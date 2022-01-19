@@ -6,11 +6,42 @@
 	objectVersion = 55;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		16D0E97145D9F260D1ED04F4 /* Kotlin */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 22159DFFB31F5C08225AACB2 /* Build configuration list for PBXAggregateTarget "Kotlin" */;
+			buildPhases = (
+				025ED7AFA93F4C2C649F44D7 /* Compile Kotlin */,
+			);
+			dependencies = (
+			);
+			name = Kotlin;
+			productName = Kotlin;
+		};
+		74CDBFA9A4074E5AE05AF341 /* Gryphon */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F5CBE82E7C308F1DCE52E9B6 /* Build configuration list for PBXAggregateTarget "Gryphon" */;
+			buildPhases = (
+				38D67A6BA9DA742ECE94B349 /* Call Gryphon */,
+			);
+			dependencies = (
+			);
+			name = Gryphon;
+			productName = Gryphon;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */; };
 		4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B9127981BC200EB4E1B /* ContentView.swift */; };
 		4D403B9427981BC400EB4E1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D403B9327981BC400EB4E1B /* Assets.xcassets */; };
 		4D403B9727981BC400EB4E1B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D403B9627981BC400EB4E1B /* Preview Assets.xcassets */; };
+		4D403B9E27981D3500EB4E1B /* GryphonSwiftLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B9D27981D3500EB4E1B /* GryphonSwiftLibrary.swift */; };
+		4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B9F27981EA700EB4E1B /* KotlinJunction.swift */; };
+		4D403BA42798212600EB4E1B /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4D403BA32798212600EB4E1B /* FirebaseAuth */; };
+		4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 4D403BA52798212600EB4E1B /* FirebaseDynamicLinks */; };
+		4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4D403BA72798212600EB4E1B /* FirebaseFirestore */; };
+		4D403BAA279821D500EB4E1B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +50,10 @@
 		4D403B9127981BC200EB4E1B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4D403B9327981BC400EB4E1B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4D403B9627981BC400EB4E1B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4D403B9D27981D3500EB4E1B /* GryphonSwiftLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GryphonSwiftLibrary.swift; sourceTree = "<group>"; };
+		4D403B9F27981EA700EB4E1B /* KotlinJunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KotlinJunction.swift; sourceTree = "<group>"; };
+		4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
+		4D403BAB2798269200EB4E1B /* DishRevueBackIOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DishRevueBackIOS.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -26,6 +61,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D403BA42798212600EB4E1B /* FirebaseAuth in Frameworks */,
+				4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */,
+				4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +91,10 @@
 			children = (
 				4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */,
 				4D403B9127981BC200EB4E1B /* ContentView.swift */,
+				4D403BA12798206400EB4E1B /* KotlinJunction */,
 				4D403B9327981BC400EB4E1B /* Assets.xcassets */,
+				4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */,
+				4D403BAB2798269200EB4E1B /* DishRevueBackIOS.entitlements */,
 				4D403B9527981BC400EB4E1B /* Preview Content */,
 			);
 			path = DishRevueBackIOS;
@@ -65,6 +106,15 @@
 				4D403B9627981BC400EB4E1B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4D403BA12798206400EB4E1B /* KotlinJunction */ = {
+			isa = PBXGroup;
+			children = (
+				4D403B9F27981EA700EB4E1B /* KotlinJunction.swift */,
+				4D403B9D27981D3500EB4E1B /* GryphonSwiftLibrary.swift */,
+			);
+			path = KotlinJunction;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -83,6 +133,11 @@
 			dependencies = (
 			);
 			name = DishRevueBackIOS;
+			packageProductDependencies = (
+				4D403BA32798212600EB4E1B /* FirebaseAuth */,
+				4D403BA52798212600EB4E1B /* FirebaseDynamicLinks */,
+				4D403BA72798212600EB4E1B /* FirebaseFirestore */,
+			);
 			productName = DishRevueBackIOS;
 			productReference = 4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */;
 			productType = "com.apple.product-type.application";
@@ -111,11 +166,16 @@
 				Base,
 			);
 			mainGroup = 4D403B8327981BC200EB4E1B;
+			packageReferences = (
+				4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 4D403B8D27981BC200EB4E1B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				4D403B8B27981BC200EB4E1B /* DishRevueBackIOS */,
+				74CDBFA9A4074E5AE05AF341 /* Gryphon */,
+				16D0E97145D9F260D1ED04F4 /* Kotlin */,
 			);
 		};
 /* End PBXProject section */
@@ -127,17 +187,59 @@
 			files = (
 				4D403B9727981BC400EB4E1B /* Preview Assets.xcassets in Resources */,
 				4D403B9427981BC400EB4E1B /* Assets.xcassets in Resources */,
+				4D403BAA279821D500EB4E1B /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		025ED7AFA93F4C2C649F44D7 /* Compile Kotlin */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Kotlin";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash .gryphon/scripts/compileKotlin.sh";
+		};
+		38D67A6BA9DA742ECE94B349 /* Call Gryphon */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Call Gryphon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "gryphon \"${PROJECT_NAME}.xcodeproj\" \"${SRCROOT}/gryphonInputFiles.xcfilelist\" --verbose --continue-on-error local.config";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4D403B8827981BC200EB4E1B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D403B9E27981D3500EB4E1B /* GryphonSwiftLibrary.swift in Sources */,
 				4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */,
+				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
 				4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,6 +368,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
@@ -295,6 +398,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
@@ -319,9 +423,64 @@
 			};
 			name = Release;
 		};
+		7F438F806815C97894BE5D4C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				PRODUCT_NAME = Gryphon;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = FALSE;
+			};
+			name = Debug;
+		};
+		89BEA3B030164C3D506CF04E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				PRODUCT_NAME = Gryphon;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = FALSE;
+			};
+			name = Release;
+		};
+		A7B7671A5C89B4BF8DA28314 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CONFIG_FILES = local.config;
+				PRODUCT_NAME = Kotlin;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = FALSE;
+			};
+			name = Debug;
+		};
+		C0C660B3B5EE40EFE2706EED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CONFIG_FILES = local.config;
+				PRODUCT_NAME = Kotlin;
+				SUPPORTED_PLATFORMS = macosx;
+				SUPPORTS_MACCATALYST = FALSE;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		22159DFFB31F5C08225AACB2 /* Build configuration list for PBXAggregateTarget "Kotlin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C0C660B3B5EE40EFE2706EED /* Release */,
+				A7B7671A5C89B4BF8DA28314 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4D403B8727981BC200EB4E1B /* Build configuration list for PBXProject "DishRevueBackIOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -340,7 +499,45 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		F5CBE82E7C308F1DCE52E9B6 /* Build configuration list for PBXAggregateTarget "Gryphon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89BEA3B030164C3D506CF04E /* Release */,
+				7F438F806815C97894BE5D4C /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4D403BA32798212600EB4E1B /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		4D403BA52798212600EB4E1B /* FirebaseDynamicLinks */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDynamicLinks;
+		};
+		4D403BA72798212600EB4E1B /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4D403B8427981BC200EB4E1B /* Project object */;
 }

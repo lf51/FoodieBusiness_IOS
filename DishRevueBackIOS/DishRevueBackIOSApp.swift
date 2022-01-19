@@ -6,9 +6,18 @@
 //
 
 import SwiftUI
+import Firebase
 
 @main
 struct DishRevueBackIOSApp: App {
+    
+    init() {
+        
+        FirebaseApp.configure()
+        // disattivare raccolta dati
+        
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
