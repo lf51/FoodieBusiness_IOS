@@ -32,6 +32,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		4D1BC7402799A746000B463C /* LinkSignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1BC73F2799A746000B463C /* LinkSignInView.swift */; };
+		4D1BC7442799AB29000B463C /* AlertObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1BC7432799AB29000B463C /* AlertObject.swift */; };
 		4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */; };
 		4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B9127981BC200EB4E1B /* ContentView.swift */; };
 		4D403B9427981BC400EB4E1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D403B9327981BC400EB4E1B /* Assets.xcassets */; };
@@ -42,9 +44,12 @@
 		4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 4D403BA52798212600EB4E1B /* FirebaseDynamicLinks */; };
 		4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4D403BA72798212600EB4E1B /* FirebaseFirestore */; };
 		4D403BAA279821D500EB4E1B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */; };
+		4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4D1BC73F2799A746000B463C /* LinkSignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSignInView.swift; sourceTree = "<group>"; };
+		4D1BC7432799AB29000B463C /* AlertObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertObject.swift; sourceTree = "<group>"; };
 		4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishRevueBackIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRevueBackIOSApp.swift; sourceTree = "<group>"; };
 		4D403B9127981BC200EB4E1B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -54,6 +59,7 @@
 		4D403B9F27981EA700EB4E1B /* KotlinJunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KotlinJunction.swift; sourceTree = "<group>"; };
 		4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		4D403BAB2798269200EB4E1B /* DishRevueBackIOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DishRevueBackIOS.entitlements; sourceTree = "<group>"; };
+		4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPasswordLess.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +76,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4D1BC73427998085000B463C /* Struct */ = {
+			isa = PBXGroup;
+			children = (
+				4D1BC7432799AB29000B463C /* AlertObject.swift */,
+			);
+			path = Struct;
+			sourceTree = "<group>";
+		};
+		4D1BC7422799AB07000B463C /* Publisher */ = {
+			isa = PBXGroup;
+			children = (
+				4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */,
+			);
+			path = Publisher;
+			sourceTree = "<group>";
+		};
 		4D403B8327981BC200EB4E1B = {
 			isa = PBXGroup;
 			children = (
@@ -91,10 +113,13 @@
 			children = (
 				4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */,
 				4D403B9127981BC200EB4E1B /* ContentView.swift */,
-				4D403BA12798206400EB4E1B /* KotlinJunction */,
+				4D1BC73F2799A746000B463C /* LinkSignInView.swift */,
+				4D1BC73427998085000B463C /* Struct */,
+				4D1BC7422799AB07000B463C /* Publisher */,
 				4D403B9327981BC400EB4E1B /* Assets.xcassets */,
 				4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */,
 				4D403BAB2798269200EB4E1B /* DishRevueBackIOS.entitlements */,
+				4D403BA12798206400EB4E1B /* KotlinJunction */,
 				4D403B9527981BC400EB4E1B /* Preview Content */,
 			);
 			path = DishRevueBackIOS;
@@ -239,8 +264,11 @@
 			files = (
 				4D403B9E27981D3500EB4E1B /* GryphonSwiftLibrary.swift in Sources */,
 				4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */,
+				4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */,
 				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
+				4D1BC7402799A746000B463C /* LinkSignInView.swift in Sources */,
 				4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */,
+				4D1BC7442799AB29000B463C /* AlertObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,7 +398,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -400,7 +428,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

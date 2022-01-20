@@ -15,12 +15,12 @@ struct DishRevueBackIOSApp: App {
         
         FirebaseApp.configure()
         // disattivare raccolta dati
-        
     }
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+           // ContentView()
+            LinkSignInView()
         }
     }
 }
