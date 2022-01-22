@@ -12,11 +12,6 @@ import Firebase
 struct LinkSignInView: View {
     
   @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
-  @State private var email: String = ""
-  @State private var isPresentingSheet = false
-
-  /// This property will cause an alert view to display when it has a non-null value.
-//  @State private var alertItem: AlertItem? = nil
 
   var body: some View {
       
@@ -28,13 +23,14 @@ struct LinkSignInView: View {
           .padding(.bottom, 60)
 
         CustomStyledTextField(
-          text: $email, placeholder: "Email", symbolName: "person.circle.fill"
+            text: $authProcess.email, placeholder: "Email", symbolName: "person.circle.fill"
         )
 
-          CustomStyledButton(title: "Send Link", action: {
-              authProcess.sendSignInLink(email: email)
+        CustomStyledButton(title: "Send Link", action: {
+              authProcess.sendSignInLink()
+            //  email = "" --> Se resettiamo la mail, dobbiamo salvarla da qualche parte (UserDefault per poter continuare il flow)
           })
-          .disabled(email.isEmpty)
+              .disabled(authProcess.email.isEmpty)
 
         Spacer()
       }
@@ -44,16 +40,18 @@ struct LinkSignInView: View {
     .onOpenURL { url in
         
       let link = url.absoluteString
+        print("url/link:\(link)")
         
       if Auth.auth().isSignIn(withEmailLink: link) {
           
-          authProcess.passwordlessSignIn(email: email, link: link) { result in
+          authProcess.passwordlessSignIn(link: link) { result in
             
           switch result {
           case let .success(user):
-            isPresentingSheet = user?.isEmailVerified ?? false
+              authProcess.isPresentingSheet = user?.isEmailVerified ?? false
           case let .failure(error):
-            isPresentingSheet = false
+              authProcess.isPresentingSheet = false
+              
             authProcess.alertItem = AlertObject(
               title: "An authentication error occurred.",
               message: error.localizedDescription
@@ -62,15 +60,17 @@ struct LinkSignInView: View {
         }
       }
     }
-    .sheet(isPresented: $isPresentingSheet) {
-      SuccessView(email: email)
+    .sheet(isPresented: $authProcess.isPresentingSheet) {
+        SuccessView(authProcess: authProcess)
     }
-    .alert(item: $authProcess.alertItem) { alert -> Alert in
+   /* .alert(item: $authProcess.alertItem) { alert -> Alert in
       Alert(
         title: Text(alert.title),
         message: Text(alert.message)
       )
-    }
+    } */
+      // Lo Sheet e l'Alert vanno in conflitto. Lo Sheet può essere una bella proposta come prima autenticazione per mostrare un carrello di slide e tips su come settare l'account o mostrare un primo settaggio in stile FantaBid
+      //L'Alert mi piace per comunicare nei rientri che l'utente xxxx è autenticato. Però voglio che appaia per qualche secondo e si dissolva da solo. IN QUESTA FASE, comunque, sia lo SHEET che l'ALERT servivano a testare l'avvenuto signIN
   }
     
 }
@@ -122,7 +122,8 @@ struct CustomStyledButton: View {
 
 /// Displayed when a user successfuly logs in.
 struct SuccessView: View {
-  let email: String
+   
+    @ObservedObject var authProcess: AuthPasswordLess
 
   var body: some View {
     /// The first view in this `ZStack` is a `Color` view that expands
@@ -137,10 +138,11 @@ struct SuccessView: View {
             .font(.largeTitle)
             .fontWeight(.semibold)
 
-          Text(email.lowercased())
+            Text(authProcess.displayName.lowercased())
             .font(.title3)
             .fontWeight(.bold)
             .multilineTextAlignment(.leading)
+
         }
         .padding(.leading)
 
@@ -148,6 +150,40 @@ struct SuccessView: View {
           .resizable()
           .aspectRatio(contentMode: .fit)
           .scaleEffect(0.5)
+          
+          Spacer()
+          
+          VStack{
+              
+              CustomStyledTextField(text: $authProcess.displayName, placeholder: "Custom Display Name", symbolName: "person.circle.fill")
+              
+              CustomStyledButton(title: "Change Name") {
+                  authProcess.updateCurrentUserProfile()
+              }
+          }
+          
+          
+          Spacer()
+          
+          HStack {
+              
+              Button {
+                  authProcess.deleteCurrentUser()
+              } label: {
+                  Text("Delete Account").foregroundColor(.red)
+              }
+              
+             Spacer()
+              
+              Button {
+                  authProcess.signOutCurrentUser()
+              } label: {
+                  Text("SIGN OUT").foregroundColor(.blue)
+              }
+              
+          }.padding()
+            
+          
       }
       .foregroundColor(.white)
     }
