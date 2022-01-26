@@ -11,23 +11,19 @@ import Firebase
 class AuthPasswordLess: ObservableObject {
     
     @Published var email: String = ""
-    @Published var alertItem: AlertObject?
-    @Published var isPresentingSheet: Bool = false
+    @Published var alertItem: AlertModel?
+    @Published var isPresentingSheet: Bool = true
     
     @Published var displayName: String = ""
     
-    
     init() {
         print("Step_1 -> INIT")
-      //  reAuthUser()
         checkUserSignedIn()
-        
     }
     
     func sendSignInLink() {
         
       let actionCodeSettings = ActionCodeSettings()
-    //  actionCodeSettings.url = URL(string: "https://dishrevueproject.firebaseapp.com") //deep link del dynamic link di sotto
       actionCodeSettings.url = URL(string: "https://dishrevuebackios.page.link/backendauth") // dynamic link
       actionCodeSettings.handleCodeInApp = true
       actionCodeSettings.setIOSBundleID(Bundle.main.bundleIdentifier!)
@@ -38,13 +34,13 @@ class AuthPasswordLess: ObservableObject {
             
             print("Errore nell'autenticazione: \(error!.localizedDescription)")
             
-            self.alertItem = AlertObject(
+            self.alertItem = AlertModel(
             title: "The sign in link could not be sent.",
             message: error!.localizedDescription
           )
             return
         }
-            self.alertItem = AlertObject(title: "Authentication Link Sent", message: "Check in your email inbox or spam")
+            self.alertItem = AlertModel(title: "Authentication Link Sent", message: "Check in your email inbox or spam")
             UserDefaults.standard.set(self.email, forKey: "Email")
             self.email = ""
             print("Link Succesfully sent")
@@ -62,12 +58,14 @@ class AuthPasswordLess: ObservableObject {
             if let error = error {
               print("ⓧ Authentication error: \(error.localizedDescription).")
               completion(.failure(error))
+                // inserire alert
                 
             } else {
               print("✔ Authentication was successful.")
               completion(.success(result?.user))
+                self.isPresentingSheet = false
                 self.displayName = result?.user.displayName ?? result?.user.email ?? ""
-                self.alertItem = AlertObject(title: "Authentication", message: "User \(result?.user.email ?? "") successfully Authenticated")
+                self.alertItem = AlertModel(title: "Authentication", message: "User \(result?.user.email ?? "") successfully Authenticated")
             }
           }
             
@@ -84,12 +82,14 @@ class AuthPasswordLess: ObservableObject {
             print("IsEmailVerified: \(user.isEmailVerified)")
             print("UserProviderID: \(user.providerID)")
             print("UserName: \(user.displayName ?? "")")
-            self.isPresentingSheet = user.isEmailVerified
+            self.isPresentingSheet = false
             self.displayName = user.displayName ?? user.email ?? ""
-            self.alertItem = AlertObject(title: "Authentication", message: "User \(self.email) successfully Authenticated")
+            self.alertItem = AlertModel(title: "Check Authentication", message: "User \(self.displayName) successfully Authenticated")
             
         }
-        else {print("STEP_2 - NO USER IN") }
+        else {
+
+            print("STEP_2 - NO USER IN") }
       
     }
 
@@ -102,18 +102,16 @@ class AuthPasswordLess: ObservableObject {
                 guard error == nil else {
                     
                     print("DeleteStage - Error:\(error?.localizedDescription ?? "")")
-                    self.alertItem = AlertObject(title: "Error", message: "\(error?.localizedDescription ?? "") - SigningOut CurrentUser. Auth again to delete")
+                    self.alertItem = AlertModel(title: "Error", message: "\(error?.localizedDescription ?? "") - SigningOut CurrentUser. Sign-In again to delete")
                     self.signOutCurrentUser()
                     
                     return
                 }
                 
-                self.alertItem = AlertObject(title: "Delete Account", message: "Account Deleted Successfully")
+                self.alertItem = AlertModel(title: "Delete Account", message: "Account Deleted Successfully")
                 print("DeleteStage - Account Deleted")
             }
-            
         }
-        
     }
     
     func signOutCurrentUser() {
@@ -126,10 +124,12 @@ class AuthPasswordLess: ObservableObject {
             
             try firebaseAuth.signOut()
             
+            self.alertItem = AlertModel(title: "SignOut", message: "User Signed Out Successfully")
             print("SignOut Successfully")
             
         } catch let signOutError as NSError {
             
+            self.alertItem = AlertModel(title: "SignOut", message: "Error signingOut")
             print("Error signingOut: %@", signOutError)
         }
         
@@ -158,6 +158,8 @@ class AuthPasswordLess: ObservableObject {
 
 
 
-
+    
+    
+//Fine Classe
 }
 

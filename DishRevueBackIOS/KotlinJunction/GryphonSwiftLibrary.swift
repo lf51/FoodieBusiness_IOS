@@ -204,12 +204,12 @@ private func gryphonTemplates() {
 	let _array2: MutableList<Any> = [1, 2, 3]
 	let _array3: [Any] = [1, 2, 3]
 	let _dictionary: [_Hashable: Any] = [:]
-	let _list: List<Any> = []
-	let _map: Map<_Hashable, Any> = [:]
+	let _list: ListGSL<Any> = []
+	let _map: MapGSL<_Hashable, Any> = [:]
 	let _any: Any = 0
 	let _string: String = ""
 	let _index = _string.startIndex
-	let _comparableArray: List<_Comparable> = []
+	let _comparableArray: ListGSL<_Comparable> = []
 	let _closure: (_Comparable, _Comparable) -> Bool = { _, _ in true }
 
 	// Templates with an input that references methods defined in this file
@@ -225,13 +225,13 @@ private func gryphonTemplates() {
 	_ = _array1.appending(contentsOf: _array2)
 	_ = "_array1 + _array2"
 
-	_ = List(_array3)
+	_ = ListGSL(_array3)
 	_ = GRYTemplate.call(.dot("_array3", "toList"), [])
 
 	_ = MutableList(_array3)
 	_ = GRYTemplate.call(.dot("_array3", "toMutableList"), [])
 
-	_ = Map(_dictionary)
+	_ = MapGSL(_dictionary)
 	_ = GRYTemplate.call(.dot("_dictionary", "toMap"), [])
 
 	_ = MutableMap(_dictionary)
@@ -272,11 +272,11 @@ public struct _ListSlice<Element>: Collection,
 	public typealias Index = Int
 	public typealias SubSequence = _ListSlice<Element>
 
-	let list: List<Element>
+	let list: ListGSL<Element>
 	let range: Range<Int>
 
 	public init(
-		list: List<Element>,
+		list: ListGSL<Element>,
 		range: Range<Int>)
 	{
 		self.list = list
@@ -324,35 +324,35 @@ public struct _ListSlice<Element>: Collection,
 	}
 
 	// Other methods
-	public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> List<Element> {
+	public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> ListGSL<Element> {
 		let array = list.array[range]
-		return try List(array.filter(isIncluded))
+		return try ListGSL(array.filter(isIncluded))
 	}
 
-	public func map<T>(_ transform: (Element) throws -> T) rethrows -> List<T> {
+	public func map<T>(_ transform: (Element) throws -> T) rethrows -> ListGSL<T> {
 		let array = list.array[range]
-		return try List<T>(array.map(transform))
+		return try ListGSL<T>(array.map(transform))
 	}
 
-	public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> List<T> {
+	public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> ListGSL<T> {
 		let array = list.array[range]
-		return try List<T>(array.compactMap(transform))
+		return try ListGSL<T>(array.compactMap(transform))
 	}
 
 	public func flatMap<SegmentOfResult>(
 		_ transform: (Element) throws -> SegmentOfResult)
-		rethrows -> List<SegmentOfResult.Element>
+		rethrows -> ListGSL<SegmentOfResult.Element>
 		where SegmentOfResult: Sequence
 	{
 		let array = list.array[range]
-		return try List<SegmentOfResult.Element>(array.flatMap(transform))
+		return try ListGSL<SegmentOfResult.Element>(array.flatMap(transform))
 	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // gryphon ignore
-public class List<Element>: CustomStringConvertible,
+public class ListGSL<Element>: CustomStringConvertible, // from List to ListGSL per risolvere conflitto con List in swift
 	CustomDebugStringConvertible,
 	ExpressibleByArrayLiteral,
 	Sequence,
@@ -386,7 +386,7 @@ public class List<Element>: CustomStringConvertible,
 	}
 
 	// Sequence
-	public func makeIterator() -> IndexingIterator<List<Element>> {
+	public func makeIterator() -> IndexingIterator<ListGSL<Element>> {
 		return IndexingIterator(_elements: self)
 	}
 
@@ -435,9 +435,9 @@ public class List<Element>: CustomStringConvertible,
 	/// Used to obtain a List with a new element type. If all elements in the list can be casted to
 	/// the new type, the method succeeds and the new MutableList is returned. Otherwise, the method
 	/// returns `nil`.
-	public func `as`<CastedType>(_ type: List<CastedType>.Type) -> List<CastedType>? {
+	public func `as`<CastedType>(_ type: ListGSL<CastedType>.Type) -> ListGSL<CastedType>? {
 		if let castedList = self.array as? [CastedType] {
-			return List<CastedType>(castedList)
+			return ListGSL<CastedType>(castedList)
 		}
 		else {
 			return nil
@@ -447,12 +447,12 @@ public class List<Element>: CustomStringConvertible,
 	/// Used to obtain a List with a new element type. If all elements in the list can be casted to
 	/// the new type, the method succeeds and the new MutableList is returned. Otherwise, the method
 	/// crashes.
-	public func forceCast<CastedType>(to type: List<CastedType>.Type) -> List<CastedType> {
-		List<CastedType>(array as! [CastedType])
+	public func forceCast<CastedType>(to type: ListGSL<CastedType>.Type) -> ListGSL<CastedType> {
+		ListGSL<CastedType>(array as! [CastedType])
 	}
 
-	public func toList() -> List<Element> {
-		return List(array)
+	public func toList() -> ListGSL<Element> {
+		return ListGSL(array)
 	}
 
 	public var isEmpty: Bool {
@@ -467,62 +467,62 @@ public class List<Element>: CustomStringConvertible,
 		return array.last
 	}
 
-	public func dropFirst(_ k: Int = 1) -> List<Element> {
-		return List(array.dropFirst(k))
+	public func dropFirst(_ k: Int = 1) -> ListGSL<Element> {
+		return ListGSL(array.dropFirst(k))
 	}
 
-	public func dropLast(_ k: Int = 1) -> List<Element> {
-		return List(array.dropLast(k))
+	public func dropLast(_ k: Int = 1) -> ListGSL<Element> {
+		return ListGSL(array.dropLast(k))
 	}
 
-	public func drop(while predicate: (Element) throws -> Bool) rethrows -> List<Element> {
-		return try List(array.drop(while: predicate))
+	public func drop(while predicate: (Element) throws -> Bool) rethrows -> ListGSL<Element> {
+		return try ListGSL(array.drop(while: predicate))
 	}
 
-	public func appending(_ newElement: Element) -> List<Element> {
-		return List<Element>(self.array + [newElement])
+	public func appending(_ newElement: Element) -> ListGSL<Element> {
+		return ListGSL<Element>(self.array + [newElement])
 	}
 
-	public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> List<Element> {
-		return try List(self.array.filter(isIncluded))
+	public func filter(_ isIncluded: (Element) throws -> Bool) rethrows -> ListGSL<Element> {
+		return try ListGSL(self.array.filter(isIncluded))
 	}
 
-	public func map<T>(_ transform: (Element) throws -> T) rethrows -> List<T> {
-		return try List<T>(self.array.map(transform))
+	public func map<T>(_ transform: (Element) throws -> T) rethrows -> ListGSL<T> {
+		return try ListGSL<T>(self.array.map(transform))
 	}
 
-	public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> List<T> {
-		return try List<T>(self.array.compactMap(transform))
+	public func compactMap<T>(_ transform: (Element) throws -> T?) rethrows -> ListGSL<T> {
+		return try ListGSL<T>(self.array.compactMap(transform))
 	}
 
 	public func flatMap<SegmentOfResult>(
 		_ transform: (Element) throws -> SegmentOfResult)
-		rethrows -> List<SegmentOfResult.Element>
+		rethrows -> ListGSL<SegmentOfResult.Element>
 		where SegmentOfResult: Sequence
 	{
-		return try List<SegmentOfResult.Element>(array.flatMap(transform))
+		return try ListGSL<SegmentOfResult.Element>(array.flatMap(transform))
 	}
 
-	public func prefix(while predicate: (Element) throws -> Bool) rethrows -> List<Element> {
-		return try List<Element>(array.prefix(while: predicate))
+	public func prefix(while predicate: (Element) throws -> Bool) rethrows -> ListGSL<Element> {
+		return try ListGSL<Element>(array.prefix(while: predicate))
 	}
 
 	@inlinable
 	public func sorted(
 		by areInIncreasingOrder: (Element, Element) throws -> Bool) rethrows
-		-> List<Element>
+		-> ListGSL<Element>
 	{
-		return List(try array.sorted(by: areInIncreasingOrder))
+		return ListGSL(try array.sorted(by: areInIncreasingOrder))
 	}
 
-	public func appending<S>(contentsOf newElements: S) -> List<Element>
+	public func appending<S>(contentsOf newElements: S) -> ListGSL<Element>
 		where S: Sequence, Element == S.Element
 	{
-		return List<Element>(self.array + newElements)
+		return ListGSL<Element>(self.array + newElements)
 	}
 
-	public func reversed() -> List<Element> {
-		return List(array.reversed())
+	public func reversed() -> ListGSL<Element> {
+		return ListGSL(array.reversed())
 	}
 
 	public var indices: Range<Int> {
@@ -533,33 +533,33 @@ public class List<Element>: CustomStringConvertible,
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // gryphon ignore
-extension List {
+extension ListGSL {
 	public func toMutableList() -> MutableList<Element> {
 		return MutableList(array)
 	}
 }
 
 // gryphon ignore
-extension List {
+extension ListGSL {
 	@inlinable
 	public static func + <Other>(
-		lhs: List<Element>,
+		lhs: ListGSL<Element>,
 		rhs: Other)
-		-> List<Element>
+		-> ListGSL<Element>
 		where Other: Sequence,
-		List.Element == Other.Element
+		ListGSL.Element == Other.Element
 	{
 		var array = lhs.array
 		for element in rhs {
 			array.append(element)
 		}
-		return List(array)
+		return ListGSL(array)
 	}
 }
 
 // gryphon ignore
-extension List: Equatable where Element: Equatable {
-	public static func == (lhs: List, rhs: List) -> Bool {
+extension ListGSL: Equatable where Element: Equatable {
+	public static func == (lhs: ListGSL, rhs: ListGSL) -> Bool {
 		return lhs.array == rhs.array
 	}
 
@@ -570,24 +570,24 @@ extension List: Equatable where Element: Equatable {
 }
 
 // gryphon ignore
-extension List: Hashable where Element: Hashable {
+extension ListGSL: Hashable where Element: Hashable {
 	public func hash(into hasher: inout Hasher) {
 		array.hash(into: &hasher)
 	}
 }
 
 // gryphon ignore
-extension List where Element: Comparable {
+extension ListGSL where Element: Comparable {
 	@inlinable
-	public func sorted() -> List<Element> {
-		return List(array.sorted())
+	public func sorted() -> ListGSL<Element> {
+		return ListGSL(array.sorted())
 	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // gryphon ignore
-public class MutableList<Element>: List<Element>,
+public class MutableList<Element>: ListGSL<Element>,
 	MutableCollection,
 	RangeReplaceableCollection
 {
@@ -646,14 +646,14 @@ public class MutableList<Element>: List<Element>,
 		self.array = self.array.reversed()
 	}
 
-	override public func drop(while predicate: (Element) throws -> Bool) rethrows -> List<Element> {
-		return try List(array.drop(while: predicate))
+	override public func drop(while predicate: (Element) throws -> Bool) rethrows -> ListGSL<Element> {
+		return try ListGSL(array.drop(while: predicate))
 	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // gryphon ignore
-extension List {
+extension ListGSL {
 
 	/// Used to obtain a MutableList with a new element type. If all elements in the list can be
 	/// casted to the new type, the method succeeds and the new MutableList is returned. Otherwise,
@@ -686,30 +686,30 @@ extension List {
 // gryphon ignore
 public func zip<ASequence, ListElement>(
 	_ array1: ASequence,
-	_ array2: List<ListElement>)
-	-> List<(ASequence.Element, ListElement)>
+	_ array2: ListGSL<ListElement>)
+	-> ListGSL<(ASequence.Element, ListElement)>
 	where ASequence: Sequence
 {
-	return List(Swift.zip(array1, array2))
+	return ListGSL(Swift.zip(array1, array2))
 }
 
 // gryphon ignore
 public func zip<ASequence, ListElement>(
-	_ array1: List<ListElement>,
+	_ array1: ListGSL<ListElement>,
 	_ array2: ASequence)
-	-> List<(ListElement, ASequence.Element)>
+	-> ListGSL<(ListElement, ASequence.Element)>
 	where ASequence: Sequence
 {
-	return List(Swift.zip(array1, array2))
+	return ListGSL(Swift.zip(array1, array2))
 }
 
 // gryphon ignore
 public func zip<List1Element, List2Element>(
-	_ array1: List<List1Element>,
-	_ array2: List<List2Element>)
-	-> List<(List1Element, List2Element)>
+	_ array1: ListGSL<List1Element>,
+	_ array2: ListGSL<List2Element>)
+	-> ListGSL<(List1Element, List2Element)>
 {
-	return List(Swift.zip(array1, array2))
+	return ListGSL(Swift.zip(array1, array2))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -718,7 +718,7 @@ public func zip<List1Element, List2Element>(
 /// the Dictionary type in Swift conforms exactly to these protocols,
 /// plus CustomReflectable (which is beyond Gryphon's scope for now).
 // gryphon ignore
-public class Map<Key, Value>: CustomStringConvertible,
+public class MapGSL<Key, Value>: CustomStringConvertible, // modificato nome from Map to MapGSL in data 24.01.2022 - Vedere KotlinJunction 
 	CustomDebugStringConvertible,
 	ExpressibleByDictionaryLiteral,
 	Collection
@@ -738,8 +738,8 @@ public class Map<Key, Value>: CustomStringConvertible,
 	}
 
 	// The tuple inside the list has to be translated as a Pair for Kotlin compatibility
-	public func toList() -> List<(Key, Value)> {
-		return List(dictionary).map { ($0.0, $0.1) }
+	public func toList() -> ListGSL<(Key, Value)> {
+		return ListGSL(dictionary).map { ($0.0, $0.1) }
 	}
 
 	// Custom (Debug) String Convertible
@@ -757,7 +757,7 @@ public class Map<Key, Value>: CustomStringConvertible,
 	}
 
 	// Sequence
-	public func makeIterator() -> IndexingIterator<Map<Key, Value>> {
+	public func makeIterator() -> IndexingIterator<MapGSL<Key, Value>> {
 		return IndexingIterator(_elements: self)
 	}
 
@@ -791,11 +791,11 @@ public class Map<Key, Value>: CustomStringConvertible,
 	/// be casted to the new types, the method succeeds and the new Map is returned. Otherwise, the
 	/// method returns `nil`.
 	public func `as`<CastedKey, CastedValue>(
-		_ type: Map<CastedKey, CastedValue>.Type)
-		-> Map<CastedKey, CastedValue>?
+		_ type: MapGSL<CastedKey, CastedValue>.Type)
+		-> MapGSL<CastedKey, CastedValue>?
 	{
 		if let castedDictionary = self.dictionary as? [CastedKey: CastedValue] {
-			return Map<CastedKey, CastedValue>(castedDictionary)
+			return MapGSL<CastedKey, CastedValue>(castedDictionary)
 		}
 		else {
 			return nil
@@ -806,14 +806,14 @@ public class Map<Key, Value>: CustomStringConvertible,
 	/// be casted to the new types, the method succeeds and the new Map is returned. Otherwise, the
 	/// method crashes.
 	public func forceCast<CastedKey, CastedValue>(
-		to type: Map<CastedKey, CastedValue>.Type)
-		-> Map<CastedKey, CastedValue>
+		to type: MapGSL<CastedKey, CastedValue>.Type)
+		-> MapGSL<CastedKey, CastedValue>
 	{
-		Map<CastedKey, CastedValue>(dictionary as! [CastedKey: CastedValue])
+		MapGSL<CastedKey, CastedValue>(dictionary as! [CastedKey: CastedValue])
 	}
 
-	public func toMap() -> Map<Key, Value> {
-		return Map(dictionary)
+	public func toMap() -> MapGSL<Key, Value> {
+		return MapGSL(dictionary)
 	}
 
 	public subscript (_ key: Key) -> Value? {
@@ -839,14 +839,14 @@ public class Map<Key, Value>: CustomStringConvertible,
 	}
 
 	public func map<T>(_ transform: (KeyValueTuple) throws -> T)
-		rethrows -> List<T>
+		rethrows -> ListGSL<T>
 	{
-		return try List<T>(self.dictionary.map(transform))
+		return try ListGSL<T>(self.dictionary.map(transform))
 	}
 
 	@inlinable
-	public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> Map<Key, T> {
-		return try Map<Key, T>(dictionary.mapValues(transform))
+	public func mapValues<T>(_ transform: (Value) throws -> T) rethrows -> MapGSL<Key, T> {
+		return try MapGSL<Key, T>(dictionary.mapValues(transform))
 	}
 
 	@inlinable
@@ -861,21 +861,21 @@ public class Map<Key, Value>: CustomStringConvertible,
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // gryphon ignore
-extension Map {
+extension MapGSL {
 	public func toMutableMap() -> MutableMap<Key, Value> {
 		return MutableMap(dictionary)
 	}
 }
 
 // gryphon ignore
-extension Map: Equatable where Value: Equatable {
-	public static func == (lhs: Map, rhs: Map) -> Bool {
+extension MapGSL: Equatable where Value: Equatable {
+	public static func == (lhs: MapGSL, rhs: MapGSL) -> Bool {
 		return lhs.dictionary == rhs.dictionary
 	}
 }
 
 // gryphon ignore
-extension Map: Hashable where Value: Hashable {
+extension MapGSL: Hashable where Value: Hashable {
 	public func hash(into hasher: inout Hasher) {
 		dictionary.hash(into: &hasher)
 	}
@@ -884,7 +884,7 @@ extension Map: Hashable where Value: Hashable {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // gryphon ignore
-public class MutableMap<Key, Value>: Map<Key, Value> where Key: Hashable {
+public class MutableMap<Key, Value>: MapGSL<Key, Value> where Key: Hashable {
 	override public subscript (_ key: Key) -> Value? {
 		get {
 			return dictionary[key]
@@ -896,7 +896,7 @@ public class MutableMap<Key, Value>: Map<Key, Value> where Key: Hashable {
 }
 
 // gryphon ignore
-extension Map {
+extension MapGSL {
 	/// Used to obtain a MutableMap with new key and/or value types. If all keys and values in the
 	/// map can be casted to the new types, the method succeeds and the new MutableMap is returned.
 	/// Otherwise, the method returns `nil`.

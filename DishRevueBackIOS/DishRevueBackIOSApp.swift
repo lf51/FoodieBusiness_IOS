@@ -20,7 +20,11 @@ struct DishRevueBackIOSApp: App {
     var body: some Scene {
         WindowGroup {
            // ContentView()
-            LinkSignInView()
+          //  LinkSignInView()
+          //  CreateNewPropertiesView()
+            PrincipalTabView()
         }
     }
 }
+
+

@@ -9,34 +9,38 @@ import SwiftUI
 import Firebase
 
 /// Main view where user can login in using Email Link Authentication.
-struct LinkSignInView: View {
-    
-  @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
+struct LinkSignInSheetView: View {
+   
+    @ObservedObject var authProcess: AuthPasswordLess
 
   var body: some View {
       
-    NavigationView {
+  //  NavigationView {
         
       VStack(alignment: .leading) {
+          
+        Text("PasswordLess Authentication")
+            .font(.largeTitle)
+            .fontWeight(.semibold)
           
         Text("Authenticate users with only their email, no password required!")
           .padding(.bottom, 60)
 
-        CustomStyledTextField(
+        CSTextField_1(
             text: $authProcess.email, placeholder: "Email", symbolName: "person.circle.fill"
         )
 
-        CustomStyledButton(title: "Send Link", action: {
+          CSButton_2(title: "Send Link", accentColor: .white,backgroundColor: .cyan,cornerRadius: 16.0, action: {
               authProcess.sendSignInLink()
-            //  email = "" --> Se resettiamo la mail, dobbiamo salvarla da qualche parte (UserDefault per poter continuare il flow)
+           
           })
               .disabled(authProcess.email.isEmpty)
 
         Spacer()
       }
       .padding()
-      .navigationBarTitle("Passwordless Login")
-    }
+     // .navigationBarTitle("Passwordless Login")
+  // }
     .onOpenURL { url in
         
       let link = url.absoluteString
@@ -52,7 +56,7 @@ struct LinkSignInView: View {
           case let .failure(error):
               authProcess.isPresentingSheet = false
               
-            authProcess.alertItem = AlertObject(
+            authProcess.alertItem = AlertModel(
               title: "An authentication error occurred.",
               message: error.localizedDescription
             )
@@ -60,9 +64,9 @@ struct LinkSignInView: View {
         }
       }
     }
-    .sheet(isPresented: $authProcess.isPresentingSheet) {
+   /* .sheet(isPresented: $authProcess.isPresentingSheet) {
         SuccessView(authProcess: authProcess)
-    }
+    } */
    /* .alert(item: $authProcess.alertItem) { alert -> Alert in
       Alert(
         title: Text(alert.title),
@@ -76,49 +80,10 @@ struct LinkSignInView: View {
 }
 
 /// A custom styled TextField with an SF symbol icon.
-struct CustomStyledTextField: View {
-  @Binding var text: String
-  let placeholder: String
-  let symbolName: String
 
-  var body: some View {
-    HStack {
-      Image(systemName: symbolName)
-        .imageScale(.large)
-        .padding(.leading)
-
-      TextField(placeholder, text: $text)
-        .padding(.vertical)
-        .accentColor(.orange)
-        .autocapitalization(.none)
-    }
-    .background(
-      RoundedRectangle(cornerRadius: 16.0, style: .circular)
-        .foregroundColor(Color(.secondarySystemFill))
-    )
-  }
-}
 
 /// A custom styled button with a custom title and action.
-struct CustomStyledButton: View {
-  let title: String
-  let action: () -> Void
 
-  var body: some View {
-    Button(action: action) {
-      /// Embed in an HStack to display a wide button with centered text.
-      HStack {
-        Spacer()
-        Text(title)
-          .padding()
-          .accentColor(.white)
-        Spacer()
-      }
-    }
-    .background(Color.orange)
-    .cornerRadius(16.0)
-  }
-}
 
 /// Displayed when a user successfuly logs in.
 struct SuccessView: View {
@@ -155,9 +120,9 @@ struct SuccessView: View {
           
           VStack{
               
-              CustomStyledTextField(text: $authProcess.displayName, placeholder: "Custom Display Name", symbolName: "person.circle.fill")
+              CSTextField_2(text: $authProcess.displayName, placeholder: "Custom Display Name", symbolName: "person.circle.fill",accentColor: .orange,autoCap: .none,cornerRadius: 16.0)
               
-              CustomStyledButton(title: "Change Name") {
+              CSButton_2(title: "Change Name",accentColor:.white, backgroundColor: .orange, cornerRadius: 16.0) {
                   authProcess.updateCurrentUserProfile()
               }
           }
