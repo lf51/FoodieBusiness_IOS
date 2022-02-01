@@ -45,8 +45,10 @@ struct CSTextField_2: View {
   var body: some View {
       
     HStack {
+        
       Image(systemName: symbolName)
         .imageScale(.large)
+        .foregroundColor(accentColor)
         .padding(.leading)
 
       TextField(placeholder, text: $text)

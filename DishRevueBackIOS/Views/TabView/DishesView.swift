@@ -15,7 +15,7 @@ struct DishesView: View {
         
         ZStack {
             
-            backGroundColorView.ignoresSafeArea()
+            backGroundColorView.edgesIgnoringSafeArea(.top)
             
             Text("Elenco Piatti Creati + ModificaPiattiEsistenti + Visualizza/rispondi recensioni")
         }

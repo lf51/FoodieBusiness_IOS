@@ -10,6 +10,8 @@ import Firebase
 
 class AuthPasswordLess: ObservableObject {
     
+    static var isUserAuth:Bool = true // Impostare di default su FALSE. Viene aggiornato se l'utente fa l'Auth - Non è stato ancora agganciato
+    
     @Published var email: String = ""
     @Published var alertItem: AlertModel?
     @Published var isPresentingSheet: Bool = true

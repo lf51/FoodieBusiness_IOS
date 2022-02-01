@@ -9,17 +9,18 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @StateObject var propertyViewModel: PropertyVM = PropertyVM()
     @ObservedObject var authProcess: AuthPasswordLess
     var backGroundViewColor: Color
     
-    @State var listaProperties: [String] = ["Paninari","FattoriaMorgana"]
+   // @State var listaProperties: [String] = ["Paninari","FattoriaMorgana"]
     @State var showAddNewPropertySheet:Bool = false
     
     var body: some View {
         
         ZStack {
             
-            backGroundViewColor.ignoresSafeArea()
+            backGroundViewColor.edgesIgnoringSafeArea(.top)
  
             VStack(alignment: .leading) {
            
@@ -42,9 +43,17 @@ struct HomeView: View {
                     Button(action: {
                         
                     //    self.listaProperties.append("Osteria del Vicolo")
+                        if AuthPasswordLess.isUserAuth {
+                            
+                            self.showAddNewPropertySheet.toggle()
+                            // Comando per creare Nuova Property
+                        } else {
+                            authProcess.isPresentingSheet = true 
+                        }
                         
-                        self.showAddNewPropertySheet.toggle()
-                        // Comando per creare Nuova Property
+                        
+                        
+                        // Se l'utente non è autenticato deve riaprire lo sheet dell'Auth
                         
                     }, label: {
                         Image(systemName: "plus.circle")
@@ -61,16 +70,17 @@ struct HomeView: View {
                            
                     VStack(alignment:.leading,spacing:5.0) {
                         
-                        ForEach(listaProperties, id:\.self) { property in
+                        ForEach(propertyViewModel.propertiesList) { property in
                             
                             HStack{
                                 
-                                Text(property)
+                                Text(property.name)
+                                Text(property.id)
                                     .padding(.leading)
                                 Spacer()
                                 
                                 NavigationLink(destination: Text("Ciao")) {
-                                    Text("Aricio")
+                                    Text("Ariciao")
                                 }
                                 //NavigationLink to PropertyView: Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti
                                 
@@ -97,7 +107,10 @@ struct HomeView: View {
             //
         }// chiusa ZStack
         .sheet(isPresented: self.$showAddNewPropertySheet) {
-            AddNewPropertySheetView()
+            AddNewPropertySheetView(propertyViewModel: propertyViewModel)
+        }
+        .sheet(isPresented: $authProcess.isPresentingSheet) {
+            LinkSignInSheetView(authProcess: authProcess)
         }
 
         

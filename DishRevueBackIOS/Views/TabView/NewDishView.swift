@@ -15,7 +15,7 @@ struct NewDishView: View {
         
         ZStack {
             
-            backGroundColorView.ignoresSafeArea()
+            backGroundColorView.edgesIgnoringSafeArea(.top)
             
             Text("Creiamo un nuovo piatto")
             
