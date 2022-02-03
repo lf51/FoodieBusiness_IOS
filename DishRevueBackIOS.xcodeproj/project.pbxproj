@@ -52,8 +52,7 @@
 		4DAD4FB8279EEE5400C0EAE8 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD4FB7279EEE5400C0EAE8 /* MapView.swift */; };
 		4DAD4FBA279EF09900C0EAE8 /* StyledTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD4FB9279EF09900C0EAE8 /* StyledTextField.swift */; };
 		4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */; };
-		4DB2489327A9332800A135D1 /* QueryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2489227A9332800A135D1 /* QueryRow.swift */; };
-		4DB2489527A98F0C00A135D1 /* PropertyChoiceInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB2489427A98F0C00A135D1 /* PropertyChoiceInfoView.swift */; };
+		4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */; };
 		4DF0C4AB27A009A800315A73 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AA27A009A800315A73 /* HomeView.swift */; };
 		4DF0C4AD27A009B800315A73 /* DishesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AC27A009B800315A73 /* DishesView.swift */; };
 		4DF0C4AF27A009C400315A73 /* NewDishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AE27A009C400315A73 /* NewDishView.swift */; };
@@ -83,8 +82,7 @@
 		4DAD4FB7279EEE5400C0EAE8 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		4DAD4FB9279EF09900C0EAE8 /* StyledTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledTextField.swift; sourceTree = "<group>"; };
 		4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledButton.swift; sourceTree = "<group>"; };
-		4DB2489227A9332800A135D1 /* QueryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryRow.swift; sourceTree = "<group>"; };
-		4DB2489427A98F0C00A135D1 /* PropertyChoiceInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyChoiceInfoView.swift; sourceTree = "<group>"; };
+		4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPropertySheetView.swift; sourceTree = "<group>"; };
 		4DF0C4AA27A009A800315A73 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4DF0C4AC27A009B800315A73 /* DishesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishesView.swift; sourceTree = "<group>"; };
 		4DF0C4AE27A009C400315A73 /* NewDishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishView.swift; sourceTree = "<group>"; };
@@ -142,6 +140,7 @@
 				4DF7D9D627A45097001DB949 /* Views */,
 				4DF7D9D727A450A2001DB949 /* ViewModels */,
 				4DF7D9D827A450B1001DB949 /* DataModels */,
+				4DC3EBCA27ABEDD400FFC50E /* OBSOLETE */,
 				4D403B9327981BC400EB4E1B /* Assets.xcassets */,
 				4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */,
 				4D403BAB2798269200EB4E1B /* DishRevueBackIOS.entitlements */,
@@ -174,10 +173,16 @@
 				4DAD4FB7279EEE5400C0EAE8 /* MapView.swift */,
 				4DAD4FB9279EF09900C0EAE8 /* StyledTextField.swift */,
 				4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */,
-				4DB2489227A9332800A135D1 /* QueryRow.swift */,
-				4DB2489427A98F0C00A135D1 /* PropertyChoiceInfoView.swift */,
 			);
 			path = SubView;
+			sourceTree = "<group>";
+		};
+		4DC3EBCA27ABEDD400FFC50E /* OBSOLETE */ = {
+			isa = PBXGroup;
+			children = (
+				4DAD4F95279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift */,
+			);
+			path = OBSOLETE;
 			sourceTree = "<group>";
 		};
 		4DF0C4B027A009CB00315A73 /* TabView */ = {
@@ -193,7 +198,7 @@
 		4DF0C4B127A046DB00315A73 /* SheetView */ = {
 			isa = PBXGroup;
 			children = (
-				4DAD4F95279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift */,
+				4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */,
 				4D1BC73F2799A746000B463C /* LinkSignInSheetView.swift */,
 			);
 			path = SheetView;
@@ -350,9 +355,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */,
 				4DF7D9D327A40AD9001DB949 /* CustomTabBarView.swift in Sources */,
 				4DAD4FBA279EF09900C0EAE8 /* StyledTextField.swift in Sources */,
-				4DB2489527A98F0C00A135D1 /* PropertyChoiceInfoView.swift in Sources */,
 				4D403B9E27981D3500EB4E1B /* GryphonSwiftLibrary.swift in Sources */,
 				4DAD4FB8279EEE5400C0EAE8 /* MapView.swift in Sources */,
 				4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */,
@@ -370,7 +375,6 @@
 				4D1BC7442799AB29000B463C /* AlertModel.swift in Sources */,
 				4DF0C4AB27A009A800315A73 /* HomeView.swift in Sources */,
 				4D1BC749279C5C43000B463C /* LogoAppBackEndView.swift in Sources */,
-				4DB2489327A9332800A135D1 /* QueryRow.swift in Sources */,
 				4DAD4F96279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift in Sources */,
 				4DF7D9D527A4429F001DB949 /* VariousTabStyle.swift in Sources */,
 			);
@@ -502,7 +506,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -532,7 +536,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

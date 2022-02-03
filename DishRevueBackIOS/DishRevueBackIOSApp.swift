@@ -21,6 +21,7 @@ struct DishRevueBackIOSApp: App {
         WindowGroup {
         
             PrincipalTabView()
+            
         }
     }
 }

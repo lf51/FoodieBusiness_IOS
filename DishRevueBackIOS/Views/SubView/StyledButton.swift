@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Primo CustomButton
+// SubView Button Riutilizzabili
 
 struct CSButton_1: View {
   let title: String
@@ -43,6 +43,7 @@ struct CSButton_2: View {
       HStack {
         Spacer()
         Text(title)
+              .bold()
           .padding()
           .accentColor(accentColor)
         Spacer()

@@ -16,7 +16,12 @@ import MapKit
 
 */
 
-struct PropertyModel: Identifiable {
+struct PropertyModel: Identifiable, Equatable {
+    static func == (lhs: PropertyModel, rhs: PropertyModel) -> Bool {
+        
+        lhs.id == rhs.id
+    }
+    
     
    // let id = UUID().uuidString // Questo sistema non garantisce l'unicità. Il compilatore andrebbe a considerare due oggetti diversi, due location uguali, ossia con stesso nome indirizzo e blabla solo perchè avrebbero due id differenti. Il grande Nick ci viene in soccorso e crea una computed
     

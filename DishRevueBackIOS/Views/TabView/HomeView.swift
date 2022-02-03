@@ -106,8 +106,10 @@ struct HomeView: View {
            // Text("InfoGenerali + Add New Property + NewReview ")
             //
         }// chiusa ZStack
-        .sheet(isPresented: self.$showAddNewPropertySheet) {
-            AddNewPropertySheetView(propertyViewModel: propertyViewModel)
+        .sheet(isPresented: self.$showAddNewPropertySheet,onDismiss: {
+            propertyViewModel.onDismissSearchPropertySheet()
+        }) {
+            NewPropertySheetView(vm: propertyViewModel, isShowingSheet: self.$showAddNewPropertySheet)
         }
         .sheet(isPresented: $authProcess.isPresentingSheet) {
             LinkSignInSheetView(authProcess: authProcess)

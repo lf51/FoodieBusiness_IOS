@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-// Primo Custom TextField
+// TextField SubView riutilizzabili
+
 struct CSTextField_1: View {
     
   @Binding var text: String
@@ -39,6 +40,7 @@ struct CSTextField_2: View {
   let placeholder: String
   let symbolName: String
   let accentColor: Color
+  let backGroundColor: Color
   let autoCap: UITextAutocapitalizationType
   let cornerRadius:CGFloat
 
@@ -49,6 +51,7 @@ struct CSTextField_2: View {
       Image(systemName: symbolName)
         .imageScale(.large)
         .foregroundColor(accentColor)
+        .background(backGroundColor.clipShape(Circle()))
         .padding(.leading)
 
       TextField(placeholder, text: $text)
