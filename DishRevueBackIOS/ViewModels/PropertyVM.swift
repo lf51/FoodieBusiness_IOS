@@ -24,25 +24,55 @@ class PropertyVM: ObservableObject {
     @Published var showActivityInfo:Bool = false 
     @Published var alertItem: AlertModel?
     
-    func storePropertyData() {}
+    
+    init() {
+        
+        propertiesList.append(propertyExample) // TEST CODE
+        
+        
+    }
+    
+    
     
     func addNewProperty() {
+        
+        // Check che la proprietà non sia stata già aggiunta localmente
+        
+        /// Implementare il check sull'intero DataBase
         
         guard !self.propertiesList.contains(self.currentProperty) else {
             // add alert
             self.alertItem = AlertModel(title: "Error", message: "Property already Listed")
-            
+            self.showActivityInfo = false
             print("ITEM ALREADY IN")
             print(self.propertiesList.isEmpty.description)
             return }
         
-        
         // add Alert
-        self.alertItem = AlertModel(title: "Property List ", message: "New Property Added Successfully")
+        self.alertItem = AlertModel(title: "\(self.currentProperty.name) - \(self.currentProperty.cityName)", message: "New Property Added Successfully")
         
+        // Aggiungiamo la proprietà localmente
         self.propertiesList.append(self.currentProperty)
+        self.showActivityInfo = false
         print("Item Added")
         
+        /// Implementare la registrazione sul database
+        
+    }
+    
+    func storePropertyData() {
+        
+        // salviamo proprietà su firebase
+    }
+    
+    func addDishOnMenu() {
+        
+        // aggiungiamo un piatto al menu
+    }
+    
+    func removeDish() {
+        
+        // rimuove piatto dal menu del ristorante ma non dall'archivio Piatti
     }
     
     func queryResearch() {
@@ -66,7 +96,7 @@ class PropertyVM: ObservableObject {
                 coordinates: item.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
                 webSite: item.url?.absoluteString ?? "",
                 phoneNumber: item.phoneNumber ?? "",
-                streetAdress: item.placemark.thoroughfare ?? "" // mi da il quartiere e voglio invece la via
+                streetAdress: item.placemark.thoroughfare ?? "" 
                 
               )
             })
@@ -78,7 +108,6 @@ class PropertyVM: ObservableObject {
         self.currentRegion = MKCoordinateRegion(center: place.coordinates , span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         
         self.currentProperty = place
-      //  propertyViewModel.queryResults = [] // se svuoto la cache non mi funziona più il pin sulla mappa. WHY?
         self.showActivityInfo = true
     }
     
@@ -95,5 +124,16 @@ class PropertyVM: ObservableObject {
         self.showActivityInfo = false
         
     }
+   
+    
+    
+    
+    
+    // Codice da ELIMINARE - UTILE IN FASE DI COSTRUZIONE
+    
+    let propertyExample: PropertyModel = PropertyModel(name: "Osteria Favelas", cityName: "Sciacca", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), imageNames: ["LogoAppBACKEND"], webSite: "https://fantabid.it", phoneNumber: "+39 333 7213895", streetAdress: "Via Conzo 26")
+    
+    
+    
     
 }

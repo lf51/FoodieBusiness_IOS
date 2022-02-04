@@ -22,20 +22,23 @@ struct PropertyModel: Identifiable, Equatable {
         lhs.id == rhs.id
     }
     
-    
-   // let id = UUID().uuidString // Questo sistema non garantisce l'unicità. Il compilatore andrebbe a considerare due oggetti diversi, due location uguali, ossia con stesso nome indirizzo e blabla solo perchè avrebbero due id differenti. Il grande Nick ci viene in soccorso e crea una computed
-    
-    var id: String {
+   var id: String {
         
-       // let cod1 = name.replacingOccurrences(of: " ", with: "").lowercased()
-       // let cod2 = cityName.replacingOccurrences(of: " ", with: "").lowercased()
+       // let cod1 = name.replacingOccurrences(of: " ", with: "-").lowercased()
+       // let cod2 = cityName.replacingOccurrences(of: " ", with: "-").lowercased()
         let cod3 = String(coordinates.latitude).replacingOccurrences(of: ".", with: "A")
         let cod4 = String(coordinates.longitude).replacingOccurrences(of: ".", with: "E")
-        
-        
-        let codId = /*cod1 + cod2 +*/ cod3 + cod4
-        
-        return codId
+    
+        let codId = cod3 + cod4
+       
+       return codId
+       
+       // let id = UUID().uuidString // Questo sistema non garantisce l'unicità. Il compilatore andrebbe a considerare due oggetti diversi, due location uguali, ossia con stesso nome indirizzo e blabla solo perchè avrebbero due id differenti. Il grande Nick ci viene in soccorso e crea una computed
+         
+        // l'utilizzo di .hashValue non garantisce UNICITA?. Non va bene perchè produce un id diverso fra le varie sessioni. Quindi può andare bene nella sessione locale ma non per salvare l'info sul dataBase
+       
+       /// Sistema di identificazione NON SODDISFACENTE -- Temo Rallentamenti. Nella ricerca, quando si trova a livello macro, crea degli id che non sono Univoci
+       
     }
     
     let name: String

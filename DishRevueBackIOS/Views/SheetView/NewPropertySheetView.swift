@@ -5,6 +5,8 @@
 //  Created by Calogero Friscia on 24/01/22.
 //
 
+/* 03.02.2022 --> Bozza Definitiva */
+
 import SwiftUI
 import MapKit
 
@@ -67,10 +69,10 @@ struct NewPropertySheetView: View {
             }
         }
         .alert(item: $vm.alertItem) { alert -> Alert in
-           Alert(
-             title: Text(alert.title),
-             message: Text(alert.message)
-           )
+            Alert(
+                title: Text(alert.title).bold(),
+                message: Text(alert.message).fontWeight(.light),
+                dismissButton: .default(Text("Continue")))
          }
     }
 }

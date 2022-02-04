@@ -6,192 +6,159 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct HomeView: View {
     
     @StateObject var propertyViewModel: PropertyVM = PropertyVM()
     @ObservedObject var authProcess: AuthPasswordLess
-    var backGroundViewColor: Color
-    
-   // @State var listaProperties: [String] = ["Paninari","FattoriaMorgana"]
+    var backGroundColorView: Color
+
     @State var showAddNewPropertySheet:Bool = false
+    
+    let appearance: UINavigationBarAppearance = {
+        
+        let setColor = UINavigationBarAppearance()
+        setColor.configureWithOpaqueBackground()
+        setColor.backgroundColor = .red
+        return setColor
+        
+    }()
+  
     
     var body: some View {
         
-        ZStack {
+        NavigationView {
+
             
-            backGroundViewColor.edgesIgnoringSafeArea(.top)
- 
-            VStack(alignment: .leading) {
-           
-                Spacer()
+            ZStack {
                 
-                // Info Proprietario /DisplayName /SignOut / DeletAccount / potremmo inserire qui la verifica dell'account in modo che valga per tutte le properties.
-                
-                
-                // Box Novità
-                
-                HStack {
+                backGroundColorView.edgesIgnoringSafeArea(.top)
+     
+                VStack(alignment: .leading) {
+               
+                    // Info Proprietario /DisplayName /SignOut / DeletAccount / potremmo inserire qui la verifica dell'account in modo che valga per tutte le properties.
                     
-                    Text("Properties")
-                      .font(.largeTitle)
-                      .fontWeight(.semibold)
-                      .padding(.leading)
+                    Text("Box da riempire")
+                    
                     
                     Spacer()
-                        
-                    Button(action: {
-                        
-                    //    self.listaProperties.append("Osteria del Vicolo")
-                        if AuthPasswordLess.isUserAuth {
-                            
-                            self.showAddNewPropertySheet.toggle()
-                            // Comando per creare Nuova Property
-                        } else {
-                            authProcess.isPresentingSheet = true 
-                        }
-                        
-                        
-                        
-                        // Se l'utente non è autenticato deve riaprire lo sheet dell'Auth
-                        
-                    }, label: {
-                        Image(systemName: "plus.circle")
-                            .font(.largeTitle)
-                            .background(Color.blue.clipShape(Circle()))
-                            .foregroundColor(.white)
-                            .padding(.trailing)
-                    })
+    
+                    // Box Novità
+                    Text("Box Novità")
                     
-                }
+                    Spacer()
+                    
+                    AddNewPropertyBar(authProcess: authProcess, showAddNewPropertySheet: $showAddNewPropertySheet)
 
-
-                ScrollView() {
-                           
-                    VStack(alignment:.leading,spacing:5.0) {
-                        
-                        ForEach(propertyViewModel.propertiesList) { property in
+                    // Lista Properties
+                    ScrollView() {
+                               
+                        VStack(alignment:.leading,spacing:5.0) {
                             
-                            HStack{
+                            ForEach(propertyViewModel.propertiesList) { property in
                                 
-                                Text(property.name)
-                                Text(property.id)
-                                    .padding(.leading)
-                                Spacer()
-                                
-                                NavigationLink(destination: Text("Ciao")) {
-                                    Text("Ariciao")
+                  
+                                    NavigationLink(destination: Text("Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti")) {
+                                        
+                                        Text("Ariciao").bold().foregroundColor(Color.red)
+                                    
+                                    
                                 }
-                                //NavigationLink to PropertyView: Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti
                                 
                             }
-                            
                         }
                     }
-                  
-                    // Lista Properties
-                    
-                }
-               .frame(maxWidth:.infinity)
-               .frame(maxHeight: 300) // Calcolare altezza in termini %
+                   .frame(maxWidth:.infinity)
+                   .frame(maxHeight: 300) // Calcolare altezza in termini %
                 
-                
-                
-             
-                
-                
-            }
+                } // VStack End
+
+            }// chiusa ZStack
+            .background(backGroundColorView.opacity(0.4))
+            .navigationTitle("Hi, Nome Utente \(Text(authProcess.displayName))")
+            .navigationBarItems(
+                leading: NavigationLink(destination: {
+                    Text("Dati Account")
+                }, label: {
+                    Image(systemName: "person.fill")
+                        .foregroundColor(.black)
+                })
+     
+                    )
             
-          
-           // Text("InfoGenerali + Add New Property + NewReview ")
-            //
-        }// chiusa ZStack
-        .sheet(isPresented: self.$showAddNewPropertySheet,onDismiss: {
-            propertyViewModel.onDismissSearchPropertySheet()
-        }) {
-            NewPropertySheetView(vm: propertyViewModel, isShowingSheet: self.$showAddNewPropertySheet)
+            .navigationBarTitleDisplayMode(.automatic)
+            .navigationViewStyle(.stack) // se non ricordo male mi serve per iPad
+            /*.toolbar(content: {
+                HStack {
+                    Text("Ciao!")
+                    Spacer()
+                    Text("Hello!")
+                }
+            })*/
+           
+            .sheet(isPresented: self.$showAddNewPropertySheet,onDismiss: {
+                propertyViewModel.onDismissSearchPropertySheet()
+            }) {
+                NewPropertySheetView(vm: propertyViewModel, isShowingSheet: self.$showAddNewPropertySheet)
+            }
+            .sheet(isPresented: $authProcess.isPresentingSheet) {
+                LinkSignInSheetView(authProcess: authProcess)
         }
-        .sheet(isPresented: $authProcess.isPresentingSheet) {
-            LinkSignInSheetView(authProcess: authProcess)
+            
         }
+       
+         // End NavigationView
+       
 
         
 
     }
+      
 }
 
-struct HomeView_Previews: PreviewProvider {
+struct HomeViewBeta_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(authProcess: AuthPasswordLess(), backGroundViewColor: Color.cyan)
+        HomeView(authProcess: AuthPasswordLess(), backGroundColorView: Color.cyan)
     }
 }
 
-/*struct SuccessView: View {
-   
+struct AddNewPropertyBar: View {
+    
     @ObservedObject var authProcess: AuthPasswordLess
-
-  var body: some View {
-    /// The first view in this `ZStack` is a `Color` view that expands
-    /// to set the background color of the `SucessView`.
-    ZStack {
-      Color.orange
-        .edgesIgnoringSafeArea(.all)
-
-      VStack(alignment: .leading) {
-        Group {
-          Text("Welcome")
-            .font(.largeTitle)
-            .fontWeight(.semibold)
-
-            Text(authProcess.displayName.lowercased())
-            .font(.title3)
-            .fontWeight(.bold)
-            .multilineTextAlignment(.leading)
-
-        }
-        .padding(.leading)
-
-        Image(systemName: "checkmark.circle")
-          .resizable()
-          .aspectRatio(contentMode: .fit)
-          .scaleEffect(0.5)
-          
-          Spacer()
-          
-          VStack{
-              
-              CSTextField_2(text: $authProcess.displayName, placeholder: "Custom Display Name", symbolName: "person.circle.fill",accentColor: .orange,autoCap: .none,cornerRadius: 16.0)
-              
-              CSButton_2(title: "Change Name",accentColor:.white, backgroundColor: .orange, cornerRadius: 16.0) {
-                  authProcess.updateCurrentUserProfile()
-              }
-          }
-          
-          
-          Spacer()
-          
-          HStack {
-              
-              Button {
-                  authProcess.deleteCurrentUser()
-              } label: {
-                  Text("Delete Account").foregroundColor(.red)
-              }
-              
-             Spacer()
-              
-              Button {
-                  authProcess.signOutCurrentUser()
-              } label: {
-                  Text("SIGN OUT").foregroundColor(.blue)
-              }
-              
-          }.padding()
+    @Binding var showAddNewPropertySheet: Bool
+    
+    var body: some View {
+        HStack {
             
-          
-      }
-      .foregroundColor(.white)
+            Text("Properties")
+                .font(.largeTitle)
+                .fontWeight(.semibold)
+                .padding(.leading)
+            
+            Spacer()
+            
+            Button(action: {
+                
+                //    self.listaProperties.append("Osteria del Vicolo")
+                if AuthPasswordLess.isUserAuth {
+                    
+                    self.showAddNewPropertySheet.toggle()
+                    // Comando per creare Nuova Property
+                } else {
+                    authProcess.isPresentingSheet = true
+                }
+         
+                // Se l'utente non è autenticato deve riaprire lo sheet dell'Auth
+                
+            }, label: {
+                Image(systemName: "plus.circle")
+                    .font(.largeTitle)
+                    .background(Color.blue.clipShape(Circle()))
+                    .foregroundColor(.white)
+                    .padding(.trailing)
+            })
+            
+        }
     }
-  }
 }
-*/

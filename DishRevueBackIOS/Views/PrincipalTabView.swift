@@ -10,37 +10,39 @@ import SwiftUI
 struct PrincipalTabView: View {
     
     @StateObject var authProcess:AuthPasswordLess = AuthPasswordLess()
+    @StateObject var dishVM: DishVM = DishVM()
     
     var backGroundColorView: Color = Color.cyan
+    @State var tabSelector: Int = 0
     
     var body: some View {
             
-            TabView {
+        TabView(selection:$tabSelector) {
                 
-                HomeView(authProcess: authProcess, backGroundViewColor: backGroundColorView)
+                HomeView(authProcess: authProcess, backGroundColorView: backGroundColorView)
                     .badge(10) // Il pallino rosso delle notifiche !!!
                     
                 //SuccessView(authProcess: authProcess)
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
-                    }.tag(0)
-                    .background(backGroundColorView.opacity(0.4))
+                    }.tag(0)// tag serve a selezionare la tab attraverso il selection a cui passare una @State var
+                  //  .background(backGroundColorView.opacity(0.4)) // Una volta inserita la navigationView nella destinazione, il background della tab da qui non lavora più e lo abbiamo spostasto nella all'interno delle view, nello stack più alto sotto la NavigationView
                 
-                NewDishView(backGroundColorView: backGroundColorView)
+            NewDishView(dishVM: dishVM, backGroundColorView: backGroundColorView)
                     .tabItem {
                         Image (systemName: "plus.circle")
                         Text("NEW Dish")
                     }.tag(1)
-                    .background(backGroundColorView.opacity(0.4))
+                   // .background(backGroundColorView.opacity(0.4))
                     
                 
-                DishesView(backGroundColorView: backGroundColorView)
+            DisheListView(dishVM: dishVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
                     .tabItem {
                         Image (systemName: "list.bullet.rectangle.portrait")
                         Text("All Dishes")
                     }.tag(2)
-                    .background(backGroundColorView.opacity(0.4))
+                   // .background(backGroundColorView.opacity(0.4))
                        
                 
                 
