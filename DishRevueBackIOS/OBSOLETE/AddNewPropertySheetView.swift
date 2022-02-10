@@ -35,7 +35,7 @@ struct AddNewPropertySheetView: View {
         
             PropertyChoiceInfoView(vm:vm,screenWidth: screenWidth,frameHeight: screenHeight * 0.20)
                     .overlay(
-                        InfoOverlayPointView(foregroundColor: .gray, offsetPoint: -25.0),alignment: .topLeading
+                        InfoOverlayPointView(placeHolder:"Activity Info", imageName:"info.circle", foregroundColor: .gray, offsetPoint: -25.0),alignment: .topLeading
                     )
                     .padding(.vertical, screenHeight * 0.05 )
             
@@ -76,16 +76,18 @@ struct AddNewPropertySheetView_Previews: PreviewProvider {
 
 struct InfoOverlayPointView: View {
     
+    var placeHolder: String
+    var imageName: String
     var foregroundColor: Color
     var offsetPoint: CGFloat
     
     var body: some View {
         HStack {
             
-            Image(systemName: "info.circle.fill")
+            Image(systemName: imageName)
                 .foregroundColor(foregroundColor)
             
-            Text("Activity Info")
+            Text(placeHolder)
                 .font(.subheadline)
                 .foregroundColor(foregroundColor)
             

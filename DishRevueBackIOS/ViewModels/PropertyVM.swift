@@ -31,9 +31,7 @@ class PropertyVM: ObservableObject {
         
         
     }
-    
-    
-    
+ 
     func addNewProperty() {
         
         // Check che la proprietà non sia stata già aggiunta localmente

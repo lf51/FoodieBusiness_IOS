@@ -10,21 +10,12 @@ import UIKit
 
 struct HomeView: View {
     
-    @StateObject var propertyViewModel: PropertyVM = PropertyVM()
+    @ObservedObject var propertyViewModel: PropertyVM 
     @ObservedObject var authProcess: AuthPasswordLess
+    @ObservedObject var dishVM: DishVM
     var backGroundColorView: Color
 
     @State var showAddNewPropertySheet:Bool = false
-    
-    let appearance: UINavigationBarAppearance = {
-        
-        let setColor = UINavigationBarAppearance()
-        setColor.configureWithOpaqueBackground()
-        setColor.backgroundColor = .red
-        return setColor
-        
-    }()
-  
     
     var body: some View {
         
@@ -59,9 +50,9 @@ struct HomeView: View {
                             ForEach(propertyViewModel.propertiesList) { property in
                                 
                   
-                                    NavigationLink(destination: Text("Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti")) {
+                                NavigationLink(destination: ExtractedView(dishVM: dishVM, currentProperty: property)) {
                                         
-                                        Text("Ariciao").bold().foregroundColor(Color.red)
+                                    Text(property.name).bold().foregroundColor(Color.red)
                                     
                                     
                                 }
@@ -79,7 +70,7 @@ struct HomeView: View {
             .navigationTitle("Hi, Nome Utente \(Text(authProcess.displayName))")
             .navigationBarItems(
                 leading: NavigationLink(destination: {
-                    Text("Dati Account")
+                    Text("Dati Account - Spostare qui la facoltà di aggiungere una nuova Proprietà (Perchè? -> Perchè a parte le catene che aprono un ristorante al giorno, il 99% dei ristoratori userà questo pulsante solo all'inizio, dunque non è necessario posizionarlo in facile e veloce accesso")
                 }, label: {
                     Image(systemName: "person.fill")
                         .foregroundColor(.black)
@@ -119,7 +110,7 @@ struct HomeView: View {
 
 struct HomeViewBeta_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(authProcess: AuthPasswordLess(), backGroundColorView: Color.cyan)
+        HomeView(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backGroundColorView: Color.cyan)
     }
 }
 
@@ -160,5 +151,41 @@ struct AddNewPropertyBar: View {
             })
             
         }
+    }
+}
+
+struct ExtractedView: View {
+    
+    @ObservedObject var dishVM: DishVM
+    var currentProperty: PropertyModel
+    
+    var body: some View {
+        
+        VStack{
+            
+            Text("Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti")
+            
+            Text("Menu for property: \(currentProperty.name)")
+            
+            List {
+                
+                ForEach(dishVM.dishList.filter{$0.restaurantMenu.contains(currentProperty)}) { dish in
+                    
+                    
+                    Text(dish.name)
+                    
+                
+                }
+                
+                
+                
+            }
+            
+            
+        }
+        
+        
+        
+       
     }
 }

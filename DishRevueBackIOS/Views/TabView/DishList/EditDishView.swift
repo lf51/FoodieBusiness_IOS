@@ -5,46 +5,60 @@
 //  Created by Calogero Friscia on 04/02/22.
 //
 
+/* Passiamo a questa View la posizione d'indice dell'elemento DishModel contenuto nell'array DishList in dishVM che vogliamo modificare. Passiamo anche ovviamente il dishVM su cui stiamo lavorando. Le modifiche effettuate qui vengono aggiornate instantaneamente anche alle altre View. Problema simile avuto in Fantabid ma risolto qui con Maggiore EFFICIENZA !!! */
+
 import SwiftUI
 
 struct EditDishView: View {
     
-    private var staticDish: DishModel
-    @State private var editableDish: DishModel
-    
-    init(currentDish: DishModel) {
-        
-        self.staticDish = currentDish
-        self.editableDish = currentDish
-        
-    }
-    
+    @ObservedObject var dishVM: DishVM
+    @ObservedObject var propertyVM : PropertyVM
+    let currentDishIndexPosition: Int
     
     var body: some View {
         
         VStack{
             
-            Text("Edit -> \(staticDish.name)")
+           Text("Edit -> \(dishVM.dishList[currentDishIndexPosition].name)")
+    
             
-            TextField("Add Main Ingredient", text: $editableDish.ingredientiPrincipali[0])
+         /*   TextField("Add Main Ingredient", text: $editableDish.ingredientiPrincipali[0]) */
             
             
             Button {
                
-                // Abbiamo passato Un DishModel, lo abbiamo attribuito a due variabili, una statica e una State nell'idea di modificare la State e passare poi le modifiche alla Static.
-                // Tentativo da Abortire
-                
+                dishVM.dishList[currentDishIndexPosition].name = "NOME CAMBIATO CON SUCCESSO"
+   
             } label: {
                 Text("Salva Modifiche")
             }
+            
+            List {
+                
+                ForEach(propertyVM.propertiesList) { property in
+                    
+                    Text(property.name).onTapGesture {
+                        
+                        dishVM.dishList[currentDishIndexPosition].restaurantMenu.append(property)
+                        
+                    }
+                    
+                    
+                    
+                    
+                }
+                
+                
+            }
+            
 
         }
  
     }
 }
 
-struct EditDishView_Previews: PreviewProvider {
+/*struct EditDishView_Previews: PreviewProvider {
     static var previews: some View {
-        EditDishView(currentDish: DishModel())
+        EditDishView(dishVM: DishVM())
     }
-}
+} */

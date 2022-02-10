@@ -57,8 +57,8 @@
 		4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */; };
 		4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */; };
 		4DF0C4AB27A009A800315A73 /* HomeViewBASEVERSION.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AA27A009A800315A73 /* HomeViewBASEVERSION.swift */; };
-		4DF0C4AD27A009B800315A73 /* DisheListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AC27A009B800315A73 /* DisheListView.swift */; };
-		4DF0C4AF27A009C400315A73 /* NewDishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AE27A009C400315A73 /* NewDishView.swift */; };
+		4DF0C4AD27A009B800315A73 /* DishListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AC27A009B800315A73 /* DishListView.swift */; };
+		4DF0C4AF27A009C400315A73 /* NewDishSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AE27A009C400315A73 /* NewDishSheetView.swift */; };
 		4DF0C4B327A04D7000315A73 /* DishModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4B227A04D7000315A73 /* DishModel.swift */; };
 		4DF0C4B527A05DEA00315A73 /* PropertyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4B427A05DEA00315A73 /* PropertyModel.swift */; };
 		4DF7D9D327A40AD9001DB949 /* CustomTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF7D9D227A40AD9001DB949 /* CustomTabBarView.swift */; };
@@ -90,8 +90,8 @@
 		4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledButton.swift; sourceTree = "<group>"; };
 		4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPropertySheetView.swift; sourceTree = "<group>"; };
 		4DF0C4AA27A009A800315A73 /* HomeViewBASEVERSION.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewBASEVERSION.swift; sourceTree = "<group>"; };
-		4DF0C4AC27A009B800315A73 /* DisheListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisheListView.swift; sourceTree = "<group>"; };
-		4DF0C4AE27A009C400315A73 /* NewDishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishView.swift; sourceTree = "<group>"; };
+		4DF0C4AC27A009B800315A73 /* DishListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishListView.swift; sourceTree = "<group>"; };
+		4DF0C4AE27A009C400315A73 /* NewDishSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishSheetView.swift; sourceTree = "<group>"; };
 		4DF0C4B227A04D7000315A73 /* DishModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishModel.swift; sourceTree = "<group>"; };
 		4DF0C4B427A05DEA00315A73 /* PropertyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyModel.swift; sourceTree = "<group>"; };
 		4DF7D9D227A40AD9001DB949 /* CustomTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarView.swift; sourceTree = "<group>"; };
@@ -176,7 +176,7 @@
 		4DA4615E27AD89E400BD648D /* DishList */ = {
 			isa = PBXGroup;
 			children = (
-				4DF0C4AC27A009B800315A73 /* DisheListView.swift */,
+				4DF0C4AC27A009B800315A73 /* DishListView.swift */,
 				4DA4615F27AD8A2000BD648D /* EditDishView.swift */,
 			);
 			path = DishList;
@@ -206,7 +206,6 @@
 			children = (
 				4DA4615A27AD14D200BD648D /* HomeView.swift */,
 				4DA4615E27AD89E400BD648D /* DishList */,
-				4DF0C4AE27A009C400315A73 /* NewDishView.swift */,
 			);
 			path = TabView;
 			sourceTree = "<group>";
@@ -216,6 +215,7 @@
 			children = (
 				4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */,
 				4D1BC73F2799A746000B463C /* LinkSignInSheetView.swift */,
+				4DF0C4AE27A009C400315A73 /* NewDishSheetView.swift */,
 			);
 			path = SheetView;
 			sourceTree = "<group>";
@@ -385,9 +385,9 @@
 				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
 				4D1BC7402799A746000B463C /* LinkSignInSheetView.swift in Sources */,
 				4DF0C4B327A04D7000315A73 /* DishModel.swift in Sources */,
-				4DF0C4AD27A009B800315A73 /* DisheListView.swift in Sources */,
+				4DF0C4AD27A009B800315A73 /* DishListView.swift in Sources */,
 				4DA4616027AD8A2000BD648D /* EditDishView.swift in Sources */,
-				4DF0C4AF27A009C400315A73 /* NewDishView.swift in Sources */,
+				4DF0C4AF27A009C400315A73 /* NewDishSheetView.swift in Sources */,
 				4D1BC747279C1FED000B463C /* PrincipalTabView.swift in Sources */,
 				4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */,
 				4D1BC7442799AB29000B463C /* AlertModel.swift in Sources */,
@@ -526,7 +526,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -556,7 +556,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

@@ -97,7 +97,6 @@ struct NewPropertySheetView_Previews: PreviewProvider {
     }
 } */
 
-
 // SubView
 
 struct QueryRow: View {
@@ -115,8 +114,6 @@ struct QueryRow: View {
                 .italic()
                 .foregroundColor(.gray)
             
-                
-                
         }
         .foregroundColor(.black)
         .shadow(radius: 1.0)
@@ -125,7 +122,6 @@ struct QueryRow: View {
         .frame(maxWidth:.infinity,alignment: .leading)
         .padding(.horizontal)
         
-
     }
 }
 
@@ -151,7 +147,7 @@ struct QueryScrollView: View {
                                 }
                             
                             Divider().shadow(radius: 1.0).padding(.horizontal)
-                            
+                        
                         }
                     }
                 }
@@ -172,7 +168,7 @@ struct PropertyChoiceInfoView: View {
             
             VStack(alignment: .leading, spacing: frameHeight/25) {
                             
-                Text(vm.currentProperty.name)
+                    Text(vm.currentProperty.name)
                     .font(.system(.title3, design: .rounded))
                     .fontWeight(.heavy)
                     .lineLimit(1)

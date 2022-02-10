@@ -11,6 +11,7 @@ struct PrincipalTabView: View {
     
     @StateObject var authProcess:AuthPasswordLess = AuthPasswordLess()
     @StateObject var dishVM: DishVM = DishVM()
+    @StateObject var propertyVM: PropertyVM = PropertyVM()
     
     var backGroundColorView: Color = Color.cyan
     @State var tabSelector: Int = 0
@@ -19,7 +20,7 @@ struct PrincipalTabView: View {
             
         TabView(selection:$tabSelector) {
                 
-                HomeView(authProcess: authProcess, backGroundColorView: backGroundColorView)
+            HomeView(propertyViewModel: propertyVM, authProcess: authProcess, dishVM: dishVM, backGroundColorView: backGroundColorView)
                     .badge(10) // Il pallino rosso delle notifiche !!!
                     
                 //SuccessView(authProcess: authProcess)
@@ -29,15 +30,16 @@ struct PrincipalTabView: View {
                     }.tag(0)// tag serve a selezionare la tab attraverso il selection a cui passare una @State var
                   //  .background(backGroundColorView.opacity(0.4)) // Una volta inserita la navigationView nella destinazione, il background della tab da qui non lavora più e lo abbiamo spostasto nella all'interno delle view, nello stack più alto sotto la NavigationView
                 
-            NewDishView(dishVM: dishVM, backGroundColorView: backGroundColorView)
+           /* NewDishView(dishVM: dishVM, backGroundColorView: backGroundColorView)
                     .tabItem {
                         Image (systemName: "plus.circle")
                         Text("NEW Dish")
                     }.tag(1)
-                   // .background(backGroundColorView.opacity(0.4))
+                   // .background(backGroundColorView.opacity(0.4)) */
+            // 07.02.22 Abbiamo trasformato la creazione di un piatto in uno sheet che viene fuori della DishListView
                     
                 
-            DisheListView(dishVM: dishVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
+            DishListView(dishVM: dishVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
                     .tabItem {
                         Image (systemName: "list.bullet.rectangle.portrait")
                         Text("All Dishes")
