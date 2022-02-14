@@ -7,20 +7,18 @@
 
 import SwiftUI
 
-/* STIAMO LAVORANDO AI TEXTFIELD - OCCORRE AGGANCIARE IL BINDING */
+// Bozza COMPLETATA 10.02.2022
 
 
 struct NewDishSheetView: View {
     
-    @ObservedObject var dishVM: DishVM
+    @ObservedObject var dishVM: DishVM // ATTUALMENTE NON UTILIZZATO
     var backGroundColorView: Color
     
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
-    @Binding var openNewDish: Bool
-    
-// State per stoppare il delete degli ingredienti
-    
-    @State var activeDeletion: Bool = false
+    @Binding var openNewDish: Bool // dismiss button
+     
+    @State var activeDeletion: Bool = false // attiva l'eliminazione degli ingredienti
     
     var body: some View {
         
@@ -77,13 +75,18 @@ struct NewDishSheetView: View {
                             
                             InfoGeneraliNewDish_Sub(newDish: $newDish, activeDeletion: $activeDeletion)
                                 .padding()
-                                
+                          /*
+                           INFO COTTURA DI OGNI SINGOLO INGREDIENTE
+                           
+                           */
                          //   Spacer()
 
                   
                             ScrollSelectionMenuView(newDish: $newDish)
                                 .disabled(self.activeDeletion)
 
+                            DishSpecificView(newDish: $newDish)
+                                .disabled(self.activeDeletion)
                             
                         }
                   
@@ -120,7 +123,11 @@ struct NewDishView_Previews: PreviewProvider {
     static var previews: some View {
         
        /* NewDishSheetView(dishVM: DishVM(), backGroundColorView: Color.cyan, openNewDish: .constant(true)) */
-        DishInfoDeleteRow(data: "Guanciale", baseColor: Color.gray)
+     //   DishInfoDeleteRow(data: "Guanciale", baseColor: Color.gray)
+        
+        DishSpecificView(newDish: .constant(DishModel()))
+
+        
     }
 }
 
@@ -388,6 +395,53 @@ struct CSTextField_3: View {
     }
 }
 
+/// Small Custom textfiel con una immagine  e un bottone
+struct CSTextField_4: View {
+    
+  //  @Binding var tagliaDelPiatto: DishSpecificValue
+    @Binding var textFieldItem: String
+    let placeHolder: String
+    let image: String
+  //  let suffisso: String
+   // let action: () -> Void
+    
+    var body: some View {
+        
+        HStack {
+            
+            Image(systemName: image)
+                .imageScale(.large)
+                .foregroundColor(self.textFieldItem != "" ? Color.green : Color.black)
+                .padding(.leading)
+            
+            TextField (self.placeHolder, text: $textFieldItem)
+                .keyboardType(.numberPad)
+                ._tightPadding()
+                .accentColor(Color.white)
+                
+          /*  Button(action: self.action) {
+                    
+                    Image(systemName: "plus.circle")
+                        .imageScale(.large)
+                        .foregroundColor(Color.white)
+                        .padding(.trailing)
+                }.disabled(self.textFieldItem == "") */
+        
+        }.background(
+            
+            RoundedRectangle(cornerRadius: 5.0)
+                .strokeBorder(Color.blue)
+                .background(
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .fill(Color.gray.opacity(self.textFieldItem != "" ? 0.6 : 0.2))
+                    
+                )
+                .shadow(radius: 3.0)
+        )
+           // .onSubmit(self.action)
+            .animation(Animation.easeInOut, value: self.textFieldItem)
+    }
+}
 
 
 struct CustomLabelView: View {
@@ -422,25 +476,30 @@ struct ShowNewDishPropertyValue:View {
     let baseColor: Color
     let action: (_ data: String) -> Void
     
+   let gridColumns: [GridItem] = [
+    
+    GridItem(.adaptive(minimum: 100.0, maximum: .infinity), spacing: 0, alignment: .leading) // la lunghezza minima di 90 è arbitraria. Non vogliamo cmq metterla proporzionale perchè altrimenti su schermi enormi andrebbero lo stesso numero di elementi che su scehermi piccoli e non avrebbe senso. Al senso estetico, cmq, qui preferiamo la praticità essendo questa l'iterfaccia BUSINESS
+    ]
+    
     var body: some View {
+
+// Rimpiazzato lo scroll con la lazyGrid.11.02.2022
         
-        ScrollView(.horizontal,showsIndicators: false) {
-            
-            HStack {
+            LazyVGrid(columns: gridColumns) {
                 
                 ForEach(showArrayData,id:\.self) { data in
-                    
+                   
                     if !activeDelection {
-                        
-                        DishInfoRow(data:data,baseColor:baseColor)
+                       
+                       DishInfoRow(data:data,baseColor:baseColor)
+                            
                             .onLongPressGesture {
-                                
                                 withAnimation(.easeInOut) {
-                                  //  action(data)
-                                    self.activeDelection = true
-                                    
-                                }
-                        }
+                                   //  action(data)
+                                     self.activeDelection = true
+                                     
+                                 }
+                            } // il longPressure va in conflitto con lo scroll. Lo scroll non funziona se ci poggiamo sui rettangoli, funziona se ci poggiamo sullo spazio vuoto. Il problema è quando lo spazio si esaurisce. Lo Scroll funziona col Tap, anche double.
                         
                     } else {
                         
@@ -449,13 +508,15 @@ struct ShowNewDishPropertyValue:View {
                                 print("TAP TO DELETE")
                                 withAnimation(.easeInOut) {
                                     self.action(data)
-                                    self.activeDelection = false
+                                    
+                                    if self.showArrayData.isEmpty {self.activeDelection = false }
+                                  //  self.activeDelection = false
+                                    // lasciamo volutamente aperta la facoltà di cancellare finchè non si tocca su un elemento fuori da quelli cancellabili
                                 }
                             }
                     }
                 }
             }
-        }
     }
 }
 
@@ -470,6 +531,7 @@ struct DishInfoRow: View {
             .bold()
             .lineLimit(1)
             .foregroundColor(.white)
+            .minimumScaleFactor(0.6)
             ._tightPadding()
             .background (
                 
@@ -499,6 +561,7 @@ struct DishInfoDeleteRow: View {
                 .bold()
                 .lineLimit(1)
                 .foregroundColor(Color.white)
+                .minimumScaleFactor(0.6)
                 ._tightPadding()
                 .background(
                     RoundedRectangle(cornerRadius: 5.0)
@@ -532,9 +595,9 @@ struct InfoGeneraliNewDish_Sub: View {
     
     @Binding var newDish: DishModel
     
-    @State var nomePiatto: String = ""
-    @State var nuovoIngredientePrincipale: String = ""
-    @State var nuovoIngredienteSecondario: String = ""
+    @State private var nomePiatto: String = ""
+    @State private var nuovoIngredientePrincipale: String = ""
+    @State private var nuovoIngredienteSecondario: String = ""
     
     @Binding var activeDeletion: Bool
     
@@ -545,7 +608,7 @@ struct InfoGeneraliNewDish_Sub: View {
             CustomLabelView(placeHolder: "Info Generali", imageName: "info.circle", backgroundColor: Color.brown)
             
             
-            CSTextField_3(textFieldItem: self.$nomePiatto, placeHolder: "Nome del Piatto") {
+            CSTextField_3(textFieldItem: self.$nomePiatto, placeHolder: self.newDish.name == "" ? "Nome del Piatto" : "Modifica Nome del Piatto") {
                 
                 self.newDish.name = self.nomePiatto
                 self.nomePiatto = ""
@@ -553,7 +616,7 @@ struct InfoGeneraliNewDish_Sub: View {
             
             if self.newDish.name != "" {DishInfoRow(data: self.newDish.name, baseColor: Color.green)}
             
-            CSTextField_3(textFieldItem: self.$nuovoIngredientePrincipale, placeHolder: "Ingredienti Principali") {
+            CSTextField_3(textFieldItem: self.$nuovoIngredientePrincipale, placeHolder: "Ingrediente Principale") {
                 
                 self.validateItem(array: &self.newDish.ingredientiPrincipali, item: &self.nuovoIngredientePrincipale)
    
@@ -567,7 +630,7 @@ struct InfoGeneraliNewDish_Sub: View {
                 }
             }
             
-            CSTextField_3(textFieldItem: self.$nuovoIngredienteSecondario, placeHolder: "Ingredienti Secondari (Optional)") {
+            CSTextField_3(textFieldItem: self.$nuovoIngredienteSecondario, placeHolder: "Ingrediente Secondario (Optional)") {
                 
                 self.validateItem(array: &self.newDish.ingredientiSecondari, item: &self.nuovoIngredienteSecondario)
             }
@@ -598,16 +661,188 @@ struct InfoGeneraliNewDish_Sub: View {
     
     func validateItem(array: inout [String], item: inout String) {
         
-        guard !array.contains(item) else {
-            
+        item = item.capitalized
+        
+        guard !self.newDish.ingredientiPrincipali.contains(item) else {
+            print("\(item) already fra gli ingredienti Principali")
             item = ""
             return
-            
         }
         
+        guard !self.newDish.ingredientiSecondari.contains(item) else {
+            print("\(item) already fra gli ingredienti Secondari")
+            item = ""
+            return
+        }
+
         array.append(item)
+        print("\(item) in ")
         item = ""
-        
     }
+    
+}
+
+
+struct DishSpecificView: View {
+    
+    @Binding var newDish: DishModel
+ 
+    @State private var grammi: String = ""
+    @State private var pax: String = ""
+    @State private var prezzo: String = ""
+    @State private var currentDish: DishSpecificValue = .unico(0, 1, 0.0)
+    
+    @State private var openSpecificValue: Bool = false
+
+    var body: some View {
+        
+        VStack(alignment: .leading) {
+            
+            CustomLabelView(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.brown)
+            
+            VStack {
+                if !self.openSpecificValue {
+                    
+                    ScrollView(.horizontal,showsIndicators: false) {
+                        
+                        HStack {
+                            
+                            ForEach(DishSpecificValue.allCases) { taglia in
+                                
+                                Text(taglia.simpleDescription())
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background (
+                                        
+                                        RoundedRectangle(cornerRadius: 5.0)
+                                            .strokeBorder(taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue)
+                                            .background(RoundedRectangle(cornerRadius: 5.0)
+                                                            .fill(taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint.opacity(0.8) : Color.clear))
+                                            .shadow(radius: 3.0)
+                                    )
+                                    .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
+                                    .onTapGesture {
+                                        self.openSpecificValue = true
+                                        self.currentDish = taglia
+                                        
+                                    }.disabled(taglia.isSceltaBloccata(newDish: self.newDish)) // validiamo la scelta
+                            }
+                        }
+                    }
+                    
+                } else {
+                    
+                    VStack(alignment: .leading) {
+                        
+                        
+                        HStack {
+                            
+                            CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark")
+                            CSTextField_4(textFieldItem: $grammi, placeHolder: "0 gr", image: "scalemass.fill")
+                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle")
+                            
+                        }
+                        
+                        HStack {
+                            Text(self.currentDish.simpleDescription())
+                                .bold()
+                                .foregroundColor(.white)
+                                ._tightPadding()
+                                .background (
+                                    
+                                    RoundedRectangle(cornerRadius: 5.0)
+                                        .strokeBorder(Color.clear)
+                                        .background(RoundedRectangle(cornerRadius: 5.0)
+                                                        .fill(Color.mint.opacity(0.8))
+                                        .shadow(radius: 3.0)
+                                                   )
+                                    )
+                            
+                            Spacer()
+                            
+                            Button("Close") { self.openSpecificValue = false}
+                            .padding(.trailing)
+                            
+                            Button {
+ 
+                                self.validateAndAddSpecificValue()
+                                self.openSpecificValue = false
+                                
+                            } label: {
+                                
+                                Text(self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi")
+                                    .fontWeight(.heavy)
+                                    .foregroundColor(.white)
+                                    ._tightPadding()
+                                    .background (
+                                        
+                                        RoundedRectangle(cornerRadius: 5.0)
+                                            .strokeBorder(Color.red)
+                                            .background(RoundedRectangle(cornerRadius: 5.0)
+                                                            .fill(Color.red.opacity(0.8))
+                                            .shadow(radius: 3.0)
+                                                       )
+                                        )
+                            }
+                        }
+                    }
+                }
+            } // end Scroll
+        }.padding(.horizontal)
+    }
+    
+    // Method Space
+    func validateAndAddSpecificValue() {
+        
+        guard let grammi = Int(self.grammi) else {
+            // inserire alert
+            self.grammi = "0 gr"
+            return}
+        guard let price = Double(self.prezzo) else {
+            // alert
+            self.prezzo = "0.0"
+            return}
+        guard let pax = Int(self.pax) else {
+            //alert
+            self.pax = ">= 1"
+            return}
+        
+        switch self.currentDish {
+            
+        case .unico:
+            self.currentDish = .unico(grammi, pax, price)
+        case .doppio:
+            self.currentDish = .doppio(grammi, pax, price)
+        case .piccolo:
+            self.currentDish = .piccolo(grammi, pax, price)
+        case .medio:
+            self.currentDish = .medio(grammi, pax, price)
+        case .grande:
+            self.currentDish = .grande(grammi, pax, price)
+       
+        }
+
+        print("pax: \(self.pax) - grammi: \(self.grammi) - price: \(self.prezzo)")
+        
+        self.grammi = "0 gr"
+        self.prezzo = "0.0"
+        self.pax = ">= 1"
+        
+        if self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) {
+            
+            let index = self.newDish.tagliaPiatto.firstIndex(where: {$0.id == self.currentDish.id})
+            
+            self.newDish.tagliaPiatto.remove(at: index!)
+        } // se già presente lo rimuoviamo
+        
+        
+        self.newDish.tagliaPiatto.append(self.currentDish)
+        print("taglieCount: \(self.newDish.tagliaPiatto.count)")
+
+    }
+    
+  
+    
     
 }

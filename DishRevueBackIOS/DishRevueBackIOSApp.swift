@@ -20,7 +20,9 @@ struct DishRevueBackIOSApp: App {
     var body: some Scene {
         WindowGroup {
         
-            PrincipalTabView()
+           PrincipalTabView()
+          //  DishSpecificView(newDish:.constant(DishModel()))
+           
             
         }
     }
