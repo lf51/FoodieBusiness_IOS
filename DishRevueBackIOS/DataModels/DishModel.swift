@@ -5,6 +5,8 @@
 //  Created by Calogero Friscia on 25/01/22.
 //
 
+// Modifiche 14.02
+
 import Foundation
 
 struct DishModel: Identifiable {
