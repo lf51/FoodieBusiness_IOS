@@ -56,9 +56,17 @@
 		4DAD4FBA279EF09900C0EAE8 /* StyledTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD4FB9279EF09900C0EAE8 /* StyledTextField.swift */; };
 		4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */; };
 		4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */; };
+		4DCCD6CF27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6CE27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift */; };
+		4DCCD6D127BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D027BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift */; };
+		4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */; };
+		4DCCD6D527BABA2300F387B2 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D427BABA2300F387B2 /* CustomLabel.swift */; };
+		4DCCD6D927BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D827BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift */; };
+		4DCCD6DB27BAC08000F387B2 /* DishInfo_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6DA27BAC08000F387B2 /* DishInfo_NewDishSubView.swift */; };
+		4DCCD6DE27BAC17D00F387B2 /* EnumScrollCases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6DD27BAC17D00F387B2 /* EnumScrollCases.swift */; };
+		4DD29F0C27BD17570065AC2A /* InfoDishRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DD29F0B27BD17570065AC2A /* InfoDishRow.swift */; };
 		4DF0C4AB27A009A800315A73 /* HomeViewBASEVERSION.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AA27A009A800315A73 /* HomeViewBASEVERSION.swift */; };
 		4DF0C4AD27A009B800315A73 /* DishListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AC27A009B800315A73 /* DishListView.swift */; };
-		4DF0C4AF27A009C400315A73 /* NewDishSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AE27A009C400315A73 /* NewDishSheetView.swift */; };
+		4DF0C4AF27A009C400315A73 /* NewDishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4AE27A009C400315A73 /* NewDishView.swift */; };
 		4DF0C4B327A04D7000315A73 /* DishModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4B227A04D7000315A73 /* DishModel.swift */; };
 		4DF0C4B527A05DEA00315A73 /* PropertyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C4B427A05DEA00315A73 /* PropertyModel.swift */; };
 		4DF7D9D327A40AD9001DB949 /* CustomTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF7D9D227A40AD9001DB949 /* CustomTabBarView.swift */; };
@@ -89,9 +97,17 @@
 		4DAD4FB9279EF09900C0EAE8 /* StyledTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledTextField.swift; sourceTree = "<group>"; };
 		4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledButton.swift; sourceTree = "<group>"; };
 		4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPropertySheetView.swift; sourceTree = "<group>"; };
+		4DCCD6CE27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoGenerali_NewDishSubView.swift; sourceTree = "<group>"; };
+		4DCCD6D027BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionMenu_NewDishSubView.swift; sourceTree = "<group>"; };
+		4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishSpecific_NewDishSubView.swift; sourceTree = "<group>"; };
+		4DCCD6D427BABA2300F387B2 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
+		4DCCD6D827BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridInfoDishValue_NewDishSubView.swift; sourceTree = "<group>"; };
+		4DCCD6DA27BAC08000F387B2 /* DishInfo_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishInfo_NewDishSubView.swift; sourceTree = "<group>"; };
+		4DCCD6DD27BAC17D00F387B2 /* EnumScrollCases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumScrollCases.swift; sourceTree = "<group>"; };
+		4DD29F0B27BD17570065AC2A /* InfoDishRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoDishRow.swift; sourceTree = "<group>"; };
 		4DF0C4AA27A009A800315A73 /* HomeViewBASEVERSION.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewBASEVERSION.swift; sourceTree = "<group>"; };
 		4DF0C4AC27A009B800315A73 /* DishListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishListView.swift; sourceTree = "<group>"; };
-		4DF0C4AE27A009C400315A73 /* NewDishSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishSheetView.swift; sourceTree = "<group>"; };
+		4DF0C4AE27A009C400315A73 /* NewDishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishView.swift; sourceTree = "<group>"; };
 		4DF0C4B227A04D7000315A73 /* DishModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishModel.swift; sourceTree = "<group>"; };
 		4DF0C4B427A05DEA00315A73 /* PropertyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyModel.swift; sourceTree = "<group>"; };
 		4DF7D9D227A40AD9001DB949 /* CustomTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarView.swift; sourceTree = "<group>"; };
@@ -177,34 +193,91 @@
 			isa = PBXGroup;
 			children = (
 				4DF0C4AC27A009B800315A73 /* DishListView.swift */,
+				4DD29F0A27BD120C0065AC2A /* SubView */,
 				4DA4615F27AD8A2000BD648D /* EditDishView.swift */,
 			);
 			path = DishList;
 			sourceTree = "<group>";
 		};
-		4DAD4FBB279EF0C900C0EAE8 /* SubView */ = {
+		4DAD4FBB279EF0C900C0EAE8 /* SubView_trasversali */ = {
 			isa = PBXGroup;
 			children = (
 				4DAD4FB7279EEE5400C0EAE8 /* MapView.swift */,
 				4DAD4FB9279EF09900C0EAE8 /* StyledTextField.swift */,
 				4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */,
+				4DCCD6D427BABA2300F387B2 /* CustomLabel.swift */,
 			);
-			path = SubView;
+			path = SubView_trasversali;
 			sourceTree = "<group>";
 		};
 		4DC3EBCA27ABEDD400FFC50E /* OBSOLETE */ = {
 			isa = PBXGroup;
 			children = (
+				4D1BC745279C1FB6000B463C /* TemporaryVIEW */,
 				4DF0C4AA27A009A800315A73 /* HomeViewBASEVERSION.swift */,
 				4DAD4F95279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift */,
 			);
 			path = OBSOLETE;
 			sourceTree = "<group>";
 		};
-		4DF0C4B027A009CB00315A73 /* TabView */ = {
+		4DCCD6CD27BAB2D700F387B2 /* NewDish */ = {
+			isa = PBXGroup;
+			children = (
+				4DF0C4AE27A009C400315A73 /* NewDishView.swift */,
+				4DCCD6D627BABAF800F387B2 /* NewDishSubView */,
+			);
+			path = NewDish;
+			sourceTree = "<group>";
+		};
+		4DCCD6D627BABAF800F387B2 /* NewDishSubView */ = {
+			isa = PBXGroup;
+			children = (
+				4DCCD6CE27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift */,
+				4DCCD6D727BABF3500F387B2 /* InfoSubView */,
+				4DCCD6D027BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift */,
+				4DCCD6DC27BAC15D00F387B2 /* SelectionSubView */,
+				4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */,
+			);
+			path = NewDishSubView;
+			sourceTree = "<group>";
+		};
+		4DCCD6D727BABF3500F387B2 /* InfoSubView */ = {
+			isa = PBXGroup;
+			children = (
+				4DCCD6D827BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift */,
+				4DCCD6DA27BAC08000F387B2 /* DishInfo_NewDishSubView.swift */,
+			);
+			path = InfoSubView;
+			sourceTree = "<group>";
+		};
+		4DCCD6DC27BAC15D00F387B2 /* SelectionSubView */ = {
+			isa = PBXGroup;
+			children = (
+				4DCCD6DD27BAC17D00F387B2 /* EnumScrollCases.swift */,
+			);
+			path = SelectionSubView;
+			sourceTree = "<group>";
+		};
+		4DD29F0927BD11FC0065AC2A /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
 				4DA4615A27AD14D200BD648D /* HomeView.swift */,
+			);
+			path = HomeView;
+			sourceTree = "<group>";
+		};
+		4DD29F0A27BD120C0065AC2A /* SubView */ = {
+			isa = PBXGroup;
+			children = (
+				4DD29F0B27BD17570065AC2A /* InfoDishRow.swift */,
+			);
+			path = SubView;
+			sourceTree = "<group>";
+		};
+		4DF0C4B027A009CB00315A73 /* TabView */ = {
+			isa = PBXGroup;
+			children = (
+				4DD29F0927BD11FC0065AC2A /* HomeView */,
 				4DA4615E27AD89E400BD648D /* DishList */,
 			);
 			path = TabView;
@@ -215,7 +288,6 @@
 			children = (
 				4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */,
 				4D1BC73F2799A746000B463C /* LinkSignInSheetView.swift */,
-				4DF0C4AE27A009C400315A73 /* NewDishSheetView.swift */,
 			);
 			path = SheetView;
 			sourceTree = "<group>";
@@ -224,10 +296,10 @@
 			isa = PBXGroup;
 			children = (
 				4D1BC746279C1FED000B463C /* PrincipalTabView.swift */,
-				4DF0C4B127A046DB00315A73 /* SheetView */,
 				4DF0C4B027A009CB00315A73 /* TabView */,
-				4DAD4FBB279EF0C900C0EAE8 /* SubView */,
-				4D1BC745279C1FB6000B463C /* TemporaryVIEW */,
+				4DCCD6CD27BAB2D700F387B2 /* NewDish */,
+				4DF0C4B127A046DB00315A73 /* SheetView */,
+				4DAD4FBB279EF0C900C0EAE8 /* SubView_trasversali */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -375,27 +447,35 @@
 				4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */,
 				4DF7D9D327A40AD9001DB949 /* CustomTabBarView.swift in Sources */,
 				4DAD4FBA279EF09900C0EAE8 /* StyledTextField.swift in Sources */,
+				4DCCD6DE27BAC17D00F387B2 /* EnumScrollCases.swift in Sources */,
+				4DCCD6D527BABA2300F387B2 /* CustomLabel.swift in Sources */,
 				4D403B9E27981D3500EB4E1B /* GryphonSwiftLibrary.swift in Sources */,
 				4DAD4FB8279EEE5400C0EAE8 /* MapView.swift in Sources */,
 				4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */,
 				4DF0C4B527A05DEA00315A73 /* PropertyModel.swift in Sources */,
+				4DD29F0C27BD17570065AC2A /* InfoDishRow.swift in Sources */,
 				4DAD4F94279EA7A800C0EAE8 /* PropertyVM.swift in Sources */,
 				4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */,
 				4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */,
+				4DCCD6D127BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift in Sources */,
 				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
+				4DCCD6CF27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift in Sources */,
 				4D1BC7402799A746000B463C /* LinkSignInSheetView.swift in Sources */,
 				4DF0C4B327A04D7000315A73 /* DishModel.swift in Sources */,
 				4DF0C4AD27A009B800315A73 /* DishListView.swift in Sources */,
 				4DA4616027AD8A2000BD648D /* EditDishView.swift in Sources */,
-				4DF0C4AF27A009C400315A73 /* NewDishSheetView.swift in Sources */,
+				4DF0C4AF27A009C400315A73 /* NewDishView.swift in Sources */,
 				4D1BC747279C1FED000B463C /* PrincipalTabView.swift in Sources */,
 				4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */,
+				4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */,
 				4D1BC7442799AB29000B463C /* AlertModel.swift in Sources */,
+				4DCCD6DB27BAC08000F387B2 /* DishInfo_NewDishSubView.swift in Sources */,
 				4DA4615D27AD3FE900BD648D /* DishVM.swift in Sources */,
 				4DF0C4AB27A009A800315A73 /* HomeViewBASEVERSION.swift in Sources */,
 				4D1BC749279C5C43000B463C /* LogoAppBackEndView.swift in Sources */,
 				4DAD4F96279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift in Sources */,
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
+				4DCCD6D927BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift in Sources */,
 				4DF7D9D527A4429F001DB949 /* VariousTabStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -526,7 +606,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -556,7 +636,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

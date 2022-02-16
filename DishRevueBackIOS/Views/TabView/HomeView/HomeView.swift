@@ -169,7 +169,7 @@ struct ExtractedView: View {
             
             List {
                 
-                ForEach(dishVM.dishList.filter{$0.restaurantMenu.contains(currentProperty)}) { dish in
+                ForEach(dishVM.dishList.filter{$0.restaurantWhereIsOnMenu.contains(currentProperty)}) { dish in
                     
                     
                     Text(dish.name)

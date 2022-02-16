@@ -19,18 +19,17 @@ struct DishModel: Identifiable {
     
     //var tempoDiAttesa: Int? // Ha tante sfaccettature, occorerebbe parlarne prima con dei Ristoratori
     
-    var quantità: Int?
    // var dishIcon: String // Icona standard dei piatti che potremmo in realtà associare direttamente alla categoria
     var images: [String] // immagini caricate dal ristoratore o dai clienti // da gestire
     
-    var aBaseDi: DishBase
     var type: DishType
-    var allergeni: [Allergeni]
-    var category: [DishCategory]
+    var aBaseDi: DishBase
     var metodoCottura: DishCookingMethod
+    var category: [DishCategory]
+    var allergeni: [Allergeni]
     
     var tagliaPiatto: [DishSpecificValue] = []
-    var restaurantMenu: [PropertyModel] = []
+    var restaurantWhereIsOnMenu: [PropertyModel] = []
     
     // una proprietà che lo inserisce in un menu, ovvero in un ristorante
     
@@ -50,6 +49,8 @@ struct DishModel: Identifiable {
    
 }
 
+// Creare Oggetto Ingrediente
+
 struct Ingrediente {
     
     let nome: String
@@ -59,6 +60,8 @@ struct Ingrediente {
     let produzione: QualityIngrediente?
     
 }
+
+
 
 enum QualityIngrediente: String {
     
@@ -84,7 +87,19 @@ enum QualityIngrediente: String {
     
 }
 
-enum DishSpecificValue: CaseIterable, Identifiable {
+// End Creazione Oggetto Ingrediente
+
+protocol MyEnumProtocol: CaseIterable,Identifiable,Equatable {
+      
+    func simpleDescription() -> String
+    
+    static var defaultValue: Self { get }
+}
+
+
+enum DishSpecificValue: MyEnumProtocol {
+    
+    static var defaultValue: DishSpecificValue = DishSpecificValue.unico(0, 1, 0.0)
     
     static var allCases: [DishSpecificValue] = [.unico(0,1,0.0),.doppio(0,1,0.0),.piccolo(0,1,0.0),.medio(0,1,0.0),.grande(0,1,0.0)]
     
@@ -150,7 +165,10 @@ enum DishSpecificValue: CaseIterable, Identifiable {
     
 }
 
-enum DishCookingMethod: String, CaseIterable, Identifiable {
+enum DishCookingMethod: MyEnumProtocol  {
+    
+    static var defaultValue: DishCookingMethod = DishCookingMethod.altro
+    
     
     case padella
     case bollito
@@ -165,10 +183,32 @@ enum DishCookingMethod: String, CaseIterable, Identifiable {
     
     case altro // creare la possibilità per il ristoratore di specificare qualunque cosa voglia
     
-    var id: String { self.rawValue }
+    var id: String { self.simpleDescription() }
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+            
+        case .padella: return "Padella"
+        case .bollito: return "Bollito"
+        case .vapore: return "Vapore"
+        case .frittura_olio: return "Frittura con Olio"
+        case .frittura_aria: return "Frittura ad Aria"
+        case .forno_elettrico: return "Forno Elettrico"
+        case .forno_a_legna: return "Forno a Legna"
+        case .griglia: return "Griglia"
+        case .piastra: return "Piastra"
+        case .crudo: return "Crudo"
+        case .altro: return "Altro Metodo di Cottura"
+            
+        }
+    }
 }
 
-enum DishType:String, CaseIterable, Identifiable {
+enum DishType: MyEnumProtocol {
+    
+    static var defaultValue: DishType = DishType.altro
+    
     // Potremmo associare l'icona standard ad ogni categoria
     case antipasto
     case primo
@@ -185,30 +225,83 @@ enum DishType:String, CaseIterable, Identifiable {
 
     case altro  // creare la possibilità per il ristoratore di specificare qualunque cosa voglia 
     
-    var id: String { self.rawValue }
+    var id: String { self.simpleDescription() }
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+            
+        case .antipasto: return "Antipasto"
+        case .primo: return "Primo"
+        case .secondo: return "Secondo"
+        case .contorno: return "Contorno"
+        case .pizza: return "Pizza"
+        case .tavolaCalda: return "Tavola Calda"
+        case .panino: return "Panino"
+        case .piadina: return "Piadina"
+        case .bevanda: return "Bevanda"
+        case .dessert: return "Dessert"
+        case .altro: return "Non Specificato"
+        
+        }
+        
+        
+    }
+    
 }
 
-enum DishBase:String, CaseIterable, Identifiable {
+enum DishBase: MyEnumProtocol {
+    
+    static var defaultValue: DishBase = DishBase.vegetali
+    
     // Potremmo Associare un icona ad ogni Tipo
     
     case carne // a base di carne o derivati (latte e derivati)
     case pesce // a base di pesce
     case vegetali // a base di vegetali
     
-    var id: String { self.rawValue }
+    var id: String { self.simpleDescription() }
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+            
+        case .carne: return "Carne"
+        case .pesce: return "Pesce"
+        case .vegetali: return "Vegetali"
+            
+            
+        }
+    }
 }
 
-enum DishCategory: String, CaseIterable, Identifiable {
+enum DishCategory: MyEnumProtocol {
     
+    static var defaultValue: DishCategory = DishCategory.vegetariano
+
     case vegetariano // può contenere latte&derivati - Non può contenere carne o pesce
     case vegano // può contenere solo vegetali
     case milkFree // può contenere carne o pesce - Non può contenere latte&derivati
     case glutenFree // non contiene glutine
     
-    var id: String { self.rawValue }
+    var id: String { self.simpleDescription() }
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+            
+        case .vegetariano: return "Vegetariano"
+        case .vegano: return "Vegano"
+        case .milkFree: return "Milk Free"
+        case .glutenFree: return "Gluten Free"
+            
+        }
+    }
 }
 
-enum Allergeni:String, CaseIterable, Identifiable {
+enum Allergeni: MyEnumProtocol {
+    
+    static var defaultValue: Allergeni = Allergeni.altro
     
     //Potremmo associare un icona ad ogni allergene e utilizzare la simpleDescription() al posto dei RawValue
     case arachidi_e_derivati
@@ -228,7 +321,7 @@ enum Allergeni:String, CaseIterable, Identifiable {
     
     case altro
  
-    var id: String { self.rawValue }
+    var id: String { self.simpleDescription() }
     
     func simpleDescription() -> String {
         

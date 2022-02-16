@@ -1,0 +1,179 @@
+//
+//  DishSpecific_NewDishSubView.swift
+//  DishRevueBackIOS
+//
+//  Created by Calogero Friscia on 14/02/22.
+//
+
+import SwiftUI
+
+struct DishSpecific_NewDishSubView: View {
+    
+    @Binding var newDish: DishModel
+ 
+    @State private var grammi: String = ""
+    @State private var pax: String = ""
+    @State private var prezzo: String = ""
+    @State private var currentDish: DishSpecificValue = .unico(0, 1, 0.0)
+    
+    @State private var openSpecificValue: Bool = false
+
+    var body: some View {
+        
+        VStack(alignment: .leading) {
+            
+            CSLabel_1(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.brown)
+            
+            VStack {
+                if !self.openSpecificValue {
+                    
+                    ScrollView(.horizontal,showsIndicators: false) {
+                        
+                        HStack {
+                            
+                            ForEach(DishSpecificValue.allCases) { taglia in
+                                
+                                Text(taglia.simpleDescription())
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background (
+                                        
+                                        RoundedRectangle(cornerRadius: 5.0)
+                                            .strokeBorder(taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue)
+                                            .background(RoundedRectangle(cornerRadius: 5.0)
+                                                            .fill(taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint.opacity(0.8) : Color.clear))
+                                            .shadow(radius: 3.0)
+                                    )
+                                    .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
+                                    .onTapGesture {
+                                        self.openSpecificValue = true
+                                        self.currentDish = taglia
+                                        
+                                    }.disabled(taglia.isSceltaBloccata(newDish: self.newDish)) // validiamo la scelta
+                            }
+                        }
+                    }
+                    
+                } else {
+                    
+                    VStack(alignment: .leading) {
+                        
+                        
+                        HStack {
+                            
+                            CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark")
+                            CSTextField_4(textFieldItem: $grammi, placeHolder: "0 gr", image: "scalemass.fill")
+                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle")
+                            
+                        }
+                        
+                        HStack {
+                            Text(self.currentDish.simpleDescription())
+                                .bold()
+                                .foregroundColor(.white)
+                                ._tightPadding()
+                                .background (
+                                    
+                                    RoundedRectangle(cornerRadius: 5.0)
+                                        .strokeBorder(Color.clear)
+                                        .background(RoundedRectangle(cornerRadius: 5.0)
+                                                        .fill(Color.mint.opacity(0.8))
+                                        .shadow(radius: 3.0)
+                                                   )
+                                    )
+                            
+                            Spacer()
+                            
+                            Button("Close") { self.openSpecificValue = false}
+                            .padding(.trailing)
+                            
+                            Button {
+ 
+                                self.validateAndAddSpecificValue()
+                                self.openSpecificValue = false
+                                
+                            } label: {
+                                
+                                Text(self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi")
+                                    .fontWeight(.heavy)
+                                    .foregroundColor(.white)
+                                    ._tightPadding()
+                                    .background (
+                                        
+                                        RoundedRectangle(cornerRadius: 5.0)
+                                            .strokeBorder(Color.red)
+                                            .background(RoundedRectangle(cornerRadius: 5.0)
+                                                            .fill(Color.red.opacity(0.8))
+                                            .shadow(radius: 3.0)
+                                                       )
+                                        )
+                            }
+                        }
+                    }
+                }
+            } // end Scroll
+        }.padding(.horizontal)
+    }
+    
+    // Method Space
+    func validateAndAddSpecificValue() {
+        
+        guard let grammi = Int(self.grammi) else {
+            // inserire alert
+            self.grammi = "0 gr"
+            return}
+        guard let price = Double(self.prezzo) else {
+            // alert
+            self.prezzo = "0.0"
+            return}
+        guard let pax = Int(self.pax) else {
+            //alert
+            self.pax = ">= 1"
+            return}
+        
+        switch self.currentDish {
+            
+        case .unico:
+            self.currentDish = .unico(grammi, pax, price)
+        case .doppio:
+            self.currentDish = .doppio(grammi, pax, price)
+        case .piccolo:
+            self.currentDish = .piccolo(grammi, pax, price)
+        case .medio:
+            self.currentDish = .medio(grammi, pax, price)
+        case .grande:
+            self.currentDish = .grande(grammi, pax, price)
+       
+        }
+
+        print("pax: \(self.pax) - grammi: \(self.grammi) - price: \(self.prezzo)")
+        
+        self.grammi = "0 gr"
+        self.prezzo = "0.0"
+        self.pax = ">= 1"
+        
+        if self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) {
+            
+            let index = self.newDish.tagliaPiatto.firstIndex(where: {$0.id == self.currentDish.id})
+            
+            self.newDish.tagliaPiatto.remove(at: index!)
+        } // se già presente lo rimuoviamo
+        
+        
+        self.newDish.tagliaPiatto.append(self.currentDish)
+        print("taglieCount: \(self.newDish.tagliaPiatto.count)")
+
+    }
+    
+  
+    
+    
+}
+
+/* struct DishSpecific_NewDishSubView_Previews: PreviewProvider {
+    static var previews: some View {
+        DishSpecific_NewDishSubView()
+    }
+}
+ */

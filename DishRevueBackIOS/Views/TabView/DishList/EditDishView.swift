@@ -19,6 +19,8 @@ struct EditDishView: View {
         
         VStack{
             
+           
+            
            Text("Edit -> \(dishVM.dishList[currentDishIndexPosition].name)")
     
             
@@ -28,6 +30,7 @@ struct EditDishView: View {
             Button {
                
                 dishVM.dishList[currentDishIndexPosition].name = "NOME CAMBIATO CON SUCCESSO"
+             
    
             } label: {
                 Text("Salva Modifiche")
@@ -39,7 +42,7 @@ struct EditDishView: View {
                     
                     Text(property.name).onTapGesture {
                         
-                        dishVM.dishList[currentDishIndexPosition].restaurantMenu.append(property)
+                        dishVM.dishList[currentDishIndexPosition].restaurantWhereIsOnMenu.append(property)
                         
                     }
                     
