@@ -21,7 +21,7 @@ struct InfoGenerali_NewDishSubView: View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1(placeHolder: "Info Generali", imageName: "info.circle", backgroundColor: Color.brown)
+            CSLabel_1(placeHolder: "Info Generali", imageName: "info.circle", backgroundColor: Color.black, toggleBottone: nil)
             
             
             CSTextField_3(textFieldItem: self.$nomePiatto, placeHolder: self.newDish.name == "" ? "Nome del Piatto" : "Modifica Nome del Piatto") {

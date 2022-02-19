@@ -73,6 +73,7 @@ struct CSTextField_2: View {
     }
 } */
 
+/// Small Custom textfiel con una immagine  e una Action
 struct CSTextField_3: View {
     
     @Binding var textFieldItem: String
@@ -116,7 +117,7 @@ struct CSTextField_3: View {
     }
 }
 
-/// Small Custom textfiel con una immagine  e un bottone
+/// Small Custom textfiel con una immagine
 struct CSTextField_4: View {
     
     @Binding var textFieldItem: String

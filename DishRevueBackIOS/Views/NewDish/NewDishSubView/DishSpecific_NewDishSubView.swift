@@ -22,7 +22,7 @@ struct DishSpecific_NewDishSubView: View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.brown)
+            CSLabel_1(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: nil)
             
             VStack {
                 if !self.openSpecificValue {
@@ -154,6 +154,8 @@ struct DishSpecific_NewDishSubView: View {
             self.currentDish = .medio(self.grammi, self.pax, self.prezzo)
         case .grande:
             self.currentDish = .grande(self.grammi, self.pax, self.prezzo)
+        case.custom:
+            self.currentDish = .custom("DA IMPLEMENTARE-HAVE A CHECK",self.grammi,self.pax,self.prezzo)
        
         }
 

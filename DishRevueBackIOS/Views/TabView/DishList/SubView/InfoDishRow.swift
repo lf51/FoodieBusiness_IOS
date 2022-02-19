@@ -9,51 +9,32 @@ import SwiftUI
 
 struct InfoDishRow: View {
     
-   // @ObservedObject var dishVM: DishVM
- //   let currentDishIndexPosition: Int
     let borderColor:Color
     let fillColor:Color
     
-    @State var currentDish: DishModel // Se vogliamo effettuare modifiche sul piatto, dobbiamo recuperare il piatto dal ViewModel, cosa che facevamo passando l'index, ma che le modifiche alla View Madre hanno reso nonFattibile e per cui dobbiamo recuperarlo qui in stile FantaBid cercando però di essere più efficienti. AL MOMENTO NON MODIFICA I DATI MA LI MOSTRA
+    @State var currentDish: DishModel
     @State private var showTagliaValue:Bool = false
     @State private var currentTaglia:DishSpecificValue = .defaultValue
-    
-  /*  init (dishVM:DishVM,currentDishIndexPosition:Int,borderColor:Color,fillColor:Color) {
-        
-        self.dishVM = dishVM
-        self.currentDishIndexPosition = currentDishIndexPosition
-        self.currentDish = dishVM.dishList[currentDishIndexPosition]
-        self.borderColor = borderColor
-        self.fillColor = fillColor
-    } */
-    
-    // Modificare i valori Associati al DishSpecificValue
-    @State private var peso: String = ""
-    @State private var pax: String = ""
-    @State private var price: String = ""
+ 
     
     var body: some View {
-
-       // ZStack {
-            
+          
             VStack(alignment:.leading) {
 
                 HStack {
                     
                     CSText_tightRectangle(testo: currentDish.name, fontWeight: .heavy, textColor: Color.blue, strokeColor: Color.blue, fillColor: Color.clear)
-
+                // dal Nome Piatto accediamo all'Editing del Piatto
                     
                     Text("9.5")
                         .fontWeight(.heavy)
                         .foregroundColor(Color.yellow)
                         .padding()
                         .background(Circle().foregroundColor(Color.black.opacity(0.2)))
-                        
+                 // dal Voto accediamo alle recensioni
+                    
                 }
-                
-                
-               
-                
+           
                 if !self.showTagliaValue {
                     
                     HStack {
@@ -80,7 +61,7 @@ struct InfoDishRow: View {
                         
                         CSText_RotatingRectangle(testo: "\(currentTaglia.iterateTaglie().peso) gr", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.yellow, fillColor: Color.yellow, showDeleteImage: false)
                             .onTapGesture {
-                                currentTaglia.changeAssociatedValue(currentDish: &currentDish, newValue: "2405")
+                              /*  currentTaglia.changeAssociatedValue(currentDish: &currentDish, newValue: "2405") */
                               // performare modifica Valori Associati alla tagliaPiatto
                             }
                 
@@ -93,26 +74,7 @@ struct InfoDishRow: View {
             } // end VSTACK MADRE
                  .padding()
                  .background(fillColor.cornerRadius(5.0).opacity(0.8))
-                /* .overlay(
-                    Text("9.5")
-                        .fontWeight(.heavy)
-                        .foregroundColor(Color.yellow)
-                        .padding()
-                        .background(Circle().foregroundColor(Color.black.opacity(0.6)))
-                        .position(x: 0, y: 0)
-                 ) */
-            
-            
-            
-            
-      //  } // end ZStack
-       // .padding()
-        //.background(fillColor.cornerRadius(5.0).opacity(0.8))
-      //  ._tightPadding()
-       // .background(borderColor.cornerRadius(5.0).opacity(0.8))
-        
-        
-        
+    
     }
 }
 
@@ -139,11 +101,11 @@ struct InfoDishRow_Previews: PreviewProvider {
         dish.name = "Bucatino alla Matriciana"
         dish.ingredientiPrincipali = ["Pasta di grano Duro","Guanciale","Pecorino Romano DOP", "Tuorlo d'Uovo BIO",]
         dish.ingredientiSecondari = ["Pepe Nero", "Prezzemolo"]
-        dish.type = .primo
+        dish.type = .defaultValue
         dish.aBaseDi = .carne
         dish.metodoCottura = .padella
         dish.allergeni = [.latte_e_derivati,.uova_e_derivati]
-        dish.category = [.milkFree,.glutenFree]
+        dish.avaibleFor = [.vegariano,.glutenFree]
         dish.tagliaPiatto = [.unico("80", "1", "12.5"),.doppio("160", "2", "18.5")]
         
         return dish

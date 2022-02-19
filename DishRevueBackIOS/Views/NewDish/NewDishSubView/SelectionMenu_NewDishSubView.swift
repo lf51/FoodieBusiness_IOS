@@ -11,35 +11,97 @@ struct SelectionMenu_NewDishSubView: View {
     
     @Binding var newDish: DishModel
     
+    @State private var creaNuovaTipologia:Bool? = false
+    @State private var nuovaTipologia: String = ""
+    
+    @State private var creaNuovaCottura: Bool? = false
+    @State private var nuovaCottura: String = ""
+    
     var body: some View {
         
         VStack(alignment:.leading) {
             
-            CSLabel_1(placeHolder: "Tipologia", imageName: "list.dash", backgroundColor: Color.brown)
-            
-            EnumScrollCases(cases: DishType.allCases, dishSingleProperty: self.$newDish.type, colorSelection: Color.green)
-          
-            
-            CSLabel_1(placeHolder: "Base", imageName: "lanyardcard", backgroundColor: Color.brown)
-            
-            EnumScrollCases(cases: DishBase.allCases, dishSingleProperty: self.$newDish.aBaseDi, colorSelection: Color.blue)
-            
- 
-            CSLabel_1(placeHolder: "Cottura", imageName: "flame", backgroundColor: Color.brown)
-            
-            EnumScrollCases(cases: DishCookingMethod.allCases, dishSingleProperty: self.$newDish.metodoCottura, colorSelection: Color.orange)
-            
-
-            CSLabel_1(placeHolder: "Avaible for", imageName: "person.fill.checkmark", backgroundColor: Color.brown)
-            
-            EnumScrollCases(cases: DishCategory.allCases, dishCollectionProperty: self.$newDish.category, colorSelection: Color.yellow)
+            Group {
+                
+                    CSLabel_1(placeHolder: "Tipologia", imageName: "list.dash", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
+                
+                if creaNuovaTipologia != nil {
+                    
+                    if !creaNuovaTipologia! {
+                        
+                        EnumScrollCases(cases: DishType.allCases, dishSingleProperty: self.$newDish.type, colorSelection: Color.green)
+                    }
+                    
+                else {
+                    
+                    CSTextField_3(textFieldItem: $nuovaTipologia, placeHolder: "Aggiungi Tipologia") {
+                        
+                        DishType.allCases.append(.tipologia(nuovaTipologia))
+                        self.nuovaTipologia = ""
+                        self.creaNuovaTipologia = false
+                        }
+                    }
+                }
+                
+                CSLabel_1(placeHolder: "A base di", imageName: "lanyardcard", backgroundColor: Color.black, toggleBottone: nil)
+                
+                EnumScrollCases(cases: DishBase.allCases, dishSingleProperty: self.$newDish.aBaseDi, colorSelection: Color.blue)
+                
      
+                CSLabel_1(placeHolder: "Metodo di cottura", imageName: "flame", backgroundColor: Color.black, toggleBottone: $creaNuovaCottura)
+                
+                if self.creaNuovaCottura != nil {
+                    
+                    if !creaNuovaCottura! {
+                        
+                        EnumScrollCases(cases: DishCookingMethod.allCases, dishSingleProperty: self.$newDish.metodoCottura, colorSelection: Color.orange)
+                    
+                    } else {
+                        
+                        CSTextField_3(textFieldItem: $nuovaCottura, placeHolder: "Aggiungi Cottura") {
+                            
+                            DishCookingMethod.allCases.append(.altro(nuovaCottura))
+                            self.nuovaCottura = ""
+                            self.creaNuovaCottura = false
+                            }
+                        
+                    }
+                    
+                }
+                
+               
+                
+            }
             
-            CSLabel_1(placeHolder: "Presenza Allergeni", imageName: "exclamationmark.triangle", backgroundColor: Color.brown)
+            Group {
+                
+                CSLabel_1(placeHolder: "Categoria", imageName: "person.fill", backgroundColor: Color.black, toggleBottone: nil)
+                
+                VStack(alignment:.leading) {
+                    EnumScrollCases(cases: DishCategory.allCases, dishSingleProperty: self.$newDish.category, colorSelection: Color.indigo.opacity(0.6))
+                    Text(self.newDish.category.extendedDescription())
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .italic()
+                        .foregroundColor(Color.black)
+                }
+                
             
-            EnumScrollCases(cases: Allergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red)
+                CSLabel_1(placeHolder: "Adattabile alla dieta", imageName: "person.fill.checkmark", backgroundColor: Color.black, toggleBottone: nil)
+                
+                EnumScrollCases(cases: DishAvaibleFor.allCases, dishCollectionProperty: self.$newDish.avaibleFor, colorSelection: Color.yellow)
+         
+                
+                CSLabel_1(placeHolder: "Allergeni Presenti", imageName: "exclamationmark.triangle", backgroundColor: Color.black, toggleBottone: nil)
+                
+                EnumScrollCases(cases: Allergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red)
+                
+            }
+           
             
         }.padding(.horizontal)
+       
+        
     }
 }
 
