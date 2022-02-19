@@ -11,6 +11,7 @@ class DishVM: ObservableObject {
     
     @Published var dishList: [DishModel] = []
     
+    
     init() {
         
         // Test Area
@@ -18,16 +19,42 @@ class DishVM: ObservableObject {
         //
     }
     
-    func createDish() {
+    func mappedDishList() -> [DishType] {
         
-        // crea un nuovo piatto
+        let firstStepArray = dishList.map({$0.type})
+        let secondStepSet = Set(firstStepArray)
+        let lastStepArray = Array(secondStepSet)
+        // trasformiamo il prima array, frutto di un Map, in un Set per eliminare i duplicati, poichè ogni piatto della stessa tipologia ha una tipologia con sempre il medesiomo id che nella mappatura risulta duplicarsi per ogni piatto di quella tipologia EHM???? -> RIPORTIAMO IL set in array di modo da farlo scorrere sineProblema in un foreach loop
+        return lastStepArray
+        
     }
     
-    func saveDish(dish:DishModel) {
+    func filteredDishList(filtro:DishType) -> [DishModel] {
         
+        // Utile per mostrare nella DishListView solo i piatti per le tipologie usate // Antipasto, Primo blabla
+        
+       dishList.filter({$0.type == filtro})
+        
+    }
+    
+    
+    func createNewOrEditOldDish(dish:DishModel) {
+        
+        guard let oldDishIndex = self.dishList.firstIndex(where: {$0.id == dish.id}) else {
+            
+            print("Piatto mai Esistito Prima, creato con id: \(dish.id)")
+            self.dishList.append(dish)
+            return
+        }
+
+        self.dishList.remove(at: oldDishIndex)
+        self.dishList.insert(dish, at: oldDishIndex)
+        
+        print("Piatto con id: \(dish.id) modificato con Successo")
         // crea e salva il piatto su firebase
         
-        dishList.append(dish)
+    // Matriciana 5CE7F174-1E10-45F4-8387-4139C59E42ED
+    // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
     func loadDishes() {

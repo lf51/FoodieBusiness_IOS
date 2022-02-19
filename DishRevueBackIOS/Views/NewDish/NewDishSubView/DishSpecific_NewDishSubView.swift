@@ -14,7 +14,7 @@ struct DishSpecific_NewDishSubView: View {
     @State private var grammi: String = ""
     @State private var pax: String = ""
     @State private var prezzo: String = ""
-    @State private var currentDish: DishSpecificValue = .unico(0, 1, 0.0)
+    @State private var currentDish: DishSpecificValue = .unico("0", "1", "0.0")
     
     @State private var openSpecificValue: Bool = false
 
@@ -33,7 +33,7 @@ struct DishSpecific_NewDishSubView: View {
                             
                             ForEach(DishSpecificValue.allCases) { taglia in
                                 
-                                Text(taglia.simpleDescription())
+                              /* Text(taglia.simpleDescription())
                                     .bold()
                                     .foregroundColor(.white)
                                     .padding()
@@ -44,7 +44,9 @@ struct DishSpecific_NewDishSubView: View {
                                             .background(RoundedRectangle(cornerRadius: 5.0)
                                                             .fill(taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint.opacity(0.8) : Color.clear))
                                             .shadow(radius: 3.0)
-                                    )
+                                    ) */
+                                CSText_bigRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue, fillColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint : Color.clear)
+                                
                                     .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
                                     .onTapGesture {
                                         self.openSpecificValue = true
@@ -69,7 +71,10 @@ struct DishSpecific_NewDishSubView: View {
                         }
                         
                         HStack {
-                            Text(self.currentDish.simpleDescription())
+                            
+                            CSText_tightRectangle(testo: self.currentDish.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: Color.clear, fillColor: Color.mint)
+                            
+                          /*  Text(self.currentDish.simpleDescription())
                                 .bold()
                                 .foregroundColor(.white)
                                 ._tightPadding()
@@ -81,7 +86,7 @@ struct DishSpecific_NewDishSubView: View {
                                                         .fill(Color.mint.opacity(0.8))
                                         .shadow(radius: 3.0)
                                                    )
-                                    )
+                                    ) */
                             
                             Spacer()
                             
@@ -95,7 +100,9 @@ struct DishSpecific_NewDishSubView: View {
                                 
                             } label: {
                                 
-                                Text(self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi")
+                                CSText_tightRectangle(testo: self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
+                                
+                              /*  Text(self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi")
                                     .fontWeight(.heavy)
                                     .foregroundColor(.white)
                                     ._tightPadding()
@@ -107,43 +114,46 @@ struct DishSpecific_NewDishSubView: View {
                                                             .fill(Color.red.opacity(0.8))
                                             .shadow(radius: 3.0)
                                                        )
-                                        )
+                                        ) */
                             }
                         }
                     }
                 }
-            } // end Scroll
+            }
         }.padding(.horizontal)
     }
     
     // Method Space
     func validateAndAddSpecificValue() {
         
-        guard let grammi = Int(self.grammi) else {
+        guard Int(self.grammi) != nil else {
             // inserire alert
+            print("Valore inserito in grammi NON VALIDO")
             self.grammi = "0 gr"
             return}
-        guard let price = Double(self.prezzo) else {
+        guard Double(self.prezzo) != nil else {
             // alert
+            print("Valore inserito in prezzo NON VALIDO")
             self.prezzo = "0.0"
             return}
-        guard let pax = Int(self.pax) else {
+        guard Int(self.pax) != nil else {
             //alert
+            print("Valore inserito in pax NON VALIDO")
             self.pax = ">= 1"
             return}
         
         switch self.currentDish {
             
         case .unico:
-            self.currentDish = .unico(grammi, pax, price)
+            self.currentDish = .unico(self.grammi, self.pax, self.prezzo)
         case .doppio:
-            self.currentDish = .doppio(grammi, pax, price)
+            self.currentDish = .doppio(self.grammi, self.pax, self.prezzo)
         case .piccolo:
-            self.currentDish = .piccolo(grammi, pax, price)
+            self.currentDish = .piccolo(self.grammi, self.pax, self.prezzo)
         case .medio:
-            self.currentDish = .medio(grammi, pax, price)
+            self.currentDish = .medio(self.grammi, self.pax, self.prezzo)
         case .grande:
-            self.currentDish = .grande(grammi, pax, price)
+            self.currentDish = .grande(self.grammi, self.pax, self.prezzo)
        
         }
 

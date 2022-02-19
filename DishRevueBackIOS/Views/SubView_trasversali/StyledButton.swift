@@ -9,6 +9,8 @@ import SwiftUI
 
 // SubView Button Riutilizzabili
 
+// Usare il .buttomStyle per semplificare lo stile dei bottoni
+
 struct CSButton_1: View {
   let title: String
   let action: () -> Void

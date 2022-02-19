@@ -30,7 +30,9 @@ struct InfoGenerali_NewDishSubView: View {
                 self.nomePiatto = ""
             }
             
-            if self.newDish.name != "" {DishInfoRectangle(data: self.newDish.name, baseColor: Color.green)}
+            if self.newDish.name != "" {
+                CSText_tightRectangle(testo: self.newDish.name, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.green)
+                /*DishInfoRectangle(data: self.newDish.name, baseColor: Color.green)*/}
             
             CSTextField_3(textFieldItem: self.$nuovoIngredientePrincipale, placeHolder: "Ingrediente Principale") {
                 

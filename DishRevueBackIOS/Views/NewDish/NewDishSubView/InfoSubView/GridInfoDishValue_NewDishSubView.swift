@@ -29,7 +29,7 @@ struct GridInfoDishValue_NewDishSubView:View {
                    
                     if !activeDelection {
                        
-                       DishInfoRectangle(data:data,baseColor:baseColor)
+                       CSText_RotatingRectangleFrontFace(data:data,baseColor:baseColor)
                             
                             .onLongPressGesture {
                                 withAnimation(.easeInOut) {
@@ -41,7 +41,7 @@ struct GridInfoDishValue_NewDishSubView:View {
                         
                     } else {
                         
-                        DishInfoDeletableRectangle(data: data, baseColor: Color.gray)
+                        CSText_RotatingRectangle(testo: data, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
                             .onTapGesture {
                                 print("TAP TO DELETE")
                                 withAnimation(.easeInOut) {

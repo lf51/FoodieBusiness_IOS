@@ -11,32 +11,36 @@ import SwiftUI
 
 struct EditDishView: View {
     
-    @ObservedObject var dishVM: DishVM
-    @ObservedObject var propertyVM : PropertyVM
-    let currentDishIndexPosition: Int
+   // @ObservedObject var dishVM: DishVM
+   // @ObservedObject var propertyVM : PropertyVM
+  //  let currentDishIndexPosition: Int
+    @State var currentDish: DishModel
     
     var body: some View {
         
         VStack{
             
            
+            Text("Edit --> \(currentDish.name)")
             
-           Text("Edit -> \(dishVM.dishList[currentDishIndexPosition].name)")
+        //   Text("Edit -> \(dishVM.dishList[currentDishIndexPosition].name)")
     
             
          /*   TextField("Add Main Ingredient", text: $editableDish.ingredientiPrincipali[0]) */
             
             
             Button {
-               
-                dishVM.dishList[currentDishIndexPosition].name = "NOME CAMBIATO CON SUCCESSO"
+             
+                currentDish.name = "Nome Cambiato con Successo"
+                
+           //     dishVM.dishList[currentDishIndexPosition].name = "NOME CAMBIATO CON SUCCESSO"
              
    
             } label: {
                 Text("Salva Modifiche")
             }
             
-            List {
+          /*  List {
                 
                 ForEach(propertyVM.propertiesList) { property in
                     
@@ -52,7 +56,7 @@ struct EditDishView: View {
                 }
                 
                 
-            }
+            } */
             
 
         }

@@ -46,7 +46,7 @@ struct EnumScrollCases<T:MyEnumProtocol>: View {
                 
                 ForEach(enumCases) { type in
                     
-                    Text(type.simpleDescription())
+                  /*  Text(type.simpleDescription())
                         .bold()
                         .foregroundColor(.white)
                         .padding()
@@ -58,7 +58,9 @@ struct EnumScrollCases<T:MyEnumProtocol>: View {
                                                 .fill(self.checkSelectionOrContainer(type: type) ? colorSelection.opacity(0.8) : Color.clear))
                                 .shadow(radius: 3.0)
                             
-                        )
+                        ) */
+                    
+                    CSText_bigRectangle(testo: type.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.checkSelectionOrContainer(type: type) ? Color.clear : Color.blue, fillColor: self.checkSelectionOrContainer(type: type) ? colorSelection : Color.clear)
                         .onTapGesture {self.addingValueTo(newValue: type)}
                 }
             }

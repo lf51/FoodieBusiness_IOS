@@ -10,6 +10,20 @@ import SwiftUI
 /* Passiamo nelle SubView l'indice del dish da editare/visuallizare in modo da poter effettuare modifiche direttamente sull'oggetto senza passarlo. In questa maniera le modifiche sono visualizzate in realTime. Passando l'oggetto (essendo il DishModel una struttura) abbiamo invece gli stessi problemi di sincronia avuti con FantaBid (dove non abbiamo risolto in modo efficace), perchè le modifiche vengono effettuate su un "Nuovo" oggetto*/
 
 
+/* In questa View sono Mostrati in sintesi tutti i piatti creati dal Ristoratore. Info da mostrare:
+
+ • Nome del Piatto
+ • Tagli del Piatto ( + modifica Veloce)
+ • Stato del Piatto - Pubblico / Bozza  ( + modifica Veloce)
+ • Se Pubblico, proprietà su cui è caricato (+ modifica Veloce)
+ • Voto delle recensioni (+ accesso Veloce alle recensioni)
+
+ Da Valutare:
+ -- I piatti devono provenire: O da un publisher locale preventivamente riempito dal server, o da un'iterazione diretta sui dati nel Server
+ -- Le modifiche vengono fatte: O localmente e poi salvate sul server, o direttamente sul dato nel server
+ 
+*/
+
 struct DishListView: View {
     
     @ObservedObject var dishVM: DishVM
@@ -18,7 +32,7 @@ struct DishListView: View {
     @Binding var tabSelection: Int // serve a muoversi fra le tabItem, utile se vogliamo rimettere la NewDishView nella tabBar
     var backGroundColorView: Color
     
-    @State private var openNewDish: Bool = false
+    @State private var openSheetNewDish: Bool = false
     
     var body: some View {
         
@@ -28,83 +42,44 @@ struct DishListView: View {
                 
                 backGroundColorView.edgesIgnoringSafeArea(.top)
                 
-                VStack {
+                VStack(alignment:.leading) {
                     
                     Text("Lista")
                     
                     ScrollView {
                         
-                        VStack{
+                        ForEach(dishVM.mappedDishList()) { tipologia in
                             
-                          /*  ForEach(dishVM.dishList) { dish in
-                  
-                            NavigationLink {
-                                    
-                                    VStack {
-                                        EditDishView(dishVM: dishVM, propertyVM: propertyVM, currentDishIndexPosition: 0, currentDish: dish)
+                            CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .heavy, textColor: Color.black, strokeColor: Color.yellow, fillColor: Color.yellow.opacity(0.6))
+                           // Text(tipologia.simpleDescription())
+                          
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                
+                                HStack {
+                      
+                                    ForEach(dishVM.filteredDishList(filtro: tipologia)) { dish in
+                    
+                                    NavigationLink {
+                                       
+                                // Destinazione View per Creare/Modificare il piatto
+                                        NewDishView(dishVM: dishVM, backGroundColorView: Color.cyan, newDish: dish)
+                                            .navigationBarHidden(true)
                                         
+                                            
+                                        } label: {
+                                            
+                                            InfoDishRow(borderColor: Color.clear, fillColor: Color.black, currentDish: dish)
                                                                             }
+                                    }
                                     
-                                    
-                                } label: {
-                                    HStack {
-                                        
-                                        Text(dish.name)
-                                        
-                                      /*  ForEach(dishVM.dishList[i].allergeni) { allergene in
-                                            
-                                            Text(allergene.simpleDescription())
-                                            
-                                        
-                                            
-                                        }*/
-                                       // Text(dish.name)
-                                        //Text(dish.ingredientiPrincipali[0])
-                                           
-                                    } .foregroundColor(.black)
                                 }
-                            } */
-                            
-                            
-                            ForEach(dishVM.dishList.indices,id:\.self) { i in
-                                
-                            
-                                
-                                
-                            NavigationLink {
-                                    
-                                    VStack {
-                                        EditDishView(dishVM: dishVM, propertyVM: propertyVM, currentDishIndexPosition: i)
-                                        
-                                                                            }
-                                    
-                                    
-                                } label: {
-                                    HStack {
-                                        
-                                        Text(dishVM.dishList[i].name)
-                                        
-                                        ForEach(dishVM.dishList[i].allergeni) { allergene in
-                                            
-                                            Text(allergene.simpleDescription())
-                                            
-                                        
-                                            
-                                        }
-                                       // Text(dish.name)
-                                        //Text(dish.ingredientiPrincipali[0])
-                                           
-                                    } .foregroundColor(.black)
-                                } 
                             }
-                            
+                        
                         }
                     }
+                
                 }
-                
-                
-                
-                Text("Elenco Piatti Creati + ModificaPiattiEsistenti + Visualizza/rispondi recensioni")
+
             }
             .navigationTitle(Text("All Dishes"))
             .navigationBarItems(
@@ -112,19 +87,19 @@ struct DishListView: View {
                     
                     Button(action: {
                        // self.tabSelection = 1
-                        self.openNewDish.toggle()
+                        self.openSheetNewDish.toggle()
                     }, label: {
                         HStack {
                             Image(systemName: "plus.circle")
                                 .foregroundColor(.black)
                             
-                            Text("New Dish").bold()
+                            Text("New Dish").bold().foregroundColor(Color.black)
                         }
                     })
                     
             )
-            .sheet(isPresented: self.$openNewDish) {
-                NewDishView(dishVM: dishVM, backGroundColorView: .cyan, openNewDish: $openNewDish)
+            .sheet(isPresented: self.$openSheetNewDish) {
+                NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
             }
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
         

@@ -99,18 +99,62 @@ protocol MyEnumProtocol: CaseIterable,Identifiable,Equatable {
 
 enum DishSpecificValue: MyEnumProtocol {
     
-    static var defaultValue: DishSpecificValue = DishSpecificValue.unico(0, 1, 0.0)
+    static var defaultValue: DishSpecificValue = DishSpecificValue.unico("0", "1", "0.0")
     
-    static var allCases: [DishSpecificValue] = [.unico(0,1,0.0),.doppio(0,1,0.0),.piccolo(0,1,0.0),.medio(0,1,0.0),.grande(0,1,0.0)]
+    static var allCases: [DishSpecificValue] = [.unico("0","1","0.0"),.doppio("0","1","0.0"),.piccolo("0","1","0.0"),.medio("0","1","0.0"),.grande("0","1","0.0")]
     
-    case unico(_ grammi:Int, _ pax:Int, _ prezzo: Double)
-    case doppio(_ grammi:Int, _ pax:Int, _ prezzo: Double)
+    case unico(_ grammi:String, _ pax:String, _ prezzo: String)
+    case doppio(_ grammi:String, _ pax:String, _ prezzo: String)
     
-    case piccolo(_ grammi:Int, _ pax:Int, _ prezzo: Double)
-    case medio(_ grammi:Int, _ pax:Int, _ prezzo: Double)
-    case grande(_ grammi:Int, _ pax:Int, _ prezzo: Double)
+    case piccolo(_ grammi:String, _ pax:String, _ prezzo: String)
+    case medio(_ grammi:String, _ pax:String, _ prezzo: String)
+    case grande(_ grammi:String, _ pax:String, _ prezzo: String)
    
     var id: String { self.simpleDescription() }
+    
+    func iterateTaglie() -> (peso:String,porzioni:String,prezzo:String) {
+        
+        switch self {
+            
+        case .unico(let grammi, let porzioni, let prezzo):
+            return (peso:grammi,porzioni:porzioni,prezzo:prezzo)
+        case .doppio(let grammi, let porzioni, let prezzo):
+            return (peso:grammi,porzioni:porzioni,prezzo:prezzo)
+        case .piccolo(let grammi, let porzioni, let prezzo):
+            return (peso:grammi,porzioni:porzioni,prezzo:prezzo)
+        case .medio(let grammi, let porzioni, let prezzo):
+            return (peso:grammi,porzioni:porzioni,prezzo:prezzo)
+        case .grande(let grammi, let porzioni, let prezzo):
+            return (peso:grammi,porzioni:porzioni,prezzo:prezzo)
+            
+        }
+        
+    }
+    
+    func changeAssociatedValue(currentDish: inout DishModel, newValue: String) {
+        
+        let selfIndex = currentDish.tagliaPiatto.firstIndex(of: self)
+        currentDish.tagliaPiatto.remove(at: selfIndex!)
+        
+        switch self {
+            
+        case .unico:
+            currentDish.tagliaPiatto.append(.unico(newValue,newValue,newValue))
+        case .doppio:
+            currentDish.tagliaPiatto.append(.doppio(newValue,newValue,newValue))
+        case .piccolo:
+            currentDish.tagliaPiatto.append(.piccolo(newValue,newValue,newValue))
+        case .medio:
+            currentDish.tagliaPiatto.append(.medio(newValue,newValue,newValue))
+        case .grande:
+            currentDish.tagliaPiatto.append(.grande(newValue,newValue,newValue))
+            
+        }
+        
+        
+    }
+    
+    
     
     func simpleDescription() -> String {
         
@@ -125,7 +169,6 @@ enum DishSpecificValue: MyEnumProtocol {
         }
     }
 
-    
     func isTagliaAlreadyIn(newDish: DishModel) -> Bool  {
         
         newDish.tagliaPiatto.contains { taglia in

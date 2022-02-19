@@ -9,14 +9,17 @@ import SwiftUI
 
 // Bozza COMPLETATA 10.02.2022
 // Fare Ordine
+// 60DA0BBB-0D44-4CF9-B609-05CB517DF35A
 
 struct NewDishView: View {
+    
+    @Environment(\.dismiss) var dismiss
     
     @ObservedObject var dishVM: DishVM // ATTUALMENTE NON UTILIZZATO
     var backGroundColorView: Color
     
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
-    @Binding var openNewDish: Bool // dismiss button
+  //  @Binding var openNewDish: Bool // dismiss button
     @State var activeDeletion: Bool = false // attiva l'eliminazione degli ingredienti
     
     var body: some View {
@@ -29,7 +32,7 @@ struct NewDishView: View {
                 
                 HStack { // una Sorta di NavigationBar
                     
-                    Text("New Dish")
+                    Text(newDish.name != "" ? newDish.name : "New Dish")
                         .bold()
                         .font(.largeTitle)
                         .foregroundColor(Color.black)
@@ -39,9 +42,12 @@ struct NewDishView: View {
                     if !activeDeletion {
                         
                         Button {
-                            self.openNewDish.toggle()
+                           // self.openNewDish.toggle()
+                            dismiss()
                         } label: {
-                            Text("Dismiss")//.padding()
+                            Text("Dismiss")
+                                .foregroundColor(Color.black)
+                            //.padding()
                         }
                     } else {
                         
@@ -97,7 +103,7 @@ struct NewDishView: View {
                     CSButton_2(title: "Create Dish", accentColor: .white, backgroundColor: .cyan, cornerRadius: 5.0) {
                         
                         print("CREARE PIATTO SU FIREBASE")
-                        dishVM.saveDish(dish: self.newDish)
+                        dishVM.createNewOrEditOldDish(dish: self.newDish)
                         self.newDish = DishModel()
                         
                     }
@@ -115,7 +121,7 @@ struct NewDishView: View {
 struct NewDishView_Previews: PreviewProvider {
     static var previews: some View {
         
-        NewDishView(dishVM: DishVM(), backGroundColorView: Color.cyan, openNewDish: .constant(true))
+        NewDishView(dishVM: DishVM(), backGroundColorView: Color.cyan)
      
     }
 }
