@@ -59,14 +59,14 @@ struct InfoDishRow: View {
                     
                     HStack {
                         
-                        CSText_RotatingRectangle(testo: "\(currentTaglia.iterateTaglie().peso) gr", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.yellow, fillColor: Color.yellow, showDeleteImage: false)
+                        CSText_RotatingRectangle(testo: "\(currentTaglia.showAssociatedValue().peso) gr", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.yellow, fillColor: Color.yellow, showDeleteImage: false)
                             .onTapGesture {
-                              /*  currentTaglia.changeAssociatedValue(currentDish: &currentDish, newValue: "2405") */
+                              /*  currentTaglia.changeAssociatedValue(currentDish: &currentDish, newValue: "2405") */ // metodo cancellato - DA RISCRIVERE
                               // performare modifica Valori Associati alla tagliaPiatto
                             }
                 
-                        CSText_RotatingRectangle(testo: "\(currentTaglia.iterateTaglie().porzioni) pax", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.brown, fillColor: Color.brown, showDeleteImage: false)
-                        CSText_RotatingRectangle(testo: "\(currentTaglia.iterateTaglie().prezzo) euro", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.orange, fillColor: Color.orange, showDeleteImage: false)
+                        CSText_RotatingRectangle(testo: "\(currentTaglia.showAssociatedValue().porzioni) pax", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.brown, fillColor: Color.brown, showDeleteImage: false)
+                        CSText_RotatingRectangle(testo: "\(currentTaglia.showAssociatedValue().prezzo) euro", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.orange, fillColor: Color.orange, showDeleteImage: false)
          
                     }
                 }

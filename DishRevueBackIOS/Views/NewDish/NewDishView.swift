@@ -104,6 +104,7 @@ struct NewDishView: View {
                         
                         print("CREARE PIATTO SU FIREBASE")
                         dishVM.createNewOrEditOldDish(dish: self.newDish)
+                        self.newDish.type.mantieniUltimaScelta()
                         self.newDish = DishModel()
                         
                     }
@@ -113,7 +114,12 @@ struct NewDishView: View {
 
             
         } // end ZStack
-    
+        .alert(item:$newDish.alertItem) { alert -> Alert in
+           Alert(
+             title: Text(alert.title),
+             message: Text(alert.message)
+           )
+         }
     }
     
 }

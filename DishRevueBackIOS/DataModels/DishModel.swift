@@ -30,6 +30,8 @@ struct DishModel: Identifiable {
     
     var restaurantWhereIsOnMenu: [PropertyModel] = []
     
+    var alertItem: AlertModel?
+    
     init() { // init di un piatto nuovo e "vuoto"
         
         self.name = ""
@@ -50,16 +52,17 @@ struct DishModel: Identifiable {
 protocol MyEnumProtocol: CaseIterable,Identifiable,Equatable { // Protocollo utile per un Generic di modo da passare differenti oggetti(ENUM) alla stessa View
       
     func simpleDescription() -> String
+    func createId() -> String
     
     static var defaultValue: Self { get }
 }
 
 
-enum DishSpecificValue: MyEnumProtocol {
+enum DishSpecificValue: MyEnumProtocol, Hashable {
     
     static var defaultValue: DishSpecificValue = DishSpecificValue.unico("n/d", "1", "n/d")
     
-    static var allCases: [DishSpecificValue] = [.unico("n/d","1","n/d"),.doppio("n/d","1","n/d"),.piccolo("n/d","1","n/d"),.medio("n/d","1","n/d"),.grande("n/d","1","n/d"),.custom("Custom","n/d","1","n/d")]
+    static var allCases: [DishSpecificValue] = [.unico("n/d","1","n/d"),.doppio("n/d","1","n/d"),.piccolo("n/d","1","n/d"),.medio("n/d","1","n/d"),.grande("n/d","1","n/d")]
     
     case unico(_ grammi:String, _ pax:String, _ prezzo: String)
     case doppio(_ grammi:String, _ pax:String, _ prezzo: String)
@@ -70,9 +73,9 @@ enum DishSpecificValue: MyEnumProtocol {
     
     case custom(_ nome: String, _ grammi: String, _ pax: String, _ prezzo: String)
    
-    var id: String { self.simpleDescription() }
+    var id: String { self.createId() }
     
-    func iterateTaglie() -> (peso:String,porzioni:String,prezzo:String) {
+    func showAssociatedValue() -> (peso:String,porzioni:String,prezzo:String) {
         
         switch self {
             
@@ -92,29 +95,11 @@ enum DishSpecificValue: MyEnumProtocol {
         }
         
     }
-    
-  /*  func changeAssociatedValue(currentDish: inout DishModel, newValue: String) {
+
+    func createId() -> String {
         
-        let selfIndex = currentDish.tagliaPiatto.firstIndex(of: self)
-        currentDish.tagliaPiatto.remove(at: selfIndex!)
-        
-        switch self {
-            
-        case .unico:
-            currentDish.tagliaPiatto.append(.unico(newValue,newValue,newValue))
-        case .doppio:
-            currentDish.tagliaPiatto.append(.doppio(newValue,newValue,newValue))
-        case .piccolo:
-            currentDish.tagliaPiatto.append(.piccolo(newValue,newValue,newValue))
-        case .medio:
-            currentDish.tagliaPiatto.append(.medio(newValue,newValue,newValue))
-        case .grande:
-            currentDish.tagliaPiatto.append(.grande(newValue,newValue,newValue))
-            
-        }
-        
-        
-    } */
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
+    }
     
     func simpleDescription() -> String {
         
@@ -125,7 +110,7 @@ enum DishSpecificValue: MyEnumProtocol {
         case .medio: return "Medio"
         case .grande: return "Grande"
         case .doppio: return "Double"
-        case .custom(let nome, _,_,_): return nome
+        case .custom(let nome, _,_,_): return nome.capitalized
                         
         }
     }
@@ -145,48 +130,94 @@ enum DishSpecificValue: MyEnumProtocol {
         // prima opzione
         guard !newDish.tagliaPiatto.isEmpty else {return false}
         //
+        
         let sceltaCorrente = self.id
         let listaDelleTaglie = newDish.tagliaPiatto.map {$0.id}
-        
-        let avaibleList_1: Set<String> = ["Unico", "Double"]
-        let avaibleList_2: Set<String> = ["Piccolo", "Medio", "Grande"]
-        
         let set_listaDelleTaglie = Set(listaDelleTaglie)
         
-        if set_listaDelleTaglie.isDisjoint(with: avaibleList_1) {
+        let avaibleList: Set<String> =  ["unico", "double", "piccolo", "medio", "grande"]
+        let avaibleSubList_1: Set<String> = ["unico", "double"]
+        let avaibleSubList_2: Set<String> = ["piccolo", "medio", "grande"]
+    
+        if set_listaDelleTaglie.isDisjoint(with: avaibleList) {
             
-            if avaibleList_2.contains(sceltaCorrente) {return false } else {return true}
+            if avaibleList.contains(sceltaCorrente) { return true } else { return false }
+        }
+        
+        else {
             
-        } else {
+            if set_listaDelleTaglie.isDisjoint(with: avaibleSubList_1) {
+                
+                if avaibleSubList_2.contains(sceltaCorrente) {return false} else {return true}
+                
+            } else {
+                
+                if avaibleSubList_1.contains(sceltaCorrente) {return false } else {return true}
+                
+            }
+        }
+    }
+    
+    func qualeComboIsAvaible() -> String {
+        
+        let avaibleList =  ["unico", "double", "piccolo", "medio", "grande"]
+        var avaibleSubList_1 = ["unico", "double"]
+        var avaibleSubList_2 = ["piccolo", "medio", "grande"]
+        
+        if !avaibleList.contains(self.id) {
             
-            if avaibleList_1.contains(sceltaCorrente) {return false } else {return true}
+            return "La specifica \"\(self.simpleDescription())\" è utilizzabile solo in combinazione con altre specifiche Custom"
+        }
+        
+        else if avaibleSubList_1.contains(self.id) {
+            
+            let index = avaibleSubList_1.firstIndex(of: self.id)
+            avaibleSubList_1.remove(at: index!)
+            
+            return "La specifica \"\(self.simpleDescription())\" è utilizzabile solo in combinazione con la specifica \(avaibleSubList_1.description)"
+        }
+        
+        else {
+            
+            let index = avaibleSubList_2.firstIndex(of: self.id)
+            avaibleSubList_2.remove(at: index!)
+            
+            return "La specifica \"\(self.simpleDescription())\" è utilizzabile solo in combinazione con le specifiche \(avaibleSubList_2.description)"
             
         }
         
-        // FUNZIONE DA IMPLEMENTARE PER TENERE CONTO DELLA CATEGORIA CUSTOM, e da implementare per impedire anche che venga dato come nome custom uno dei nomi dei casi dell'enum
+    }
+    
+    static func isCustomCaseNameOriginal(customName: String) -> Bool {
+        
+        let allCasesId = allCases.map({$0.id})
+        let ipotetingCustomNameId = customName.replacingOccurrences(of:" ", with:"").lowercased()
+        
+        if allCasesId.contains(ipotetingCustomNameId) { return false } else { return true}
+        
     }
     
 }
 
 enum DishCookingMethod: MyEnumProtocol  {
     
-    static var allCases: [DishCookingMethod] = [.padella,.bollito,.vapore,.frittura_olio,.frittura_aria,.forno_elettrico,.forno_a_legna,.griglia,.piastra,.crudo]
-    static var defaultValue: DishCookingMethod = DishCookingMethod.altro("")
+    // Valutare di mantenere l'ultima scelta o meno in stile DishType
+    
+    static var allCases: [DishCookingMethod] = [.crudo,.padella,.bollito,.vapore,.frittura,.forno,.forno_a_legna,.griglia]
+    static var defaultValue: DishCookingMethod = DishCookingMethod.metodoCustom("")
     
     case padella
     case bollito
     case vapore
-    case frittura_olio
-    case frittura_aria
-    case forno_elettrico
+    case frittura
+    case forno
     case forno_a_legna
     case griglia
-    case piastra
     case crudo
     
-    case altro(_ customMethod:String) // creare la possibilità per il ristoratore di specificare qualunque cosa voglia
+    case metodoCustom(_ customMethod:String) // creare la possibilità per il ristoratore di specificare qualunque cosa voglia
     
-    var id: String { self.simpleDescription() }
+    var id: String { self.createId() }
     
     func simpleDescription() -> String {
         
@@ -195,30 +226,32 @@ enum DishCookingMethod: MyEnumProtocol  {
         case .padella: return "Padella"
         case .bollito: return "Bollito"
         case .vapore: return "Vapore"
-        case .frittura_olio: return "Frittura con Olio"
-        case .frittura_aria: return "Frittura ad Aria"
-        case .forno_elettrico: return "Forno Elettrico"
+        case .frittura: return "Frittura"
+        case .forno: return "Forno"
         case .forno_a_legna: return "Forno a Legna"
         case .griglia: return "Griglia"
-        case .piastra: return "Piastra"
         case .crudo: return "Crudo"
-        case .altro(let customMethod): return customMethod
+        case .metodoCustom(let customMethod): return customMethod.capitalized
             
         }
     }
-    // POSSIAMO TRASFORMARLO SUL MODELLO DEL DISHTYPE
+    
+    func createId() -> String {
+        
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
+    }
+
 }
 
 enum DishType: MyEnumProtocol, Hashable {
     
-    // quando scarichiamo i dati dal server, dobbiamo iterate tutte le tipologie salvate, e queste andranno a riempire la static allCases preventivamente svuotata. In questo modo i casi saranno tutti custom, e persisteranno(ovvero il ristoratore che ha creato una tipologia, se la ritroverà ogni volta che vuole creare un nuovo piatto). Di default, quindi prima che arrivino i dati dal server, la allCases avrà il contenuto scritto qui, che va a sostituire i vari singoli casi precedenti con un solo ma molteplice caso Custom
+    // quando scarichiamo i dati dal server, dobbiamo iterate tutte le tipologie salvate e inserirle nella static allCases. Insieme ai casi "standard" avremo così anche i casi custom.
     
-   // static var allCases: [DishType] = [.antipasto,.primo,.secondo,.contorno,.pizza,.bevanda,.dessert]
-    static var allCases: [DishType] = [.tipologia("antipasti"),.tipologia("primi"),.tipologia("SEcondi"),.tipologia("ConTorni"),.tipologia("PiZze"),.tipologia("BevandE"),.tipologia("doLci")]
-    static var defaultValue: DishType = DishType.tipologia("")
+    static var allCases: [DishType] = [.antipasto,.primo,.secondo,.contorno,.pizza,.bevanda,.dessert]
+    static var defaultValue: DishType = DishType.tipologiaCustom("")
     
     // Potremmo associare l'icona standard ad ogni categoria
-   /* case antipasto
+    case antipasto
     case primo
     case secondo
     case contorno
@@ -226,19 +259,26 @@ enum DishType: MyEnumProtocol, Hashable {
     case pizza
     
     case bevanda
-    case dessert */
+    case dessert
 
-    case tipologia(_ customName:String)  // creare la possibilità per il ristoratore di specificare qualunque cosa voglia
+    case tipologiaCustom(_ customName:String)  // creare la possibilità per il ristoratore di specificare qualunque cosa voglia
     
     var id: String { self.createId() }
     
+    func mantieniUltimaScelta() {
+        
+        guard let index = DishType.allCases.firstIndex(of: self) else { return }
+        DishType.defaultValue = self
+        DishType.allCases.remove(at: index)
+        DishType.allCases.insert(self, at: 0)
+        
+        // Impostiamo l'ultima scelta come default e la mettiamo per prima nell'array. In questo modo, in caso di piatti creati in consecutio, la scelta del tipo persiste e può essere comodo. Ovviamente può semore essere cambiata
+    }
+    
+    
     func createId() -> String {
         
-        switch self {
-            
-        case .tipologia(let customName): return customName.lowercased() // standardizziamo le stringhe ID in lowercases
-            
-        }
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
         
     }
     
@@ -246,14 +286,14 @@ enum DishType: MyEnumProtocol, Hashable {
    
         switch self {
             
-      /*  case .antipasto: return "Antipasto"
-        case .primo: return "Primo"
-        case .secondo: return "Secondo"
-        case .contorno: return "Contorno"
-        case .pizza: return "Pizza"
-        case .bevanda: return "Bevanda"
-        case .dessert: return "Dessert" */
-        case .tipologia(let customName): return customName.capitalized
+        case .antipasto: return "Antipasti"
+        case .primo: return "Primi"
+        case .secondo: return "Secondi"
+        case .contorno: return "Contorni"
+        case .pizza: return "Pizze"
+        case .bevanda: return "Bevande"
+        case .dessert: return "Dolci"
+        case .tipologiaCustom(let customName): return customName.capitalized
         
         }
     }
@@ -262,17 +302,18 @@ enum DishType: MyEnumProtocol, Hashable {
 
 enum DishBase: MyEnumProtocol {
     
-    static var allCases: [DishBase] = [.carne,.pesce,.vegetali,.altro("da Specificare")]
-    static var defaultValue: DishBase = DishBase.altro("")
+    static var allCases: [DishBase] = [.carne,.pesce,.vegetali] // Non essendoci valori Associati, la allCases potrebbe essere implicita, ma la esplicitiamo per omettere il caso NoValue, di modo che non appaia fra le opzioni di scelta
+    static var defaultValue: DishBase = DishBase.noValue
     
     // Potremmo Associare un icona ad ogni Tipo
     
     case carne // a base di carne o derivati (latte e derivati)
     case pesce // a base di pesce
     case vegetali // a base di vegetali
-    case altro(_ customBase: String)
     
-    var id: String { self.simpleDescription() }
+    case noValue // lo usiamo per avere un valore di default Nullo
+    
+    var id: String { self.createId() }
     
     func simpleDescription() -> String {
         
@@ -281,23 +322,30 @@ enum DishBase: MyEnumProtocol {
         case .carne: return "Carne"
         case .pesce: return "Pesce"
         case .vegetali: return "Vegetali"
-        case .altro(let customBase): return customBase
-            
+        case .noValue: return "Nessun Valore"
             
         }
+    }
+    
+    func createId() -> String {
+        
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
 }
 
 enum DishCategory: MyEnumProtocol {
     
-    static var defaultValue: DishCategory = DishCategory.standard
+    static var allCases: [DishCategory] = [.standard,.vegetariano,.vegariano,.vegano]
+    static var defaultValue: DishCategory = DishCategory.noValue
 
     case standard // contiene di tutto
     case vegetariano // può contenere latte&derivati - Non può contenere carne o pesce
     case vegariano // non contiene latte animale e prodotti derivati
     case vegano // può contenere solo vegetali
     
-    var id: String { self.simpleDescription() }
+    case noValue // lo usiamo per avere un valore di default Nullo
+    
+    var id: String { self.createId()}
     
     func simpleDescription() -> String {
         
@@ -307,8 +355,14 @@ enum DishCategory: MyEnumProtocol {
         case .vegetariano: return "Vegetariano"
         case .vegariano: return "Vegariano"
         case .vegano: return "Vegano"
+        case .noValue: return "Nessun Valore"
         
         }
+    }
+    
+    func createId() -> String {
+        
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
     
     func extendedDescription() -> String {
@@ -319,6 +373,7 @@ enum DishCategory: MyEnumProtocol {
         case .vegetariano: return "Esclude la carne e il pesce"
         case .vegariano: return "Esclude il Latte Animale e i suoi derivati"
         case .vegano: return "Contiene SOLO ingredienti di origine vegetale"
+        case .noValue: return ""
         
         }
         
@@ -329,16 +384,17 @@ enum DishCategory: MyEnumProtocol {
 enum DishAvaibleFor: MyEnumProtocol {
     
     // E' la possibilità di un piatto in Categoria standard di essere disponibile con modifiche per un'altra categoria
-    static var allCases: [DishAvaibleFor] = [.vegetariano,.vegano,.vegariano,.glutenFree,.altro("da Specificare")]
-    static var defaultValue: DishAvaibleFor = DishAvaibleFor.altro("da Specificare")
+    static var allCases: [DishAvaibleFor] = [.vegetariano,.vegano,.vegariano,.glutenFree]
+    static var defaultValue: DishAvaibleFor = DishAvaibleFor.noValue
 
     case vegetariano // può contenere latte&derivati - Non può contenere carne o pesce
     case vegariano // può contenere carne o pesce - Non può contenere latte&derivati
     case vegano // può contenere solo vegetali
     case glutenFree // non contiene glutine
-    case altro (_ customDiet: String)
     
-    var id: String { self.simpleDescription() }
+    case noValue // lo usiamo per avere un valore di default Nullo
+    
+    var id: String { self.createId()}
     
     func simpleDescription() -> String {
         
@@ -348,16 +404,21 @@ enum DishAvaibleFor: MyEnumProtocol {
         case .vegariano: return "Vegariana" // Milk Free
         case .vegano: return "Vegana"
         case .glutenFree: return "Senza Glutine"
-        case .altro(let customDiet): return "\(customDiet)"
+        case .noValue: return "Nessun Valore"
             
         }
+    }
+    
+    func createId() -> String {
+        
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
 }
 
 enum Allergeni: MyEnumProtocol {
     
-    static var allCases: [Allergeni] = [.arachidi_e_derivati,.fruttaAguscio,.latte_e_derivati,.molluschi,.crostacei,.pesce,.uova_e_derivati,.sesamo,.soia,.glutine,.lupini,.senape,.sedano,.anidride_solforosa_e_solfiti,.altro("da Specificare")]
-    static var defaultValue: Allergeni = Allergeni.altro("da Specificare")
+    static var allCases: [Allergeni] = [.arachidi_e_derivati,.anidride_solforosa_e_solfiti,.crostacei,.fruttaAguscio,.glutine,.latte_e_derivati,.lupini,.molluschi,.pesce,.sedano,.senape,.sesamo,.soia,.uova_e_derivati]
+    static var defaultValue: Allergeni = Allergeni.noValue
     
     //Potremmo associare un icona ad ogni allergene e utilizzare la simpleDescription() al posto dei RawValue
     case arachidi_e_derivati
@@ -375,9 +436,9 @@ enum Allergeni: MyEnumProtocol {
     case sedano
     case anidride_solforosa_e_solfiti
     
-    case altro(_ otherAllergene: String)
+    case noValue // lo usiamo per avere un valore di default Nullo
  
-    var id: String { self.simpleDescription() }
+    var id: String { self.createId() }
     
     func simpleDescription() -> String {
         
@@ -397,12 +458,16 @@ enum Allergeni: MyEnumProtocol {
         case .sedano: return "Sedano"
         case .anidride_solforosa_e_solfiti: return "Anidride Solforosa & Solfiti"
         case .uova_e_derivati: return "Uova & derivati"
-        case .altro(let otherAllergene): return otherAllergene
+        case .noValue: return "Nessun Valore"
         
         }
         
     }
     
+    func createId() -> String {
+        
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
+    }
     
 }
 

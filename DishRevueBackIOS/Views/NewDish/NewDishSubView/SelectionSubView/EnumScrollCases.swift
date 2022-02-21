@@ -46,20 +46,6 @@ struct EnumScrollCases<T:MyEnumProtocol>: View {
                 
                 ForEach(enumCases) { type in
                     
-                  /*  Text(type.simpleDescription())
-                        .bold()
-                        .foregroundColor(.white)
-                        .padding()
-                        .background (
-                            
-                        RoundedRectangle(cornerRadius: 5.0)
-                            .strokeBorder(self.checkSelectionOrContainer(type: type) ? Color.clear : Color.blue)
-                                .background(RoundedRectangle(cornerRadius: 5.0)
-                                                .fill(self.checkSelectionOrContainer(type: type) ? colorSelection.opacity(0.8) : Color.clear))
-                                .shadow(radius: 3.0)
-                            
-                        ) */
-                    
                     CSText_bigRectangle(testo: type.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.checkSelectionOrContainer(type: type) ? Color.clear : Color.blue, fillColor: self.checkSelectionOrContainer(type: type) ? colorSelection : Color.clear)
                         .onTapGesture {self.addingValueTo(newValue: type)}
                 }
@@ -87,7 +73,7 @@ struct EnumScrollCases<T:MyEnumProtocol>: View {
             
             withAnimation(.default) {
                 
-                self.newDishSingleProperty = newValue
+                self.newDishSingleProperty = self.newDishSingleProperty == newValue ? T.defaultValue : newValue
             }
             
         }

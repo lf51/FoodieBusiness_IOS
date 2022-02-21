@@ -23,11 +23,9 @@ struct SelectionMenu_NewDishSubView: View {
             
             Group {
                 
-                    CSLabel_1(placeHolder: "Tipologia", imageName: "list.dash", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
+                CSLabel_1(placeHolder: "Tipologia", imageName: "list.dash", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
                 
-                if creaNuovaTipologia != nil {
-                    
-                    if !creaNuovaTipologia! {
+                    if !(creaNuovaTipologia ?? false) {
                         
                         EnumScrollCases(cases: DishType.allCases, dishSingleProperty: self.$newDish.type, colorSelection: Color.green)
                     }
@@ -35,13 +33,13 @@ struct SelectionMenu_NewDishSubView: View {
                 else {
                     
                     CSTextField_3(textFieldItem: $nuovaTipologia, placeHolder: "Aggiungi Tipologia") {
-                        
-                        DishType.allCases.append(.tipologia(nuovaTipologia))
+
+                        DishType.allCases.insert(.tipologiaCustom(nuovaTipologia), at: 0)
                         self.nuovaTipologia = ""
                         self.creaNuovaTipologia = false
                         }
                     }
-                }
+                
                 
                 CSLabel_1(placeHolder: "A base di", imageName: "lanyardcard", backgroundColor: Color.black, toggleBottone: nil)
                 
@@ -50,27 +48,20 @@ struct SelectionMenu_NewDishSubView: View {
      
                 CSLabel_1(placeHolder: "Metodo di cottura", imageName: "flame", backgroundColor: Color.black, toggleBottone: $creaNuovaCottura)
                 
-                if self.creaNuovaCottura != nil {
-                    
-                    if !creaNuovaCottura! {
+                    if !(creaNuovaCottura ?? false) {
                         
                         EnumScrollCases(cases: DishCookingMethod.allCases, dishSingleProperty: self.$newDish.metodoCottura, colorSelection: Color.orange)
                     
                     } else {
                         
-                        CSTextField_3(textFieldItem: $nuovaCottura, placeHolder: "Aggiungi Cottura") {
+                        CSTextField_3(textFieldItem: $nuovaCottura, placeHolder: "Aggiungi Metodo di Cottura") {
                             
-                            DishCookingMethod.allCases.append(.altro(nuovaCottura))
+                            DishCookingMethod.allCases.insert(.metodoCustom(nuovaCottura), at: 1) // 1 per tenere sempre il Crudo come Prima Scelta
                             self.nuovaCottura = ""
                             self.creaNuovaCottura = false
-                            }
-                        
+                            
+                        }
                     }
-                    
-                }
-                
-               
-                
             }
             
             Group {

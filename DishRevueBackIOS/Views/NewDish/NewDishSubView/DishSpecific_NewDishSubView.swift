@@ -14,112 +14,115 @@ struct DishSpecific_NewDishSubView: View {
     @State private var grammi: String = ""
     @State private var pax: String = ""
     @State private var prezzo: String = ""
-    @State private var currentDish: DishSpecificValue = .unico("0", "1", "0.0")
     
+    @State private var currentDish: DishSpecificValue = .unico("0", "1", "0.0")
     @State private var openSpecificValue: Bool = false
+    
+    @State private var creaNuovaTaglia: Bool? = false
+    @State private var nuovaTaglia: String = ""
 
     var body: some View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: nil)
+            CSLabel_1(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovaTaglia).disabled(self.openSpecificValue)
             
-            VStack {
-                if !self.openSpecificValue {
+            if !(creaNuovaTaglia ?? false) {
+                
+                VStack {
                     
-                    ScrollView(.horizontal,showsIndicators: false) {
+                    if !self.openSpecificValue {
                         
-                        HStack {
+                        ScrollView(.horizontal,showsIndicators: false) {
                             
-                            ForEach(DishSpecificValue.allCases) { taglia in
+                            HStack {
                                 
-                              /* Text(taglia.simpleDescription())
-                                    .bold()
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .background (
-                                        
-                                        RoundedRectangle(cornerRadius: 5.0)
-                                            .strokeBorder(taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue)
-                                            .background(RoundedRectangle(cornerRadius: 5.0)
-                                                            .fill(taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint.opacity(0.8) : Color.clear))
-                                            .shadow(radius: 3.0)
-                                    ) */
-                                CSText_bigRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue, fillColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint : Color.clear)
-                                
-                                    .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
-                                    .onTapGesture {
-                                        self.openSpecificValue = true
-                                        self.currentDish = taglia
-                                        
-                                    }.disabled(taglia.isSceltaBloccata(newDish: self.newDish)) // validiamo la scelta
+                                ForEach(DishSpecificValue.allCases) { taglia in
+                                    
+                                    CSText_bigRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue, fillColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint : Color.clear)
+                                    
+                                        .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
+                                        .onTapGesture {
+                                            withAnimation(.default) {
+                                                if taglia.isSceltaBloccata(newDish: self.newDish) {
+                                                    
+                                                    newDish.alertItem = AlertModel (
+                                                        title: "Scelta Bloccata",
+                                                        message: "\(taglia.qualeComboIsAvaible())\n\n - Premi a lungo una scelta per Resettare - "
+                                                                    )
+                                                    // Se bloccata appare un Alert
+                                                    print("Mettere un Alert")
+                                                }
+                                                else {
+                                                    self.openSpecificValue = true
+                                                    self.currentDish = taglia
+                                                }
+                                            }// preferiamo questa form al disabled diretto, perchè con le taglie disabilitate lo scroll non scorre. Così manteniamo lo scorrimento e mandiamo un Alert di notifica del perchè non è possibile selezionare
+                                            
+                                        }//.disabled(taglia.isSceltaBloccata(newDish: self.newDish)) // validiamo la scelta
+                                        .onLongPressGesture {
+                                            withAnimation(.default) {
+                                                self.newDish.tagliaPiatto = []
+                                            }
+                                            
+                                        }
+                                }
                             }
                         }
-                    }
-                    
-                } else {
-                    
-                    VStack(alignment: .leading) {
                         
+                    } else {
                         
-                        HStack {
+                        VStack(alignment: .leading) {
                             
-                            CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark")
-                            CSTextField_4(textFieldItem: $grammi, placeHolder: "0 gr", image: "scalemass.fill")
-                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle")
+                            HStack {
+                                
+                                CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark")
+                                CSTextField_4(textFieldItem: $grammi, placeHolder: "0 gr", image: "scalemass.fill")
+                                CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle")
+                                
+                            }
                             
-                        }
-                        
-                        HStack {
-                            
-                            CSText_tightRectangle(testo: self.currentDish.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: Color.clear, fillColor: Color.mint)
-                            
-                          /*  Text(self.currentDish.simpleDescription())
-                                .bold()
-                                .foregroundColor(.white)
-                                ._tightPadding()
-                                .background (
+                            HStack {
+                                
+                                CSText_tightRectangle(testo: self.currentDish.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: Color.clear, fillColor: Color.mint)
+                                
+                                Spacer()
+                                
+                                Button("Close") { self.openSpecificValue = false}
+                                .padding(.trailing)
+                                
+                                Button {
+     
+                                    self.validateAndAddSpecificValue()
+                                    self.openSpecificValue = false
                                     
-                                    RoundedRectangle(cornerRadius: 5.0)
-                                        .strokeBorder(Color.clear)
-                                        .background(RoundedRectangle(cornerRadius: 5.0)
-                                                        .fill(Color.mint.opacity(0.8))
-                                        .shadow(radius: 3.0)
-                                                   )
-                                    ) */
-                            
-                            Spacer()
-                            
-                            Button("Close") { self.openSpecificValue = false}
-                            .padding(.trailing)
-                            
-                            Button {
- 
-                                self.validateAndAddSpecificValue()
-                                self.openSpecificValue = false
-                                
-                            } label: {
-                                
-                                CSText_tightRectangle(testo: self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
-                                
-                              /*  Text(self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi")
-                                    .fontWeight(.heavy)
-                                    .foregroundColor(.white)
-                                    ._tightPadding()
-                                    .background (
-                                        
-                                        RoundedRectangle(cornerRadius: 5.0)
-                                            .strokeBorder(Color.red)
-                                            .background(RoundedRectangle(cornerRadius: 5.0)
-                                                            .fill(Color.red.opacity(0.8))
-                                            .shadow(radius: 3.0)
-                                                       )
-                                        ) */
+                                } label: {
+                                    
+                                    CSText_tightRectangle(testo: self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
+      
+                                }
                             }
                         }
                     }
                 }
+                
+            } else {
+                
+                CSTextField_3(textFieldItem: $nuovaTaglia, placeHolder: "Aggiungi un Nuovo taglio") {
+                    
+                    if DishSpecificValue.isCustomCaseNameOriginal(customName: nuovaTaglia) {
+                        
+                        DishSpecificValue.allCases.insert(.custom(nuovaTaglia, "n/d", "1", "n/d"), at: 0)
+                   
+                    } else { print("Nome non Originale Inserire ALERT")/* Alert che avverte della non originalità del nome*/ }
+                    
+                    print(DishSpecificValue.allCases.description)
+                    self.nuovaTaglia = ""
+                    self.creaNuovaTaglia = false
+                    
+                }
             }
+            
         }.padding(.horizontal)
     }
     
@@ -129,17 +132,17 @@ struct DishSpecific_NewDishSubView: View {
         guard Int(self.grammi) != nil else {
             // inserire alert
             print("Valore inserito in grammi NON VALIDO")
-            self.grammi = "0 gr"
+            self.grammi = ""
             return}
         guard Double(self.prezzo) != nil else {
             // alert
             print("Valore inserito in prezzo NON VALIDO")
-            self.prezzo = "0.0"
+            self.prezzo = ""
             return}
         guard Int(self.pax) != nil else {
             //alert
             print("Valore inserito in pax NON VALIDO")
-            self.pax = ">= 1"
+            self.pax = ""
             return}
         
         switch self.currentDish {
@@ -154,16 +157,18 @@ struct DishSpecific_NewDishSubView: View {
             self.currentDish = .medio(self.grammi, self.pax, self.prezzo)
         case .grande:
             self.currentDish = .grande(self.grammi, self.pax, self.prezzo)
-        case.custom:
-            self.currentDish = .custom("DA IMPLEMENTARE-HAVE A CHECK",self.grammi,self.pax,self.prezzo)
+            
+        case .custom(let name,_,_,_):
+            self.currentDish = .custom(name,self.grammi,self.pax,self.prezzo)
        
         }
 
         print("pax: \(self.pax) - grammi: \(self.grammi) - price: \(self.prezzo)")
+        print("currentDish: \(currentDish.simpleDescription())")
         
-        self.grammi = "0 gr"
-        self.prezzo = "0.0"
-        self.pax = ">= 1"
+        self.grammi = ""
+        self.prezzo = ""
+        self.pax = ""
         
         if self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) {
             
