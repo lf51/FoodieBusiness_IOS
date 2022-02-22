@@ -36,6 +36,7 @@
 		4D1BC7442799AB29000B463C /* AlertModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1BC7432799AB29000B463C /* AlertModel.swift */; };
 		4D1BC747279C1FED000B463C /* PrincipalTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1BC746279C1FED000B463C /* PrincipalTabView.swift */; };
 		4D1BC749279C5C43000B463C /* LogoAppBackEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1BC748279C5C43000B463C /* LogoAppBackEndView.swift */; };
+		4D28C85E27C53F12009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28C85D27C53F11009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift */; };
 		4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */; };
 		4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403B9127981BC200EB4E1B /* ContentView.swift */; };
 		4D403B9427981BC400EB4E1B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4D403B9327981BC400EB4E1B /* Assets.xcassets */; };
@@ -58,7 +59,7 @@
 		4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */; };
 		4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */; };
 		4DCCD6CF27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6CE27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift */; };
-		4DCCD6D127BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D027BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift */; };
+		4DCCD6D127BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D027BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift */; };
 		4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */; };
 		4DCCD6D527BABA2300F387B2 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D427BABA2300F387B2 /* CustomLabel.swift */; };
 		4DCCD6D927BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D827BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift */; };
@@ -78,6 +79,7 @@
 		4D1BC7432799AB29000B463C /* AlertModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertModel.swift; sourceTree = "<group>"; };
 		4D1BC746279C1FED000B463C /* PrincipalTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrincipalTabView.swift; sourceTree = "<group>"; };
 		4D1BC748279C5C43000B463C /* LogoAppBackEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoAppBackEndView.swift; sourceTree = "<group>"; };
+		4D28C85D27C53F11009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionPropertyIngrediente_NewDishSubView.swift; sourceTree = "<group>"; };
 		4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DishRevueBackIOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRevueBackIOSApp.swift; sourceTree = "<group>"; };
 		4D403B9127981BC200EB4E1B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,7 +101,7 @@
 		4DAD4FBC279EF44100C0EAE8 /* StyledButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledButton.swift; sourceTree = "<group>"; };
 		4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPropertySheetView.swift; sourceTree = "<group>"; };
 		4DCCD6CE27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoGenerali_NewDishSubView.swift; sourceTree = "<group>"; };
-		4DCCD6D027BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionMenu_NewDishSubView.swift; sourceTree = "<group>"; };
+		4DCCD6D027BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionPropertyDish_NewDishSubView.swift; sourceTree = "<group>"; };
 		4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishSpecific_NewDishSubView.swift; sourceTree = "<group>"; };
 		4DCCD6D427BABA2300F387B2 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
 		4DCCD6D827BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridInfoDishValue_NewDishSubView.swift; sourceTree = "<group>"; };
@@ -235,7 +237,8 @@
 			children = (
 				4DCCD6CE27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift */,
 				4DCCD6D727BABF3500F387B2 /* InfoSubView */,
-				4DCCD6D027BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift */,
+				4DCCD6D027BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift */,
+				4D28C85D27C53F11009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift */,
 				4DCCD6DC27BAC15D00F387B2 /* SelectionSubView */,
 				4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */,
 			);
@@ -458,7 +461,7 @@
 				4DAD4F94279EA7A800C0EAE8 /* PropertyVM.swift in Sources */,
 				4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */,
 				4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */,
-				4DCCD6D127BAB4A400F387B2 /* SelectionMenu_NewDishSubView.swift in Sources */,
+				4DCCD6D127BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift in Sources */,
 				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
 				4DCCD6CF27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift in Sources */,
 				4D1BC7402799A746000B463C /* LinkSignInSheetView.swift in Sources */,
@@ -475,6 +478,7 @@
 				4D1BC749279C5C43000B463C /* LogoAppBackEndView.swift in Sources */,
 				4DAD4F96279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift in Sources */,
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
+				4D28C85E27C53F12009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift in Sources */,
 				4DCCD6D927BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift in Sources */,
 				4DF7D9D527A4429F001DB949 /* VariousTabStyle.swift in Sources */,
 			);
@@ -606,7 +610,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -636,7 +640,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

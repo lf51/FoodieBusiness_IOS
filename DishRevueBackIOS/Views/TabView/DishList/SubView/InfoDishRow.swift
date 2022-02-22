@@ -59,14 +59,14 @@ struct InfoDishRow: View {
                     
                     HStack {
                         
-                        CSText_RotatingRectangle(testo: "\(currentTaglia.showAssociatedValue().peso) gr", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.yellow, fillColor: Color.yellow, showDeleteImage: false)
+                        CSText_RotatingRectangleDynamicDeletingFace(testo: "\(currentTaglia.showAssociatedValue().peso) gr", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.yellow, fillColor: Color.yellow, showDeleteImage: false)
                             .onTapGesture {
                               /*  currentTaglia.changeAssociatedValue(currentDish: &currentDish, newValue: "2405") */ // metodo cancellato - DA RISCRIVERE
                               // performare modifica Valori Associati alla tagliaPiatto
                             }
                 
-                        CSText_RotatingRectangle(testo: "\(currentTaglia.showAssociatedValue().porzioni) pax", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.brown, fillColor: Color.brown, showDeleteImage: false)
-                        CSText_RotatingRectangle(testo: "\(currentTaglia.showAssociatedValue().prezzo) euro", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.orange, fillColor: Color.orange, showDeleteImage: false)
+                        CSText_RotatingRectangleDynamicDeletingFace(testo: "\(currentTaglia.showAssociatedValue().porzioni) pax", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.brown, fillColor: Color.brown, showDeleteImage: false)
+                        CSText_RotatingRectangleDynamicDeletingFace(testo: "\(currentTaglia.showAssociatedValue().prezzo) euro", fontWeight: .semibold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.orange, fillColor: Color.orange, showDeleteImage: false)
          
                     }
                 }
@@ -99,8 +99,8 @@ struct InfoDishRow_Previews: PreviewProvider {
         
         var dish = DishModel()
         dish.name = "Bucatino alla Matriciana"
-        dish.ingredientiPrincipali = ["Pasta di grano Duro","Guanciale","Pecorino Romano DOP", "Tuorlo d'Uovo BIO",]
-        dish.ingredientiSecondari = ["Pepe Nero", "Prezzemolo"]
+       dish.ingredientiPrincipali = [ModelloIngrediente(nome: "Pasta di grano Duro",cottura: nil, provenienza: nil, metodoDiProduzione: nil), ModelloIngrediente(nome:"Guanciale", cottura:nil, provenienza: nil, metodoDiProduzione: nil)]
+        dish.ingredientiSecondari = [ModelloIngrediente(nome: "Pepe Nero", cottura: nil, provenienza: nil,metodoDiProduzione: nil),ModelloIngrediente(nome: "Peperoncino", cottura: nil, provenienza: nil, metodoDiProduzione: nil)]
         dish.type = .defaultValue
         dish.aBaseDi = .carne
         dish.metodoCottura = .padella

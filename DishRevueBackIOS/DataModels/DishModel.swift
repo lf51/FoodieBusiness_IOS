@@ -14,8 +14,10 @@ struct DishModel: Identifiable {
     var id:String = UUID().uuidString
     
     var name: String
-    var ingredientiPrincipali: [String]
-    var ingredientiSecondari: [String]
+   // var ingredientiPrincipali: [String]
+    var ingredientiPrincipali: [ModelloIngrediente]
+    var ingredientiSecondari: [ModelloIngrediente]
+   // var ingredientiSecondari: [String]
     // var tempoDiAttesa: Int? // Ha tante sfaccettature, occorerebbe parlarne prima con dei Ristoratori
     // var dishIcon: String // Icona standard dei piatti che potremmo in realtà associare direttamente alla categoria
     // var images: [String] // immagini caricate dal ristoratore o dai clienti // da gestire
@@ -472,22 +474,28 @@ enum Allergeni: MyEnumProtocol {
 }
 
 
-/*
+
 // Creare Oggetto Ingrediente
 
-struct Ingrediente {
+struct ModelloIngrediente: Identifiable, Equatable {
+    
+    static func == (lhs: ModelloIngrediente, rhs: ModelloIngrediente) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    var id: String { self.nome.replacingOccurrences(of:" ", with:"").lowercased() + "\(self.cottura?.id ?? "")" }
     
     let nome: String
     
     let cottura: DishCookingMethod?
-    let provenienza: String?
-    let produzione: QualityIngrediente?
+    let provenienza: ProvenienzaIngrediente?
+    let metodoDiProduzione: MetodoDiProduzuoneIngrediente?
     
 }
 
 
 
-enum QualityIngrediente: String {
+enum MetodoDiProduzuoneIngrediente: String {
     
     case convenzionale = "Convenzionale"
     case biologio = "Bio"
@@ -508,7 +516,17 @@ enum QualityIngrediente: String {
         }
         
     } */
+}
     
-} */
+    enum ProvenienzaIngrediente {
+        
+        case Italia(località: String)
+        case Europa(Nazione: String)
+        case RestoDelMondo(Nazione: String)
+                
+    }
+    
+    
+
 
 // End Creazione Oggetto Ingrediente

@@ -59,31 +59,47 @@ struct CSText_bigRectangle: View {
 
 /*Uguale al CSText_tightRectangle, l'unica differenza è che in questo come nel rotating (di cui è specchio) abbiamo il testo che scala */
 
-struct CSText_RotatingRectangleFrontFace: View {
+struct CSText_RotatingRectangleStaticFace: View {
     
-    let data: String
-    let baseColor: Color
+    let testo: String
+    let fontWeight: Font.Weight
+    let textColor: Color
+    let scaleFactor: CGFloat
+    let strokeColor: Color
+    let fillColor: Color
+   
+    let topTrailingImage: String?
     
     var body: some View {
         
-        Text(data)
-            .bold()
-            .lineLimit(1)
-            .foregroundColor(.white)
-            .minimumScaleFactor(0.6)
-            ._tightPadding()
-            .background (
-                
-                RoundedRectangle(cornerRadius: 5.0)
-                    .strokeBorder(Color.blue)
-                    .background(RoundedRectangle(cornerRadius: 5.0)
-                                    .fill(baseColor.opacity(0.8)))
-                    .shadow(radius: 3.0)
+        ZStack(alignment: .topTrailing) {
+            Text(testo)
+                .fontWeight(fontWeight) // .bold
+                .lineLimit(1)
+                .foregroundColor(textColor) // .white
+                .minimumScaleFactor(scaleFactor) // 0.6
+                ._tightPadding()
+                .background (
+                    
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .strokeBorder(strokeColor) // .blue
+                        .background(RoundedRectangle(cornerRadius: 5.0)
+                                        .fill(fillColor.opacity(0.8)))
+                        .shadow(radius: 3.0)
             )
+            
+            if topTrailingImage != nil {
+                Image(systemName: topTrailingImage!)
+                    .frame(width:10, height: 10)
+                    .background(Color.clear)
+                    .foregroundColor(Color.red)
+            }
+            
+        }
     }
 }
 
-struct CSText_RotatingRectangle: View {
+struct CSText_RotatingRectangleDynamicDeletingFace: View {
     
     let testo: String
     let fontWeight: Font.Weight

@@ -12,24 +12,25 @@ import SwiftUI
 // Usare il .buttomStyle per semplificare lo stile dei bottoni
 
 struct CSButton_1: View {
+    
   let title: String
+  let fontWeight: Font.Weight
+  let titleColor: Color
+  let fillColor: Color
   let action: () -> Void
 
   var body: some View {
     Button(action: action) {
-      /// Embed in an HStack to display a wide button with centered text.
-      HStack {
-        Spacer()
+    
         Text(title)
-          .padding()
-          .accentColor(.white)
-        Spacer()
-      }
+            .fontWeight(fontWeight)
+            ._tightPadding()
+            .foregroundColor(titleColor)
+            .background(fillColor)
+            .cornerRadius(5.0)
+            }
+        }
     }
-    .background(Color.orange)
-    .cornerRadius(16.0)
-  }
-}
 
 struct CSButton_2: View {
     

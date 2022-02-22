@@ -39,6 +39,7 @@ struct DishSpecific_NewDishSubView: View {
                                 
                                 ForEach(DishSpecificValue.allCases) { taglia in
                                     
+                                    
                                     CSText_bigRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue, fillColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint : Color.clear)
                                     
                                         .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
@@ -48,29 +49,26 @@ struct DishSpecific_NewDishSubView: View {
                                                     
                                                     newDish.alertItem = AlertModel (
                                                         title: "Scelta Bloccata",
-                                                        message: "\(taglia.qualeComboIsAvaible())\n\n - Premi a lungo una scelta per Resettare - "
+                                                        message: "\(taglia.qualeComboIsAvaible())\n\n - Premi a lungo un'opzione qualsiasi per Resettare - "
                                                                     )
-                                                    // Se bloccata appare un Alert
-                                                    print("Mettere un Alert")
-                                                }
+                                                            }
+                                                
                                                 else {
                                                     self.openSpecificValue = true
                                                     self.currentDish = taglia
                                                 }
-                                            }// preferiamo questa form al disabled diretto, perchè con le taglie disabilitate lo scroll non scorre. Così manteniamo lo scorrimento e mandiamo un Alert di notifica del perchè non è possibile selezionare
-                                            
-                                        }//.disabled(taglia.isSceltaBloccata(newDish: self.newDish)) // validiamo la scelta
+                                            }
+                                        }
                                         .onLongPressGesture {
                                             withAnimation(.default) {
                                                 self.newDish.tagliaPiatto = []
-                                            }
-                                            
+                                                        }
+                                                    }
                                         }
+                                    }
                                 }
-                            }
-                        }
                         
-                    } else {
+                            } else {
                         
                         VStack(alignment: .leading) {
                             
@@ -114,7 +112,11 @@ struct DishSpecific_NewDishSubView: View {
                         
                         DishSpecificValue.allCases.insert(.custom(nuovaTaglia, "n/d", "1", "n/d"), at: 0)
                    
-                    } else { print("Nome non Originale Inserire ALERT")/* Alert che avverte della non originalità del nome*/ }
+                    } else { newDish.alertItem = AlertModel(
+                        title: "Controlla Scroll specifiche",
+                        message: "La specifica \"\(nuovaTaglia)\" esiste già"
+                                            )
+                                    }
                     
                     print(DishSpecificValue.allCases.description)
                     self.nuovaTaglia = ""

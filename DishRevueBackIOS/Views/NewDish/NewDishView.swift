@@ -21,6 +21,7 @@ struct NewDishView: View {
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
   //  @Binding var openNewDish: Bool // dismiss button
     @State var activeDeletion: Bool = false // attiva l'eliminazione degli ingredienti
+    @State var openEditingIngrediente: Bool = false // attiva l'editing dell'ingrediente
     
     var body: some View {
         
@@ -38,29 +39,30 @@ struct NewDishView: View {
                         .foregroundColor(Color.black)
                     
                     Spacer()
+  
+                    // Done Button
                     
-                    if !activeDeletion {
+                    if openEditingIngrediente {
                         
-                        Button {
-                           // self.openNewDish.toggle()
-                            dismiss()
-                        } label: {
-                            Text("Dismiss")
-                                .foregroundColor(Color.black)
-                            //.padding()
+                        CSButton_1(title: "Done", fontWeight: .heavy, titleColor: Color.white, fillColor: Color.blue) {
+                            self.openEditingIngrediente = false
                         }
-                    } else {
                         
-                        Button {
-                            self.activeDeletion = false
-                        } label: {
-                            Text("ANNULLA")
-                                .fontWeight(.heavy)
-                                ._tightPadding()
-                                .foregroundColor(Color.white)
-                                .background(RoundedRectangle(cornerRadius: 5.0).fill(Color.red))
-                        }
                     }
+        
+                    // Delete Button
+                    
+                    else if activeDeletion {
+                        
+                        CSButton_1(title: "Annulla", fontWeight: .heavy, titleColor: Color.white, fillColor: Color.red) {
+                            self.activeDeletion = false
+                        }
+                        
+                    }
+      
+                    // Default Button
+                    else {Button(action: {dismiss()}, label: {Text("Dismiss").foregroundColor(Color.black)})}
+
                 }
                 .padding()
                 .background(Color.cyan) // questo background riguarda la parte alta della View occupata dall'HStack
@@ -72,29 +74,28 @@ struct NewDishView: View {
                         VStack(alignment:.leading) { // info Dish
                          //   Text(dishVM.newDish.images) // ICONA STANDARD PIATTO
                             
-                            InfoGenerali_NewDishSubView(newDish: $newDish, activeDeletion: $activeDeletion)
+                            InfoGenerali_NewDishSubView(newDish: $newDish, activeDeletion: $activeDeletion, openEditingIngrediente: $openEditingIngrediente)
                                 .padding()
-                          /*
-                           INFO COTTURA DI OGNI SINGOLO INGREDIENTE
-                           
-                           */
-                         //   Spacer()
 
-                  
-                            SelectionMenu_NewDishSubView(newDish: $newDish)
-                                .disabled(self.activeDeletion)
+                            if !openEditingIngrediente {
+                                
+                                SelectionPropertyDish_NewDishSubView(newDish: $newDish)
+                                    .disabled(self.activeDeletion)
 
-                            DishSpecific_NewDishSubView(newDish: $newDish)
-                                .disabled(self.activeDeletion)
+                                DishSpecific_NewDishSubView(newDish: $newDish)
+                                    .disabled(self.activeDeletion)
                             
+                            } else {
+                                
+                               SelectionPropertyIngrediente_NewDishSubView(newDish: $newDish)
+                                
+                            }
                         }
-                  
-                      //  Spacer()
-                
-                   // }
+
                 }.onTapGesture {
                     print("TAP ON Entire SCROLL VIEW") // funziona su tutto tranne che sui menu orizzontali che abbiamo disabilitato ad hoc.
                     self.activeDeletion = false
+                    self.openEditingIngrediente = false
                 }
                 
                 Spacer()

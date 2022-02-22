@@ -9,10 +9,11 @@ import SwiftUI
 
 struct GridInfoDishValue_NewDishSubView:View {
     
+    @Binding var openEditingIngrediente: Bool
     @Binding var activeDelection: Bool
-    @Binding var showArrayData: [String]
+    @Binding var showArrayData: [ModelloIngrediente]
     let baseColor: Color
-    let action: (_ data: String) -> Void
+    let action: (_ data: ModelloIngrediente) -> Void
     
    let gridColumns: [GridItem] = [
     
@@ -25,23 +26,26 @@ struct GridInfoDishValue_NewDishSubView:View {
         
             LazyVGrid(columns: gridColumns) {
                 
-                ForEach(showArrayData,id:\.self) { data in
+                ForEach(showArrayData) { data in
                    
                     if !activeDelection {
                        
-                       CSText_RotatingRectangleFrontFace(data:data,baseColor:baseColor)
-                            
+                        CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: data.cottura != nil ? "flame.fill" : nil )
+                            .onTapGesture(count: 2, perform: {
+                                self.openEditingIngrediente = true 
+                            }).disabled(self.activeDelection)
                             .onLongPressGesture {
                                 withAnimation(.easeInOut) {
                                    //  action(data)
                                      self.activeDelection = true
                                      
                                  }
-                            } // il longPressure va in conflitto con lo scroll. Lo scroll non funziona se ci poggiamo sui rettangoli, funziona se ci poggiamo sullo spazio vuoto. Il problema è quando lo spazio si esaurisce. Lo Scroll funziona col Tap, anche double.
+                            }.disabled(self.openEditingIngrediente)
+                        // il longPressure va in conflitto con lo scroll. Lo scroll non funziona se ci poggiamo sui rettangoli, funziona se ci poggiamo sullo spazio vuoto. Il problema è quando lo spazio si esaurisce. Lo Scroll funziona col Tap, anche double.
                         
                     } else {
                         
-                        CSText_RotatingRectangle(testo: data, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
+                        CSText_RotatingRectangleDynamicDeletingFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
                             .onTapGesture {
                                 print("TAP TO DELETE")
                                 withAnimation(.easeInOut) {

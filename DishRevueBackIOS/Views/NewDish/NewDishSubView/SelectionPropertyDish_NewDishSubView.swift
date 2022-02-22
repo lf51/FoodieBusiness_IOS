@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SelectionMenu_NewDishSubView: View {
+struct SelectionPropertyDish_NewDishSubView: View {
     
     @Binding var newDish: DishModel
     

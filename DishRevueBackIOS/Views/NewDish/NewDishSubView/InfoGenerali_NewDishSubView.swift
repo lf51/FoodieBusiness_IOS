@@ -16,6 +16,7 @@ struct InfoGenerali_NewDishSubView: View {
     @State private var nuovoIngredienteSecondario: String = ""
     
     @Binding var activeDeletion: Bool
+    @Binding var openEditingIngrediente: Bool
     
     var body: some View {
         
@@ -31,17 +32,24 @@ struct InfoGenerali_NewDishSubView: View {
             }
             
             if self.newDish.name != "" {
-                CSText_tightRectangle(testo: self.newDish.name, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.green)
-                /*DishInfoRectangle(data: self.newDish.name, baseColor: Color.green)*/}
-            
-            CSTextField_3(textFieldItem: self.$nuovoIngredientePrincipale, placeHolder: "Ingrediente Principale") {
                 
-                self.validateItem(array: &self.newDish.ingredientiPrincipali, item: &self.nuovoIngredientePrincipale)
+                CSText_tightRectangle(testo: self.newDish.name, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.green)
+                                                }
+            
+                CSTextField_3(textFieldItem: self.$nuovoIngredientePrincipale, placeHolder: "Ingrediente Principale") {
+                
+                    if self.validateItem(array: &self.newDish.ingredientiPrincipali, item: &self.nuovoIngredientePrincipale) {
+                        
+                        newDish.alertItem = AlertModel(title: "Error", message: "L'ingrediente \"\(nuovoIngredientePrincipale.capitalized)\" è già presente fra gli ingredienti")
+                        self.nuovoIngredientePrincipale = ""
+                        // anche se in un If statement il metodo validate viene eseguito e l'ingrediente originale aggiunto ritorna un false, mentre l'eventuale doppione non viene aggiunto e ritorna un true che ci permette di mandare un alert.
+                    } else { self.openEditingIngrediente = true }
    
             }
             
             if !self.newDish.ingredientiPrincipali.isEmpty {
-                GridInfoDishValue_NewDishSubView(activeDelection: $activeDeletion, showArrayData: self.$newDish.ingredientiPrincipali, baseColor: Color.orange) { data in
+                
+                GridInfoDishValue_NewDishSubView(openEditingIngrediente: $openEditingIngrediente, activeDelection: $activeDeletion, showArrayData: self.$newDish.ingredientiPrincipali, baseColor: Color.orange) { data in
                     
                     self.removeItem(array: &self.newDish.ingredientiPrincipali, item: data)
                     
@@ -50,11 +58,17 @@ struct InfoGenerali_NewDishSubView: View {
             
             CSTextField_3(textFieldItem: self.$nuovoIngredienteSecondario, placeHolder: "Ingrediente Secondario (Optional)") {
                 
-                self.validateItem(array: &self.newDish.ingredientiSecondari, item: &self.nuovoIngredienteSecondario)
+                if self.validateItem(array: &self.newDish.ingredientiSecondari, item: &self.nuovoIngredienteSecondario) {
+                    
+                    newDish.alertItem = AlertModel(title: "Error", message: "L'ingrediente \"\(nuovoIngredienteSecondario.capitalized)\" è già presente fra gli ingredienti")
+                    self.nuovoIngredienteSecondario = ""
+                    // vedi commento su Ingrediente Principale
+                }  else { self.openEditingIngrediente = true }
+                
             }
             
             if !self.newDish.ingredientiSecondari.isEmpty {
-                GridInfoDishValue_NewDishSubView(activeDelection: $activeDeletion, showArrayData: self.$newDish.ingredientiSecondari, baseColor: Color.mint) { data in
+                GridInfoDishValue_NewDishSubView(openEditingIngrediente: $openEditingIngrediente, activeDelection: $activeDeletion, showArrayData: self.$newDish.ingredientiSecondari, baseColor: Color.mint) { data in
                     
                     self.removeItem(array: &self.newDish.ingredientiSecondari, item: data)
                 }
@@ -65,11 +79,13 @@ struct InfoGenerali_NewDishSubView: View {
             // Per la Quantità serve uno spazio più piccolo
             
         }
+        
+        
     }
     
     // function Space
     
-    func removeItem(array: inout [String], item: String) {
+    func removeItem(array: inout [ModelloIngrediente], item: ModelloIngrediente) {
         
         let positionIndex = array.firstIndex(of: item)
         
@@ -77,25 +93,31 @@ struct InfoGenerali_NewDishSubView: View {
         
     }
     
-    func validateItem(array: inout [String], item: inout String) {
+    func validateItem(array: inout [ModelloIngrediente], item: inout String) -> Bool {
         
         item = item.capitalized
         
-        guard !self.newDish.ingredientiPrincipali.contains(item) else {
+        let newIngrediente = ModelloIngrediente(nome: item, cottura: .bollito, provenienza: nil, metodoDiProduzione: nil)
+        
+        guard !self.newDish.ingredientiPrincipali.contains(newIngrediente) else {
             print("\(item) already fra gli ingredienti Principali")
-            item = ""
-            return
+            // l'alert qui dentro non funziona, perchè manca un binding diretto con la newDish. Abbiamo risolto facendo ritornare un bool al metodo
+           // item = ""
+            return true
         }
         
-        guard !self.newDish.ingredientiSecondari.contains(item) else {
+        guard !self.newDish.ingredientiSecondari.contains(newIngrediente) else {
             print("\(item) already fra gli ingredienti Secondari")
-            item = ""
-            return
+          //  item = ""
+            return true
         }
 
-        array.append(item)
+        array.append(newIngrediente)
         print("\(item) in ")
         item = ""
+        return false
+        
+        // la funzione ritorna un bool per mandare un alert nel caso di un doppione
     }
     
 }
