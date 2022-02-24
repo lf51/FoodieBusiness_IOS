@@ -99,8 +99,8 @@ struct InfoDishRow_Previews: PreviewProvider {
         
         var dish = DishModel()
         dish.name = "Bucatino alla Matriciana"
-       dish.ingredientiPrincipali = [ModelloIngrediente(nome: "Pasta di grano Duro",cottura: nil, provenienza: nil, metodoDiProduzione: nil), ModelloIngrediente(nome:"Guanciale", cottura:nil, provenienza: nil, metodoDiProduzione: nil)]
-        dish.ingredientiSecondari = [ModelloIngrediente(nome: "Pepe Nero", cottura: nil, provenienza: nil,metodoDiProduzione: nil),ModelloIngrediente(nome: "Peperoncino", cottura: nil, provenienza: nil, metodoDiProduzione: nil)]
+       dish.ingredientiPrincipali = []
+       dish.ingredientiSecondari = []
         dish.type = .defaultValue
         dish.aBaseDi = .carne
         dish.metodoCottura = .padella

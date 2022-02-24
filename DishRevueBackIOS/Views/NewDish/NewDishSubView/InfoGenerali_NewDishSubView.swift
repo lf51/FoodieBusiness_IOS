@@ -97,7 +97,9 @@ struct InfoGenerali_NewDishSubView: View {
         
         item = item.capitalized
         
-        let newIngrediente = ModelloIngrediente(nome: item, cottura: .bollito, provenienza: nil, metodoDiProduzione: nil)
+     //   let newIngrediente = ModelloIngrediente(nome: item, cottura: .bollito, provenienza: nil, metodoDiProduzione: nil)
+        var newIngrediente = ModelloIngrediente()
+        newIngrediente.nome = item 
         
         guard !self.newDish.ingredientiPrincipali.contains(newIngrediente) else {
             print("\(item) already fra gli ingredienti Principali")

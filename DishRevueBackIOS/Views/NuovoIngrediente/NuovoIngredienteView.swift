@@ -11,14 +11,14 @@ import SwiftUI
 // Fare Ordine
 // 60DA0BBB-0D44-4CF9-B609-05CB517DF35A
 
-struct NewDishView: View {
+struct NuovoIngredienteView: View {
     
     @Environment(\.dismiss) var dismiss
     
     @ObservedObject var dishVM: DishVM // ATTUALMENTE NON UTILIZZATO
     var backGroundColorView: Color
     
-    @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
+    @State var nuovoIngrediente: ModelloIngrediente = ModelloIngrediente() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
   //  @Binding var openNewDish: Bool // dismiss button
     @State var activeDeletion: Bool = false // attiva l'eliminazione degli ingredienti
     @State var openEditingIngrediente: Bool = false // attiva l'editing dell'ingrediente
@@ -33,7 +33,7 @@ struct NewDishView: View {
                 
                 HStack { // una Sorta di NavigationBar
                     
-                    Text(newDish.name != "" ? newDish.name : "New Dish")
+                    Text(nuovoIngrediente.nome != "" ? nuovoIngrediente.nome : "Nuovo Ingrediente")
                         .bold()
                         .font(.largeTitle)
                         .foregroundColor(Color.black)
@@ -74,22 +74,10 @@ struct NewDishView: View {
                         VStack(alignment:.leading) { // info Dish
                          //   Text(dishVM.newDish.images) // ICONA STANDARD PIATTO
                             
-                            InfoGenerali_NewDishSubView(newDish: $newDish, activeDeletion: $activeDeletion, openEditingIngrediente: $openEditingIngrediente)
-                                .padding()
-
-                            if !openEditingIngrediente {
-                                
-                                SelectionPropertyDish_NewDishSubView(newDish: $newDish)
-                                    .disabled(self.activeDeletion)
-
-                                DishSpecific_NewDishSubView(newDish: $newDish)
-                                    .disabled(self.activeDeletion)
+                            InfoIngrediente_NuovoIngredienteSubView(nuovoIngrediente:$nuovoIngrediente, activeDeletion: $activeDeletion, openEditingIngrediente: $openEditingIngrediente)
+                   
+                               SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)                           
                             
-                            } else {
-                                
-                              /* SelectionPropertyIngrediente_NewDishSubView(newDish: $newDish) */
-                                
-                            }
                         }
 
                 }.onTapGesture {
@@ -101,12 +89,18 @@ struct NewDishView: View {
                 Spacer()
                 
                 VStack {
-                    CSButton_2(title: "Create Dish", accentColor: .white, backgroundColor: .cyan, cornerRadius: 5.0) {
+                    CSButton_2(title: "Crea Ingrediente", accentColor: .white, backgroundColor: .cyan, cornerRadius: 5.0) {
                         
-                        print("CREARE PIATTO SU FIREBASE")
-                        dishVM.createNewOrEditOldDish(dish: self.newDish)
-                        self.newDish.type.mantieniUltimaScelta()
-                        self.newDish = DishModel()
+                        print("CREARE Ingrediente SU FIREBASE")
+                        print(nuovoIngrediente.nome)
+                        
+                        print(nuovoIngrediente.conservazione.simpleDescription())
+                        print(nuovoIngrediente.provenienza.simpleDescription())
+                        print(nuovoIngrediente.produzione.simpleDescription())
+                        
+                       // dishVM.createNewOrEditOldDish(dish: self.newDish)
+                      //  self.newDish.type.mantieniUltimaScelta()
+                      //  self.newDish = DishModel()
                         
                     }
                 }.background(Color.cyan) // questo back permette di amalgamare il bottone con il suo Vstack, altrimenti il bottone si vede come una striscia
@@ -115,20 +109,20 @@ struct NewDishView: View {
 
             
         } // end ZStack
-        .alert(item:$newDish.alertItem) { alert -> Alert in
+       /* .alert(item:$newDish.alertItem) { alert -> Alert in
            Alert(
              title: Text(alert.title),
              message: Text(alert.message)
            )
-         }
+         } */
     }
     
 }
 
-struct NewDishView_Previews: PreviewProvider {
+struct NuovoIngredienteView_Previews: PreviewProvider {
     static var previews: some View {
         
-        NewDishView(dishVM: DishVM(), backGroundColorView: Color.cyan)
+        NuovoIngredienteView(dishVM: DishVM(), backGroundColorView: Color.cyan)
      
     }
 }

@@ -47,6 +47,12 @@ struct PrincipalTabView: View {
                    // .background(backGroundColorView.opacity(0.4))
                        
                 
+            ListaIngredientiView(dishVM: dishVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
+                .tabItem {
+                    Image (systemName: "list.bullet")
+                    Text("Lista Ingredienti")
+                }.tag(3)
+            
                 
             }.sheet(isPresented: $authProcess.isPresentingSheet) {
                 LinkSignInSheetView(authProcess: authProcess)

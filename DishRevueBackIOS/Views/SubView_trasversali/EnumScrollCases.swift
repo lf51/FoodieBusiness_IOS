@@ -74,6 +74,7 @@ struct EnumScrollCases<T:MyEnumProtocol>: View {
             withAnimation(.default) {
                 
                 self.newDishSingleProperty = self.newDishSingleProperty == newValue ? T.defaultValue : newValue
+                print("Dentro AddingValue - oldValue: \(self.newDishSingleProperty.simpleDescription()) - NewValue:\(newValue.simpleDescription())")
             }
             
         }
