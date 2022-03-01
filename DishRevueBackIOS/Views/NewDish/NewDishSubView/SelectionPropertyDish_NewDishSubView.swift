@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+// Ultima pulizia codice 01.03.2022
 
 struct SelectionPropertyDish_NewDishSubView: View {
     
@@ -23,11 +24,11 @@ struct SelectionPropertyDish_NewDishSubView: View {
             
             Group {
                 
-                CSLabel_1(placeHolder: "Tipologia", imageName: "list.dash", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
+                CSLabel_1Button(placeHolder: "Tipologia", imageName: "list.bullet.below.rectangle", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
                 
                     if !(creaNuovaTipologia ?? false) {
                         
-                        EnumScrollCases(cases: DishType.allCases, dishSingleProperty: self.$newDish.type, colorSelection: Color.green)
+                        EnumScrollCases(cases: DishType.allCases, dishSingleProperty: self.$newDish.type, colorSelection: Color.green.opacity(0.8))
                     }
                     
                 else {
@@ -41,16 +42,16 @@ struct SelectionPropertyDish_NewDishSubView: View {
                     }
                 
                 
-                CSLabel_1(placeHolder: "A base di", imageName: "lanyardcard", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "A base di", imageName: "lanyardcard", backgroundColor: Color.black, toggleBottone: nil)
                 
-                EnumScrollCases(cases: DishBase.allCases, dishSingleProperty: self.$newDish.aBaseDi, colorSelection: Color.blue)
+                EnumScrollCases(cases: DishBase.allCases, dishSingleProperty: self.$newDish.aBaseDi, colorSelection: Color.indigo.opacity(0.8))
                 
      
-                CSLabel_1(placeHolder: "Metodo di cottura", imageName: "flame", backgroundColor: Color.black, toggleBottone: $creaNuovaCottura)
+                CSLabel_1Button(placeHolder: "Metodo di cottura", imageName: "flame", backgroundColor: Color.black, toggleBottone: $creaNuovaCottura)
                 
                     if !(creaNuovaCottura ?? false) {
                         
-                        EnumScrollCases(cases: DishCookingMethod.allCases, dishSingleProperty: self.$newDish.metodoCottura, colorSelection: Color.orange)
+                        EnumScrollCases(cases: DishCookingMethod.allCases, dishSingleProperty: self.$newDish.metodoCottura, colorSelection: Color.orange.opacity(0.8))
                     
                     } else {
                         
@@ -66,10 +67,10 @@ struct SelectionPropertyDish_NewDishSubView: View {
             
             Group {
                 
-                CSLabel_1(placeHolder: "Categoria", imageName: "person.fill", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "Categoria", imageName: "person.fill", backgroundColor: Color.black, toggleBottone: nil)
                 
                 VStack(alignment:.leading) {
-                    EnumScrollCases(cases: DishCategory.allCases, dishSingleProperty: self.$newDish.category, colorSelection: Color.indigo.opacity(0.6))
+                    EnumScrollCases(cases: DishCategory.allCases, dishSingleProperty: self.$newDish.category, colorSelection: Color.green.opacity(0.8))
                     Text(self.newDish.category.extendedDescription())
                         .font(.caption)
                         .fontWeight(.semibold)
@@ -78,19 +79,19 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 }
                 
             
-                CSLabel_1(placeHolder: "Adattabile alla dieta", imageName: "person.fill.checkmark", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "Adattabile alla dieta", imageName: "person.fill.checkmark", backgroundColor: Color.black, toggleBottone: nil)
                 
-                EnumScrollCases(cases: DishAvaibleFor.allCases, dishCollectionProperty: self.$newDish.avaibleFor, colorSelection: Color.yellow)
+                EnumScrollCases(cases: DishAvaibleFor.allCases, dishCollectionProperty: self.$newDish.avaibleFor, colorSelection: Color.blue.opacity(0.8))
          
                 
-                CSLabel_1(placeHolder: "Allergeni Presenti", imageName: "exclamationmark.triangle", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "Allergeni Presenti", imageName: "exclamationmark.triangle", backgroundColor: Color.black, toggleBottone: nil)
                 
-                EnumScrollCases(cases: Allergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red)
+                EnumScrollCases(cases: Allergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red.opacity(0.8))
                 
             }
            
             
-        }.padding(.horizontal)
+        }
        
         
     }

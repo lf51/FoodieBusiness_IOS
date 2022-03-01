@@ -28,7 +28,7 @@ struct DishModel: Identifiable {
     var category: DishCategory
     var avaibleFor: [DishAvaibleFor]
     var allergeni: [Allergeni]
-    var tagliaPiatto: [DishSpecificValue]
+    var formatiDelPiatto: [DishFormati]
     
     var restaurantWhereIsOnMenu: [PropertyModel] = []
     
@@ -42,7 +42,7 @@ struct DishModel: Identifiable {
         self.aBaseDi = .defaultValue
         self.type = .defaultValue
         self.allergeni = []
-        self.tagliaPiatto = []
+        self.formatiDelPiatto = []
         self.category = .defaultValue
         self.avaibleFor = []
         self.metodoCottura = .defaultValue
@@ -60,11 +60,11 @@ protocol MyEnumProtocol: CaseIterable,Identifiable,Equatable { // Protocollo uti
 }
 
 
-enum DishSpecificValue: MyEnumProtocol, Hashable {
+enum DishFormati: MyEnumProtocol, Hashable {
     
-    static var defaultValue: DishSpecificValue = DishSpecificValue.unico("n/d", "1", "n/d")
+    static var defaultValue: DishFormati = DishFormati.custom("","n/d", "1", "n/d")
     
-    static var allCases: [DishSpecificValue] = [.unico("n/d","1","n/d"),.doppio("n/d","1","n/d"),.piccolo("n/d","1","n/d"),.medio("n/d","1","n/d"),.grande("n/d","1","n/d")]
+    static var allCases: [DishFormati] = [.unico("n/d","1","n/d"),.doppio("n/d","1","n/d"),.piccolo("n/d","1","n/d"),.medio("n/d","1","n/d"),.grande("n/d","1","n/d")]
     
     case unico(_ grammi:String, _ pax:String, _ prezzo: String)
     case doppio(_ grammi:String, _ pax:String, _ prezzo: String)
@@ -119,7 +119,7 @@ enum DishSpecificValue: MyEnumProtocol, Hashable {
 
     func isTagliaAlreadyIn(newDish: DishModel) -> Bool  {
         
-        newDish.tagliaPiatto.contains { taglia in
+        newDish.formatiDelPiatto.contains { taglia in
             
             taglia.id == self.id // controlliamo che l'array tagliaPiatto non contenga già un elemento con lo stesso id.
             
@@ -130,11 +130,11 @@ enum DishSpecificValue: MyEnumProtocol, Hashable {
     func isSceltaBloccata(newDish: DishModel) -> Bool {
         
         // prima opzione
-        guard !newDish.tagliaPiatto.isEmpty else {return false}
+        guard !newDish.formatiDelPiatto.isEmpty else {return false}
         //
         
         let sceltaCorrente = self.id
-        let listaDelleTaglie = newDish.tagliaPiatto.map {$0.id}
+        let listaDelleTaglie = newDish.formatiDelPiatto.map {$0.id}
         let set_listaDelleTaglie = Set(listaDelleTaglie)
         
         let avaibleList: Set<String> =  ["unico", "double", "piccolo", "medio", "grande"]
@@ -475,186 +475,4 @@ enum Allergeni: MyEnumProtocol {
 
 
 
-// Creare Oggetto Ingrediente
 
-struct ModelloIngrediente: Identifiable, Equatable {
-    
-  static func == (lhs: ModelloIngrediente, rhs: ModelloIngrediente) -> Bool {
-       return
-      lhs.id == rhs.id &&
-      lhs.provenienza == rhs.provenienza &&
-      lhs.produzione == rhs.produzione &&
-      lhs.conservazione == rhs.conservazione
-    }
-    
-    var id: String { self.nome.replacingOccurrences(of:" ", with:"").lowercased() }
-
-    var nome: String
-    
-  //  var cottura: DishCookingMethod // la cottura la evitiamo in questa fase perchè può generare confusione
-    var provenienza: ProvenienzaIngrediente
-    var produzione: ProduzioneIngrediente
-  //  var stagionalita: StagionalitaIngrediente // la stagionalità non ha senso poichè è inserita dal ristoratore, ed è inserita quando? Ha senso se la attribuisce il sistema, ma è complesso.
-    var conservazione: ConservazioneIngrediente
-    
-    var dishWhereIsUsed: [DishModel] = [] // creiamo la doppia scrittura, ossia registriamo l'ingrediente nel piatto, e il piatto nell'ingrediente, di modo da avere un array di facile accesso per mostrare tutti i piatti che utilizzano quel dato ingrediente
-    
-    
-    // In futuro serviranno delle proprietà ulteriori, pensando nell'ottica che l'ingrediente possa essere gestito dall'app in chiave economato, quindi gestendo quantità e prezzi e rifornimenti necessari
-    
-    init() {
-        
-        self.nome = ""
-       
-        self.provenienza = .defaultValue
-        self.produzione = .defaultValue
-     
-        self.conservazione = .defaultValue
-        
-    }
-    
-    init(nome: String, provenienza: ProvenienzaIngrediente, metodoDiProduzione: ProduzioneIngrediente) {
-        
-        self.nome = nome
-     
-        self.provenienza = provenienza
-        self.produzione = metodoDiProduzione
-        self.conservazione = .defaultValue
-       
-        
-        
-    }
-    
-    
-}
-
-/*enum StagionalitaIngrediente: MyEnumProtocol {
-    
-    static var allCases: [StagionalitaIngrediente] = [.diStagione,.fuoriStagione]
-    static var defaultValue: StagionalitaIngrediente = StagionalitaIngrediente.noValue
-    
-    case diStagione
-    case fuoriStagione
-    case noValue
-    
-    var id: String { self.createId() }
-    
-    func simpleDescription() -> String {
-        
-        switch self {
-            
-        case .diStagione: return "Di Stagione"
-        case .fuoriStagione: return "Fuori Stagione"
-        case .noValue: return ""
-            
-        }
-    }
-    
-    func createId() -> String {
-        self.simpleDescription().replacingOccurrences(of:" ", with:"").lowercased()
-    }
-} */
-
-enum ConservazioneIngrediente: MyEnumProtocol {
-    
-    static var allCases: [ConservazioneIngrediente] = [.fresco,.congelato,.surgelato,.conserva]
-    static var defaultValue: ConservazioneIngrediente = ConservazioneIngrediente.custom("")
-    
-    var id: String {self.createId()}
-    
-    case fresco
-    case congelato
-    case surgelato
-    case conserva
-    
-    case custom(_ metodoDiConservazione:String)
-    
-    func simpleDescription() -> String {
-        
-        switch self {
-            
-        case .fresco: return "Fresco"
-        case .conserva: return "Conserva"
-        case .surgelato: return "Surgelato"
-        case .congelato: return "Congelato"
-        case .custom(let metodoDiConservazione): return metodoDiConservazione.capitalized
-            
-        }
-    }
-    
-    func createId() -> String {
-        self.simpleDescription().replacingOccurrences(of:" ", with: "").lowercased()
-    }
-    
-    
-}
-
-enum ProduzioneIngrediente: MyEnumProtocol {
-
-    static var defaultValue: ProduzioneIngrediente = ProduzioneIngrediente.custom("")
-    static var allCases: [ProduzioneIngrediente] = [.convenzionale,.biologico,.naturale,.selvatico]
-    
-    var id: String { self.createId()}
-
-    case convenzionale
-    case biologico
-    case naturale
-    case selvatico
-   
-    case custom(_ metodoDiProduzione:String)
-    
-    func simpleDescription() -> String {
-        
-        switch self {
-            
-        case .convenzionale: return "Convenzionale"
-        case .biologico: return "Biologico"
-        case .naturale: return "Naturale"
-        case .selvatico: return "Selvatico"
-        case .custom(let metodoDiProduzione): return metodoDiProduzione.capitalized
-            
-        }
-        
-    }
-    
-    func createId() -> String {
-        self.simpleDescription().replacingOccurrences(of:" ", with:"").lowercased()
-    }
-}
-    
-enum ProvenienzaIngrediente: MyEnumProtocol {
-    
-    static var defaultValue: ProvenienzaIngrediente = ProvenienzaIngrediente.custom("")
-    static var allCases: [ProvenienzaIngrediente] = [.HomeMade, .Italia, .Europa, .RestoDelMondo]
-    
-    var id: String { self.createId() }
-    
-        case HomeMade
-        case Italia
-        case Europa
-        case RestoDelMondo
-        case custom(_ località:String)
-    
-    func simpleDescription() -> String {
-        
-        switch self {
-            
-        case .HomeMade: return "Fatto in Casa"
-        case .Italia: return "Italia"
-        case .Europa: return "Comunità Europea"
-        case .RestoDelMondo: return "Resto del Mondo"
-        case .custom(let località): return località.capitalized
-            
-            }
-        }
-    
-    func createId() -> String {
-        self.simpleDescription().replacingOccurrences(of:" ", with:"").lowercased()
-        }
-    
-    }
-    
-    
-
-
-// End Creazione Oggetto Ingrediente

@@ -10,7 +10,7 @@ import MapKit
 
 class PropertyVM: ObservableObject {
     
-    @Published var listaIngredienti: [ModelloIngrediente] = [] // questa è lista degli ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà
+    @Published var listaIngredienti: [ModelloIngrediente] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
     
     @Published var propertiesList: [PropertyModel] = [] // deve essere riempita con le proprietà create e salvate su firebase
     
@@ -29,6 +29,7 @@ class PropertyVM: ObservableObject {
     
     init() {
         
+    
         propertiesList.append(propertyExample) // TEST CODE
         
         

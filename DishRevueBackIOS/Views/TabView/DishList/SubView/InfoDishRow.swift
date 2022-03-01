@@ -14,7 +14,7 @@ struct InfoDishRow: View {
     
     @State var currentDish: DishModel
     @State private var showTagliaValue:Bool = false
-    @State private var currentTaglia:DishSpecificValue = .defaultValue
+    @State private var currentTaglia:DishFormati = .defaultValue
  
     
     var body: some View {
@@ -39,7 +39,7 @@ struct InfoDishRow: View {
                     
                     HStack {
                         
-                        ForEach(currentDish.tagliaPiatto) { taglia in
+                        ForEach(currentDish.formatiDelPiatto) { taglia in
 
                             CSText_tightRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.green, strokeColor: Color.green, fillColor: Color.clear)
                                 .onTapGesture {
@@ -106,7 +106,7 @@ struct InfoDishRow_Previews: PreviewProvider {
         dish.metodoCottura = .padella
         dish.allergeni = [.latte_e_derivati,.uova_e_derivati]
         dish.avaibleFor = [.vegariano,.glutenFree]
-        dish.tagliaPiatto = [.unico("80", "1", "12.5"),.doppio("160", "2", "18.5")]
+        dish.formatiDelPiatto = [.unico("80", "1", "12.5"),.doppio("160", "2", "18.5")]
         
         return dish
     }()

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct GridInfoDishValue_NewDishSubView:View {
     
-    @Binding var openEditingIngrediente: Bool
+  //  @Binding var openEditingIngrediente: Bool
     @Binding var activeDelection: Bool
     @Binding var showArrayData: [ModelloIngrediente]
     let baseColor: Color
@@ -30,20 +30,20 @@ struct GridInfoDishValue_NewDishSubView:View {
                    
                     if !activeDelection {
                        
-                   /*     CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: data.cottura != nil ? "flame.fill" : nil )
-                            .onTapGesture(count: 2, perform: {
+                        CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
+                           /* .onTapGesture(count: 2, perform: {
                                 self.openEditingIngrediente = true 
-                            }).disabled(self.activeDelection)
+                            }).disabled(self.activeDelection)*/
                             .onLongPressGesture {
                                 withAnimation(.easeInOut) {
                                    //  action(data)
                                      self.activeDelection = true
                                      
                                  }
-                            }.disabled(self.openEditingIngrediente)
+                            }//.disabled(self.openEditingIngrediente)
                         // il longPressure va in conflitto con lo scroll. Lo scroll non funziona se ci poggiamo sui rettangoli, funziona se ci poggiamo sullo spazio vuoto. Il problema è quando lo spazio si esaurisce. Lo Scroll funziona col Tap, anche double.
                         
-                   */ } else {
+                    } else {
                         
                         CSText_RotatingRectangleDynamicDeletingFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
                             .onTapGesture {

@@ -11,7 +11,7 @@ import SwiftUI
 
 // Usare il .buttomStyle per semplificare lo stile dei bottoni
 
-struct CSButton_1: View {
+struct CSButton_tight: View {
     
   let title: String
   let fontWeight: Font.Weight
@@ -27,7 +27,7 @@ struct CSButton_1: View {
             ._tightPadding()
             .foregroundColor(titleColor)
             .background(fillColor)
-            .cornerRadius(5.0)
+            .cornerRadius(5.0) // 5.0
             }
         }
     }
@@ -46,7 +46,7 @@ struct CSButton_2: View {
       HStack {
         Spacer()
         Text(title)
-              .bold()
+          .bold()
           .padding()
           .accentColor(accentColor)
         Spacer()

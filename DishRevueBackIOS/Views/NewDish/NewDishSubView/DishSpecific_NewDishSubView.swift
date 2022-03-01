@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+// Ultima pulizia codice 01.03.2022
 
 struct DishSpecific_NewDishSubView: View {
     
@@ -15,7 +16,7 @@ struct DishSpecific_NewDishSubView: View {
     @State private var pax: String = ""
     @State private var prezzo: String = ""
     
-    @State private var currentDish: DishSpecificValue = .unico("0", "1", "0.0")
+    @State private var currentDish: DishFormati = .defaultValue
     @State private var openSpecificValue: Bool = false
     
     @State private var creaNuovaTaglia: Bool? = false
@@ -25,7 +26,7 @@ struct DishSpecific_NewDishSubView: View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovaTaglia).disabled(self.openSpecificValue)
+            CSLabel_1Button(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovaTaglia).disabled(self.openSpecificValue)
             
             if !(creaNuovaTaglia ?? false) {
                 
@@ -37,9 +38,8 @@ struct DishSpecific_NewDishSubView: View {
                             
                             HStack {
                                 
-                                ForEach(DishSpecificValue.allCases) { taglia in
-                                    
-                                    
+                                ForEach(DishFormati.allCases) { taglia in
+        
                                     CSText_bigRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue, fillColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint : Color.clear)
                                     
                                         .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
@@ -52,7 +52,6 @@ struct DishSpecific_NewDishSubView: View {
                                                         message: "\(taglia.qualeComboIsAvaible())\n\n - Premi a lungo un'opzione qualsiasi per Resettare - "
                                                                     )
                                                             }
-                                                
                                                 else {
                                                     self.openSpecificValue = true
                                                     self.currentDish = taglia
@@ -61,7 +60,7 @@ struct DishSpecific_NewDishSubView: View {
                                         }
                                         .onLongPressGesture {
                                             withAnimation(.default) {
-                                                self.newDish.tagliaPiatto = []
+                                                self.newDish.formatiDelPiatto = []
                                                         }
                                                     }
                                         }
@@ -108,9 +107,9 @@ struct DishSpecific_NewDishSubView: View {
                 
                 CSTextField_3(textFieldItem: $nuovaTaglia, placeHolder: "Aggiungi un Nuovo taglio") {
                     
-                    if DishSpecificValue.isCustomCaseNameOriginal(customName: nuovaTaglia) {
+                    if DishFormati.isCustomCaseNameOriginal(customName: nuovaTaglia) {
                         
-                        DishSpecificValue.allCases.insert(.custom(nuovaTaglia, "n/d", "1", "n/d"), at: 0)
+                        DishFormati.allCases.insert(.custom(nuovaTaglia, "n/d", "1", "n/d"), at: 0)
                    
                     } else { newDish.alertItem = AlertModel(
                         title: "Controlla Scroll specifiche",
@@ -118,31 +117,59 @@ struct DishSpecific_NewDishSubView: View {
                                             )
                                     }
                     
-                    print(DishSpecificValue.allCases.description)
+                    print(DishFormati.allCases.description)
                     self.nuovaTaglia = ""
                     self.creaNuovaTaglia = false
                     
                 }
             }
             
-        }.padding(.horizontal)
+        }
     }
     
     // Method Space
-    func validateAndAddSpecificValue() {
+    
+    private func validateValue(value: String, convalidaAsDouble: Bool) -> Bool {
         
-        guard Int(self.grammi) != nil else {
-            // inserire alert
+        if convalidaAsDouble {
+            
+            if let righValue = Double(value) { if righValue >= 0 {return true} else {return false} } else {return false}
+            
+        } else {
+            // convalida Int
+            if let rightValue = Int(value) { if rightValue > 0 {return true} else {return false} } else {return false}
+            
+        }
+    }
+    
+    private func validateAndAddSpecificValue() {
+        
+        guard validateValue(value: self.grammi, convalidaAsDouble: true) else {
+        
+            self.newDish.alertItem = AlertModel(
+                title: "Errore Inserimento Grammi",
+                message: "Valore inserito non valido. Ex: 150 o 150.5" )
+            
             print("Valore inserito in grammi NON VALIDO")
             self.grammi = ""
-            return}
-        guard Double(self.prezzo) != nil else {
-            // alert
+            return }
+        
+        guard validateValue(value: self.prezzo, convalidaAsDouble: true) else {
+    
+            self.newDish.alertItem = AlertModel(
+                title: "Errore Inserimento Prezzo",
+                message: "Valore inserito non valido. Ex: 180 o 180.5" )
+            
             print("Valore inserito in prezzo NON VALIDO")
             self.prezzo = ""
             return}
-        guard Int(self.pax) != nil else {
-            //alert
+        
+        guard validateValue(value: self.pax, convalidaAsDouble: false) else {
+        
+            self.newDish.alertItem = AlertModel(
+                title: "Errore Inserimento Porzioni",
+                message: "Il valore si riferisce al numero di persono e deve essere un numero intero positivo. Ex: 2 - Errato 1/2" )
+            
             print("Valore inserito in pax NON VALIDO")
             self.pax = ""
             return}
@@ -174,20 +201,16 @@ struct DishSpecific_NewDishSubView: View {
         
         if self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) {
             
-            let index = self.newDish.tagliaPiatto.firstIndex(where: {$0.id == self.currentDish.id})
+            let index = self.newDish.formatiDelPiatto.firstIndex(where: {$0.id == self.currentDish.id})
             
-            self.newDish.tagliaPiatto.remove(at: index!)
+            self.newDish.formatiDelPiatto.remove(at: index!)
         } // se già presente lo rimuoviamo
-        
-        
-        self.newDish.tagliaPiatto.append(self.currentDish)
-        print("taglieCount: \(self.newDish.tagliaPiatto.count)")
+                
+        self.newDish.formatiDelPiatto.append(self.currentDish)
+        print("taglieCount: \(self.newDish.formatiDelPiatto.count)")
 
     }
-    
-  
-    
-    
+ 
 }
 
 /* struct DishSpecific_NewDishSubView_Previews: PreviewProvider {

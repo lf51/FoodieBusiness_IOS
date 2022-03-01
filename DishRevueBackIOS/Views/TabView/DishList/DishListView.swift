@@ -32,7 +32,7 @@ struct DishListView: View {
     @Binding var tabSelection: Int // serve a muoversi fra le tabItem, utile se vogliamo rimettere la NewDishView nella tabBar
     var backGroundColorView: Color
     
-    @State private var openSheetNewDish: Bool = false
+    @State private var openCreateNewDish: Bool = false
     
     var body: some View {
         
@@ -62,7 +62,7 @@ struct DishListView: View {
                                     NavigationLink {
                                        
                                 // Destinazione View per Creare/Modificare il piatto
-                                        NewDishView(dishVM: dishVM, backGroundColorView: Color.cyan, newDish: dish)
+                                        NewDishMainView(propertyVM:propertyVM, dishVM: dishVM, backGroundColorView: Color.cyan, newDish: dish)
                                             .navigationBarHidden(true)
                                         
                                             
@@ -87,7 +87,7 @@ struct DishListView: View {
                     
                     Button(action: {
                        // self.tabSelection = 1
-                        self.openSheetNewDish.toggle()
+                        self.openCreateNewDish.toggle()
                     }, label: {
                         HStack {
                             Image(systemName: "plus.circle")
@@ -98,9 +98,10 @@ struct DishListView: View {
                     })
                     
             )
-            .sheet(isPresented: self.$openSheetNewDish) {
-                NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
-            }
+            .fullScreenCover(isPresented: self.$openCreateNewDish, content: {
+                NewDishMainView(propertyVM: propertyVM, dishVM: dishVM,  backGroundColorView: .cyan)
+            })
+
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
         
         

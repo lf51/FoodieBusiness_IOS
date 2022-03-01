@@ -9,21 +9,14 @@ import SwiftUI
 
 struct InfoIngrediente_NuovoIngredienteSubView: View {
     
-   // @Binding var newDish: DishModel
-    
-   // @State private var nomePiatto: String = ""
     @State private var nomeNuovoIngrediente: String = ""
-   // @State private var nuovoIngredienteSecondario: String = ""
-    
     @Binding var nuovoIngrediente: ModelloIngrediente
-    @Binding var activeDeletion: Bool
-    @Binding var openEditingIngrediente: Bool
     
     var body: some View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1(placeHolder: nuovoIngrediente.nome == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.nome)", imageName: "gearshape", backgroundColor: Color.black, toggleBottone: nil)
+            CSLabel_1Button(placeHolder: nuovoIngrediente.nome == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.nome)", imageName: "gearshape", backgroundColor: Color.black, toggleBottone: nil)
   
             CSTextField_3(textFieldItem: self.$nomeNuovoIngrediente, placeHolder: "Nome Ingrediente") {
                 self.nuovoIngrediente.nome = self.nomeNuovoIngrediente
