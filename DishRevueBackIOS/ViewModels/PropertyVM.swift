@@ -10,7 +10,12 @@ import MapKit
 
 class PropertyVM: ObservableObject {
     
-    @Published var listaIngredienti: [ModelloIngrediente] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
+    // create dal sistema
+    var listaBaseModelloIngrediente: [BaseModelloIngrediente] = [] // load(fileJson)
+    // la lista appIngredients sarà riempita da un json che creeremo con una lista di nomi di ingredienti. Dal nome verrà creato un Modello Ingrediente nel momento in cui sarà scelto dal ristoratore
+    
+    // end create dal sistema
+    @Published var listaMyIngredients: [ModelloIngrediente] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
     
     @Published var propertiesList: [PropertyModel] = [] // deve essere riempita con le proprietà create e salvate su firebase
     
@@ -30,7 +35,8 @@ class PropertyVM: ObservableObject {
     init() {
         
     
-        propertiesList.append(propertyExample) // TEST CODE
+        propertiesList.append(propertyExample) // TEST CODE DA ELIMINARE
+        fillListaBaseModello() // TEST CODE DA ELIMINARE
         
         
     }
@@ -135,6 +141,21 @@ class PropertyVM: ObservableObject {
     let propertyExample: PropertyModel = PropertyModel(name: "Osteria Favelas", cityName: "Sciacca", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), imageNames: ["LogoAppBACKEND"], webSite: "https://fantabid.it", phoneNumber: "+39 333 7213895", streetAdress: "Via Conzo 26")
     
     
+   let ing1 = BaseModelloIngrediente(nome: "basilico")
+   let ing2 = BaseModelloIngrediente(nome: "aglio")
+    let ing3 = BaseModelloIngrediente(nome: "olio")
+    let ing4 = BaseModelloIngrediente(nome: "prezzemolo")
+    let ing5 = BaseModelloIngrediente(nome: "origano")
+    let ing6 = BaseModelloIngrediente(nome: "sale")
+    let ing7 = BaseModelloIngrediente(nome: "pepe")
     
+    func fillListaBaseModello() {
+        
+        // questo avverrà con il load da un json
+        let ingList = [ing1,ing2,ing3,ing4,ing5,ing6,ing7] // TEST CODE DA ELIMINARE
+        listaBaseModelloIngrediente.append(contentsOf: ingList) // TEST CODE DA ELIMINARE
+        //
+
+    }
     
 }

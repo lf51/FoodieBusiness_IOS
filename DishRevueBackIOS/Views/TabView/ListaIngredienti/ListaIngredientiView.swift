@@ -48,7 +48,7 @@ struct ListaIngredientiView: View {
                     
                     ScrollView {
                         
-                        ForEach(propertyVM.listaIngredienti) { ingrediente in
+                        ForEach(propertyVM.listaMyIngredients) { ingrediente in
                             
                             Text(ingrediente.nome)
                           //  Text(ingrediente.cottura.simpleDescription())
@@ -84,7 +84,7 @@ struct ListaIngredientiView: View {
             )
             .sheet(isPresented: self.$openNuovoIngrediente) {
                // NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
-                NuovoIngredienteMAINView(propertyVM:propertyVM, backGroundColorView: backGroundColorView, dismissButton: nil)
+                NuovoIngredienteMainView(propertyVM:propertyVM, backGroundColorView: backGroundColorView, dismissButton: nil)
                 // Creare nuovo ingrediente
             }
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar

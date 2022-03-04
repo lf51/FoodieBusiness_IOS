@@ -9,7 +9,7 @@ import Foundation
 
 // Creare Oggetto Ingrediente
 
-struct ModelloIngrediente: Identifiable, Equatable {
+struct ModelloIngrediente: IngredientConformation {
     
   static func == (lhs: ModelloIngrediente, rhs: ModelloIngrediente) -> Bool {
        return
@@ -164,9 +164,26 @@ enum ProvenienzaIngrediente: MyEnumProtocol {
 
 // End Creazione Oggetto Ingrediente
 
+protocol IngredientConformation: Identifiable, Equatable {
+    
+    var nome:String {get}
+    
+}
 
 
-/*func load<T:Decodable>(_ filename:String) -> T {
+// Modello base da caricare da un Json
+
+struct BaseModelloIngrediente: IngredientConformation {
+    
+    var id: String {self.nome.replacingOccurrences(of: " ", with: "").lowercased() }
+    
+    let nome: String
+    
+}
+
+
+
+func load<T:Decodable>(_ filename:String) -> T {
     
     let data:Data
     
@@ -181,33 +198,5 @@ enum ProvenienzaIngrediente: MyEnumProtocol {
         return try decoder.decode(T.self, from: data)
     } catch {fatalError("Impossibile eseguire il PARSE sul file \(filename) as \(T.self):\n\(error)") }
     
-} */
+}
 
-
-
-/*enum StagionalitaIngrediente: MyEnumProtocol {
-    
-    static var allCases: [StagionalitaIngrediente] = [.diStagione,.fuoriStagione]
-    static var defaultValue: StagionalitaIngrediente = StagionalitaIngrediente.noValue
-    
-    case diStagione
-    case fuoriStagione
-    case noValue
-    
-    var id: String { self.createId() }
-    
-    func simpleDescription() -> String {
-        
-        switch self {
-            
-        case .diStagione: return "Di Stagione"
-        case .fuoriStagione: return "Fuori Stagione"
-        case .noValue: return ""
-            
-        }
-    }
-    
-    func createId() -> String {
-        self.simpleDescription().replacingOccurrences(of:" ", with:"").lowercased()
-    }
-} */

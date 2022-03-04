@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-// Creare un selettore che può inserire, rimuovere e ordinare gli ingredienti
+// 04.03.2022 Selettore Ingrediente che usa i Generics per fa convivere sia il ModelloIngrediente che il BaseModelloIngrediente. Rivelatosi inutile, poichè invece di convertire il baseModello nel Modello ogni volta che un ingrediente base viene scelto, procediamo con una conversione di tutti i baseModello prima dell'init della View, ossia in fase di download del json
 
-struct SelettoreIngrediente_NewDishSubView: View {
+struct SelettoreIngrediente_NewDishSubViewBACKUP: View {
     
     @ObservedObject var propertyVM: PropertyVM
   //  @Binding var newDish: DishModel
@@ -237,7 +237,7 @@ struct SelettoreIngrediente_NewDishSubView: View {
       
 }
 
-struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
+struct SelettoreIngrediente_NewDishSubViewBACKUP_Previews: PreviewProvider {
     
     static var propertyVM: PropertyVM = PropertyVM()
     
@@ -269,14 +269,14 @@ struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
         
             }
         
-            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM)
+            SelettoreIngrediente_NewDishSubViewBACKUP(propertyVM: propertyVM)
                
             
             /*{ ingrediente in
                 //
             } */
         }.onTapGesture {
-            SelettoreIngrediente_NewDishSubView_Previews.test()
+            SelettoreIngrediente_NewDishSubViewBACKUP_Previews.test()
         }
        
     }
@@ -297,7 +297,7 @@ struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
     
 }
 
-struct MostraIngredientiGenerics<G:IngredientConformation>:View {
+struct MostraIngredientiGenericsBACKUP<G:IngredientConformation>:View {
     
     var listaDaMostrare: [G]
     
@@ -339,7 +339,7 @@ struct MostraIngredientiGenerics<G:IngredientConformation>:View {
     }
 }
 
-struct SwitchListeIngredienti: View {
+struct SwitchListeIngredientiBACKUP: View {
     
     @Binding var switchList: Bool
     

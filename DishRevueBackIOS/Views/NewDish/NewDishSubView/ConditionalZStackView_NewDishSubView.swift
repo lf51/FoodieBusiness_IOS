@@ -23,7 +23,7 @@ struct ConditionalZStackView_NewDishSubView: View {
         
         if openCreaNuovoIngrediente! {
                     
-        NuovoIngredienteMAINView(propertyVM: propertyVM, backGroundColorView: backGroundColorView, dismissButton: $openCreaNuovoIngrediente)
+        NuovoIngredienteMainView(propertyVM: propertyVM, backGroundColorView: backGroundColorView, dismissButton: $openCreaNuovoIngrediente)
 
                 }
         
@@ -33,13 +33,24 @@ struct ConditionalZStackView_NewDishSubView: View {
 
                 }
    
-        if openAddingIngredientePrincipale! || openAddingIngredienteSecondario! {
+        if openAddingIngredientePrincipale! {
+            
+            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM)
+            
+          
+            
+        }
+        
+        
+        if openAddingIngredienteSecondario! {
                         
-        SelettoreIngrediente_NewDishSubView(propertyVM:propertyVM, newDish: $newDish) { ingrediente in
+            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM)
+            
+          /*  SelettoreIngrediente_NewDishSubView(propertyVM:propertyVM, newDish: $newDish) { ingrediente in
 
             self.addIngrediente(ingrediente: ingrediente)
           
-            }
+            }*/
              .padding(.leading)
          
                     }
