@@ -36,44 +36,13 @@ struct ConditionalZStackView_NewDishSubView: View {
         if openAddingIngredientePrincipale! {
             
             SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, newDish: $newDish)
-            
-          
-            
+         
         }
         
-        
-     /*   if openAddingIngredienteSecondario! {
-                        
-            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, newDish: $newDish)
-            
-          /*  SelettoreIngrediente_NewDishSubView(propertyVM:propertyVM, newDish: $newDish) { ingrediente in
-
-            self.addIngrediente(ingrediente: ingrediente)
-          
-            }*/
-             .padding(.leading)
-         
-                    } */
     
     }
     // Method
-  private func addIngrediente(ingrediente: ModelloIngrediente) {
 
-        if openAddingIngredientePrincipale! {
-            
-            self.newDish.ingredientiPrincipali.append(ingrediente)
-            print("\(ingrediente.nome) in")
-        }
-        
-        else if openAddingIngredienteSecondario! {
-            
-            self.newDish.ingredientiSecondari.append(ingrediente)
-            print("\(ingrediente.nome) in")
-        }
-        
-        else {print("ERRORE DI CHIAMATA nel Metodo AddIngrediente(). CHIAMATA NON POSSIBILE. ")}
-
-    }
     
 }
 

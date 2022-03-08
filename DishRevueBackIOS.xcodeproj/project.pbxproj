@@ -54,6 +54,13 @@
 		4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */; };
 		4D471A3227CA1CE300547F8A /* ModelloIngrediente.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D471A3127CA1CE300547F8A /* ModelloIngrediente.swift */; };
 		4D61321B27D64B1F0056B9F8 /* TestListMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D61321A27D64B1F0056B9F8 /* TestListMove.swift */; };
+		4D92579D27D7A76400D71B9C /* SelettoreIngredienteBACKUP_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D92579C27D7A76400D71B9C /* SelettoreIngredienteBACKUP_NewDishSubView.swift */; };
+		4D9257A027D7C8BE00D71B9C /* MostraEOrdinaIngredienti_SelettoreSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D92579F27D7C8BE00D71B9C /* MostraEOrdinaIngredienti_SelettoreSubView.swift */; };
+		4D9257A227D7C95600D71B9C /* MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9257A127D7C95600D71B9C /* MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift */; };
+		4D9257A427D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9257A327D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift */; };
+		4D9257A627D7CA1E00D71B9C /* ListaIngredienti_ConditionalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9257A527D7CA1E00D71B9C /* ListaIngredienti_ConditionalView.swift */; };
+		4D9257A827D7CA5400D71B9C /* EnumAndProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9257A727D7CA5400D71B9C /* EnumAndProtocol.swift */; };
+		4D9257AA27D7CB7200D71B9C /* SwitchListeIngredientiPiatto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9257A927D7CB7100D71B9C /* SwitchListeIngredientiPiatto.swift */; };
 		4D92C41E27BE46E60084D214 /* StyledText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D92C41D27BE46E60084D214 /* StyledText.swift */; };
 		4D97292B27D233270042C481 /* SelettoreIngrediente_NewDishSubViewBACKUP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D97292A27D233270042C481 /* SelettoreIngrediente_NewDishSubViewBACKUP.swift */; };
 		4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4615A27AD14D200BD648D /* HomeView.swift */; };
@@ -106,6 +113,13 @@
 		4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPasswordLess.swift; sourceTree = "<group>"; };
 		4D471A3127CA1CE300547F8A /* ModelloIngrediente.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelloIngrediente.swift; sourceTree = "<group>"; };
 		4D61321A27D64B1F0056B9F8 /* TestListMove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestListMove.swift; sourceTree = "<group>"; };
+		4D92579C27D7A76400D71B9C /* SelettoreIngredienteBACKUP_NewDishSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelettoreIngredienteBACKUP_NewDishSubView.swift; sourceTree = "<group>"; };
+		4D92579F27D7C8BE00D71B9C /* MostraEOrdinaIngredienti_SelettoreSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostraEOrdinaIngredienti_SelettoreSubView.swift; sourceTree = "<group>"; };
+		4D9257A127D7C95600D71B9C /* MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift; sourceTree = "<group>"; };
+		4D9257A327D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchListeIngredienti_SelettoreIngredienteSubView.swift; sourceTree = "<group>"; };
+		4D9257A527D7CA1E00D71B9C /* ListaIngredienti_ConditionalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListaIngredienti_ConditionalView.swift; sourceTree = "<group>"; };
+		4D9257A727D7CA5400D71B9C /* EnumAndProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumAndProtocol.swift; sourceTree = "<group>"; };
+		4D9257A927D7CB7100D71B9C /* SwitchListeIngredientiPiatto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchListeIngredientiPiatto.swift; sourceTree = "<group>"; };
 		4D92C41D27BE46E60084D214 /* StyledText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyledText.swift; sourceTree = "<group>"; };
 		4D97292A27D233270042C481 /* SelettoreIngrediente_NewDishSubViewBACKUP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelettoreIngrediente_NewDishSubViewBACKUP.swift; sourceTree = "<group>"; };
 		4DA4615A27AD14D200BD648D /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -221,6 +235,18 @@
 			path = JsonFileData;
 			sourceTree = "<group>";
 		};
+		4D92579E27D7A84B00D71B9C /* SelettoreSubView */ = {
+			isa = PBXGroup;
+			children = (
+				4D92579F27D7C8BE00D71B9C /* MostraEOrdinaIngredienti_SelettoreSubView.swift */,
+				4D9257A127D7C95600D71B9C /* MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift */,
+				4D9257A327D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift */,
+				4D9257A527D7CA1E00D71B9C /* ListaIngredienti_ConditionalView.swift */,
+				4D9257A927D7CB7100D71B9C /* SwitchListeIngredientiPiatto.swift */,
+			);
+			path = SelettoreSubView;
+			sourceTree = "<group>";
+		};
 		4DA4615E27AD89E400BD648D /* DishList */ = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +272,7 @@
 		4DC3EBCA27ABEDD400FFC50E /* OBSOLETE */ = {
 			isa = PBXGroup;
 			children = (
+				4D92579C27D7A76400D71B9C /* SelettoreIngredienteBACKUP_NewDishSubView.swift */,
 				4D97292A27D233270042C481 /* SelettoreIngrediente_NewDishSubViewBACKUP.swift */,
 				4D1BC745279C1FB6000B463C /* TemporaryVIEW */,
 				4DF0C4AA27A009A800315A73 /* HomeViewBASEVERSION.swift */,
@@ -274,6 +301,7 @@
 				4DCCD6D027BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift */,
 				4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */,
 				4D04E28327C7A2BD002F0486 /* SelettoreIngrediente_NewDishSubView.swift */,
+				4D92579E27D7A84B00D71B9C /* SelettoreSubView */,
 			);
 			path = NewDishSubView;
 			sourceTree = "<group>";
@@ -377,6 +405,7 @@
 				4DF0C4B227A04D7000315A73 /* DishModel.swift */,
 				4DF0C4B427A05DEA00315A73 /* PropertyModel.swift */,
 				4D471A3127CA1CE300547F8A /* ModelloIngrediente.swift */,
+				4D9257A727D7CA5400D71B9C /* EnumAndProtocol.swift */,
 			);
 			path = DataModels;
 			sourceTree = "<group>";
@@ -518,17 +547,23 @@
 				4DD6308827C690D200A16E17 /* InfoIngrediente_NuovoIngredienteSubView.swift in Sources */,
 				4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */,
 				4DCCD6D127BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift in Sources */,
+				4D9257AA27D7CB7200D71B9C /* SwitchListeIngredientiPiatto.swift in Sources */,
+				4D9257A427D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift in Sources */,
 				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
 				4D14238427CE934900CFF4AE /* ConditionalZStackView_NewDishSubView.swift in Sources */,
+				4D9257A027D7C8BE00D71B9C /* MostraEOrdinaIngredienti_SelettoreSubView.swift in Sources */,
 				4DCCD6CF27BAB3DB00F387B2 /* InfoGenerali_NewDishSubView.swift in Sources */,
 				4D1BC7402799A746000B463C /* LinkSignInSheetView.swift in Sources */,
 				4DF0C4B327A04D7000315A73 /* DishModel.swift in Sources */,
 				4DF0C4AD27A009B800315A73 /* DishListView.swift in Sources */,
 				4DA4616027AD8A2000BD648D /* EditDishView.swift in Sources */,
+				4D9257A827D7CA5400D71B9C /* EnumAndProtocol.swift in Sources */,
+				4D92579D27D7A76400D71B9C /* SelettoreIngredienteBACKUP_NewDishSubView.swift in Sources */,
 				4DF0C4AF27A009C400315A73 /* BottonBar_NewDishSubView.swift in Sources */,
 				4D1BC747279C1FED000B463C /* PrincipalTabView.swift in Sources */,
 				4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */,
 				4D04E28427C7A2BD002F0486 /* SelettoreIngrediente_NewDishSubView.swift in Sources */,
+				4D9257A627D7CA1E00D71B9C /* ListaIngredienti_ConditionalView.swift in Sources */,
 				4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */,
 				4D29C05B27CD33E000E3037C /* TopBar_NewDishSubView.swift in Sources */,
 				4DD6308227C68B3000A16E17 /* ListaIngredientiView.swift in Sources */,
@@ -541,6 +576,7 @@
 				4DAD4F96279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift in Sources */,
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
 				4D28C85E27C53F12009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift in Sources */,
+				4D9257A227D7C95600D71B9C /* MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift in Sources */,
 				4DD6308527C68E7400A16E17 /* NuovoIngredienteMainView.swift in Sources */,
 				4D471A3227CA1CE300547F8A /* ModelloIngrediente.swift in Sources */,
 				4DCCD6D927BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift in Sources */,
@@ -674,7 +710,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -704,7 +740,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

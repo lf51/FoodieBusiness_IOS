@@ -13,6 +13,7 @@ class PropertyVM: ObservableObject {
     // create dal sistema
     var listaBaseModelloIngrediente: [BaseModelloIngrediente] = [] // load(fileJson)
     // la lista appIngredients sarà riempita da un json che creeremo con una lista di nomi di ingredienti. Dal nome verrà creato un Modello Ingrediente nel momento in cui sarà scelto dal ristoratore
+    var listoneFromListaBaseModelloIngrediente: [ModelloIngrediente] = [] // questo listone sarà creato contestualmente dalla listaBaseModelloIngrediente creata da un json
     
     // end create dal sistema
     @Published var listaMyIngredients: [ModelloIngrediente] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
@@ -36,7 +37,7 @@ class PropertyVM: ObservableObject {
         
     
         propertiesList.append(propertyExample) // TEST CODE DA ELIMINARE
-        fillListaBaseModello() // TEST CODE DA ELIMINARE
+        fillFromListaBaseModello() // TEST CODE DA ELIMINARE
         
         
     }
@@ -149,12 +150,17 @@ class PropertyVM: ObservableObject {
     let ing6 = BaseModelloIngrediente(nome: "sale")
     let ing7 = BaseModelloIngrediente(nome: "pepe")
     
-    func fillListaBaseModello() {
+    func fillFromListaBaseModello() { // TEST CODE DA MODIFICARE
         
-        // questo avverrà con il load da un json
-        let ingList = [ing1,ing2,ing3,ing4,ing5,ing6,ing7] // TEST CODE DA ELIMINARE
-        listaBaseModelloIngrediente.append(contentsOf: ingList) // TEST CODE DA ELIMINARE
-        //
+        
+        let ingList = [ing1,ing2,ing3,ing4,ing5,ing6,ing7]
+        
+        for ing in ingList {
+            
+            let ingMod = ModelloIngrediente(nome: ing.nome)
+            listoneFromListaBaseModelloIngrediente.append(ingMod)
+            
+        }
 
     }
     

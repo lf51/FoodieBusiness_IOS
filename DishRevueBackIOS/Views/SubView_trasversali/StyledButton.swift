@@ -12,6 +12,8 @@ import SwiftUI
 // Usare il .buttomStyle per semplificare lo stile dei bottoni
 
 struct CSButton_image: View {
+  
+  let activationBool: Bool
     
   let activeImage: String
   let deActiveImage: String
@@ -25,9 +27,9 @@ struct CSButton_image: View {
       
     Button(action: action) {
     
-        Image(systemName: activeImage)
+        Image(systemName: activationBool ? activeImage : deActiveImage)
             .imageScale(imageScale)
-            .foregroundColor(activeColor)
+            .foregroundColor(activationBool ? activeColor : deActiveColor)
 
             }
         }
