@@ -9,7 +9,7 @@ import SwiftUI
 
 // 04.03.2022 Selettore Ingrediente che usa i Generics per fa convivere sia il ModelloIngrediente che il BaseModelloIngrediente. Rivelatosi inutile, poichè invece di convertire il baseModello nel Modello ogni volta che un ingrediente base viene scelto, procediamo con una conversione di tutti i baseModello prima dell'init della View, ossia in fase di download del json
 
-struct SelettoreIngrediente_NewDishSubViewBACKUP: View {
+/*struct SelettoreIngrediente_NewDishSubViewBACKUP: View {
     
     @ObservedObject var propertyVM: PropertyVM
   //  @Binding var newDish: DishModel
@@ -375,3 +375,4 @@ struct SwitchListeIngredientiBACKUP: View {
     }
 }
 
+*/

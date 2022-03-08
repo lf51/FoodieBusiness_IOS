@@ -53,8 +53,15 @@ struct ModelloIngrediente: IngredientConformation {
         self.produzione = metodoDiProduzione
         self.conservazione = .defaultValue
        
+    }
+    
+    init(nome:String) {
         
-        
+        self.nome = nome
+     
+        self.provenienza = .defaultValue
+        self.produzione = .defaultValue
+        self.conservazione = .defaultValue
     }
     
     
@@ -167,9 +174,7 @@ enum ProvenienzaIngrediente: MyEnumProtocol {
 protocol IngredientConformation: Identifiable, Equatable {
     
     var nome:String {get}
-    
 }
-
 
 // Modello base da caricare da un Json
 

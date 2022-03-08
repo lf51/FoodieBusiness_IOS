@@ -16,8 +16,8 @@ struct NewDishMainView: View {
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
   //  @Binding var openNewDish: Bool // dismiss button
     @State var activeDelection: Bool = false // attiva l'eliminazione degli ingredienti
-    @State var openAddingIngredientePrincipale: Bool? = false
-    @State var openAddingIngredienteSecondario: Bool? = false
+    @State var openAddingIngredientePrincipale: Bool? = false // apre per tuttiGliIngredienti
+    @State var openAddingIngredienteSecondario: Bool? = false // in disuso // da eliminare
     @State var openCreaNuovoIngrediente: Bool? = false
     @State var openProgrammaEPubblica: Bool = false
     

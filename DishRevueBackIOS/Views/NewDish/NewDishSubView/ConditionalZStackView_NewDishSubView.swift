@@ -35,16 +35,16 @@ struct ConditionalZStackView_NewDishSubView: View {
    
         if openAddingIngredientePrincipale! {
             
-            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM)
+            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, newDish: $newDish)
             
           
             
         }
         
         
-        if openAddingIngredienteSecondario! {
+     /*   if openAddingIngredienteSecondario! {
                         
-            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM)
+            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, newDish: $newDish)
             
           /*  SelettoreIngrediente_NewDishSubView(propertyVM:propertyVM, newDish: $newDish) { ingrediente in
 
@@ -53,7 +53,7 @@ struct ConditionalZStackView_NewDishSubView: View {
             }*/
              .padding(.leading)
          
-                    }
+                    } */
     
     }
     // Method

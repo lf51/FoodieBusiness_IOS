@@ -24,13 +24,13 @@ struct GridInfoDishValue_NewDishSubView:View {
 
 // Rimpiazzato lo scroll con la lazyGrid.11.02.2022
         
-            LazyVGrid(columns: gridColumns) {
+            LazyVGrid(columns: gridColumns) { // la lazyGrid non visualizza elementi duplicati, ma nel debug mi informa che ci sono id duplicati. Blocchiamo l'inserimento di duplicati a monte dove modifichiamo l'array
                 
                 ForEach(showArrayData) { data in
                    
                     if !activeDelection {
-                       
-                        CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
+           
+                       CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
                            /* .onTapGesture(count: 2, perform: {
                                 self.openEditingIngrediente = true 
                             }).disabled(self.activeDelection)*/
@@ -42,6 +42,8 @@ struct GridInfoDishValue_NewDishSubView:View {
                                  }
                             }//.disabled(self.openEditingIngrediente)
                         // il longPressure va in conflitto con lo scroll. Lo scroll non funziona se ci poggiamo sui rettangoli, funziona se ci poggiamo sullo spazio vuoto. Il problema è quando lo spazio si esaurisce. Lo Scroll funziona col Tap, anche double.
+                        
+                        
                         
                     } else {
                         
