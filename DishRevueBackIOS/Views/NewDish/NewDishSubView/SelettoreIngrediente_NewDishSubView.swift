@@ -41,7 +41,7 @@ struct SelettoreIngrediente_NewDishSubView: View {
             ListaIngredienti_ConditionalView(propertyVM: propertyVM, newDish: $newDish, listaDaMostrare: $listaDaMostrare, temporarySelectionIngredients: $temporarySelectionIngredients)
             // .refreshable -> per aggiornare
             
-            CSButton_2(title: "Aggiungi", accentColor: Color.white, backgroundColor: Color.cyan.opacity(0.5), cornerRadius: 0.0) {
+            CSButton_large(title: "Aggiungi", accentColor: Color.white, backgroundColor: Color.cyan.opacity(0.5), cornerRadius: 0.0) {
                 
                 self.aggiungiNewDishIngredients()
                 

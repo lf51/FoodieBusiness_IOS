@@ -114,7 +114,7 @@ struct HomeViewBASEVERSION: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
+struct HomeViewBASEVERSION_Previews: PreviewProvider {
     static var previews: some View {
         HomeViewBASEVERSION(authProcess: AuthPasswordLess(), backGroundViewColor: Color.cyan)
     }

@@ -24,25 +24,25 @@ struct SelectionPropertyDish_NewDishSubView: View {
             
             Group {
                 
-                CSLabel_1Button(placeHolder: "Tipologia", imageName: "list.bullet.below.rectangle", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
+                CSLabel_1Button(placeHolder: "Categoria", imageName: "list.bullet.below.rectangle", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
                 
                     if !(creaNuovaTipologia ?? false) {
                         
-                        EnumScrollCases(cases: DishType.allCases, dishSingleProperty: self.$newDish.type, colorSelection: Color.green.opacity(0.8))
+                        EnumScrollCases(cases: DishCategoria.allCases, dishSingleProperty: self.$newDish.categoria, colorSelection: Color.green.opacity(0.8))
                     }
                     
                 else {
                     
                     CSTextField_3(textFieldItem: $nuovaTipologia, placeHolder: "Aggiungi Tipologia") {
 
-                        DishType.allCases.insert(.tipologiaCustom(nuovaTipologia), at: 0)
+                        DishCategoria.allCases.insert(.tipologiaCustom(nuovaTipologia), at: 0)
                         self.nuovaTipologia = ""
                         self.creaNuovaTipologia = false
                         }
                     }
                 
                 
-                CSLabel_1Button(placeHolder: "A base di", imageName: "lanyardcard", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "A base di", imageName: "lanyardcard", backgroundColor: Color.black)
                 
                 EnumScrollCases(cases: DishBase.allCases, dishSingleProperty: self.$newDish.aBaseDi, colorSelection: Color.indigo.opacity(0.8))
                 
@@ -67,11 +67,11 @@ struct SelectionPropertyDish_NewDishSubView: View {
             
             Group {
                 
-                CSLabel_1Button(placeHolder: "Categoria", imageName: "person.fill", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "Tipologia", imageName: "person.fill", backgroundColor: Color.black)
                 
                 VStack(alignment:.leading) {
-                    EnumScrollCases(cases: DishCategory.allCases, dishSingleProperty: self.$newDish.category, colorSelection: Color.green.opacity(0.8))
-                    Text(self.newDish.category.extendedDescription())
+                    EnumScrollCases(cases: DishTipologia.allCases, dishSingleProperty: self.$newDish.tipologia, colorSelection: Color.green.opacity(0.8))
+                    Text(self.newDish.tipologia.extendedDescription())
                         .font(.caption)
                         .fontWeight(.semibold)
                         .italic()
@@ -79,21 +79,18 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 }
                 
             
-                CSLabel_1Button(placeHolder: "Adattabile alla dieta", imageName: "person.fill.checkmark", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "Adattabile alla dieta", imageName: "person.fill.checkmark", backgroundColor: Color.black)
                 
                 EnumScrollCases(cases: DishAvaibleFor.allCases, dishCollectionProperty: self.$newDish.avaibleFor, colorSelection: Color.blue.opacity(0.8))
          
                 
-                CSLabel_1Button(placeHolder: "Allergeni Presenti", imageName: "exclamationmark.triangle", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "Allergeni Presenti", imageName: "exclamationmark.triangle", backgroundColor: Color.black)
                 
                 EnumScrollCases(cases: Allergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red.opacity(0.8))
                 
             }
-           
-            
+                       
         }
-       
-        
     }
 }
 

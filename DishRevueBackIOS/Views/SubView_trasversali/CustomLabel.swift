@@ -15,7 +15,7 @@ struct CSLabel_1Button: View {
     
     @Binding var toggleBottone: Bool?
     
-    init(placeHolder: String, imageName: String, backgroundColor: Color, toggleBottone: Binding<Bool?>?) {
+    init(placeHolder: String, imageName: String, backgroundColor: Color, toggleBottone: Binding<Bool?>? = nil) {
         
         self.placeHolder = placeHolder
         self.imageName = imageName
@@ -75,7 +75,7 @@ struct CSLabel_2Button: View {
     
     var testoBottoneTEXT: String?
     
-    init(placeHolder: String, imageName: String, backgroundColor: Color, toggleBottonePLUS: Binding<Bool?>?, toggleBottoneTEXT: Binding<Bool?>?, testoBottoneTEXT: String) {
+    init(placeHolder: String, imageName: String, backgroundColor: Color, toggleBottonePLUS: Binding<Bool?>? = nil, toggleBottoneTEXT: Binding<Bool?>? = nil, testoBottoneTEXT: String) {
         
         self.placeHolder = placeHolder
         self.imageName = imageName

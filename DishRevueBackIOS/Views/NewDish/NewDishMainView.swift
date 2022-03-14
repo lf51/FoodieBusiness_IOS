@@ -14,16 +14,15 @@ struct NewDishMainView: View {
     var backGroundColorView: Color
     
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
-  //  @Binding var openNewDish: Bool // dismiss button
-    @State var activeDelection: Bool = false // attiva l'eliminazione degli ingredienti
-    @State var openAddingIngredientePrincipale: Bool? = false // apre per tuttiGliIngredienti
-    @State var openAddingIngredienteSecondario: Bool? = false // in disuso // da eliminare
-    @State var openCreaNuovoIngrediente: Bool? = false
-    @State var openProgrammaEPubblica: Bool = false
+    @State var wannaDeleteIngredient: Bool? = false // attiva l'eliminazione degli ingredienti
+    @State var wannaAddIngredient: Bool? = false // apre per tuttiGliIngredienti
+ //   @State var openAddingIngredienteSecondario: Bool? = false // in disuso // da eliminare
+    @State var wannaCreateIngredient: Bool? = false
+    @State var wannaProgramAndPublishNewDish: Bool = false
     
     private var isThereAReasonToDisabled: Bool {
         
-       openAddingIngredienteSecondario! || openAddingIngredientePrincipale! || openCreaNuovoIngrediente! || activeDelection
+       wannaAddIngredient! || wannaCreateIngredient! || wannaDeleteIngredient!
         
     }
     
@@ -35,9 +34,10 @@ struct NewDishMainView: View {
             
             VStack {
                 
-                TopBar_NewDishSubView(newDish: $newDish, openAddingIngredientePrincipale: $openAddingIngredientePrincipale, openAddingIngredienteSecondario: $openAddingIngredienteSecondario, openCreaNuovoIngrediente: $openCreaNuovoIngrediente, activeDelection: $activeDelection)
+               TopBar_3BoolPlusDismiss(title: newDish.name != "" ? newDish.name : "New Dish", enableEnvironmentDismiss: true, doneButton: $wannaAddIngredient, exitButton: $wannaCreateIngredient, cancelButton: $wannaDeleteIngredient)
                     .padding()
                     .background(Color.cyan)
+        
                 
                 Spacer()
                 
@@ -47,7 +47,7 @@ struct NewDishMainView: View {
 
                     VStack(alignment:.leading) {
                                     
-                    InfoGenerali_NewDishSubView(newDish: $newDish, activeDelection: $activeDelection, openAddingIngredientePrincipale: $openAddingIngredientePrincipale, openAddingIngredienteSecondario: $openAddingIngredienteSecondario, openCreaNuovoIngrediente: $openCreaNuovoIngrediente)
+                    InfoGenerali_NewDishSubView(newDish: $newDish, wannaDeleteIngredient: $wannaDeleteIngredient, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient)
 
                     SelectionPropertyDish_NewDishSubView(newDish: $newDish)
                     DishSpecific_NewDishSubView(newDish: $newDish)
@@ -61,20 +61,20 @@ struct NewDishMainView: View {
                     .zIndex(0)
                     .onTapGesture {
                         print("TAP ON Entire SCROLL VIEW") // funziona su tutto tranne che sui menu orizzontali che abbiamo disabilitato ad hoc.
-                        self.activeDelection = false
-                        self.openAddingIngredientePrincipale = false
-                        self.openAddingIngredienteSecondario = false
+                        self.wannaDeleteIngredient = false
+                     //   self.wannaAddIngredient = false
+                      // self.openAddingIngredienteSecondario = false
                     }
                     
                    
-                    ConditionalZStackView_NewDishSubView(propertyVM: propertyVM, newDish: $newDish, openAddingIngredientePrincipale: $openAddingIngredientePrincipale, openAddingIngredienteSecondario: $openAddingIngredienteSecondario, openCreaNuovoIngrediente: $openCreaNuovoIngrediente, openProgrammaEPubblica: $openProgrammaEPubblica, backGroundColorView: backGroundColorView)
+                    ConditionalZStackView_NewDishSubView(propertyVM: propertyVM, newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backGroundColorView: backGroundColorView)
                     
                     
                 } // end ZStack Interno
                 
                 Spacer()
                 
-                BottonBar_NewDishSubView(dishVM: dishVM, newDish: $newDish, openProgrammaEPubblica: $openProgrammaEPubblica)
+                BottonBar_NewDishSubView(dishVM: dishVM, newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
                     .padding()
                     .background(Color.cyan)
                     .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)

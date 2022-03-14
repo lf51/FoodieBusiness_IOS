@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct GridInfoDishValue_NewDishSubView:View {
+struct CustomGrid_GenericsView<R:CustomGridAvaible>:View {
     
   //  @Binding var openEditingIngrediente: Bool
-    @Binding var activeDelection: Bool
-    @Binding var showArrayData: [ModelloIngrediente]
+    @Binding var wannaDeleteItem: Bool?
+    @Binding var genericDataToShow: [R]
     let baseColor: Color
-    let action: (_ data: ModelloIngrediente) -> Void
+  //  let action: (_ data: R) -> Void
     
    let gridColumns: [GridItem] = [
     
@@ -26,18 +26,18 @@ struct GridInfoDishValue_NewDishSubView:View {
         
             LazyVGrid(columns: gridColumns) { // la lazyGrid non visualizza elementi duplicati, ma nel debug mi informa che ci sono id duplicati. Blocchiamo l'inserimento di duplicati a monte dove modifichiamo l'array
                 
-                ForEach(showArrayData) { data in
+                ForEach(genericDataToShow) { data in
                    
-                    if !activeDelection {
+                    if !wannaDeleteItem! {
            
                        CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
                            /* .onTapGesture(count: 2, perform: {
                                 self.openEditingIngrediente = true 
-                            }).disabled(self.activeDelection)*/
+                            }).disabled(self.wannaDeleteIngredient)*/
                             .onLongPressGesture {
                                 withAnimation(.easeInOut) {
                                    //  action(data)
-                                     self.activeDelection = true
+                                     self.wannaDeleteItem = true
                                      
                                  }
                             }//.disabled(self.openEditingIngrediente)
@@ -49,12 +49,13 @@ struct GridInfoDishValue_NewDishSubView:View {
                         
                         CSText_RotatingRectangleDynamicDeletingFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
                             .onTapGesture {
-                                print("TAP TO DELETE")
+                                print("TAP TO DELETE Item")
                                 withAnimation(.easeInOut) {
-                                    self.action(data)
                                     
-                                    if self.showArrayData.isEmpty {self.activeDelection = false }
-                                  //  self.activeDelection = false
+                                    self.removeGenericItem(item: data)
+                                    
+                                    if self.genericDataToShow.isEmpty {self.wannaDeleteItem = false }
+                                  //  self.wannaDeleteIngredient = false
                                     // lasciamo volutamente aperta la facoltà di cancellare finchè non si tocca su un elemento fuori da quelli cancellabili
                                 }
                             }
@@ -62,6 +63,15 @@ struct GridInfoDishValue_NewDishSubView:View {
                 }
             }
     }
+    
+    private func removeGenericItem(item: R) {
+         
+        let positionIndex = self.genericDataToShow.firstIndex(of: item)
+         
+        self.genericDataToShow.remove(at: positionIndex!)
+         
+     }
+    
 }
 
 /*struct GridInfoDishValue_NewDishSubView_Previews: PreviewProvider {

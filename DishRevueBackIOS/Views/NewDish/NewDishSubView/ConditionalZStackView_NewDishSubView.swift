@@ -12,28 +12,28 @@ struct ConditionalZStackView_NewDishSubView: View {
     @ObservedObject var propertyVM: PropertyVM
     
     @Binding var newDish: DishModel
-    @Binding var openAddingIngredientePrincipale: Bool?
-    @Binding var openAddingIngredienteSecondario: Bool?
-    @Binding var openCreaNuovoIngrediente: Bool?
-    @Binding var openProgrammaEPubblica: Bool
+    @Binding var wannaAddIngredient: Bool?
+   // @Binding var openAddingIngredienteSecondario: Bool?
+    @Binding var wannaCreateIngredient: Bool?
+    @Binding var wannaProgramAndPublishNewDish: Bool
     
     var backGroundColorView: Color
     
     var body: some View {
         
-        if openCreaNuovoIngrediente! {
+        if wannaCreateIngredient! {
                     
-        NuovoIngredienteMainView(propertyVM: propertyVM, backGroundColorView: backGroundColorView, dismissButton: $openCreaNuovoIngrediente)
+        NuovoIngredienteMainView(propertyVM: propertyVM, backGroundColorView: backGroundColorView, dismissButton: $wannaCreateIngredient)
 
                 }
         
-        if openProgrammaEPubblica {
+        if wannaProgramAndPublishNewDish {
                     
            Text("Scheda Pubblicazione e Programmazione Piatto")
 
                 }
    
-        if openAddingIngredientePrincipale! {
+        if wannaAddIngredient! {
             
             SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, newDish: $newDish)
          

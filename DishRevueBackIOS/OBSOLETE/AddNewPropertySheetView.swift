@@ -39,7 +39,7 @@ struct AddNewPropertySheetView: View {
                     )
                     .padding(.vertical, screenHeight * 0.05 )
             
-            CSButton_2(title: "Add Property",accentColor: .white,backgroundColor: .cyan.opacity(0.6),cornerRadius: 8.0) {
+            CSButton_large(title: "Add Property",accentColor: .white,backgroundColor: .cyan.opacity(0.6),cornerRadius: 8.0) {
                 // registrare la proprietà su firebase
                 vm.addNewProperty()
             }

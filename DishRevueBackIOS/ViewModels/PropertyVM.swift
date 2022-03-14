@@ -53,7 +53,7 @@ class PropertyVM: ObservableObject {
             self.alertItem = AlertModel(title: "Error", message: "Property already Listed")
             self.showActivityInfo = false
             print("ITEM ALREADY IN")
-            print(self.propertiesList.isEmpty.description)
+            print("is Property empty \(self.propertiesList.isEmpty.description)")
             return }
         
         // add Alert

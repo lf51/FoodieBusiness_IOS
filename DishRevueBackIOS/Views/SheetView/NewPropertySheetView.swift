@@ -194,7 +194,7 @@ struct PropertyChoiceInfoView: View {
             
             VStack{
                 
-                CSButton_2(title: "Add Property", accentColor: .white, backgroundColor: .cyan, cornerRadius: 5.0) {
+                CSButton_large(title: "Add Property", accentColor: .white, backgroundColor: .cyan, cornerRadius: 5.0) {
                     
                     vm.addNewProperty()
                     // Registrare su FireBase Proprietà

@@ -30,7 +30,7 @@ struct LinkSignInSheetView: View {
             text: $authProcess.email, placeholder: "Email", symbolName: "person.circle.fill"
         )
 
-          CSButton_2(title: "Send Link", accentColor: .white,backgroundColor: .cyan,cornerRadius: 16.0, action: {
+          CSButton_large(title: "Send Link", accentColor: .white,backgroundColor: .cyan,cornerRadius: 16.0, action: {
               authProcess.sendSignInLink()
            
           })
@@ -122,7 +122,7 @@ struct SuccessView: View {
               
               CSTextField_2(text: $authProcess.displayName, placeholder: "Custom Display Name", symbolName: "person.circle.fill",accentColor: .orange, backGroundColor: .clear,autoCap: .none,cornerRadius: 16.0)
               
-              CSButton_2(title: "Change Name",accentColor:.white, backgroundColor: .orange, cornerRadius: 16.0) {
+              CSButton_large(title: "Change Name",accentColor:.white, backgroundColor: .orange, cornerRadius: 16.0) {
                   authProcess.updateCurrentUserProfile()
               }
           }

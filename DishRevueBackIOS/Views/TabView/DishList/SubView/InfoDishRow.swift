@@ -14,7 +14,7 @@ struct InfoDishRow: View {
     
     @State var currentDish: DishModel
     @State private var showTagliaValue:Bool = false
-    @State private var currentTaglia:DishFormati = .defaultValue
+    @State private var currentTaglia:DishFormato = .defaultValue
  
     
     var body: some View {
@@ -99,9 +99,9 @@ struct InfoDishRow_Previews: PreviewProvider {
         
         var dish = DishModel()
         dish.name = "Bucatino alla Matriciana"
-       dish.ingredientiPrincipali = []
-       dish.ingredientiSecondari = []
-        dish.type = .defaultValue
+        dish.ingredientiPrincipali = []
+        dish.ingredientiSecondari = []
+        dish.categoria = .defaultValue
         dish.aBaseDi = .carne
         dish.metodoCottura = .padella
         dish.allergeni = [.latte_e_derivati,.uova_e_derivati]

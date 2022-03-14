@@ -16,7 +16,7 @@ struct InfoIngrediente_NuovoIngredienteSubView: View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1Button(placeHolder: nuovoIngrediente.nome == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.nome)", imageName: "gearshape", backgroundColor: Color.black, toggleBottone: nil)
+            CSLabel_1Button(placeHolder: nuovoIngrediente.nome == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.nome)", imageName: "gearshape", backgroundColor: Color.black)
   
             CSTextField_3(textFieldItem: self.$nomeNuovoIngrediente, placeHolder: "Nome Ingrediente") {
                 self.nuovoIngrediente.nome = self.nomeNuovoIngrediente

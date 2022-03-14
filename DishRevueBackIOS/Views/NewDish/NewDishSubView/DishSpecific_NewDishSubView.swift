@@ -16,29 +16,29 @@ struct DishSpecific_NewDishSubView: View {
     @State private var pax: String = ""
     @State private var prezzo: String = ""
     
-    @State private var currentDish: DishFormati = .defaultValue
-    @State private var openSpecificValue: Bool = false
+    @State private var formatoCorrente: DishFormato = .defaultValue
+    @State private var wannaInsertFormatValue: Bool = false
     
-    @State private var creaNuovaTaglia: Bool? = false
-    @State private var nuovaTaglia: String = ""
+    @State private var creaNuovoFormato: Bool? = false
+    @State private var nuovoFormato: String = ""
 
     var body: some View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1Button(placeHolder: "Specifiche", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovaTaglia).disabled(self.openSpecificValue)
+            CSLabel_1Button(placeHolder: "Formato", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovoFormato).disabled(self.wannaInsertFormatValue)
             
-            if !(creaNuovaTaglia ?? false) {
+            if !(creaNuovoFormato ?? false) {
                 
                 VStack {
                     
-                    if !self.openSpecificValue {
+                    if !self.wannaInsertFormatValue {
                         
                         ScrollView(.horizontal,showsIndicators: false) {
                             
                             HStack {
                                 
-                                ForEach(DishFormati.allCases) { taglia in
+                                ForEach(DishFormato.allCases) { taglia in
         
                                     CSText_bigRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue, fillColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint : Color.clear)
                                     
@@ -53,8 +53,8 @@ struct DishSpecific_NewDishSubView: View {
                                                                     )
                                                             }
                                                 else {
-                                                    self.openSpecificValue = true
-                                                    self.currentDish = taglia
+                                                    self.wannaInsertFormatValue = true
+                                                    self.formatoCorrente = taglia
                                                 }
                                             }
                                         }
@@ -81,21 +81,21 @@ struct DishSpecific_NewDishSubView: View {
                             
                             HStack {
                                 
-                                CSText_tightRectangle(testo: self.currentDish.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: Color.clear, fillColor: Color.mint)
+                                CSText_tightRectangle(testo: self.formatoCorrente.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: Color.clear, fillColor: Color.mint)
                                 
                                 Spacer()
                                 
-                                Button("Close") { self.openSpecificValue = false}
+                                Button("Close") { self.wannaInsertFormatValue = false}
                                 .padding(.trailing)
                                 
                                 Button {
      
                                     self.validateAndAddSpecificValue()
-                                    self.openSpecificValue = false
+                                    self.wannaInsertFormatValue = false
                                     
                                 } label: {
                                     
-                                    CSText_tightRectangle(testo: self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
+                                    CSText_tightRectangle(testo: self.formatoCorrente.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
       
                                 }
                             }
@@ -105,21 +105,21 @@ struct DishSpecific_NewDishSubView: View {
                 
             } else {
                 
-                CSTextField_3(textFieldItem: $nuovaTaglia, placeHolder: "Aggiungi un Nuovo taglio") {
+                CSTextField_3(textFieldItem: $nuovoFormato, placeHolder: "Aggiungi un Nuovo Formato") {
                     
-                    if DishFormati.isCustomCaseNameOriginal(customName: nuovaTaglia) {
+                    if DishFormato.isCustomCaseNameOriginal(customName: nuovoFormato) {
                         
-                        DishFormati.allCases.insert(.custom(nuovaTaglia, "n/d", "1", "n/d"), at: 0)
+                        DishFormato.allCases.insert(.custom(nuovoFormato, "n/d", "1", "n/d"), at: 0)
                    
                     } else { newDish.alertItem = AlertModel(
                         title: "Controlla Scroll specifiche",
-                        message: "La specifica \"\(nuovaTaglia)\" esiste già"
+                        message: "La specifica \"\(nuovoFormato)\" esiste già"
                                             )
                                     }
                     
-                    print(DishFormati.allCases.description)
-                    self.nuovaTaglia = ""
-                    self.creaNuovaTaglia = false
+                    print(DishFormato.allCases.description)
+                    self.nuovoFormato = ""
+                    self.creaNuovoFormato = false
                     
                 }
             }
@@ -174,39 +174,39 @@ struct DishSpecific_NewDishSubView: View {
             self.pax = ""
             return}
         
-        switch self.currentDish {
+        switch self.formatoCorrente {
             
         case .unico:
-            self.currentDish = .unico(self.grammi, self.pax, self.prezzo)
+            self.formatoCorrente = .unico(self.grammi, self.pax, self.prezzo)
         case .doppio:
-            self.currentDish = .doppio(self.grammi, self.pax, self.prezzo)
+            self.formatoCorrente = .doppio(self.grammi, self.pax, self.prezzo)
         case .piccolo:
-            self.currentDish = .piccolo(self.grammi, self.pax, self.prezzo)
+            self.formatoCorrente = .piccolo(self.grammi, self.pax, self.prezzo)
         case .medio:
-            self.currentDish = .medio(self.grammi, self.pax, self.prezzo)
+            self.formatoCorrente = .medio(self.grammi, self.pax, self.prezzo)
         case .grande:
-            self.currentDish = .grande(self.grammi, self.pax, self.prezzo)
+            self.formatoCorrente = .grande(self.grammi, self.pax, self.prezzo)
             
         case .custom(let name,_,_,_):
-            self.currentDish = .custom(name,self.grammi,self.pax,self.prezzo)
+            self.formatoCorrente = .custom(name,self.grammi,self.pax,self.prezzo)
        
         }
 
         print("pax: \(self.pax) - grammi: \(self.grammi) - price: \(self.prezzo)")
-        print("currentDish: \(currentDish.simpleDescription())")
+        print("currentDish: \(formatoCorrente.simpleDescription())")
         
         self.grammi = ""
         self.prezzo = ""
         self.pax = ""
         
-        if self.currentDish.isTagliaAlreadyIn(newDish: self.newDish) {
+        if self.formatoCorrente.isTagliaAlreadyIn(newDish: self.newDish) {
             
-            let index = self.newDish.formatiDelPiatto.firstIndex(where: {$0.id == self.currentDish.id})
+            let index = self.newDish.formatiDelPiatto.firstIndex(where: {$0.id == self.formatoCorrente.id})
             
             self.newDish.formatiDelPiatto.remove(at: index!)
         } // se già presente lo rimuoviamo
                 
-        self.newDish.formatiDelPiatto.append(self.currentDish)
+        self.newDish.formatiDelPiatto.append(self.formatoCorrente)
         print("taglieCount: \(self.newDish.formatiDelPiatto.count)")
 
     }

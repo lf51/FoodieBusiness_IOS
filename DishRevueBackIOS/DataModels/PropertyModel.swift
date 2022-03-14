@@ -49,4 +49,189 @@ struct PropertyModel: Identifiable, Equatable {
     let phoneNumber: String
     let streetAdress: String
     
+    var scheduleServizio: [MenuDelServizio] = [.colazione(inizio: "06.00", fine: "10.00", giorni: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi]),.pranzo(inizio: "12.00", fine: "15.00", giorni: [.sabato])]
+    
+}
+
+enum GiorniDelServizio: MyEnumProtocol {
+
+    static var defaultValue: GiorniDelServizio = .lunedi
+    
+    var id: String {self.createId()}
+    
+    case lunedi
+    case martedi
+    case mercoledi
+    case giovedi
+    case venerdi
+    case sabato
+    case domenica
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+        case .lunedi:
+            return "Lunedi"
+        case .martedi:
+            return "Martedi"
+        case .mercoledi:
+            return "Mercoledi"
+        case .giovedi:
+            return "Giovedi"
+        case .venerdi:
+            return "Venerdi"
+        case .sabato:
+            return "Sabato"
+        case .domenica:
+            return "Domenica"
+        }
+    }
+    
+    func shortDescription() -> String {
+        
+        switch self {
+        case .lunedi:
+            return "L"
+        case .martedi:
+            return "Ma"
+        case .mercoledi:
+            return "Me"
+        case .giovedi:
+            return "G"
+        case .venerdi:
+            return "V"
+        case .sabato:
+            return "S"
+        case .domenica:
+            return "D"
+        }
+        
+    }
+    
+    func createId() -> String {
+        
+        self.simpleDescription().lowercased()
+    }
+    
+}
+
+enum MenuDelServizio: MyEnumProtocol,CustomGridAvaible {
+    
+    static func == (lhs: MenuDelServizio, rhs: MenuDelServizio) -> Bool {
+        
+        lhs.id == rhs.id
+    }
+    
+    static var defaultValue: MenuDelServizio = .custom(nome: "", inizio: "", fine: "", giorni: [])
+    
+    static var allCases: [MenuDelServizio] = [.colazione(inizio: "", fine: "", giorni: []),.pranzo(inizio: "", fine: "", giorni: []),.cena(inizio: "", fine: "", giorni: []),.brunch(inizio: "", fine: "", giorni: []),.aperitivo(inizio: "", fine: "", giorni: [])]
+    
+    var id: String {self.createId()}
+    var nome: String {self.extendedDescription().nome}
+    
+    case colazione(inizio:String,fine:String,giorni:[GiorniDelServizio])
+    case pranzo(inizio:String,fine:String,giorni:[GiorniDelServizio])
+    case cena(inizio:String,fine:String,giorni:[GiorniDelServizio])
+    case brunch(inizio:String,fine:String,giorni:[GiorniDelServizio])
+    case aperitivo(inizio:String,fine:String,giorni:[GiorniDelServizio])
+    
+    
+    case custom(nome:String,inizio:String,fine:String,giorni:[GiorniDelServizio])
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+        case .colazione:
+            return "Colazione"
+        case .brunch:
+            return "Brunch"
+        case .pranzo:
+            return "Pranzo"
+        case .aperitivo:
+            return "Aperitivo"
+        case .cena:
+            return "Cena"
+        case .custom(let nome,_,_,_):
+            return nome.capitalized
+        }
+    }
+    
+    func extendedDescription() -> (nome:String,orario:String,dayIn:[String]) {
+        
+        switch self {
+            
+        case .colazione(let inizio, let fine, let giorni):
+            let start = manipolateDateFromString(dateFormattedAsString: inizio)
+            let end = manipolateDateFromString(dateFormattedAsString: fine)
+            let dayIn = returnGiorniDelServizio(arrayGiorni: giorni)
+            return ("Colazione","(\(start)-\(end))",dayIn)
+            
+        case .pranzo(let inizio, let fine, let giorni):
+            let start = manipolateDateFromString(dateFormattedAsString: inizio)
+            let end = manipolateDateFromString(dateFormattedAsString: fine)
+            let dayIn = returnGiorniDelServizio(arrayGiorni: giorni)
+            return ("Pranzo","(\(start)-\(end))",dayIn)
+            
+        case .cena(let inizio, let fine, let giorni):
+            let start = manipolateDateFromString(dateFormattedAsString: inizio)
+            let end = manipolateDateFromString(dateFormattedAsString: fine)
+            let dayIn = returnGiorniDelServizio(arrayGiorni: giorni)
+            return ("Cena","(\(start)-\(end))",dayIn)
+            
+        case .brunch(let inizio, let fine, let giorni):
+            let start = manipolateDateFromString(dateFormattedAsString: inizio)
+            let end = manipolateDateFromString(dateFormattedAsString: fine)
+            let dayIn = returnGiorniDelServizio(arrayGiorni: giorni)
+            return ("Brunch","(\(start)-\(end))",dayIn)
+            
+        case .aperitivo(let inizio, let fine, let giorni):
+            let start = manipolateDateFromString(dateFormattedAsString: inizio)
+            let end = manipolateDateFromString(dateFormattedAsString: fine)
+            let dayIn = returnGiorniDelServizio(arrayGiorni: giorni)
+            return ("Apertivo","(\(start)-\(end))",dayIn)
+            
+        case .custom(let nome, let inizio, let fine, let giorni):
+            let start = manipolateDateFromString(dateFormattedAsString: inizio)
+            let end = manipolateDateFromString(dateFormattedAsString: fine)
+            let dayIn = returnGiorniDelServizio(arrayGiorni: giorni)
+            return ("\(nome.capitalized)","(\(start)-\(end))",dayIn)
+        }
+    }
+    
+    func createId() -> String {
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased()
+    }
+    
+    func manipolateDateFromString(dateFormattedAsString: String) -> String {
+        
+        // la data è salvata come Stringa. E' una stringa complessa. Noi la riduciamo nuovamente come Date, la manipoliamo per estrapolare solo il dato che ci serve, ossia l'orario, e lo ritorniamo come stringa corta
+        
+        let formatterValue: DateFormatter = DateFormatter()
+            formatterValue.timeStyle = .short
+    
+        let dateValue = ISO8601DateFormatter().date(from: dateFormattedAsString)
+        
+        let stringValue = formatterValue.string(from: dateValue ?? Date())
+        
+        print("DentroManipolateDate-Orario:\(stringValue)")
+     //   return stringValue
+        return stringValue
+        // Non Funziona
+    }
+    
+    func returnGiorniDelServizio(arrayGiorni: [GiorniDelServizio]) -> [String] {
+        
+        var dayIn:[String] = []
+        
+        for day in arrayGiorni {
+            
+            let dd = day.shortDescription()
+            dayIn.append(dd)
+            
+        }
+        
+        return dayIn
+    }
+    
+    
 }

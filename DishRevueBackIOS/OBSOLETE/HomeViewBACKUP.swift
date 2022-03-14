@@ -8,14 +8,14 @@
 import SwiftUI
 import UIKit
 
-struct HomeView: View {
+struct HomeViewBACKUP: View {
     
     @ObservedObject var propertyViewModel: PropertyVM 
     @ObservedObject var authProcess: AuthPasswordLess
     @ObservedObject var dishVM: DishVM
     var backGroundColorView: Color
 
-    @State private var showAddNewPropertySheet:Bool = false
+    @State var showAddNewPropertySheet:Bool = false
     
     var body: some View {
         
@@ -39,19 +39,8 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                 /*   AddNewPropertyBar_HomeSubView(authProcess: authProcess, showAddNewPropertySheet: $showAddNewPropertySheet) */
-                    LargeMiddleBar_PlusButton(title: "Proprietà") {
-                        
-                        if AuthPasswordLess.isUserAuth {
-                            
-                            self.showAddNewPropertySheet.toggle()
-                            print("Siamo nell'If in LargeMiddleBar action")
-                        } else {
-                            authProcess.isPresentingSheet = true
-                            print("Siamo nell'else dell'action in LargeMiddleBar")
-                        }
-                    }
-                    
+                /*    AddNewPropertyBar_HomeSubView(authProcess: authProcess, showAddNewPropertySheet: $showAddNewPropertySheet) */
+
                     // Lista Properties
                     ScrollView() {
                                
@@ -118,66 +107,40 @@ struct HomeView: View {
       
 }
 
-struct HomeView_Previews: PreviewProvider {
+struct HomeViewBACKUP_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backGroundColorView: Color.cyan)
+        HomeViewBACKUP(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backGroundColorView: Color.cyan)
     }
 }
 
 
 
-struct TESTView: View {
+struct ExtractedViewBACKUP: View {
     
     @ObservedObject var dishVM: DishVM
     var currentProperty: PropertyModel
     
-    @State private var wannaCreateMenu: Bool? = false
-    
     var body: some View {
         
-        ZStack {
+        VStack{
             
-            VStack {
+            Text("Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti")
+            
+            Text("Menu for property: \(currentProperty.name)")
+            
+            List {
                 
-                Text("Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti")
-                
-                Spacer()
-                // Metà schermo
-                
-                
-                
-                VStack {
-                    
-                  //  Text("Menu for property: \(currentProperty.name)")
-                    LargeMiddleBar_PlusButton(title: "Menu") {
-                        self.wannaCreateMenu = true
-                    }
-                    
-                    ForEach(currentProperty.scheduleServizio) { menu in
-                        
-                        HStack {
-                            Text(menu.nome)
-                            Text(menu.extendedDescription().orario)
-                            Text(menu.extendedDescription().dayIn, format: .list(type: .and))
-                        }
-                        
-                        
-                        
-                        
-                    }
+                ForEach(dishVM.dishList.filter{$0.restaurantWhereIsOnMenu.contains(currentProperty)}) { dish in
                     
                     
+                    Text(dish.name)
+                    
+                
                 }
                 
                 
-            }
-            
-            if wannaCreateMenu! {
-                
-                SchedulePropertyService(dismissView: $wannaCreateMenu)
                 
             }
-            
             
             
         }
@@ -187,15 +150,3 @@ struct TESTView: View {
        
     }
 }
-
-
-
-
-
-/*  List {
-      
-      ForEach(dishVM.dishList.filter{$0.restaurantWhereIsOnMenu.contains(currentProperty)}) { dish in
-    
-          Text(dish.name)
-      }
-  } */

@@ -84,7 +84,7 @@ struct ListaIngredientiView: View {
             )
             .sheet(isPresented: self.$openNuovoIngrediente) {
                // NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
-                NuovoIngredienteMainView(propertyVM:propertyVM, backGroundColorView: backGroundColorView, dismissButton: nil)
+                NuovoIngredienteMainView(propertyVM:propertyVM, backGroundColorView: backGroundColorView)
                 // Creare nuovo ingrediente
             }
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar

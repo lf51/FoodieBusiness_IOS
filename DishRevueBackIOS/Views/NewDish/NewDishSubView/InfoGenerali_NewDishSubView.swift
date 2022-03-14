@@ -15,10 +15,10 @@ struct InfoGenerali_NewDishSubView: View {
     
     @Binding var newDish: DishModel
   
-    @Binding var activeDelection: Bool
-    @Binding var openAddingIngredientePrincipale: Bool?
-    @Binding var openAddingIngredienteSecondario: Bool?
-    @Binding var openCreaNuovoIngrediente: Bool?
+    @Binding var wannaDeleteIngredient: Bool?
+    @Binding var wannaAddIngredient: Bool?
+  //  @Binding var openAddingIngredienteSecondario: Bool?
+    @Binding var wannaCreateIngredient: Bool?
     
     var body: some View {
         
@@ -26,7 +26,7 @@ struct InfoGenerali_NewDishSubView: View {
             
             VStack(alignment:.leading) {
                 
-                CSLabel_1Button(placeHolder: "Nome del Piatto", imageName: "info.circle", backgroundColor: Color.black, toggleBottone: nil)
+                CSLabel_1Button(placeHolder: "Nome del Piatto", imageName: "info.circle", backgroundColor: Color.black)
                 
                 if self.newDish.name == "" || self.showEditNomePiatto {
                     
@@ -51,29 +51,25 @@ struct InfoGenerali_NewDishSubView: View {
                       
             VStack {
                 
-                CSLabel_2Button(placeHolder: "Ingredienti Principali", imageName: self.openAddingIngredientePrincipale! ? "ellipsis.curlybraces" : "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: $openCreaNuovoIngrediente, toggleBottoneTEXT: $openAddingIngredientePrincipale, testoBottoneTEXT: "Scegli")
+                CSLabel_2Button(placeHolder: "Ingredienti Principali", imageName: "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: $wannaCreateIngredient, toggleBottoneTEXT: $wannaAddIngredient, testoBottoneTEXT: "Edit")
                 
                 if !self.newDish.ingredientiPrincipali.isEmpty {
                     
-                    GridInfoDishValue_NewDishSubView(activeDelection: $activeDelection, showArrayData: self.$newDish.ingredientiPrincipali, baseColor: Color.mint) { data in
-                        
-                        self.removeItem(array: &self.newDish.ingredientiPrincipali, item: data)
-                        
-                    }
+                    CustomGrid_GenericsView(wannaDeleteItem: $wannaDeleteIngredient, genericDataToShow: self.$newDish.ingredientiPrincipali, baseColor: Color.mint)
+                    
                 }
             }
             
             VStack {
                 
-                CSLabel_2Button(placeHolder: "Ingredienti Secondari", imageName: self.openAddingIngredienteSecondario! ? "ellipsis.curlybraces" : "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: nil, toggleBottoneTEXT: nil, testoBottoneTEXT: "")
+                CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageName: "curlybraces", backgroundColor: Color.black)
+                
+             /*   CSLabel_2Button(placeHolder: "Ingredienti Secondari", imageName: "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: nil, toggleBottoneTEXT: nil, testoBottoneTEXT: "") */
                 
                 if !self.newDish.ingredientiSecondari.isEmpty {
                     
-                    GridInfoDishValue_NewDishSubView(activeDelection: $activeDelection, showArrayData: self.$newDish.ingredientiSecondari, baseColor: Color.orange) { data in
-                        
-                        self.removeItem(array: &self.newDish.ingredientiSecondari, item: data)
-                        
-                    }
+                    CustomGrid_GenericsView(wannaDeleteItem: $wannaDeleteIngredient, genericDataToShow: self.$newDish.ingredientiSecondari, baseColor: Color.orange)
+                    
                 }
       
             }
@@ -89,6 +85,8 @@ struct InfoGenerali_NewDishSubView: View {
         array.remove(at: positionIndex!)
         
     }
+    
+  
  
 }
 

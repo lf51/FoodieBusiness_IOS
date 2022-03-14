@@ -57,7 +57,7 @@ struct CSButton_tight: View {
         }
     }
 
-struct CSButton_2: View {
+struct CSButton_large: View {
     
     let title: String
     let accentColor: Color

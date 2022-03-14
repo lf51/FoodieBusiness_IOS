@@ -9,7 +9,7 @@ import Foundation
 
 class DishVM: ObservableObject {
     
-    @Published var dishList: [DishModel] = []
+    @Published var dishList: [DishModel] = [] // trasversale a tutte le proprietà dello stesso accounter. Contiene tutti i piatti creati, bozze e pubblici
     
     
     init() {
@@ -19,9 +19,9 @@ class DishVM: ObservableObject {
         //
     }
     
-    func mappedDishList() -> [DishType] {
+    func mappedDishList() -> [DishCategoria] {
         
-        let firstStepArray = dishList.map({$0.type})
+        let firstStepArray = dishList.map({$0.categoria})
         let secondStepSet = Set(firstStepArray)
         let lastStepArray = Array(secondStepSet)
         // trasformiamo il prima array, frutto di un Map, in un Set per eliminare i duplicati, poichè ogni piatto della stessa tipologia ha una tipologia con sempre il medesiomo id che nella mappatura risulta duplicarsi per ogni piatto di quella tipologia EHM???? -> RIPORTIAMO IL set in array di modo da farlo scorrere sineProblema in un foreach loop
@@ -29,11 +29,11 @@ class DishVM: ObservableObject {
         
     }
     
-    func filteredDishList(filtro:DishType) -> [DishModel] {
+    func filteredDishList(filtro:DishCategoria) -> [DishModel] {
         
         // Utile per mostrare nella DishListView solo i piatti per le tipologie usate // Antipasto, Primo blabla
         
-       dishList.filter({$0.type == filtro})
+       dishList.filter({$0.categoria == filtro})
         
     }
     

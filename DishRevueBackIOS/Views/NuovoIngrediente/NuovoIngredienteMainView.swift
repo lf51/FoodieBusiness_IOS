@@ -10,16 +10,14 @@ import SwiftUI
 // SVILUPPARE CREAZIONE VARIANTI CON LO STESSO NOME
 
 struct NuovoIngredienteMainView: View {
-    
-    @Environment(\.dismiss) var dismiss
-    
+
     @ObservedObject var propertyVM: PropertyVM
     let backGroundColorView: Color
-    @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment
+    @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
     
     @State var nuovoIngrediente: ModelloIngrediente = ModelloIngrediente() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
     
-    init(propertyVM: PropertyVM, backGroundColorView: Color, dismissButton: Binding<Bool?>?) {
+    init(propertyVM: PropertyVM, backGroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
         
         self.propertyVM = propertyVM
         self.backGroundColorView = backGroundColorView
@@ -33,44 +31,35 @@ struct NuovoIngredienteMainView: View {
            if self.dismissButton == nil {backGroundColorView.opacity(0.9).ignoresSafeArea()}
                   
         VStack { // VStack Madre
+               
+            if self.dismissButton == nil {
                 
-                HStack { // una Sorta di NavigationBar
-                    
-                    Text(nuovoIngrediente.nome != "" ? nuovoIngrediente.nome : "Nuovo Ingrediente")
-                        .bold()
-                        .font(.largeTitle)
-                        .foregroundColor(Color.black)
-                    
-                    Spacer()
-             // Default Button
+                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.nome != "" ? nuovoIngrediente.nome : "Nuovo Ingrediente", enableEnvironmentDismiss:true)
+                    .padding()
+                    .background(Color.cyan)
+                // questo background riguarda la parte alta della View occupata dall'HStack e serve a dare uno stacco di tono
+                
+            } else {
+                
+                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.nome != "" ? nuovoIngrediente.nome : "Nuovo Ingrediente", exitButton: $dismissButton)
+                    .padding()
+            }
             
-        CSButton_tight(title: "Dismiss", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.clear) {
-            
-            if self.dismissButton == nil { dismiss() } else { self.dismissButton = false }
-                    }
-   
-                }
-                .padding()
-                .background(self.dismissButton == nil ? Color.cyan : Color.clear)
-            // questo background riguarda la parte alta della View occupata dall'HStack
-
                 VStack(alignment:.leading) {
                             
-                            InfoIngrediente_NuovoIngredienteSubView(nuovoIngrediente:$nuovoIngrediente)
+                InfoIngrediente_NuovoIngredienteSubView(nuovoIngrediente:$nuovoIngrediente)
                    
-                            SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)
+                SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)
                             
-                    if self.dismissButton == nil { Spacer() }
+            if self.dismissButton == nil { Spacer() }
                     
-                            CSButton_2(title: "Crea Ingrediente", accentColor: .black, backgroundColor: .black.opacity(0.2), cornerRadius: 10.0) {
+                CSButton_large(title: "Crea Ingrediente", accentColor: .black, backgroundColor: .black.opacity(0.2), cornerRadius: 10.0) {
                                     
                                     test(ingrediente: &nuovoIngrediente)
-                                    print("CREARE Ingrediente SU FIREBASE")
+                                    print("CREARE Ingrediente SU FIREBASE-Modificare in NuovoIngredienteView")
                            
                             }.padding()
                     }
-
-                
             } // End VSTACK MADRE
         .background(self.dismissButton == nil ? RoundedRectangle(cornerRadius: 20.0).fill(Color.clear).shadow(radius: 0.0) : RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
         .contrast(self.dismissButton == nil ? 1.0 : 1.2)
