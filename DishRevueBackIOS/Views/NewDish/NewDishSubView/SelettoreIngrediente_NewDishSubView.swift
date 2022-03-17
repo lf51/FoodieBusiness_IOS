@@ -18,7 +18,7 @@ struct SelettoreIngrediente_NewDishSubView: View {
 
     @State private var listaDaMostrare: ElencoListeIngredienti = .allFromCommunity
 
-    @State private var temporarySelectionIngredients: [String:[ModelloIngrediente]] = ["IngredientiPrincipali":[], "IngredientiSecondari":[]]
+    @State private var temporarySelectionIngredients: [String:[IngredientModel]] = ["IngredientiPrincipali":[], "IngredientiSecondari":[]]
 
     private var isAggiungiButtonDisabled: Bool {
         
@@ -112,9 +112,9 @@ struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
         
         for x in 1...20 {
             
-        var ingrediente = ModelloIngrediente()
+        var ingrediente = IngredientModel()
             
-            ingrediente.nome = "\(x.description)' ingredient"
+            ingrediente.intestazione = "\(x.description)' ingredient"
             
             propertyVM.listaMyIngredients.append(ingrediente)
             

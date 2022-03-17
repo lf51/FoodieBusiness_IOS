@@ -50,7 +50,7 @@ struct ListaIngredientiView: View {
                         
                         ForEach(propertyVM.listaMyIngredients) { ingrediente in
                             
-                            Text(ingrediente.nome)
+                            Text(ingrediente.intestazione)
                           //  Text(ingrediente.cottura.simpleDescription())
                             Text("Provenienza Ingrediente")
                             Text("Metodo di Produzione")

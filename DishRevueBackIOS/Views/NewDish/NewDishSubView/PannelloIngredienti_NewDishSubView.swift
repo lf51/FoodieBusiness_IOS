@@ -8,10 +8,7 @@
 import SwiftUI
 // Ultima pulizia codice 01.03.2022
 
-struct InfoGenerali_NewDishSubView: View {
-
-    @State private var nomePiatto: String = ""
-    @State private var showEditNomePiatto: Bool = false
+struct PannelloIngredienti_NewDishSubView: View {
     
     @Binding var newDish: DishModel
   
@@ -24,30 +21,9 @@ struct InfoGenerali_NewDishSubView: View {
         
         VStack(alignment: .leading) {
             
-            VStack(alignment:.leading) {
-                
-                CSLabel_1Button(placeHolder: "Nome del Piatto", imageName: "info.circle", backgroundColor: Color.black)
-                
-                if self.newDish.name == "" || self.showEditNomePiatto {
-                    
-                    CSTextField_3(textFieldItem: self.$nomePiatto, placeHolder: self.newDish.name == "" ? "Nome del Piatto" : "Modifica Nome del Piatto") {
-                        
-                        self.newDish.name = self.nomePiatto
-                        self.nomePiatto = ""
-                        self.showEditNomePiatto = false
-                    }
             
-                }
-                
-                if self.newDish.name != "" {
-                    
-                    CSText_tightRectangle(testo: self.newDish.name, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.green)
-                        .onTapGesture(count: 2) {
-                            self.showEditNomePiatto.toggle()
-                        }
-                                                    }
-                
-            }
+       //    IntestazioneNuovoOggetto_Generic(placeHolderLabel: "Nome del Piatto", imageLabel: "gear", itemModel: $newDish)
+            
                       
             VStack {
                 
@@ -78,7 +54,7 @@ struct InfoGenerali_NewDishSubView: View {
     
     // function Space
     
-   private func removeItem(array: inout [ModelloIngrediente], item: ModelloIngrediente) {
+   private func removeItem(array: inout [IngredientModel], item: IngredientModel) {
         
         let positionIndex = array.firstIndex(of: item)
         

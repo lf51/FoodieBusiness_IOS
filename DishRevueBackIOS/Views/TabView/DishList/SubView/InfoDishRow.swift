@@ -23,7 +23,7 @@ struct InfoDishRow: View {
 
                 HStack {
                     
-                    CSText_tightRectangle(testo: currentDish.name, fontWeight: .heavy, textColor: Color.blue, strokeColor: Color.blue, fillColor: Color.clear)
+                    CSText_tightRectangle(testo: currentDish.intestazione, fontWeight: .heavy, textColor: Color.blue, strokeColor: Color.blue, fillColor: Color.clear)
                 // dal Nome Piatto accediamo all'Editing del Piatto
                     
                     Text("9.5")
@@ -98,7 +98,7 @@ struct InfoDishRow_Previews: PreviewProvider {
    static var testDish:DishModel = {
         
         var dish = DishModel()
-        dish.name = "Bucatino alla Matriciana"
+        dish.intestazione = "Bucatino alla Matriciana"
         dish.ingredientiPrincipali = []
         dish.ingredientiSecondari = []
         dish.categoria = .defaultValue

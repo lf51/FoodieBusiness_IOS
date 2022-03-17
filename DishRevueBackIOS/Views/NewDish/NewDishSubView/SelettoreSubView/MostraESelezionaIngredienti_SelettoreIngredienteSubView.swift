@@ -9,9 +9,9 @@ import SwiftUI
 
 struct MostraESelezionaIngredienti: View {
         
-        var listaAttiva: [ModelloIngrediente]
-        let attributeIngredient: (_ ingredient: ModelloIngrediente) -> (colore: Color,image: String, isUsed: Bool)
-        let action: (_ ingredient: ModelloIngrediente) -> Void
+        var listaAttiva: [IngredientModel]
+        let attributeIngredient: (_ ingredient: IngredientModel) -> (colore: Color,image: String, isUsed: Bool)
+        let action: (_ ingredient: IngredientModel) -> Void
      
         var body: some View {
                 
@@ -21,7 +21,7 @@ struct MostraESelezionaIngredienti: View {
                         
                         HStack {
                             
-                            Text(ingrediente.nome)
+                            Text(ingrediente.intestazione)
                                     .fontWeight(.semibold)
                                     .lineLimit(1)
                                   //  .minimumScaleFactor(0.7) -> Tolto perchè lo scala sempre

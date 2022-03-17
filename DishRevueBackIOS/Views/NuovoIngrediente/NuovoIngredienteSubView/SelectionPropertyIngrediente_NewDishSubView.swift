@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SelectionPropertyIngrediente_NewDishSubView: View {
     
-    @Binding var nuovoIngrediente: ModelloIngrediente
+    @Binding var nuovoIngrediente: IngredientModel
 
     @State private var creaCaseConservazione: Bool? = false
     @State private var nuovaConservazione: String = ""

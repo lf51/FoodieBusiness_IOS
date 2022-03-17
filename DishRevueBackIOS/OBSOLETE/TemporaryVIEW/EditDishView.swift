@@ -21,7 +21,7 @@ struct EditDishView: View {
         VStack{
             
            
-            Text("Edit --> \(currentDish.name)")
+            Text("Edit --> \(currentDish.intestazione)")
             
         //   Text("Edit -> \(dishVM.dishList[currentDishIndexPosition].name)")
     
@@ -31,7 +31,7 @@ struct EditDishView: View {
             
             Button {
              
-                currentDish.name = "Nome Cambiato con Successo"
+                currentDish.intestazione = "Nome Cambiato con Successo"
                 
            //     dishVM.dishList[currentDishIndexPosition].name = "NOME CAMBIATO CON SUCCESSO"
              

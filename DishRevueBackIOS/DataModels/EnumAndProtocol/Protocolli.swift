@@ -15,13 +15,13 @@ protocol MyEnumProtocol: CaseIterable, Identifiable, Equatable { // Protocollo u
     static var defaultValue: Self { get }
 }
 
-protocol IngredientConformation: Identifiable, Equatable { // Protocollo creato per uniformare BaseMOdelloIngrediente con ModelloIngrediente. Caduto in disuso in data 09.03.2022
+/*protocol IngredientConformation: Identifiable, Equatable { // Protocollo creato per uniformare BaseMOdelloIngrediente con ModelloIngrediente. Caduto in disuso in data 09.03.2022
     
     var nome:String {get}
-}
+} */
 
 protocol CustomGridAvaible: Identifiable, Equatable {
     
-    var nome: String {get}
+    var intestazione: String {get set}
     
 }

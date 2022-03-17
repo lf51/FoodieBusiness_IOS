@@ -6,16 +6,18 @@
 //
 
 import SwiftUI
-
-struct SchedulePropertyService: View {
+/*
+struct SchedulePropertyServiceBACKUP: View {
     
   //  @Environment(\.dismiss) var dismiss
+    
+    @State var nuovoMenu: MenuModel = MenuModel()
     
     @State private var wannaCreateNewMenu: Bool? = false
     @State private var nuovoNomeMenu: String = ""
     
-    @State private var nuovoMenuDelServizio: MenuDelServizio = .defaultValue
-    @State private var scheduleMenuEServizio: [MenuDelServizio] = [] // Essendo il propertyModel passato per copia, invece di lavorare su di esso direttamente, lavoriamo su questo array State qui creato, e una volta che i servizi sono definiti li salviamo copiando questo array nella variabile di riferimento del propertyModel
+   // @State private var nuovoMenuDelServizio: IntestazioneMenu = .defaultValue
+   // @State private var scheduleMenuEServizio: [IntestazioneMenu] = [] // Essendo il propertyModel passato per copia, invece di lavorare su di esso direttamente, lavoriamo su questo array State qui creato, e una volta che i servizi sono definiti li salviamo copiando questo array nella variabile di riferimento del propertyModel
     
     @State private var oraInizioServizio: Date = Date()
     @State private var oraFineServizio: Date = Date()
@@ -58,12 +60,12 @@ struct SchedulePropertyService: View {
                 
                 if !(wannaCreateNewMenu ?? false) {
                     
-                    EnumScrollCases(cases: MenuDelServizio.allCases, dishSingleProperty: $nuovoMenuDelServizio, colorSelection: Color.mint)
+                    EnumScrollCases(cases: IntestazioneMenu.allCases, dishSingleProperty: $nuovoMenuDelServizio, colorSelection: Color.mint)
                     
                 }  else {
                     
                     CSTextField_3(textFieldItem: $nuovoNomeMenu, placeHolder: "example: Cenone di Natale") {
-                        MenuDelServizio.allCases.insert(.custom(nome: nuovoNomeMenu, inizio: "", fine: "", giorni: []), at: 0)
+                        IntestazioneMenu.allCases.insert(.custom(nome: nuovoNomeMenu, inizio: "", fine: "", giorni: []), at: 0)
                         self.nuovoNomeMenu = ""
                         self.wannaCreateNewMenu = false
                     }
@@ -166,22 +168,22 @@ struct SchedulePropertyService: View {
         switch nuovoMenuDelServizio {
             
         case .colazione:
-            let servizio = MenuDelServizio.colazione(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
+            let servizio = IntestazioneMenu.colazione(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
             self.scheduleMenuEServizio.append(servizio)
         case .brunch:
-            let servizio = MenuDelServizio.brunch(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
+            let servizio = IntestazioneMenu.brunch(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
             self.scheduleMenuEServizio.append(servizio)
         case .pranzo:
-            let servizio = MenuDelServizio.pranzo(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
+            let servizio = IntestazioneMenu.pranzo(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
             self.scheduleMenuEServizio.append(servizio)
         case .aperitivo:
-            let servizio = MenuDelServizio.aperitivo(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
+            let servizio = IntestazioneMenu.aperitivo(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
             self.scheduleMenuEServizio.append(servizio)
         case .cena:
-            let servizio = MenuDelServizio.cena(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
+            let servizio = IntestazioneMenu.cena(inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
             self.scheduleMenuEServizio.append(servizio)
         case .custom:
-            let servizio = MenuDelServizio.custom(nome:nuovoNomeMenu,inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
+            let servizio = IntestazioneMenu.custom(nome:nuovoNomeMenu,inizio: oraInizioServizio.ISO8601Format(), fine: oraFineServizio.ISO8601Format(), giorni: self.giorniDelServizio)
             self.scheduleMenuEServizio.append(servizio)
         }
         
@@ -201,3 +203,4 @@ struct SchedulePropertyService_Previews: PreviewProvider {
         SchedulePropertyService(dismissView: .constant(true))
     }
 }
+*/

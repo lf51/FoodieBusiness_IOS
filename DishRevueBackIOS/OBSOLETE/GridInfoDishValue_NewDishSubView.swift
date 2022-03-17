@@ -11,9 +11,9 @@ struct GridInfoDishValue_NewDishSubView:View {
     
   //  @Binding var openEditingIngrediente: Bool
     @Binding var wannaDeleteIngredient: Bool
-    @Binding var showArrayData: [ModelloIngrediente]
+    @Binding var showArrayData: [IngredientModel]
     let baseColor: Color
-    let action: (_ data: ModelloIngrediente) -> Void
+    let action: (_ data: IngredientModel) -> Void
     
    let gridColumns: [GridItem] = [
     
@@ -30,7 +30,7 @@ struct GridInfoDishValue_NewDishSubView:View {
                    
                     if !wannaDeleteIngredient {
            
-                       CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
+                       CSText_RotatingRectangleStaticFace(testo: data.intestazione, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
                            /* .onTapGesture(count: 2, perform: {
                                 self.openEditingIngrediente = true 
                             }).disabled(self.wannaDeleteIngredient)*/
@@ -47,7 +47,7 @@ struct GridInfoDishValue_NewDishSubView:View {
                         
                     } else {
                         
-                        CSText_RotatingRectangleDynamicDeletingFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
+                        CSText_RotatingRectangleDynamicDeletingFace(testo: data.intestazione, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
                             .onTapGesture {
                                 print("TAP TO DELETE")
                                 withAnimation(.easeInOut) {

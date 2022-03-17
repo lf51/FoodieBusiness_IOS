@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MostraEOrdinaIngredienti: View {
         
-        @Binding var listaAttiva: [ModelloIngrediente]
+        @Binding var listaAttiva: [IngredientModel]
         @Environment(\.editMode) var mode
         
         var body: some View {
@@ -20,7 +20,7 @@ struct MostraEOrdinaIngredienti: View {
                     VStack {
                         HStack {
                                 
-                                Text(ingrediente.nome)
+                                Text(ingrediente.intestazione)
                                         .fontWeight(.semibold)
                                         .lineLimit(1)
 

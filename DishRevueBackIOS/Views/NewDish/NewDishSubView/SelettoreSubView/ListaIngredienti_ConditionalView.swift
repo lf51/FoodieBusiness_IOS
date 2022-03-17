@@ -13,7 +13,7 @@ struct ListaIngredienti_ConditionalView: View {
     @Binding var newDish: DishModel
     @Binding var listaDaMostrare: ElencoListeIngredienti
     
-    @Binding var temporarySelectionIngredients: [String:[ModelloIngrediente]]
+    @Binding var temporarySelectionIngredients: [String:[IngredientModel]]
     
     var body: some View {
 
@@ -61,7 +61,7 @@ struct ListaIngredienti_ConditionalView: View {
  //Method
 
     
-    private func addIngredientsTemporary(ingredient: ModelloIngrediente) {
+    private func addIngredientsTemporary(ingredient: IngredientModel) {
 
         let((_,_,_),ingredientKey) = discoverIngredientAttribute(ingredient: ingredient)
     
@@ -91,7 +91,7 @@ struct ListaIngredienti_ConditionalView: View {
     }
     
     
-    private func discoverIngredientAttribute(ingredient: ModelloIngrediente) -> (imageColorUsed:(Color,String,Bool), key: String) {
+    private func discoverIngredientAttribute(ingredient: IngredientModel) -> (imageColorUsed:(Color,String,Bool), key: String) {
          
         // Guard per controllo di unicità
         guard !self.newDish.ingredientiPrincipali.contains(ingredient) else {

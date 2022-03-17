@@ -34,7 +34,7 @@ struct NewDishMainView: View {
             
             VStack {
                 
-               TopBar_3BoolPlusDismiss(title: newDish.name != "" ? newDish.name : "New Dish", enableEnvironmentDismiss: true, doneButton: $wannaAddIngredient, exitButton: $wannaCreateIngredient, cancelButton: $wannaDeleteIngredient)
+               TopBar_3BoolPlusDismiss(title: newDish.intestazione != "" ? newDish.intestazione : "New Dish", enableEnvironmentDismiss: true, doneButton: $wannaAddIngredient, exitButton: $wannaCreateIngredient, cancelButton: $wannaDeleteIngredient)
                     .padding()
                     .background(Color.cyan)
         
@@ -46,8 +46,10 @@ struct NewDishMainView: View {
                     ScrollView { // La View Mobile
 
                     VStack(alignment:.leading) {
-                                    
-                    InfoGenerali_NewDishSubView(newDish: $newDish, wannaDeleteIngredient: $wannaDeleteIngredient, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient)
+                             
+                        IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Piatto", imageLabel: "doc.badge.plus", coloreContainer: Color.green, itemModel: $newDish)
+                        
+                    PannelloIngredienti_NewDishSubView(newDish: $newDish, wannaDeleteIngredient: $wannaDeleteIngredient, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient)
 
                     SelectionPropertyDish_NewDishSubView(newDish: $newDish)
                     DishSpecific_NewDishSubView(newDish: $newDish)
@@ -78,7 +80,7 @@ struct NewDishMainView: View {
                     .padding()
                     .background(Color.cyan)
                     .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)
-                    .disabled(isThereAReasonToDisabled || self.newDish.name == "")
+                    .disabled(isThereAReasonToDisabled || self.newDish.intestazione == "")
                 
             }.zIndex(1)
           

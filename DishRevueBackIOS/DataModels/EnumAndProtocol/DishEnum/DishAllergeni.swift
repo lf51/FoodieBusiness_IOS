@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum Allergeni: MyEnumProtocol {
+enum DishAllergeni: MyEnumProtocol {
     
-    static var allCases: [Allergeni] = [.arachidi_e_derivati,.anidride_solforosa_e_solfiti,.crostacei,.fruttaAguscio,.glutine,.latte_e_derivati,.lupini,.molluschi,.pesce,.sedano,.senape,.sesamo,.soia,.uova_e_derivati]
-    static var defaultValue: Allergeni = Allergeni.noValue
+    static var allCases: [DishAllergeni] = [.arachidi_e_derivati,.anidride_solforosa_e_solfiti,.crostacei,.fruttaAguscio,.glutine,.latte_e_derivati,.lupini,.molluschi,.pesce,.sedano,.senape,.sesamo,.soia,.uova_e_derivati]
+    static var defaultValue: DishAllergeni = DishAllergeni.noValue
     
     //Potremmo associare un icona ad ogni allergene e utilizzare la simpleDescription() al posto dei RawValue
     case arachidi_e_derivati

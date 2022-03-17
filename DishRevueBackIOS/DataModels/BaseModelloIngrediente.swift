@@ -9,7 +9,7 @@ import Foundation
 
 // Modello base da caricare da un Json
 
-struct BaseModelloIngrediente: IngredientConformation {
+struct BaseModelloIngrediente {
     
     var id: String {self.nome.replacingOccurrences(of: " ", with: "").lowercased() }
     

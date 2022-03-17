@@ -30,7 +30,7 @@ struct CustomGrid_GenericsView<R:CustomGridAvaible>:View {
                    
                     if !wannaDeleteItem! {
            
-                       CSText_RotatingRectangleStaticFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
+                       CSText_RotatingRectangleStaticFace(testo: data.intestazione, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: baseColor, topTrailingImage: "flame.fill")
                            /* .onTapGesture(count: 2, perform: {
                                 self.openEditingIngrediente = true 
                             }).disabled(self.wannaDeleteIngredient)*/
@@ -47,7 +47,7 @@ struct CustomGrid_GenericsView<R:CustomGridAvaible>:View {
                         
                     } else {
                         
-                        CSText_RotatingRectangleDynamicDeletingFace(testo: data.nome, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
+                        CSText_RotatingRectangleDynamicDeletingFace(testo: data.intestazione, fontWeight: .bold, textColor: Color.white, scaleFactor: 0.6, strokeColor: Color.blue, fillColor: Color.gray, showDeleteImage: true)
                             .onTapGesture {
                                 print("TAP TO DELETE Item")
                                 withAnimation(.easeInOut) {

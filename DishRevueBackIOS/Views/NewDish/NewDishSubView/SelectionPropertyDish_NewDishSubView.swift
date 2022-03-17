@@ -86,7 +86,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 
                 CSLabel_1Button(placeHolder: "Allergeni Presenti", imageName: "exclamationmark.triangle", backgroundColor: Color.black)
                 
-                EnumScrollCases(cases: Allergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red.opacity(0.8))
+                EnumScrollCases(cases: DishAllergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red.opacity(0.8))
                 
             }
                        

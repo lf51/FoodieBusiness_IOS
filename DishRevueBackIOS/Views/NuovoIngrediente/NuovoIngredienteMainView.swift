@@ -15,7 +15,7 @@ struct NuovoIngredienteMainView: View {
     let backGroundColorView: Color
     @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
     
-    @State var nuovoIngrediente: ModelloIngrediente = ModelloIngrediente() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
+    @State var nuovoIngrediente: IngredientModel = IngredientModel() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
     
     init(propertyVM: PropertyVM, backGroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
         
@@ -34,20 +34,21 @@ struct NuovoIngredienteMainView: View {
                
             if self.dismissButton == nil {
                 
-                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.nome != "" ? nuovoIngrediente.nome : "Nuovo Ingrediente", enableEnvironmentDismiss:true)
+                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.intestazione != "" ? nuovoIngrediente.intestazione : "Nuovo Ingrediente", enableEnvironmentDismiss:true)
                     .padding()
                     .background(Color.cyan)
                 // questo background riguarda la parte alta della View occupata dall'HStack e serve a dare uno stacco di tono
                 
             } else {
                 
-                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.nome != "" ? nuovoIngrediente.nome : "Nuovo Ingrediente", exitButton: $dismissButton)
+                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.intestazione != "" ? nuovoIngrediente.intestazione : "Nuovo Ingrediente", exitButton: $dismissButton)
                     .padding()
             }
             
                 VStack(alignment:.leading) {
                             
-                InfoIngrediente_NuovoIngredienteSubView(nuovoIngrediente:$nuovoIngrediente)
+            /*    InfoIngrediente_NuovoIngredienteSubView(nuovoIngrediente:$nuovoIngrediente) */
+                    IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Ingrediente", imageLabel: "doc.badge.plus", coloreContainer: Color.orange, itemModel: $nuovoIngrediente).padding(.horizontal)
                    
                 SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)
                             
@@ -69,11 +70,11 @@ struct NuovoIngredienteMainView: View {
        }
     }
     
-    func test(ingrediente: inout ModelloIngrediente) {
+    func test(ingrediente: inout IngredientModel) {
         
         for x in 0...100 {
             
-            ingrediente.nome = String(x)
+            ingrediente.intestazione = String(x)
             
             propertyVM.listaMyIngredients.append(ingrediente)
             

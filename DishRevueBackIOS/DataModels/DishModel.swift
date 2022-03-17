@@ -9,15 +9,20 @@
 
 import Foundation
 
-struct DishModel: Identifiable {
+struct DishModel: CustomGridAvaible {
     
-    var id:String = UUID().uuidString
-    var status: DishStatus // in beta
+    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
+        lhs.intestazione == rhs.intestazione
+    }
     
-    var name: String
+    var id:String = UUID().uuidString // deprecated il 16.03.2022 --> l'overload del == non funziona con l'id in questa forma, non funziona nel senso che mi fa saltare la modifica dell'intestazione nel NewDish. Usando l'intestazione invece funziona
+   // var status: DishStatus // in beta
     
-    var ingredientiPrincipali: [ModelloIngrediente]
-    var ingredientiSecondari: [ModelloIngrediente]
+    var intestazione: String
+    
+    var menuWhereIsIn: [MenuModel] = [] // doppia scrittura con
+    var ingredientiPrincipali: [IngredientModel]
+    var ingredientiSecondari: [IngredientModel]
     
     // var tempoDiAttesa: Int? // Ha tante sfaccettature, occorerebbe parlarne prima con dei Ristoratori
     // var dishIcon: String // Icona standard dei piatti che potremmo in realtà associare direttamente alla categoria
@@ -28,16 +33,16 @@ struct DishModel: Identifiable {
     var metodoCottura: DishCookingMethod
     var tipologia: DishTipologia
     var avaibleFor: [DishAvaibleFor]
-    var allergeni: [Allergeni]
+    var allergeni: [DishAllergeni]
     var formatiDelPiatto: [DishFormato]
     
-    var restaurantWhereIsOnMenu: [PropertyModel] = []
+   // var restaurantWhereIsOnMenu: [PropertyModel] = []
     
     var alertItem: AlertModel?
     
     init() { // init di un piatto nuovo e "vuoto"
         
-        self.name = ""
+        self.intestazione = ""
         self.ingredientiPrincipali = []
         self.ingredientiSecondari = []
         self.aBaseDi = .defaultValue
@@ -48,12 +53,12 @@ struct DishModel: Identifiable {
         self.avaibleFor = []
         self.metodoCottura = .defaultValue
         
-        self.status = .programmato(day: [.lunedi,.martedi,.mercoledi,.giovedi,.domenica(ora:DateInterval(start: .now, end: .distantFuture))])
+     //   self.status = .programmato(day: [.lunedi,.martedi,.mercoledi,.giovedi,.domenica(ora:DateInterval(start: .now, end: .distantFuture))])
         
     }
    
 }
-
+/*
 enum DishStatus {
     
     case bozza // non ancora completo
@@ -77,4 +82,4 @@ enum GiorniDellaSettimana {
    
     
 }
-
+*/

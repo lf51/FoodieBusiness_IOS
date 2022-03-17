@@ -13,10 +13,10 @@ class PropertyVM: ObservableObject {
     // create dal sistema
     var listaBaseModelloIngrediente: [BaseModelloIngrediente] = [] // load(fileJson)
     // la lista appIngredients sarà riempita da un json che creeremo con una lista di nomi di ingredienti. Dal nome verrà creato un Modello Ingrediente nel momento in cui sarà scelto dal ristoratore
-    var listoneFromListaBaseModelloIngrediente: [ModelloIngrediente] = [] // questo listone sarà creato contestualmente dalla listaBaseModelloIngrediente creata da un json
+    var listoneFromListaBaseModelloIngrediente: [IngredientModel] = [] // questo listone sarà creato contestualmente dalla listaBaseModelloIngrediente creata da un json
     
     // end create dal sistema
-    @Published var listaMyIngredients: [ModelloIngrediente] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
+    @Published var listaMyIngredients: [IngredientModel] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
     
     @Published var propertiesList: [PropertyModel] = [] // deve essere riempita con le proprietà create e salvate su firebase
     
@@ -157,7 +157,7 @@ class PropertyVM: ObservableObject {
         
         for ing in ingList {
             
-            let ingMod = ModelloIngrediente(nome: ing.nome)
+            let ingMod = IngredientModel(nome: ing.nome)
             listoneFromListaBaseModelloIngrediente.append(ingMod)
             
         }

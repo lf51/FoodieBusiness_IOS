@@ -7,19 +7,19 @@
 
 import SwiftUI
 
-struct InfoIngrediente_NuovoIngredienteSubView: View {
+struct InfoIngrediente_NuovoIngredienteSubView: View { // deprecated 16.03.2022 sostituita da un generic
     
     @State private var nomeNuovoIngrediente: String = ""
-    @Binding var nuovoIngrediente: ModelloIngrediente
+    @Binding var nuovoIngrediente: IngredientModel
     
     var body: some View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1Button(placeHolder: nuovoIngrediente.nome == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.nome)", imageName: "gearshape", backgroundColor: Color.black)
+            CSLabel_1Button(placeHolder: nuovoIngrediente.intestazione == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.intestazione)", imageName: "gearshape", backgroundColor: Color.black)
   
             CSTextField_3(textFieldItem: self.$nomeNuovoIngrediente, placeHolder: "Nome Ingrediente") {
-                self.nuovoIngrediente.nome = self.nomeNuovoIngrediente
+                self.nuovoIngrediente.intestazione = self.nomeNuovoIngrediente
                 self.nomeNuovoIngrediente = ""
             }
             

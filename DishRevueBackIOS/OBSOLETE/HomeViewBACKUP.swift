@@ -7,7 +7,7 @@
 
 import SwiftUI
 import UIKit
-
+/*
 struct HomeViewBACKUP: View {
     
     @ObservedObject var propertyViewModel: PropertyVM 
@@ -150,3 +150,6 @@ struct ExtractedViewBACKUP: View {
        
     }
 }
+
+
+*/

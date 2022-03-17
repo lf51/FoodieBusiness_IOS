@@ -60,7 +60,7 @@ struct HomeView: View {
                             ForEach(propertyViewModel.propertiesList) { property in
                                 
                   
-                                NavigationLink(destination: TESTView(dishVM: dishVM, currentProperty: property)) {
+                                NavigationLink(destination: TESTView(dishVM: dishVM, currentProperty: property, backgroundColor: backGroundColorView)) {
                                         
                                     Text(property.name).bold().foregroundColor(Color.red)
                                     
@@ -119,8 +119,13 @@ struct HomeView: View {
 }
 
 struct HomeView_Previews: PreviewProvider {
+    static var vm: PropertyVM = PropertyVM()
+    
     static var previews: some View {
-        HomeView(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backGroundColorView: Color.cyan)
+        
+    HomeView(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backGroundColorView: Color.cyan)
+        
+      /*  TESTView(dishVM: DishVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
     }
 }
 
@@ -130,6 +135,7 @@ struct TESTView: View {
     
     @ObservedObject var dishVM: DishVM
     var currentProperty: PropertyModel
+    let backgroundColor: Color
     
     @State private var wannaCreateMenu: Bool? = false
     
@@ -137,28 +143,35 @@ struct TESTView: View {
         
         ZStack {
             
+            backgroundColor.edgesIgnoringSafeArea(.top)
+            
             VStack {
+                
+                Text(currentProperty.cityName)
+                
+                
+                
                 
                 Text("Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti")
                 
                 Spacer()
                 // Metà schermo
+                LargeMiddleBar_PlusButton(title: "Menu") {
+                    self.wannaCreateMenu = true
+                }
                 
                 
-                
-                VStack {
+                ScrollView {
                     
                   //  Text("Menu for property: \(currentProperty.name)")
-                    LargeMiddleBar_PlusButton(title: "Menu") {
-                        self.wannaCreateMenu = true
-                    }
                     
-                    ForEach(currentProperty.scheduleServizio) { menu in
+                    
+                    ForEach(currentProperty.menuIn) { menu in
                         
                         HStack {
-                            Text(menu.nome)
-                            Text(menu.extendedDescription().orario)
-                            Text(menu.extendedDescription().dayIn, format: .list(type: .and))
+                            Text(menu.intestazione)
+                           // Text(menu.extendedDescription().orario)
+                           // Text(menu.extendedDescription().dayIn, format: .list(type: .and))
                         }
                         
                         
@@ -174,13 +187,18 @@ struct TESTView: View {
             
             if wannaCreateMenu! {
                 
-                SchedulePropertyService(dismissView: $wannaCreateMenu)
-                
+              //  SchedulePropertyService(dismissView: $wannaCreateMenu)
+
+              NuovoMenuMainView(dismissView: $wannaCreateMenu)
+       
+              
             }
             
             
             
         }
+        .navigationTitle("\(currentProperty.name)")
+        .background(backgroundColor.opacity(0.4))
         
         
         
