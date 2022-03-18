@@ -46,9 +46,8 @@ struct NuovoIngredienteMainView: View {
             }
             
                 VStack(alignment:.leading) {
-                            
-            /*    InfoIngrediente_NuovoIngredienteSubView(nuovoIngrediente:$nuovoIngrediente) */
-                    IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Ingrediente", imageLabel: "doc.badge.plus", coloreContainer: Color.orange, itemModel: $nuovoIngrediente).padding(.horizontal)
+
+                IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Ingrediente", imageLabel: "doc.badge.plus", coloreContainer: Color.orange, itemModel: $nuovoIngrediente).padding(.horizontal)
                    
                 SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)
                             

@@ -10,12 +10,8 @@ import SwiftUI
 struct NuovoMenuMainView: View {
 
     @State private var nuovoMenu: MenuModel
-    
- //   @State private var wannaCreateNewMenu: Bool? = false
-    @State private var nuovoNomeMenu: String = ""
- 
-  //  @State private var wannaDeleteMenuDelServizio:Bool? = false
     @Binding var dismissView:Bool?
+    @State private var nuovaIntestazioneMenu: String = ""
     
     init(editMenu:MenuModel? = MenuModel(), dismissView: Binding<Bool?>? = nil) {
         
@@ -23,38 +19,15 @@ struct NuovoMenuMainView: View {
         _nuovoMenu = State(wrappedValue: editMenu!)
             
     }
+    
+    var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool) {
 
-    var timeFormatter: DateFormatter {
+      let disableTipologia = self.nuovoMenu.intestazione == ""
+      let disableProgrammazione = self.nuovoMenu.tipologia == .defaultValue
         
-        let time = DateFormatter()
-       // time.dateStyle = .none // Possiamo ometterlo
-        time.timeStyle = .short
-        
-        return time
+      return (disableTipologia,disableProgrammazione)
     }
-    
-    var isThereAReasonToDisable: (date: Bool, days: Bool, button:Bool) {
-
-        return (false,false,false)
-       
-    }
-    
-    var valueTo:(disableDate:Bool, disableDays:Bool, titlePicker:String) {
-        
-        switch self.nuovoMenu.isAvaibleWhen {
-            
-        case .dataEsatta:
-            return (true,true,"li:")
-        case.intervalloAperto:
-            return(true,false,"dal:")
-        case .intervalloChiuso:
-            return(false,false,"dal:")
-            
-        }
-        
-    }
-    
-    
+ 
     var body: some View {
         
         VStack {
@@ -67,71 +40,22 @@ struct NuovoMenuMainView: View {
                 IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (Interno)", imageLabel: "doc.badge.plus", coloreContainer: Color.red, itemModel: $nuovoMenu)
                 
                 CSLabel_1Button(placeHolder: "Tipologia", imageName: "dollarsign.circle", backgroundColor: Color.black)
-                EnumScrollCases(cases: TipologiaMenu.allCases, dishSingleProperty: $nuovoMenu.tipologia, colorSelection: Color.brown)
                 
-                CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen)
+                SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
+                    .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
+                    .disabled(isThereAReasonToDisable.tipologia)
+
+                CSLabel_2Button(placeHolder: "Ristoranti", imageName: "circle", backgroundColor: Color.black, toggleBottoneTEXT: .constant(false), testoBottoneTEXT: "Scegli")
+                    .opacity(0.4)
+                    .disabled(true)
                 
-                HStack {
-                    
-                    DatePicker(valueTo.titlePicker, selection: self.$nuovoMenu.dataInizio, displayedComponents: .date)
-                    
-                    Text("     -->     ")
-                    
-                    DatePicker("al:", selection: self.$nuovoMenu.dataFine, displayedComponents: .date)
-                        .opacity(self.valueTo.disableDate ? 0.2 : 1.0)
-                        .disabled(self.valueTo.disableDate)
-                    
-                }
-                 
-                EnumScrollCases(cases: GiorniDelServizio.allCases, dishCollectionProperty: self.$nuovoMenu.giorniDelServizio, colorSelection: Color.mint)
-                        .opacity(self.valueTo.disableDays ? 0.4 : 1.0)
-                        .disabled(self.valueTo.disableDays)
-                        
-                HStack {
-                    
-                    DatePicker("dalle:", selection: self.$nuovoMenu.oraInizio, displayedComponents: .hourAndMinute)
-                        
-                    Text("     -->     ")
-                    
-                    DatePicker("alle:", selection: self.$nuovoMenu.oraFine, in: (self.nuovoMenu.oraInizio.addingTimeInterval(1800.0))...,displayedComponents: .hourAndMinute)
-                    
-                }
-                .opacity(self.isThereAReasonToDisable.date ? 0.4 : 1.0)
-                .disabled(self.isThereAReasonToDisable.date)
+         
                 
-                
-                
-        
-                        HStack {
-                            
-                            if !isThereAReasonToDisable.days {
-                                
-                                Text("Il menu \(nuovoMenu.intestazione) è attivo dalle \(timeFormatter.string(from: self.nuovoMenu.oraInizio)) alle \(timeFormatter.string(from: self.nuovoMenu.oraFine)) nei giorni di \(dayDescription(),format:.list(type: .and))")
-                                    .italic().fontWeight(.light).font(.caption)
-                            
-                            }
-                            
-                            Spacer()
-                            
-                            CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) {
-                                
-                                self.resetValue()
-                                
-                            }
-                            .opacity(self.isThereAReasonToDisable.date ? 0.4 : 1.0)
-                            .disabled(self.isThereAReasonToDisable.date)
-                            
-                         
-                           CSButton_tight(title: "Done", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
-                            
-                             //   self.sheduleANewService()
-                               self.scheduleANewMenu()
-                                
-                           }
-                           .opacity(self.isThereAReasonToDisable.button ? 0.4 : 1.0)
-                           .disabled(self.isThereAReasonToDisable.button)
-                            
-                        }.padding(.vertical)
+                CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
+                    
+                CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
+
+                BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu)
  
             }.padding(.horizontal)
             
@@ -141,43 +65,13 @@ struct NuovoMenuMainView: View {
         .background(RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
         .contrast(1.2)
         .brightness(0.08)
-        
+        .alert(item:$nuovoMenu.alertItem) { alert -> Alert in
+           Alert(
+             title: Text(alert.title),
+             message: Text(alert.message)
+           )
+         } // non funziona
     }
-    
-    // Method
- 
-    private func resetValue() {
-
-        self.nuovoMenu = MenuModel()
-
-    }
-    
-    private func dayDescription() -> [String] {
-        
-        var giorniServizio: [String] = []
-        
-        for day in self.nuovoMenu.giorniDelServizio {
-            
-            giorniServizio.append(day.simpleDescription())
-        }
-        
-        return giorniServizio
-    }
-    
-    
-    private func scheduleANewMenu() {
-            
-        print("Nome Menu: \(self.nuovoMenu.intestazione)")
-        print("data Inizio:\(self.nuovoMenu.dataInizio.ISO8601Format())")
-        print("data Fine: \(self.nuovoMenu.dataFine.ISO8601Format())")
-        print("nei giorni di: \(self.nuovoMenu.giorniDelServizio.description)")
-        print("dalle \(self.nuovoMenu.oraInizio.ISO8601Format()) alle \(self.nuovoMenu.oraFine.ISO8601Format())")
-        
-        
-       print("Salvare MenuModel nel firebase e/o nell'elenco dei Menu in un ViewModel")
-    }
- 
-    
 }
 
 struct NuovoMenuMainView_Previews: PreviewProvider {

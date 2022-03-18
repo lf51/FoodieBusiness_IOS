@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct IntestazioneNuovoOggetto_Generic<T:CustomGridAvaible>: View {
+struct IntestazioneNuovoOggetto_Generic<T:MyModelProtocol>: View {
     
     let placeHolderItemName: String
     let imageLabel: String

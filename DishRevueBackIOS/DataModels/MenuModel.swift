@@ -7,10 +7,19 @@
 
 import Foundation
 
-struct MenuModel: CustomGridAvaible {
+struct MenuModel:MyModelProtocol {
     
     static func == (lhs: MenuModel, rhs: MenuModel) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id &&
+        lhs.intestazione == rhs.intestazione &&
+        lhs.tipologia == rhs.tipologia &&
+        lhs.isAvaibleWhen == rhs.isAvaibleWhen &&
+        lhs.dataInizio == rhs.dataInizio &&
+        lhs.dataFine == rhs.dataFine &&
+        lhs.giorniDelServizio == rhs.giorniDelServizio &&
+        lhs.oraInizio == rhs.oraInizio &&
+        lhs.oraFine == rhs.oraFine
+        
     }
     
     var id: String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() }
@@ -23,10 +32,13 @@ struct MenuModel: CustomGridAvaible {
     
     var isAvaibleWhen: AvailabilityMenu = .defaultValue
     var dataInizio: Date = Date() // ruolo duplice, data inizio e data esatta
-    var dataFine: Date = Date() // opzionale perchè possiamo non avere una fine in caso di data fissa
+    var dataFine: Date = Date().advanced(by: 604800) // opzionale perchè possiamo non avere una fine in caso di data fissa
     var giorniDelServizio:[GiorniDelServizio] = []
     var oraInizio: Date = Date()
-    var oraFine: Date = Date()
+    var oraFine: Date = Date().advanced(by: 1800)
+    
+    var alertItem: AlertModel?
+    //
     
 //    init() {}
     init() {
@@ -40,12 +52,13 @@ struct MenuModel: CustomGridAvaible {
 
 enum AvailabilityMenu:Hashable {
     
-    static var defaultValue: AvailabilityMenu = .intervalloAperto // il default inizia subito, è un intervallo aperto, ed è valido tutti i giorni
+    static var defaultValue: AvailabilityMenu = .noValue
     static var allCases:[AvailabilityMenu] = [.intervalloChiuso,.dataEsatta,.intervalloAperto]
 
     case dataEsatta
     case intervalloChiuso
     case intervalloAperto
+    case noValue
     
     func shortDescription() -> String {
         
@@ -57,8 +70,23 @@ enum AvailabilityMenu:Hashable {
             return "<..>"
         case .intervalloAperto:
             return "<..."
+        case .noValue:
+            return ""
         }
+    }
+    
+    func extendedDescription() -> String {
         
+        switch self {
+        case .dataEsatta:
+            return "Scegli una data esatta. Es: Menu di Natale"
+        case .intervalloChiuso:
+            return "Programma il Menu con un Inizio e una Fine"
+        case .intervalloAperto:
+            return "Programma il Menu con un Inizio senza una Fine"
+        case .noValue:
+            return ""
+        }
         
     }
     
@@ -66,13 +94,14 @@ enum AvailabilityMenu:Hashable {
 
 enum TipologiaMenu: MyEnumProtocol {
    
-    static var allCases: [TipologiaMenu] = [.fisso(costo: 0.0),.allaCarta]
-    static var defaultValue: TipologiaMenu = .allaCarta
+    static var allCases: [TipologiaMenu] = [.fisso(costo: "n/d"),.allaCarta]
+    static var defaultValue: TipologiaMenu = .noValue
     
     var id:String {self.createId()}
     
-    case fisso(persone:Int? = 1,costo: Double)
+    case fisso(persone:String = "1",costo: String)
     case allaCarta
+    case noValue
     
     func simpleDescription() -> String {
         
@@ -81,11 +110,27 @@ enum TipologiaMenu: MyEnumProtocol {
             return "Fisso"
         case .allaCarta:
             return "Alla Carta"
+        case .noValue:
+            return ""
         }
     }
     
     func createId() -> String {
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased()
+    }
+    
+    func editingAvaible() -> Bool {
+        
+        switch self {
+            
+        case .fisso:
+            return true
+        case .allaCarta:
+            return false
+        case .noValue:
+            return false
+        }
+        
     }
 }
 

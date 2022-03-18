@@ -9,13 +9,24 @@
 
 import Foundation
 
-struct DishModel: CustomGridAvaible {
+struct DishModel:MyModelProtocol {
     
-    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
-        lhs.intestazione == rhs.intestazione
+   static func == (lhs: DishModel, rhs: DishModel) -> Bool {
+        lhs.intestazione == rhs.intestazione &&
+        lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
+        lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
+        lhs.categoria == rhs.categoria &&
+        lhs.aBaseDi == rhs.aBaseDi &&
+        lhs.metodoCottura == rhs.metodoCottura &&
+        lhs.tipologia == rhs.tipologia &&
+        lhs.avaibleFor == rhs.avaibleFor &&
+        lhs.allergeni == rhs.allergeni &&
+        lhs.formatiDelPiatto == rhs.formatiDelPiatto
+       
+       // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
     }
     
-    var id:String = UUID().uuidString // deprecated il 16.03.2022 --> l'overload del == non funziona con l'id in questa forma, non funziona nel senso che mi fa saltare la modifica dell'intestazione nel NewDish. Usando l'intestazione invece funziona
+    var id:String = UUID().uuidString // deprecated il 16.03.2022 --> Formarlo in altro Modo
    // var status: DishStatus // in beta
     
     var intestazione: String
@@ -35,7 +46,7 @@ struct DishModel: CustomGridAvaible {
     var avaibleFor: [DishAvaibleFor]
     var allergeni: [DishAllergeni]
     var formatiDelPiatto: [DishFormato]
-    
+
    // var restaurantWhereIsOnMenu: [PropertyModel] = []
     
     var alertItem: AlertModel?

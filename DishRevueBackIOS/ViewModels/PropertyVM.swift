@@ -11,7 +11,7 @@ import MapKit
 class PropertyVM: ObservableObject {
     
     // create dal sistema
-    var listaBaseModelloIngrediente: [BaseModelloIngrediente] = [] // load(fileJson)
+    var listaBaseModelloIngrediente: [CommunityIngredientModel] = [] // load(fileJson)
     // la lista appIngredients sarà riempita da un json che creeremo con una lista di nomi di ingredienti. Dal nome verrà creato un Modello Ingrediente nel momento in cui sarà scelto dal ristoratore
     var listoneFromListaBaseModelloIngrediente: [IngredientModel] = [] // questo listone sarà creato contestualmente dalla listaBaseModelloIngrediente creata da un json
     
@@ -142,13 +142,13 @@ class PropertyVM: ObservableObject {
     let propertyExample: PropertyModel = PropertyModel(name: "Osteria Favelas", cityName: "Sciacca", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), imageNames: ["LogoAppBACKEND"], webSite: "https://fantabid.it", phoneNumber: "+39 333 7213895", streetAdress: "Via Conzo 26")
     
     
-   let ing1 = BaseModelloIngrediente(nome: "basilico")
-   let ing2 = BaseModelloIngrediente(nome: "aglio")
-    let ing3 = BaseModelloIngrediente(nome: "olio")
-    let ing4 = BaseModelloIngrediente(nome: "prezzemolo")
-    let ing5 = BaseModelloIngrediente(nome: "origano")
-    let ing6 = BaseModelloIngrediente(nome: "sale")
-    let ing7 = BaseModelloIngrediente(nome: "pepe")
+   let ing1 = CommunityIngredientModel(nome: "basilico")
+   let ing2 = CommunityIngredientModel(nome: "aglio")
+    let ing3 = CommunityIngredientModel(nome: "olio")
+    let ing4 = CommunityIngredientModel(nome: "prezzemolo")
+    let ing5 = CommunityIngredientModel(nome: "origano")
+    let ing6 = CommunityIngredientModel(nome: "sale")
+    let ing7 = CommunityIngredientModel(nome: "pepe")
     
     func fillFromListaBaseModello() { // TEST CODE DA MODIFICARE
         

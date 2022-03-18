@@ -18,7 +18,7 @@ struct NewDishMainView: View {
     @State var wannaAddIngredient: Bool? = false // apre per tuttiGliIngredienti
  //   @State var openAddingIngredienteSecondario: Bool? = false // in disuso // da eliminare
     @State var wannaCreateIngredient: Bool? = false
-    @State var wannaProgramAndPublishNewDish: Bool = false
+    @State var wannaProgramAndPublishNewDish: Bool = false 
     
     private var isThereAReasonToDisabled: Bool {
         
@@ -47,7 +47,7 @@ struct NewDishMainView: View {
 
                     VStack(alignment:.leading) {
                              
-                        IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Piatto", imageLabel: "doc.badge.plus", coloreContainer: Color.green, itemModel: $newDish)
+                    IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Piatto", imageLabel: "doc.badge.plus", coloreContainer: Color.green, itemModel: $newDish)
                         
                     PannelloIngredienti_NewDishSubView(newDish: $newDish, wannaDeleteIngredient: $wannaDeleteIngredient, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient)
 
@@ -67,8 +67,7 @@ struct NewDishMainView: View {
                      //   self.wannaAddIngredient = false
                       // self.openAddingIngredienteSecondario = false
                     }
-                    
-                   
+        
                     ConditionalZStackView_NewDishSubView(propertyVM: propertyVM, newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backGroundColorView: backGroundColorView)
                     
                     

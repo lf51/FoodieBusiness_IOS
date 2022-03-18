@@ -147,6 +147,65 @@ struct CSLabel_2Button: View {
     }
 }
 
+struct CSLabel_1Picker: View {
+    
+    let placeHolder: String
+    let imageName: String
+    let labelColor: Color
+    let pickerColor: Color    
+    
+    @Binding var selectedProgram: AvailabilityMenu
+    var isThereConditionToDisablePicker: Bool
+    
+    init(placeHolder: String, imageName: String, backgroundColor: Color, pickerColor:Color? = nil, availabilityMenu: Binding<AvailabilityMenu>, conditionToDisablePicker: Bool? = nil) {
+        
+        self.placeHolder = placeHolder
+        self.imageName = imageName
+        self.labelColor = backgroundColor
+        self.pickerColor = pickerColor ?? Color.clear
+
+        self.isThereConditionToDisablePicker = conditionToDisablePicker ?? false
+        _selectedProgram = availabilityMenu
+        
+    }
+
+    var body: some View {
+        
+        HStack {
+            
+            Label {
+                Text(placeHolder)
+                    .fontWeight(.medium)
+                    .font(.system(.subheadline, design: .monospaced))
+            } icon: {
+                Image(systemName: imageName)
+            }
+            ._tightPadding()
+            .background(
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(labelColor.opacity(0.2))
+            )
+    
+            Spacer()
+            
+            Picker(selection:$selectedProgram) {
+                
+                ForEach(AvailabilityMenu.allCases, id:\.self) {schedule in
+                    
+                    Text(schedule.shortDescription())
+                    
+                }
+                
+            } label: {Text("")}
+            .pickerStyle(SegmentedPickerStyle())
+            .opacity(isThereConditionToDisablePicker ? 0.6 : 1.0)
+            .disabled(isThereConditionToDisablePicker)
+          
+        }
+    }
+}
+
 
 /*struct CustomLabel_Previews: PreviewProvider {
     static var previews: some View {
@@ -154,28 +213,3 @@ struct CSLabel_2Button: View {
     }
 }*/
 
-
-/*struct CSLabel_1BACKUP: View {
-    
-    var placeHolder: String
-    var imageName: String
-    var backgroundColor: Color
-    
-    var body: some View {
-        
-        Label {
-            Text(placeHolder)
-                .fontWeight(.medium)
-                .font(.system(.subheadline, design: .monospaced))
-        } icon: {
-            Image(systemName: imageName)
-        }
-        ._tightPadding()
-        .background(
-            
-            RoundedRectangle(cornerRadius: 5.0)
-                .fill(backgroundColor.opacity(0.2))
-        )
-  
-    }
-} */

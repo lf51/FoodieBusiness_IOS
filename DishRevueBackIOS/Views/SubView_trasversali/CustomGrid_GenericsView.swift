@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CustomGrid_GenericsView<R:CustomGridAvaible>:View {
+struct CustomGrid_GenericsView<R:MyModelProtocol>:View {
     
   //  @Binding var openEditingIngrediente: Bool
     @Binding var wannaDeleteItem: Bool?

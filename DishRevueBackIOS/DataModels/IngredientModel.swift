@@ -9,7 +9,7 @@ import Foundation
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel: CustomGridAvaible {
+struct IngredientModel: MyModelProtocol {
     
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return
@@ -31,8 +31,8 @@ struct IngredientModel: CustomGridAvaible {
   //  var stagionalita: StagionalitaIngrediente // la stagionalità non ha senso poichè è inserita dal ristoratore, ed è inserita quando? Ha senso se la attribuisce il sistema, ma è complesso.
     var conservazione: ConservazioneIngrediente
     
-    
-    
+    var alertItem: AlertModel?
+    //
     
     // In futuro serviranno delle proprietà ulteriori, pensando nell'ottica che l'ingrediente possa essere gestito dall'app in chiave economato, quindi gestendo quantità e prezzi e rifornimenti necessari
     

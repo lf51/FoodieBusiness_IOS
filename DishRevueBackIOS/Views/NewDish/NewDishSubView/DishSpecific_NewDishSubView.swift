@@ -129,22 +129,9 @@ struct DishSpecific_NewDishSubView: View {
     
     // Method Space
     
-    private func validateValue(value: String, convalidaAsDouble: Bool) -> Bool {
-        
-        if convalidaAsDouble {
-            
-            if let righValue = Double(value) { if righValue >= 0 {return true} else {return false} } else {return false}
-            
-        } else {
-            // convalida Int
-            if let rightValue = Int(value) { if rightValue > 0 {return true} else {return false} } else {return false}
-            
-        }
-    }
-    
     private func validateAndAddSpecificValue() {
         
-        guard validateValue(value: self.grammi, convalidaAsDouble: true) else {
+        guard myValidateValue(value: self.grammi, convalidaAsDouble: true) else {
         
             self.newDish.alertItem = AlertModel(
                 title: "Errore Inserimento Grammi",
@@ -154,7 +141,7 @@ struct DishSpecific_NewDishSubView: View {
             self.grammi = ""
             return }
         
-        guard validateValue(value: self.prezzo, convalidaAsDouble: true) else {
+        guard myValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
     
             self.newDish.alertItem = AlertModel(
                 title: "Errore Inserimento Prezzo",
@@ -164,7 +151,7 @@ struct DishSpecific_NewDishSubView: View {
             self.prezzo = ""
             return}
         
-        guard validateValue(value: self.pax, convalidaAsDouble: false) else {
+        guard myValidateValue(value: self.pax, convalidaAsDouble: false) else {
         
             self.newDish.alertItem = AlertModel(
                 title: "Errore Inserimento Porzioni",
