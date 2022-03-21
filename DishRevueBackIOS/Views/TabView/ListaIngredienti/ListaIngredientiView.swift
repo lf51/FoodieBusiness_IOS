@@ -26,7 +26,7 @@ import SwiftUI
 
 struct ListaIngredientiView: View {
     
-    @ObservedObject var dishVM: DishVM // non sembra servire
+    @ObservedObject var accounterVM: AccounterVM // non sembra servire
     
     @ObservedObject var propertyVM: PropertyVM
     @Binding var tabSelection: Int
@@ -48,7 +48,7 @@ struct ListaIngredientiView: View {
                     
                     ScrollView {
                         
-                        ForEach(propertyVM.listaMyIngredients) { ingrediente in
+                        ForEach(accounterVM.allMyIngredients) { ingrediente in
                             
                             Text(ingrediente.intestazione)
                           //  Text(ingrediente.cottura.simpleDescription())
@@ -84,7 +84,7 @@ struct ListaIngredientiView: View {
             )
             .sheet(isPresented: self.$openNuovoIngrediente) {
                // NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
-                NuovoIngredienteMainView(propertyVM:propertyVM, backGroundColorView: backGroundColorView)
+                NuovoIngredienteMainView(propertyVM:propertyVM, accounterVM: accounterVM, backGroundColorView: backGroundColorView)
                 // Creare nuovo ingrediente
             }
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
@@ -97,6 +97,6 @@ struct ListaIngredientiView: View {
 
 struct ListaIngredientiView_Previews: PreviewProvider {
     static var previews: some View {
-        ListaIngredientiView(dishVM: DishVM(), propertyVM: PropertyVM(), tabSelection: .constant(2), backGroundColorView: Color.cyan)
+        ListaIngredientiView(accounterVM: AccounterVM(), propertyVM: PropertyVM(), tabSelection: .constant(2), backGroundColorView: Color.cyan)
     }
 }

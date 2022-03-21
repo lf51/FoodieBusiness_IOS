@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DishVM: ObservableObject {
+/*class DishVM: ObservableObject { // Deprecated in data 21.03.2022 -> Accorpato ad AccounterVM
     
     @Published var dishList: [DishModel] = [] // trasversale a tutte le proprietà dello stesso accounter. Contiene tutti i piatti creati, bozze e pubblici
     
@@ -79,6 +79,6 @@ class DishVM: ObservableObject {
     
     //
     
-}
+} */
 
 

@@ -8,7 +8,7 @@
 import Foundation
 
 struct MenuModel:MyModelProtocol {
-    
+   
     static func == (lhs: MenuModel, rhs: MenuModel) -> Bool {
         lhs.id == rhs.id &&
         lhs.intestazione == rhs.intestazione &&

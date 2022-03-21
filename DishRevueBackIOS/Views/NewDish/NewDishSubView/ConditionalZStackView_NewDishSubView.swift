@@ -10,6 +10,7 @@ import SwiftUI
 struct ConditionalZStackView_NewDishSubView: View {
     
     @ObservedObject var propertyVM: PropertyVM
+    @ObservedObject var accounterVM: AccounterVM
     
     @Binding var newDish: DishModel
     @Binding var wannaAddIngredient: Bool?
@@ -23,7 +24,7 @@ struct ConditionalZStackView_NewDishSubView: View {
         
         if wannaCreateIngredient! {
                     
-        NuovoIngredienteMainView(propertyVM: propertyVM, backGroundColorView: backGroundColorView, dismissButton: $wannaCreateIngredient)
+            NuovoIngredienteMainView(propertyVM: propertyVM, accounterVM: accounterVM, backGroundColorView: backGroundColorView, dismissButton: $wannaCreateIngredient)
 
                 }
         
@@ -35,7 +36,7 @@ struct ConditionalZStackView_NewDishSubView: View {
    
         if wannaAddIngredient! {
             
-            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, newDish: $newDish)
+            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, accounterVM: accounterVM, newDish: $newDish)
          
         }
         

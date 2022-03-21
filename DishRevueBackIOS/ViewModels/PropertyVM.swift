@@ -9,14 +9,16 @@ import Foundation
 import MapKit
 
 class PropertyVM: ObservableObject {
-    
+    /*
     // create dal sistema
-    var listaBaseModelloIngrediente: [CommunityIngredientModel] = [] // load(fileJson)
+    var allTheCommunityIngredients: [CommunityIngredientModel] = [] // load(fileJson)
     // la lista appIngredients sarà riempita da un json che creeremo con una lista di nomi di ingredienti. Dal nome verrà creato un Modello Ingrediente nel momento in cui sarà scelto dal ristoratore
     var listoneFromListaBaseModelloIngrediente: [IngredientModel] = [] // questo listone sarà creato contestualmente dalla listaBaseModelloIngrediente creata da un json
     
     // end create dal sistema
-    @Published var listaMyIngredients: [IngredientModel] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
+    @Published var allMyIngredients: [IngredientModel] = [] // questa è la lista dei "MIEI" ingredienti ed è trasversale ad ogni piatto e ad ogni proprietà dello stesso account
+    
+    */
     
     @Published var propertiesList: [PropertyModel] = [] // deve essere riempita con le proprietà create e salvate su firebase
     
@@ -37,7 +39,7 @@ class PropertyVM: ObservableObject {
         
     
         propertiesList.append(propertyExample) // TEST CODE DA ELIMINARE
-        fillFromListaBaseModello() // TEST CODE DA ELIMINARE
+     //   fillFromListaBaseModello() // TEST CODE DA ELIMINARE
         
         
     }
@@ -73,7 +75,7 @@ class PropertyVM: ObservableObject {
         // salviamo proprietà su firebase
     }
     
-    func addDishOnMenu() {
+   /* func addDishOnMenu() {
         
         // aggiungiamo un piatto al menu
     }
@@ -81,7 +83,7 @@ class PropertyVM: ObservableObject {
     func removeDish() {
         
         // rimuove piatto dal menu del ristorante ma non dall'archivio Piatti
-    }
+    } */
     
     func queryResearch() {
 
@@ -142,7 +144,7 @@ class PropertyVM: ObservableObject {
     let propertyExample: PropertyModel = PropertyModel(name: "Osteria Favelas", cityName: "Sciacca", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), imageNames: ["LogoAppBACKEND"], webSite: "https://fantabid.it", phoneNumber: "+39 333 7213895", streetAdress: "Via Conzo 26")
     
     
-   let ing1 = CommunityIngredientModel(nome: "basilico")
+  /* let ing1 = CommunityIngredientModel(nome: "basilico")
    let ing2 = CommunityIngredientModel(nome: "aglio")
     let ing3 = CommunityIngredientModel(nome: "olio")
     let ing4 = CommunityIngredientModel(nome: "prezzemolo")
@@ -162,6 +164,6 @@ class PropertyVM: ObservableObject {
             
         }
 
-    }
+    } */
     
 }

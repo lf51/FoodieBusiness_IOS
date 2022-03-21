@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DishTipologia: MyEnumProtocol {
+enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform {
     
     static var allCases: [DishTipologia] = [.standard,.vegetariano,.vegariano,.vegano]
     static var defaultValue: DishTipologia = DishTipologia.noValue

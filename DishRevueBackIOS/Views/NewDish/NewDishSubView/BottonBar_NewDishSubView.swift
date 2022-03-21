@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BottonBar_NewDishSubView: View {
     
-    @ObservedObject var dishVM: DishVM
+    @ObservedObject var accounterVM: AccounterVM
     @Binding var newDish: DishModel
     @Binding var wannaProgramAndPublishNewDish: Bool
     
@@ -20,8 +20,8 @@ struct BottonBar_NewDishSubView: View {
             CSButton_large(title: "Salva Bozza", accentColor: Color.white, backgroundColor: Color.red.opacity(0.8), cornerRadius: 5.0) {
                 
                 print("SVILUPPARE FUNZIONI BOTTONE")
-                dishVM.createNewOrEditOldDish(dish: self.newDish)
-                
+              //  accounterVM.createNewOrEditOldDish(dish: self.newDish)
+                accounterVM.createOrEditItemModel(itemModel: self.newDish)
                 self.newDish.categoria.mantieniUltimaScelta() // mette l'ultima type utilizzata come default per il prox piatto
                 self.newDish = DishModel() // inizializza un piatto nuovo
                 

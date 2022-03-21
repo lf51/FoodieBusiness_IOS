@@ -10,7 +10,7 @@ import SwiftUI
 struct PrincipalTabView: View {
     
     @StateObject var authProcess:AuthPasswordLess = AuthPasswordLess()
-    @StateObject var dishVM: DishVM = DishVM()
+    @StateObject var accounterVM: AccounterVM = AccounterVM()
     @StateObject var propertyVM: PropertyVM = PropertyVM()
     
     var backGroundColorView: Color = Color.cyan
@@ -20,7 +20,7 @@ struct PrincipalTabView: View {
             
         TabView(selection:$tabSelector) {
                 
-            HomeView(propertyViewModel: propertyVM, authProcess: authProcess, dishVM: dishVM, backGroundColorView: backGroundColorView)
+            HomeView(propertyViewModel: propertyVM, authProcess: authProcess, accounterVM: accounterVM, backGroundColorView: backGroundColorView)
                     .badge(10) // Il pallino rosso delle notifiche !!!
                     
                 //SuccessView(authProcess: authProcess)
@@ -39,7 +39,7 @@ struct PrincipalTabView: View {
             // 07.02.22 Abbiamo trasformato la creazione di un piatto in uno sheet che viene fuori della DishListView
                     
                 
-            DishListView(dishVM: dishVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
+            DishListView(accounterVM: accounterVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
                     .tabItem {
                         Image (systemName: "list.bullet.rectangle.portrait")
                         Text("All Dishes")
@@ -47,11 +47,18 @@ struct PrincipalTabView: View {
                    // .background(backGroundColorView.opacity(0.4))
                        
                 
-            ListaIngredientiView(dishVM: dishVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
+            ListaIngredientiView(accounterVM: accounterVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
                 .tabItem {
                     Image (systemName: "list.bullet")
                     Text("Lista Ingredienti")
                 }.tag(3)
+            
+            TESTVIEWMODEL()
+                .tabItem {
+                    Image (systemName: "list.bullet")
+                    Text("TEST")
+                }.tag(3)
+            
             
                 
             }.sheet(isPresented: $authProcess.isPresentingSheet) {

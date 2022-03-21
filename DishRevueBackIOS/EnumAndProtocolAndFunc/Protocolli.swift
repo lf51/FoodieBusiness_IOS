@@ -15,26 +15,40 @@ protocol MyEnumProtocol: CaseIterable, Identifiable, Equatable { // Protocollo u
     static var defaultValue: Self { get }
 }
 
+protocol MyEnumProtocolMapConform:Hashable { }
 
 protocol MyModelProtocol: Identifiable, Equatable {
-    
-   // associatedtype ItemModel:MyEnumProtocolAdvanced
     
     var intestazione: String {get set}
     var alertItem: AlertModel? {get set}
     
 }
 
+protocol MyModelProtocolMapConform {
+    
+    associatedtype MapCategory: MyEnumProtocolMapConform
+    
+    var mapCategoryAvaible: MapCategory {get}
+    
+}
+
+
+
+
+
 protocol MyEnumProtocolAdvanced: MyEnumProtocol { // in disuso dopo Test generic della DishSpecifiView in data 17.03.2022
 
+    associatedtype ItemModel: MyModelProtocol
+    
     static func custom(_ nome: String,_ grammi: String?,_ pax: String,_ prezzo: String) -> Self // può diventare un case
     
     func showAssociatedValue() -> (nome:String,peso:String?,porzioni:String,prezzo:String)
-    func isTagliaAlreadyIn<T:MyModelProtocol>(modello: T) -> Bool
-    func isSceltaBloccata<T:MyModelProtocol>(modello: T) -> Bool
+    func isTagliaAlreadyIn(modello: ItemModel) -> Bool
+    func isSceltaBloccata(modello: ItemModel) -> Bool
     func qualeComboIsAvaible() -> String
     
     static func isCustomCaseNameOriginal(customName: String) -> Bool
     static func addNewValueToAllCases(customName: String) -> Void
     
 }
+

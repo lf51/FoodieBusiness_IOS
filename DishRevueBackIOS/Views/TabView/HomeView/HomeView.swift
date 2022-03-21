@@ -12,7 +12,7 @@ struct HomeView: View {
     
     @ObservedObject var propertyViewModel: PropertyVM 
     @ObservedObject var authProcess: AuthPasswordLess
-    @ObservedObject var dishVM: DishVM
+    @ObservedObject var accounterVM: AccounterVM
     var backGroundColorView: Color
 
     @State private var showAddNewPropertySheet:Bool = false
@@ -60,7 +60,7 @@ struct HomeView: View {
                             ForEach(propertyViewModel.propertiesList) { property in
                                 
                   
-                                NavigationLink(destination: TESTView(dishVM: dishVM, currentProperty: property, backgroundColor: backGroundColorView)) {
+                                NavigationLink(destination: TESTView(accounterVM: accounterVM, currentProperty: property, backgroundColor: backGroundColorView)) {
                                         
                                     Text(property.name).bold().foregroundColor(Color.red)
                                     
@@ -123,9 +123,9 @@ struct HomeView_Previews: PreviewProvider {
     
     static var previews: some View {
         
-    HomeView(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backGroundColorView: Color.cyan)
+    HomeView(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), accounterVM: AccounterVM(), backGroundColorView: Color.cyan)
         
-      /*  TESTView(dishVM: DishVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
+      /*  TESTView(accounterVM: AccounterVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
     }
 }
 
@@ -133,7 +133,7 @@ struct HomeView_Previews: PreviewProvider {
 
 struct TESTView: View {
     
-    @ObservedObject var dishVM: DishVM
+    @ObservedObject var accounterVM: AccounterVM
     var currentProperty: PropertyModel
     let backgroundColor: Color
     

@@ -9,9 +9,11 @@
 
 import Foundation
 
-struct DishModel:MyModelProtocol {
+struct DishModel: MyModelProtocol, MyModelProtocolMapConform {
     
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
+       
+        lhs.id == rhs.id &&
         lhs.intestazione == rhs.intestazione &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
@@ -26,7 +28,8 @@ struct DishModel:MyModelProtocol {
        // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
     }
     
-    var id:String = UUID().uuidString // deprecated il 16.03.2022 --> Formarlo in altro Modo
+    var id:String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() }
+  //  var id:String = UUID().uuidString // deprecated il 16.03.2022 --> Formarlo in altro Modo
    // var status: DishStatus // in beta
     
     var intestazione: String
@@ -68,6 +71,12 @@ struct DishModel:MyModelProtocol {
         
     }
    
+    var mapCategoryAvaible:DishCategoria {
+        
+        self.categoria
+    }
+
+    
 }
 /*
 enum DishStatus {

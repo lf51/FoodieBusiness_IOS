@@ -12,14 +12,16 @@ import SwiftUI
 struct NuovoIngredienteMainView: View {
 
     @ObservedObject var propertyVM: PropertyVM
+    @ObservedObject var accounterVM: AccounterVM
     let backGroundColorView: Color
     @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
     
     @State var nuovoIngrediente: IngredientModel = IngredientModel() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
     
-    init(propertyVM: PropertyVM, backGroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
+    init(propertyVM: PropertyVM, accounterVM: AccounterVM, backGroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
         
         self.propertyVM = propertyVM
+        self.accounterVM = accounterVM
         self.backGroundColorView = backGroundColorView
         _dismissButton = dismissButton ?? Binding.constant(nil)
     }
@@ -75,7 +77,7 @@ struct NuovoIngredienteMainView: View {
             
             ingrediente.intestazione = String(x)
             
-            propertyVM.listaMyIngredients.append(ingrediente)
+            accounterVM.allMyIngredients.append(ingrediente)
             
         }
         
@@ -108,7 +110,7 @@ struct NuovoIngredienteView_Previews: PreviewProvider {
             }
             
             
-            NuovoIngredienteMainView(propertyVM: PropertyVM(), backGroundColorView: Color.cyan, dismissButton: nil)
+            NuovoIngredienteMainView(propertyVM: PropertyVM(), accounterVM: AccounterVM(), backGroundColorView: Color.cyan, dismissButton: nil)
               // .cornerRadius(20.0)
                 //.padding(.vertical)
                 

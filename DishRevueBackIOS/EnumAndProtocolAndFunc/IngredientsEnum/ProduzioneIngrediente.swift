@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ProduzioneIngrediente: MyEnumProtocol {
+enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
 
     static var defaultValue: ProduzioneIngrediente = ProduzioneIngrediente.custom("")
     static var allCases: [ProduzioneIngrediente] = [.convenzionale,.biologico,.naturale,.selvatico]

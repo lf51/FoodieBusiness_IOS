@@ -10,6 +10,7 @@ import SwiftUI
 struct ListaIngredienti_ConditionalView: View {
     
     @ObservedObject var propertyVM: PropertyVM
+    @ObservedObject var accounterVM: AccounterVM
     @Binding var newDish: DishModel
     @Binding var listaDaMostrare: ElencoListeIngredienti
     
@@ -23,7 +24,7 @@ struct ListaIngredienti_ConditionalView: View {
 
             if listaDaMostrare == .allFromCommunity {
                     
-                    MostraESelezionaIngredienti(listaAttiva:propertyVM.listoneFromListaBaseModelloIngrediente) { ingredient in
+                    MostraESelezionaIngredienti(listaAttiva:accounterVM.listoneFromListaBaseModelloIngrediente) { ingredient in
                         self.discoverIngredientAttribute(ingredient: ingredient).imageColorUsed
                     } action: { ingredient in
                         self.addIngredientsTemporary(ingredient: ingredient)
@@ -33,7 +34,7 @@ struct ListaIngredienti_ConditionalView: View {
                 
                 else if listaDaMostrare == .allMyIngredients {
                     
-                    MostraESelezionaIngredienti(listaAttiva: propertyVM.listaMyIngredients) { ingredient in
+                    MostraESelezionaIngredienti(listaAttiva: accounterVM.allMyIngredients) { ingredient in
                         self.discoverIngredientAttribute(ingredient: ingredient).imageColorUsed
                     } action: { ingredient in
                         self.addIngredientsTemporary(ingredient: ingredient)

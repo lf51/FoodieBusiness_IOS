@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DishCategoria: MyEnumProtocol, Hashable {
+enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
     
     // quando scarichiamo i dati dal server, dobbiamo iterate tutte le tipologie salvate e inserirle nella static allCases. Insieme ai casi "standard" avremo così anche i casi custom.
     

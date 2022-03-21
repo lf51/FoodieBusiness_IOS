@@ -80,10 +80,10 @@ struct InfoDishRow: View {
 
 struct InfoDishRow_Previews: PreviewProvider {
     
-    static var dishVM:DishVM = {
+    static var accounterVM:AccounterVM = {
         
-        var dishViewModel = DishVM()
-        dishViewModel.dishList.append(testDish)
+        var dishViewModel = AccounterVM()
+        dishViewModel.allMyDish.append(testDish)
         return dishViewModel
     }()
     
