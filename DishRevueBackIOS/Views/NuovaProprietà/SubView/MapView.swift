@@ -12,12 +12,14 @@ import MapKit
 
 struct MapView: View {
     
-    @ObservedObject var vm:PropertyVM
+   // @ObservedObject var vm:PropertyVM
+    @Binding var currentRegion: MKCoordinateRegion
+    @Binding var queryResults: [PropertyModel]
     
     var body: some View {
           
-            Map(coordinateRegion: $vm.currentRegion,
-                annotationItems: vm.queryResults) { property in
+            Map(coordinateRegion: $currentRegion,
+                annotationItems: queryResults) { property in
                 
                 MapMarker(coordinate: property.coordinates , tint: .cyan)
                 
@@ -25,9 +27,10 @@ struct MapView: View {
     }
 }
 
+/*
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
         MapView(vm:PropertyVM())
     }
-}
+} */
 

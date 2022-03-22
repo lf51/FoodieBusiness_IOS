@@ -35,7 +35,7 @@ struct TESTVIEWMODEL: View {
         return dish
     }()
     
-    let propertyExampleBis: PropertyModel = PropertyModel(name: "Osteria Favelas", cityName: "Sciacca", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), imageNames: ["LogoAppBACKEND"], webSite: "https://fantabid.it", phoneNumber: "+39 333 7213895", streetAdress: "Via Conzo 26")
+    let propertyExampleBis: PropertyModel = PropertyModel(nome: "Osteria Favelas")
     
     var body: some View {
     
@@ -95,7 +95,7 @@ struct TESTVIEWMODEL: View {
                 
                 ForEach(viewModel.allMyProperties) { dish in
                     
-                    Text(dish.name)
+                    Text(dish.intestazione)
              
                 }
                 

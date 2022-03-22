@@ -8,6 +8,7 @@
 import Foundation
 import MapKit
 
+/* // Deprecated il 22.03.2022 -> Inglobata nell'accounterVM
 class PropertyVM: ObservableObject {
     /*
     // create dal sistema
@@ -29,7 +30,7 @@ class PropertyVM: ObservableObject {
         center: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
     
-    @Published var currentProperty: PropertyModel = PropertyModel(name: "Activity Name", cityName: "City", coordinates:CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "https://fantabid.it/dishRevue/Milano/pizzium/viavigevano", phoneNumber: "phone number", streetAdress: "Street adress")
+  //  @Published var currentProperty: PropertyModel = PropertyModel(name: "Activity Name", cityName: "City", coordinates:CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "https://fantabid.it/dishRevue/Milano/pizzium/viavigevano", phoneNumber: "phone number", streetAdress: "Street adress")
     
     @Published var showActivityInfo:Bool = false 
     @Published var alertItem: AlertModel?
@@ -38,13 +39,13 @@ class PropertyVM: ObservableObject {
     init() {
         
     
-        propertiesList.append(propertyExample) // TEST CODE DA ELIMINARE
+     //   propertiesList.append(propertyExample) // TEST CODE DA ELIMINARE
      //   fillFromListaBaseModello() // TEST CODE DA ELIMINARE
         
         
     }
  
-    func addNewProperty() {
+  /*  func addNewProperty() {
         
         // Check che la proprietà non sia stata già aggiunta localmente
         
@@ -59,7 +60,7 @@ class PropertyVM: ObservableObject {
             return }
         
         // add Alert
-        self.alertItem = AlertModel(title: "\(self.currentProperty.name) - \(self.currentProperty.cityName)", message: "New Property Added Successfully")
+        self.alertItem = AlertModel(title: "\(self.currentProperty.intestazione) - \(self.currentProperty.cityName)", message: "New Property Added Successfully")
         
         // Aggiungiamo la proprietà localmente
         self.propertiesList.append(self.currentProperty)
@@ -68,7 +69,7 @@ class PropertyVM: ObservableObject {
         
         /// Implementare la registrazione sul database
         
-    }
+    } */
     
     func storePropertyData() {
         
@@ -85,7 +86,7 @@ class PropertyVM: ObservableObject {
         // rimuove piatto dal menu del ristorante ma non dall'archivio Piatti
     } */
     
-    func queryResearch() {
+  /* func queryResearch() {
 
         self.queryResults.removeAll()
         
@@ -101,7 +102,7 @@ class PropertyVM: ObservableObject {
   
               return PropertyModel(
                 
-                name: item.name ?? "",
+                intestazione: item.intestazione ?? "",
                 cityName: item.placemark.locality ?? "",
                 coordinates: item.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
                 webSite: item.url?.absoluteString ?? "",
@@ -111,17 +112,22 @@ class PropertyVM: ObservableObject {
               )
             })
         }
-    }
+    } */
     
-    func showPlaceData(place:PropertyModel) {
+  /*  func showPlaceData(place:PropertyModel) {
         
         self.currentRegion = MKCoordinateRegion(center: place.coordinates , span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         
         self.currentProperty = place
         self.showActivityInfo = true
-    }
+    } */
     
-    func onDismissSearchPropertySheet() {
+    
+    
+    // CAPIRE COME RIMPIAZZARE E DOVE
+    
+    func onDismissSearchPropertySheet() {}
+  /*  func onDismissSearchPropertySheet() {
         
         self.currentProperty = PropertyModel(name: "Activity Name", cityName: "City", coordinates:CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "https://fantabid.it/dishRevue/Milano/pizzium/viavigevano", phoneNumber: "phone number", streetAdress: "Street adress")
         
@@ -133,15 +139,15 @@ class PropertyVM: ObservableObject {
         self.queryResults = []
         self.showActivityInfo = false
         
-    }
+    } */
    
     
-    
+    //
     
     
     // Codice da ELIMINARE - UTILE IN FASE DI COSTRUZIONE
     
-    let propertyExample: PropertyModel = PropertyModel(name: "Osteria Favelas", cityName: "Sciacca", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), imageNames: ["LogoAppBACKEND"], webSite: "https://fantabid.it", phoneNumber: "+39 333 7213895", streetAdress: "Via Conzo 26")
+  //  let propertyExample: PropertyModel = PropertyModel(name: "Osteria Favelas", cityName: "Sciacca", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), imageNames: ["LogoAppBACKEND"], webSite: "https://fantabid.it", phoneNumber: "+39 333 7213895", streetAdress: "Via Conzo 26")
     
     
   /* let ing1 = CommunityIngredientModel(nome: "basilico")
@@ -167,3 +173,6 @@ class PropertyVM: ObservableObject {
     } */
     
 }
+
+
+*/

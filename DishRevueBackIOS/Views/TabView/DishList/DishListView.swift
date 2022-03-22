@@ -26,9 +26,7 @@ import SwiftUI
 
 struct DishListView: View {
     
-    @ObservedObject var accounterVM: AccounterVM
-    
-    @ObservedObject var propertyVM: PropertyVM // forse evitabile
+    @EnvironmentObject var accounterVM: AccounterVM
     @Binding var tabSelection: Int // serve a muoversi fra le tabItem, utile se vogliamo rimettere la NewDishView nella tabBar
     var backGroundColorView: Color
     
@@ -62,7 +60,7 @@ struct DishListView: View {
                                     NavigationLink {
                                        
                                 // Destinazione View per Creare/Modificare il piatto
-                                        NewDishMainView(propertyVM:propertyVM, accounterVM: accounterVM, backGroundColorView: Color.cyan, newDish: dish)
+                                        NewDishMainView(backGroundColorView: Color.cyan, newDish: dish)
                                             .navigationBarHidden(true)
                                         
                                             
@@ -81,25 +79,16 @@ struct DishListView: View {
                 }
 
             }
-            .navigationTitle(Text("All Dishes"))
+            .navigationTitle(Text("I Miei Piatti"))
             .navigationBarItems(
                 trailing:
                     
-                    Button(action: {
-                       // self.tabSelection = 1
+                    LargeBar_TextPlusButton(buttonTitle: "Nuovo Piatto", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openCreateNewDish.toggle()
-                    }, label: {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                                .foregroundColor(.black)
-                            
-                            Text("New Dish").bold().foregroundColor(Color.black)
-                        }
-                    })
-                    
-            )
+                    }
+                )
             .fullScreenCover(isPresented: self.$openCreateNewDish, content: {
-                NewDishMainView(propertyVM: propertyVM, accounterVM: accounterVM,  backGroundColorView: .cyan)
+                NewDishMainView(backGroundColorView: .cyan)
             })
 
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
@@ -109,9 +98,10 @@ struct DishListView: View {
         }
     }
 }
-
+/*
 struct DisheListView_Previews: PreviewProvider {
     static var previews: some View {
-        DishListView(accounterVM: AccounterVM(), propertyVM: PropertyVM(), tabSelection: .constant(2), backGroundColorView: Color.cyan)
+        DishListView(accounterVM: AccounterVM(), tabSelection: .constant(2), backGroundColorView: Color.cyan)
     }
 }
+*/

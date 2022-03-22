@@ -7,16 +7,14 @@
 
 import SwiftUI
 import UIKit
-
+/*
 struct HomeView: View {
     
     @ObservedObject var authProcess: AuthPasswordLess
-    @EnvironmentObject var accounterVM: AccounterVM
+    @ObservedObject var accounterVM: AccounterVM
     var backGroundColorView: Color
 
-    @State private var wannaAddNewProperty:Bool = false
-    @State private var wannaCreateMenu: Bool? = false
-    var screenHeight: CGFloat = UIScreen.main.bounds.height
+    @State private var showAddNewPropertySheet:Bool = false
     
     var body: some View {
         
@@ -40,50 +38,28 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                    LargeBar_TextPlusButton(placeHolder: "I Miei Menu") {
+                 /*   AddNewPropertyBar_HomeSubView(authProcess: authProcess, showAddNewPropertySheet: $showAddNewPropertySheet) */
+                    LargeMiddleBar_PlusButton(title: "Proprietà") {
                         
-                        withAnimation {
-                            self.wannaCreateMenu = true
-                        }
-                       
-                    }.padding(.horizontal)
-            
-                    // Lista Properties
-                    ScrollView {
-                               
-                        VStack(alignment:.leading,spacing:5.0) {
+                        if AuthPasswordLess.isUserAuth {
                             
-                            ForEach(accounterVM.mappingModelList(modelType: MenuModel.self)) { categoriaMap in
-                                
-                                Text(categoriaMap.simpleDescription()).bold().foregroundColor(Color.red)
-                                    
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    
-                                    HStack {
-                          
-                                        ForEach(accounterVM.filteredModelList(modelType: MenuModel.self, filtro: categoriaMap )) { menu in
-                        
-                                            Text(menu.intestazione)
-                                            
-                                        }
-                                        
-                                    }
-                                }
-                            }
+                            self.showAddNewPropertySheet.toggle()
+                            print("Siamo nell'If in LargeMiddleBar action")
+                        } else {
+                            authProcess.isPresentingSheet = true
+                            print("Siamo nell'else dell'action in LargeMiddleBar")
                         }
                     }
-                   .frame(maxWidth:.infinity)
-                   .frame(maxHeight: screenHeight * 0.40) // Calcolare altezza in termini %
-                
                     
-                 /*   ScrollView() { // Lista Properties per TEST
+                    // Lista Properties
+                    ScrollView() {
                                
                         VStack(alignment:.leading,spacing:5.0) {
                             
                             ForEach(accounterVM.allMyProperties) { property in
                                 
                   
-                                NavigationLink(destination: TESTView(currentProperty: property, backgroundColor: backGroundColorView)) {
+                                NavigationLink(destination: TESTView(accounterVM: accounterVM, currentProperty: property, backgroundColor: backGroundColorView)) {
                                         
                                     Text(property.intestazione).bold().foregroundColor(Color.red)
                                     
@@ -94,20 +70,10 @@ struct HomeView: View {
                         }
                     }
                    .frame(maxWidth:.infinity)
-                   .frame(maxHeight: 300) */
-                    
-                    
-                    
+                   .frame(maxHeight: 300) // Calcolare altezza in termini %
+                
                 } // VStack End
 
-                if self.wannaCreateMenu! {
-                    
-                    NuovoMenuMainView(dismissView: $wannaCreateMenu).zIndex(1.0)
-                    
-                }
-                
-                
-                
             }// chiusa ZStack
             .background(backGroundColorView.opacity(0.4))
             .navigationTitle("Hi, Nome Utente \(Text(authProcess.displayName))")
@@ -117,17 +83,23 @@ struct HomeView: View {
                 }, label: {
                     Image(systemName: "person.fill")
                         .foregroundColor(.black)
-                }),
-                trailing: LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color.mint, imageFore: Color.white) {
-                    self.wannaAddNewPropertyButton()
-                }
+                })
+     
                     )
             
             .navigationBarTitleDisplayMode(.automatic)
             .navigationViewStyle(.stack) // se non ricordo male mi serve per iPad
-            .sheet(isPresented: self.$wannaAddNewProperty) {
+            /*.toolbar(content: {
+                HStack {
+                    Text("Ciao!")
+                    Spacer()
+                    Text("Hello!")
+                }
+            })*/
+           
+            .sheet(isPresented: self.$showAddNewPropertySheet) {
                 
-                NewPropertySheetView(isShowingSheet: self.$wannaAddNewProperty)
+                NewPropertySheetView(accounterVM: accounterVM, isShowingSheet: self.$showAddNewPropertySheet)
               
             }
             .sheet(isPresented: $authProcess.isPresentingSheet) {
@@ -142,26 +114,9 @@ struct HomeView: View {
         
 
     }
-    
-    // Method
-    
-    private func wannaAddNewPropertyButton() {
-        
-        if AuthPasswordLess.isUserAuth {
-            
-            self.wannaAddNewProperty.toggle()
-            print("Utente Autenticato, Apertura Sheet NuovaProprietà")
-            
-        } else {
-            
-            authProcess.isPresentingSheet = true
-            print("Utente NON Auth, Apertura Sheet Authentication")
-        }
-    }
-    
       
 }
-/*
+
 struct HomeView_Previews: PreviewProvider {
  
     static var previews: some View {
@@ -171,12 +126,12 @@ struct HomeView_Previews: PreviewProvider {
       /*  TESTView(accounterVM: AccounterVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
     }
 }
-*/
+
 
 
 struct TESTView: View {
     
-    @EnvironmentObject var accounterVM: AccounterVM
+    @ObservedObject var accounterVM: AccounterVM
     var currentProperty: PropertyModel
     let backgroundColor: Color
     
@@ -199,9 +154,9 @@ struct TESTView: View {
                 
                 Spacer()
                 // Metà schermo
-                LargeBar_TextPlusButton(placeHolder: "Menu") {
+                LargeMiddleBar_PlusButton(title: "Menu") {
                     self.wannaCreateMenu = true
-                }.padding(.horizontal)
+                }
                 
                 
                 ScrollView {
@@ -251,7 +206,7 @@ struct TESTView: View {
 
 
 
-
+*/
 
 /*  List {
       

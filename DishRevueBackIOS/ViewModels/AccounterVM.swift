@@ -26,46 +26,43 @@ class AccounterVM: ObservableObject {
     @Published var allMyDish:[DishModel] = [] // tutti i piatti creati dall'accounter
     @Published var allMyMenu:[MenuModel] = [] // tutti i menu creati dall'accounter
     @Published var allMyProperties:[PropertyModel] = [] // tutte le proprietà registrate dall'accounter - In disuso finchè esiste un VM apposito
+    @Published var alertItem: AlertModel?
     
     init() {
         
         fillFromListaBaseModello()
     }
     
-    
     // Method Generic
-    
-    func createOrEditItemModel<T:MyModelProtocol>(itemModel:T) {
 
-        var containerT: [T] = []
-        
-        switch itemModel.self {
-            
-        case is IngredientModel:
-            containerT = self.allMyIngredients as! [T]
-        case is DishModel:
-            containerT = self.allMyDish as! [T]
-        case is MenuModel:
-            containerT = self.allMyMenu as! [T]
-        case is PropertyModel:
-            containerT = self.allMyProperties as! [T]
-            
-        default: return
-            
-        }
+    func createOrEditItemModel<T:MyModelProtocol>(itemModel:T) {
+    
+        var (containerT, editAvaible) = assignToContainerT(itemModel: itemModel)
   
         if let oldItemIndex = containerT.firstIndex(where: {$0 == itemModel}) {
             
-            containerT.remove(at: oldItemIndex)
-            containerT.insert(itemModel, at: oldItemIndex)
-            print("Piato con id: \(itemModel.id) esistente. Rimosso e Reinserito")
-            
+            if editAvaible {
+                
+                containerT.remove(at: oldItemIndex)
+                containerT.insert(itemModel, at: oldItemIndex)
+                
+                self.alertItem = AlertModel(title: "\(itemModel.intestazione)", message: "Item modificato con succcesso.")
+                
+                print("Item con id: \(itemModel.id) esistente. Rimosso e Reinserito. Modificato con successo")
+                
+            } else {
+                
+                self.alertItem = AlertModel(title: "Error", message: "Item already Listed")
+                print("ITEM ALREADY IN")
+                
+            }
         }
         
         else {
             
-            print("Piatto mai Esistito Prima, creato con id: \(itemModel.id)")
+            self.alertItem = AlertModel(title: "\(itemModel.intestazione)", message: "New Item Added Successfully")
             containerT.append(itemModel)
+            print("Item mai Esistita Prima, creato con id: \(itemModel.id)")
         }
         
         switch itemModel.self {
@@ -95,10 +92,9 @@ class AccounterVM: ObservableObject {
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
-    
     func mappingModelList<T:MyModelProtocolMapConform>(modelType: T.Type) -> [T.MapCategory] {
         
-        let containerT: [T] = findModelTypeArray(modelType: modelType)
+        let containerT: [T] = assignToContainerT(modelType: modelType)
         
         let firstStep = containerT.map({$0.mapCategoryAvaible})
         let secondStep = Set(firstStep)
@@ -110,13 +106,13 @@ class AccounterVM: ObservableObject {
     
     func filteredModelList<T:MyModelProtocolMapConform>(modelType:T.Type, filtro:T.MapCategory) -> [T] {
            
-        let containerT: [T] = findModelTypeArray(modelType: modelType)
+        let containerT: [T] = assignToContainerT(modelType: modelType)
          
         return containerT.filter({$0.mapCategoryAvaible == filtro})
            
        }
     
-    private func findModelTypeArray<T:MyModelProtocolMapConform>(modelType:T.Type) ->[T] {
+    private func assignToContainerT<T:MyModelProtocolMapConform> (modelType:T.Type) ->[T] {
         
         var containerT: [T] = []
         
@@ -125,9 +121,9 @@ class AccounterVM: ObservableObject {
         case is DishModel.Type:
             containerT = self.allMyDish as! [T]
         case is IngredientModel.Type:
-            containerT = [] // type ancora non conforme al MyModelProtocolMapConform
+            containerT = self.allMyIngredients as! [T]
         case is MenuModel.Type:
-            containerT = [] // type ancora non conforme al MyModelProtocolMapConform
+            containerT = self.allMyMenu as! [T]
         case is PropertyModel.Type:
             containerT = [] // type ancora non conforme al MyModelProtocolMapConform
             
@@ -138,11 +134,28 @@ class AccounterVM: ObservableObject {
         return containerT
     }
     
-
+    private func assignToContainerT<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
+        
+        switch itemModel.self {
+            
+        case is IngredientModel:
+            return(self.allMyIngredients as! [T], true)
+        case is DishModel:
+            return(self.allMyDish as! [T], true)
+        case is MenuModel:
+            return (self.allMyMenu as! [T], true)
+        case is PropertyModel:
+            return(self.allMyProperties as! [T], false)
+            
+        default: return([],false)
+            
+        }
+    }
+    
   // AREA TEST -> DA ELIMINARE
     
-    let ing1 = CommunityIngredientModel(nome: "basilico")
-    let ing2 = CommunityIngredientModel(nome: "aglio")
+     let ing1 = CommunityIngredientModel(nome: "basilico")
+     let ing2 = CommunityIngredientModel(nome: "aglio")
      let ing3 = CommunityIngredientModel(nome: "olio")
      let ing4 = CommunityIngredientModel(nome: "prezzemolo")
      let ing5 = CommunityIngredientModel(nome: "origano")
@@ -150,8 +163,7 @@ class AccounterVM: ObservableObject {
      let ing7 = CommunityIngredientModel(nome: "pepe")
      
      func fillFromListaBaseModello() { // TEST CODE DA MODIFICARE
-         
-         
+                  
          let ingList = [ing1,ing2,ing3,ing4,ing5,ing6,ing7]
          
          for ing in ingList {
@@ -160,8 +172,6 @@ class AccounterVM: ObservableObject {
              listoneFromListaBaseModelloIngrediente.append(ingMod)
              
          }
-
      }
-    
 }
 

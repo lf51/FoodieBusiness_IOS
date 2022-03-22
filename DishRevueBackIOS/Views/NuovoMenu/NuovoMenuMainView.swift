@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NuovoMenuMainView: View {
 
+    @EnvironmentObject var accounterVM: AccounterVM
     @State private var nuovoMenu: MenuModel
     @Binding var dismissView:Bool?
     @State private var nuovaIntestazioneMenu: String = ""
@@ -49,13 +50,11 @@ struct NuovoMenuMainView: View {
                     .opacity(0.4)
                     .disabled(true)
                 
-         
-                
                 CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
                     
                 CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
 
-                BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu)
+                BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu){self.scheduleANewMenu()}
  
             }.padding(.horizontal)
             
@@ -65,12 +64,28 @@ struct NuovoMenuMainView: View {
         .background(RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
         .contrast(1.2)
         .brightness(0.08)
-        .alert(item:$nuovoMenu.alertItem) { alert -> Alert in
+        .alert(item:$accounterVM.alertItem) { alert -> Alert in
            Alert(
              title: Text(alert.title),
              message: Text(alert.message)
            )
          } // non funziona
+    }
+    
+    // Method
+    
+    private func scheduleANewMenu() {
+            
+        self.accounterVM.createOrEditItemModel(itemModel: self.nuovoMenu)
+        
+        print("Nome Menu: \(self.nuovoMenu.intestazione)")
+        print("data Inizio:\(self.nuovoMenu.dataInizio.ISO8601Format())")
+        print("data Fine: \(self.nuovoMenu.dataFine.ISO8601Format())")
+        print("nei giorni di: \(self.nuovoMenu.giorniDelServizio.description)")
+        print("dalle \(self.nuovoMenu.oraInizio.ISO8601Format()) alle \(self.nuovoMenu.oraFine.ISO8601Format())")
+        
+        
+       print("Salvare MenuModel nel firebase e/o nell'elenco dei Menu in un ViewModel")
     }
 }
 

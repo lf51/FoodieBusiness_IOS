@@ -9,8 +9,8 @@ import SwiftUI
 
 struct NewDishMainView: View {
     
-    @ObservedObject var propertyVM: PropertyVM
-    @ObservedObject var accounterVM: AccounterVM // ATTUALMENTE NON UTILIZZATO
+   // @ObservedObject var propertyVM: PropertyVM
+    @EnvironmentObject var accounterVM: AccounterVM // ATTUALMENTE NON UTILIZZATO
     var backGroundColorView: Color
     
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
@@ -68,14 +68,14 @@ struct NewDishMainView: View {
                       // self.openAddingIngredienteSecondario = false
                     }
         
-                    ConditionalZStackView_NewDishSubView(propertyVM: propertyVM, accounterVM: accounterVM, newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backGroundColorView: backGroundColorView)
+                    ConditionalZStackView_NewDishSubView(newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backGroundColorView: backGroundColorView)
                     
                     
                 } // end ZStack Interno
                 
                 Spacer()
                 
-                BottonBar_NewDishSubView(accounterVM: accounterVM, newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
+                BottonBar_NewDishSubView(newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
                     .padding()
                     .background(Color.cyan)
                     .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)

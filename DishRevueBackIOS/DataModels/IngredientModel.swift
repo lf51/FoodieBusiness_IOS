@@ -9,8 +9,8 @@ import Foundation
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel: MyModelProtocol {
-    
+struct IngredientModel: MyModelProtocol, MyModelProtocolMapConform {
+
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return
       lhs.id == rhs.id &&
@@ -33,6 +33,7 @@ struct IngredientModel: MyModelProtocol {
     
     var alertItem: AlertModel?
     //
+    var mapCategoryAvaible: ProduzioneIngrediente {self.produzione}
     
     // In futuro serviranno delle proprietà ulteriori, pensando nell'ottica che l'ingrediente possa essere gestito dall'app in chiave economato, quindi gestendo quantità e prezzi e rifornimenti necessari
     

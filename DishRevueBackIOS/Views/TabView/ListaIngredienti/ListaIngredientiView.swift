@@ -26,9 +26,9 @@ import SwiftUI
 
 struct ListaIngredientiView: View {
     
-    @ObservedObject var accounterVM: AccounterVM // non sembra servire
+    @EnvironmentObject var accounterVM: AccounterVM // non sembra servire
     
-    @ObservedObject var propertyVM: PropertyVM
+    //@ObservedObject var propertyVM: PropertyVM
     @Binding var tabSelection: Int
     var backGroundColorView: Color
     
@@ -65,26 +65,17 @@ struct ListaIngredientiView: View {
                 }
 
             }
-            .navigationTitle(Text("Lista Ingredienti"))
+            .navigationTitle(Text("I Miei Ingredienti"))
             .navigationBarItems(
                 trailing:
                     
-                    Button(action: {
-                       // self.tabSelection = 1
+                    LargeBar_TextPlusButton(buttonTitle: "Nuovo Ingrediente", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openNuovoIngrediente.toggle()
-                    }, label: {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                                .foregroundColor(.black)
-                            
-                            Text("Nuovo Ingrediente").bold().foregroundColor(Color.black)
-                        }
-                    })
-                    
-            )
+                    }
+                )
             .sheet(isPresented: self.$openNuovoIngrediente) {
                // NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
-                NuovoIngredienteMainView(propertyVM:propertyVM, accounterVM: accounterVM, backGroundColorView: backGroundColorView)
+                NuovoIngredienteMainView(backGroundColorView: backGroundColorView)
                 // Creare nuovo ingrediente
             }
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
@@ -94,9 +85,10 @@ struct ListaIngredientiView: View {
         }
     }
 }
-
+/*
 struct ListaIngredientiView_Previews: PreviewProvider {
     static var previews: some View {
-        ListaIngredientiView(accounterVM: AccounterVM(), propertyVM: PropertyVM(), tabSelection: .constant(2), backGroundColorView: Color.cyan)
+        ListaIngredientiView(tabSelection: .constant(2), backGroundColorView: Color.cyan)
     }
 }
+*/

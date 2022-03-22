@@ -13,8 +13,8 @@ struct SelettoreIngrediente_NewDishSubView: View {
     
     var screenHeight: CGFloat = UIScreen.main.bounds.height
     
-    @ObservedObject var propertyVM: PropertyVM
-    @ObservedObject var accounterVM: AccounterVM
+  //  @ObservedObject var propertyVM: PropertyVM
+    @EnvironmentObject var accounterVM: AccounterVM
     @Binding var newDish: DishModel
 
     @State private var listaDaMostrare: ElencoListeIngredienti = .allFromCommunity
@@ -39,7 +39,7 @@ struct SelettoreIngrediente_NewDishSubView: View {
                 .padding()
                 .background(Color.cyan.opacity(0.5))
 
-            ListaIngredienti_ConditionalView(propertyVM: propertyVM, accounterVM: accounterVM, newDish: $newDish, listaDaMostrare: $listaDaMostrare, temporarySelectionIngredients: $temporarySelectionIngredients)
+            ListaIngredienti_ConditionalView(newDish: $newDish, listaDaMostrare: $listaDaMostrare, temporarySelectionIngredients: $temporarySelectionIngredients)
             // .refreshable -> per aggiornare
             
             CSButton_large(title: "Aggiungi", accentColor: Color.white, backgroundColor: Color.cyan.opacity(0.5), cornerRadius: 0.0) {
@@ -71,7 +71,7 @@ struct SelettoreIngrediente_NewDishSubView: View {
 
 struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
     
-    static var propertyVM: PropertyVM = PropertyVM()
+  //  static var propertyVM: PropertyVM = PropertyVM()
     static var accounterVM: AccounterVM = AccounterVM()
     
     static var previews: some View {
@@ -102,7 +102,7 @@ struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
         
             }
         
-            SelettoreIngrediente_NewDishSubView(propertyVM: propertyVM, accounterVM: accounterVM, newDish: .constant(DishModel()))
+            SelettoreIngrediente_NewDishSubView(newDish: .constant(DishModel()))
 
         }.onTapGesture {
             SelettoreIngrediente_NewDishSubView_Previews.test()

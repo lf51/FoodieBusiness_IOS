@@ -8,6 +8,8 @@
 import SwiftUI
 import MapKit
 
+/* DEPRECATED 21.03.2022
+
 struct AddNewPropertySheetView: View {
     
     @ObservedObject var vm:PropertyVM
@@ -99,3 +101,4 @@ struct InfoOverlayPointView: View {
 }
 
 
+*/

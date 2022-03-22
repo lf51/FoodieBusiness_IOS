@@ -22,7 +22,6 @@ struct DishRevueBackIOSApp: App {
         
            PrincipalTabView()
           //  DishSpecificView(newDish:.constant(DishModel()))
-           
             
         }
     }

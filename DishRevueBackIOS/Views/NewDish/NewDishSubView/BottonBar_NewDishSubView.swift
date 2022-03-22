@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BottonBar_NewDishSubView: View {
     
-    @ObservedObject var accounterVM: AccounterVM
+    @EnvironmentObject var accounterVM: AccounterVM
     @Binding var newDish: DishModel
     @Binding var wannaProgramAndPublishNewDish: Bool
     

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/* DEPRECATED 21.03.2022
 struct HomeViewBASEVERSION: View {
     
     @StateObject var propertyViewModel: PropertyVM = PropertyVM()
@@ -120,6 +121,8 @@ struct HomeViewBASEVERSION_Previews: PreviewProvider {
     }
 }
 
+ */
+ 
 /*struct SuccessView: View {
    
     @ObservedObject var authProcess: AuthPasswordLess

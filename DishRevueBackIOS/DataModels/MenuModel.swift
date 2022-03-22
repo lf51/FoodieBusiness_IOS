@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MenuModel:MyModelProtocol {
+struct MenuModel:MyModelProtocol, MyModelProtocolMapConform {
    
     static func == (lhs: MenuModel, rhs: MenuModel) -> Bool {
         lhs.id == rhs.id &&
@@ -39,7 +39,7 @@ struct MenuModel:MyModelProtocol {
     
     var alertItem: AlertModel?
     //
-    
+    var mapCategoryAvaible: TipologiaMenu {self.tipologia}
 //    init() {}
     init() {
         
@@ -92,7 +92,7 @@ enum AvailabilityMenu:Hashable {
     
 }
 
-enum TipologiaMenu: MyEnumProtocol {
+enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
    
     static var allCases: [TipologiaMenu] = [.fisso(costo: "n/d"),.allaCarta]
     static var defaultValue: TipologiaMenu = .noValue
@@ -135,7 +135,7 @@ enum TipologiaMenu: MyEnumProtocol {
 }
 
 
-enum GiorniDelServizio: MyEnumProtocol {
+enum GiorniDelServizio: MyEnumProtocol, MyEnumProtocolMapConform {
 
     static var defaultValue: GiorniDelServizio = .lunedi
     static var allDayService: [GiorniDelServizio] = [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato,.domenica] // abbiamo creato questo array uguale ma diverso dall'AllCases per aprire in futuro lo spazio ad un array con i giorni di attività escluso il giorno di riposo

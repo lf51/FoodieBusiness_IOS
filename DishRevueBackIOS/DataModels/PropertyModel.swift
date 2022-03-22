@@ -46,17 +46,53 @@ struct PropertyModel: MyModelProtocol {
        
     }
     
-    let name: String
-    let cityName: String
-    let coordinates: CLLocationCoordinate2D
+  //  let name: String
+    var cityName: String
+    var coordinates: CLLocationCoordinate2D
     var imageNames: [String] = []
-    let webSite: String
-    let phoneNumber: String
-    let streetAdress: String
+    var webSite: String
+    var phoneNumber: String
+    var streetAdress: String
     
   //  var scheduleServizio: [IntestazioneMenu] = [.colazione,.pranzo]
     
     var menuIn: [MenuModel] = [] // doppia scrittura con propertiesWhereIsIn in MenuModel
+    
+    init() { // utile quando creaiamo la @State NewProperty
+        
+        self.intestazione = ""
+        self.cityName = ""
+        self.coordinates = CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
+        self.webSite = ""
+        self.phoneNumber = ""
+        self.streetAdress = ""
+        
+        
+    }
+    
+    init (intestazione: String, cityName: String, coordinates: CLLocationCoordinate2D, webSite: String, phoneNumber: String, streetAdress: String) {
+        
+        self.intestazione = intestazione
+        self.cityName = cityName
+        self.coordinates = coordinates
+        self.webSite = webSite
+        self.phoneNumber = phoneNumber
+        self.streetAdress = streetAdress
+    
+    }
+    
+    init(nome: String) { 
+        
+        self.intestazione = nome
+        self.cityName = ""
+        self.coordinates = CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
+        self.webSite = ""
+        self.phoneNumber = ""
+        self.streetAdress = ""
+        
+        
+    }
+    
     
 }
 

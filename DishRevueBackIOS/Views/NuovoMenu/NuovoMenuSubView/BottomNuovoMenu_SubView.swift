@@ -11,6 +11,7 @@ struct BottomNuovoMenu_SubView: View {
     
     @Binding var nuovoMenu: MenuModel
     @State private var showDialog: Bool = false
+    let doneAction: () -> Void
     
     var isThereAReasonToDisable:(reset: Bool, done:Bool) {
         
@@ -20,12 +21,6 @@ struct BottomNuovoMenu_SubView: View {
         
         return (disableReset,disableDone)
     }
-    
-    // Test Area
-    
-    
-    
-    //
     
     var body: some View {
        
@@ -57,13 +52,14 @@ struct BottomNuovoMenu_SubView: View {
            .opacity(self.isThereAReasonToDisable.done ? 0.6 : 1.0)
            .disabled(self.isThereAReasonToDisable.done)
             
-        }.padding(.vertical)
-            .confirmationDialog(
+        }
+        .padding(.vertical)
+        .confirmationDialog(
                 menuDescription(),
                 isPresented: $showDialog,
                 titleVisibility: .visible) {
                 
-                    Button("Conferma Menu", role: .none) {self.scheduleANewMenu()}
+                Button("Conferma Menu", role: .none) {self.doneAction()}
             }
         
     }
@@ -109,7 +105,7 @@ struct BottomNuovoMenu_SubView: View {
     }
     
     
-    private func scheduleANewMenu() {
+  /*  private func scheduleANewMenu() {
             
         print("Nome Menu: \(self.nuovoMenu.intestazione)")
         print("data Inizio:\(self.nuovoMenu.dataInizio.ISO8601Format())")
@@ -119,7 +115,7 @@ struct BottomNuovoMenu_SubView: View {
         
         
        print("Salvare MenuModel nel firebase e/o nell'elenco dei Menu in un ViewModel")
-    }
+    } */
 }
 
 /*struct BottomNuovoMenu_SubView_Previews: PreviewProvider {

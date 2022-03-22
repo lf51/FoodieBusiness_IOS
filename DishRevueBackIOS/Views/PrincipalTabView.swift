@@ -11,7 +11,7 @@ struct PrincipalTabView: View {
     
     @StateObject var authProcess:AuthPasswordLess = AuthPasswordLess()
     @StateObject var accounterVM: AccounterVM = AccounterVM()
-    @StateObject var propertyVM: PropertyVM = PropertyVM()
+  //  @StateObject var propertyVM: PropertyVM = PropertyVM()
     
     var backGroundColorView: Color = Color.cyan
     @State var tabSelector: Int = 0
@@ -20,7 +20,7 @@ struct PrincipalTabView: View {
             
         TabView(selection:$tabSelector) {
                 
-            HomeView(propertyViewModel: propertyVM, authProcess: authProcess, accounterVM: accounterVM, backGroundColorView: backGroundColorView)
+            HomeView(authProcess: authProcess, backGroundColorView: backGroundColorView)
                     .badge(10) // Il pallino rosso delle notifiche !!!
                     
                 //SuccessView(authProcess: authProcess)
@@ -39,7 +39,7 @@ struct PrincipalTabView: View {
             // 07.02.22 Abbiamo trasformato la creazione di un piatto in uno sheet che viene fuori della DishListView
                     
                 
-            DishListView(accounterVM: accounterVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
+            DishListView(tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
                     .tabItem {
                         Image (systemName: "list.bullet.rectangle.portrait")
                         Text("All Dishes")
@@ -47,29 +47,32 @@ struct PrincipalTabView: View {
                    // .background(backGroundColorView.opacity(0.4))
                        
                 
-            ListaIngredientiView(accounterVM: accounterVM, propertyVM: propertyVM, tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
+            ListaIngredientiView(tabSelection: $tabSelector, backGroundColorView: backGroundColorView)
                 .tabItem {
                     Image (systemName: "list.bullet")
                     Text("Lista Ingredienti")
                 }.tag(3)
             
-            TESTVIEWMODEL()
+          /*  TESTVIEWMODEL()
                 .tabItem {
                     Image (systemName: "list.bullet")
                     Text("TEST")
-                }.tag(3)
+                }.tag(3) */
             
             
                 
             }.sheet(isPresented: $authProcess.isPresentingSheet) {
                 LinkSignInSheetView(authProcess: authProcess)
             }  // riattivare quando abbiamo finito di creare la tabView
+         
             .alert(item: $authProcess.alertItem) { alert -> Alert in
                Alert(
                  title: Text(alert.title),
                  message: Text(alert.message)
                )
              }
+            .environmentObject(accounterVM)
+           
             .accentColor(.cyan)
             
         

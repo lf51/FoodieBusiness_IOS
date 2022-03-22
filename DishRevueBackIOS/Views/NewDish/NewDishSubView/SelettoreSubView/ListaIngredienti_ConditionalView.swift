@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ListaIngredienti_ConditionalView: View {
     
-    @ObservedObject var propertyVM: PropertyVM
-    @ObservedObject var accounterVM: AccounterVM
+  //  @ObservedObject var propertyVM: PropertyVM
+    @EnvironmentObject var accounterVM: AccounterVM
     @Binding var newDish: DishModel
     @Binding var listaDaMostrare: ElencoListeIngredienti
     
