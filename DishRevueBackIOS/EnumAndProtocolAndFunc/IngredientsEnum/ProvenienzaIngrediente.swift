@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum ProvenienzaIngrediente: MyEnumProtocol {
-    
+enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
+ 
     static var defaultValue: ProvenienzaIngrediente = ProvenienzaIngrediente.custom("")
     static var allCases: [ProvenienzaIngrediente] = [.HomeMade, .Italia, .Europa, .RestoDelMondo]
     
@@ -37,4 +37,40 @@ enum ProvenienzaIngrediente: MyEnumProtocol {
         self.simpleDescription().replacingOccurrences(of:" ", with:"").lowercased()
         }
     
+    func returnTypeCase() -> ProvenienzaIngrediente {
+        
+        switch self {
+        case .HomeMade:
+            return .HomeMade
+        case .Italia:
+            return .Italia
+        case .Europa:
+            return .Europa
+        case .RestoDelMondo:
+            return .RestoDelMondo
+        case .custom( _):
+            return .custom("")
+        }
+   
     }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .HomeMade:
+            return "house.circle"
+        case .Italia:
+            return "leaf"
+        case .Europa:
+            return "bus.fill"
+        case .RestoDelMondo:
+           return "globe.europe.africa"
+        case .custom( _):
+            return "globe.europe.africa"
+        }
+    }
+    
+    
+    
+}

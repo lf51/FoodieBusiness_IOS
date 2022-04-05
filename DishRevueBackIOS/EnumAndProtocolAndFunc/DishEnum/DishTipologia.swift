@@ -8,6 +8,11 @@
 import Foundation
 
 enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform {
+    func returnTypeCase() -> DishTipologia {
+        print("dentro DishTipologia ReturnType")
+        return .standard
+    }
+    
     
     static var allCases: [DishTipologia] = [.standard,.vegetariano,.vegariano,.vegano]
     static var defaultValue: DishTipologia = DishTipologia.noValue
@@ -51,6 +56,23 @@ enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform {
         
         }
         
+    }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .standard:
+            return "fork.knife.circle"
+        case .vegetariano:
+            return "fork.knife.circle"
+        case .vegariano:
+            return "fork.knife.circle"
+        case .vegano:
+            return "fork.knife.circle"
+        case .noValue:
+            return "fork.knife.circle"
+        }
     }
     
 }

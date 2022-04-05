@@ -48,5 +48,6 @@ enum DishCookingMethod: MyEnumProtocol  {
         
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
+    
 
 }

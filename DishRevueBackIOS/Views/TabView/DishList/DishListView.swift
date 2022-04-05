@@ -42,38 +42,13 @@ struct DishListView: View {
                 
                 VStack(alignment:.leading) {
                     
-                    Text("Lista")
+                 //   Text("Lista") // con questo text attivo lo scroll viene bloccato e il navigationTitle resta grande
+                    Divider()
                     
                     ScrollView {
                         
-                        ForEach(accounterVM.mappingModelList(modelType: DishModel.self)) { tipologia in
-                            
-                            CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .heavy, textColor: Color.black, strokeColor: Color.yellow, fillColor: Color.yellow.opacity(0.6))
-                           // Text(tipologia.simpleDescription())
-                          
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                
-                                HStack {
-                      
-                                    ForEach(accounterVM.filteredModelList(modelType: DishModel.self, filtro: tipologia)) { dish in
-                    
-                                    NavigationLink {
-                                       
-                                // Destinazione View per Creare/Modificare il piatto
-                                        NewDishMainView(backGroundColorView: Color.cyan, newDish: dish)
-                                            .navigationBarHidden(true)
-                                        
-                                            
-                                        } label: {
-                                            
-                                            InfoDishRow(borderColor: Color.clear, fillColor: Color.black, currentDish: dish)
-                                                                            }
-                                    }
-                                    
-                                }
-                            }
-                        
-                        }
+                        ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allDishMapCategory)
+           
                     }
                 
                 }
@@ -98,6 +73,7 @@ struct DishListView: View {
         }
     }
 }
+
 /*
 struct DisheListView_Previews: PreviewProvider {
     static var previews: some View {

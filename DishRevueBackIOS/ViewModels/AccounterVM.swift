@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 class AccounterVM: ObservableObject {
     
     // questa classe punta ad essere l'unico ViewModel dell'app. Puntiamo a spostare qui dentro tutto ciò che deve funzionare trasversalmente fra le view, e a sostituire gli altri ViewModel col sistema Struct/@State con cui abbiamo creato un NuovoPiatto, un NuovoIngrediente, e un NuovoMenu.
@@ -27,6 +28,9 @@ class AccounterVM: ObservableObject {
     @Published var allMyMenu:[MenuModel] = [] // tutti i menu creati dall'accounter
     @Published var allMyProperties:[PropertyModel] = [] // tutte le proprietà registrate dall'accounter - In disuso finchè esiste un VM apposito
     @Published var alertItem: AlertModel?
+    
+    
+
     
     init() {
         
@@ -92,14 +96,27 @@ class AccounterVM: ObservableObject {
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
-    func mappingModelList<T:MyModelProtocolMapConform>(modelType: T.Type) -> [T.MapCategory] {
+   
+    
+   /* func mappingModelList<T:MyModelProtocolMapConform, E: MyEnumProtocolMapConform>(modelList:[T], filtro: KeyPath<T,E>) -> [E] {
+        
+        let containerT: [T] = modelList
+        let filter = filtro
+        
+        let firstStep = containerT.map { model -> [E] in
+            let mod = model as! IngredientModel
+           return [mod.conservazione]
+        }
+    } */
+    
+   /*func mappingModelList<T:MyModelProtocolMapConform>(modelType: T.Type) -> [T.MapCategory] {
         
         let containerT: [T] = assignToContainerT(modelType: modelType)
         
         let firstStep = containerT.map({$0.mapCategoryAvaible})
-        let secondStep = Set(firstStep)
-        let lastStep = Array(secondStep)
-
+       
+        print("firstStep containerT.map -> \(firstStep)")
+        let lastStep = centrifugaMapCategory(array: firstStep)
         return lastStep
         /* Versione BETA funzionante in data 21.03 -> dopo vari tentativi abbiamo volutamente abbandonato la possibilità di selezionare la categoria per la mappatura in modo dinamico. Vediamo più avanti se questo sarà necessario e allora riproveremo. Siamo arrivati ad una sintassi del tipo func<T:MyModelProtocolMapConform,G:MyEnumProtocolMapConform> nomefunc(modelType: T.Type, categoryType: G.type) -> [G] */
     }
@@ -108,11 +125,31 @@ class AccounterVM: ObservableObject {
            
         let containerT: [T] = assignToContainerT(modelType: modelType)
          
-        return containerT.filter({$0.mapCategoryAvaible == filtro})
+        return containerT.filter({$0.mapCategoryAvaible.returnTypeCase() == filtro})
            
-       }
+       } */
     
-    private func assignToContainerT<T:MyModelProtocolMapConform> (modelType:T.Type) ->[T] {
+    private func centrifugaMapCategory<E:MyEnumProtocolMapConform>(array:[E]) -> [E] {
+        
+        var secondStep: [E] = []
+        
+        for eachCase in array {
+            
+            let element:E = eachCase.returnTypeCase()
+            secondStep.append(element)
+            
+        }
+        print("secondStep Centriguga(firstStep) -> \(secondStep)")
+        let thirdStep = Set(secondStep)
+        print("thirdStep Set(secondStep) -> \(thirdStep)")
+        let lastStep = Array(thirdStep)
+        print("lastStep Array(thirdStep) -> \(lastStep)")
+        return lastStep
+       
+    }
+    
+    
+    private func assignToContainerT<T:MyModelProtocolMapConform> (modelType:T.Type) -> [T] {
         
         var containerT: [T] = []
         
@@ -162,6 +199,28 @@ class AccounterVM: ObservableObject {
      let ing6 = CommunityIngredientModel(nome: "sale")
      let ing7 = CommunityIngredientModel(nome: "pepe")
      
+    let menu1 = MenuModel(nome: "Pranzo WeekEnd", tipologia: .allaCarta, giorniDelServizio: [.venerdi,.sabato,.domenica])
+    let menu2 = MenuModel(nome: "Pranzo Feriale", tipologia: .fisso(persone: "1", costo: "15"), giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi])
+    let menu3 = MenuModel(nome: "ColazioneExpress", tipologia: .fisso(persone: "1", costo: "2.5"), giorniDelServizio: [.giovedi])
+    let menu4 = MenuModel(nome: "CenaAllDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato,.domenica])
+    let prop1 = PropertyModel(nome: "CasaMia")
+    let prop2 = PropertyModel(nome: "CasaTua")
+    let prop3 = PropertyModel(nome: "CasaSua")
+    let prop4 = PropertyModel(nome: "CasaEssa")
+    let dish1 = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carne, categoria: .primo, tipologia: .standard)
+    let dish2 = DishModel(intestazione: "Bucatini alla Matriciana", aBaseDi: .carne, categoria: .primo, tipologia: .standard)
+    let dish4 = DishModel(intestazione: "Tiramisu", aBaseDi: .carne, categoria: .dessert, tipologia: .standard)
+    let dish3 = DishModel(intestazione: "Fritto Misto", aBaseDi: .pesce, categoria: .secondo, tipologia: .vegariano)
+
+    let ingre1 = IngredientModel(nome: "Aglio", provenienza: .Italia, metodoDiProduzione: .biologico, conservazione: .conserva)
+    let ingre2 = IngredientModel(nome: "Aglio Rosso", provenienza: .HomeMade, metodoDiProduzione: .naturale, conservazione: .surgelato)
+    let ingre3 = IngredientModel(nome: "Cipolla", provenienza: .Europa, metodoDiProduzione: .convenzionale, conservazione: .congelato)
+    let ingre4 = IngredientModel(nome: "Prezzemolo", provenienza: .RestoDelMondo, metodoDiProduzione: .selvatico, conservazione: .fresco)
+    let ingre5 = IngredientModel(nome: "TestIngr", provenienza: .Italia, metodoDiProduzione: .biologico, conservazione: .fresco)
+    
+  //  let menu5 = MenuModel.Filter.tipologia(.allaCarta)
+ //   let menu6 = MenuModel.Filter.tipologia(.fisso(costo: "25"))
+    
      func fillFromListaBaseModello() { // TEST CODE DA MODIFICARE
                   
          let ingList = [ing1,ing2,ing3,ing4,ing5,ing6,ing7]
@@ -170,8 +229,19 @@ class AccounterVM: ObservableObject {
              
              let ingMod = IngredientModel(nome: ing.nome)
              listoneFromListaBaseModelloIngrediente.append(ingMod)
-             
+           //  allMyIngredients.append(ingMod)
          }
+         
+         let menuList = [menu1,menu2,menu3,menu4]
+         let dishList = [dish1,dish2,dish3,dish4]
+         let propList = [prop1,prop2,prop3,prop4]
+         let ingrList = [ingre1,ingre2,ingre3,ingre4, ingre5]
+         
+         allMyMenu.append(contentsOf: menuList)
+         allMyDish.append(contentsOf: dishList)
+         allMyProperties.append(contentsOf: propList)
+         allMyIngredients.append(contentsOf: ingrList)
+         
      }
 }
 

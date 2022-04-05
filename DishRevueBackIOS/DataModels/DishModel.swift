@@ -9,8 +9,8 @@
 
 import Foundation
 
-struct DishModel: MyModelProtocol, MyModelProtocolMapConform {
-    
+struct DishModel: MyModelProtocol {
+ 
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
        
         lhs.id == rhs.id &&
@@ -71,10 +71,23 @@ struct DishModel: MyModelProtocol, MyModelProtocolMapConform {
         
     }
    
-    var mapCategoryAvaible:DishCategoria {
+    init(intestazione: String, aBaseDi: DishBase, categoria: DishCategoria, tipologia: DishTipologia) {
         
-        self.categoria
+        self.intestazione = intestazione
+        self.aBaseDi = aBaseDi
+        self.categoria = categoria
+        self.tipologia = tipologia
+        
+        self.ingredientiPrincipali = []
+        self.ingredientiSecondari = []
+        self.allergeni = []
+        self.formatiDelPiatto = []
+        
+        self.avaibleFor = []
+        self.metodoCottura = .defaultValue
     }
+  
+
 
     
 }

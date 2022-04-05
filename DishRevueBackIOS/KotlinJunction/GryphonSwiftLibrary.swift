@@ -18,6 +18,10 @@
 
 // MARK: - Template class declarations
 // gryphon ignore
+
+/*
+
+
 internal class GRYTemplate {
 	static func dot(_ left: GRYTemplate, _ right: String) -> GRYDotTemplate {
 		return GRYDotTemplate(left, right)
@@ -922,3 +926,6 @@ extension MapGSL {
 		MutableMap<CastedKey, CastedValue>(dictionary as! [CastedKey: CastedValue])
 	}
 }
+
+
+*/

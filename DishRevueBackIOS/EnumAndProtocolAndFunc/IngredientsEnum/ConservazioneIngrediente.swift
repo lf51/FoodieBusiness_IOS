@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ConservazioneIngrediente: MyEnumProtocol {
+enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     
     static var allCases: [ConservazioneIngrediente] = [.fresco,.congelato,.surgelato,.conserva]
     static var defaultValue: ConservazioneIngrediente = ConservazioneIngrediente.custom("")
@@ -38,5 +38,38 @@ enum ConservazioneIngrediente: MyEnumProtocol {
         self.simpleDescription().replacingOccurrences(of:" ", with: "").lowercased()
     }
     
+    func returnTypeCase() -> ConservazioneIngrediente {
+        
+        switch self {
+        case .fresco:
+            return .fresco
+        case .congelato:
+            return .congelato
+        case .surgelato:
+            return .surgelato
+        case .conserva:
+            return .conserva
+        case .custom( _):
+            return .custom("")
+        }
+        
+    }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .fresco:
+            return "hare"
+        case .congelato:
+            return "thermometer.snowflake"
+        case .surgelato:
+            return "thermometer.snowflake"
+        case .conserva:
+            return "timer"
+        case .custom( _):
+            return "thermometer.snowflake"
+        }
+    }
     
 }

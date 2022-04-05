@@ -7,9 +7,10 @@
 
 import Foundation
 
-struct MenuModel:MyModelProtocol, MyModelProtocolMapConform {
-   
+struct MenuModel:MyModelProtocol {
+
     static func == (lhs: MenuModel, rhs: MenuModel) -> Bool {
+        
         lhs.id == rhs.id &&
         lhs.intestazione == rhs.intestazione &&
         lhs.tipologia == rhs.tipologia &&
@@ -39,14 +40,23 @@ struct MenuModel:MyModelProtocol, MyModelProtocolMapConform {
     
     var alertItem: AlertModel?
     //
-    var mapCategoryAvaible: TipologiaMenu {self.tipologia}
+   
 //    init() {}
     init() {
         
     }
     
+    init (nome: String, tipologia: TipologiaMenu, giorniDelServizio: [GiorniDelServizio]) {
+        
+        self.intestazione = nome
+        self.tipologia = tipologia
+        self.giorniDelServizio = giorniDelServizio
+        
+    }
+    
   //  var oraInizio: String
   //  var oraFine: String
+   
     
 }
 
@@ -132,10 +142,42 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
         }
         
     }
+    
+    func returnTypeCase() -> Self {
+        
+        switch self {
+        case .fisso(_, _):
+            return .fisso(costo: "n/d")
+        case .allaCarta:
+            return .allaCarta
+        case .noValue:
+            return .noValue
+        }
+    }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .fisso(_, _):
+            return "fork.knife.circle"
+        case .allaCarta:
+            return "fork.knife.circle"
+        case .noValue:
+            return "fork.knife.circle"
+        }
+    }
+    
 }
 
 
 enum GiorniDelServizio: MyEnumProtocol, MyEnumProtocolMapConform {
+    
+    func returnTypeCase() -> GiorniDelServizio {
+        print("dentro Giorni del Servizio - Fase Test")
+        return .domenica
+    }
+    
 
     static var defaultValue: GiorniDelServizio = .lunedi
     static var allDayService: [GiorniDelServizio] = [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato,.domenica] // abbiamo creato questo array uguale ma diverso dall'AllCases per aprire in futuro lo spazio ad un array con i giorni di attività escluso il giorno di riposo
@@ -194,6 +236,27 @@ enum GiorniDelServizio: MyEnumProtocol, MyEnumProtocolMapConform {
     func createId() -> String {
         
         self.simpleDescription().lowercased()
+    }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .lunedi:
+            return "fork.knife.circle"
+        case .martedi:
+            return "fork.knife.circle"
+        case .mercoledi:
+            return "fork.knife.circle"
+        case .giovedi:
+            return "fork.knife.circle"
+        case .venerdi:
+            return "fork.knife.circle"
+        case .sabato:
+            return "fork.knife.circle"
+        case .domenica:
+            return "fork.knife.circle"
+        }
     }
     
 }

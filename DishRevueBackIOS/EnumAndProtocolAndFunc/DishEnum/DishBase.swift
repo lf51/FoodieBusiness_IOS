@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DishBase: MyEnumProtocol {
+enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
     
     static var allCases: [DishBase] = [.carne,.pesce,.vegetali] // Non essendoci valori Associati, la allCases potrebbe essere implicita, ma la esplicitiamo per omettere il caso NoValue, di modo che non appaia fra le opzioni di scelta
     static var defaultValue: DishBase = DishBase.noValue
@@ -37,5 +37,25 @@ enum DishBase: MyEnumProtocol {
     func createId() -> String {
         
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
+    }
+    
+    func returnTypeCase() -> DishBase {
+        print("dentro DishBase return type")
+        return .carne
+    }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .carne:
+            return "fork.knife.circle"
+        case .pesce:
+            return "fork.knife.circle"
+        case .vegetali:
+            return "fork.knife.circle"
+        case .noValue:
+            return "fork.knife.circle"
+        }
     }
 }

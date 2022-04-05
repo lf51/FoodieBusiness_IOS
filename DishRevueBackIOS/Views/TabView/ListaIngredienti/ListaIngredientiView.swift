@@ -26,7 +26,7 @@ import SwiftUI
 
 struct ListaIngredientiView: View {
     
-    @EnvironmentObject var accounterVM: AccounterVM // non sembra servire
+  //  @EnvironmentObject var accounterVM: AccounterVM // non sembra servire
     
     //@ObservedObject var propertyVM: PropertyVM
     @Binding var tabSelection: Int
@@ -45,22 +45,17 @@ struct ListaIngredientiView: View {
                 VStack(alignment:.leading) {
                     
                 //    Text("Lista Ingredienti")
+                  //  Divider() // usando il divider il navigationTitle resta large
                     
-                    ScrollView {
+                 //   ScrollView {
                         
-                        ForEach(accounterVM.allMyIngredients) { ingrediente in
-                            
-                            Text(ingrediente.intestazione)
-                          //  Text(ingrediente.cottura.simpleDescription())
-                            Text("Provenienza Ingrediente")
-                            Text("Metodo di Produzione")
-                            
-                          // Text(ingrediente.provenienza)
-                          //  Text(ingrediente.metodoDiProduzione)
-                            
-                            
-                        }
-                    }
+                        
+                        ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory)
+                   
+                      //  allCases(filtro: .conservazione)
+                        
+                        
+                   // }
                 
                 }
 

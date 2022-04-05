@@ -18,6 +18,7 @@ struct HomeView: View {
     @State private var wannaCreateMenu: Bool? = false
     var screenHeight: CGFloat = UIScreen.main.bounds.height
     
+    
     var body: some View {
         
         NavigationView {
@@ -48,12 +49,32 @@ struct HomeView: View {
                        
                     }.padding(.horizontal)
             
+                    ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
+                   // allCases(filtro: .tipologiaMenu)
+                    
+                    // POSIZIONE PROVVISORIA
+                    
+
+                    
+                   /* Picker(selection:$selectedMapCategory) {
+                        
+                        ForEach(MapCategoryContainer.allMenuMapCategory, id:\.self) {category in
+                            
+                            Text(category.simpleDescription())
+                            
+                        }
+                        
+                    } label: {Text("")}
+                    .pickerStyle(SegmentedPickerStyle()) */
+                    
+                    
                     // Lista Properties
-                    ScrollView {
+               /*     ScrollView {
                                
                         VStack(alignment:.leading,spacing:5.0) {
                             
-                            ForEach(accounterVM.mappingModelList(modelType: MenuModel.self)) { categoriaMap in
+                          //  ForEach(accounterVM.mappingModelList(modelType: MenuModel.self)) { categoriaMap in
+                            ForEach(accounterVM.mappingModelList(modelType:MenuModel.self)) { categoriaMap in
                                 
                                 Text(categoriaMap.simpleDescription()).bold().foregroundColor(Color.red)
                                     
@@ -61,7 +82,7 @@ struct HomeView: View {
                                     
                                     HStack {
                           
-                                        ForEach(accounterVM.filteredModelList(modelType: MenuModel.self, filtro: categoriaMap )) { menu in
+                                       ForEach(accounterVM.filteredModelList(modelType: MenuModel.self, filtro: categoriaMap )) { menu in
                         
                                             Text(menu.intestazione)
                                             
@@ -74,7 +95,7 @@ struct HomeView: View {
                     }
                    .frame(maxWidth:.infinity)
                    .frame(maxHeight: screenHeight * 0.40) // Calcolare altezza in termini %
-                
+                */
                     
                  /*   ScrollView() { // Lista Properties per TEST
                                
@@ -161,17 +182,17 @@ struct HomeView: View {
     
       
 }
-/*
+
 struct HomeView_Previews: PreviewProvider {
  
     static var previews: some View {
         
-    HomeView(authProcess: AuthPasswordLess(), accounterVM: AccounterVM(), backGroundColorView: Color.cyan)
+    HomeView(authProcess: AuthPasswordLess(), backGroundColorView: Color.cyan)
         
       /*  TESTView(accounterVM: AccounterVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
     }
 }
-*/
+
 
 
 struct TESTView: View {

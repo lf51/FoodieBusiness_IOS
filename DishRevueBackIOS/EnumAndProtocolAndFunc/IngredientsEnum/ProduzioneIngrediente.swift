@@ -9,6 +9,22 @@ import Foundation
 
 enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
 
+    func returnTypeCase() -> ProduzioneIngrediente {
+        print("dentro produzione ingrediente returnType")
+        switch self {
+        case .convenzionale:
+            return .convenzionale
+        case .biologico:
+            return .biologico
+        case .naturale:
+            return .naturale
+        case .selvatico:
+            return .selvatico
+        case .custom( _):
+            return .custom("")
+        }
+    }
+    
     static var defaultValue: ProduzioneIngrediente = ProduzioneIngrediente.custom("")
     static var allCases: [ProduzioneIngrediente] = [.convenzionale,.biologico,.naturale,.selvatico]
     
@@ -37,5 +53,22 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     
     func createId() -> String {
         self.simpleDescription().replacingOccurrences(of:" ", with:"").lowercased()
+    }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .convenzionale:
+            return "hammer.circle"
+        case .biologico:
+            return "leaf"
+        case .naturale:
+            return "leaf"
+        case .selvatico:
+            return "leaf"
+        case .custom(_):
+            return "leaf"
+        }
     }
 }

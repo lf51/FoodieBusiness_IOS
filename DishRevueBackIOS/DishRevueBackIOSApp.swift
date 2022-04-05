@@ -28,3 +28,10 @@ struct DishRevueBackIOSApp: App {
 }
 
 
+/*
+ 
+ Importare libreria KeypathKit dello sviluppatore francese, swift Heroes
+ utile per lavorare con gli array tramite keypath
+ 
+ 
+ */

@@ -8,6 +8,11 @@
 import Foundation
 
 enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
+    func returnTypeCase() -> DishCategoria {
+        print("dentro DishCategoria return type")
+        return .antipasto
+    }
+    
     
     // quando scarichiamo i dati dal server, dobbiamo iterate tutte le tipologie salvate e inserirle nella static allCases. Insieme ai casi "standard" avremo così anche i casi custom.
     
@@ -59,6 +64,28 @@ enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
         case .dessert: return "Dolci"
         case .tipologiaCustom(let customName): return customName.capitalized
         
+        }
+    }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+        case .antipasto:
+            return "fork.knife.circle"
+        case .primo:
+            return "fork.knife.circle"
+        case .secondo:
+            return "fork.knife.circle"
+        case .contorno:
+            return "fork.knife.circle"
+        case .pizza:
+            return "fork.knife.circle"
+        case .bevanda:
+            return "fork.knife.circle"
+        case .dessert:
+            return "fork.knife.circle"
+        case .tipologiaCustom( _):
+            return "fork.knife.circle"
         }
     }
     
