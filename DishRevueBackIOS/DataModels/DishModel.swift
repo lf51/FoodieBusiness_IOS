@@ -10,7 +10,7 @@
 import Foundation
 
 struct DishModel: MyModelProtocol {
- 
+     
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
        
         lhs.id == rhs.id &&

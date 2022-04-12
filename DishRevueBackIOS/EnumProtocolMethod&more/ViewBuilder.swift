@@ -19,7 +19,7 @@ import SwiftUI
 
 }
 
-@ViewBuilder func switchModelDataRowView<M:MyModelProtocol>(item: M, statusFilter: ModelStatus) -> some View {
+@ViewBuilder func switchModelDataRowView<M:MyModelProtocol>(item: M/*, statusFilter: ModelStatus*/) -> some View {
      
      switch item.self {
          
@@ -28,9 +28,10 @@ import SwiftUI
          
      case is DishModel:
          
-         let item_1 = item as! DishModel
+         DishModel_RowView(item: item as! DishModel)
+       /*  let item_1 = item as! DishModel
          if item_1.status == statusFilter {DishModel_RowView(item: item as! DishModel)}
-         else { EmptyView() }
+         else { EmptyView() } */
      
      case is IngredientModel:
          IngredientModel_RowView(item: item as! IngredientModel)

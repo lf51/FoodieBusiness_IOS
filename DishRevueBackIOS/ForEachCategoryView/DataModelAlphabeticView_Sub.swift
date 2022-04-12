@@ -25,7 +25,7 @@ struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
                 
                     ForEach(dataContainer) { item in
                         
-                        switchModelDataRowView(item: item, statusFilter: statusFilter)
+                        switchModelDataRowView(item: item)
                  
                     }
             }

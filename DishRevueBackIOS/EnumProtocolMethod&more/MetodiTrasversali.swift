@@ -49,7 +49,10 @@ func myTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     
 }
 
-func myCentrifugaEnumTypeArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] { // serve ad elimare i case duplicati nel caso di valori Associati. Lavora insieme alla func returnType stabilita nel protocollo MyEnumProtocolMapConform
+/// Ripulisce dai casi duplicati un array di (ENUM) case conformi al MyEnumProtocolMapConform [lf51]
+/// - Parameter array: array description
+/// - Returns: description
+func myRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
     
     var arrayCentrifugato:[T] = []
     

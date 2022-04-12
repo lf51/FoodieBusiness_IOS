@@ -10,7 +10,7 @@ import Foundation
 // Creare Oggetto Ingrediente
 
 struct IngredientModel: MyModelProtocol {
-
+    
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return
       lhs.id == rhs.id &&

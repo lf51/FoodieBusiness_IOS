@@ -34,56 +34,12 @@ protocol MyModelProtocol: Identifiable, Equatable {
     
 }
 
-protocol MyModelProtocolMapConform {
+/*protocol MyModelProtocolMapConform {
     
- //   associatedtype MapProperty:MyEnumProtocol,MyEnumProtocolMapConform
+    associatedtype MapProperty:MyEnumProtocol,MyEnumProtocolMapConform
  
-  //  var mapCategoryAvaible: MapProperty { get }
-  // func filter(mapElement: MapCategoryContainer) -> MyEnumProtocolMapConform
-  //  var kp:KeyPath<Self, MapProperty> { get }
-    
-    var kpFilter: PartialKeyPath<Self> { get } // Il Valore deve essere conforme al MyEnumMapProtocol, anche se non è esplicitato
-  //  var kp2: KeyPath<Self,MapProperty> { get }
-    
-   // func testKP (_ : MapCategoryContainer) -> KeyPath<Self,Any>
-   // var allModelFilter: [KpModel] { get }
-}
-
-
-
-/* protocol MyModelProtocolMapConform {
-    
-    
-    
-    
-    associatedtype MapProperty1: MyEnumProtocol,MyEnumProtocolMapConform
-    associatedtype MapProperty2: MyEnumProtocol,MyEnumProtocolMapConform
-    associatedtype MapProperty3: MyEnumProtocol,MyEnumProtocolMapConform
-    associatedtype MapProperty4: MyEnumProtocol,MyEnumProtocolMapConform
-    associatedtype MapProperty5: MyEnumProtocol,MyEnumProtocolMapConform
-    
-    var mapProperty_1: MapProperty1 {get}
-    var mapProperty_2: MapProperty2 {get}
-    var mapProperty_3: MapProperty3 {get}
-    var mapProperty_4: MapProperty4 {get}
-    var mapProperty_5: MapProperty5 {get}
-
+    var staticMapCategory: MapProperty { get }
+  
 } */
 
-
-/*protocol MyEnumProtocolAdvanced: MyEnumProtocol { // in disuso dopo Test generic della DishSpecifiView in data 17.03.2022
-
-    associatedtype ItemModel: MyModelProtocol
-    
-    static func custom(_ nome: String,_ grammi: String?,_ pax: String,_ prezzo: String) -> Self // può diventare un case
-    
-    func showAssociatedValue() -> (nome:String,peso:String?,porzioni:String,prezzo:String)
-    func isTagliaAlreadyIn(modello: ItemModel) -> Bool
-    func isSceltaBloccata(modello: ItemModel) -> Bool
-    func qualeComboIsAvaible() -> String
-    
-    static func isCustomCaseNameOriginal(customName: String) -> Bool
-    static func addNewValueToAllCases(customName: String) -> Void
-    
-} */
 

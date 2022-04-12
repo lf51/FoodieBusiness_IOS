@@ -109,19 +109,19 @@ class AccounterVM: ObservableObject {
         }
     } */
     
-   /*func mappingModelList<T:MyModelProtocolMapConform>(modelType: T.Type) -> [T.MapCategory] {
+   /* func mappingModelList<T:MyModelProtocolMapConform>(modelType: T.Type) -> [T.MapProperty] {
         
         let containerT: [T] = assignToContainerT(modelType: modelType)
         
-        let firstStep = containerT.map({$0.mapCategoryAvaible})
+        let firstStep = containerT.map({$0.staticMapCategory})
        
         print("firstStep containerT.map -> \(firstStep)")
         let lastStep = centrifugaMapCategory(array: firstStep)
         return lastStep
-        /* Versione BETA funzionante in data 21.03 -> dopo vari tentativi abbiamo volutamente abbandonato la possibilità di selezionare la categoria per la mappatura in modo dinamico. Vediamo più avanti se questo sarà necessario e allora riproveremo. Siamo arrivati ad una sintassi del tipo func<T:MyModelProtocolMapConform,G:MyEnumProtocolMapConform> nomefunc(modelType: T.Type, categoryType: G.type) -> [G] */
-    }
+        /* 12.04 -> dopo vari tentativi abbiamo volutamente abbandonato la possibilità di selezionare la categoria per la mappatura in modo dinamico, dopo esserci riusciti con un viewbuilder. Preferiamo una mappatura statica con filtro dinamico. */
+    } */
     
-    func filteredModelList<T:MyModelProtocolMapConform>(modelType:T.Type, filtro:T.MapCategory) -> [T] {
+   /* func filteredModelList<T:MyModelProtocolMapConform>(modelType:T.Type, filtro:T.MapCategory) -> [T] {
            
         let containerT: [T] = assignToContainerT(modelType: modelType)
          
@@ -129,7 +129,7 @@ class AccounterVM: ObservableObject {
            
        } */
     
-    private func centrifugaMapCategory<E:MyEnumProtocolMapConform>(array:[E]) -> [E] {
+  /*  private func centrifugaMapCategory<E:MyEnumProtocolMapConform>(array:[E]) -> [E] {
         
         var secondStep: [E] = []
         
@@ -146,10 +146,10 @@ class AccounterVM: ObservableObject {
         print("lastStep Array(thirdStep) -> \(lastStep)")
         return lastStep
        
-    }
+    } */
     
     
-    private func assignToContainerT<T:MyModelProtocolMapConform> (modelType:T.Type) -> [T] {
+   /* private func assignToContainerT<T:MyModelProtocolMapConform> (modelType:T.Type) -> [T] {
         
         var containerT: [T] = []
         
@@ -169,7 +169,7 @@ class AccounterVM: ObservableObject {
         }
         
         return containerT
-    }
+    } */
     
     private func assignToContainerT<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
         

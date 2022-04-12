@@ -28,7 +28,7 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
                             
                             ForEach(dataFiltering(category)) { item in
                                 
-                           //     switchModelDataRowView(item: item)
+                                switchModelDataRowView(item: item)
                                 
                             }
                         }
