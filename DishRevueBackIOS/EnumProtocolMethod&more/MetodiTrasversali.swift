@@ -48,3 +48,16 @@ func myTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     return (time,date)
     
 }
+
+func myCentrifugaEnumTypeArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] { // serve ad elimare i case duplicati nel caso di valori Associati. Lavora insieme alla func returnType stabilita nel protocollo MyEnumProtocolMapConform
+    
+    var arrayCentrifugato:[T] = []
+    
+    for eachCase in array {
+        
+        let element:T = eachCase.returnTypeCase()
+        arrayCentrifugato.append(element)
+        
+    }
+   return arrayCentrifugato
+}

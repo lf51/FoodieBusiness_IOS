@@ -56,6 +56,11 @@ enum DishAllergeni: MyEnumProtocol {
         
     }
     
+    func extendedDescription() -> String? {
+        print("Dentro DishAllergeni. DescrizioneEstesa non sviluppata")
+        return nil
+    }
+    
     func createId() -> String {
         
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi

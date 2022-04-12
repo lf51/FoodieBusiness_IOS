@@ -34,6 +34,11 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         }
     }
     
+    func extendedDescription() -> String? {
+        print("Dentro ConservazioneIngrediente. DescrizioneEstesa non sviluppata")
+        return nil
+    }
+    
     func createId() -> String {
         self.simpleDescription().replacingOccurrences(of:" ", with: "").lowercased()
     }
@@ -41,26 +46,20 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     func returnTypeCase() -> ConservazioneIngrediente {
         
         switch self {
-        case .fresco:
-            return .fresco
-        case .congelato:
-            return .congelato
-        case .surgelato:
-            return .surgelato
-        case .conserva:
-            return .conserva
+        
         case .custom( _):
             return .custom("")
+        default: return self
         }
         
     }
     
-    func imageAssociated() -> String {
+    func imageAssociated() -> String? {
         
         switch self {
             
         case .fresco:
-            return "hare"
+            return "heart"
         case .congelato:
             return "thermometer.snowflake"
         case .surgelato:
@@ -68,7 +67,23 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         case .conserva:
             return "timer"
         case .custom( _):
-            return "thermometer.snowflake"
+            return nil
+        }
+    }
+    
+    func orderValue() -> Int {
+        
+        switch self {
+        case .fresco:
+            return 1
+        case .congelato:
+            return 2
+        case .surgelato:
+            return 3
+        case .conserva:
+            return 4
+        case .custom(_):
+            return (ConservazioneIngrediente.allCases.count + 1)
         }
     }
     

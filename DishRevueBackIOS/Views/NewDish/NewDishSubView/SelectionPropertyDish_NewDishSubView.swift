@@ -69,14 +69,14 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 
                 CSLabel_1Button(placeHolder: "Tipologia", imageName: "person.fill", backgroundColor: Color.black)
                 
-                VStack(alignment:.leading) {
+             //   VStack(alignment:.leading) {
                     EnumScrollCases(cases: DishTipologia.allCases, dishSingleProperty: self.$newDish.tipologia, colorSelection: Color.green.opacity(0.8))
-                    Text(self.newDish.tipologia.extendedDescription())
+                  /*  Text(self.newDish.tipologia.extendedDescription())
                         .font(.caption)
                         .fontWeight(.semibold)
                         .italic()
-                        .foregroundColor(Color.black)
-                }
+                        .foregroundColor(Color.black) */
+             //   }
                 
             
                 CSLabel_1Button(placeHolder: "Adattabile alla dieta", imageName: "person.fill.checkmark", backgroundColor: Color.black)

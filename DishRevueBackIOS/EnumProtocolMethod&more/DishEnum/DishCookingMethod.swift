@@ -43,6 +43,10 @@ enum DishCookingMethod: MyEnumProtocol  {
             
         }
     }
+    func extendedDescription() -> String? {
+        print("Dentro DishCookingMethod. DescrizioneEstesa non sviluppata")
+        return nil
+    }
     
     func createId() -> String {
         

@@ -40,18 +40,11 @@ struct DishListView: View {
                 
                 backGroundColorView.edgesIgnoringSafeArea(.top)
                 
-                VStack(alignment:.leading) {
+              //  VStack(alignment:.leading) {
                     
-                 //   Text("Lista") // con questo text attivo lo scroll viene bloccato e il navigationTitle resta grande
-                    Divider()
-                    
-                    ScrollView {
-                        
                         ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allDishMapCategory)
-           
-                    }
                 
-                }
+              // }
 
             }
             .navigationTitle(Text("I Miei Piatti"))

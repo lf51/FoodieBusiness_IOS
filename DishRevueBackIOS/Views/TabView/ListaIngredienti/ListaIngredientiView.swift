@@ -26,9 +26,6 @@ import SwiftUI
 
 struct ListaIngredientiView: View {
     
-  //  @EnvironmentObject var accounterVM: AccounterVM // non sembra servire
-    
-    //@ObservedObject var propertyVM: PropertyVM
     @Binding var tabSelection: Int
     var backGroundColorView: Color
     
@@ -42,22 +39,11 @@ struct ListaIngredientiView: View {
                 
                 backGroundColorView.edgesIgnoringSafeArea(.top)
                 
-                VStack(alignment:.leading) {
-                    
-                //    Text("Lista Ingredienti")
-                  //  Divider() // usando il divider il navigationTitle resta large
-                    
-                 //   ScrollView {
-                        
-                        
-                        ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory)
-                   
-                      //  allCases(filtro: .conservazione)
-                        
-                        
-                   // }
-                
-                }
+               // VStack(alignment:.leading) {
+  
+                ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory)
+      
+               // }
 
             }
             .navigationTitle(Text("I Miei Ingredienti"))
@@ -74,9 +60,7 @@ struct ListaIngredientiView: View {
                 // Creare nuovo ingrediente
             }
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
-        
-        
-        
+    
         }
     }
 }

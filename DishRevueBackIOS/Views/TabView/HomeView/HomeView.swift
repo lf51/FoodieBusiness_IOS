@@ -41,15 +41,21 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                    LargeBar_TextPlusButton(placeHolder: "I Miei Menu") {
+                    VStack(spacing:10.0) {
                         
-                        withAnimation {
-                            self.wannaCreateMenu = true
-                        }
-                       
-                    }.padding(.horizontal)
+                        LargeBar_TextPlusButton(placeHolder: "I Miei Menu") {
+                            
+                            withAnimation {
+                                self.wannaCreateMenu = true
+                            }
+                           
+                        }.padding(.horizontal)
+                        
+                        ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
+                    }
             
-                    ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
+                    
+                    
                    // allCases(filtro: .tipologiaMenu)
                     
                     // POSIZIONE PROVVISORIA
@@ -183,7 +189,7 @@ struct HomeView: View {
       
 }
 
-struct HomeView_Previews: PreviewProvider {
+/*struct HomeView_Previews: PreviewProvider {
  
     static var previews: some View {
         
@@ -191,7 +197,7 @@ struct HomeView_Previews: PreviewProvider {
         
       /*  TESTView(accounterVM: AccounterVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
     }
-}
+} */
 
 
 

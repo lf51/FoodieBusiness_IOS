@@ -8,15 +8,10 @@
 import Foundation
 
 enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
-    func returnTypeCase() -> DishCategoria {
-        print("dentro DishCategoria return type")
-        return .antipasto
-    }
-    
-    
+ 
     // quando scarichiamo i dati dal server, dobbiamo iterate tutte le tipologie salvate e inserirle nella static allCases. Insieme ai casi "standard" avremo così anche i casi custom.
     
-    static var allCases: [DishCategoria] = [.antipasto,.primo,.secondo,.contorno,.pizza,.bevanda,.dessert]
+    static var allCases: [DishCategoria] = [.antipasto,.primo,.secondo,.contorno,.pizza,.bevanda,.dessert,.frutta]
     static var defaultValue: DishCategoria = DishCategoria.tipologiaCustom("")
     
     // Potremmo associare l'icona standard ad ogni categoria
@@ -29,6 +24,7 @@ enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
     
     case bevanda
     case dessert
+    case frutta
 
     case tipologiaCustom(_ customName:String)  // creare la possibilità per il ristoratore di specificare qualunque cosa voglia
     
@@ -62,30 +58,76 @@ enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
         case .pizza: return "Pizze"
         case .bevanda: return "Bevande"
         case .dessert: return "Dolci"
+        case .frutta: return "Frutta"
         case .tipologiaCustom(let customName): return customName.capitalized
         
         }
     }
     
-    func imageAssociated() -> String {
+    func extendedDescription() -> String? {
+        print("Dentro DishCategoria. DescrizioneEstesa non sviluppata")
+        return nil
+    }
+    
+    
+    func imageAssociated() -> String? {
         
         switch self {
+            
         case .antipasto:
-            return "fork.knife.circle"
+            return "🫒"
         case .primo:
-            return "fork.knife.circle"
+            return "🍝"
         case .secondo:
-            return "fork.knife.circle"
+            return "🥩"
         case .contorno:
-            return "fork.knife.circle"
+            return "🍟"
         case .pizza:
-            return "fork.knife.circle"
+            return "🍕"
         case .bevanda:
-            return "fork.knife.circle"
+            return "🍺"
         case .dessert:
-            return "fork.knife.circle"
+            return "🍰"
+        case .frutta:
+            return "🍓"
         case .tipologiaCustom( _):
-            return "fork.knife.circle"
+            return "🍽"
+        }
+    }
+    
+    func returnTypeCase() -> DishCategoria {
+        
+        switch self {
+     
+        case .tipologiaCustom( _):
+            return .tipologiaCustom("Standard")
+        default: return self
+            
+        }
+    }
+
+    func orderValue() -> Int {
+        
+        switch self {
+            
+        case .antipasto:
+            return 1
+        case .primo:
+            return 2
+        case .secondo:
+            return 3
+        case .contorno:
+            return 4
+        case .pizza:
+            return 5
+        case .bevanda:
+            return 8
+        case .dessert:
+            return 6
+        case .frutta:
+            return 7
+        case .tipologiaCustom( _):
+            return (DishCategoria.allCases.count + 1)
         }
     }
     

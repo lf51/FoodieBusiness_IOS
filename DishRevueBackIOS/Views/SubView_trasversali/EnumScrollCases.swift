@@ -24,7 +24,7 @@ struct EnumScrollCases<T:MyEnumProtocol>: View {
         _newDishSingleProperty = dishSingleProperty
         _newDishCollectionProperty = .constant([]) // qui a differenza di giù, si è fatto presto passando un arrayVuoto
         self.colorSelection = colorSelection
-    
+       
     }
     
     init(cases:[T], dishCollectionProperty: Binding<[T]>, colorSelection: Color) {
@@ -40,16 +40,29 @@ struct EnumScrollCases<T:MyEnumProtocol>: View {
   
     var body: some View {
         
-        ScrollView(.horizontal,showsIndicators: false) {
+        VStack(alignment:.leading) {
             
-            HStack {
+            ScrollView(.horizontal,showsIndicators: false) {
                 
-                ForEach(enumCases) { type in
+                HStack {
                     
-                    CSText_bigRectangle(testo: type.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.checkSelectionOrContainer(type: type) ? Color.clear : Color.blue, fillColor: self.checkSelectionOrContainer(type: type) ? colorSelection : Color.clear)
-                        .onTapGesture {self.addingValueTo(newValue: type)}
+                    ForEach(enumCases) { type in
+                        
+                        CSText_bigRectangle(testo: type.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.checkSelectionOrContainer(type: type) ? Color.clear : Color.blue, fillColor: self.checkSelectionOrContainer(type: type) ? colorSelection : Color.clear)
+                            .onTapGesture {self.addingValueTo(newValue: type)}
+                    }
                 }
             }
+            
+            if let extendedDescription = newDishSingleProperty.extendedDescription() {
+                
+                Text(extendedDescription)
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .italic()
+                    .foregroundColor(Color.black)
+            }
+       
         }
     }
     

@@ -9,15 +9,16 @@ import Foundation
 
 enum MapCategoryContainer {
     
-    static var allMenuMapCategory: [MapCategoryContainer] = [.tipologiaMenu,.giorniDelServizio,.statusMenu]
-    static var allIngredientMapCategory: [MapCategoryContainer] = [.conservazione,.produzione,.provenienza]
-    static var allDishMapCategory: [MapCategoryContainer] = [.categoria,.base,.tipologiaPiatto,.statusPiatto]
+    static var allMenuMapCategory: [MapCategoryContainer] = [.menuAz,.tipologiaMenu,.giorniDelServizio,.statusMenu]
+    static var allIngredientMapCategory: [MapCategoryContainer] = [.ingredientAz,.provenienza,.conservazione,.produzione]
+    static var allDishMapCategory: [MapCategoryContainer] = [.dishAz,.categoria,.base,.tipologiaPiatto,.statusPiatto]
     
-    static var menuDefault: MapCategoryContainer = .tipologiaMenu
-    static var ingredientDefault: MapCategoryContainer = .produzione
-    static var dishDefault: MapCategoryContainer = .categoria
+   // static var defaultCase: MapCategoryContainer = .aZ
+   // static var menuDefault: MapCategoryContainer = .tipologiaMenu
+   // static var ingredientDefault: MapCategoryContainer = .produzione
+   // static var dishDefault: MapCategoryContainer = .categoria
     
-    case tipologiaMenu // comune sia al menu che al piatto // stored
+    case tipologiaMenu
     case giorniDelServizio // collection
     case statusMenu
     
@@ -29,6 +30,10 @@ enum MapCategoryContainer {
     case base // stored
     case tipologiaPiatto
     case statusPiatto
+    
+    case menuAz
+    case ingredientAz
+    case dishAz
     
     func simpleDescription() -> String {
         
@@ -54,6 +59,8 @@ enum MapCategoryContainer {
             return "Tipologia"
         case .statusPiatto:
             return "Status"
+        case .menuAz,.ingredientAz,.dishAz:
+            return "a..z"
         }
         
     }

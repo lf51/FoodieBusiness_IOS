@@ -14,43 +14,44 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
     
     var body: some View {
         
-        
-        VStack(alignment:.leading) {
+      //  VStack(alignment:.leading) {
             
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 
-                ForEach(Array(Set(dataMapping)), id:\.self) { category in
+                ForEach(dataMapping, id:\.self) { category in
                     
-                    CSLabel_1Button(placeHolder: category.simpleDescription(), imageName: "pencil", backgroundColor: Color.green)
+                    CSLabel_1Button(placeHolder: category.simpleDescription(), imageName: category.imageAssociated(), backgroundColor: Color.blue, backgroundOpacity: 0.3)
  
-                    
-                    ScrollView(.horizontal) {
+                    ScrollView(.horizontal,showsIndicators: false) {
                         
                          HStack {
                             
                             ForEach(dataFiltering(category)) { item in
                                 
-                                Text(item.intestazione)
+                           //     switchModelDataRowView(item: item)
+                                
                             }
-                            
                         }
-                        
-                        
                     }
-                    
                 }
-            
             }
-            
-        }
-        .padding(.horizontal)
-    
+       // }
     }
-  
 }
 
 struct DataModelCategoryView_Previews: PreviewProvider {
+    
     static var previews: some View {
-        DataModelCategoryView()
+        
+        ZStack {
+            
+            Color.cyan.ignoresSafeArea()
+            
+            Group {
+                
+                MenuModel_RowView(item: MenuModel(nome: "SomeDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi]))
+                
+            }
+        }
     }
 }

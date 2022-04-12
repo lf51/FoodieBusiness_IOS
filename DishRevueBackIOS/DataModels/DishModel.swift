@@ -50,6 +50,8 @@ struct DishModel: MyModelProtocol {
     var allergeni: [DishAllergeni]
     var formatiDelPiatto: [DishFormato]
 
+    var rating: String
+    var status: ModelStatus
    // var restaurantWhereIsOnMenu: [PropertyModel] = []
     
     var alertItem: AlertModel?
@@ -66,38 +68,48 @@ struct DishModel: MyModelProtocol {
         self.tipologia = .defaultValue
         self.avaibleFor = []
         self.metodoCottura = .defaultValue
+        self.rating = "9.5"
+        self.status = .bozza
         
      //   self.status = .programmato(day: [.lunedi,.martedi,.mercoledi,.giovedi,.domenica(ora:DateInterval(start: .now, end: .distantFuture))])
         
     }
    
-    init(intestazione: String, aBaseDi: DishBase, categoria: DishCategoria, tipologia: DishTipologia) {
+    init(intestazione: String, aBaseDi: DishBase, categoria: DishCategoria, tipologia: DishTipologia, status: ModelStatus) {
         
         self.intestazione = intestazione
         self.aBaseDi = aBaseDi
         self.categoria = categoria
         self.tipologia = tipologia
         
-        self.ingredientiPrincipali = []
-        self.ingredientiSecondari = []
-        self.allergeni = []
+        self.ingredientiPrincipali = [IngredientModel(nome: "Guanciale"),IngredientModel(nome: "Pecorino D.O.P"),  IngredientModel(nome: "Uova")] // riempito per Test
+        self.ingredientiSecondari = [IngredientModel(nome: "Pepe Nero"),IngredientModel(nome: "Prezzemolo")] // riempito per Test
+        self.allergeni = [.latte_e_derivati,.glutine,.uova_e_derivati] // riempito per Test
         self.formatiDelPiatto = []
         
         self.avaibleFor = []
         self.metodoCottura = .defaultValue
+        self.rating = "8.5"
+        
+        self.status = status
     }
   
 
 
     
 }
-/*
-enum DishStatus {
+
+enum ModelStatus:String {
+    
+    static var allCases: [ModelStatus] = [.all,.pubblico,.bozza,.inPausa,.archiviato]
+    static var defaultValue: ModelStatus = .all
     
     case bozza // non ancora completo
- //   case pubblico // Rimette in moto da una Pausa
- //   case inPausa // Mette in Pausa una Pubblicazione
-    case programmato(day:[GiorniDellaSettimana]) // pubblico in modo condizionato
+    case pubblico // Rimette in moto da una Pausa
+    case inPausa // Stop temporaneo
+    case archiviato // Stop incondizionato
+    case all
+  //  case programmato(day:[GiorniDellaSettimana]) // pubblico in modo condizionato
 
 }
 
@@ -107,7 +119,7 @@ enum DishStatus {
  Pranzo / cena / colazione
  Da data a data specifica
  
- */
+ 
 
 enum GiorniDellaSettimana {
     

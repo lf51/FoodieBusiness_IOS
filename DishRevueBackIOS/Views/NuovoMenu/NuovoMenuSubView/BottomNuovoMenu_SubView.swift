@@ -29,8 +29,12 @@ struct BottomNuovoMenu_SubView: View {
           /*  Text("Il menu \(nuovoMenu.intestazione) è attivo dalle \(timeFormatter.string(from: self.nuovoMenu.oraInizio)) alle \(timeFormatter.string(from: self.nuovoMenu.oraFine)) nei giorni di \(dayDescription(),format:.list(type: .and))")
                     .italic().fontWeight(.light).font(.caption) */
             
-            Text(self.nuovoMenu.isAvaibleWhen.extendedDescription())
-                .italic().fontWeight(.light).font(.caption)
+            Text(self.nuovoMenu.isAvaibleWhen.extendedDescription() ?? "")
+                .font(.caption)
+                .fontWeight(.light)
+                .italic()
+                
+                
             
             Spacer()
             

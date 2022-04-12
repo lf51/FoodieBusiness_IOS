@@ -10,16 +10,18 @@ import SwiftUI
 struct CSLabel_1Button: View {
     
     var placeHolder: String
-    var imageName: String
+    var imageName: String?
     var backgroundColor: Color
+    var backgroundOpacity: Double?
     
     @Binding var toggleBottone: Bool?
     
-    init(placeHolder: String, imageName: String, backgroundColor: Color, toggleBottone: Binding<Bool?>? = nil) {
+    init(placeHolder: String, imageName: String? = nil, backgroundColor: Color, backgroundOpacity:Double? = nil, toggleBottone: Binding<Bool?>? = nil) {
         
         self.placeHolder = placeHolder
         self.imageName = imageName
         self.backgroundColor = backgroundColor
+        self.backgroundOpacity = backgroundOpacity
 
         _toggleBottone = toggleBottone ?? Binding.constant(nil)
         
@@ -34,13 +36,14 @@ struct CSLabel_1Button: View {
                     .fontWeight(.medium)
                     .font(.system(.subheadline, design: .monospaced))
             } icon: {
-                Image(systemName: imageName)
+         
+                switchImageText(string: imageName)
             }
             ._tightPadding()
             .background(
                 
                 RoundedRectangle(cornerRadius: 5.0)
-                    .fill(backgroundColor.opacity(0.2))
+                    .fill(backgroundColor.opacity(backgroundOpacity ?? 0.2))
             )
             
             if toggleBottone != nil {

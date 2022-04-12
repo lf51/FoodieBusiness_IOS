@@ -7,18 +7,49 @@
 
 import SwiftUI
 
+/*
+ 
+ Filtro e Mapping -> Abbiamo costruito un mapping filtrato in ordine alfabetico. Adesso stiamo valutando l'implementazione di un filtro a incrociare. Quindi potremmo avere un mapping per categoria principale (ritornado quindi indietro di un paio di settimane, quando avevamo una sola categoria che stabilivamo dal protocollo) che poi incrociamo con le altre categorie. Per cui, ad esempio, i piatti verrebbero tutti mappati per categoria (primo, secondo, ecc) e poi incrociati con altre richieste, tipo la base e la tipologia o lo status. Così se vogliamo sapere quali piatti abbiamo a base di pesce, o quali piatti abbiamo vegani, selezioniamo il filtro, e la lista viene sempre mappata per categoria ma filtrata per la seconda richiesta.
+ 
+ 
+ */
+
+
+
+
 
 struct ItemModelCategoryViewBuilder: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    @State private var selectedMapCategory: MapCategoryContainer = .ingredientDefault
+
     let dataContainer:[MapCategoryContainer]
+    @State private var selectedMapCategory: MapCategoryContainer
+    @State private var statusFilter: ModelStatus = .defaultValue
+    
+    init(dataContainer:[MapCategoryContainer]) {
+       
+        self.dataContainer = dataContainer
+        selectedMapCategory = dataContainer[0] // il default A..Z
+        
+    }
     
     var body: some View {
 
-        DataModelPickerView_SubView(selectedMapCategory: $selectedMapCategory, dataContainer: dataContainer)
-        
-        allCases(filtro: selectedMapCategory)
+        VStack(alignment:.leading) {
+                
+            DataModelPickerView_SubView(selectedMapCategory: $selectedMapCategory, statusFilter: $statusFilter, dataContainer: dataContainer)
+
+            HStack {
+                
+                allCases(filtro: selectedMapCategory)
+                
+                Spacer()
+            }
+            
+            
+                Spacer()
+        }
+        .padding(.horizontal)
         
     }
     
@@ -26,39 +57,46 @@ struct ItemModelCategoryViewBuilder: View {
         
         switch filtro {
             
+        case .menuAz:
+            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyMenu, statusFilter: statusFilter)
+        case .ingredientAz:
+            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyIngredients, statusFilter: statusFilter)
+        case .dishAz:
+            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyDish, statusFilter: statusFilter)
+            
         case .tipologiaMenu:
-            viewCategoryItemModel(mapElement: .tipologiaMenu, modelType: MenuModel.self, elementType: TipologiaMenu.self)
+            viewCategoryItemModel(mapElement: .tipologiaMenu, modelType: viewModel.allMyMenu, elementType: TipologiaMenu.self)
         case .giorniDelServizio:
-            notListed()
+            viewCategoryItemModel(mapElement: .giorniDelServizio, modelType: viewModel.allMyMenu, elementType: GiorniDelServizio.self)
         case .statusMenu:
             notListed()
             
         case .conservazione:
-            viewCategoryItemModel(mapElement: .conservazione,modelType: IngredientModel.self, elementType: ConservazioneIngrediente.self)
+            viewCategoryItemModel(mapElement: .conservazione, modelType: viewModel.allMyIngredients, elementType: ConservazioneIngrediente.self)
         case .produzione:
-            viewCategoryItemModel(mapElement: .produzione,modelType: IngredientModel.self, elementType: ProduzioneIngrediente.self)
+            viewCategoryItemModel(mapElement: .produzione,modelType: viewModel.allMyIngredients, elementType: ProduzioneIngrediente.self)
         case .provenienza:
-            viewCategoryItemModel(mapElement: .provenienza,modelType: IngredientModel.self, elementType: ProvenienzaIngrediente.self)
+            viewCategoryItemModel(mapElement: .provenienza,modelType: viewModel.allMyIngredients, elementType: ProvenienzaIngrediente.self)
             
         case .categoria:
-            viewCategoryItemModel(mapElement: .categoria, modelType: DishModel.self, elementType: DishCategoria.self)
+            viewCategoryItemModel(mapElement: .categoria, modelType: viewModel.allMyDish, elementType: DishCategoria.self)
         case .base:
-            viewCategoryItemModel(mapElement: .base, modelType: DishModel.self, elementType: DishBase.self)
+            viewCategoryItemModel(mapElement: .base, modelType: viewModel.allMyDish, elementType: DishBase.self)
         case .tipologiaPiatto:
-            viewCategoryItemModel(mapElement: .tipologiaPiatto, modelType: DishModel.self, elementType: DishTipologia.self)
+            viewCategoryItemModel(mapElement: .tipologiaPiatto, modelType: viewModel.allMyDish, elementType: DishTipologia.self)
         case .statusPiatto:
             notListed()
         }
     }
     
     func notListed() -> some View {
-        Text("Dentro ViewBuilder - Case non settato")
+        Text("Dentro ViewBuilder allCases - Case non settato")
     }
     
     
-    private func viewCategoryItemModel<T:MyEnumProtocolMapConform, M:MyModelProtocol>(mapElement: MapCategoryContainer, modelType: M.Type, elementType: T.Type) -> some View {
+    private func viewCategoryItemModel<T:MyEnumProtocolMapConform, M:MyModelProtocol>(mapElement: MapCategoryContainer, modelType: [M], elementType: T.Type) -> some View {
          
-        var dataModel:[M] = []
+        var dataModel:[M] = modelType
         var dataMapping:[T] = []
 
          switch mapElement {
@@ -66,16 +104,17 @@ struct ItemModelCategoryViewBuilder: View {
          // DishModel
              
          case .categoria:
-             dataModel = viewModel.allMyDish as! [M]
+             //dataModel = viewModel.allMyDish as! [M]
+
              dataMapping = dataModel.map({ item in
                  
                  let dishModel = item as! DishModel
                  return dishModel.categoria as! T
-                 
+          
              })
-             
+        
          case .base:
-             dataModel = viewModel.allMyDish as! [M]
+            // dataModel = viewModel.allMyDish as! [M]
              dataMapping = dataModel.map({ item in
                  
                  let dishModel = item as! DishModel
@@ -84,7 +123,7 @@ struct ItemModelCategoryViewBuilder: View {
              })
              
          case .tipologiaPiatto:
-             dataModel = viewModel.allMyDish as! [M]
+            // dataModel = viewModel.allMyDish as! [M]
              dataMapping = dataModel.map({ item in
                  
                  let dishModel = item as! DishModel
@@ -102,10 +141,9 @@ struct ItemModelCategoryViewBuilder: View {
              }) */ // manca la proprietà
              
              
-             
              // MenuModel
          case .tipologiaMenu:
-             dataModel = viewModel.allMyMenu as! [M]
+           //  dataModel = viewModel.allMyMenu as! [M]
              dataMapping = dataModel.map({ item in
                  
                  let menuModel = item as! MenuModel
@@ -113,9 +151,10 @@ struct ItemModelCategoryViewBuilder: View {
                  
              })
              
-       /*  case .giorniDelServizio:
-             dataModel = viewModel.allMyMenu as! [M]
-             step1 = dataModel.map({ item in
+         case .giorniDelServizio:
+            // dataModel = viewModel.allMyMenu as! [M]
+             dataMapping = GiorniDelServizio.allCases as! [T]
+            /* dataMapping = dataModel.map({ item in
                  
                  let menuModel = item as! MenuModel
                  return menuModel.giorniDelServizio as! T
@@ -134,7 +173,7 @@ struct ItemModelCategoryViewBuilder: View {
          // IngredientModel
          case .conservazione:
              
-             dataModel = viewModel.allMyIngredients as! [M]
+            // dataModel = viewModel.allMyIngredients as! [M]
              dataMapping = dataModel.map({ item in
                  
                  let ingredientModel = item as! IngredientModel
@@ -144,7 +183,7 @@ struct ItemModelCategoryViewBuilder: View {
             
          case .produzione:
              
-             dataModel = viewModel.allMyIngredients as! [M]
+            // dataModel = viewModel.allMyIngredients as! [M]
              dataMapping = dataModel.map({ item in
                  
                  let ingredientModel = item as! IngredientModel
@@ -154,7 +193,7 @@ struct ItemModelCategoryViewBuilder: View {
              
          case .provenienza:
              
-             dataModel = viewModel.allMyIngredients as! [M]
+            // dataModel = viewModel.allMyIngredients as! [M]
              dataMapping = dataModel.map({ item in
                  
                  let ingredientModel = item as! IngredientModel
@@ -177,10 +216,15 @@ struct ItemModelCategoryViewBuilder: View {
             case .tipologiaMenu:
                 dataFiltering = dataModel.filter({ item in
                     let menuModel = item as! MenuModel
-                    return menuModel.tipologia == element as! TipologiaMenu
+                    return menuModel.tipologia.returnTypeCase() == element as! TipologiaMenu
                 }) as! [M]
-           /* case .giorniDelServizio:
-                <#code#>
+                
+            case .giorniDelServizio:
+                dataFiltering = dataModel.filter({ item in
+                   let menuModel = item as! MenuModel
+                    return menuModel.giorniDelServizio.contains(element as! GiorniDelServizio)
+                }) as! [M]
+            /*
             case .statusMenu:
                 <#code#>
                 */
@@ -226,14 +270,16 @@ struct ItemModelCategoryViewBuilder: View {
                 dataFiltering = []
             }
            
-           return dataFiltering
+            return dataFiltering.sorted { $0.intestazione < $1.intestazione }
            
        }
 
         
-        let dataMappingUnique = Array(Set(dataMapping))
+        let dataMappingCentrifugato = myCentrifugaEnumTypeArray(array: dataMapping)
+        let dataMappingSet = Array(Set(dataMappingCentrifugato))
+        let dataMappingArray = dataMappingSet.sorted{$0.orderValue() < $1.orderValue()}
         
-        return DataModelCategoryView_SubView(dataMapping: dataMappingUnique) { category in
+        return DataModelCategoryView_SubView(dataMapping: dataMappingArray) { category in
             dataFiltering(element: category, data: dataModel)
         }
          
@@ -244,8 +290,16 @@ struct ItemModelCategoryViewBuilder: View {
 
 
 struct Conferma_Previews: PreviewProvider {
+    
     static var previews: some View {
-        ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory).environmentObject(AccounterVM())
+        
+        ZStack {
+            
+            Color.cyan.ignoresSafeArea()
+            
+            ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory).environmentObject(AccounterVM())
+            
+        }
+        
     }
 }
-

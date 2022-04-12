@@ -55,6 +55,15 @@
 		4D471A3227CA1CE300547F8A /* IngredientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D471A3127CA1CE300547F8A /* IngredientModel.swift */; };
 		4D4FE6E627FCA88E00AC0190 /* DataModelCategoryView_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6E527FCA88E00AC0190 /* DataModelCategoryView_SubView.swift */; };
 		4D4FE6E827FCA8B700AC0190 /* DataModelPickerView_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6E727FCA8B700AC0190 /* DataModelPickerView_SubView.swift */; };
+		4D4FE6EA27FD9F4300AC0190 /* COLORTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6E927FD9F4300AC0190 /* COLORTEST.swift */; };
+		4D4FE6EC27FEEBF700AC0190 /* MenuModel_RowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6EB27FEEBF700AC0190 /* MenuModel_RowView.swift */; };
+		4D4FE6F227FF265400AC0190 /* GiorniDelServizio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6F127FF265300AC0190 /* GiorniDelServizio.swift */; };
+		4D4FE6F427FF267800AC0190 /* TipologiaMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6F327FF267800AC0190 /* TipologiaMenu.swift */; };
+		4D4FE6F627FF269F00AC0190 /* AvailabilityMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6F527FF269F00AC0190 /* AvailabilityMenu.swift */; };
+		4D4FE6F827FF34FB00AC0190 /* DishModel_RowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6F727FF34FB00AC0190 /* DishModel_RowView.swift */; };
+		4D4FE6FA28008EBC00AC0190 /* ViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6F928008EBC00AC0190 /* ViewBuilder.swift */; };
+		4D56A62428018D1000A43E80 /* IngredientModel_RowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D56A62328018D1000A43E80 /* IngredientModel_RowView.swift */; };
+		4D56A6262802ECA500A43E80 /* DataModelAlphabeticView_Sub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D56A6252802ECA500A43E80 /* DataModelAlphabeticView_Sub.swift */; };
 		4D61321B27D64B1F0056B9F8 /* TestListMove.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D61321A27D64B1F0056B9F8 /* TestListMove.swift */; };
 		4D7985D827D8B8990012FE23 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985D727D8B8990012FE23 /* Protocol.swift */; };
 		4D7985DB27D8B92E0012FE23 /* DishAllergeni.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985DA27D8B92E0012FE23 /* DishAllergeni.swift */; };
@@ -147,6 +156,15 @@
 		4D471A3127CA1CE300547F8A /* IngredientModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel.swift; sourceTree = "<group>"; };
 		4D4FE6E527FCA88E00AC0190 /* DataModelCategoryView_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelCategoryView_SubView.swift; sourceTree = "<group>"; };
 		4D4FE6E727FCA8B700AC0190 /* DataModelPickerView_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelPickerView_SubView.swift; sourceTree = "<group>"; };
+		4D4FE6E927FD9F4300AC0190 /* COLORTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = COLORTEST.swift; sourceTree = "<group>"; };
+		4D4FE6EB27FEEBF700AC0190 /* MenuModel_RowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuModel_RowView.swift; sourceTree = "<group>"; };
+		4D4FE6F127FF265300AC0190 /* GiorniDelServizio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiorniDelServizio.swift; sourceTree = "<group>"; };
+		4D4FE6F327FF267800AC0190 /* TipologiaMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipologiaMenu.swift; sourceTree = "<group>"; };
+		4D4FE6F527FF269F00AC0190 /* AvailabilityMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityMenu.swift; sourceTree = "<group>"; };
+		4D4FE6F727FF34FB00AC0190 /* DishModel_RowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishModel_RowView.swift; sourceTree = "<group>"; };
+		4D4FE6F928008EBC00AC0190 /* ViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewBuilder.swift; sourceTree = "<group>"; };
+		4D56A62328018D1000A43E80 /* IngredientModel_RowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel_RowView.swift; sourceTree = "<group>"; };
+		4D56A6252802ECA500A43E80 /* DataModelAlphabeticView_Sub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelAlphabeticView_Sub.swift; sourceTree = "<group>"; };
 		4D61321A27D64B1F0056B9F8 /* TestListMove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestListMove.swift; sourceTree = "<group>"; };
 		4D7985D727D8B8990012FE23 /* Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocol.swift; sourceTree = "<group>"; };
 		4D7985DA27D8B92E0012FE23 /* DishAllergeni.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishAllergeni.swift; sourceTree = "<group>"; };
@@ -263,11 +281,13 @@
 			children = (
 				4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */,
 				4D403B9127981BC200EB4E1B /* ContentView.swift */,
+				4D4FE6E927FD9F4300AC0190 /* COLORTEST.swift */,
 				4D4FE6E427FC88E800AC0190 /* ForEachCategoryView */,
+				4D4FE6ED27FEEC0100AC0190 /* RowView */,
 				4DF7D9D627A45097001DB949 /* Views */,
 				4DF7D9D727A450A2001DB949 /* ViewModels */,
 				4DF7D9D827A450B1001DB949 /* DataModels */,
-				4D7985D927D8B91D0012FE23 /* EnumAndProtocolAndFunc */,
+				4D7985D927D8B91D0012FE23 /* EnumProtocolMethod&more */,
 				4DC3EBCA27ABEDD400FFC50E /* OBSOLETE */,
 				4D403B9327981BC400EB4E1B /* Assets.xcassets */,
 				4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */,
@@ -309,21 +329,33 @@
 				4DC94A1A27E4DDDE0080264C /* ItemModelCategoryViewBuilder.swift */,
 				4D4FE6E527FCA88E00AC0190 /* DataModelCategoryView_SubView.swift */,
 				4D4FE6E727FCA8B700AC0190 /* DataModelPickerView_SubView.swift */,
+				4D56A6252802ECA500A43E80 /* DataModelAlphabeticView_Sub.swift */,
 			);
 			path = ForEachCategoryView;
 			sourceTree = "<group>";
 		};
-		4D7985D927D8B91D0012FE23 /* EnumAndProtocolAndFunc */ = {
+		4D4FE6ED27FEEC0100AC0190 /* RowView */ = {
+			isa = PBXGroup;
+			children = (
+				4D4FE6EB27FEEBF700AC0190 /* MenuModel_RowView.swift */,
+				4D4FE6F727FF34FB00AC0190 /* DishModel_RowView.swift */,
+				4D56A62328018D1000A43E80 /* IngredientModel_RowView.swift */,
+			);
+			path = RowView;
+			sourceTree = "<group>";
+		};
+		4D7985D927D8B91D0012FE23 /* EnumProtocolMethod&more */ = {
 			isa = PBXGroup;
 			children = (
 				4D7985D727D8B8990012FE23 /* Protocol.swift */,
 				4DC94A1727E3915A0080264C /* MetodiTrasversali.swift */,
 				4DC94A2A27EC7BF50080264C /* MapCategoryContainer.swift */,
+				4D4FE6F928008EBC00AC0190 /* ViewBuilder.swift */,
 				4DC94A1927E39A240080264C /* MenuEnum */,
 				4D7985E827D8BA550012FE23 /* DishEnum */,
 				4D7985EF27D8BB5E0012FE23 /* IngredientsEnum */,
 			);
-			path = EnumAndProtocolAndFunc;
+			path = "EnumProtocolMethod&more";
 			sourceTree = "<group>";
 		};
 		4D7985E827D8BA550012FE23 /* DishEnum */ = {
@@ -429,6 +461,9 @@
 		4DC94A1927E39A240080264C /* MenuEnum */ = {
 			isa = PBXGroup;
 			children = (
+				4D4FE6F127FF265300AC0190 /* GiorniDelServizio.swift */,
+				4D4FE6F327FF267800AC0190 /* TipologiaMenu.swift */,
+				4D4FE6F527FF269F00AC0190 /* AvailabilityMenu.swift */,
 			);
 			path = MenuEnum;
 			sourceTree = "<group>";
@@ -697,6 +732,8 @@
 				4D4FE6E827FCA8B700AC0190 /* DataModelPickerView_SubView.swift in Sources */,
 				4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */,
 				4D7985DB27D8B92E0012FE23 /* DishAllergeni.swift in Sources */,
+				4D4FE6F227FF265400AC0190 /* GiorniDelServizio.swift in Sources */,
+				4D56A62428018D1000A43E80 /* IngredientModel_RowView.swift in Sources */,
 				4DF7D9D327A40AD9001DB949 /* CustomTabBarView.swift in Sources */,
 				4D7985F127D8BB9D0012FE23 /* CommunityIngredientModel.swift in Sources */,
 				4D79860027E1EDB20012FE23 /* CorpoProgrammazioneMenu_SubView.swift in Sources */,
@@ -724,6 +761,7 @@
 				4DC94A1B27E4DDDE0080264C /* ItemModelCategoryViewBuilder.swift in Sources */,
 				4D9257AA27D7CB7200D71B9C /* SwitchListeIngredientiPiatto.swift in Sources */,
 				4D9257A427D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift in Sources */,
+				4D4FE6EA27FD9F4300AC0190 /* COLORTEST.swift in Sources */,
 				4DC94A2527E9EC370080264C /* QueryScrollView_NewPropertySubView.swift in Sources */,
 				4D7985FA27DBBE350012FE23 /* CustomGrid_GenericsView.swift in Sources */,
 				4D7985F427DB62160012FE23 /* LargeBar_TextPlusButton.swift in Sources */,
@@ -733,6 +771,7 @@
 				4D7985DD27D8B96A0012FE23 /* DishAvaibleFor.swift in Sources */,
 				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
 				4D14238427CE934900CFF4AE /* ConditionalZStackView_NewDishSubView.swift in Sources */,
+				4D4FE6F827FF34FB00AC0190 /* DishModel_RowView.swift in Sources */,
 				4D9257A027D7C8BE00D71B9C /* MostraEOrdinaIngredienti_SelettoreSubView.swift in Sources */,
 				4DCCD6CF27BAB3DB00F387B2 /* PannelloIngredienti_NewDishSubView.swift in Sources */,
 				4D7985F827DB670F0012FE23 /* SchedulePropertyService.swift in Sources */,
@@ -746,9 +785,12 @@
 				4D1BC747279C1FED000B463C /* PrincipalTabView.swift in Sources */,
 				4D403B9027981BC200EB4E1B /* DishRevueBackIOSApp.swift in Sources */,
 				4D04E28427C7A2BD002F0486 /* SelettoreIngrediente_NewDishSubView.swift in Sources */,
+				4D4FE6FA28008EBC00AC0190 /* ViewBuilder.swift in Sources */,
 				4D9257A627D7CA1E00D71B9C /* ListaIngredienti_ConditionalView.swift in Sources */,
 				4DC94A2927EA1E900080264C /* HomeViewBACKUP2.swift in Sources */,
+				4D56A6262802ECA500A43E80 /* DataModelAlphabeticView_Sub.swift in Sources */,
 				4DC94A1827E3915A0080264C /* MetodiTrasversali.swift in Sources */,
+				4D4FE6F627FF269F00AC0190 /* AvailabilityMenu.swift in Sources */,
 				4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */,
 				4D7985EE27D8BAE90012FE23 /* ConservazioneIngrediente.swift in Sources */,
 				4D29C05B27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift in Sources */,
@@ -765,7 +807,9 @@
 				4D7985E727D8BA250012FE23 /* DishFormato.swift in Sources */,
 				4D7985FC27E0AD280012FE23 /* MenuModel.swift in Sources */,
 				4DAD4F96279EAC7E00C0EAE8 /* AddNewPropertySheetView.swift in Sources */,
+				4D4FE6EC27FEEBF700AC0190 /* MenuModel_RowView.swift in Sources */,
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
+				4D4FE6F427FF267800AC0190 /* TipologiaMenu.swift in Sources */,
 				4D28C85E27C53F12009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift in Sources */,
 				4D7985D827D8B8990012FE23 /* Protocol.swift in Sources */,
 				4DC94A2727E9ECB70080264C /* ChoiceInfoView_NewPropertySubView.swift in Sources */,
@@ -907,7 +951,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -937,7 +981,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

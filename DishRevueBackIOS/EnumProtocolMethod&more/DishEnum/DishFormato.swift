@@ -64,6 +64,11 @@ enum DishFormato: MyEnumProtocol, Hashable {
         }
     }
 
+    func extendedDescription() -> String? {
+        print("Dentro DishFormato. DescrizioneEstesa non sviluppata")
+        return nil
+    }
+
     func isTagliaAlreadyIn(newDish: DishModel) -> Bool  {
         
         newDish.formatiDelPiatto.contains { taglia in

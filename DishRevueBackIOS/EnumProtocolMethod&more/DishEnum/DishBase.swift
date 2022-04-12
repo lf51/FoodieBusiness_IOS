@@ -34,28 +34,48 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
         }
     }
     
+    func extendedDescription() -> String? {
+        print("Dentro DishBase. DescrizioneEstesa non sviluppata")
+        return nil
+    }
+    
     func createId() -> String {
         
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
     
     func returnTypeCase() -> DishBase {
-        print("dentro DishBase return type")
-        return .carne
+        
+        return self
     }
     
-    func imageAssociated() -> String {
+    func imageAssociated() -> String? {
         
         switch self {
             
         case .carne:
-            return "fork.knife.circle"
+            return "🐂"
         case .pesce:
-            return "fork.knife.circle"
+            return "🐟"
         case .vegetali:
-            return "fork.knife.circle"
+            return "🌱"
         case .noValue:
-            return "fork.knife.circle"
+            return nil
+        }
+    }
+    
+    func orderValue() -> Int {
+        
+        switch self {
+            
+        case .carne:
+            return 1
+        case .pesce:
+            return 2
+        case .vegetali:
+            return 3
+        case .noValue:
+            return 0
         }
     }
 }

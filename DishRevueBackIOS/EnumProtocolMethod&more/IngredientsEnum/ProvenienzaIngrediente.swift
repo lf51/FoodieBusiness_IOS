@@ -26,12 +26,17 @@ enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
             
         case .HomeMade: return "Fatto in Casa"
         case .Italia: return "Italia"
-        case .Europa: return "Comunità Europea"
-        case .RestoDelMondo: return "Resto del Mondo"
+        case .Europa: return "UE"
+        case .RestoDelMondo: return "Extra UE"
         case .custom(let località): return località.capitalized
             
             }
         }
+    
+    func extendedDescription() -> String? {
+        print("Dentro ProvenienzaIngrediente. DescrizioneEstesa non sviluppata")
+        return nil
+    }
     
     func createId() -> String {
         self.simpleDescription().replacingOccurrences(of:" ", with:"").lowercased()
@@ -40,37 +45,48 @@ enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     func returnTypeCase() -> ProvenienzaIngrediente {
         
         switch self {
-        case .HomeMade:
-            return .HomeMade
-        case .Italia:
-            return .Italia
-        case .Europa:
-            return .Europa
-        case .RestoDelMondo:
-            return .RestoDelMondo
+    
         case .custom( _):
             return .custom("")
+        default: return self
+            
         }
    
     }
     
-    func imageAssociated() -> String {
+    func imageAssociated() -> String? {
         
         switch self {
             
         case .HomeMade:
-            return "house.circle"
+            return "house"
         case .Italia:
-            return "leaf"
+            return "🇮🇹"
         case .Europa:
-            return "bus.fill"
+            return "🇪🇺"
         case .RestoDelMondo:
            return "globe.europe.africa"
         case .custom( _):
-            return "globe.europe.africa"
+            return nil
         }
     }
     
+    func orderValue() -> Int {
+    
+        switch self {
+        case .HomeMade:
+            return 1
+        case .Italia:
+            return 2
+        case .Europa:
+            return 3
+        case .RestoDelMondo:
+            return 4
+        case .custom( _):
+            return (ProvenienzaIngrediente.allCases.count + 1)
+        }
+    }
+
     
     
 }
