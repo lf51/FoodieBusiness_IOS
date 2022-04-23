@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BottonBar_NewDishSubView: View {
     
-    @EnvironmentObject var accounterVM: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     @Binding var newDish: DishModel
     @Binding var wannaProgramAndPublishNewDish: Bool
     
@@ -21,7 +21,7 @@ struct BottonBar_NewDishSubView: View {
                 
                 print("SVILUPPARE FUNZIONI BOTTONE")
               //  accounterVM.createNewOrEditOldDish(dish: self.newDish)
-                accounterVM.createOrEditItemModel(itemModel: self.newDish)
+                viewModel.createOrEditItemModel(itemModel: self.newDish)
                 self.newDish.categoria.mantieniUltimaScelta() // mette l'ultima type utilizzata come default per il prox piatto
                 self.newDish = DishModel() // inizializza un piatto nuovo
                 

@@ -10,7 +10,7 @@ import SwiftUI
 struct ConditionalZStackView_NewDishSubView: View {
     
    // @ObservedObject var propertyVM: PropertyVM
-    @EnvironmentObject var accounterVM: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var newDish: DishModel
     @Binding var wannaAddIngredient: Bool?

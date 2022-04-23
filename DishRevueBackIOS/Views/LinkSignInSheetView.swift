@@ -86,7 +86,9 @@ struct LinkSignInSheetView: View {
 
 
 /// Displayed when a user successfuly logs in.
-struct SuccessView: View {
+
+
+/* struct SuccessView: View {
    
     @ObservedObject var authProcess: AuthPasswordLess
 
@@ -153,7 +155,9 @@ struct SuccessView: View {
       .foregroundColor(.white)
     }
   }
-}
+} */
+
+
 
 /* struct ContentView_Previews: PreviewProvider {
   static var previews: some View {

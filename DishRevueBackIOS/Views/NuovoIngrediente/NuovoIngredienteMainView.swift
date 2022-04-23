@@ -12,7 +12,7 @@ import SwiftUI
 struct NuovoIngredienteMainView: View {
 
   //  @ObservedObject var propertyVM: PropertyVM
-    @EnvironmentObject var accounterVM: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     let backGroundColorView: Color
     @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
     
@@ -77,7 +77,7 @@ struct NuovoIngredienteMainView: View {
             
             ingrediente.intestazione = String(x)
             
-            accounterVM.allMyIngredients.append(ingrediente)
+            viewModel.allMyIngredients.append(ingrediente)
             
         }
         

@@ -7,179 +7,210 @@
 
 import SwiftUI
 
-/*
 
 struct DataModelPickerView_SubView: View {
     
-    @Binding var selectedMapCategory: MapCategoryContainer
-    @State private var deepMapCategory: MapCategoryContainer
-   // @Binding var filterMapCategory: E
-    
-  // @Binding var statusFilter: ModelStatus
     let dataContainer:[MapCategoryContainer]
+    @Binding var mapCategory: MapCategoryContainer
+  //  @Binding var stringSearch: String
     
-    init (dataContainer:[MapCategoryContainer], mapCategory: Binding<MapCategoryContainer>) {
-        
-        self.dataContainer = dataContainer
-        _selectedMapCategory = mapCategory
-        deepMapCategory = dataContainer[1]
-        
-    }
-    
+    @Binding var filterCategory: MapCategoryContainer // richiede un valoreAssociato
+    @State private var emptyFilterCategory: MapCategoryContainer = .defaultValue
+    /*Empty e filterCategory sono due facce della stessa medaglia. La empty serve per il secondo picker, mentre la filter è la sua gemella e serve a portare su il valore associato. Nella versione precedente le due var coincidevano e questo generava un bug visivo nel picker */
+    @State private var showFilter: Bool = false
+    @State private var showFilterCategory: Bool = false
     
     var body: some View {
 
-        HStack {
+        VStack(alignment:.leading) {
             
             HStack {
                 
-              Image(systemName: "eye")
+                CS_Picker(selection: $mapCategory, dataContainer: updateContainer(element: filterCategory))
+               // Spacer()
                 
-                Picker(selection:$selectedMapCategory) {
-                              
-                    ForEach(dataContainer, id:\.self) {filter in
-           
-                            Text(filter.simpleDescription())
-             
-                              }
-                              
-                          } label: {Text("")}
-                          .pickerStyle(MenuPickerStyle())
-                          .accentColor(Color.black)
-                          .padding(.horizontal)
-                          .background(
-                        
-                        RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color.white.opacity(0.8))
-                            .shadow(radius: 1.0)
-                    )
-                    
-            }
-            .padding(.leading)
-            .background(
-                
-                RoundedRectangle(cornerRadius: 5.0)
-                    .stroke()
-                    .fill(Color.white.opacity(0.5))
-                    
-            )
-       // .padding(.bottom)
-            
-         //   Spacer()
-     // Secondo Picker
-            
-            HStack {
-                
-              Image(systemName: "eye")
-                
-                Picker(selection:$deepMapCategory) {
-                              
-                    ForEach(dataContainer, id:\.self) {filter in
-                        
-                        if filter != selectedMapCategory {
-                            
-                            
-                            vbCompilePicker(deepCategory: deepMapCategory, label: filter.simpleDescription())
-                            
-                            
-                            
+                CSButton_tight(title: self.showFilter ? "Reset" : "Filtri", fontWeight: .semibold, titleColor: Color.blue, fillColor: Color.clear) {
+                    withAnimation {
+                        if self.showFilter {
+                            self.filterCategory = .defaultValue
                         }
-                        else {EmptyView()}
-                        
-                            
-                              }
-                              
-                          } label: {Text("")}
-                          .pickerStyle(MenuPickerStyle())
-                          .accentColor(Color.black)
-                          .padding(.horizontal)
-                          .background(
-                        
-                        RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color.white.opacity(0.8))
-                            .shadow(radius: 1.0)
-                    )
-                    
-            }
-            .padding(.leading)
-            .background(
-                
-                RoundedRectangle(cornerRadius: 5.0)
-                    .stroke()
-                    .fill(Color.white.opacity(0.5))
-                    
-            )
+                        self.showFilter.toggle()
+                    }
+                }
 
-           // Terzo Picker
+                Spacer()
+                
+            }
+           // .padding()
+   
+            if showFilter {
             
-         //  compilePicker(deepCategory: deepMapCategory)
-        
-        
+                HStack {
+                    
+                    CS_Picker(selection: $emptyFilterCategory, dataContainer: updateContainer(element: mapCategory))
+                        .onChange(of: emptyFilterCategory) { newValue in
+                            let conditions:[MapCategoryContainer] = [.menuAz, .ingredientAz, .dishAz]
+                            if conditions.contains(newValue) { self.filterCategory = newValue}
+                            else { self.showFilterCategory = true }
+                        }
+
+                    if showFilterCategory{vbCompilePicker(emptyFilterCategory: emptyFilterCategory)}
+                       
+                    Spacer()
+                    
+                   // CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass")
+                }
+            
+            }
+
         }
-     
-      //  .padding()
-        .padding(.bottom)
+
+       // .padding(.bottom)
+        
     }
     
-
+    // Method
     
+    private func updateContainer(element: MapCategoryContainer) -> [MapCategoryContainer] {
+        
+        var container = self.dataContainer
+        guard element != .reset else { return container }
+        
+        let plainElement = element.returnTypeCase()
+        let index = container.firstIndex(of: plainElement)
+        container.remove(at: index!)
+        return container
     
+    }
+    
+    @ViewBuilder func vbCompilePicker(emptyFilterCategory: MapCategoryContainer) -> some View {
+        
+        switch emptyFilterCategory {
+            
+        case .tipologiaMenu(_):
+            CS_PickerDoubleState(selection: TipologiaMenu.defaultValue, dataContainer: TipologiaMenu.allCases) { category in
+                self.filterCategory = .tipologiaMenu(filter: category)
+            }
+        case .giorniDelServizio(_):
+            
+            CS_PickerDoubleState(selection: GiorniDelServizio.defaultValue, dataContainer: GiorniDelServizio.allCases) { category in
+                
+                self.filterCategory = .giorniDelServizio(filter: category)
+                
+            }
+        case .statusMenu:
+            EmptyView()
+            
+        case .conservazione(_):
+    
+            CS_PickerDoubleState(selection: ConservazioneIngrediente.defaultValue, dataContainer: ConservazioneIngrediente.allCases) { category in
+                self.filterCategory = .conservazione(filter: category)
+            }
+        case .produzione(_):
+            CS_PickerDoubleState(selection: ProduzioneIngrediente.defaultValue, dataContainer: ProduzioneIngrediente.allCases) { category in
+                self.filterCategory = .produzione(filter: category)
+            }
+        case .provenienza(_):
+            CS_PickerDoubleState(selection: ProvenienzaIngrediente.defaultValue, dataContainer: ProvenienzaIngrediente.allCases) { category in
+                self.filterCategory = .provenienza(filter: category)
+            }
+            
+        case .categoria(_):
+            
+            CS_PickerDoubleState(selection: DishCategoria.defaultValue, dataContainer: DishCategoria.allCases) { category in
+                
+                self.filterCategory = .categoria(filter: category)
+                
+            }
+        case .base(_):
+            
+            CS_PickerDoubleState(selection: DishBase.defaultValue, dataContainer: DishBase.allCases) { category in
+                self.filterCategory = .base(filter: category)
+            }
+        case .tipologiaPiatto(_):
+            
+            CS_PickerDoubleState(selection: DishTipologia.defaultValue, dataContainer: DishTipologia.allCases) { category in
+                
+                self.filterCategory = .tipologiaPiatto(filter: category)
+            }
+        case .statusPiatto:
+            EmptyView()
+            
+        case .menuAz:
+           
+           EmptyView()
+        case .ingredientAz:
+            
+            EmptyView()
+        case .dishAz:
+           
+            EmptyView()
+            
+        case .reset:
+            EmptyView()
+        }
+    }
 }
 
-struct DataModelPickerView_Previews: PreviewProvider {
+/*struct DataModelPickerView_Previews: PreviewProvider {
     
     static var previews: some View {
         ZStack {
             
             Color.cyan.ignoresSafeArea()
             
-            DataModelPickerView_SubView(dataContainer: MapCategoryContainer.allIngredientMapCategory, mapCategory: .constant(.provenienza))
+            DataModelPickerView_SubView(dataContainer: MapCategoryContainer.allIngredientMapCategory, mapCategory: .constant(.provenienza()), filterCategory: .constant(.produzione()))
         }
     }
-}
+} */
 
-
+/// La variabile selezionata nel Picker è al livello Binding
 struct CS_Picker<E:MyEnumProtocolMapConform>: View {
     
-    @State var selection: String = ""
+    @Binding var selection: E
     let dataContainer: [E]
-    let label: String
+  // let forEachContent: (_:E) -> I
     
-    init(dataContainer:[E], label:String) {
+    @State private var showCustomLabel: Bool = true
+    
+  /*  init(dataContainer: [E], selection: Binding<E>, @ViewBuilder forEachContent: @escaping (_:E) -> I) {
         
+        _selection = selection
         self.dataContainer = dataContainer
-     //   _selection = Binding(dataContainer[0])
-        self.label = label
-    }
+        self.forEachContent = forEachContent
+        
+    } */
     
     var body: some View {
         
-      //  HStack {
-            
-         // Image(systemName: "eye")
-            
-            Picker(selection:$selection) {
-                          
-                ForEach(dataContainer, id:\.self) {filter in
-                           
-                    Text(filter.simpleDescription())
-                        
-                          }
-                          
-            } label: {Text(label)}
-            
-        /*
-                      .pickerStyle(MenuPickerStyle())
-                      .accentColor(Color.black)
-                      .padding(.horizontal)
-                      .background(
+       
+            //  Image(systemName: "eye")
+                   
+                Picker(selection:$selection) {
+                             
+                    if showCustomLabel {Text("Scegli..")}
                     
-                    RoundedRectangle(cornerRadius: 5.0)
-                        .fill(Color.white.opacity(0.8))
-                        .shadow(radius: 1.0)
-                ) */
-                
-     //   }
+                        ForEach(dataContainer, id:\.self) {filter in
+                                   
+                          //  forEachContent(filter)
+                            Text(filter.simpleDescription()) }
+                              
+                } label: {Text("")}
+                          .pickerStyle(MenuPickerStyle())
+                          .accentColor(Color.black)
+                          .padding(.horizontal)
+                          .background(
+                        
+                        RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color.white.opacity(0.8))
+                            .shadow(radius: 1.0)
+                    )
+                    
+                        .onChange(of: selection) { _ in
+                               self.showCustomLabel = false
+                                    }
+  
+    
       /*  .padding(.leading)
         .background(
             
@@ -188,90 +219,23 @@ struct CS_Picker<E:MyEnumProtocolMapConform>: View {
                 .fill(Color.white.opacity(0.5))
                 
         ) */
-        
-        
+
     }
     
 }
 
-@ViewBuilder func vbCompilePicker(deepCategory:MapCategoryContainer, label:String ) -> some View {
+/// La variabile selezionata nel Picker è al livello State
+struct CS_PickerDoubleState<E:MyEnumProtocolMapConform>: View {
     
-    switch deepCategory {
+    @State var selection: E
+    let dataContainer: [E]
+    let action: (_ category: E) -> Void
+  
+    var body: some View {
         
-    case .tipologiaMenu:
-        CS_Picker(dataContainer: TipologiaMenu.allCases, label: label)
-    case .giorniDelServizio:
-        CS_Picker(dataContainer: GiorniDelServizio.allCases, label: label)
-    case .statusMenu:
-        CS_Picker(dataContainer: TipologiaMenu.allCases, label: label)
-        
-    case .conservazione:
-        CS_Picker(dataContainer: ConservazioneIngrediente.allCases, label: label)
-    case .produzione:
-        CS_Picker(dataContainer: ProduzioneIngrediente.allCases, label: label)
-    case .provenienza:
-        CS_Picker(dataContainer: ProvenienzaIngrediente.allCases, label: label)
-        
-    case .categoria:
-        CS_Picker(dataContainer: DishCategoria.allCases, label: label)
-    case .base:
-        CS_Picker(dataContainer: DishBase.allCases, label: label)
-    case .tipologiaPiatto:
-        CS_Picker(dataContainer: DishTipologia.allCases, label: label)
-    case .statusPiatto:
-        CS_Picker(dataContainer: DishCategoria.allCases, label: label)
-        
-    case .menuAz:
-        CS_Picker(dataContainer: TipologiaMenu.allCases, label: label)
-    case .ingredientAz:
-        CS_Picker(dataContainer: ConservazioneIngrediente.allCases, label: label)
-    case .dishAz:
-        CS_Picker(dataContainer: DishCategoria.allCases, label: label)
+        CS_Picker(selection: $selection, dataContainer: dataContainer)
+        .onChange(of: selection) { newValue in
+            action(newValue)
+        }
     }
-    
-    
 }
-
-
-/*func compileContainer<E:MyEnumProtocolMapConform>(deepCategory: MapCategoryContainer, containerType: E.Type) -> some View {
-    
-    var dataContainer:[E] = []
-     
-    switch deepCategory {
-        
-    case .tipologiaMenu:
-        dataContainer = TipologiaMenu.allCases as! [E]
-    case .giorniDelServizio:
-        dataContainer = GiorniDelServizio.allCases as! [E]
-    case .statusMenu:
-        dataContainer = []
-        
-    case .conservazione:
-        dataContainer = ConservazioneIngrediente.allCases as! [E]
-    case .produzione:
-        dataContainer = ProduzioneIngrediente.allCases as! [E]
-    case .provenienza:
-        dataContainer = ProvenienzaIngrediente.allCases as! [E]
-        
-    case .categoria:
-        dataContainer = DishCategoria.allCases as! [E]
-    case .base:
-        dataContainer = DishBase.allCases as! [E]
-    case .tipologiaPiatto:
-        dataContainer = DishTipologia.allCases as! [E]
-    case .statusPiatto:
-        dataContainer = []
-        
-    case .menuAz, .ingredientAz,.dishAz:
-        dataContainer = []
-
-    }
-
-    return CS_Picker(dataContainer: dataContainer)
-    
-    
-} */
-
-
-
-*/

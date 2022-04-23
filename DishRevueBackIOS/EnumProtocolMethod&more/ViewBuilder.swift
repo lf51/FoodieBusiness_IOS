@@ -8,7 +8,10 @@
 import Foundation
 import SwiftUI
 
-@ViewBuilder func switchImageText(string: String?) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emnojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.11
+/// Passare una emojy o il systenName di una Image. Il nil ritorna una circle Image
+/// - Parameter string: <#string description#>
+/// - Returns: <#description#>
+@ViewBuilder func vbSwitchImageText(string: String?) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emnojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.04
     
         if let imageName = string {
             
@@ -19,7 +22,10 @@ import SwiftUI
 
 }
 
-@ViewBuilder func switchModelDataRowView<M:MyModelProtocol>(item: M/*, statusFilter: ModelStatus*/) -> some View {
+/// Riconosce il modello e ritorna la rowView associata
+/// - Parameter item: <#item description#>
+/// - Returns: <#description#>
+@ViewBuilder func vbSwitchModelRowView<M:MyModelProtocol>(item: M) -> some View {
      
      switch item.self {
          
@@ -27,12 +33,8 @@ import SwiftUI
          MenuModel_RowView(item: item as! MenuModel)
          
      case is DishModel:
-         
          DishModel_RowView(item: item as! DishModel)
-       /*  let item_1 = item as! DishModel
-         if item_1.status == statusFilter {DishModel_RowView(item: item as! DishModel)}
-         else { EmptyView() } */
-     
+ 
      case is IngredientModel:
          IngredientModel_RowView(item: item as! IngredientModel)
          

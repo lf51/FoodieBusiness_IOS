@@ -10,7 +10,7 @@ import SwiftUI
 struct NewDishMainView: View {
     
    // @ObservedObject var propertyVM: PropertyVM
-    @EnvironmentObject var accounterVM: AccounterVM // ATTUALMENTE NON UTILIZZATO
+    @EnvironmentObject var viewModel: AccounterVM // ATTUALMENTE NON UTILIZZATO
     var backGroundColorView: Color
     
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.

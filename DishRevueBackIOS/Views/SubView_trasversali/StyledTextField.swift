@@ -73,7 +73,7 @@ struct CSTextField_2: View {
     }
 } */
 
-/// Small Custom textfiel con una immagine  e una Action
+/// Small Custom textfiel con una immagine e una Action
 struct CSTextField_3: View {
     
     @Binding var textFieldItem: String
@@ -117,13 +117,23 @@ struct CSTextField_3: View {
     }
 }
 
-/// Small Custom textfiel con una immagine
+/// Small Custom textfield con una immagine e TightPadding
 struct CSTextField_4: View {
     
     @Binding var textFieldItem: String
     let placeHolder: String
     let image: String
-  
+    let showDelete: Bool
+    
+    init(textFieldItem:Binding<String>,placeHolder:String,image:String,showDelete:Bool = false) {
+        
+        _textFieldItem = textFieldItem
+        self.placeHolder = placeHolder
+        self.image = image
+        self.showDelete = showDelete
+        
+    }
+    
     var body: some View {
         
         HStack {
@@ -137,7 +147,19 @@ struct CSTextField_4: View {
                 .keyboardType(.numberPad)
                 ._tightPadding()
                 .accentColor(Color.white)
-        
+            
+            if showDelete {
+                
+                Button {
+                    self.textFieldItem = ""
+                } label: {
+                    Image(systemName: "x.circle")
+                        .imageScale(.medium)
+                        .foregroundColor(Color.white)
+                        .padding(.trailing)
+                }.disabled(self.textFieldItem == "")
+            }
+            
         }.background(
             
             RoundedRectangle(cornerRadius: 5.0)

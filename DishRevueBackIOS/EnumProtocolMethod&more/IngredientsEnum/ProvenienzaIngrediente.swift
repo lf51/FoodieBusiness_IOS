@@ -10,24 +10,24 @@ import Foundation
 enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
  
     static var defaultValue: ProvenienzaIngrediente = ProvenienzaIngrediente.custom("")
-    static var allCases: [ProvenienzaIngrediente] = [.HomeMade, .Italia, .Europa, .RestoDelMondo]
+    static var allCases: [ProvenienzaIngrediente] = [.homeMade, .italia, .europa, .restoDelMondo]
     
     var id: String { self.createId() }
     
-        case HomeMade
-        case Italia
-        case Europa
-        case RestoDelMondo
+        case homeMade
+        case italia
+        case europa
+        case restoDelMondo
         case custom(_ località:String)
     
     func simpleDescription() -> String {
         
         switch self {
             
-        case .HomeMade: return "Fatto in Casa"
-        case .Italia: return "Italia"
-        case .Europa: return "UE"
-        case .RestoDelMondo: return "Extra UE"
+        case .homeMade: return "Fatto in Casa"
+        case .italia: return "Italia"
+        case .europa: return "UE"
+        case .restoDelMondo: return "Extra UE"
         case .custom(let località): return località.capitalized
             
             }
@@ -48,6 +48,7 @@ enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     
         case .custom( _):
             return .custom("")
+            
         default: return self
             
         }
@@ -58,13 +59,13 @@ enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         
         switch self {
             
-        case .HomeMade:
+        case .homeMade:
             return "house"
-        case .Italia:
+        case .italia:
             return "🇮🇹"
-        case .Europa:
+        case .europa:
             return "🇪🇺"
-        case .RestoDelMondo:
+        case .restoDelMondo:
            return "globe.europe.africa"
         case .custom( _):
             return nil
@@ -74,13 +75,13 @@ enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     func orderValue() -> Int {
     
         switch self {
-        case .HomeMade:
+        case .homeMade:
             return 1
-        case .Italia:
+        case .italia:
             return 2
-        case .Europa:
+        case .europa:
             return 3
-        case .RestoDelMondo:
+        case .restoDelMondo:
             return 4
         case .custom( _):
             return (ProvenienzaIngrediente.allCases.count + 1)

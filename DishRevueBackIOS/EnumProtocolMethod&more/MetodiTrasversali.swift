@@ -49,7 +49,8 @@ func myTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     
 }
 
-/// Ripulisce dai casi duplicati un array di (ENUM) case conformi al MyEnumProtocolMapConform [lf51]
+/*
+/// Ritorna un array di case (ripuliti dai valori Associati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
 /// - Parameter array: array description
 /// - Returns: description
 func myRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
@@ -63,4 +64,24 @@ func myRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
         
     }
    return arrayCentrifugato
+} */
+
+/// Ritorna un array di case unici (ripuliti dai valori Associati, dai duplicati, e ordinati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
+/// - Parameter array: array description
+/// - Returns: description
+func myRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
+    
+    var arrayCentrifugato:[T] = []
+    
+    for eachCase in array {
+        
+        let element:T = eachCase.returnTypeCase()
+        arrayCentrifugato.append(element)
+        
+    }
+    
+    let secondStep = Array(Set(arrayCentrifugato))
+    let lastStep = secondStep.sorted{$0.orderValue() < $1.orderValue()}
+    
+   return lastStep
 }

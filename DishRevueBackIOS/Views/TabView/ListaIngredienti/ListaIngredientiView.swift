@@ -54,6 +54,8 @@ struct ListaIngredientiView: View {
                         self.openNuovoIngrediente.toggle()
                     }
                 )
+            .navigationBarTitleDisplayMode(.large)
+            //.navigationViewStyle(StackNavigationViewStyle())
             .sheet(isPresented: self.$openNuovoIngrediente) {
                // NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
                 NuovoIngredienteMainView(backGroundColorView: backGroundColorView)
@@ -61,7 +63,7 @@ struct ListaIngredientiView: View {
             }
             .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
     
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 /*

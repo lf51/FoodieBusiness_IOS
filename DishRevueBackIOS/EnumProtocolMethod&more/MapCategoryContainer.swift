@@ -7,17 +7,13 @@
 
 import Foundation
 
-enum MapCategoryContainer {
-    
+enum MapCategoryContainer:MyEnumProtocolMapConform {
+
     static var allMenuMapCategory: [MapCategoryContainer] = [.menuAz,.tipologiaMenu(),.giorniDelServizio(),/*.statusMenu*/]
     static var allIngredientMapCategory: [MapCategoryContainer] = [.ingredientAz,.provenienza(),.conservazione(),.produzione()]
-    static var allDishMapCategory: [MapCategoryContainer] = [.dishAz,.categoria(),.base(),.tipologiaPiatto(),/*.statusPiatto*/]
-    
-   // static var defaultCase: MapCategoryContainer = .aZ
-   // static var menuDefault: MapCategoryContainer = .tipologiaMenu
-   // static var ingredientDefault: MapCategoryContainer = .produzione
-   // static var dishDefault: MapCategoryContainer = .categoria
-    
+    static var allDishMapCategory: [MapCategoryContainer] = [.categoria(),.base(),.tipologiaPiatto(),.dishAz/*.statusPiatto*/]    
+    static var defaultValue:MapCategoryContainer = .reset
+
     case tipologiaMenu(filter:TipologiaMenu? = nil)
     case giorniDelServizio(filter:GiorniDelServizio? = nil) // collection
     case statusMenu
@@ -34,6 +30,8 @@ enum MapCategoryContainer {
     case menuAz
     case ingredientAz
     case dishAz
+    
+    case reset
         
     func simpleDescription() -> String {
         
@@ -61,44 +59,53 @@ enum MapCategoryContainer {
             return "Status"
         case .menuAz,.ingredientAz,.dishAz:
             return "a..z"
+        case .reset:
+            return "nil"
         }
         
     }
     
-
-    
-   /* func associatedArray() -> [some MyEnumProtocolMapConform] {
+    func returnTypeCase() -> MapCategoryContainer {
         
         switch self {
-            
-        case .tipologiaMenu:
-            return TipologiaMenu.allCases
-        case .giorniDelServizio:
-            return GiorniDelServizio.allCases
+        case .tipologiaMenu(_):
+            return .tipologiaMenu()
+        case .giorniDelServizio(_):
+            return .giorniDelServizio()
         case .statusMenu:
-            return []
-            
-        case .conservazione:
-            return ConservazioneIngrediente.allCases
-        case .produzione:
-            return ProduzioneIngrediente.allCases
-        case .provenienza:
-            return ProvenienzaIngrediente.allCases
-            
-        case .categoria:
-            return DishCategoria.allCases
-        case .base:
-            return DishBase.allCases
-        case .tipologiaPiatto:
-            return DishTipologia.allCases
+            return .statusMenu
+        case .conservazione(_):
+            return .conservazione()
+        case .produzione(_):
+            return .produzione()
+        case .provenienza(_):
+            return .provenienza()
+        case .categoria(_):
+            return .categoria()
+        case .base(_):
+            return .base()
+        case .tipologiaPiatto(_):
+            return .tipologiaPiatto()
         case .statusPiatto:
-            return []
-            
-        case .menuAz, .ingredientAz,.dishAz:
-            return []
-   
+            return .statusPiatto
+        case .menuAz:
+            return .menuAz
+        case .ingredientAz:
+            return .ingredientAz
+        case .dishAz:
+            return .dishAz
+        case .reset:
+            return .reset
         }
-    } */
+        
+    }
     
+    func imageAssociated() -> String? {
+        return "eye"
+    }
+    
+    func orderValue() -> Int {
+        return 0
+    }
     
 }

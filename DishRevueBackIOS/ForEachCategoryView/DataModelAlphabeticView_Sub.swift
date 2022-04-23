@@ -10,36 +10,43 @@ import SwiftUI
 struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
     
     let dataContainer: [T]
-    var statusFilter: ModelStatus
-    
-    init (dataContainer:[T], statusFilter:ModelStatus) {
-        
-        self.dataContainer = dataContainer.sorted{$0.intestazione < $1.intestazione }
-        self.statusFilter = statusFilter
-        
-    }
-    
+    @Binding var stringSearch: String
+    let dataFiltering: () -> [T]
+ 
     var body: some View {
         
             ScrollView(showsIndicators: false) {
                 
-                    ForEach(dataContainer) { item in
+                ScrollViewReader { proxy in
+                    
+                    CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
+              
+                    ForEach(dataFiltering().sorted{$0.intestazione < $1.intestazione}) { item in
                         
-                        switchModelDataRowView(item: item)
-                 
+                        HStack {
+                           
+                            vbSwitchModelRowView(item: item)
+                            Spacer() // Possiamo mettere una view di fianco ogni schedina
+    
+                        }
                     }
+                    .id(1)
+                    .onAppear {proxy.scrollTo(1, anchor: .top)}
+                    
+                }
             }
     }
 }
 
+/*
 struct DataModelAlphabeticView_Sub_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
             
             Color.cyan.ignoresSafeArea()
             
-            DataModelAlphabeticView_Sub(dataContainer: [MenuModel()], statusFilter: .all)
+            DataModelAlphabeticView_Sub(dataContainer: [MenuModel()])
         }
     }
 }
-
+*/

@@ -10,7 +10,7 @@ import SwiftUI
 struct PrincipalTabView: View {
     
     @StateObject var authProcess:AuthPasswordLess = AuthPasswordLess()
-    @StateObject var accounterVM: AccounterVM = AccounterVM()
+    @StateObject var viewModel: AccounterVM = AccounterVM()
   //  @StateObject var propertyVM: PropertyVM = PropertyVM()
     
     var backGroundColorView: Color = Color.cyan
@@ -71,11 +71,9 @@ struct PrincipalTabView: View {
                  message: Text(alert.message)
                )
              }
-            .environmentObject(accounterVM)
-           
+            .environmentObject(viewModel)
             .accentColor(.cyan)
-            
-        
+  
     }
 }
 

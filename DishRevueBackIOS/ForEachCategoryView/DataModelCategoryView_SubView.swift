@@ -10,14 +10,61 @@ import SwiftUI
 struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConform>:View {
     
     let dataMapping:[G]
+    @Binding var stringSearch: String
     let dataFiltering: (_ element:G) -> [M]
+    
+    var body: some View {
+  
+           ScrollView(showsIndicators: false){
+                
+               ScrollViewReader { proxy in
+                   CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
+                   
+                   ForEach(dataMapping, id:\.self) { category in
+                       
+                       CSLabel_1Button(placeHolder: category.simpleDescription(), imageName: category.imageAssociated(), backgroundColor: Color.blue, backgroundOpacity: 0.3)
+    
+                       ScrollView(.horizontal,showsIndicators: false) {
+                           
+                            HStack {
+                               
+                                ForEach(dataFiltering(category).sorted{$0.intestazione < $1.intestazione}) { item in
+                                   
+                                   vbSwitchModelRowView(item: item)
+                                   
+                               }
+                           }
+                       }
+                   }
+                   .id(1)
+                   .onAppear {proxy.scrollTo(1, anchor: .top)}
+                   
+               }
+            }
+
+    }
+}
+
+
+
+
+/* struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConform>:View {
+    
+    let dataMapping:[G]
+    @State var stringSearch: String = ""
+    let dataFiltering: (_ element:G) -> [M]
+    
+    @State var showSearchBar: Bool = false
     
     var body: some View {
         
       //  VStack(alignment:.leading) {
-            
-            ScrollView(showsIndicators: false) {
+        
+        
+           ScrollView(showsIndicators: false){
                 
+              if showSearchBar { CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass") }
+    
                 ForEach(dataMapping, id:\.self) { category in
                     
                     CSLabel_1Button(placeHolder: category.simpleDescription(), imageName: category.imageAssociated(), backgroundColor: Color.blue, backgroundOpacity: 0.3)
@@ -26,18 +73,27 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
                         
                          HStack {
                             
-                            ForEach(dataFiltering(category)) { item in
+                             ForEach(dataFiltering(category).sorted{$0.intestazione < $1.intestazione}) { item in
                                 
-                                switchModelDataRowView(item: item)
+                                vbSwitchModelRowView(item: item)
                                 
                             }
                         }
                     }
                 }
             }
+           
+           
        // }
     }
-}
+} */ // BACKUP 17.04
+
+
+
+
+
+
+
 
 struct DataModelCategoryView_Previews: PreviewProvider {
     

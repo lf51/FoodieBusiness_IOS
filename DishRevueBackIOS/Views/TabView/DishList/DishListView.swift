@@ -26,7 +26,7 @@ import SwiftUI
 
 struct DishListView: View {
     
-    @EnvironmentObject var accounterVM: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     @Binding var tabSelection: Int // serve a muoversi fra le tabItem, utile se vogliamo rimettere la NewDishView nella tabBar
     var backGroundColorView: Color
     
@@ -56,6 +56,8 @@ struct DishListView: View {
                         self.openCreateNewDish.toggle()
                     }
                 )
+            .navigationBarTitleDisplayMode(.large)
+          //  .navigationViewStyle(StackNavigationViewStyle()) 
             .fullScreenCover(isPresented: self.$openCreateNewDish, content: {
                 NewDishMainView(backGroundColorView: .cyan)
             })
@@ -64,7 +66,7 @@ struct DishListView: View {
         
         
         
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

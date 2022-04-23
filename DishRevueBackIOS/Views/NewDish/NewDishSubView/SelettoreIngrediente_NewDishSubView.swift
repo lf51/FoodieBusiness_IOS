@@ -14,7 +14,7 @@ struct SelettoreIngrediente_NewDishSubView: View {
     var screenHeight: CGFloat = UIScreen.main.bounds.height
     
   //  @ObservedObject var propertyVM: PropertyVM
-    @EnvironmentObject var accounterVM: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     @Binding var newDish: DishModel
 
     @State private var listaDaMostrare: ElencoListeIngredienti = .allFromCommunity
@@ -72,7 +72,7 @@ struct SelettoreIngrediente_NewDishSubView: View {
 struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
     
   //  static var propertyVM: PropertyVM = PropertyVM()
-    static var accounterVM: AccounterVM = AccounterVM()
+    static var viewModel: AccounterVM = AccounterVM()
     
     static var previews: some View {
         
@@ -118,7 +118,7 @@ struct SelettoreIngrediente_NewDishSubView_Previews: PreviewProvider {
             
             ingrediente.intestazione = "\(x.description)' ingredient"
             
-            accounterVM.allMyIngredients.append(ingrediente)
+            viewModel.allMyIngredients.append(ingrediente)
             
         }
         

@@ -44,8 +44,7 @@ struct MenuModel_RowView: View {
                 HStack {
                         
                         ForEach(GiorniDelServizio.allCases) { day in
-
-                                
+         
                             iteratingGiorniDelServizio(day: day, arrayData: item.giorniDelServizio)
                             
                         }
@@ -56,17 +55,11 @@ struct MenuModel_RowView: View {
                 .padding(.horizontal)
                 
             } // chiuda VStack madre
-                
-                
-            
-            
-                
-                
+         
         } // chiusa Zstack Madre
        // .background(Color.red)
         .frame(width: 300, height: 150)
-        
-   
+
     }
     
 }

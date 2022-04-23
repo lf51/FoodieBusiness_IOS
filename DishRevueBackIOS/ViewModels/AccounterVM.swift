@@ -29,9 +29,6 @@ class AccounterVM: ObservableObject {
     @Published var allMyProperties:[PropertyModel] = [] // tutte le proprietà registrate dall'accounter - In disuso finchè esiste un VM apposito
     @Published var alertItem: AlertModel?
     
-    
-
-    
     init() {
         
         fillFromListaBaseModello()
@@ -96,80 +93,110 @@ class AccounterVM: ObservableObject {
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
-   
-    
-   /* func mappingModelList<T:MyModelProtocolMapConform, E: MyEnumProtocolMapConform>(modelList:[T], filtro: KeyPath<T,E>) -> [E] {
-        
-        let containerT: [T] = modelList
-        let filter = filtro
-        
-        let firstStep = containerT.map { model -> [E] in
-            let mod = model as! IngredientModel
-           return [mod.conservazione]
-        }
-    } */
-    
-   /* func mappingModelList<T:MyModelProtocolMapConform>(modelType: T.Type) -> [T.MapProperty] {
-        
-        let containerT: [T] = assignToContainerT(modelType: modelType)
-        
-        let firstStep = containerT.map({$0.staticMapCategory})
+    func deepFiltering<M:MyModelProtocol>(model:M, filterCategory:MapCategoryContainer) -> Bool {
        
-        print("firstStep containerT.map -> \(firstStep)")
-        let lastStep = centrifugaMapCategory(array: firstStep)
-        return lastStep
-        /* 12.04 -> dopo vari tentativi abbiamo volutamente abbandonato la possibilità di selezionare la categoria per la mappatura in modo dinamico, dopo esserci riusciti con un viewbuilder. Preferiamo una mappatura statica con filtro dinamico. */
-    } */
-    
-   /* func filteredModelList<T:MyModelProtocolMapConform>(modelType:T.Type, filtro:T.MapCategory) -> [T] {
+       switch filterCategory {
            
-        let containerT: [T] = assignToContainerT(modelType: modelType)
-         
-        return containerT.filter({$0.mapCategoryAvaible.returnTypeCase() == filtro})
+       case .tipologiaMenu(let internalFilter):
            
-       } */
+           guard internalFilter != nil else { return true}
+           let menuModel = model as! MenuModel
+           return menuModel.tipologia.returnTypeCase() == internalFilter
+           
+       case .giorniDelServizio(let filter):
+           
+           guard filter != nil else { return true}
+           let menuModel = model as! MenuModel
+           return menuModel.giorniDelServizio.contains(filter!)
+           
+       case .statusMenu:
+           print("Dentro statusMenu/deepFiltering - Da Settare")
+           return true
+           
+       case .conservazione(let filter):
+           
+           guard filter != nil else { return true}
+           let ingredientModel = model as! IngredientModel
+           return ingredientModel.conservazione == filter
+           
+       case .produzione(let filter):
+           
+           guard filter != nil else { return true}
+           let ingredientModel = model as! IngredientModel
+           return ingredientModel.produzione == filter
+           
+       case .provenienza(let filter):
+           
+           guard filter != nil else { return true}
+           let ingredientModel = model as! IngredientModel
+           return ingredientModel.provenienza == filter
+           
+       case .categoria(let filter):
+           
+           guard filter != nil else { return true}
+           let dishModel = model as! DishModel
+           return dishModel.categoria == filter
+           
+       case .base(let filter):
+           
+           guard filter != nil else { return true}
+           let dishModel = model as! DishModel
+           return dishModel.aBaseDi == filter
+           
+       case .tipologiaPiatto(let filter):
+           
+           guard filter != nil else { return true}
+           let dishModel = model as! DishModel
+           return dishModel.tipologia == filter
+           
+       case .statusPiatto:
+           print("Dentro statusPiatto/deepFiltering - Da Settare")
+           return true
+           
+       case .menuAz, .ingredientAz,.dishAz, .reset:
+           return true
+
+       }
+     
+   }
     
-  /*  private func centrifugaMapCategory<E:MyEnumProtocolMapConform>(array:[E]) -> [E] {
+    func stringResearch<T:MyModelProtocol>(item: T, stringaRicerca: String) -> Bool {
         
-        var secondStep: [E] = []
+        guard stringaRicerca != "" else { return true }
         
-        for eachCase in array {
+        let ricerca = stringaRicerca.replacingOccurrences(of: " ", with: "").lowercased()
+        print("Dentro Stringa Ricerca")
+        switch item.self {
             
-            let element:E = eachCase.returnTypeCase()
-            secondStep.append(element)
+        case is IngredientModel:
+            let itemModel = item as! IngredientModel
+            let condition_One = itemModel.intestazione.lowercased().contains(ricerca)
+  
+            return condition_One
+
+        case is DishModel:
+            
+            let itemModel = item as! DishModel
+            let condition_One = itemModel.intestazione.lowercased().contains(ricerca)
+          
+            return condition_One
+            
+        case is MenuModel:
+            
+            let itemModel = item as! MenuModel
+            let condition_One = itemModel.intestazione.lowercased().contains(ricerca)
+            
+            return condition_One
+            
+        default: return false
+            
             
         }
-        print("secondStep Centriguga(firstStep) -> \(secondStep)")
-        let thirdStep = Set(secondStep)
-        print("thirdStep Set(secondStep) -> \(thirdStep)")
-        let lastStep = Array(thirdStep)
-        print("lastStep Array(thirdStep) -> \(lastStep)")
-        return lastStep
+        
        
-    } */
+        
+    }
     
-    
-   /* private func assignToContainerT<T:MyModelProtocolMapConform> (modelType:T.Type) -> [T] {
-        
-        var containerT: [T] = []
-        
-        switch modelType {
-            
-        case is DishModel.Type:
-            containerT = self.allMyDish as! [T]
-        case is IngredientModel.Type:
-            containerT = self.allMyIngredients as! [T]
-        case is MenuModel.Type:
-            containerT = self.allMyMenu as! [T]
-        case is PropertyModel.Type:
-            containerT = [] // type ancora non conforme al MyModelProtocolMapConform
-            
-        default: containerT = []
-            
-        }
-        
-        return containerT
-    } */
     
     private func assignToContainerT<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
         
@@ -188,6 +215,24 @@ class AccounterVM: ObservableObject {
             
         }
     }
+   
+
+    
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // VIEWBUILDER
+    
+    
     
   // AREA TEST -> DA ELIMINARE
     
@@ -212,11 +257,11 @@ class AccounterVM: ObservableObject {
     let dish4 = DishModel(intestazione: "Tiramisu", aBaseDi: .carne, categoria: .dessert, tipologia: .standard,status: .bozza)
     let dish3 = DishModel(intestazione: "Fritto Misto", aBaseDi: .pesce, categoria: .secondo, tipologia: .vegariano, status: .inPausa)
 
-    let ingre1 = IngredientModel(nome: "Aglio", provenienza: .Italia, metodoDiProduzione: .biologico, conservazione: .conserva)
-    let ingre2 = IngredientModel(nome: "Aglio Rosso", provenienza: .HomeMade, metodoDiProduzione: .naturale, conservazione: .surgelato)
-    let ingre3 = IngredientModel(nome: "Cipolla", provenienza: .Europa, metodoDiProduzione: .convenzionale, conservazione: .congelato)
-    let ingre4 = IngredientModel(nome: "Prezzemolo", provenienza: .RestoDelMondo, metodoDiProduzione: .selvatico, conservazione: .fresco)
-    let ingre5 = IngredientModel(nome: "TestIngr", provenienza: .Italia, metodoDiProduzione: .biologico, conservazione: .fresco)
+    let ingre1 = IngredientModel(nome: "Aglio", provenienza: .italia, metodoDiProduzione: .biologico, conservazione: .conserva)
+    let ingre2 = IngredientModel(nome: "Aglio Rosso", provenienza: .homeMade, metodoDiProduzione: .naturale, conservazione: .surgelato)
+    let ingre3 = IngredientModel(nome: "Cipolla", provenienza: .europa, metodoDiProduzione: .convenzionale, conservazione: .congelato)
+    let ingre4 = IngredientModel(nome: "Prezzemolo", provenienza: .restoDelMondo, metodoDiProduzione: .selvatico, conservazione: .fresco)
+    let ingre5 = IngredientModel(nome: "TestIngr", provenienza: .italia, metodoDiProduzione: .biologico, conservazione: .fresco)
     
   //  let menu5 = MenuModel.Filter.tipologia(.allaCarta)
  //   let menu6 = MenuModel.Filter.tipologia(.fisso(costo: "25"))
@@ -245,3 +290,78 @@ class AccounterVM: ObservableObject {
      }
 }
 
+
+// OBSOLETE
+
+/* func mappingModelList<T:MyModelProtocolMapConform, E: MyEnumProtocolMapConform>(modelList:[T], filtro: KeyPath<T,E>) -> [E] {
+    
+    let containerT: [T] = modelList
+    let filter = filtro
+    
+    let firstStep = containerT.map { model -> [E] in
+        let mod = model as! IngredientModel
+       return [mod.conservazione]
+    }
+} */
+
+/* func mappingModelList<T:MyModelProtocolMapConform>(modelType: T.Type) -> [T.MapProperty] {
+    
+    let containerT: [T] = assignToContainerT(modelType: modelType)
+    
+    let firstStep = containerT.map({$0.staticMapCategory})
+   
+    print("firstStep containerT.map -> \(firstStep)")
+    let lastStep = centrifugaMapCategory(array: firstStep)
+    return lastStep
+    /* 12.04 -> dopo vari tentativi abbiamo volutamente abbandonato la possibilità di selezionare la categoria per la mappatura in modo dinamico, dopo esserci riusciti con un viewbuilder. Preferiamo una mappatura statica con filtro dinamico. */
+} */
+
+/* func filteredModelList<T:MyModelProtocolMapConform>(modelType:T.Type, filtro:T.MapCategory) -> [T] {
+       
+    let containerT: [T] = assignToContainerT(modelType: modelType)
+     
+    return containerT.filter({$0.mapCategoryAvaible.returnTypeCase() == filtro})
+       
+   } */
+
+/*  private func centrifugaMapCategory<E:MyEnumProtocolMapConform>(array:[E]) -> [E] {
+    
+    var secondStep: [E] = []
+    
+    for eachCase in array {
+        
+        let element:E = eachCase.returnTypeCase()
+        secondStep.append(element)
+        
+    }
+    print("secondStep Centriguga(firstStep) -> \(secondStep)")
+    let thirdStep = Set(secondStep)
+    print("thirdStep Set(secondStep) -> \(thirdStep)")
+    let lastStep = Array(thirdStep)
+    print("lastStep Array(thirdStep) -> \(lastStep)")
+    return lastStep
+   
+} */
+
+
+/* private func assignToContainerT<T:MyModelProtocolMapConform> (modelType:T.Type) -> [T] {
+    
+    var containerT: [T] = []
+    
+    switch modelType {
+        
+    case is DishModel.Type:
+        containerT = self.allMyDish as! [T]
+    case is IngredientModel.Type:
+        containerT = self.allMyIngredients as! [T]
+    case is MenuModel.Type:
+        containerT = self.allMyMenu as! [T]
+    case is PropertyModel.Type:
+        containerT = [] // type ancora non conforme al MyModelProtocolMapConform
+        
+    default: containerT = []
+        
+    }
+    
+    return containerT
+} */

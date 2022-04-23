@@ -11,7 +11,7 @@ import UIKit
 struct HomeView: View {
     
     @ObservedObject var authProcess: AuthPasswordLess
-    @EnvironmentObject var accounterVM: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     var backGroundColorView: Color
 
     @State private var wannaAddNewProperty:Bool = false
@@ -53,77 +53,7 @@ struct HomeView: View {
                         
                         ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
                     }
-            
-                    
-                    
-                   // allCases(filtro: .tipologiaMenu)
-                    
-                    // POSIZIONE PROVVISORIA
-                    
-
-                    
-                   /* Picker(selection:$selectedMapCategory) {
-                        
-                        ForEach(MapCategoryContainer.allMenuMapCategory, id:\.self) {category in
-                            
-                            Text(category.simpleDescription())
-                            
-                        }
-                        
-                    } label: {Text("")}
-                    .pickerStyle(SegmentedPickerStyle()) */
-                    
-                    
-                    // Lista Properties
-               /*     ScrollView {
-                               
-                        VStack(alignment:.leading,spacing:5.0) {
-                            
-                          //  ForEach(accounterVM.mappingModelList(modelType: MenuModel.self)) { categoriaMap in
-                            ForEach(accounterVM.mappingModelList(modelType:MenuModel.self)) { categoriaMap in
-                                
-                                Text(categoriaMap.simpleDescription()).bold().foregroundColor(Color.red)
-                                    
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    
-                                    HStack {
-                          
-                                       ForEach(accounterVM.filteredModelList(modelType: MenuModel.self, filtro: categoriaMap )) { menu in
-                        
-                                            Text(menu.intestazione)
-                                            
-                                        }
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
-                   .frame(maxWidth:.infinity)
-                   .frame(maxHeight: screenHeight * 0.40) // Calcolare altezza in termini %
-                */
-                    
-                 /*   ScrollView() { // Lista Properties per TEST
-                               
-                        VStack(alignment:.leading,spacing:5.0) {
-                            
-                            ForEach(accounterVM.allMyProperties) { property in
-                                
-                  
-                                NavigationLink(destination: TESTView(currentProperty: property, backgroundColor: backGroundColorView)) {
-                                        
-                                    Text(property.intestazione).bold().foregroundColor(Color.red)
-                                    
-                                    
-                                }
-                                
-                            }
-                        }
-                    }
-                   .frame(maxWidth:.infinity)
-                   .frame(maxHeight: 300) */
-                    
-                    
+        
                     
                 } // VStack End
 
@@ -132,26 +62,31 @@ struct HomeView: View {
                     NuovoMenuMainView(dismissView: $wannaCreateMenu).zIndex(1.0)
                     
                 }
-                
-                
-                
+         
             }// chiusa ZStack
             .background(backGroundColorView.opacity(0.4))
             .navigationTitle("Hi, Nome Utente \(Text(authProcess.displayName))")
             .navigationBarItems(
                 leading: NavigationLink(destination: {
-                    Text("Dati Account - Spostare qui la facoltà di aggiungere una nuova Proprietà (Perchè? -> Perchè a parte le catene che aprono un ristorante al giorno, il 99% dei ristoratori userà questo pulsante solo all'inizio, dunque non è necessario posizionarlo in facile e veloce accesso")
+                    
+                    AccounterMainView(authProcess: authProcess, backGroundColorView: backGroundColorView)
+
+                    
                 }, label: {
                     Image(systemName: "person.fill")
                         .foregroundColor(.black)
                 }),
-                trailing: LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color.mint, imageFore: Color.white) {
-                    self.wannaAddNewPropertyButton()
-                }
-                    )
-            
-            .navigationBarTitleDisplayMode(.automatic)
-            .navigationViewStyle(.stack) // se non ricordo male mi serve per iPad
+                trailing: NavigationLink(
+                    destination: {
+                    PropertyListView(authProcess: authProcess, backGroundColorView: backGroundColorView)
+                    }, label: {
+                        Text("Proprietà")
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.white)
+                    })
+            )
+            .navigationBarTitleDisplayMode(.large)
+           // .navigationViewStyle(StackNavigationViewStyle()) // se non ricordo male mi serve per iPad
             .sheet(isPresented: self.$wannaAddNewProperty) {
                 
                 NewPropertySheetView(isShowingSheet: self.$wannaAddNewProperty)
@@ -159,14 +94,13 @@ struct HomeView: View {
             }
             .sheet(isPresented: $authProcess.isPresentingSheet) {
                 LinkSignInSheetView(authProcess: authProcess)
-        }
+            }
             
         }
-       
-         // End NavigationView
-       
-
+        .accentColor(Color.white)
+        .navigationViewStyle(StackNavigationViewStyle())
         
+         // End NavigationView
 
     }
     
@@ -185,8 +119,6 @@ struct HomeView: View {
             print("Utente NON Auth, Apertura Sheet Authentication")
         }
     }
-    
-      
 }
 
 /*struct HomeView_Previews: PreviewProvider {
@@ -200,10 +132,9 @@ struct HomeView: View {
 } */
 
 
-
 struct TESTView: View {
     
-    @EnvironmentObject var accounterVM: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     var currentProperty: PropertyModel
     let backgroundColor: Color
     
@@ -219,9 +150,6 @@ struct TESTView: View {
                 
                 Text(currentProperty.cityName)
                 
-                
-                
-                
                 Text("Editing Info Proprietà/ Caricamento Immagini/ Richiesta spunta di Verifica (telefonata, verifica dati, invio codice ricavato dall'uuid da inserire nell'app che lo confronta e crea la spunta blu)/ editing Menu: inserimento/eliminazioni piatti")
                 
                 Spacer()
@@ -229,13 +157,11 @@ struct TESTView: View {
                 LargeBar_TextPlusButton(placeHolder: "Menu") {
                     self.wannaCreateMenu = true
                 }.padding(.horizontal)
-                
-                
+                                
                 ScrollView {
                     
                   //  Text("Menu for property: \(currentProperty.name)")
-                    
-                    
+                                        
                     ForEach(currentProperty.menuIn) { menu in
                         
                         HStack {
@@ -243,16 +169,8 @@ struct TESTView: View {
                            // Text(menu.extendedDescription().orario)
                            // Text(menu.extendedDescription().dayIn, format: .list(type: .and))
                         }
-                        
-                        
-                        
-                        
                     }
-                    
-                    
                 }
-                
-                
             }
             
             if wannaCreateMenu! {
@@ -261,24 +179,13 @@ struct TESTView: View {
 
               NuovoMenuMainView(dismissView: $wannaCreateMenu)
        
-              
             }
-            
-            
-            
         }
         .navigationTitle("\(currentProperty.intestazione)")
         .background(backgroundColor.opacity(0.4))
-        
-        
-        
-       
+ 
     }
 }
-
-
-
-
 
 /*  List {
       

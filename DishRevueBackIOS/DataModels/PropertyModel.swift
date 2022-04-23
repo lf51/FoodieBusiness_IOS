@@ -21,7 +21,6 @@ struct PropertyModel: MyModelProtocol {
     var intestazione: String = "" // deve sostituire il nome
     var alertItem: AlertModel?
     
-    
     static func == (lhs: PropertyModel, rhs: PropertyModel) -> Bool {
         
         lhs.id == rhs.id

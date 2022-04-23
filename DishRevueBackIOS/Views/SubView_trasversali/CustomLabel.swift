@@ -37,7 +37,7 @@ struct CSLabel_1Button: View {
                     .font(.system(.subheadline, design: .monospaced))
             } icon: {
          
-                switchImageText(string: imageName)
+                vbSwitchImageText(string: imageName)
             }
             ._tightPadding()
             .background(

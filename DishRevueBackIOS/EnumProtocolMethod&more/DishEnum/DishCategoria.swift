@@ -100,7 +100,7 @@ enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
         switch self {
      
         case .tipologiaCustom( _):
-            return .tipologiaCustom("Standard")
+            return .tipologiaCustom("")
         default: return self
             
         }
