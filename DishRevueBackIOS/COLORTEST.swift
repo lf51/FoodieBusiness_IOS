@@ -14,8 +14,17 @@ struct COLORTEST: View {
         ZStack {
             
             Color.cyan.ignoresSafeArea()
+            VStack {
+                
+                CSLabel_1Button(placeHolder: "Surgelato", backgroundColor: Color.blue, backgroundOpacity: 0.4)
+                
+                RoundedRectangle(cornerRadius: 10.0)
+                    .frame(height: 5.0)
+                    .foregroundColor(Color.black)
+
+                
+            }
             
-            CSLabel_1Button(placeHolder: "Surgelato", backgroundColor: Color.blue, backgroundOpacity: 0.4)
             
         }
         
