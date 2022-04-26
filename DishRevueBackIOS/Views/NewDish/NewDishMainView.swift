@@ -11,7 +11,7 @@ struct NewDishMainView: View {
     
    // @ObservedObject var propertyVM: PropertyVM
     @EnvironmentObject var viewModel: AccounterVM // ATTUALMENTE NON UTILIZZATO
-    var backGroundColorView: Color
+    var backgroundColorView: Color
     
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
     @State var wannaDeleteIngredient: Bool? = false // attiva l'eliminazione degli ingredienti
@@ -30,7 +30,7 @@ struct NewDishMainView: View {
        
         ZStack {
             
-            backGroundColorView.opacity(0.9).ignoresSafeArea()
+            backgroundColorView.opacity(0.9).ignoresSafeArea()
             
             VStack {
                 
@@ -68,7 +68,7 @@ struct NewDishMainView: View {
                       // self.openAddingIngredienteSecondario = false
                     }
         
-                    ConditionalZStackView_NewDishSubView(newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backGroundColorView: backGroundColorView)
+                    ConditionalZStackView_NewDishSubView(newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backgroundColorView: backgroundColorView)
                     
                     
                 } // end ZStack Interno
@@ -84,12 +84,12 @@ struct NewDishMainView: View {
             }.zIndex(1)
           
         } // end ZStack Esterno
-        .alert(item:$newDish.alertItem) { alert -> Alert in
+      /*  .alert(item:$newDish.alertItem) { alert -> Alert in
            Alert(
              title: Text(alert.title),
              message: Text(alert.message)
            )
-         }
+         } */
     }
 }
 

@@ -12,7 +12,7 @@ struct HomeView: View {
     
     @ObservedObject var authProcess: AuthPasswordLess
     @EnvironmentObject var viewModel: AccounterVM
-    var backGroundColorView: Color
+    var backgroundColorView: Color
 
     @State private var wannaAddNewProperty:Bool = false
     @State private var wannaCreateMenu: Bool? = false
@@ -25,7 +25,7 @@ struct HomeView: View {
       
             ZStack {
                 
-                backGroundColorView.edgesIgnoringSafeArea(.top)
+                backgroundColorView.edgesIgnoringSafeArea(.top)
      
                 VStack(alignment: .leading) {
                
@@ -64,37 +64,45 @@ struct HomeView: View {
                 }
          
             }// chiusa ZStack
-            .background(backGroundColorView.opacity(0.4))
-            .navigationTitle("Hi, Nome Utente \(Text(authProcess.displayName))")
+            .background(backgroundColorView.opacity(0.4))
+            .navigationTitle("Ciao \(Text(authProcess.userInfo?.userDisplayName ?? ""))")
             .navigationBarItems(
                 leading: NavigationLink(destination: {
                     
-                    AccounterMainView(authProcess: authProcess, backGroundColorView: backGroundColorView)
+                    AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
 
-                    
                 }, label: {
                     Image(systemName: "person.fill")
                         .foregroundColor(.black)
                 }),
                 trailing: NavigationLink(
                     destination: {
-                    PropertyListView(authProcess: authProcess, backGroundColorView: backGroundColorView)
+                        
+                    PropertyListView(backgroundColorView: backgroundColorView)
+                        
                     }, label: {
-                        Text("Proprietà")
-                            .fontWeight(.bold)
-                            .foregroundColor(Color.white)
+                        
+                        HStack {
+                            
+                            Text("Proprietà")
+                                .fontWeight(.bold)
+                                .foregroundColor(Color.white)
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                                .imageScale(.medium)
+                                
+                        }
                     })
             )
             .navigationBarTitleDisplayMode(.large)
            // .navigationViewStyle(StackNavigationViewStyle()) // se non ricordo male mi serve per iPad
-            .sheet(isPresented: self.$wannaAddNewProperty) {
+          /*  .sheet(isPresented: self.$wannaAddNewProperty) {
                 
                 NewPropertySheetView(isShowingSheet: self.$wannaAddNewProperty)
               
             }
             .sheet(isPresented: $authProcess.isPresentingSheet) {
                 LinkSignInSheetView(authProcess: authProcess)
-            }
+            } */
             
         }
         .accentColor(Color.white)
@@ -106,7 +114,7 @@ struct HomeView: View {
     
     // Method
     
-    private func wannaAddNewPropertyButton() {
+  /*  private func wannaAddNewPropertyButton() {
         
         if AuthPasswordLess.isUserAuth {
             
@@ -118,21 +126,21 @@ struct HomeView: View {
             authProcess.isPresentingSheet = true
             print("Utente NON Auth, Apertura Sheet Authentication")
         }
-    }
+    } */
 }
 
 /*struct HomeView_Previews: PreviewProvider {
  
     static var previews: some View {
         
-    HomeView(authProcess: AuthPasswordLess(), backGroundColorView: Color.cyan)
+    HomeView(authProcess: AuthPasswordLess(), backgroundColorView: Color.cyan)
         
       /*  TESTView(accounterVM: AccounterVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
     }
 } */
 
 
-struct TESTView: View {
+/*struct TESTView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     var currentProperty: PropertyModel
@@ -185,7 +193,7 @@ struct TESTView: View {
         .background(backgroundColor.opacity(0.4))
  
     }
-}
+} */
 
 /*  List {
       

@@ -13,16 +13,16 @@ struct NuovoIngredienteMainView: View {
 
   //  @ObservedObject var propertyVM: PropertyVM
     @EnvironmentObject var viewModel: AccounterVM
-    let backGroundColorView: Color
+    let backgroundColorView: Color
     @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
     
     @State var nuovoIngrediente: IngredientModel = IngredientModel() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
     
-    init(backGroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
+    init(backgroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
         
       //  self.propertyVM = propertyVM
        // self.accounterVM = accounterVM
-        self.backGroundColorView = backGroundColorView
+        self.backgroundColorView = backgroundColorView
         _dismissButton = dismissButton ?? Binding.constant(nil)
     }
     
@@ -30,7 +30,7 @@ struct NuovoIngredienteMainView: View {
         
        ZStack {
 
-           if self.dismissButton == nil {backGroundColorView.opacity(0.9).ignoresSafeArea()}
+           if self.dismissButton == nil {backgroundColorView.opacity(0.9).ignoresSafeArea()}
                   
         VStack { // VStack Madre
                
@@ -110,7 +110,7 @@ struct NuovoIngredienteView_Previews: PreviewProvider {
             }
             
             
-            NuovoIngredienteMainView(backGroundColorView: Color.cyan, dismissButton: nil)
+            NuovoIngredienteMainView(backgroundColorView: Color.cyan, dismissButton: nil)
               // .cornerRadius(20.0)
                 //.padding(.vertical)
                 

@@ -27,7 +27,7 @@ import SwiftUI
 struct ListaIngredientiView: View {
     
     @Binding var tabSelection: Int
-    var backGroundColorView: Color
+    var backgroundColorView: Color
     
     @State private var openNuovoIngrediente: Bool = false
     
@@ -37,7 +37,7 @@ struct ListaIngredientiView: View {
             
             ZStack {
                 
-                backGroundColorView.edgesIgnoringSafeArea(.top)
+                backgroundColorView.edgesIgnoringSafeArea(.top)
                 
                // VStack(alignment:.leading) {
   
@@ -57,11 +57,11 @@ struct ListaIngredientiView: View {
             .navigationBarTitleDisplayMode(.large)
             //.navigationViewStyle(StackNavigationViewStyle())
             .sheet(isPresented: self.$openNuovoIngrediente) {
-               // NewDishView(dishVM: dishVM, backGroundColorView: .cyan)
-                NuovoIngredienteMainView(backGroundColorView: backGroundColorView)
+               // NewDishView(dishVM: dishVM, backgroundColorView: .cyan)
+                NuovoIngredienteMainView(backgroundColorView: backgroundColorView)
                 // Creare nuovo ingrediente
             }
-            .background(backGroundColorView.opacity(0.4)) // colora la tabItemBar
+            .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
     
         }.navigationViewStyle(StackNavigationViewStyle())
     }
@@ -69,7 +69,7 @@ struct ListaIngredientiView: View {
 /*
 struct ListaIngredientiView_Previews: PreviewProvider {
     static var previews: some View {
-        ListaIngredientiView(tabSelection: .constant(2), backGroundColorView: Color.cyan)
+        ListaIngredientiView(tabSelection: .constant(2), backgroundColorView: Color.cyan)
     }
 }
 */

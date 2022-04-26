@@ -57,8 +57,8 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                         
                         HStack {
                             
-                            CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark")
-                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle")
+                            CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark", keyboardType: .numberPad)
+                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle", keyboardType: .decimalPad)
                             
                         }
                         

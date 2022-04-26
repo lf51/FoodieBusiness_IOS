@@ -11,17 +11,16 @@ struct AccounterMainView: View {
    
   @ObservedObject var authProcess: AuthPasswordLess
   @EnvironmentObject var viewModel: AccounterVM
-  let backGroundColorView: Color
+  let backgroundColorView: Color
     
-  
   @State private var newDisplayName: String = ""
-    @State private var wannaChangeDisplayName: Bool = false
+  @State private var wannaChangeDisplayName: Bool = false
  
   var body: some View {
 
       ZStack(alignment:.leading) {
           
-          backGroundColorView.edgesIgnoringSafeArea(.top)
+          backgroundColorView.edgesIgnoringSafeArea(.top)
 
           VStack(alignment:.leading) {
               
@@ -31,7 +30,7 @@ struct AccounterMainView: View {
                       
                       Image(systemName: "lock.fill")
                       
-                      Text("lillofriscia@gmail.comm")
+                      Text("\(authProcess.userInfo?.userEmail ?? "")")
                           .italic()
                           .accentColor(Color.gray)
                           .shadow(color: Color.white, radius: 10.0, x: 0, y:  0)
@@ -46,7 +45,7 @@ struct AccounterMainView: View {
                       
                       Image(systemName: "person.fill")
                       
-                      CSText_tightRectangle(testo: "lilloFree", fontWeight: .semibold, textColor: Color.yellow, strokeColor: Color.blue, fillColor: Color.cyan)
+                      CSText_tightRectangle(testo: "\(authProcess.userInfo?.userDisplayName ?? "")", fontWeight: .semibold, textColor: Color.yellow, strokeColor: Color.blue, fillColor: Color.cyan)
                           .onTapGesture {
                               withAnimation {
                                   self.wannaChangeDisplayName.toggle()
@@ -57,14 +56,17 @@ struct AccounterMainView: View {
            
               if wannaChangeDisplayName {
                   
-                  CSTextField_3(textFieldItem: $newDisplayName, placeHolder: "User Name") {
+                  CSTextField_5(textFieldItem: $newDisplayName, placeHolder: "UserName", image: "at", showDelete: true, keyboardType: .default){
                       
                       withAnimation {
-                          authProcess.displayName = self.newDisplayName
+                          authProcess.updateDisplayName(newDisplayName: self.newDisplayName)
                           self.newDisplayName = ""
                           self.wannaChangeDisplayName = false
                       }
+                      
+                      
                   }
+                  
               }
              
                   HStack {
@@ -83,12 +85,16 @@ struct AccounterMainView: View {
                   
                   HStack {
                       
-                      CSText_tightRectangle(testo: "Disconnetti", fontWeight: .semibold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.blue)
+                      CSButton_tight(title: "Disconnetti", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
+                          self.authProcess.signOutCurrentUser()
+                            }
                       
                       Spacer()
                       
-                      CSText_tightRectangle(testo: "Elimina Account", fontWeight: .semibold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.red)
-                      
+                      CSButton_tight(title: "Elimina Account", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.red) {
+                          self.authProcess.deleteCurrentUser()
+                      }
+             
                   }
                   
                   Text(UUID().uuidString)
@@ -107,13 +113,21 @@ struct AccounterMainView: View {
           
           
       } // chiusa ZStack
-      .background(backGroundColorView.opacity(0.4))
+      .background(backgroundColorView.opacity(0.4))
       .navigationTitle("Settings")
       .navigationBarTitleDisplayMode(.large)
       .toolbar {
     
           CSText_tightRectangle(testo: "Richiedi Verifica", fontWeight: .semibold, textColor: Color.blue, strokeColor: Color.blue, fillColor: Color.cyan)
       }
+     /* .alert(item: $authProcess.alertItem) { alert -> Alert in
+          Alert(
+            title: Text(alert.title),
+            message: Text(alert.message)
+          )
+          
+      } */
+      
       
     
   }
@@ -129,7 +143,7 @@ struct AccounterMainView_Previews: PreviewProvider {
         NavigationView {
             
          //   NavigationLink {
-            AccounterMainView(authProcess: AuthPasswordLess(), backGroundColorView: Color.cyan)
+            AccounterMainView(authProcess: AuthPasswordLess(), backgroundColorView: Color.cyan)
                    
          /*  } label: {
                 Text("Test").foregroundColor(Color.red)

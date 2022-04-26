@@ -47,7 +47,7 @@ struct DishSpecific_NewDishSubView: View {
                                             withAnimation(.default) {
                                                 if taglia.isSceltaBloccata(newDish: self.newDish) {
                                                     
-                                                    newDish.alertItem = AlertModel (
+                                                    self.newDish.alertItem = AlertModel (
                                                         title: "Scelta Bloccata",
                                                         message: "\(taglia.qualeComboIsAvaible())\n\n - Premi a lungo un'opzione qualsiasi per Resettare - "
                                                                     )
@@ -73,9 +73,9 @@ struct DishSpecific_NewDishSubView: View {
                             
                             HStack {
                                 
-                                CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark")
-                                CSTextField_4(textFieldItem: $grammi, placeHolder: "0 gr", image: "scalemass.fill")
-                                CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle")
+                                CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark", keyboardType: .numberPad)
+                                CSTextField_4(textFieldItem: $grammi, placeHolder: "0 gr", image: "scalemass.fill",keyboardType: .decimalPad)
+                                CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle", keyboardType: .decimalPad)
                                 
                             }
                             
@@ -134,8 +134,8 @@ struct DishSpecific_NewDishSubView: View {
         guard myValidateValue(value: self.grammi, convalidaAsDouble: true) else {
         
             self.newDish.alertItem = AlertModel(
-                title: "Errore Inserimento Grammi",
-                message: "Valore inserito non valido. Ex: 150 o 150.5" )
+                title: "Errore Inserimento Peso",
+                message: "Valore inserito non valido. Ex: 150 o 150,5" )
             
             print("Valore inserito in grammi NON VALIDO")
             self.grammi = ""
@@ -145,7 +145,7 @@ struct DishSpecific_NewDishSubView: View {
     
             self.newDish.alertItem = AlertModel(
                 title: "Errore Inserimento Prezzo",
-                message: "Valore inserito non valido. Ex: 180 o 180.5" )
+                message: "Valore inserito non valido. Ex: 180 o 180,5" )
             
             print("Valore inserito in prezzo NON VALIDO")
             self.prezzo = ""

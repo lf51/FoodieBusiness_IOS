@@ -28,7 +28,7 @@ func myValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
    
    if convalidaAsDouble {
        
-       if let righValue = Double(value) { if righValue >= 0 {return true} else {return false} } else {return false}
+       if let righValue = Double(value.replacingOccurrences(of: ",", with: ".")) { if righValue >= 0 {return true} else {return false} } else {return false}
        
    } else {
        // convalida Int

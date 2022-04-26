@@ -12,7 +12,7 @@ struct HomeView: View {
     
     @ObservedObject var authProcess: AuthPasswordLess
     @ObservedObject var accounterVM: AccounterVM
-    var backGroundColorView: Color
+    var backgroundColorView: Color
 
     @State private var showAddNewPropertySheet:Bool = false
     
@@ -22,7 +22,7 @@ struct HomeView: View {
       
             ZStack {
                 
-                backGroundColorView.edgesIgnoringSafeArea(.top)
+                backgroundColorView.edgesIgnoringSafeArea(.top)
      
                 VStack(alignment: .leading) {
                
@@ -59,7 +59,7 @@ struct HomeView: View {
                             ForEach(accounterVM.allMyProperties) { property in
                                 
                   
-                                NavigationLink(destination: TESTView(accounterVM: accounterVM, currentProperty: property, backgroundColor: backGroundColorView)) {
+                                NavigationLink(destination: TESTView(accounterVM: accounterVM, currentProperty: property, backgroundColor: backgroundColorView)) {
                                         
                                     Text(property.intestazione).bold().foregroundColor(Color.red)
                                     
@@ -75,7 +75,7 @@ struct HomeView: View {
                 } // VStack End
 
             }// chiusa ZStack
-            .background(backGroundColorView.opacity(0.4))
+            .background(backgroundColorView.opacity(0.4))
             .navigationTitle("Hi, Nome Utente \(Text(authProcess.displayName))")
             .navigationBarItems(
                 leading: NavigationLink(destination: {
@@ -121,7 +121,7 @@ struct HomeView_Previews: PreviewProvider {
  
     static var previews: some View {
         
-    HomeView(authProcess: AuthPasswordLess(), accounterVM: AccounterVM(), backGroundColorView: Color.cyan)
+    HomeView(authProcess: AuthPasswordLess(), accounterVM: AccounterVM(), backgroundColorView: Color.cyan)
         
       /*  TESTView(accounterVM: AccounterVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
     }

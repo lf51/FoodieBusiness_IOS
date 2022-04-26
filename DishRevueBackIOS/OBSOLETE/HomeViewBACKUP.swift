@@ -13,7 +13,7 @@ struct HomeViewBACKUP: View {
     @ObservedObject var propertyViewModel: PropertyVM 
     @ObservedObject var authProcess: AuthPasswordLess
     @ObservedObject var dishVM: DishVM
-    var backGroundColorView: Color
+    var backgroundColorView: Color
 
     @State var showAddNewPropertySheet:Bool = false
     
@@ -23,7 +23,7 @@ struct HomeViewBACKUP: View {
       
             ZStack {
                 
-                backGroundColorView.edgesIgnoringSafeArea(.top)
+                backgroundColorView.edgesIgnoringSafeArea(.top)
      
                 VStack(alignment: .leading) {
                
@@ -65,7 +65,7 @@ struct HomeViewBACKUP: View {
                 } // VStack End
 
             }// chiusa ZStack
-            .background(backGroundColorView.opacity(0.4))
+            .background(backgroundColorView.opacity(0.4))
             .navigationTitle("Hi, Nome Utente \(Text(authProcess.displayName))")
             .navigationBarItems(
                 leading: NavigationLink(destination: {
@@ -109,7 +109,7 @@ struct HomeViewBACKUP: View {
 
 struct HomeViewBACKUP_Previews: PreviewProvider {
     static var previews: some View {
-        HomeViewBACKUP(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backGroundColorView: Color.cyan)
+        HomeViewBACKUP(propertyViewModel: PropertyVM(), authProcess: AuthPasswordLess(), dishVM: DishVM(), backgroundColorView: Color.cyan)
     }
 }
 

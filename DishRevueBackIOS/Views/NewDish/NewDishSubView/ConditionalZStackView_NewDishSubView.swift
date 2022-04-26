@@ -18,13 +18,13 @@ struct ConditionalZStackView_NewDishSubView: View {
     @Binding var wannaCreateIngredient: Bool?
     @Binding var wannaProgramAndPublishNewDish: Bool
     
-    var backGroundColorView: Color
+    var backgroundColorView: Color
     
     var body: some View {
         
         if wannaCreateIngredient! {
                     
-            NuovoIngredienteMainView(backGroundColorView: backGroundColorView, dismissButton: $wannaCreateIngredient)
+            NuovoIngredienteMainView(backgroundColorView: backgroundColorView, dismissButton: $wannaCreateIngredient)
 
                 }
         

@@ -64,12 +64,12 @@ struct NuovoMenuMainView: View {
         .background(RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
         .contrast(1.2)
         .brightness(0.08)
-        .alert(item:$viewModel.alertItem) { alert -> Alert in
+       /*.alert(item:$viewModel.alertItem) { alert -> Alert in
            Alert(
              title: Text(alert.title),
              message: Text(alert.message)
            )
-         } // non funziona
+         }*/ // non funziona
     }
     
     // Method

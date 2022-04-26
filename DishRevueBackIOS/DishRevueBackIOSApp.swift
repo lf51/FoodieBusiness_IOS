@@ -10,17 +10,19 @@ import Firebase
 
 @main
 struct DishRevueBackIOSApp: App {
-    
+        
     init() {
         
         FirebaseApp.configure()
         // disattivare raccolta dati
+
     }
     
     var body: some Scene {
         WindowGroup {
         
-           PrincipalTabView()
+           MainView()
+                
           //  DishSpecificView(newDish:.constant(DishModel()))
             
         }

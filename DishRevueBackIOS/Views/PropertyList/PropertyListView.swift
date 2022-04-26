@@ -10,15 +10,15 @@ import SwiftUI
 struct PropertyListView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-    @ObservedObject var authProcess: AuthPasswordLess
-    let backGroundColorView: Color
+  //  @ObservedObject var authProcess: AuthPasswordLess
+    let backgroundColorView: Color
     @State private var wannaAddNewProperty: Bool = false
     
     var body: some View {
         
         ZStack {
             
-            backGroundColorView.edgesIgnoringSafeArea(.top)
+            backgroundColorView.edgesIgnoringSafeArea(.top)
             
             VStack(alignment:.leading, spacing: 10.0) {
                 
@@ -42,7 +42,10 @@ struct PropertyListView: View {
                 trailing:
                     
             LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color.mint, imageFore: Color.white) {
-                        self.wannaAddNewPropertyButton()
+                
+                withAnimation {
+                    self.wannaAddNewProperty.toggle()
+                }                
                     }
                 )
             .navigationBarTitleDisplayMode(.large)
@@ -52,7 +55,7 @@ struct PropertyListView: View {
               
         }
         }
-        .background(backGroundColorView.opacity(0.4))
+        .background(backgroundColorView.opacity(0.4))
         /* .sheet(isPresented: $authProcess.isPresentingSheet) {
              LinkSignInSheetView(authProcess: authProcess)
          }*/
@@ -60,7 +63,7 @@ struct PropertyListView: View {
     
     // Method
     
-    private func wannaAddNewPropertyButton() {
+   /* private func wannaAddNewPropertyButton() {
         
         if AuthPasswordLess.isUserAuth {
             
@@ -72,14 +75,14 @@ struct PropertyListView: View {
             authProcess.isPresentingSheet = true
             print("Utente NON Auth, Apertura Sheet Authentication")
         }
-    }
+    } */
     
 }
 
 struct PropertyListView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PropertyListView(authProcess: AuthPasswordLess(), backGroundColorView: Color.cyan)
+            PropertyListView(backgroundColorView: Color.cyan)
         }
     }
 }
