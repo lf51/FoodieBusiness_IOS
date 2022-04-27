@@ -46,7 +46,7 @@ struct HomeView: View {
                             self.showAddNewPropertySheet.toggle()
                             print("Siamo nell'If in LargeMiddleBar action")
                         } else {
-                            authProcess.isPresentingSheet = true
+                            authProcess.openSignInView = true
                             print("Siamo nell'else dell'action in LargeMiddleBar")
                         }
                     }
@@ -102,7 +102,7 @@ struct HomeView: View {
                 NewPropertySheetView(accounterVM: accounterVM, isShowingSheet: self.$showAddNewPropertySheet)
               
             }
-            .sheet(isPresented: $authProcess.isPresentingSheet) {
+            .sheet(isPresented: $authProcess.openSignInView) {
                 LinkSignInSheetView(authProcess: authProcess)
         }
             

@@ -92,7 +92,7 @@ struct HomeViewBACKUP: View {
             }) {
                 NewPropertySheetView(vm: propertyViewModel, isShowingSheet: self.$showAddNewPropertySheet)
             }
-            .sheet(isPresented: $authProcess.isPresentingSheet) {
+            .sheet(isPresented: $authProcess.openSignInView) {
                 LinkSignInSheetView(authProcess: authProcess)
         }
             

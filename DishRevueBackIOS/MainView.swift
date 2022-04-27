@@ -38,15 +38,12 @@ struct MainView: View {
                     Text("Lista Ingredienti")
                 }.tag(2)
             }
-        .fullScreenCover(isPresented: $authProcess.isPresentingSheet, content: {
+        .fullScreenCover(isPresented: $authProcess.openSignInView, content: {
             LinkSignInSheetView(authProcess: authProcess)
         })
-        .alert(item: $authProcess.alertItem) { alert -> Alert in
-               Alert(
-                 title: Text(alert.title),
-                 message: Text(alert.message)
-               )
-             }
+       
+        .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
+        .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
         .environmentObject(viewModel)
         .accentColor(.cyan)
   
@@ -60,3 +57,29 @@ struct PrincipalTabView_Previews: PreviewProvider {
 }
 
 
+struct CS_AlertModifier: ViewModifier {
+    
+    @Binding var isPresented: Bool
+    let item: AlertModel?
+    
+    func body(content: Content) -> some View {
+        
+     content
+            .alert(Text(item?.title ?? "NoTitle"), isPresented: $isPresented, presenting: item) { alert in
+                
+                if alert.actionPlus != nil {
+                    
+                    Button(
+                        role: .destructive) {
+                            alert.actionPlus?.action()
+                        } label: {
+                            Text(alert.actionPlus?.title.rawValue.capitalized ?? "")
+                        }
+                }
+          
+            } message: { alert in
+                Text(alert.message)
+            }
+        
+    }
+}

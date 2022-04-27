@@ -8,7 +8,13 @@
 import Foundation
 
 struct AlertModel: Identifiable {
-  var id = UUID()
-  var title: String
-  var message: String
+    
+  let id = UUID()
+  let title: String
+  let message: String
+  var actionPlus: ActionModel? = nil
+ // let actionTitle: String? = nil
+ // let action: (() -> Void)? = nil
 }
+
+

@@ -27,7 +27,8 @@ class AccounterVM: ObservableObject {
     @Published var allMyDish:[DishModel] = [] // tutti i piatti creati dall'accounter
     @Published var allMyMenu:[MenuModel] = [] // tutti i menu creati dall'accounter
     @Published var allMyProperties:[PropertyModel] = [] // tutte le proprietà registrate dall'accounter - In disuso finchè esiste un VM apposito
-    @Published var alertItem: AlertModel?
+    @Published var showAlert: Bool = false
+    @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
     init() {
         
@@ -61,7 +62,10 @@ class AccounterVM: ObservableObject {
         
         else {
             
-            self.alertItem = AlertModel(title: "\(itemModel.intestazione)", message: "New Item Added Successfully")
+            self.alertItem = AlertModel(
+                title: "\(itemModel.intestazione)",
+                message: "New Item Added Successfully")
+            
             containerT.append(itemModel)
             print("Item mai Esistita Prima, creato con id: \(itemModel.id)")
         }
@@ -197,7 +201,6 @@ class AccounterVM: ObservableObject {
         
     }
     
-    
     private func assignToContainerT<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
         
         switch itemModel.self {
@@ -215,23 +218,6 @@ class AccounterVM: ObservableObject {
             
         }
     }
-   
-
-    
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // VIEWBUILDER
-    
     
     
   // AREA TEST -> DA ELIMINARE

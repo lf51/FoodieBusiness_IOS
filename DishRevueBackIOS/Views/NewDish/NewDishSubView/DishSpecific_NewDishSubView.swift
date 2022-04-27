@@ -131,7 +131,7 @@ struct DishSpecific_NewDishSubView: View {
     
     private func validateAndAddSpecificValue() {
         
-        guard myValidateValue(value: self.grammi, convalidaAsDouble: true) else {
+        guard csValidateValue(value: self.grammi, convalidaAsDouble: true) else {
         
             self.newDish.alertItem = AlertModel(
                 title: "Errore Inserimento Peso",
@@ -141,7 +141,7 @@ struct DishSpecific_NewDishSubView: View {
             self.grammi = ""
             return }
         
-        guard myValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
+        guard csValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
     
             self.newDish.alertItem = AlertModel(
                 title: "Errore Inserimento Prezzo",
@@ -151,7 +151,7 @@ struct DishSpecific_NewDishSubView: View {
             self.prezzo = ""
             return}
         
-        guard myValidateValue(value: self.pax, convalidaAsDouble: false) else {
+        guard csValidateValue(value: self.pax, convalidaAsDouble: false) else {
         
             self.newDish.alertItem = AlertModel(
                 title: "Errore Inserimento Porzioni",

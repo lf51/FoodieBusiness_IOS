@@ -30,7 +30,7 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
                                
                                 ForEach(dataFiltering(category).sorted{$0.intestazione < $1.intestazione}) { item in
                                    
-                                   vbSwitchModelRowView(item: item)
+                                   csVbSwitchModelRowView(item: item)
                                    
                                }
                            }

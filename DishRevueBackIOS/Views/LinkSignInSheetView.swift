@@ -98,15 +98,15 @@ struct LinkSignInSheetView: View {
                   
               case let .success(user):
                   
-                  authProcess.sendAlert(
+                  authProcess.sendDispatchAlert(
                     openSignInView: false,
                     alertModel: AlertModel(
-                        title: "Authentication Done",
+                        title: "Authentication Complete",
                         message: "Utente \(user?.displayName ?? "") Autenticato correttamente"))
 
               case let .failure(error):
                   
-                  authProcess.sendAlert(
+                  authProcess.sendDispatchAlert(
                     openSignInView: true,
                     alertModel: AlertModel(
                         title: "Authentication Failed",
@@ -117,13 +117,10 @@ struct LinkSignInSheetView: View {
           }
         }
       }
-     /* .alert(item: $authProcess.alertItem) { alert -> Alert in
-           Alert(
-             title: Text(alert.title),
-             message: Text(alert.message)
-           )
-         }  */
-   /* .sheet(isPresented: $authProcess.isPresentingSheet) {
+      /*.alert(item: $authProcess.alertItem) { alert -> Alert in
+         csSendAlert(alertModel: alert)
+         }*/ // serve a gestire le info di autenticazione Iniziali
+   /* .sheet(isPresented: $authProcess.openSignInView) {
         SuccessView(authProcess: authProcess)
     } */
    

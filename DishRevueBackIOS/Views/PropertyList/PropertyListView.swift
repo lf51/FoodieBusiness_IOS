@@ -56,7 +56,7 @@ struct PropertyListView: View {
         }
         }
         .background(backgroundColorView.opacity(0.4))
-        /* .sheet(isPresented: $authProcess.isPresentingSheet) {
+        /* .sheet(isPresented: $authProcess.openSignInView) {
              LinkSignInSheetView(authProcess: authProcess)
          }*/
     }
@@ -72,7 +72,7 @@ struct PropertyListView: View {
             
         } else {
             
-            authProcess.isPresentingSheet = true
+            authProcess.openSignInView = true
             print("Utente NON Auth, Apertura Sheet Authentication")
         }
     } */

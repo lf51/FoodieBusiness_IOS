@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct BottonBar_NewDishSubView: View {
+struct BottomBar_NewDishSubView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var newDish: DishModel

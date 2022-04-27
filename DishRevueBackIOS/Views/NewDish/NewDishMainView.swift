@@ -75,7 +75,7 @@ struct NewDishMainView: View {
                 
                 Spacer()
                 
-                BottonBar_NewDishSubView(newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
+                BottomBar_NewDishSubView(newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
                     .padding()
                     .background(Color.cyan)
                     .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)

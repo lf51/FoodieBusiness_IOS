@@ -25,7 +25,7 @@ struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
                         
                         HStack {
                            
-                            vbSwitchModelRowView(item: item)
+                            csVbSwitchModelRowView(item: item)
                             Spacer() // Possiamo mettere una view di fianco ogni schedina
     
                         }

@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import SwiftUI
 
-func myLoad<T:Decodable>(_ filename:String) -> T {
+func csLoad<T:Decodable>(_ filename:String) -> T {
     
     let data:Data
     
@@ -24,7 +25,7 @@ func myLoad<T:Decodable>(_ filename:String) -> T {
     
 }
 
-func myValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
+func csValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
    
    if convalidaAsDouble {
        
@@ -37,7 +38,7 @@ func myValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
    }
 }
 
-func myTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
+func csTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     
     let time = DateFormatter()
     time.timeStyle = .short
@@ -49,27 +50,42 @@ func myTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     
 }
 
-/*
-/// Ritorna un array di case (ripuliti dai valori Associati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
-/// - Parameter array: array description
-/// - Returns: description
-func myRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
+/// se l'alertModel non possiede una action ritorna un Alert comunicativo. Default ActionTitle "Prosegui"
+/*func csSendAlert(alertModel: AlertModel) -> Alert {
+   
+   guard alertModel.actionPlus != nil else {
+       
+       return Alert(
+           title: Text(alertModel.title),
+           message: Text(alertModel.message))
+       
+   }
     
-    var arrayCentrifugato:[T] = []
+    let actionTitle: Text
     
-    for eachCase in array {
+    switch alertModel.actionPlus!.title {
         
-        let element:T = eachCase.returnTypeCase()
-        arrayCentrifugato.append(element)
+    case .elimina:
+        actionTitle = Text("Elimina").foregroundColor(Color.red)
+   
+    default: actionTitle = Text(alertModel.actionPlus!.title.rawValue.capitalized)
         
     }
-   return arrayCentrifugato
+    
+       return Alert(
+              title: Text(alertModel.title),
+              message: Text(alertModel.message),
+              primaryButton: Alert.Button.cancel(),
+              secondaryButton: Alert.Button.default(
+                actionTitle,
+                action: (alertModel.actionPlus!.action)))
+
 } */
 
 /// Ritorna un array di case unici (ripuliti dai valori Associati, dai duplicati, e ordinati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
 /// - Parameter array: array description
 /// - Returns: description
-func myRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
+func csRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
     
     var arrayCentrifugato:[T] = []
     

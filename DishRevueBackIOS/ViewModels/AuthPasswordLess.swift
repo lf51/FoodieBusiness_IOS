@@ -9,13 +9,14 @@ import Foundation
 import Firebase
 
 class AuthPasswordLess: ObservableObject {
-    
-  //  static var isUserAuth:Bool = false // Impostare di default su FALSE. Viene aggiornato se l'utente fa l'Auth - Non è stato ancora agganciato
+
     @Published var userInfo: UserModel?
     
     @Published var email: String = ""
-    @Published var alertItem: AlertModel?
-    @Published var isPresentingSheet: Bool = true
+    
+    @Published var showAlert: Bool = false 
+    @Published var alertItem: AlertModel? {didSet {showAlert = true}}
+    @Published var openSignInView: Bool = true
 
     init() {
         print("Step_1 -> INIT")
@@ -41,7 +42,7 @@ class AuthPasswordLess: ObservableObject {
           )
             return
         }
-            self.alertItem = AlertModel(title: "Authentication Link inviato a \(self.email).", message: "Controlla dallo stesso device la tua posta in arrivo (o la cartella spam) e clicca sul link.")
+            self.alertItem = AlertModel(title: "Authentication Link inviato a \(self.email).", message: "Nessuna password necessaria.\nApri da questo device la tua posta in arrivo (o la cartella spam) e clicca sul link per autenticarti.")
             UserDefaults.standard.set(self.email, forKey: "Email")
             self.email = ""
             print("Link Succesfully sent")
@@ -59,7 +60,7 @@ class AuthPasswordLess: ObservableObject {
             if let error = error {
               print("ⓧ Authentication error: \(error.localizedDescription).")
               completion(.failure(error))
-              //  self.isPresentingSheet = true
+              //  self.openSignInView = true
                 
             } else {
               print("✔ Authentication was successful.")
@@ -71,10 +72,7 @@ class AuthPasswordLess: ObservableObject {
                     userProviderID: result?.user.providerID ?? "",
                     userDisplayName: result?.user.displayName ?? result?.user.email ?? "",
                     userEmailVerified: result?.user.isEmailVerified ?? false)
-                
-              //  self.isPresentingSheet = false
-                //self.displayName = result?.user.displayName ?? result?.user.email ?? ""
-               
+ 
             }
           }
             
@@ -84,14 +82,14 @@ class AuthPasswordLess: ObservableObject {
     func checkUserSignedIn() {
                 
         if let user = Auth.auth().currentUser {
-            print("STEP_2 - User already Signed In")
+          /*  print("STEP_2 - User already Signed In")
             
             print("User email: \(user.email ?? "")")
             print("User UID: \(user.uid)")
             print("IsEmailVerified: \(user.isEmailVerified)")
             print("UserProviderID: \(user.providerID)")
-            print("UserName: \(user.displayName ?? "")")
-            self.isPresentingSheet = false
+            print("UserName: \(user.displayName ?? "")") */
+            self.openSignInView = false
             
             self.userInfo = UserModel(
                 userEmail: user.email ?? "",
@@ -99,21 +97,62 @@ class AuthPasswordLess: ObservableObject {
                 userProviderID: user.providerID,
                 userDisplayName: user.displayName ?? user.email ?? "",
                 userEmailVerified: user.isEmailVerified)
-        
-        //    self.displayName = user.displayName ?? user.email ?? ""
-            self.alertItem = AlertModel(
+
+          /*  self.alertItem = AlertModel(
                 title: "Authentication",
-                message: "Utente \(self.userInfo?.userDisplayName ?? "") autenticato.")
+                message: "Utente \(self.userInfo?.userDisplayName ?? "") autenticato.") */
             
         }
         
         else {
-           // self.isPresentingSheet = true // è true di default
+           // self.openSignInView = true // è true di default
             print("STEP_2 - NO USER IN") }
       
     }
 
-    func deleteCurrentUser() {
+    func logOutUser() {
+        
+        self.alertItem = AlertModel(
+            title: "Logout",
+            message: "Desideri uscire dall'Applicazione?",
+            actionPlus: ActionModel(
+                title: .conferma,
+                action: {
+                    self.signOutCurrentUser()
+                }))
+    }
+    
+    func eliminaAccount() {
+        
+        self.alertItem = AlertModel(
+            title: "Eliminazione Account",
+            message: "L'eliminazione dell'account è irreversibile e comporta la perdita di ogni dato.",
+            actionPlus: ActionModel(
+                title: .elimina,
+                action: {
+                    self.deleteCurrentUser()
+                }))
+        
+    }
+    
+    func updateDisplayName(newDisplayName: String) {
+        
+        // Inserire in futuro controllo di unicità
+        
+        guard newDisplayName != "" else {
+            
+            self.userInfo?.userDisplayName = self.userInfo?.userEmail ?? ""
+            // non facciamo update sul server, poichè nel signIn sa che quando il displayName è vuoto deve visualizzare la mail
+            return }
+        let newUserName = "@" + newDisplayName.replacingOccurrences(of: " ", with: "").lowercased()
+        
+        self.userInfo?.userDisplayName = newUserName
+        
+        self.updateCurrentUserProfile()
+        
+    }
+    
+   private func deleteCurrentUser() {
         
         if let user = Auth.auth().currentUser {
             
@@ -123,22 +162,29 @@ class AuthPasswordLess: ObservableObject {
                     
                     print("DeleteStage - Error:\(error?.localizedDescription ?? "")")
                     self.alertItem = AlertModel(
-                        title: "Blocco di Sicurezza",
-                        message: "\(error?.localizedDescription ?? "") -\nDisconnessione utente corrente. Riconnetersi nuovamente e procedere all'eliminazione.")
-                    self.signOutCurrentUser()
+                        title: "Autenticazione Necessaria",
+                        message: "\(error?.localizedDescription ?? "")",
+                        actionPlus: ActionModel(
+                            title: .continua,
+                            action: {
+                                self.signOutCurrentUser()
+                            })
+
+                    )
                     
                     return
                 }
                 
-                self.alertItem = AlertModel(
+                self.sendDispatchAlert(openSignInView: true, alertModel: AlertModel(
                     title: "Dispiace Salutarti :-(",
-                    message: "Il tuo Account è stato correttamente eliminato.")
+                    message: "Il tuo Account è stato correttamente eliminato."))
+
                 print("DeleteStage - Account Deleted")
             }
         }
     }
     
-    func signOutCurrentUser() {
+   private func signOutCurrentUser() {
         
         print("SignOutStage")
         
@@ -147,32 +193,21 @@ class AuthPasswordLess: ObservableObject {
         do {
             
             try firebaseAuth.signOut()
-            
-            sendAlert(
-                openSignInView: true,
-                alertModel: AlertModel(
-                    title: "Disconessione",
-                    message: "Utente disconnesso con successo."))
-            
-            self.isPresentingSheet = true
-            self.alertItem = AlertModel(
-                title: "Disconessione",
-                message: "Utente disconnesso con successo.")
-            
-            
-            print("SignOut Successfully")
+            self.openSignInView = true
+                 
+            print("Sign-Out Successfully")
             
         } catch let signOutError as NSError {
             
             self.alertItem = AlertModel(
-                title: "Errore",
+                title: "Errore Log-Out",
                 message: "\(signOutError.localizedDescription)")
             print("Error signingOut: %@", signOutError)
         }
         
     }
 
-    func updateCurrentUserProfile() {
+   private func updateCurrentUserProfile() {
         
         let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
         
@@ -192,35 +227,18 @@ class AuthPasswordLess: ObservableObject {
             }
             
             self.alertItem = AlertModel(
-                title: "Bene!",
-                message: "Profile aggiornato correttamente.")
+                title: "User Update",
+                message: "Profilo aggiornato correttamente.")
             
             print("Update User Profile Successfully")
         })
 
     }
-  
-    func updateDisplayName(newDisplayName: String) {
-        
-        // Inserire in futuro controllo di unicità
-        
-        guard newDisplayName != "" else {
-            
-            self.userInfo?.userDisplayName = self.userInfo?.userEmail ?? ""
-            // non facciamo update sul server, poichè nel signIn sa che quando il displayName è vuoto deve visualizzare la mail
-            return }
-        let newUserName = "@" + newDisplayName.replacingOccurrences(of: " ", with: "").lowercased()
-        
-        self.userInfo?.userDisplayName = newUserName
-        
-        self.updateCurrentUserProfile()
-        
-    }
     
     /// Open/Close SignInView e send alert with Dispatch(0.5'')
-    func sendAlert(openSignInView: Bool, alertModel: AlertModel) {
+    func sendDispatchAlert(openSignInView: Bool, alertModel: AlertModel) {
         
-        self.isPresentingSheet = openSignInView
+        self.openSignInView = openSignInView
     
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.alertItem = alertModel
@@ -229,15 +247,3 @@ class AuthPasswordLess: ObservableObject {
 //Fine Classe
 }
 
-struct UserModel {
-    
-    let userEmail: String
-    let userUID: String
-    let userProviderID: String
-    var userDisplayName: String
-    let userEmailVerified: Bool
-    
-    
-    // let isUserVerified: Bool
-     
-}

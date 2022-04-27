@@ -95,7 +95,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
     
     private func validateAndAddSpecificValue() {
                 
-        guard myValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
+        guard csValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
     
             self.newMenu.alertItem = AlertModel(
                 title: "Errore Inserimento Prezzo",
@@ -106,7 +106,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
             //self.tipologiaCorrente = .defaultValue
             return}
         
-        guard myValidateValue(value: self.pax, convalidaAsDouble: false) else {
+        guard csValidateValue(value: self.pax, convalidaAsDouble: false) else {
         
             self.newMenu.alertItem = AlertModel(
                 title: "Errore Inserimento Porzioni",

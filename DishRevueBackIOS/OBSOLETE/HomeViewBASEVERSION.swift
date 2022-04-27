@@ -49,7 +49,7 @@ struct HomeViewBASEVERSION: View {
                             self.showAddNewPropertySheet.toggle()
                             // Comando per creare Nuova Property
                         } else {
-                            authProcess.isPresentingSheet = true 
+                            authProcess.openSignInView = true 
                         }
                         
                         
@@ -106,7 +106,7 @@ struct HomeViewBASEVERSION: View {
         }) {
             NewPropertySheetView(vm: propertyViewModel, isShowingSheet: self.$showAddNewPropertySheet)
         }
-        .sheet(isPresented: $authProcess.isPresentingSheet) {
+        .sheet(isPresented: $authProcess.openSignInView) {
             LinkSignInSheetView(authProcess: authProcess)
         }
 

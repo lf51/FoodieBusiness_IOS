@@ -87,10 +87,10 @@ struct BottomNuovoMenu_SubView: View {
         }
         
            let nome = self.nuovoMenu.intestazione
-           let dataInizio = myTimeFormatter().data.string(from:self.nuovoMenu.dataInizio)
-           let dataFine = myTimeFormatter().data.string(from:self.nuovoMenu.dataFine)
-           let oraInizio = myTimeFormatter().ora.string(from: self.nuovoMenu.oraInizio)
-           let oraFine = myTimeFormatter().ora.string(from: self.nuovoMenu.oraFine)
+           let dataInizio = csTimeFormatter().data.string(from:self.nuovoMenu.dataInizio)
+           let dataFine = csTimeFormatter().data.string(from:self.nuovoMenu.dataFine)
+           let oraInizio = csTimeFormatter().ora.string(from: self.nuovoMenu.oraInizio)
+           let oraFine = csTimeFormatter().ora.string(from: self.nuovoMenu.oraFine)
            
        switch self.nuovoMenu.isAvaibleWhen {
            

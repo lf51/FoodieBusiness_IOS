@@ -85,14 +85,14 @@ struct AccounterMainView: View {
                   
                   HStack {
                       
-                      CSButton_tight(title: "Disconnetti", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
-                          self.authProcess.signOutCurrentUser()
+                      CSButton_tight(title: "Esci", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
+                          self.authProcess.logOutUser()
                             }
                       
                       Spacer()
                       
                       CSButton_tight(title: "Elimina Account", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.red) {
-                          self.authProcess.deleteCurrentUser()
+                          self.authProcess.eliminaAccount()
                       }
              
                   }

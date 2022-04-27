@@ -102,7 +102,7 @@ struct ItemModelCategoryViewBuilder: View {
             
         case .tipologiaMenu:
             let dataMapping = viewModel.allMyMenu.map({$0.tipologia})
-            let dataMappingManipolato = myRipulisciArray(array: dataMapping)
+            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
             
             DataModelCategoryView_SubView<MenuModel, TipologiaMenu>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
        
@@ -132,7 +132,7 @@ struct ItemModelCategoryViewBuilder: View {
             
         case .conservazione:
             let dataMapping = viewModel.allMyIngredients.map({$0.conservazione})
-            let dataMappingManipolato = myRipulisciArray(array: dataMapping)
+            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
             DataModelCategoryView_SubView<IngredientModel, ConservazioneIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
                 
                 let dataFiltering = viewModel.allMyIngredients.filter({ item in
@@ -145,7 +145,7 @@ struct ItemModelCategoryViewBuilder: View {
             }
         case .produzione:
             let dataMapping = viewModel.allMyIngredients.map({$0.produzione})
-            let dataMappingManipolato = myRipulisciArray(array: dataMapping)
+            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
             DataModelCategoryView_SubView<IngredientModel, ProduzioneIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
                 
                 let dataFiltering = viewModel.allMyIngredients.filter({ item in
@@ -158,7 +158,7 @@ struct ItemModelCategoryViewBuilder: View {
             }
         case .provenienza:
             let dataMapping = viewModel.allMyIngredients.map({$0.provenienza})
-            let dataMappingManipolato = myRipulisciArray(array: dataMapping)
+            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
             DataModelCategoryView_SubView<IngredientModel, ProvenienzaIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
                 
                 let dataFiltering = viewModel.allMyIngredients.filter({ item in
@@ -173,7 +173,7 @@ struct ItemModelCategoryViewBuilder: View {
         case .categoria:
             
             let dataMapping = viewModel.allMyDish.map({$0.categoria})
-            let dataMappingManipolato = myRipulisciArray(array: dataMapping)
+            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
             DataModelCategoryView_SubView<DishModel, DishCategoria>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
                 
                 let dataFiltering = viewModel.allMyDish.filter({ item in
@@ -187,7 +187,7 @@ struct ItemModelCategoryViewBuilder: View {
         case .base:
             
             let dataMapping = viewModel.allMyDish.map({$0.aBaseDi})
-            let dataMappingManipolato = myRipulisciArray(array: dataMapping)
+            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
             DataModelCategoryView_SubView<DishModel, DishBase>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
                 
                 let dataFiltering = viewModel.allMyDish.filter({ item in
@@ -201,7 +201,7 @@ struct ItemModelCategoryViewBuilder: View {
         case .tipologiaPiatto:
             
             let dataMapping = viewModel.allMyDish.map({$0.tipologia})
-            let dataMappingManipolato = myRipulisciArray(array: dataMapping)
+            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
             DataModelCategoryView_SubView<DishModel, DishTipologia>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
                 
                 let dataFiltering = viewModel.allMyDish.filter({ item in

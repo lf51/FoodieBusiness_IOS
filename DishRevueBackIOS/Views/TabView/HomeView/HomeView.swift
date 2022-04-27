@@ -100,7 +100,7 @@ struct HomeView: View {
                 NewPropertySheetView(isShowingSheet: self.$wannaAddNewProperty)
               
             }
-            .sheet(isPresented: $authProcess.isPresentingSheet) {
+            .sheet(isPresented: $authProcess.openSignInView) {
                 LinkSignInSheetView(authProcess: authProcess)
             } */
             
@@ -123,7 +123,7 @@ struct HomeView: View {
             
         } else {
             
-            authProcess.isPresentingSheet = true
+            authProcess.openSignInView = true
             print("Utente NON Auth, Apertura Sheet Authentication")
         }
     } */
