@@ -9,7 +9,7 @@ import Foundation
 
 enum MapCategoryContainer:MyEnumProtocolMapConform {
 
-    static var allMenuMapCategory: [MapCategoryContainer] = [.menuAz,.tipologiaMenu(),.giorniDelServizio(),/*.statusMenu*/]
+    static var allMenuMapCategory: [MapCategoryContainer] = [.tipologiaMenu(),.giorniDelServizio(),.menuAz/*.statusMenu*/]
     static var allIngredientMapCategory: [MapCategoryContainer] = [.ingredientAz,.provenienza(),.conservazione(),.produzione()]
     static var allDishMapCategory: [MapCategoryContainer] = [.categoria(),.base(),.tipologiaPiatto(),.dishAz/*.statusPiatto*/]    
     static var defaultValue:MapCategoryContainer = .reset

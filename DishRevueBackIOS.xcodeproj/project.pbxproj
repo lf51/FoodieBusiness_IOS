@@ -54,6 +54,8 @@
 		4D403BAA279821D500EB4E1B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */; };
 		4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */; };
 		4D471A3227CA1CE300547F8A /* IngredientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D471A3127CA1CE300547F8A /* IngredientModel.swift */; };
+		4D49470028213C880093AFD6 /* SwipeActions in Frameworks */ = {isa = PBXBuildFile; productRef = 4D4946FF28213C880093AFD6 /* SwipeActions */; };
+		4D4947022822DD890093AFD6 /* CSDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4947012822DD880093AFD6 /* CSDivider.swift */; };
 		4D4FE6E627FCA88E00AC0190 /* DataModelCategoryView_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6E527FCA88E00AC0190 /* DataModelCategoryView_SubView.swift */; };
 		4D4FE6E827FCA8B700AC0190 /* DataModelPickerView_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6E727FCA8B700AC0190 /* DataModelPickerView_SubView.swift */; };
 		4D4FE6EA27FD9F4300AC0190 /* COLORTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D4FE6E927FD9F4300AC0190 /* COLORTEST.swift */; };
@@ -110,7 +112,7 @@
 		4DB75EDD280EC73A008C1765 /* AccounterMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB75EDC280EC73A008C1765 /* AccounterMainView.swift */; };
 		4DB75EDF2812BC22008C1765 /* PropertyModel_RowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB75EDE2812BC22008C1765 /* PropertyModel_RowView.swift */; };
 		4DB75EE228131578008C1765 /* PropertyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DB75EE128131578008C1765 /* PropertyListView.swift */; };
-		4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */; };
+		4DC3EBC927ABD02C00FFC50E /* NewPropertyMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC3EBC827ABD02C00FFC50E /* NewPropertyMainView.swift */; };
 		4DC94A1027E241610080264C /* IntestazioneNuovoOggetto_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC94A0F27E241610080264C /* IntestazioneNuovoOggetto_Generic.swift */; };
 		4DC94A1227E342A10080264C /* BottomNuovoMenu_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC94A1127E342A10080264C /* BottomNuovoMenu_SubView.swift */; };
 		4DC94A1627E3870F0080264C /* SpecificTipologiaNuovoMenu_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC94A1527E3870F0080264C /* SpecificTipologiaNuovoMenu_SubView.swift */; };
@@ -164,6 +166,7 @@
 		4D403BAB2798269200EB4E1B /* DishRevueBackIOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DishRevueBackIOS.entitlements; sourceTree = "<group>"; };
 		4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPasswordLess.swift; sourceTree = "<group>"; };
 		4D471A3127CA1CE300547F8A /* IngredientModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel.swift; sourceTree = "<group>"; };
+		4D4947012822DD880093AFD6 /* CSDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSDivider.swift; sourceTree = "<group>"; };
 		4D4FE6E527FCA88E00AC0190 /* DataModelCategoryView_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelCategoryView_SubView.swift; sourceTree = "<group>"; };
 		4D4FE6E727FCA8B700AC0190 /* DataModelPickerView_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModelPickerView_SubView.swift; sourceTree = "<group>"; };
 		4D4FE6E927FD9F4300AC0190 /* COLORTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = COLORTEST.swift; sourceTree = "<group>"; };
@@ -220,7 +223,7 @@
 		4DB75EDC280EC73A008C1765 /* AccounterMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccounterMainView.swift; sourceTree = "<group>"; };
 		4DB75EDE2812BC22008C1765 /* PropertyModel_RowView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyModel_RowView.swift; sourceTree = "<group>"; };
 		4DB75EE128131578008C1765 /* PropertyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyListView.swift; sourceTree = "<group>"; };
-		4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPropertySheetView.swift; sourceTree = "<group>"; };
+		4DC3EBC827ABD02C00FFC50E /* NewPropertyMainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewPropertyMainView.swift; sourceTree = "<group>"; };
 		4DC94A0F27E241610080264C /* IntestazioneNuovoOggetto_Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntestazioneNuovoOggetto_Generic.swift; sourceTree = "<group>"; };
 		4DC94A1127E342A10080264C /* BottomNuovoMenu_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomNuovoMenu_SubView.swift; sourceTree = "<group>"; };
 		4DC94A1527E3870F0080264C /* SpecificTipologiaNuovoMenu_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecificTipologiaNuovoMenu_SubView.swift; sourceTree = "<group>"; };
@@ -258,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D403BA42798212600EB4E1B /* FirebaseAuth in Frameworks */,
+				4D49470028213C880093AFD6 /* SwipeActions in Frameworks */,
 				4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */,
 				4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */,
 			);
@@ -457,6 +461,7 @@
 				4DCCD6D427BABA2300F387B2 /* CustomLabel.swift */,
 				4D92C41D27BE46E60084D214 /* StyledText.swift */,
 				4DC94A0F27E241610080264C /* IntestazioneNuovoOggetto_Generic.swift */,
+				4D4947012822DD880093AFD6 /* CSDivider.swift */,
 			);
 			path = SubView_trasversali;
 			sourceTree = "<group>";
@@ -504,7 +509,7 @@
 		4DC94A1E27E8F76D0080264C /* NuovaProprietà */ = {
 			isa = PBXGroup;
 			children = (
-				4DC3EBC827ABD02C00FFC50E /* NewPropertySheetView.swift */,
+				4DC3EBC827ABD02C00FFC50E /* NewPropertyMainView.swift */,
 				4DC94A2127E9EAD50080264C /* SubView */,
 			);
 			name = "NuovaProprietà";
@@ -656,6 +661,7 @@
 				4D403BA32798212600EB4E1B /* FirebaseAuth */,
 				4D403BA52798212600EB4E1B /* FirebaseDynamicLinks */,
 				4D403BA72798212600EB4E1B /* FirebaseFirestore */,
+				4D4946FF28213C880093AFD6 /* SwipeActions */,
 			);
 			productName = DishRevueBackIOS;
 			productReference = 4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */;
@@ -687,6 +693,7 @@
 			mainGroup = 4D403B8327981BC200EB4E1B;
 			packageReferences = (
 				4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				4D4946FE28213C870093AFD6 /* XCRemoteSwiftPackageReference "SwipeActions" */,
 			);
 			productRefGroup = 4D403B8D27981BC200EB4E1B /* Products */;
 			projectDirPath = "";
@@ -757,7 +764,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D4FE6E827FCA8B700AC0190 /* DataModelPickerView_SubView.swift in Sources */,
-				4DC3EBC927ABD02C00FFC50E /* NewPropertySheetView.swift in Sources */,
+				4DC3EBC927ABD02C00FFC50E /* NewPropertyMainView.swift in Sources */,
 				4D7985DB27D8B92E0012FE23 /* DishAllergeni.swift in Sources */,
 				4D4FE6F227FF265400AC0190 /* GiorniDelServizio.swift in Sources */,
 				4D56A62428018D1000A43E80 /* IngredientModel_RowView.swift in Sources */,
@@ -844,6 +851,7 @@
 				4D4FE6EC27FEEBF700AC0190 /* MenuModel_RowView.swift in Sources */,
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
 				4D4FE6F427FF267800AC0190 /* TipologiaMenu.swift in Sources */,
+				4D4947022822DD890093AFD6 /* CSDivider.swift in Sources */,
 				4D28C85E27C53F12009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift in Sources */,
 				4D7985D827D8B8990012FE23 /* Protocol.swift in Sources */,
 				4DC94A2727E9ECB70080264C /* ChoiceInfoView_NewPropertySubView.swift in Sources */,
@@ -987,7 +995,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1018,7 +1026,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1138,6 +1146,14 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		4D4946FE28213C870093AFD6 /* XCRemoteSwiftPackageReference "SwipeActions" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/c-villain/SwipeActions";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1155,6 +1171,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		4D4946FF28213C880093AFD6 /* SwipeActions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D4946FE28213C870093AFD6 /* XCRemoteSwiftPackageReference "SwipeActions" */;
+			productName = SwipeActions;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -42,3 +42,47 @@ import SwiftUI
          
      }
  }
+
+///ZStack con Sfondo Colorato, NavigationTitle e backgroundOpacity a livello tabBar
+struct CSZStackVB<Content:View>:View {
+    
+    let title: String
+    let backgroundColorView:Color
+    @ViewBuilder var content: Content
+    
+    var body: some View {
+        
+        ZStack {
+            
+            backgroundColorView.edgesIgnoringSafeArea(.top)
+            
+            content
+            
+        }
+        .background(backgroundColorView.opacity(0.4))
+        .navigationTitle(Text(title))
+    }
+}
+
+
+
+///ZStack con RoundedRectangle di sfondo, framed
+struct CSZStackVB_Framed<Content:View>:View {
+        
+        @ViewBuilder var content: Content
+        
+        var body: some View {
+            
+            ZStack(alignment:.leading) {
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color.white.opacity(0.3))
+                    .shadow(radius: 3.0)
+                
+                content
+                
+            }
+            .frame(width: 300, height: 150)
+           
+        }
+    }

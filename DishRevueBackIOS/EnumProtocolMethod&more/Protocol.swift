@@ -30,7 +30,7 @@ protocol MyEnumProtocolMapConform : Hashable { // deve essere conforme ad HAshab
 protocol MyModelProtocol: Identifiable, Equatable {
     
     var intestazione: String {get set}
-    var alertItem: AlertModel? {get set}
+    var descrizione: String {get set}
     
 }
 

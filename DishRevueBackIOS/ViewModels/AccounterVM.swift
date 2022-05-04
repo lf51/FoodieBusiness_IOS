@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import SwiftUI
+import MapKit // da togliere quando ripuliamo il codice dai Test
 
 
 class AccounterVM: ObservableObject {
@@ -26,20 +28,23 @@ class AccounterVM: ObservableObject {
     @Published var allMyIngredients:[IngredientModel] = [] // tutti gli ingredienti creati dall'accounter
     @Published var allMyDish:[DishModel] = [] // tutti i piatti creati dall'accounter
     @Published var allMyMenu:[MenuModel] = [] // tutti i menu creati dall'accounter
-    @Published var allMyProperties:[PropertyModel] = [] // tutte le proprietà registrate dall'accounter - In disuso finchè esiste un VM apposito
+    @Published var allMyProperties:[PropertyModel] = [] /*{ willSet {
+        print("cambio Valore allMyProperties")
+        objectWillChange.send() } }*/
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
     init() {
         
         fillFromListaBaseModello()
+        print("Init -> AccounterVM")
     }
     
     // Method Generic
 
-    func createOrEditItemModel<T:MyModelProtocol>(itemModel:T) {
+    func createOrUpdateItemModel<T:MyModelProtocol>(itemModel:T) { // 03.05 Deprecated
     
-        var (containerT, editAvaible) = assignToContainerT(itemModel: itemModel)
+        var (containerT, editAvaible) = assegnaContainer(itemModel: itemModel)
   
         if let oldItemIndex = containerT.firstIndex(where: {$0 == itemModel}) {
             
@@ -97,6 +102,82 @@ class AccounterVM: ObservableObject {
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
+    func updateItemModel<T:MyModelProtocol>(itemModel: T) {
+        
+        self.alertItem = AlertModel(
+            title: "Confermare Modifiche",
+            message: itemModel.descrizione,
+            actionPlus: ActionModel(
+                title: .conferma,
+                action: {
+                    self.updateItemModelExecutive(itemModel: itemModel)
+                }))
+        
+    }
+    
+    private func updateItemModelExecutive<T:MyModelProtocol>(itemModel: T) {
+        
+        var (containerT, _) = assegnaContainer(itemModel: itemModel)
+  
+        guard let oldItemIndex = containerT.firstIndex(of: itemModel) else {return}
+            
+           // containerT.remove(at: oldItemIndex)
+          //  containerT.insert(itemModel, at: oldItemIndex)
+        print("elementi nel Container Pre-Update: \(containerT.count)")
+            containerT[oldItemIndex] = itemModel
+            aggiornaContainer(containerT: containerT)
+        print("elementi nel Container POST-Update: \(containerT.count)")
+        print("updateItemModelExecutive executed")
+    }
+    
+    /// Manda un alert di conferma prima di eliminare l' Oggetto
+    func deleteItemModel<T:MyModelProtocol>(itemModel: T) {
+        
+        self.alertItem = AlertModel(
+            title: "Conferma Eliminazione",
+            message: "Confermi di volere eliminare \(itemModel.intestazione)?",
+            actionPlus: ActionModel(
+                title: .elimina,
+                action: {
+                    withAnimation {
+                        self.deleteItemModelExecution(itemModel: itemModel)
+                    }
+                   
+                }))
+
+    }
+    
+    private func deleteItemModelExecution<T:MyModelProtocol>(itemModel: T) {
+        
+        var (containerT, _) = assegnaContainer(itemModel: itemModel)
+        
+        guard let index = containerT.firstIndex(of: itemModel) else {
+            self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
+            return }
+        
+        containerT.remove(at: index)
+        self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!")
+        
+        self.aggiornaContainer(containerT: containerT)
+       /* switch itemModel.self {
+            
+        case is IngredientModel:
+            self.allMyIngredients = containerT as! [IngredientModel]
+        case is DishModel:
+            self.allMyDish = containerT as! [DishModel]
+        case is MenuModel:
+            self.allMyMenu = containerT as! [MenuModel]
+        case is PropertyModel:
+            self.allMyProperties = containerT as! [PropertyModel]
+            
+        default: return
+            
+        } */
+    }
+    
+   
+    
+    
     func deepFiltering<M:MyModelProtocol>(model:M, filterCategory:MapCategoryContainer) -> Bool {
        
        switch filterCategory {
@@ -201,7 +282,7 @@ class AccounterVM: ObservableObject {
         
     }
     
-    private func assignToContainerT<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
+    private func assegnaContainer<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
         
         switch itemModel.self {
             
@@ -219,6 +300,32 @@ class AccounterVM: ObservableObject {
         }
     }
     
+    private func aggiornaContainer<T:MyModelProtocol>(containerT: [T]) {
+        
+        guard !containerT.isEmpty else {
+            print("ContainerT vuoto. updateContainer non eseguito")
+            return
+        }
+        
+        let exampleItem = containerT[0]
+        
+        switch exampleItem.self {
+            
+        case is IngredientModel:
+            self.allMyIngredients = containerT as! [IngredientModel]
+        case is DishModel:
+            self.allMyDish = containerT as! [DishModel]
+        case is MenuModel:
+            self.allMyMenu = containerT as! [MenuModel]
+        case is PropertyModel:
+            self.allMyProperties = containerT as! [PropertyModel]
+            
+        default: return
+            
+        }
+   
+    }
+    
     
   // AREA TEST -> DA ELIMINARE
     
@@ -234,10 +341,10 @@ class AccounterVM: ObservableObject {
     let menu2 = MenuModel(nome: "Pranzo Feriale", tipologia: .fisso(persone: "1", costo: "15"), giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi])
     let menu3 = MenuModel(nome: "ColazioneExpress", tipologia: .fisso(persone: "1", costo: "2.5"), giorniDelServizio: [.giovedi])
     let menu4 = MenuModel(nome: "CenaAllDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato])
-    let prop1 = PropertyModel(nome: "CasaMia")
-    let prop2 = PropertyModel(nome: "CasaTua")
-    let prop3 = PropertyModel(nome: "CasaSua")
-    let prop4 = PropertyModel(nome: "CasaEssa")
+    let prop1 = PropertyModel(nome: "Mia", coordinates:  CLLocationCoordinate2D(latitude: 37.510987, longitude: 13.041434))
+    let prop2 = PropertyModel(nome: "Tua", coordinates:  CLLocationCoordinate2D(latitude: 37.510997, longitude: 13.041434))
+    let prop3 = PropertyModel(nome: "Sua", coordinates:  CLLocationCoordinate2D(latitude: 37.510927, longitude: 13.041434))
+    let prop4 = PropertyModel(nome: "Essa", coordinates: CLLocationCoordinate2D(latitude: 37.510937, longitude: 13.041434))
     let dish1 = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carne, categoria: .primo, tipologia: .standard, status: .pubblico)
     let dish2 = DishModel(intestazione: "Bucatini alla Matriciana", aBaseDi: .carne, categoria: .primo, tipologia: .standard,status: .archiviato)
     let dish4 = DishModel(intestazione: "Tiramisu", aBaseDi: .carne, categoria: .dessert, tipologia: .standard,status: .bozza)

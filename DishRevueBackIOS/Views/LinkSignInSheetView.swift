@@ -33,7 +33,7 @@ struct LinkSignInSheetView: View {
               
               VStack(alignment:.leading) {
                   
-                  Text("Welcome on Foodz!") // foodies // foodist
+                  Text("Welcome on Foodie!") // foodies // foodist // foodz / foodish
                         .font(.system(.largeTitle, design: .rounded))
                         .fontWeight(.semibold)
                         .foregroundColor(Color.black)
@@ -117,6 +117,7 @@ struct LinkSignInSheetView: View {
           }
         }
       }
+      .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
       /*.alert(item: $authProcess.alertItem) { alert -> Alert in
          csSendAlert(alertModel: alert)
          }*/ // serve a gestire le info di autenticazione Iniziali

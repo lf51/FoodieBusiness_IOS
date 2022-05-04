@@ -28,7 +28,7 @@ struct DishListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var tabSelection: Int // serve a muoversi fra le tabItem, utile se vogliamo rimettere la NewDishView nella tabBar
-    var backgroundColorView: Color
+    let backgroundColorView: Color
     
     @State private var openCreateNewDish: Bool = false
     
@@ -36,9 +36,13 @@ struct DishListView: View {
         
         NavigationView {
             
-            ZStack {
+            CSZStackVB(title: "I Miei Piatti", backgroundColorView: backgroundColorView) {
                 
-                backgroundColorView.edgesIgnoringSafeArea(.top)
+            
+            
+           /* ZStack {
+                
+                backgroundColorView.edgesIgnoringSafeArea(.top) */
                 
               //  VStack(alignment:.leading) {
                     
@@ -48,23 +52,19 @@ struct DishListView: View {
               // }
 
             }
-            .navigationTitle(Text("I Miei Piatti"))
+           // .navigationTitle(Text("I Miei Piatti"))
             .navigationBarItems(
                 trailing:
-                    
+             
                     LargeBar_TextPlusButton(buttonTitle: "Nuovo Piatto", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openCreateNewDish.toggle()
                     }
                 )
-            .navigationBarTitleDisplayMode(.large)
-          //  .navigationViewStyle(StackNavigationViewStyle()) 
+           // .navigationBarTitleDisplayMode(.large)
             .fullScreenCover(isPresented: self.$openCreateNewDish, content: {
                 NewDishMainView(backgroundColorView: .cyan)
             })
-
-            .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
-        
-        
+           // .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
         
         }.navigationViewStyle(StackNavigationViewStyle())
     }

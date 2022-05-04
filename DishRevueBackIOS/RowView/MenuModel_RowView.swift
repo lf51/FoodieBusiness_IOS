@@ -13,12 +13,12 @@ struct MenuModel_RowView: View {
     
     var body: some View {
         
-        ZStack(alignment:.leading) {
+      /*  ZStack(alignment:.leading) {
             
             RoundedRectangle(cornerRadius: 5.0)
                 .fill(Color.white.opacity(0.3))
-                .shadow(radius: 5.0)
-                
+                .shadow(radius: 5.0) */
+        CSZStackVB_Framed {
             
             VStack {
                 
@@ -58,7 +58,7 @@ struct MenuModel_RowView: View {
          
         } // chiusa Zstack Madre
        // .background(Color.red)
-        .frame(width: 300, height: 150)
+    //    .frame(width: 300, height: 150)
 
     }
     

@@ -13,12 +13,12 @@ struct DishModel_RowView: View {
     
     var body: some View {
         
-        ZStack(alignment:.leading){
+     /*   ZStack(alignment:.leading){
             
             RoundedRectangle(cornerRadius: 5.0)
                 .fill(Color.white.opacity(0.3))
-                .shadow(radius: 2.0)
-                
+                .shadow(radius: 2.0) */
+        CSZStackVB_Framed {
             
             VStack {
     
@@ -35,7 +35,7 @@ struct DishModel_RowView: View {
             } // chiuda VStack madre
                             
         } // chiusa Zstack Madre
-        .frame(width: 300, height: 150)
+       // .frame(width: 300, height: 150)
     
     }
     

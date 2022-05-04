@@ -19,6 +19,7 @@ import MapKit
 struct PropertyModel: MyModelProtocol {
     
     var intestazione: String = "" // deve sostituire il nome
+    var descrizione: String = "Ciao Bello!" { willSet {print("1.descrizioneProperty is changing from \(descrizione) to \(newValue)") } didSet {print("2.descrizioneProperty changed in \(descrizione)") }}
     var alertItem: AlertModel?
     
     static func == (lhs: PropertyModel, rhs: PropertyModel) -> Bool {
@@ -33,13 +34,13 @@ struct PropertyModel: MyModelProtocol {
         let cod3 = String(coordinates.latitude).replacingOccurrences(of: ".", with: "A")
         let cod4 = String(coordinates.longitude).replacingOccurrences(of: ".", with: "E")
     
-        let codId = cod3 + cod4
+       let codId = cod3 + cod4
        
        return codId
        
        // let id = UUID().uuidString // Questo sistema non garantisce l'unicità. Il compilatore andrebbe a considerare due oggetti diversi, due location uguali, ossia con stesso nome indirizzo e blabla solo perchè avrebbero due id differenti. Il grande Nick ci viene in soccorso e crea una computed
          
-        // l'utilizzo di .hashValue non garantisce UNICITA?. Non va bene perchè produce un id diverso fra le varie sessioni. Quindi può andare bene nella sessione locale ma non per salvare l'info sul dataBase
+       // l'utilizzo di .hashValue non garantisce UNICITA?. Non va bene perchè produce un id diverso fra le varie sessioni. Quindi può andare bene nella sessione locale ma non per salvare l'info sul dataBase
        
        /// Sistema di identificazione NON SODDISFACENTE -- Temo Rallentamenti. Nella ricerca, quando si trova a livello macro, crea degli id che non sono Univoci
        
@@ -52,6 +53,7 @@ struct PropertyModel: MyModelProtocol {
     var webSite: String
     var phoneNumber: String
     var streetAdress: String
+    var numeroCivico: String
     
   //  var scheduleServizio: [IntestazioneMenu] = [.colazione,.pranzo]
     
@@ -65,11 +67,11 @@ struct PropertyModel: MyModelProtocol {
         self.webSite = ""
         self.phoneNumber = ""
         self.streetAdress = ""
-        
+        self.numeroCivico = ""
         
     }
     
-    init (intestazione: String, cityName: String, coordinates: CLLocationCoordinate2D, webSite: String, phoneNumber: String, streetAdress: String) {
+    init (intestazione: String, cityName: String, coordinates: CLLocationCoordinate2D, webSite: String, phoneNumber: String, streetAdress: String, numeroCivico: String) {
         
         self.intestazione = intestazione
         self.cityName = cityName
@@ -77,6 +79,7 @@ struct PropertyModel: MyModelProtocol {
         self.webSite = webSite
         self.phoneNumber = phoneNumber
         self.streetAdress = streetAdress
+        self.numeroCivico = numeroCivico
     
     }
     
@@ -88,10 +91,21 @@ struct PropertyModel: MyModelProtocol {
         self.webSite = ""
         self.phoneNumber = ""
         self.streetAdress = ""
-        
+        self.numeroCivico = ""
         
     }
     
+    init(nome: String, coordinates: CLLocationCoordinate2D) {
+        
+        self.intestazione = nome
+        self.cityName = ""
+        self.coordinates = coordinates
+        self.webSite = ""
+        self.phoneNumber = ""
+        self.streetAdress = ""
+        self.numeroCivico = ""
+        
+    }
     
 }
 

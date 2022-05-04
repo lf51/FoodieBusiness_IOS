@@ -11,26 +11,32 @@ struct PICKERTEST: View {
     
     @State var selection:GiorniDelServizio = .lunedi
     @State var mainSelection:String = "casa"
-    let data = ["casa","home","hous"]
+    @State var data = ["casa","Home","myHouse"]
     
     var body: some View {
         
-        Menu {
+        List {
             
             ForEach(data,id:\.self) { data in
                 
                 Text(data)
-                    .onTapGesture {
-                        mainSelection = data 
+                    .foregroundColor(Color.white)
+                    .padding()
+                    .background(Color.black.cornerRadius(5.0))
+                    .swipeActions {
+                        Button {
+                            self.data.append("Ciao")
+                        } label: {
+                            Text("Ciao")
+                        }
+
                     }
-                
+
                 
             }
             
             
-        } label: {
-            Text(mainSelection)
-        }
+        }.listStyle(PlainListStyle())
 
 
     }

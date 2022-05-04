@@ -29,6 +29,8 @@ struct MenuModel:MyModelProtocol {
     var dishIn: [DishModel] = [] // doppia scrittura con MenuWhereIsIn in DishModel
     
     var intestazione: String = ""
+    var descrizione: String = ""
+    
     var tipologia: TipologiaMenu = .defaultValue
     
     var isAvaibleWhen: AvailabilityMenu = .defaultValue

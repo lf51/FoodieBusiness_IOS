@@ -19,7 +19,7 @@ class AuthPasswordLess: ObservableObject {
     @Published var openSignInView: Bool = true
 
     init() {
-        print("Step_1 -> INIT")
+        print("Init -> AuthPassWordLess")
         checkUserSignedIn()
     }
     

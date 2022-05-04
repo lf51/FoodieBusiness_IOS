@@ -18,9 +18,12 @@ struct AccounterMainView: View {
  
   var body: some View {
 
-      ZStack(alignment:.leading) {
+      CSZStackVB(title: "Settings", backgroundColorView: backgroundColorView) {
+ 
+      
+    //  ZStack(alignment:.leading) {
           
-          backgroundColorView.edgesIgnoringSafeArea(.top)
+         // backgroundColorView.edgesIgnoringSafeArea(.top)
 
           VStack(alignment:.leading) {
               
@@ -113,9 +116,9 @@ struct AccounterMainView: View {
           
           
       } // chiusa ZStack
-      .background(backgroundColorView.opacity(0.4))
-      .navigationTitle("Settings")
-      .navigationBarTitleDisplayMode(.large)
+     // .background(backgroundColorView.opacity(0.4))
+     // .navigationTitle("Settings")
+     // .navigationBarTitleDisplayMode(.large)
       .toolbar {
     
           CSText_tightRectangle(testo: "Richiedi Verifica", fontWeight: .semibold, textColor: Color.blue, strokeColor: Color.blue, fillColor: Color.cyan)

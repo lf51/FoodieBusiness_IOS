@@ -20,24 +20,24 @@ struct ChoiceInfoView_NewPropertySubView: View {
             
             VStack(alignment: .leading, spacing: frameHeight/25) {
                             
-                    Text(newProperty.intestazione)
+                Text(newProperty.intestazione)
                     .font(.system(.title3, design: .rounded))
                     .fontWeight(.heavy)
                     .lineLimit(1)
 
-                    Text(newProperty.streetAdress)
+                Text("\(newProperty.streetAdress), \(newProperty.numeroCivico)")
                     .italic()
                     .fontWeight(.light)
                     .lineLimit(1)
 
-                    Text(newProperty.cityName)
+                Text(newProperty.cityName)
                     .fontWeight(.semibold)
 
-                    Text(newProperty.webSite)
+                Text(newProperty.webSite)
                     .fontWeight(.ultraLight)
                     .lineLimit(1)
 
-                    Text(newProperty.phoneNumber)
+                Text(newProperty.phoneNumber)
                     .fontWeight(.semibold)
                         
             }.frame(maxWidth: (screenWidth*0.92) * 0.65)

@@ -14,75 +14,67 @@ struct PropertyListView: View {
     let backgroundColorView: Color
     @State private var wannaAddNewProperty: Bool = false
     
+    init(backgroundColorView:Color){
+        
+        self.backgroundColorView = backgroundColorView
+        print("INIT -> PROPERTYLISTVIEW")
+        
+    }
+    
     var body: some View {
         
-        ZStack {
+        CSZStackVB(title: "Le Mie Proprietà", backgroundColorView: backgroundColorView) {
+    
+        
+      /*  ZStack {
             
-            backgroundColorView.edgesIgnoringSafeArea(.top)
+            backgroundColorView.edgesIgnoringSafeArea(.top) */
             
             VStack(alignment:.leading, spacing: 10.0) {
                 
-                RoundedRectangle(cornerRadius: 10.0)
-                    .frame(height: 4.0)
-                    .foregroundColor(Color.cyan)
-                   // .foregroundColor(Color.white.opacity(0.3))
-                
-                ScrollView(showsIndicators: false){
-                    
-                    ForEach(viewModel.allMyProperties) { property in
+                RoundedRectangle(cornerRadius: 10.0) // da lo stacco per evitare l'inline.
+                    .frame(height: 2.0)
+                    .foregroundColor(Color.cyan) // Color.cyan lo rende invisibile
+            
+                  ScrollView(showsIndicators: false){
                         
-                        PropertyModel_RowView(item: property)
-                        
-                    }
-                }
+                          ForEach($viewModel.allMyProperties) { $property in
+                                
+                                PropertyModel_RowView(itemModel: $property)
+   
+                          } // chiusa ForEach
+                  }
             }
             .padding(.horizontal)
-            .navigationTitle(Text("Le Mie Proprietà"))
-            .navigationBarItems(
-                trailing:
-                    
-            LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color.mint, imageFore: Color.white) {
-                
-                withAnimation {
-                    self.wannaAddNewProperty.toggle()
-                }                
-                    }
-                )
-            .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: self.$wannaAddNewProperty) {
-                
-                NewPropertySheetView(isShowingSheet: self.$wannaAddNewProperty)
+        }
+        //  .navigationTitle(Text("Le Mie Proprietà"))
+          .navigationBarItems(
+              trailing:
+                  
+          LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color.mint, imageFore: Color.white) {
               
-        }
-        }
-        .background(backgroundColorView.opacity(0.4))
-        /* .sheet(isPresented: $authProcess.openSignInView) {
-             LinkSignInSheetView(authProcess: authProcess)
-         }*/
+              withAnimation {
+                  self.wannaAddNewProperty.toggle()
+              }
+                  }
+              )
+         // .navigationBarTitleDisplayMode(.large)
+          .sheet(isPresented: self.$wannaAddNewProperty) {
+              
+              NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
+            
+      }
+       // .background(backgroundColorView.opacity(0.4))
     }
     
     // Method
-    
-   /* private func wannaAddNewPropertyButton() {
-        
-        if AuthPasswordLess.isUserAuth {
-            
-            self.wannaAddNewProperty = true
-            print("Utente Autenticato, Apertura Sheet NuovaProprietà")
-            
-        } else {
-            
-            authProcess.openSignInView = true
-            print("Utente NON Auth, Apertura Sheet Authentication")
-        }
-    } */
     
 }
 
 struct PropertyListView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            PropertyListView(backgroundColorView: Color.cyan)
+            PropertyListView(backgroundColorView: Color.cyan).environmentObject(AccounterVM())
         }
     }
 }

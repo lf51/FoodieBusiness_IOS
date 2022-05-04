@@ -24,13 +24,18 @@ struct SwitchListeIngredientiPiatto: View {
                 
                 Spacer()
                 
-                CSButton_image(activationBool: listaDaMostrare == .ingredientiPrincipali ,activeImage: "eye.fill", deActiveImage: "eye.slash.fill", imageScale: .medium, activeColor: Color.blue, deActiveColor: Color.gray) {
-                    
-                    withAnimation {
-                        listaDaMostrare = .ingredientiPrincipali
+                CSButton_image(
+                    activationBool: listaDaMostrare == .ingredientiPrincipali,
+                    frontImage: "eye.fill",
+                    backImage: "eye.slash.fill",
+                    imageScale: .medium,
+                    backColor: Color.blue,
+                    frontColor: Color.gray) {
+                        withAnimation {
+                            listaDaMostrare = .ingredientiPrincipali
+                        }
                     }
-                }
-                
+                                
                 Text("(\(self.newDish.ingredientiPrincipali.count))")
                     .fontWeight(.light)
                     .padding(.horizontal)
@@ -48,13 +53,18 @@ struct SwitchListeIngredientiPiatto: View {
                     .lineLimit(1)
                 
                 Spacer()
-                CSButton_image(activationBool: listaDaMostrare == .ingredientiSecondari, activeImage: "eye.fill", deActiveImage: "eye.slash.fill", imageScale: .medium, activeColor: Color.blue, deActiveColor: Color.gray) {
-                    
-                    withAnimation {
-                        listaDaMostrare = .ingredientiSecondari
+                
+                CSButton_image(
+                    activationBool: listaDaMostrare == .ingredientiSecondari,
+                    frontImage: "eye.fill",
+                    backImage: "eye.slash.fill",
+                    imageScale: .medium,
+                    backColor: Color.blue,
+                    frontColor: Color.gray) {
+                        withAnimation {
+                            listaDaMostrare = .ingredientiSecondari
+                        }
                     }
-
-                }
      
                 Text("(\(self.newDish.ingredientiSecondari.count))")
                     .fontWeight(.light)

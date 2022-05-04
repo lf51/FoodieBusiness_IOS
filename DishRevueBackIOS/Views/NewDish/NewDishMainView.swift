@@ -84,6 +84,7 @@ struct NewDishMainView: View {
             }.zIndex(1)
           
         } // end ZStack Esterno
+        .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
       /*  .alert(item:$newDish.alertItem) { alert -> Alert in
            Alert(
              title: Text(alert.title),

@@ -38,7 +38,7 @@ struct ItemModelCategoryViewBuilder: View {
        
         self.dataContainer = dataContainer
         mapCategory = dataContainer[0] // il default
-        print("INIT ITEM_MODEL_CATEGORY")
+        print("INIT -> ItemModelCategoryViewBuilder - Struct:View - type: \(mapCategory.simpleDescription())")
     }
     
     var body: some View {

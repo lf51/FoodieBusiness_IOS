@@ -11,25 +11,27 @@ import SwiftUI
 
 // Usare il .buttomStyle per semplificare lo stile dei bottoni
 
+/// Plain Image Button. Use rotationDegree quando activeImage == DeactiveImage e la si vuole ruotare. ActivationBool gestisce Switch front/back Image.)
 struct CSButton_image: View {
   
-  let activationBool: Bool
+  var activationBool: Bool? = true
     
-  let activeImage: String
-  let deActiveImage: String
+  let frontImage: String
+  var backImage: String? = nil
   let imageScale: Image.Scale
-  let activeColor: Color
-  let deActiveColor: Color
-
+  var backColor: Color? = nil
+  let frontColor: Color
+  var rotationDegree: Double? = nil
   let action: () -> Void
 
   var body: some View {
       
     Button(action: action) {
     
-        Image(systemName: activationBool ? activeImage : deActiveImage)
+        Image(systemName: activationBool! ? frontImage : backImage ?? frontImage)
             .imageScale(imageScale)
-            .foregroundColor(activationBool ? activeColor : deActiveColor)
+            .foregroundColor(activationBool! ? backColor ?? frontColor : frontColor)
+            .rotationEffect(.degrees(activationBool! ? rotationDegree ?? 0.0 : 0.0))
 
             }
         }

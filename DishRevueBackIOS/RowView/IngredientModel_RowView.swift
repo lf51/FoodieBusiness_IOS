@@ -13,12 +13,14 @@ struct IngredientModel_RowView: View {
     
     var body: some View {
         
-        ZStack(alignment:.leading){
+      /*  ZStack(alignment:.leading){
             
             RoundedRectangle(cornerRadius: 5.0)
                 .fill(Color.white.opacity(0.3))
-                .shadow(radius: 3.0)
+                .shadow(radius: 3.0) */
                 
+        CSZStackVB_Framed {
+        
             VStack(alignment:.leading) {
     
                 HStack(alignment: .top) {
@@ -72,7 +74,7 @@ struct IngredientModel_RowView: View {
             } // chiuda VStack madre
             ._tightPadding()
         } // chiusa Zstack Madre
-        .frame(width: 300, height: 150)
+       // .frame(width: 300, height: 150)
         
         
     }

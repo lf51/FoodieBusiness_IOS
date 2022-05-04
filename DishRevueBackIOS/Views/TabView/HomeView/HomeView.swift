@@ -12,20 +12,23 @@ struct HomeView: View {
     
     @ObservedObject var authProcess: AuthPasswordLess
     @EnvironmentObject var viewModel: AccounterVM
-    var backgroundColorView: Color
+    let backgroundColorView: Color
 
     @State private var wannaAddNewProperty:Bool = false
-    @State private var wannaCreateMenu: Bool? = false
-    var screenHeight: CGFloat = UIScreen.main.bounds.height
     
+    @State private var isPresentedMenu: Bool = false // duplica la wannaCreateMenu: Necessaria perchè l'isPresented dello sheet non accetta optional
+    @State private var wannaCreateMenu: Bool? = false {didSet {isPresentedMenu = wannaCreateMenu!}}
+    var screenHeight: CGFloat = UIScreen.main.bounds.height
     
     var body: some View {
         
         NavigationView {
       
-            ZStack {
+            CSZStackVB(title:authProcess.userInfo?.userDisplayName ?? "", backgroundColorView: backgroundColorView) {
+            
+          //  ZStack {
                 
-                backgroundColorView.edgesIgnoringSafeArea(.top)
+              //  backgroundColorView.edgesIgnoringSafeArea(.top)
      
                 VStack(alignment: .leading) {
                
@@ -57,15 +60,15 @@ struct HomeView: View {
                     
                 } // VStack End
 
-                if self.wannaCreateMenu! {
+               /* if self.wannaCreateMenu! {
                     
                     NuovoMenuMainView(dismissView: $wannaCreateMenu).zIndex(1.0)
                     
-                }
+                } */
          
             }// chiusa ZStack
-            .background(backgroundColorView.opacity(0.4))
-            .navigationTitle("Ciao \(Text(authProcess.userInfo?.userDisplayName ?? ""))")
+          //  .background(backgroundColorView.opacity(0.4))
+          //  .navigationTitle("\(Text(authProcess.userInfo?.userDisplayName ?? ""))")
             .navigationBarItems(
                 leading: NavigationLink(destination: {
                     
@@ -93,7 +96,13 @@ struct HomeView: View {
                         }
                     })
             )
-            .navigationBarTitleDisplayMode(.large)
+           // .navigationBarTitleDisplayMode(.large)
+            .fullScreenCover(isPresented: $isPresentedMenu, content: {
+              /*  NuovoMenuMainView(dismissView: $wannaCreateMenu) */
+                NuovoMenuMainView(backgroundColorView: backgroundColorView)
+            
+            })
+
            // .navigationViewStyle(StackNavigationViewStyle()) // se non ricordo male mi serve per iPad
           /*  .sheet(isPresented: self.$wannaAddNewProperty) {
                 

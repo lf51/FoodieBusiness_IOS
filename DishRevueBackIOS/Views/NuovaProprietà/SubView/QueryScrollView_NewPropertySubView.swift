@@ -22,21 +22,21 @@ struct QueryScrollView_NewPropertySubView: View {
                   
                   ScrollView {
                       
-                      VStack(spacing: 15) {
+                     VStack(spacing: 0) {
                           
                           ForEach(queryResults) { place in
                               
                               QueryRow_NewPropertySubView(place:place)
                                   .onTapGesture {
-                                      // propertyViewModel.queryResults = []
                                       action(place)
                                   }
                               
-                              Divider().shadow(radius: 1.0).padding(.horizontal)
-                          
+                              Divider()
+                                  .shadow(radius: 1.0)
+                                  .padding()
                           }
                       }
-                  }
+                  }.padding(.vertical)
               }
           }
           .frame(maxWidth:.infinity)

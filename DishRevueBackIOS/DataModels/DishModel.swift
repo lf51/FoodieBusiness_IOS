@@ -33,6 +33,8 @@ struct DishModel: MyModelProtocol {
    // var status: DishStatus // in beta
     
     var intestazione: String
+    var descrizione: String = ""
+    var alertItem: AlertModel?
     
     var menuWhereIsIn: [MenuModel] = [] // doppia scrittura con
     var ingredientiPrincipali: [IngredientModel]
@@ -54,7 +56,7 @@ struct DishModel: MyModelProtocol {
     var status: ModelStatus
    // var restaurantWhereIsOnMenu: [PropertyModel] = []
     
-    var alertItem: AlertModel?
+    
     
     init() { // init di un piatto nuovo e "vuoto"
         

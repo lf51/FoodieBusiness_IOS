@@ -69,6 +69,7 @@ struct NuovoIngredienteMainView: View {
        
            // end ZStack
        }
+       .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
     }
     
     func test(ingrediente: inout IngredientModel) {

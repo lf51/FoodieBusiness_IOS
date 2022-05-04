@@ -27,7 +27,7 @@ import SwiftUI
 struct ListaIngredientiView: View {
     
     @Binding var tabSelection: Int
-    var backgroundColorView: Color
+    let backgroundColorView: Color
     
     @State private var openNuovoIngrediente: Bool = false
     
@@ -35,9 +35,12 @@ struct ListaIngredientiView: View {
         
         NavigationView {
             
-            ZStack {
+            CSZStackVB(title: "I Miei Ingredienti", backgroundColorView: backgroundColorView) {
                 
-                backgroundColorView.edgesIgnoringSafeArea(.top)
+            
+          /*  ZStack {
+                
+                backgroundColorView.edgesIgnoringSafeArea(.top) */
                 
                // VStack(alignment:.leading) {
   
@@ -46,7 +49,7 @@ struct ListaIngredientiView: View {
                // }
 
             }
-            .navigationTitle(Text("I Miei Ingredienti"))
+          //  .navigationTitle(Text("I Miei Ingredienti"))
             .navigationBarItems(
                 trailing:
                     
@@ -54,14 +57,12 @@ struct ListaIngredientiView: View {
                         self.openNuovoIngrediente.toggle()
                     }
                 )
-            .navigationBarTitleDisplayMode(.large)
+           // .navigationBarTitleDisplayMode(.large)
             //.navigationViewStyle(StackNavigationViewStyle())
-            .sheet(isPresented: self.$openNuovoIngrediente) {
-               // NewDishView(dishVM: dishVM, backgroundColorView: .cyan)
+            .fullScreenCover(isPresented: self.$openNuovoIngrediente, content: {
                 NuovoIngredienteMainView(backgroundColorView: backgroundColorView)
-                // Creare nuovo ingrediente
-            }
-            .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
+            })
+         //   .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
     
         }.navigationViewStyle(StackNavigationViewStyle())
     }

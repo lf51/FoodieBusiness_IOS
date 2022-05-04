@@ -24,6 +24,7 @@ struct IngredientModel: MyModelProtocol {
     var id: String { self.intestazione.replacingOccurrences(of:" ", with:"").lowercased() }
 
     var intestazione: String
+    var descrizione: String = ""
     
   //  var cottura: DishCookingMethod // la cottura la evitiamo in questa fase perchè può generare confusione
     var provenienza: ProvenienzaIngrediente
