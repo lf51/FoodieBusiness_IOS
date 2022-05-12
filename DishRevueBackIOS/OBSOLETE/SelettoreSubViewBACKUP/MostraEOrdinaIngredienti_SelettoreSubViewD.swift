@@ -7,20 +7,21 @@
 
 import SwiftUI
 
-struct MostraEOrdinaIngredienti: View {
+/* // BACKUP 10.05
+struct MostraEOrdinaIngredientiD<M2:MyModelProtocol>: View {
         
-        @Binding var listaAttiva: [IngredientModel]
+        @Binding var listaAttiva: [M2]
         @Environment(\.editMode) var mode
         
         var body: some View {
                 
             //VStack -> non lo inseriamo perchè non fa funzionare onMove e onDelete
-                ForEach(listaAttiva) { ingrediente in
+                ForEach(listaAttiva) { model in
 
                     VStack {
                         HStack {
                                 
-                                Text(ingrediente.intestazione)
+                                Text(model.intestazione)
                                         .fontWeight(.semibold)
                                         .lineLimit(1)
 
@@ -54,7 +55,7 @@ struct MostraEOrdinaIngredienti: View {
             
         }
         
-    }
+    } */
 /*
 struct MostraEOrdinaIngredienti_Previews: PreviewProvider {
     static var previews: some View {

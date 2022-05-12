@@ -50,37 +50,11 @@ func csTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     
 }
 
-/// se l'alertModel non possiede una action ritorna un Alert comunicativo. Default ActionTitle "Prosegui"
-/*func csSendAlert(alertModel: AlertModel) -> Alert {
-   
-   guard alertModel.actionPlus != nil else {
-       
-       return Alert(
-           title: Text(alertModel.title),
-           message: Text(alertModel.message))
-       
-   }
-    
-    let actionTitle: Text
-    
-    switch alertModel.actionPlus!.title {
+/// Nasconde la Keyboard
+func csHideKeyboard(){
         
-    case .elimina:
-        actionTitle = Text("Elimina").foregroundColor(Color.red)
-   
-    default: actionTitle = Text(alertModel.actionPlus!.title.rawValue.capitalized)
-        
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
-    
-       return Alert(
-              title: Text(alertModel.title),
-              message: Text(alertModel.message),
-              primaryButton: Alert.Button.cancel(),
-              secondaryButton: Alert.Button.default(
-                actionTitle,
-                action: (alertModel.actionPlus!.action)))
-
-} */
 
 /// Ritorna un array di case unici (ripuliti dai valori Associati, dai duplicati, e ordinati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
 /// - Parameter array: array description

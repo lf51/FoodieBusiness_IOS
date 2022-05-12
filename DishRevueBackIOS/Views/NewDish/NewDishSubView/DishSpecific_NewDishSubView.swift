@@ -26,7 +26,7 @@ struct DishSpecific_NewDishSubView: View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1Button(placeHolder: "Formato", imageName: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovoFormato).disabled(self.wannaInsertFormatValue)
+            CSLabel_1Button(placeHolder: "Formato", imageNameOrEmojy: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovoFormato).disabled(self.wannaInsertFormatValue)
             
             if !(creaNuovoFormato ?? false) {
                 

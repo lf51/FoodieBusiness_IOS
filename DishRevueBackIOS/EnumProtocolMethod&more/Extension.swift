@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+
 extension View {
     
     func csAlertModifier(isPresented: Binding<Bool>, item: AlertModel?) -> some View {
@@ -16,5 +17,14 @@ extension View {
         
     }
     
+    /// Layers the given views behind this ``TextEditor``.
+        func csTextEditorBackground<V>(@ViewBuilder _ content: () -> V) -> some View where V : View {
+            self
+                .onAppear {
+                    UITextView.appearance().backgroundColor = .clear
+                }
+                .background(content())
+        }
     
+   
 }

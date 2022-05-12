@@ -34,6 +34,7 @@ protocol MyModelProtocol: Identifiable, Equatable {
     
 }
 
+
 /*protocol MyModelProtocolMapConform {
     
     associatedtype MapProperty:MyEnumProtocol,MyEnumProtocolMapConform

@@ -37,8 +37,44 @@ struct CSButton_image: View {
         }
     }
 
-
 struct CSButton_tight: View {
+    
+  let title: String
+  let fontWeight: Font.Weight
+  let titleColor: Color
+  let fillColor: Color
+  let imageName: String? = nil
+  let action: () -> Void
+
+  var body: some View {
+      
+    Button(action: action) {
+    
+        HStack {
+            
+            if let imageName = imageName {
+                
+                Image(systemName: imageName)
+                    .imageScale(.medium)
+                    .foregroundColor(titleColor)
+            }
+      
+            Text(title)
+                .fontWeight(fontWeight)
+                ._tightPadding()
+                .foregroundColor(titleColor)
+                .background(fillColor)
+                .cornerRadius(5.0) // 5.0
+            
+                }
+            }
+        }
+    }
+
+
+
+
+/*struct CSButton_tight: View {
     
   let title: String
   let fontWeight: Font.Weight
@@ -57,7 +93,7 @@ struct CSButton_tight: View {
             .cornerRadius(5.0) // 5.0
             }
         }
-    }
+    } */
 
 struct CSButton_large: View {
     

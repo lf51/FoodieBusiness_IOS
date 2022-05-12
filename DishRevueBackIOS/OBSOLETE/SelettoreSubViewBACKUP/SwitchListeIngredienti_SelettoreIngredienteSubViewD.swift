@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct SwitchListeIngredienti: View {
+/* // BACKUP 10.05
+struct SwitchListeIngredientiD: View {
         
-        @Binding var listaDaMostrare: ElencoListeIngredienti
+        @Binding var listaDaMostrare: ModelList
         
         var body: some View {
             
@@ -41,7 +42,7 @@ struct SwitchListeIngredienti: View {
             }
            
         }
-    }
+    } */
 
 /*
 struct SwitchListeIngredienti_Previews: PreviewProvider {

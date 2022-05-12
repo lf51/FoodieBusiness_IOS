@@ -25,7 +25,7 @@ struct SelectionPropertyIngrediente_NewDishSubView: View {
         VStack(alignment:.leading) {
                         
             //Conservazione
-            CSLabel_1Button(placeHolder: "Conservazione", imageName: "thermometer", backgroundColor: Color.black, toggleBottone: $creaCaseConservazione)
+            CSLabel_1Button(placeHolder: "Conservazione", imageNameOrEmojy: "thermometer", backgroundColor: Color.black, toggleBottone: $creaCaseConservazione)
             
             if !(creaCaseConservazione ?? false) {
                 
@@ -44,7 +44,7 @@ struct SelectionPropertyIngrediente_NewDishSubView: View {
             
             // provenienza
             
-            CSLabel_1Button(placeHolder: "Prodotto in", imageName: "globe", backgroundColor: Color.black, toggleBottone: $creaNuovaProvenienza)
+            CSLabel_1Button(placeHolder: "Prodotto in", imageNameOrEmojy: "globe", backgroundColor: Color.black, toggleBottone: $creaNuovaProvenienza)
             
             if !(creaNuovaProvenienza ?? false) {
             
@@ -64,7 +64,7 @@ struct SelectionPropertyIngrediente_NewDishSubView: View {
             
             // metodo di Produzione
             
-            CSLabel_1Button(placeHolder: "Metodo di Produzione", imageName: "gearshape.2.fill", backgroundColor: Color.black, toggleBottone: $creaNuovoMetodoProduzione)
+            CSLabel_1Button(placeHolder: "Metodo di Produzione", imageNameOrEmojy: "gearshape.2.fill", backgroundColor: Color.black, toggleBottone: $creaNuovoMetodoProduzione)
             
             if !(creaNuovoMetodoProduzione ?? false) {
             

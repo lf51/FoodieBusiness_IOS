@@ -14,7 +14,7 @@ struct CSDivider: View {
     var body: some View {
         
         RoundedRectangle(cornerRadius: 10.0) // da lo stacco per evitare l'inline.
-            .frame(height: 2.0)
+            .frame(height: .leastNormalMagnitude)
             .foregroundColor(isVisible! ? Color.white : Color.cyan) // Color.cyan lo rende invisibile
         
     }

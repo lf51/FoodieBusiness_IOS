@@ -22,7 +22,7 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelProtocol>: View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1Button(placeHolder: editNuovaStringa ? "Edit Nome \(placeHolderItemName)" : "Nome \(placeHolderItemName)", imageName: editNuovaStringa ? "gear" : imageLabel, backgroundColor: Color.black)
+            CSLabel_1Button(placeHolder: editNuovaStringa ? "Edit Nome \(placeHolderItemName)" : "Nome \(placeHolderItemName)", imageNameOrEmojy: editNuovaStringa ? "gear" : imageLabel, backgroundColor: Color.black)
             
             if self.itemModel.intestazione == "" || self.editNuovaStringa {
                 

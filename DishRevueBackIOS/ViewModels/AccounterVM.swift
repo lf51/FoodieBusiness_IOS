@@ -102,7 +102,7 @@ class AccounterVM: ObservableObject {
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
-    func updateItemModel<T:MyModelProtocol>(itemModel: T) {
+    func updateItemModel<T:MyModelProtocol>(itemModel: T) { // Deprecated 06.05
         
         self.alertItem = AlertModel(
             title: "Confermare Modifiche",
@@ -114,6 +114,24 @@ class AccounterVM: ObservableObject {
                 }))
         
     }
+    
+    /// Manda un alert peri Confermare le Modifiche
+    func updateItemModel<T:MyModelProtocol>(messaggio:String, action: @escaping () -> T )  {
+        
+        self.alertItem = AlertModel(
+            title: "Confermare Modifiche",
+            message: messaggio,
+            actionPlus: ActionModel(
+                title: .conferma,
+                action: {
+                 
+                    let itemModel = action()
+                    self.updateItemModelExecutive(itemModel: itemModel)
+                
+                                    }))
+        
+    }
+    
     
     private func updateItemModelExecutive<T:MyModelProtocol>(itemModel: T) {
         
@@ -372,12 +390,12 @@ class AccounterVM: ObservableObject {
          
          let menuList = [menu1,menu2,menu3,menu4]
          let dishList = [dish1,dish2,dish3,dish4]
-         let propList = [prop1,prop2,prop3,prop4]
+       //  let propList = [prop1,prop2,prop3,prop4]
          let ingrList = [ingre1,ingre2,ingre3,ingre4, ingre5]
          
          allMyMenu.append(contentsOf: menuList)
          allMyDish.append(contentsOf: dishList)
-         allMyProperties.append(contentsOf: propList)
+       //  allMyProperties.append(contentsOf: propList)
          allMyIngredients.append(contentsOf: ingrList)
          
      }
@@ -458,3 +476,9 @@ class AccounterVM: ObservableObject {
     
     return containerT
 } */
+
+
+let menu1 = MenuModel(nome: "Pranzo WeekEnd", tipologia: .allaCarta, giorniDelServizio: [.venerdi,.sabato])
+let menu2 = MenuModel(nome: "Pranzo Feriale", tipologia: .fisso(persone: "1", costo: "15"), giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi])
+let menu3 = MenuModel(nome: "ColazioneExpress", tipologia: .fisso(persone: "1", costo: "2.5"), giorniDelServizio: [.giovedi])
+let menu4 = MenuModel(nome: "CenaAllDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato])

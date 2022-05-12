@@ -16,7 +16,7 @@ struct InfoIngrediente_NuovoIngredienteSubView: View { // deprecated 16.03.2022 
         
         VStack(alignment: .leading) {
             
-            CSLabel_1Button(placeHolder: nuovoIngrediente.intestazione == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.intestazione)", imageName: "gearshape", backgroundColor: Color.black)
+            CSLabel_1Button(placeHolder: nuovoIngrediente.intestazione == "" ? "Crea Nuovo Ingrediente" : "Editing \(nuovoIngrediente.intestazione)", imageNameOrEmojy: "gearshape", backgroundColor: Color.black)
   
             CSTextField_3(textFieldItem: self.$nomeNuovoIngrediente, placeHolder: "Nome Ingrediente") {
                 self.nuovoIngrediente.intestazione = self.nomeNuovoIngrediente

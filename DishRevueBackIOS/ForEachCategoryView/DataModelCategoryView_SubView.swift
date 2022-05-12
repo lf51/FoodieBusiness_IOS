@@ -22,7 +22,7 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
                    
                    ForEach(dataMapping, id:\.self) { category in
                        
-                       CSLabel_1Button(placeHolder: category.simpleDescription(), imageName: category.imageAssociated(), backgroundColor: Color.blue, backgroundOpacity: 0.3)
+                       CSLabel_1Button(placeHolder: category.simpleDescription(), imageNameOrEmojy: category.imageAssociated(), backgroundColor: Color.blue, backgroundOpacity: 0.3)
     
                        ScrollView(.horizontal,showsIndicators: false) {
                            

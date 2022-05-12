@@ -52,7 +52,7 @@ struct NuovoMenuMainView: View {
                     
                     IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (Interno)", imageLabel: "doc.badge.plus", coloreContainer: Color.red, itemModel: $nuovoMenu)
                     
-                    CSLabel_1Button(placeHolder: "Tipologia", imageName: "dollarsign.circle", backgroundColor: Color.black)
+                    CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black)
                     
                     SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
                         .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)

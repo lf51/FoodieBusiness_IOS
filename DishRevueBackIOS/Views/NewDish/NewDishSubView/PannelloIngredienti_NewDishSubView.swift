@@ -38,7 +38,7 @@ struct PannelloIngredienti_NewDishSubView: View {
             
             VStack {
                 
-                CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageName: "curlybraces", backgroundColor: Color.black)
+                CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black)
                 
              /*   CSLabel_2Button(placeHolder: "Ingredienti Secondari", imageName: "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: nil, toggleBottoneTEXT: nil, testoBottoneTEXT: "") */
                 

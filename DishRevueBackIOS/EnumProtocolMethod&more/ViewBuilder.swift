@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+
 /// ViewBuilder - Passare una emojy o il systenName di una Image. Il nil ritorna una circle Image
 /// - Parameter string: <#string description#>
 /// - Returns: <#description#>
@@ -43,7 +44,7 @@ import SwiftUI
      }
  }
 
-///ZStack con Sfondo Colorato, NavigationTitle e backgroundOpacity a livello tabBar
+///ZStack con Sfondo Colorato, NavigationTitle e backgroundOpacity a livello tabBar. Standard ListModelView
 struct CSZStackVB<Content:View>:View {
     
     let title: String
@@ -64,11 +65,12 @@ struct CSZStackVB<Content:View>:View {
     }
 }
 
-
-
-///ZStack con RoundedRectangle di sfondo, framed
+///ZStack con RoundedRectangle di sfondo, framed. Standard RowView. MaxWidth/Height: 500/250
 struct CSZStackVB_Framed<Content:View>:View {
         
+        var frameWidth: CGFloat? = 300
+        var backgroundOpacity: Double? = 0.3
+        private var frameHeight: CGFloat { frameWidth! / 2 }
         @ViewBuilder var content: Content
         
         var body: some View {
@@ -76,13 +78,13 @@ struct CSZStackVB_Framed<Content:View>:View {
             ZStack(alignment:.leading) {
                 
                 RoundedRectangle(cornerRadius: 5.0)
-                    .fill(Color.white.opacity(0.3))
+                    .fill(Color.white.opacity(backgroundOpacity!))
                     .shadow(radius: 3.0)
                 
                 content
                 
             }
-            .frame(width: 300, height: 150)
-           
+            .frame(maxWidth: 400, maxHeight: 200) // --> Mettiamo un limite alla larghezza. In questo modo possiamo variare la larghezza, sapendo che comunque, qualora nel frameWidth usassimo .infinity non andremmo a superare i maxWidth point. In questo modo ad esmpio, su iphone copriamo l'intera larghezza, mentre sul pad copriamo 500 punti. Occorre lavorare in questo modo, impostando l'altezza in proporzione della larghezza.
+            .frame(width: frameWidth! < 400 ? frameWidth! : 400, height: frameHeight < 200 ? frameHeight : 200)
         }
     }

@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct SwitchListeIngredientiPiatto: View {
+/* // BACKUP 10.05
+struct SwitchListeIngredientiPiattoD<M1:MyModelProtocol>: View {
     
-    @Binding var newDish: DishModel
-    @Binding var listaDaMostrare: ElencoListeIngredienti
+    @Binding var newDish: M1
+    @Binding var listaDaMostrare: ModelList
     
     var body: some View {
         
@@ -36,9 +37,9 @@ struct SwitchListeIngredientiPiatto: View {
                         }
                     }
                                 
-                Text("(\(self.newDish.ingredientiPrincipali.count))")
+             /*   Text("(\(self.newDish.ingredientiPrincipali.count))")
                     .fontWeight(.light)
-                    .padding(.horizontal)
+                    .padding(.horizontal) */
                 
                 Image(systemName:"circle.fill")
                     .imageScale(.large)
@@ -66,9 +67,9 @@ struct SwitchListeIngredientiPiatto: View {
                         }
                     }
      
-                Text("(\(self.newDish.ingredientiSecondari.count))")
+             /*   Text("(\(self.newDish.ingredientiSecondari.count))")
                     .fontWeight(.light)
-                    .padding(.horizontal)
+                    .padding(.horizontal) */
                 
                 Image(systemName:"circle.fill")
                     .imageScale(.large)
@@ -79,7 +80,7 @@ struct SwitchListeIngredientiPiatto: View {
         }
         
     }
-}
+} */
 
 /*
 struct SwitchListeIngredientiPiatto_Previews: PreviewProvider {

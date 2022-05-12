@@ -19,7 +19,8 @@ import MapKit
 struct PropertyModel: MyModelProtocol {
     
     var intestazione: String = "" // deve sostituire il nome
-    var descrizione: String = "Ciao Bello!" { willSet {print("1.descrizioneProperty is changing from \(descrizione) to \(newValue)") } didSet {print("2.descrizioneProperty changed in \(descrizione)") }}
+    var descrizione: String = ""
+   /* var descrizione: String = "La registrazione di una proprietò avviene da Maps. Se l'attività non è ancora presente in Maps la registrazione non può avvenire. Potremmo predisporre una registrazione manuale ma non lo facciamo per i seguenti motivi: Usando Maps ci affidiamo ad un servizio già collaudato e non ci dobbiamo preoccupare di verificare l'esistenza reale di quella proprietà, cosa che invece diventerebbe necessaria in caso di inserimento manuale. Usando Maps inoltre non dobbiamo preoccuparci dei duplicati, ossia della possibilità che qualcuno registri un'attività esistente in modo manuale nella via di fianco creando confusione. Usando Maps risolviamo quindi delle grane fiduciarie e ci resta soltanto di autenticare il legame fra l'attività registrata e il registrante. Resta un problema per le nuove attività non ancora registrate su Maps. Per queste sarebbe necessario procedere in manuale, ma sacrifichiamo le nuovissime attività non ancora registrate per evitarci i problemi di cui sopra. Confidiamo nel fatto, poi, essendo la registrazione sulle mappe qualcosa da cui un'attività non può prescindere che questa avvenga al più presto abilitando così la registrazione sulla nostra App." */
     var alertItem: AlertModel?
     
     static func == (lhs: PropertyModel, rhs: PropertyModel) -> Bool {
