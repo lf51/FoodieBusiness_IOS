@@ -7,20 +7,19 @@
 
 import SwiftUI
 
-///Main View Selettore Generico di MyModelProtocol. l'elencoModelList : [ModelList] usa degli array predefiniti. In caso di custom array, occorre tener presente che il limite max (teorico/grafico) è di 4 liste, di cui almeno una per tipo (container destinazione o container fonte), e il limite min è 2 (una per tipo)
+///Main View Selettore Generico di MyModelProtocol. l'elencoModelList : [ModelList] usa degli array predefiniti. In caso di custom array, occorre tener presente che il limite max (teorico/grafico) è di 4 liste, di cui almeno una per tipo (container destinazione o container fonte), e il limite min è 2 (una per tipo). I keypath devono portare ad array.
 struct SelettoreIngrediente_NewDishSubView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     var screenHeight: CGFloat = UIScreen.main.bounds.height
 
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var itemModel: M1
-    var elencoModelList: [ModelList] = []
-   // @State private var modelListCorrente: ModelList
+    let elencoModelList: [ModelList]
+
     @State private var modelListCorrente: String = ""
     
     private var viewModelList: [ModelList] = []
     private var itemModelList: [ModelList] = []
-   // private var temporaryListKey: [String] = []
     
     @State private var temporaryDestinationModelContainer: [String:[M2]] = [:]
     
@@ -28,60 +27,33 @@ struct SelettoreIngrediente_NewDishSubView<M1:MyModelProtocol,M2:MyModelProtocol
         
         _itemModel = itemModel
         self.elencoModelList = elencoModelList
-        (_,self.viewModelList, self.itemModelList) = separazioneListe(elencoModelList: elencoModelList)
+        (self.viewModelList, self.itemModelList) = separazioneListe(elencoModelList: elencoModelList)
         
         _modelListCorrente = State(initialValue: elencoModelList[0].returnAssociatedValue().0)
         
     }
 
-    private func separazioneListe(elencoModelList:[ModelList]) -> (tempList:[String:[M2]],vmList:[ModelList],imList:[ModelList]){
+    private var isButtonDisabled: Bool {
         
-        var fonteModelList:[ModelList] = []
-        var destinazioneModelList:[ModelList] = []
-        var temporaryDestinationModelList:[String:[M2]] = [:]
+        print("IsButtonDisabled - step 1")
         
-        for list in elencoModelList {
+        for itemList in itemModelList {
             
-            let(title,_,type) = list.returnAssociatedValue()
-         //   if AnyKeyPath.rootType == AccounterVM.self { }
-            if type == .fonte { fonteModelList.append(list) }
-            else if type == .destinazione {
-                destinazioneModelList.append(list)
-                temporaryDestinationModelList[title] = []
-            }
-          //  allListName.append(title)
+            if itemList.returnAssociatedValue().0 == self.modelListCorrente { return true }
+            
         }
-        print("Dentro SeparazioneListe.temporaryKey:\(temporaryDestinationModelList.keys.count), vmList:\(fonteModelList.count), imList:\(destinazioneModelList.count)")
-        return (temporaryDestinationModelList,fonteModelList,destinazioneModelList)
         
+        print("IsButtonDisabled - step 2")
+        
+        for (_,container) in temporaryDestinationModelContainer {
+            
+            if !container.isEmpty {return false}
+            
+        }
+        print("IsButtonDisabled - step 3")
+        
+        return true
     }
-    
-  /*  private func separazioneListe(elencoModelList:[ElencoModelList]) -> (vmList:[ElencoModelList],imList:[ElencoModelList],temList:[String]) {
-        
-        var viewModelList:[ElencoModelList]
-        var itemModelList:[ElencoModelList]
-        var temporaryListKey: [String]
-        
-        for list in elencoModelList {
-            
-            if list.returnTypeCase() == .itemModelContainer("") {
-                
-                itemModelList.append(list)
-                temporaryListKey.append(list.returnAssociatedString())
-                
-            }
-            else if list.returnTypeCase() == .viewModelContainer("",\.allMyIngredients) {
-                
-                viewModelList.append(list)
-            }
-            
-        }
-        
-        return (viewModelList,itemModelList,temporaryListKey)
-        
-    } */
-    
-    
     
   /*  private var isAggiungiButtonDisabled: Bool {
         
@@ -93,32 +65,22 @@ struct SelettoreIngrediente_NewDishSubView<M1:MyModelProtocol,M2:MyModelProtocol
 
         VStack(alignment: .leading) {
             
-            SwitchItemModelContainer(itemModelList: itemModelList, listaDaMostrare: $modelListCorrente)
+            SwitchItemModelContainer<_,M2>(itemModel:$itemModel,itemModelList: itemModelList, listaDaMostrare: $modelListCorrente)
                 .padding(.horizontal)
                 .padding(.top)
             
             SwitchViewModelContainer(viewModelList: viewModelList, listaDaMostrare: $modelListCorrente)
                 .padding()
                 .background(Color.cyan.opacity(0.5))
-            
-          /* SwitchListeIngredientiPiatto(newDish: $itemModel, listaDaMostrare: $modelListCorrente)
-                .padding(.horizontal)
-                .padding(.top)
-            
-            SwitchListeIngredienti(listaDaMostrare: $modelListCorrente)
-                .padding()
-                .background(Color.cyan.opacity(0.5)) */
-
-          /*  ListaIngredienti_ConditionalView(newDish: $newDish, listaDaMostrare: $listaDaMostrare, temporarySelectionIngredients: $temporarySelectionIngredients) */
-            // .refreshable -> per aggiornare
-            
+                
             ListaIngredienti_ConditionalView<_, M2>(itemModel: $itemModel, listaDaMostrare: $modelListCorrente, elencoModelList: elencoModelList, itemModelList: itemModelList, temporaryDestinationModelList: $temporaryDestinationModelContainer)
+            // .refreshable -> per aggiornare
             
             CSButton_large(title: "Aggiungi", accentColor: Color.white, backgroundColor: Color.cyan.opacity(0.5), cornerRadius: 0.0) {
                 
                 self.aggiungiNewDishIngredients()
                 
-                }//.disabled(isAggiungiButtonDisabled)
+                }.disabled(isButtonDisabled)
         }
         .background(Color.white.cornerRadius(20.0).shadow(radius: 5.0))
         .frame(width: (screenHeight * 0.40))
@@ -129,25 +91,46 @@ struct SelettoreIngrediente_NewDishSubView<M1:MyModelProtocol,M2:MyModelProtocol
     // Methodi & Oggetti
     
     private func aggiungiNewDishIngredients() {
-
-       /* self.newDish.ingredientiPrincipali.append(contentsOf: self.temporarySelectionIngredients["IngredientiPrincipali"]!)
-        
-        self.newDish.ingredientiSecondari.append(contentsOf: self.temporarySelectionIngredients["IngredientiSecondari"]!) */
         
         for list in itemModelList {
             
-            let (title,keyP,_) = list.returnAssociatedValue()
-            let wkp = keyP as! WritableKeyPath<M1,[M2]>
-            self.itemModel[keyPath: wkp].append(contentsOf: self.temporaryDestinationModelContainer[title]!)
-         //   self.itemModel[keyPath: wkp] = self.temporaryDestinationModelContainer[title]!
+            let (title,keyPath,_) = list.returnAssociatedValue()
+            
+            let currentKeyPath = keyPath as? WritableKeyPath<M1,[M2]>
+            if currentKeyPath != nil {
+                self.itemModel[keyPath: currentKeyPath!].append(contentsOf: self.temporaryDestinationModelContainer[title] ?? [])
+                /*qualora la chiave nel temporaryDestination non esiste passa un array vuoto */
+            }
+
             self.temporaryDestinationModelContainer[title] = []
+            print("Dentro AggiungiAction - keycount: \(temporaryDestinationModelContainer.keys.count) - \(temporaryDestinationModelContainer.keys.description)")
+        }
+    }
+    
+    private func separazioneListe(elencoModelList:[ModelList]) -> (vmList:[ModelList],imList:[ModelList]){
+        
+        var fonteModelList:[ModelList] = []
+        var destinazioneModelList:[ModelList] = []
+        
+        for list in elencoModelList {
+            
+            let(_,_,containerType) = list.returnAssociatedValue()
+
+            if containerType == .fonte {fonteModelList.append(list)}
+            else {destinazioneModelList.append(list)}
+            
         }
         
-        print("Action AggiungiListe -> Al momento Svuota le Liste temporanee. Da configurare")
+      let destinazioneModelListOrdered = destinazioneModelList.sorted {
+            
+            $0.returnAssociatedValue().2.returnAssociatedValue().1.rawValue <
+                $1.returnAssociatedValue().2.returnAssociatedValue().1.rawValue
+            
+        }
         
-      //  self.temporarySelectionIngredients["IngredientiPrincipali"]! = []
-     //   self.temporarySelectionIngredients["IngredientiSecondari"]! = []
-      
+        print("Dentro SeparazioneListe: vmList:\(fonteModelList.count) - nameVMlist:\(fonteModelList.description), imList:\(destinazioneModelList.count)-nameIMlist:\(destinazioneModelList.description)")
+        return (fonteModelList,destinazioneModelListOrdered)
+        
     }
          
 }

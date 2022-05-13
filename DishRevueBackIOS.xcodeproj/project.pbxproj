@@ -472,8 +472,8 @@
 				4D04E28327C7A2BD002F0486 /* SelettoreIngrediente_NewDishSubView.swift */,
 				4D92579F27D7C8BE00D71B9C /* MostraEOrdinaIngredienti_SelettoreSubView.swift */,
 				4D9257A127D7C95600D71B9C /* MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift */,
-				4D9257A327D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift */,
 				4D9257A527D7CA1E00D71B9C /* ListaIngredienti_ConditionalView.swift */,
+				4D9257A327D7C99B00D71B9C /* SwitchListeIngredienti_SelettoreIngredienteSubView.swift */,
 				4D9257A927D7CB7100D71B9C /* SwitchItemModelContainer.swift */,
 			);
 			path = SelettoreSubView;
@@ -1043,7 +1043,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1074,7 +1074,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 33;
+				CURRENT_PROJECT_VERSION = 34;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

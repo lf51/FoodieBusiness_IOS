@@ -12,11 +12,13 @@ enum ModelList: Equatable, Hashable {
        
     ///Case Predefinito per la relazione Piatto/Ingredienti.
     static var dishIngredientsList: [ModelList] = [
-        .viewModelIngredientContainer("allMyIngredients", \.allMyIngredients),
-        .viewModelIngredientContainer("allFromCommunity", \.listoneFromListaBaseModelloIngrediente),
-        .dishModelIngredientContainer("IngredientiPrincipali", \.ingredientiPrincipali),
-        .dishModelIngredientContainer("IngredientiSecondary", \.ingredientiSecondari)
-            ]
+    
+        .viewModelContainer("My Ingredients",\.allMyIngredients,.fonte),
+        .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),
+        .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale)),
+        .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondari,.destinazione(Color.orange, grado: .secondario))
+    
+    ]
     
     ///Case Predefinito per la relazione Piatto/Menu.
     static var dishMenuList: [ModelList] = [ ]
@@ -28,55 +30,46 @@ enum ModelList: Equatable, Hashable {
     ///Case Predefinito per la relazione Proprietà/Menu.
     static var propertyMenuList: [ModelList] = [] 
     
-    /// Container da cui attingere dati.
-  //  case viewModelContainer(String,KeyPath<AccounterVM,[IngredientModel]>)
-    /// Container in cui riversare nuovi dati.
-  //   case itemModelContainer(String,AnyKeyPath)
+    /// utilizzare come Fonte Dati
+    case viewModelContainer(String,PartialKeyPath<AccounterVM>,ContainerType)
+    /// utilizzare come Destinazione dati
+    case itemModelContainer(String,AnyKeyPath,ContainerType)
     
-     case viewModelDishContainer(String,KeyPath<AccounterVM,[DishModel]>)
-     case viewModelIngredientContainer(String,KeyPath<AccounterVM,[IngredientModel]>)
-     case viewModelMenuContainer(String,KeyPath<AccounterVM,[MenuModel]>)
-     case viewModelPropertyContainer(String,KeyPath<AccounterVM,[PropertyModel]>)
-     
-     case dishModelIngredientContainer(String,WritableKeyPath<DishModel,[IngredientModel]>)
-     case dishModelMenuContainer(String,WritableKeyPath<DishModel,[MenuModel]>)
-     
-     case menuModelDishContainer(String,WritableKeyPath<MenuModel,[DishModel]>)
-     case menuModelPropertyContainer(String,WritableKeyPath<MenuModel,[PropertyModel]>)
-     
-     case propertyModelMenuContainer(String,WritableKeyPath<PropertyModel,[MenuModel]>)
-
-    func returnAssociatedValue() -> (String,AnyKeyPath,ContainerListType) {
-        
+    func returnAssociatedValue() -> (String,AnyKeyPath,ContainerType) {
+    
         switch self {
             
-        case .viewModelDishContainer(let string, let keyPath):
-            return (string,keyPath,.fonte)
-        case .viewModelIngredientContainer(let string, let keyPath):
-            return (string,keyPath,.fonte)
-        case .viewModelMenuContainer(let string, let keyPath):
-            return (string,keyPath,.fonte)
-        case .viewModelPropertyContainer(let string, let keyPath):
-            return (string,keyPath,.fonte)
-        case .dishModelIngredientContainer(let string, let writableKeyPath):
-            return (string,writableKeyPath,.destinazione)
-        case .dishModelMenuContainer(let string, let writableKeyPath):
-            return (string,writableKeyPath,.destinazione)
-        case .menuModelDishContainer(let string, let writableKeyPath):
-            return (string,writableKeyPath,.destinazione)
-        case .menuModelPropertyContainer(let string, let writableKeyPath):
-            return (string,writableKeyPath,.destinazione)
-        case .propertyModelMenuContainer(let string, let writableKeyPath):
-            return (string,writableKeyPath,.destinazione)
+        case .viewModelContainer(let string, let partialKeyPath, let containerType):
+            return (string,partialKeyPath,containerType)
+        case .itemModelContainer(let string, let anyKeyPath, let containerType):
+            return (string,anyKeyPath,containerType)
         }
-        
+    
     }
     
-    enum ContainerListType { // Lo usiamo per distinguere i due Case del ModelList senza utilizzare la returnTypeCase usata per altre enum. Perchè con i keypath non sappiamo che valore standard passare per uniformare i case.
+    enum ContainerType: Hashable {
         
         case fonte
-        case destinazione
-        
+        case destinazione(Color, grado:GradoContainer)
+     
+        func returnAssociatedValue() -> (Color,GradoContainer) {
+            
+            switch self {
+            case .fonte:
+                return (Color.clear,.flat)
+            case .destinazione(let color, let grado):
+              return (color,grado)
+
+            }
+        }
+                
+        enum GradoContainer:Int {
+            
+            case principale = 0
+            case secondario
+            case flat // non rientra in una gerarchia. Usato per standardizzare il case destinazione e per il case Fonte
+            
+        }
         
     }
 }

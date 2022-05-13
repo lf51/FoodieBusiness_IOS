@@ -52,49 +52,6 @@ struct MostraESelezionaIngredienti<M2:MyModelProtocol>: View {
     }
 
 
-
-/* struct MostraESelezionaIngredienti: View {
-        
-        var listaAttiva: [IngredientModel]
-        let attributeIngredient: (_ ingredient: IngredientModel) -> (colore: Color,image: String, isUsed: Bool)
-        let action: (_ ingredient: IngredientModel) -> Void
-     
-        var body: some View {
-                
-                ForEach(listaAttiva) { ingrediente in
-
-                    VStack {
-                        
-                        HStack {
-                            
-                            Text(ingrediente.intestazione)
-                                    .fontWeight(.semibold)
-                                    .lineLimit(1)
-                                  //  .minimumScaleFactor(0.7) -> Tolto perchè lo scala sempre
-
-                           Spacer()
-                            
-                            Image(systemName: self.attributeIngredient(ingrediente).image)
-                                .imageScale(.large)
-                                .foregroundColor(self.attributeIngredient(ingrediente).colore)
-                                .onTapGesture {
-                                    
-                                    withAnimation {
-                                        action(ingrediente)
-                                    }
-                                }
-                        }
-                        .opacity(self.attributeIngredient(ingrediente).isUsed ? 0.5 : 1.0)
-                        .disabled(self.attributeIngredient(ingrediente).isUsed)
-                        ._tightPadding()
-                        
-                        Divider()
-                           
-                    }
-
-                }.listRowSeparator(.hidden)
-        }
-    }*/ // 07.05 BACKUP per Trasformazione in Generica
 /*
 struct MostraESelezionaIngredienti_Previews: PreviewProvider {
     static var previews: some View {
