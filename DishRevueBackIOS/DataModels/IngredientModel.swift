@@ -16,7 +16,8 @@ struct IngredientModel: MyModelProtocol {
       lhs.id == rhs.id &&
       lhs.provenienza == rhs.provenienza &&
       lhs.produzione == rhs.produzione &&
-      lhs.conservazione == rhs.conservazione
+      lhs.conservazione == rhs.conservazione &&
+      lhs.allergeni == rhs.allergeni
     }
     
     var dishWhereIsUsed: [DishModel] = [] // doppia scrittura con ListaIngredienti Principali e Secondari nel DishModel
@@ -31,6 +32,7 @@ struct IngredientModel: MyModelProtocol {
     var produzione: ProduzioneIngrediente
   //  var stagionalita: StagionalitaIngrediente // la stagionalità non ha senso poichè è inserita dal ristoratore, ed è inserita quando? Ha senso se la attribuisce il sistema, ma è complesso.
     var conservazione: ConservazioneIngrediente
+    var allergeni: [Allergeni] = []
     
     var alertItem: AlertModel?
     //
@@ -77,6 +79,7 @@ struct IngredientModel: MyModelProtocol {
         self.provenienza = provenienza
         self.produzione = metodoDiProduzione
         self.conservazione = conservazione
+        
        
     }
     

@@ -65,7 +65,8 @@ struct CSZStackVB<Content:View>:View {
     }
 }
 
-///ZStack con RoundedRectangle di sfondo, framed. Standard RowView. MaxWidth/Height: 500/250
+/* // Deprecated 21.05
+///ZStack con RoundedRectangle di sfondo, framed. Standard RowView. MaxWidth/Height: 400/200. Default -> 300/150
 struct CSZStackVB_Framed<Content:View>:View {
         
         var frameWidth: CGFloat? = 300
@@ -86,5 +87,31 @@ struct CSZStackVB_Framed<Content:View>:View {
             }
             .frame(maxWidth: 400, maxHeight: 200) // --> Mettiamo un limite alla larghezza. In questo modo possiamo variare la larghezza, sapendo che comunque, qualora nel frameWidth usassimo .infinity non andremmo a superare i maxWidth point. In questo modo ad esmpio, su iphone copriamo l'intera larghezza, mentre sul pad copriamo 500 punti. Occorre lavorare in questo modo, impostando l'altezza in proporzione della larghezza.
             .frame(width: frameWidth! < 400 ? frameWidth! : 400, height: frameHeight < 200 ? frameHeight : 200)
+        }
+    } */
+
+
+///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 300/150).MaxWidth: 400.
+struct CSZStackVB_Framed<Content:View>:View {
+        
+        var frameWidth: CGFloat? = 300
+        var rateWH: CGFloat? = 0.5
+        var backgroundOpacity: Double? = 0.3
+        var frameHeight: CGFloat { frameWidth! * rateWH! }
+        @ViewBuilder var content: Content
+        
+        var body: some View {
+            
+            ZStack(alignment:.leading) {
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color.white.opacity(backgroundOpacity!))
+                    .shadow(radius: 3.0)
+                
+                content
+                
+            }
+            .frame(maxWidth: 400)
+            .frame(width: frameWidth! < 400 ? frameWidth! : 400, height: frameHeight)
         }
     }

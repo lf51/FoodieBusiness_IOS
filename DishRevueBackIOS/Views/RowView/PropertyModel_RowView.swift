@@ -32,7 +32,7 @@ struct PropertyModel_RowView: View {
                             NavigationLink {
                                 EditingPropertyModel(itemModel: $itemModel, backgroundColorView: Color.cyan)
                             } label: {
-                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                Image(systemName:"arrow.up.forward.square") // "rectangle.portrait.and.arrow.right"
                                     .imageScale(.medium)
                                     .foregroundColor(Color.white)
                             }

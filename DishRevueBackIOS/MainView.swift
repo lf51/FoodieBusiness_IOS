@@ -12,7 +12,7 @@ struct MainView: View {
     @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
     @StateObject var viewModel: AccounterVM = AccounterVM()
  
-    let backgroundColorView: Color = Color.cyan
+    let backgroundColorView: Color = Color("BackgroundColorBusiness")
     @State var tabSelector: Int = 0
     
     var body: some View {
@@ -26,17 +26,24 @@ struct MainView: View {
                         Text("Home")
                     }.tag(0)
 
+            MenuListView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
+                .tabItem {
+                    Image (systemName: "menucard")//scroll.fill
+                    Text("Menu")
+                }.tag(1)
+            
+            
             DishListView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
                     .tabItem {
-                        Image (systemName: "list.bullet.rectangle.portrait")
-                        Text("All Dishes")
-                    }.tag(1)
+                        Image (systemName: "fork.knife.circle")
+                        Text("Piatti")
+                    }.tag(2)
     
             ListaIngredientiView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
                 .tabItem {
-                    Image (systemName: "list.bullet")
-                    Text("Lista Ingredienti")
-                }.tag(2)
+                    Image (systemName: "leaf")
+                    Text("Ingredienti")
+                }.tag(3)
             }
         .fullScreenCover(isPresented: $authProcess.openSignInView, content: {
             LinkSignInSheetView(authProcess: authProcess)
@@ -57,29 +64,4 @@ struct PrincipalTabView_Previews: PreviewProvider {
 }
 
 
-struct CS_AlertModifier: ViewModifier {
-    
-    @Binding var isPresented: Bool
-    let item: AlertModel?
-    
-    func body(content: Content) -> some View {
-        
-     content
-            .alert(Text(item?.title ?? "NoTitle"), isPresented: $isPresented, presenting: item) { alert in
-                
-                if alert.actionPlus != nil {
-                    
-                    Button(
-                        role: .destructive) {
-                            alert.actionPlus?.action()
-                        } label: {
-                            Text(alert.actionPlus?.title.rawValue.capitalized ?? "")
-                        }
-                }
-          
-            } message: { alert in
-                Text(alert.message)
-            }
-        
-    }
-}
+

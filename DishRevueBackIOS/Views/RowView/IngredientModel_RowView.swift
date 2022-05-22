@@ -71,6 +71,33 @@ struct IngredientModel_RowView: View {
                     
                 }
          
+                HStack(spacing: 4.0) {
+                    
+                    Image(systemName: "allergens")
+                        .imageScale(.medium)
+                
+                    ScrollView(.horizontal,showsIndicators: false) {
+                        
+                        HStack(spacing: 2.0) {
+                            
+                            ForEach(item.allergeni) { allergene in
+                                
+                                Text(allergene.simpleDescription().replacingOccurrences(of: " ", with: ""))
+                                    .font(.caption)
+                                    .foregroundColor(Color.black)
+                                    .italic()
+                                
+                                Text("•")
+                                
+                            }
+                            
+                        }
+                    }
+                }
+
+                
+                
+                
             } // chiuda VStack madre
             ._tightPadding()
         } // chiusa Zstack Madre

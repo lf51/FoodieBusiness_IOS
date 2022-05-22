@@ -9,21 +9,32 @@ import SwiftUI
 
 struct COLORTEST: View {
     
+    var screenHeight: CGFloat = UIScreen.main.bounds.height
+    var colorScale = 0...9
+    var brightness = 0.0
+    
+    var value: [Double] = [0.0,-0.1,-0.2,-0.3,-0.4,-0.5,-0.6,-0.7,-0.8,-0.9]
+    
+    
     var body: some View {
         
-        ZStack {
+        VStack {
             
-            Color.cyan.ignoresSafeArea()
-            VStack {
+            ForEach(colorScale, id:\.self) { scale in
                 
-                CSLabel_1Button(placeHolder: "Surgelato", backgroundColor: Color.blue, backgroundOpacity: 0.4)
+                HStack {
+                    
+                    RoundedRectangle(cornerRadius: 2)
+                        .frame(maxWidth:.infinity)
+                        .frame(height:50)
+                        .foregroundColor(Color.cyan)
+                        .brightness(value[scale])
+                    
+                    Text("\(value[scale])")
+                }
+                    
                 
-                RoundedRectangle(cornerRadius: 10.0)
-                    .frame(height: 5.0)
-                    .foregroundColor(Color.black)
-
-                
-            }
+            }.clipped()
             
             
         }

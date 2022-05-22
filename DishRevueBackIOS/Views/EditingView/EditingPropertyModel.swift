@@ -56,7 +56,10 @@ struct EditingPropertyModel: View {
                     
                     Text("Appariranno i Menu In della Proprietà")
                     
-                     
+                    ForEach(itemModel.menuIn) { menu in
+                        
+                        Text(menu.intestazione)
+                    }
                      
                     
                 } // Chiusa Scroll View
@@ -66,6 +69,16 @@ struct EditingPropertyModel: View {
                 
             } // Chiusa VStack Madre
             .padding(.horizontal)
+            
+            if openMenuList! {
+                
+                SelettoreMyModel<_,MenuModel>(
+                    itemModel: $itemModel,
+                    allModelList: ModelList.propertyMenuList,
+                    closeButton: $openMenuList)
+                
+            }
+            
         } // Chiusa ZStack Madre
         
     }

@@ -22,7 +22,7 @@ struct DishModel: MyModelProtocol {
         lhs.metodoCottura == rhs.metodoCottura &&
         lhs.tipologia == rhs.tipologia &&
         lhs.avaibleFor == rhs.avaibleFor &&
-        lhs.allergeni == rhs.allergeni &&
+      //  lhs.allergeni == rhs.allergeni &&
         lhs.formatiDelPiatto == rhs.formatiDelPiatto
        
        // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
@@ -49,7 +49,27 @@ struct DishModel: MyModelProtocol {
     var metodoCottura: DishCookingMethod
     var tipologia: DishTipologia
     var avaibleFor: [DishAvaibleFor]
-    var allergeni: [DishAllergeni]
+  //  var allergeni: [Allergeni] // DEPRECATED 19.05.2022 Li deriviamo dagli Ingredienti
+    var allergeni: [Allergeni] { // la forma = {}() per funzionare necessita il lazy, ma al momento non funziona perchè le rowModel passano delle Var/let, quando passeranno delle State magari funzionerà
+        
+        var allergeniPiatto:[Allergeni] = []
+        
+        for ingredient in self.ingredientiPrincipali {
+            let allergeneIngre:[Allergeni] = ingredient.allergeni
+            allergeniPiatto.append(contentsOf: allergeneIngre)
+        }
+        
+        for ingredient in self.ingredientiSecondari {
+            let allergeneIngre:[Allergeni] = ingredient.allergeni
+            allergeniPiatto.append(contentsOf: allergeneIngre)
+        }
+        
+        let setAllergeniPiatto = Set(allergeniPiatto)
+        print("Calcolo Allergeni Piatto \(self.intestazione)")
+        return Array(setAllergeniPiatto)
+        
+    }
+    
     var formatiDelPiatto: [DishFormato]
 
     var rating: String
@@ -58,14 +78,14 @@ struct DishModel: MyModelProtocol {
     
     
     
-    init() { // init di un piatto nuovo e "vuoto"
+    init() { // init di un piatto nuovo e "vuoto" -> Necessario per creare nuovi piatti @State
         
         self.intestazione = ""
         self.ingredientiPrincipali = []
         self.ingredientiSecondari = []
         self.aBaseDi = .defaultValue
         self.categoria = .defaultValue
-        self.allergeni = []
+      //  self.allergeni = []
         self.formatiDelPiatto = []
         self.tipologia = .defaultValue
         self.avaibleFor = []
@@ -74,8 +94,27 @@ struct DishModel: MyModelProtocol {
         self.status = .bozza
         
      //   self.status = .programmato(day: [.lunedi,.martedi,.mercoledi,.giovedi,.domenica(ora:DateInterval(start: .now, end: .distantFuture))])
+    }
+    
+    init(intestazione: String) { // necessario nella creazione veloce
+        
+        self.intestazione = intestazione
+        
+        self.ingredientiPrincipali = []
+        self.ingredientiSecondari = []
+        self.aBaseDi = .defaultValue
+        self.categoria = .defaultValue
+      //  self.allergeni = []
+        self.formatiDelPiatto = []
+        self.tipologia = .defaultValue
+        self.avaibleFor = []
+        self.metodoCottura = .defaultValue
+        self.rating = ""
+        self.status = .bozza
+        
         
     }
+    
    
     init(intestazione: String, aBaseDi: DishBase, categoria: DishCategoria, tipologia: DishTipologia, status: ModelStatus) {
         
@@ -86,7 +125,7 @@ struct DishModel: MyModelProtocol {
         
         self.ingredientiPrincipali = [IngredientModel(nome: "Guanciale"),IngredientModel(nome: "Pecorino D.O.P"),  IngredientModel(nome: "Uova")] // riempito per Test
         self.ingredientiSecondari = [IngredientModel(nome: "Pepe Nero"),IngredientModel(nome: "Prezzemolo")] // riempito per Test
-        self.allergeni = [.latte_e_derivati,.glutine,.uova_e_derivati] // riempito per Test
+      //  self.allergeni = [.latte_e_derivati,.glutine,.uova_e_derivati] // riempito per Test
         self.formatiDelPiatto = []
         
         self.avaibleFor = []

@@ -95,32 +95,36 @@ struct CSButton_tight: View {
         }
     } */
 
+/// Di default il cornerRadius se specificato va su tutti gli angoli. Il padding è di default verticale. il PaddingValue modifica il valore del paddingBottom. Lo spazio in orizzontale è erditato dagli spacer.
 struct CSButton_large: View {
     
     let title: String
     let accentColor: Color
     let backgroundColor: Color
     let cornerRadius: CGFloat
+    var corners: UIRectCorner? = .allCorners
+    var paddingValue:CGFloat? = nil
     let action: () -> Void
 
   var body: some View {
+      
     Button(action: action) {
-      /// Embed in an HStack to display a wide button with centered text.
-      HStack {
+     
+        HStack {
         Spacer()
-        Text(title)
+            Text(title)
           .bold()
-          .padding()
+          .padding(.top)
+          .padding(.bottom,paddingValue)
           .accentColor(accentColor)
         Spacer()
       }
     }
     .background(backgroundColor)
-    .cornerRadius(cornerRadius)
+    .cornerRadius(cornerRadius, corners: corners!)
+    
   }
 }
-
-
 
 /*struct CSButton_Previews: PreviewProvider {
     static var previews: some View {

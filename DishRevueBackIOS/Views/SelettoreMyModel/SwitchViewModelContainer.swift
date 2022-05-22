@@ -10,7 +10,7 @@ import SwiftUI
 struct SwitchViewModelContainer: View {
         
         let viewModelList: [ModelList]
-        @Binding var listaDaMostrare: String
+        @Binding var modelListCorrente: String
         
         var body: some View {
             
@@ -21,7 +21,6 @@ struct SwitchViewModelContainer: View {
                 Spacer()
  
             }
-           
         }
     
     // Method
@@ -32,7 +31,7 @@ struct SwitchViewModelContainer: View {
             
             Spacer()
             
-            ContainerRowLabel_Plain(viewModelList: list, listaDaMostrare: $listaDaMostrare)
+            ContainerRowLabel_Plain(viewModelSingleList: list, modelListCorrente: $modelListCorrente)
             
             }
         }
@@ -42,21 +41,28 @@ struct SwitchViewModelContainer: View {
 ///Label Container semplice. Testo con Tap per vedere contenuto
 struct ContainerRowLabel_Plain:View {
     
-    let viewModelList: ModelList
-    @Binding var listaDaMostrare: String
+    let viewModelSingleList: ModelList
+    @Binding var modelListCorrente: String
+    let listTitle: String
+    
+    init(viewModelSingleList: ModelList, modelListCorrente:Binding<String>) {
+        
+        self.viewModelSingleList = viewModelSingleList
+        _modelListCorrente = modelListCorrente
+        listTitle = viewModelSingleList.returnAssociatedValue().0
+    }
     
     var body: some View {
-        
-        Text(viewModelList.returnAssociatedValue().0)
-            .fontWeight(listaDaMostrare == viewModelList.returnAssociatedValue().0 ? .bold : .light)
+
+        Text(listTitle)
+            .fontWeight(modelListCorrente == listTitle ? .bold : .light)
+            .shadow(radius: modelListCorrente == listTitle ? 0.0 : 1.0)
             .onTapGesture {
                 
                 withAnimation(.easeOut) {
-                    self.listaDaMostrare = viewModelList.returnAssociatedValue().0
+                    self.modelListCorrente = listTitle
                 }
-            }
-        
-        
+            }  
     }
 }
 

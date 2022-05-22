@@ -34,11 +34,28 @@ class AccounterVM: ObservableObject {
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
+    var allergeni:[Allergeni] = Allergeni.allCases // 19.05 --> Collocazione Temporanea
+    
     init() {
         
         fillFromListaBaseModello()
         print("Init -> AccounterVM")
     }
+    
+    // Method
+    
+    /// Esegue un controllo nel container di riferimento utilizzando solo l'ID. Se l'item è presente ritorna true e l'item trovato. Considera infattil'item già salvato di livello superiore come informazioni contenute e dunque lo ritorna.
+    func checkExistingIngredient(item: IngredientModel) -> (Bool,IngredientModel?) {
+        
+        print("AccounterVM/checkExistingIngredient - Ingrediente \(item.intestazione)")
+        
+        guard let index = self.allMyIngredients.firstIndex(where: {$0.id == item.id}) else {return (false, nil)}
+            
+            let newIngredient:IngredientModel = self.allMyIngredients[index]
+            return (true,newIngredient)
+            
+    } // Da genericizzare
+    
     
     // Method Generic
 
@@ -102,7 +119,7 @@ class AccounterVM: ObservableObject {
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
-    func updateItemModel<T:MyModelProtocol>(itemModel: T) { // Deprecated 06.05
+ /*   func updateItemModel<T:MyModelProtocol>(itemModel: T) { // Deprecated 06.05
         
         self.alertItem = AlertModel(
             title: "Confermare Modifiche",
@@ -113,7 +130,7 @@ class AccounterVM: ObservableObject {
                     self.updateItemModelExecutive(itemModel: itemModel)
                 }))
         
-    }
+    } */
     
     /// Manda un alert peri Confermare le Modifiche
     func updateItemModel<T:MyModelProtocol>(messaggio:String, action: @escaping () -> T )  {
@@ -389,14 +406,14 @@ class AccounterVM: ObservableObject {
          }
          
          let menuList = [menu1,menu2,menu3,menu4]
-         let dishList = [dish1,dish2,dish3,dish4]
+       //  let dishList = [dish1,dish2,dish3,dish4]
        //  let propList = [prop1,prop2,prop3,prop4]
-         let ingrList = [ingre1,ingre2,ingre3,ingre4, ingre5]
+       //  let ingrList = [ingre1,ingre2,ingre3,ingre4, ingre5]
          
          allMyMenu.append(contentsOf: menuList)
-         allMyDish.append(contentsOf: dishList)
+       //  allMyDish.append(contentsOf: dishList)
        //  allMyProperties.append(contentsOf: propList)
-         allMyIngredients.append(contentsOf: ingrList)
+       //  allMyIngredients.append(contentsOf: ingrList)
          
      }
 }

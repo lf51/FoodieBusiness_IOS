@@ -18,7 +18,7 @@ extension View {
     }
     
     /// Layers the given views behind this ``TextEditor``.
-        func csTextEditorBackground<V>(@ViewBuilder _ content: () -> V) -> some View where V : View {
+    func csTextEditorBackground<V>(@ViewBuilder _ content: () -> V) -> some View where V : View {
             self
                 .onAppear {
                     UITextView.appearance().backgroundColor = .clear
@@ -26,5 +26,11 @@ extension View {
                 .background(content())
         }
     
-   
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+          clipShape( RoundedCorner(radius: radius, corners: corners) )
+      }
+    
 }
+
+
+

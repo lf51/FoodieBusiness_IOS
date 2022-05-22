@@ -8,33 +8,32 @@
 import SwiftUI
 
 /// M1 è il modello da Modificare. M2 è il modello da listare. Ex: M1 è la proprietà, M2 è il MenuModel associato alla proprietà
-struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
+struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var itemModel: M1
-    @Binding var listaDaMostrare: String
+    @Binding var modelListCorrente: String
     
-    let elencoModelList: [ModelList]
+    let allModelList: [ModelList]
     let itemModelList: [ModelList]
 
     @Binding var temporaryDestinationModelContainer: [String:[M2]]
     
-    init(itemModel:Binding<M1>, listaDaMostrare: Binding<String>, elencoModelList:[ModelList], itemModelList: [ModelList], temporaryDestinationModelList:Binding<[String:[M2]]>) {
+    init(itemModel:Binding<M1>, modelListCorrente: Binding<String>,allModelList:[ModelList], itemModelList: [ModelList], temporaryDestinationModelList:Binding<[String:[M2]]>) {
         
         _itemModel = itemModel
-        _listaDaMostrare = listaDaMostrare
+        _modelListCorrente = modelListCorrente
         _temporaryDestinationModelContainer = temporaryDestinationModelList
-        self.elencoModelList = elencoModelList
+        
+        self.allModelList = allModelList
         self.itemModelList = itemModelList
-
     }
 
     var body: some View {
 
         List {
-
-            vbShowModelList()
-          
+            
+            vbShowCurrentModelList()
         }
         .listStyle(.plain)
         
@@ -42,9 +41,9 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
     
  //Method
     
-   @ViewBuilder private func vbShowModelList() -> some View {
+   @ViewBuilder private func vbShowCurrentModelList() -> some View {
         
-        let currentList: ModelList = elencoModelList.first { $0.returnAssociatedValue().0 == listaDaMostrare }!
+       let currentList: ModelList = allModelList.first { $0.returnAssociatedValue().0 == modelListCorrente }!
         
        switch currentList {
            
@@ -52,34 +51,24 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
            
          if let container:[M2] = viewModel[keyPath: partialKeyPath] as? [M2] {
                
-               MostraESelezionaIngredienti(listaAttiva: container) { model in
+               MostraESelezionaModel(listaAttiva: container) { model in
                
                    discoverCaratteristicheModel(model: model).graficElement
                    
                } action: { model in
                    
-                   self.addIngredientsTemporary(model: model)
+                   self.addModelTemporary(model: model)
                }
                
            } else {Text("Keypath errato")}
            
        
        case .itemModelContainer(_, let anyKeyPath, _):
-           
+
            if let destinationKeypath = anyKeyPath as? WritableKeyPath<M1,[M2]> {
-               
-               MostraEOrdinaIngredienti<M2>(listaAttiva: Binding(
-                get: {
-                    print("dentro il Get del Binding in case .destinazioneModelContainer")
-                    return itemModel[keyPath: destinationKeypath]
-                },
-                set: {
-                    
-                    print("dentro il Set del Binding in case .destinazioneModelContainer")
-                    itemModel[keyPath: destinationKeypath] = $0
-                    
-                }) )
-               
+  
+              MostraEOrdinaModel(listaAttiva: $itemModel[dynamicMember: destinationKeypath])
+            
            } else {Text("Keypath errato")}
        
        }
@@ -88,9 +77,9 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
     
     private func discoverCaratteristicheModel(model: M2) -> (graficElement:(Color,String,Bool),temporaryData:(String,[String:Bool])) {
          
-     //   let colorContainer = [Color.mint,Color.orange]
+        print("DiscoverCaratteristiche Active")
         var destinationContainer: [String: ([M2], Color)] = [:]
-        var mirrorDestinationContainer: [String:Bool] = [:] // mirroring per la funzione addModelTemporary
+        var mirrorDestinationContainer: [String: Bool] = [:] // mirroring per la funzione addModelTemporary
                 
         for list in self.itemModelList {
 
@@ -99,7 +88,6 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
             let isPrincipal = grado == .principale
             
             destinationContainer[title] = ((self.itemModel[keyPath: keypath] as? [M2]) ?? [], containerColor)
-            
             mirrorDestinationContainer[title] = isPrincipal
             
         }
@@ -124,14 +112,13 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
             
         }
             
-     
         return ((Color.black, "circle", false),("",mirrorDestinationContainer))
      
     }
     
-    private func addIngredientsTemporary(model:M2) {
+    private func addModelTemporary(model:M2) {
 
-        let (_,(temporaryKey, mirrorContainer)) = discoverCaratteristicheModel(model: model)
+        let (temporaryKey, mirrorContainer) = discoverCaratteristicheModel(model: model).temporaryData
 
         var principalKey:String = ""
         var secondaryKey:String = ""
@@ -139,10 +126,10 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
         for (title,isPrincipal) in mirrorContainer {
             
             if isPrincipal {
-                print("principalKey:\(title)")
+                print("principalKey: \(title)")
                 principalKey = title }
             else {
-                print("secondaryKey:\(title)")
+                print("secondaryKey: \(title)")
                 secondaryKey = title }
             
         }
@@ -152,19 +139,15 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
             if self.temporaryDestinationModelContainer[key] != nil {
                 
                 self.temporaryDestinationModelContainer[key]!.append(model)
-                print("temporaryDestination - \(key) - is not nil")
                 
             } else {
-                
-                print("temporaryDestination - \(key) - is nil")
-             
+
                 self.temporaryDestinationModelContainer[key] = []
                 self.temporaryDestinationModelContainer[key]!.append(model)
                 
-            }
-            print("temporaryKey.count-Post: \(temporaryDestinationModelContainer.keys.count) - \(temporaryDestinationModelContainer.keys.description)")
-            
+            }            
         }
+        
         func findAndRemove(key:String) {
             
             let index = self.temporaryDestinationModelContainer[key]!.firstIndex(of: model)
@@ -181,9 +164,7 @@ struct ListaIngredienti_ConditionalView<M1:MyModelProtocol,M2:MyModelProtocol>: 
         
         else if secondaryKey != "" && temporaryKey == secondaryKey { findAndRemove(key: secondaryKey) }
         
-}
-    
-    
+    }
 
 } // Chiusa Struct
 

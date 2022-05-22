@@ -7,17 +7,26 @@
 
 import SwiftUI
 
-struct MostraEOrdinaIngredienti<M2:MyModelProtocol>: View {
+struct MostraEOrdinaModel<M2:MyModelProtocol>: View {
         
-        @Binding var listaAttiva: [M2]
-        @Environment(\.editMode) var mode
+    @Binding var listaAttiva: [M2]
+    @Environment(\.editMode) var mode
         
+    init(listaAttiva: Binding<[M2]>) {
+        
+        _listaAttiva = listaAttiva
+        print("Init MostraEOrdina")
+        
+    }
+    
         var body: some View {
                 
             //VStack -> non lo inseriamo perchè non fa funzionare onMove e onDelete
+
                 ForEach(listaAttiva) { model in
 
                     VStack {
+                        
                         HStack {
                                 
                                 Text(model.intestazione)
@@ -27,14 +36,16 @@ struct MostraEOrdinaIngredienti<M2:MyModelProtocol>: View {
                                 Spacer()
                         }
                         ._tightPadding()
+                        
                         Divider()
                     }
                 
                 }
                 .onDelete(perform: removeFromList)
                 .onMove(perform: makeOrder)
-                .onAppear(perform: editActivation)
+                .onAppear{editActivation()} //18.05.2022 -> non performante. Ha bisogno di tempo per darmi quello che voglio. Da Ottimizzare.
                 .listRowSeparator(.hidden)
+                
         }
         
         private func removeFromList(indexSet: IndexSet){
@@ -49,9 +60,10 @@ struct MostraEOrdinaIngredienti<M2:MyModelProtocol>: View {
         }
         
         private func editActivation() {
-            
+        
+      //  self.mode?.wrappedValue = self.mode?.wrappedValue == .active ? .inactive : .active
             self.mode?.wrappedValue = .active
-            
+      
         }
         
     }

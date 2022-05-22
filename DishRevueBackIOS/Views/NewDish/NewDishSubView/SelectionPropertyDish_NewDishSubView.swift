@@ -22,6 +22,21 @@ struct SelectionPropertyDish_NewDishSubView: View {
         
         VStack(alignment:.leading) {
             
+            CSLabel_1Button(placeHolder: "Allergeni", imageNameOrEmojy: "exclamationmark.triangle", backgroundColor: Color.black)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                
+                HStack {
+                    
+                    ForEach(newDish.allergeni) { allergene in
+
+                        CSText_tightRectangle(testo: allergene.simpleDescription(), fontWeight: .light, textColor: Color.red, strokeColor: Color.red, fillColor: Color.clear)
+                        
+                    }
+                }
+                
+            }
+            
             Group {
                 
                 CSLabel_1Button(placeHolder: "Categoria", imageNameOrEmojy: "list.bullet.below.rectangle", backgroundColor: Color.black, toggleBottone: $creaNuovaTipologia)
@@ -84,9 +99,9 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 EnumScrollCases(cases: DishAvaibleFor.allCases, dishCollectionProperty: self.$newDish.avaibleFor, colorSelection: Color.blue.opacity(0.8))
          
                 
-                CSLabel_1Button(placeHolder: "Allergeni Presenti", imageNameOrEmojy: "exclamationmark.triangle", backgroundColor: Color.black)
+              /*  CSLabel_1Button(placeHolder: "Allergeni Presenti", imageNameOrEmojy: "exclamationmark.triangle", backgroundColor: Color.black)
                 
-                EnumScrollCases(cases: DishAllergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red.opacity(0.8))
+                EnumScrollCases(cases: Allergeni.allCases, dishCollectionProperty: self.$newDish.allergeni, colorSelection: Color.red.opacity(0.8)) */
                 
             }
                        

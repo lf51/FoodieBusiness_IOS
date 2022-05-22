@@ -16,8 +16,8 @@ struct HomeView: View {
 
     @State private var wannaAddNewProperty:Bool = false
     
-    @State private var isPresentedMenu: Bool = false // duplica la wannaCreateMenu: Necessaria perchè l'isPresented dello sheet non accetta optional
-    @State private var wannaCreateMenu: Bool? = false {didSet {isPresentedMenu = wannaCreateMenu!}}
+  //  @State private var isPresentedMenu: Bool = false // duplica la wannaCreateMenu: Necessaria perchè l'isPresented dello sheet non accetta optional
+  //  @State private var wannaCreateMenu: Bool? = false {didSet {isPresentedMenu = wannaCreateMenu!}}
     var screenHeight: CGFloat = UIScreen.main.bounds.height
     
     var body: some View {
@@ -35,7 +35,12 @@ struct HomeView: View {
                     // Info Proprietario /DisplayName /SignOut / DeletAccount / potremmo inserire qui la verifica dell'account in modo che valga per tutte le properties.
                     
                     Text("Box da riempire")
-                    
+                    NavigationLink {
+                        FastImportMainView(backgroundColorView: backgroundColorView)
+                    } label: {
+                        Text("Importazione Veloce")
+                    }
+
                     
                     Spacer()
     
@@ -44,7 +49,7 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                    VStack(spacing:10.0) {
+                  /*  VStack(spacing:10.0) {
                         
                         LargeBar_TextPlusButton(placeHolder: "I Miei Menu") {
                             
@@ -55,7 +60,7 @@ struct HomeView: View {
                         }.padding(.horizontal)
                         
                         ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
-                    }
+                    } */
         
                     
                 } // VStack End
@@ -97,11 +102,11 @@ struct HomeView: View {
                     })
             )
            // .navigationBarTitleDisplayMode(.large)
-            .fullScreenCover(isPresented: $isPresentedMenu, content: {
+           /* .fullScreenCover(isPresented: $isPresentedMenu, content: {
               /*  NuovoMenuMainView(dismissView: $wannaCreateMenu) */
                 NuovoMenuMainView(backgroundColorView: backgroundColorView)
             
-            })
+            }) */
 
            // .navigationViewStyle(StackNavigationViewStyle()) // se non ricordo male mi serve per iPad
           /*  .sheet(isPresented: self.$wannaAddNewProperty) {

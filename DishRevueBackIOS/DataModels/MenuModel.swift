@@ -13,6 +13,7 @@ struct MenuModel:MyModelProtocol {
         
         lhs.id == rhs.id &&
         lhs.intestazione == rhs.intestazione &&
+        lhs.dishIn == rhs.dishIn &&
         lhs.tipologia == rhs.tipologia &&
         lhs.isAvaibleWhen == rhs.isAvaibleWhen &&
         lhs.dataInizio == rhs.dataInizio &&

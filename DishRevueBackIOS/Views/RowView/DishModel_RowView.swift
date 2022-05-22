@@ -116,7 +116,7 @@ struct IntestazioneDishRow_Sub: View {
 
 struct BottomDishRow_Sub: View {
     
-    let item: DishModel
+    var item: DishModel
     
     var body: some View {
         

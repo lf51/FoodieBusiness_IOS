@@ -35,23 +35,11 @@ struct ConditionalZStackView_NewDishSubView: View {
                 }
    
         if wannaAddIngredient! {
-            
-          //  SelettoreIngrediente_NewDishSubView(newDish: $newDish)
-           /* SelettoreIngrediente_NewDishSubView<_,IngredientModel>(itemModel: $newDish, elencoModelList: [.itemModelContainer("IngredientiPrincipali"),.itemModelContainer("IngredientiSecondari"),.viewModelContainer("allMyIngredients",\.allMyIngredients),.viewModelContainer("allFromCommunity",\.allTheCommunityIngredients)]) */
-         
-         /*   SelettoreIngrediente_NewDishSubView<_, IngredientModel>(
+   
+            SelettoreMyModel<_,IngredientModel>(
                 itemModel: $newDish,
-                elencoModelList: [
-                    ElencoModelList<DishModel, IngredientModel>.itemModelContainer(\.ingredientiPrincipali),
-                    .viewModelContainer(\.allMyIngredients),
-                    .itemModelContainer(\.ingredientiSecondari)
-                                 ]) */
-             
-            SelettoreIngrediente_NewDishSubView<_,IngredientModel>(
-                itemModel: $newDish,
-                elencoModelList: ModelList.dishIngredientsList)
-            
-          
+                allModelList: ModelList.dishIngredientsList,
+                closeButton: $wannaAddIngredient)
             
         }
         

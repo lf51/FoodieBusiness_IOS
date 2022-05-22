@@ -20,15 +20,31 @@ enum ModelList: Equatable, Hashable {
     
     ]
     
+   /* static var dishIngredientsList: [ModelList] = [
+    
+        .viewModelContainer("My Ingredients",\.allMyIngredients,.fonte),
+       
+        .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale))
+    
+    ] */
+    
+    
     ///Case Predefinito per la relazione Piatto/Menu.
     static var dishMenuList: [ModelList] = [ ]
     
     ///Case Predefinito per la relazione Menu/Piatti.
-    static var menuDishList: [ModelList] = []
+    static var menuDishList: [ModelList] = [
+        .viewModelContainer("Tutti i Piatti",\.allMyDish,.fonte),
+        .itemModelContainer("Piatti in Menu",\MenuModel.dishIn, .destinazione(Color.brown, grado: .principale))
+    ]
     ///Case Predefinito per la relazione Piatto/Proprietà
     static var menuPropertyList: [ModelList] = []
+    
     ///Case Predefinito per la relazione Proprietà/Menu.
-    static var propertyMenuList: [ModelList] = [] 
+    static var propertyMenuList: [ModelList] = [
+        .viewModelContainer("Menu Disponibili",\.allMyMenu, .fonte),
+        .itemModelContainer("Menu In",\PropertyModel.menuIn, .destinazione(Color.yellow, grado: .principale))
+    ]
     
     /// utilizzare come Fonte Dati
     case viewModelContainer(String,PartialKeyPath<AccounterVM>,ContainerType)

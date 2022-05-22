@@ -62,7 +62,7 @@ struct DishListView: View {
                 )
            // .navigationBarTitleDisplayMode(.large)
             .fullScreenCover(isPresented: self.$openCreateNewDish, content: {
-                NewDishMainView(backgroundColorView: .cyan)
+                NewDishMainView(backgroundColorView: backgroundColorView)
             })
            // .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
         

@@ -7,10 +7,13 @@
 
 import Foundation
 
-enum DishAllergeni: MyEnumProtocol {
+enum Allergeni: MyEnumProtocol, MyModelProtocol {
+
+    var intestazione: String {get{ self.simpleDescription() } set{ }}
+    var descrizione: String { get {self.extendedDescription() ?? "noDescription"} set { } }
     
-    static var allCases: [DishAllergeni] = [.arachidi_e_derivati,.anidride_solforosa_e_solfiti,.crostacei,.fruttaAguscio,.glutine,.latte_e_derivati,.lupini,.molluschi,.pesce,.sedano,.senape,.sesamo,.soia,.uova_e_derivati]
-    static var defaultValue: DishAllergeni = DishAllergeni.noValue
+    static var allCases: [Allergeni] = [.arachidi_e_derivati,.anidride_solforosa_e_solfiti,.crostacei,.fruttaAguscio,.glutine,.latte_e_derivati,.lupini,.molluschi,.pesce,.sedano,.senape,.sesamo,.soia,.uova_e_derivati]
+    static var defaultValue: Allergeni = Allergeni.noValue
     
     //Potremmo associare un icona ad ogni allergene e utilizzare la simpleDescription() al posto dei RawValue
     case arachidi_e_derivati
@@ -50,7 +53,7 @@ enum DishAllergeni: MyEnumProtocol {
         case .sedano: return "Sedano"
         case .anidride_solforosa_e_solfiti: return "Anidride Solforosa & Solfiti"
         case .uova_e_derivati: return "Uova & derivati"
-        case .noValue: return "Nessun Valore"
+        case .noValue: return "Nessun Allergene"
         
         }
         

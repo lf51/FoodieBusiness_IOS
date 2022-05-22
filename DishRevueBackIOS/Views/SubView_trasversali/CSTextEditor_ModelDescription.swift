@@ -129,7 +129,7 @@ struct CSTextEditor_ModelDescription<M:MyModelProtocol>: View {
                         } // Chiusa ZStack
                     } // Chiusa Overlay
                 }
-            }
+            } // Chiusa CSZStackMadre
         }
     
     // Method

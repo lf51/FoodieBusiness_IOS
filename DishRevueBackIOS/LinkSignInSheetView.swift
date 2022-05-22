@@ -19,7 +19,9 @@ struct LinkSignInSheetView: View {
         }
   
     }()
-
+    
+  //  let backgroundColorView = Color("BackgroundColorBusiness")
+    
     var body: some View {
       
   //  NavigationView {
@@ -33,7 +35,7 @@ struct LinkSignInSheetView: View {
               
               VStack(alignment:.leading) {
                   
-                  Text("Welcome on Foodie!") // foodies // foodist // foodz / foodish
+                  Text("Foodies!") // foodies // foodist // foodz / foodish / weFoodies / Foodies! / WeeFoodies
                         .font(.system(.largeTitle, design: .rounded))
                         .fontWeight(.semibold)
                         .foregroundColor(Color.black)

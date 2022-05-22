@@ -7,6 +7,55 @@
 
 import SwiftUI
 
+
+/// Label (Testo+Image/Emojy) con  ViewBuilder
+struct CSLabel_conVB<Content:View>: View {
+    
+    var placeHolder: String
+    var imageName: String?
+    var backgroundColor: Color
+    var backgroundOpacity: Double?
+    
+    @ViewBuilder var content: Content
+    
+    init(placeHolder: String, imageNameOrEmojy: String? = nil, backgroundColor: Color, backgroundOpacity:Double? = nil, content: () -> Content) {
+        
+        self.placeHolder = placeHolder
+        self.imageName = imageNameOrEmojy
+        self.backgroundColor = backgroundColor
+        self.backgroundOpacity = backgroundOpacity
+
+        self.content = content()
+        
+    } // VOGLIO TROVARE UN MODO PER OMETTERE IL TOGGLEBOTTONE INVECE DI PASSARE ESPLICITAMENTE NIL
+
+    var body: some View {
+        
+        HStack {
+            
+            Label {
+                Text(placeHolder)
+                    .fontWeight(.medium)
+                    .font(.system(.subheadline, design: .monospaced))
+            } icon: {
+         
+                csVbSwitchImageText(string: imageName)
+            }
+            ._tightPadding()
+            .background(
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(backgroundColor.opacity(backgroundOpacity ?? 0.2))
+            )
+            
+            Spacer()
+            
+            content
+        }
+    }
+}
+
+
 /// Label (Testo+Image/Emojy) con Bottone Optional (Richiede un Binding Bool)
 struct CSLabel_1Button: View {
     
@@ -69,7 +118,7 @@ struct CSLabel_1Button: View {
 }
 
 /// Label (Testo + Image) con due Bottoni Optional (Uno PlusImage e Uno testuale)
-struct CSLabel_2Button: View {
+struct CSLabel_2Button: View { // Deprecati in futuro. Sostituire con il ViewBuilder
     
     var placeHolder: String
     var imageName: String
@@ -142,6 +191,7 @@ struct CSLabel_2Button: View {
                 } label: {
                     Text(testoBottoneTEXT ?? "")
                         .fontWeight(.semibold)
+                        .foregroundColor(Color.white)
                 }
                 .buttonStyle(.borderedProminent)
                 .brightness(toggleBottoneTEXT ?? false ? 0.0 : -0.05)

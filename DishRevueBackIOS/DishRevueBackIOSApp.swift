@@ -21,7 +21,8 @@ struct DishRevueBackIOSApp: App {
     var body: some Scene {
         WindowGroup {
         
-           MainView()
+          MainView()
+         //   ImportazioneVeloceDishIngredient(backgroundColorView: Color.cyan)
                 
           //  DishSpecificView(newDish:.constant(DishModel()))
             

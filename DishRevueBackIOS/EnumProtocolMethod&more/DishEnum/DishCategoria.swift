@@ -64,6 +64,24 @@ enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
         }
     }
     
+    func simpleDescriptionSingolare() -> String {
+   
+        switch self {
+            
+        case .antipasto: return "Antipasto"
+        case .primo: return "Primo"
+        case .secondo: return "Secondo"
+        case .contorno: return "Contorno"
+        case .pizza: return "Pizza"
+        case .bevanda: return "Bevanda"
+        case .dessert: return "Dolce"
+        case .frutta: return "Frutta"
+        case .tipologiaCustom(let customName): return customName.capitalized
+        
+        }
+    }
+
+    
     func extendedDescription() -> String? {
         print("Dentro DishCategoria. DescrizioneEstesa non sviluppata")
         return nil

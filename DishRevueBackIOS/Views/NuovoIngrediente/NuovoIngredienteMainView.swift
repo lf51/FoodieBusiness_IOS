@@ -55,7 +55,7 @@ struct NuovoIngredienteMainView: View {
                             
             if self.dismissButton == nil { Spacer() }
                     
-                CSButton_large(title: "Crea Ingrediente", accentColor: .black, backgroundColor: .black.opacity(0.2), cornerRadius: 10.0) {
+                    CSButton_large(title: "Crea Ingrediente", accentColor: .black, backgroundColor: .black.opacity(0.2), cornerRadius: 10.0) {
                                     
                                     test(ingrediente: &nuovoIngrediente)
                                     print("CREARE Ingrediente SU FIREBASE-Modificare in NuovoIngredienteView")

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct InfoDishRow: View {
+struct InfoDishRow: View { // DEPRECATED
     
     let borderColor:Color
     let fillColor:Color
@@ -104,7 +104,7 @@ struct InfoDishRow_Previews: PreviewProvider {
         dish.categoria = .defaultValue
         dish.aBaseDi = .carne
         dish.metodoCottura = .padella
-        dish.allergeni = [.latte_e_derivati,.uova_e_derivati]
+      //  dish.allergeni = [.latte_e_derivati,.uova_e_derivati]
         dish.avaibleFor = [.vegariano,.glutenFree]
         dish.formatiDelPiatto = [.unico("80", "1", "12.5"),.doppio("160", "2", "18.5")]
         

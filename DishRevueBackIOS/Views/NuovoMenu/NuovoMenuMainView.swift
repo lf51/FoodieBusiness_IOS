@@ -10,20 +10,21 @@ import SwiftUI
 struct NuovoMenuMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-    @State private var nuovoMenu: MenuModel
-    @Binding var dismissView:Bool?
+    @State var nuovoMenu: MenuModel = MenuModel()
+  //  @Binding var dismissView:Bool?
     @State private var nuovaIntestazioneMenu: String = ""
+    @State private var openDishList: Bool? = false
     
     let backgroundColorView: Color
     
-    init(editMenu:MenuModel? = MenuModel(), dismissView: Binding<Bool?>? = nil, backgroundColorView: Color) {
+   /* init(editMenu:MenuModel? = MenuModel(), dismissView: Binding<Bool?>? = nil, backgroundColorView: Color) {
         
         _dismissView = dismissView ?? .constant(nil)
         _nuovoMenu = State(wrappedValue: editMenu!)
         
         self.backgroundColorView = backgroundColorView
             
-    }
+    } */
     
     var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool) {
 
@@ -48,32 +49,67 @@ struct NuovoMenuMainView: View {
                     .padding()
                     .background(Color.cyan)
                 
-                VStack(alignment: .leading) {
-                    
-                    IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (Interno)", imageLabel: "doc.badge.plus", coloreContainer: Color.red, itemModel: $nuovoMenu)
-                    
-                    CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black)
-                    
-                    SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
-                        .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
-                        .disabled(isThereAReasonToDisable.tipologia)
-
-                    CSLabel_2Button(placeHolder: "Ristoranti", imageName: "circle", backgroundColor: Color.black, toggleBottoneTEXT: .constant(false), testoBottoneTEXT: "Scegli")
-                        .opacity(0.4)
-                        .disabled(true)
-                    
-                    CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
-                        
-                    CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
-
-                  //  Spacer()
-                    
-                    BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu){self.scheduleANewMenu()}
-     
-                }.padding(.horizontal)
-                
                 Spacer()
+                
+                ZStack {
+                    
+                    ScrollView {
+                        
+                        VStack(alignment: .leading) {
+                            
+                            IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (Interno)", imageLabel: "doc.badge.plus", coloreContainer: Color.red, itemModel: $nuovoMenu)
+                            
+                            CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black)
+                            
+                            SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
+                                .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
+                                .disabled(isThereAReasonToDisable.tipologia)
+
+                           
+                            
+                            CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
+                                
+                            CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
+
+                          //  Spacer()
+                            
+                            CSLabel_2Button(placeHolder: "Piatti", imageName: "circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi")
+                               // .opacity(0.4)
+                               // .disabled(true)
+                            ForEach(nuovoMenu.dishIn) { dish in
+                                
+                                Text(dish.intestazione)
+                            }
+                            
+                            BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu){self.scheduleANewMenu()}
+             
+                        }.padding(.horizontal)
+                        
+                        
+                    } // Chiusa ScrollView
+                    .disabled(openDishList!)
+                    
+                    if openDishList! {
+                        
+                        SelettoreMyModel<_,DishModel>(
+                            itemModel: $nuovoMenu,
+                            allModelList:ModelList.menuDishList ,
+                            closeButton: $openDishList)
+                        .zIndex(1)
+                        
+                    }
+                    
+                    
+                } // Chiusa ZStack Interno
+                
+          
+                
+             //   Spacer()
             }
+            
+           
+            
+            
            /* .padding(.top)
             .background(RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
             .contrast(1.2)
@@ -184,10 +220,12 @@ struct NuovoMenuMainView: View {
     }
 } */ // BAckUp 28.04
 
+
+/*
 struct NuovoMenuMainView_Previews: PreviewProvider {
     static var previews: some View {
         NuovoMenuMainView(dismissView: .constant(true), backgroundColorView: Color.cyan)
     }
 }
 
-
+*/
