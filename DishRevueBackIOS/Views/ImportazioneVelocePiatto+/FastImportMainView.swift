@@ -20,6 +20,7 @@ struct FastImportMainView: View {
     @State private var showSubString: Bool = false
     
     @State private var ingredientiEstratti: Int = 0
+    @State private var ingredientiAlreadyEsistenti: Int = 0
    /* var isCreationDisabled:Bool {
         
        // self.fastDish.categoria == .defaultValue
@@ -74,7 +75,7 @@ struct FastImportMainView: View {
                             
                             Text("N° Piatti: \(allFastDish.count)")
                             
-                            Text("N° Ingredienti: \(ingredientiEstratti) ")
+                            Text("N° Ingredienti: \(ingredientiEstratti) (\(ingredientiAlreadyEsistenti))")
                             
                             
                          /*   CSButton_tight(title: "Salva", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
@@ -162,7 +163,7 @@ struct FastImportMainView: View {
             
         }
         viewModel.allMyIngredients.append(contentsOf: newIngredient)
-        // Deprecata in futuro, il check di unicità andraà fatto nel viewModel.
+        // Deprecata in futuro, il check di unicità andrà fatto nel viewModel.
         
         let localIndex = self.allFastDish.firstIndex(of: item)
         self.allFastDish.remove(at: localIndex!)
@@ -222,6 +223,7 @@ struct FastImportMainView: View {
                 if let oldIngredient = viewModel.checkExistingIngredient(item: ingredient).1 {
                     
                     step_5.append(oldIngredient)
+                    self.ingredientiAlreadyEsistenti += 1 // info Inutile - Deprecated in futuro
                     
                 } else {step_5.append(ingredient)}
          
@@ -323,8 +325,6 @@ struct CorpoImportazioneVeloce:View {
             
             ScrollView {
                 
-                
-                
                 ForEach($fastDish.ingredientiPrincipali) { $ingredient in
                          
                         RapidEntryRow(ingredient: $ingredient, wannaAddAllergeni: wannaAddAllergeni)
@@ -375,7 +375,7 @@ struct RapidEntryRow: View {
                         
                     }
                     
-                    HStack {
+                    HStack(alignment:.bottom) {
                         
                         Image(systemName: "allergens")
                             .imageScale(.small)
@@ -385,6 +385,7 @@ struct RapidEntryRow: View {
                     }
                     
                 }
+                .padding(.top) // o .Vertical
 
             
             if self.openAllergeni! {
@@ -403,8 +404,7 @@ struct RapidEntryRow: View {
             
             
         }
-    
-        
+            
     }
     
     // Method
@@ -435,18 +435,34 @@ struct RapidEntryRow: View {
        
         if isIngredientOld {
 
-            CSText_tightRectangle(testo: ingredient.intestazione, fontWeight: .light, textColor: Color.black, strokeColor: Color.clear, fillColor: Color.clear)
-                    .opacity(0.5)
+            Text(ingredient.intestazione)
+                .fontWeight(.light)
+                .foregroundColor(Color.black)
+                .opacity(0.5)
+           /* CSText_tightRectangle(testo: ingredient.intestazione, fontWeight: .light, textColor: Color.black, strokeColor: Color.clear, fillColor: Color.clear)
+                    .opacity(0.5) */
               
         } else {
             
-                CSText_tightRectangle(testo: ingredient.intestazione, fontWeight: .light, textColor: Color.black, strokeColor: Color.clear, fillColor: Color.clear)
+            Text(ingredient.intestazione)
+                .fontWeight(.light)
+                .foregroundColor(Color.black)
+                .overlay(alignment:.topTrailing) {
+                    Text("New")
+                        .font(.caption2)
+                        .foregroundColor(Color.white)
+                        .offset(x: 10, y: -10)
+                      
+                        
+                }
+            
+              /*  CSText_tightRectangle(testo: ingredient.intestazione, fontWeight: .light, textColor: Color.black, strokeColor: Color.clear, fillColor: Color.clear)
                     .overlay(alignment:.topTrailing) {
                         Text("New")
                             .font(.caption2)
                             .foregroundColor(Color.white)
                             
-                    }
+                    }*/
        
         }
     }
