@@ -36,7 +36,7 @@ struct HomeView: View {
                     
                     Text("Box da riempire")
                     NavigationLink {
-                        FastImportMainView(backgroundColorView: backgroundColorView)
+                        FastImport_MainView(backgroundColorView: backgroundColorView)
                     } label: {
                         Text("Importazione Veloce")
                     }

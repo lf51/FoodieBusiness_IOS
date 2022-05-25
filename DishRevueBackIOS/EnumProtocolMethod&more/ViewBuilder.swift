@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 
-/// ViewBuilder - Passare una emojy o il systenName di una Image. Il nil ritorna una circle Image
+/// Deprecata in futuro -- usare csVbSwitchImageText(string: String?,size:Image.Scale)
 /// - Parameter string: <#string description#>
 /// - Returns: <#description#>
 @ViewBuilder func csVbSwitchImageText(string: String?) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emnojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.04
@@ -22,6 +22,52 @@ import SwiftUI
         } else { Image(systemName: "circle") }
 
 }
+
+/// ViewBuilder - Passare una emojy o il systenName di una Image. Il nil ritorna una circle Image
+/// - Parameter string: <#string description#>
+/// - Returns: <#description#>
+@ViewBuilder func csVbSwitchImageText(string: String?, size: Image.Scale) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emnojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.04
+    
+        if let imageName = string {
+            
+            if imageName.count == 1 {
+                
+                switch size {
+                    
+                case .small:
+                    Text(imageName)
+                        .font(.caption2)
+                 
+                case .medium:
+                    Text(imageName)
+                        .font(.caption)
+                    
+                case .large:
+                    Text(imageName)
+                        .font(.callout)
+                    
+                @unknown default:
+                    Text(imageName)
+                        .font(.caption)
+                }
+   
+            }
+            else {
+                Image(systemName: imageName)
+                    .imageScale(size)
+                
+            }
+            
+        } else {
+            Image(systemName: "circle")
+                .imageScale(size)
+            
+        }
+
+}
+
+
+
 
 /// ViewBuilder - Riconosce il modello e ritorna la rowView associata
 /// - Parameter item: <#item description#>

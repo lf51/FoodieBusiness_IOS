@@ -35,8 +35,21 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     }
     
     func extendedDescription() -> String? {
-        print("Dentro ConservazioneIngrediente. DescrizioneEstesa non sviluppata")
-        return nil
+        
+        switch self {
+        case .fresco:
+            return "Questo ingrediente è Fresco"
+        case .congelato:
+            return "Questo ingrediente può essere congelato"
+        case .surgelato:
+            return "Questo ingrediente può essere surgelato"
+        case .conserva:
+            return "Questo ingrediente è una conserva"
+        case .custom(let metodoDiConservazione):
+            let string = metodoDiConservazione == "" ? "Metodo di Conservazione non Specificato" : "Questo prodotto è \(metodoDiConservazione)"
+            return string
+        }
+
     }
     
     func createId() -> String {

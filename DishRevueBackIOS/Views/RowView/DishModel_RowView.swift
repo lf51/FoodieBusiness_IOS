@@ -99,20 +99,51 @@ struct IntestazioneDishRow_Sub: View {
                 Spacer()
 
                 // Status
-                Image(systemName: "circle.fill")
-                    .foregroundColor(item.status == .pubblico ? Color.green : Color.red)
-                    .background(
+                VStack { // TEMPORANEO
                     
-                        Circle()
-                            .strokeBorder()
-                            .foregroundColor(Color.black.opacity(0.8))
-                           
-                    )
+                    Image(systemName: "circle.fill")
+                        .foregroundColor(item.status == .pubblico ? Color.green : Color.red)
+                        .background(
+                        
+                            Circle()
+                                .strokeBorder()
+                                .foregroundColor(Color.black.opacity(0.8))
+                               
+                        )
+                    
+                  test()
+                    
+                } // TEMPORANEO
                 // end Status
             }
 
     }
-}
+    
+    // Method
+
+ func test() -> some View { // Temporanea
+     
+     var prices: [String] = []
+     
+     for x in self.item.formatiDelPiatto {
+         
+         let price = x.showAssociatedValue().prezzo
+         prices.append(price)
+         
+     }
+     
+     
+     if !prices.isEmpty {
+        return Text(prices[0])
+         
+     } else {return Text("€ 0,00") }
+     
+     
+ }
+        
+        
+    }
+
 
 struct BottomDishRow_Sub: View {
     

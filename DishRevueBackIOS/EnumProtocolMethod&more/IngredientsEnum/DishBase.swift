@@ -9,12 +9,13 @@ import Foundation
 
 enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
     
-    static var allCases: [DishBase] = [.carne,.pesce,.vegetali] // Non essendoci valori Associati, la allCases potrebbe essere implicita, ma la esplicitiamo per omettere il caso NoValue, di modo che non appaia fra le opzioni di scelta
+    static var allCases: [DishBase] = [.carne,.pesce,.latteAnimale,.vegetali] // Non essendoci valori Associati, la allCases potrebbe essere implicita, ma la esplicitiamo per omettere il caso NoValue, di modo che non appaia fra le opzioni di scelta
     static var defaultValue: DishBase = DishBase.noValue
     
     // Potremmo Associare un icona ad ogni Tipo
     
-    case carne // a base di carne o derivati (latte e derivati)
+    case carne // a base di carne
+    case latteAnimale
     case pesce // a base di pesce
     case vegetali // a base di vegetali
     
@@ -27,6 +28,7 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
         switch self {
             
         case .carne: return "Carne"
+        case .latteAnimale: return "Latte Animale"
         case .pesce: return "Pesce"
         case .vegetali: return "Vegetali"
         case .noValue: return "Nessun Valore"
@@ -35,8 +37,18 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
     }
     
     func extendedDescription() -> String? {
-        print("Dentro DishBase. DescrizioneEstesa non sviluppata")
-        return nil
+        switch self {
+        case .carne:
+            return "Origine Animale"
+        case .latteAnimale:
+            return "Origine Latte Animale"
+        case .pesce:
+            return "Origine Animale"
+        case .vegetali:
+            return "Origine Vegetale"
+        case .noValue:
+            return nil
+        }
     }
     
     func createId() -> String {
@@ -55,6 +67,8 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
             
         case .carne:
             return "🐂"
+        case .latteAnimale:
+            return "🥛"
         case .pesce:
             return "🐟"
         case .vegetali:
@@ -70,10 +84,12 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
             
         case .carne:
             return 1
+        case .latteAnimale:
+            return 3
         case .pesce:
             return 2
         case .vegetali:
-            return 3
+            return 4
         case .noValue:
             return 0
         }

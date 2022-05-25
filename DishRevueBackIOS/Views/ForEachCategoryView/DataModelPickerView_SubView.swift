@@ -26,7 +26,7 @@ struct DataModelPickerView_SubView: View {
             
             HStack {
                 
-                CS_Picker(selection: $mapCategory, dataContainer: updateContainer(element: filterCategory))
+                CS_Picker(selection: $mapCategory, customLabel: "Scegli..", dataContainer: updateContainer(element: filterCategory))
                // Spacer()
                 
                 CSButton_tight(title: self.showFilter ? "Reset" : "Filtri", fontWeight: .semibold, titleColor: Color.blue, fillColor: Color.clear) {
@@ -47,7 +47,7 @@ struct DataModelPickerView_SubView: View {
             
                 HStack {
                     
-                    CS_Picker(selection: $emptyFilterCategory, dataContainer: updateContainer(element: mapCategory))
+                    CS_Picker(selection: $emptyFilterCategory, customLabel: "Scegli..", dataContainer: updateContainer(element: mapCategory))
                         .onChange(of: emptyFilterCategory) { newValue in
                             let conditions:[MapCategoryContainer] = [.menuAz, .ingredientAz, .dishAz]
                             if conditions.contains(newValue) { self.filterCategory = newValue}
@@ -88,12 +88,12 @@ struct DataModelPickerView_SubView: View {
         switch emptyFilterCategory {
             
         case .tipologiaMenu(_):
-            CS_PickerDoubleState(selection: TipologiaMenu.defaultValue, dataContainer: TipologiaMenu.allCases) { category in
+            CS_PickerDoubleState(selection: TipologiaMenu.defaultValue, customLabel: "Scegli..", dataContainer: TipologiaMenu.allCases) { category in
                 self.filterCategory = .tipologiaMenu(filter: category)
             }
         case .giorniDelServizio(_):
             
-            CS_PickerDoubleState(selection: GiorniDelServizio.defaultValue, dataContainer: GiorniDelServizio.allCases) { category in
+            CS_PickerDoubleState(selection: GiorniDelServizio.defaultValue, customLabel: "Scegli..", dataContainer: GiorniDelServizio.allCases) { category in
                 
                 self.filterCategory = .giorniDelServizio(filter: category)
                 
@@ -103,33 +103,33 @@ struct DataModelPickerView_SubView: View {
             
         case .conservazione(_):
     
-            CS_PickerDoubleState(selection: ConservazioneIngrediente.defaultValue, dataContainer: ConservazioneIngrediente.allCases) { category in
+            CS_PickerDoubleState(selection: ConservazioneIngrediente.defaultValue, customLabel: "Scegli..", dataContainer: ConservazioneIngrediente.allCases) { category in
                 self.filterCategory = .conservazione(filter: category)
             }
         case .produzione(_):
-            CS_PickerDoubleState(selection: ProduzioneIngrediente.defaultValue, dataContainer: ProduzioneIngrediente.allCases) { category in
+            CS_PickerDoubleState(selection: ProduzioneIngrediente.defaultValue, customLabel: "Scegli..", dataContainer: ProduzioneIngrediente.allCases) { category in
                 self.filterCategory = .produzione(filter: category)
             }
         case .provenienza(_):
-            CS_PickerDoubleState(selection: ProvenienzaIngrediente.defaultValue, dataContainer: ProvenienzaIngrediente.allCases) { category in
+            CS_PickerDoubleState(selection: ProvenienzaIngrediente.defaultValue, customLabel: "Scegli..", dataContainer: ProvenienzaIngrediente.allCases) { category in
                 self.filterCategory = .provenienza(filter: category)
             }
             
         case .categoria(_):
             
-            CS_PickerDoubleState(selection: DishCategoria.defaultValue, dataContainer: DishCategoria.allCases) { category in
+            CS_PickerDoubleState(selection: DishCategoria.defaultValue, customLabel: "Scegli..", dataContainer: DishCategoria.allCases) { category in
                 
                 self.filterCategory = .categoria(filter: category)
                 
             }
         case .base(_):
             
-            CS_PickerDoubleState(selection: DishBase.defaultValue, dataContainer: DishBase.allCases) { category in
+            CS_PickerDoubleState(selection: DishBase.defaultValue, customLabel: "Scegli..", dataContainer: DishBase.allCases) { category in
                 self.filterCategory = .base(filter: category)
             }
         case .tipologiaPiatto(_):
             
-            CS_PickerDoubleState(selection: DishTipologia.defaultValue, dataContainer: DishTipologia.allCases) { category in
+            CS_PickerDoubleState(selection: DishTipologia.defaultValue, customLabel: "Scegli..", dataContainer: DishTipologia.allCases) { category in
                 
                 self.filterCategory = .tipologiaPiatto(filter: category)
             }
@@ -164,78 +164,4 @@ struct DataModelPickerView_SubView: View {
     }
 } */
 
-/// La variabile selezionata nel Picker è al livello Binding
-struct CS_Picker<E:MyEnumProtocolMapConform>: View {
-    
-    @Binding var selection: E
-    let dataContainer: [E]
-  // let forEachContent: (_:E) -> I
-    
-    @State private var showCustomLabel: Bool = true
-    
-  /*  init(dataContainer: [E], selection: Binding<E>, @ViewBuilder forEachContent: @escaping (_:E) -> I) {
-        
-        _selection = selection
-        self.dataContainer = dataContainer
-        self.forEachContent = forEachContent
-        
-    } */
-    
-    var body: some View {
-        
-       
-            //  Image(systemName: "eye")
-                   
-                Picker(selection:$selection) {
-                             
-                    if showCustomLabel {Text("Scegli..")}
-                    
-                        ForEach(dataContainer, id:\.self) {filter in
-                                   
-                          //  forEachContent(filter)
-                            Text(filter.simpleDescription()) }
-                              
-                } label: {Text("")}
-                          .pickerStyle(MenuPickerStyle())
-                          .accentColor(Color.black)
-                          .padding(.horizontal)
-                          .background(
-                        
-                        RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color.white.opacity(0.8))
-                            .shadow(radius: 1.0)
-                    )
-                    
-                        .onChange(of: selection) { _ in
-                               self.showCustomLabel = false
-                                    }
-  
-    
-      /*  .padding(.leading)
-        .background(
-            
-            RoundedRectangle(cornerRadius: 5.0)
-                .stroke()
-                .fill(Color.white.opacity(0.5))
-                
-        ) */
 
-    }
-    
-}
-
-/// La variabile selezionata nel Picker è al livello State
-struct CS_PickerDoubleState<E:MyEnumProtocolMapConform>: View {
-    
-    @State var selection: E
-    let dataContainer: [E]
-    let action: (_ category: E) -> Void
-  
-    var body: some View {
-        
-        CS_Picker(selection: $selection, dataContainer: dataContainer)
-        .onChange(of: selection) { newValue in
-            action(newValue)
-        }
-    }
-}

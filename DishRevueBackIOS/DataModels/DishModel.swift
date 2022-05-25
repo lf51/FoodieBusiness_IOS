@@ -45,22 +45,24 @@ struct DishModel: MyModelProtocol {
     // var images: [String] // immagini caricate dal ristoratore o dai clienti // da gestire
     
     var categoria: DishCategoria
-    var aBaseDi: DishBase
+    var aBaseDi: DishBase // Deprecato in futuro --> Abbiamo spostato e rinominato il DishBase in OrigineIngrediente. Qui non saraà più necessario
+    
+    
     var metodoCottura: DishCookingMethod
-    var tipologia: DishTipologia
+    var tipologia: DishTipologia // Deprecato in futuro --> Deriveremo il tipo di piatto dall'origine degli ingredienti
     var avaibleFor: [DishAvaibleFor]
   //  var allergeni: [Allergeni] // DEPRECATED 19.05.2022 Li deriviamo dagli Ingredienti
-    var allergeni: [Allergeni] { // la forma = {}() per funzionare necessita il lazy, ma al momento non funziona perchè le rowModel passano delle Var/let, quando passeranno delle State magari funzionerà
+    var allergeni: [AllergeniIngrediente] { // la forma = {}() per funzionare necessita il lazy, ma al momento non funziona perchè le rowModel passano delle Var/let, quando passeranno delle State magari funzionerà
         
-        var allergeniPiatto:[Allergeni] = []
+        var allergeniPiatto:[AllergeniIngrediente] = []
         
         for ingredient in self.ingredientiPrincipali {
-            let allergeneIngre:[Allergeni] = ingredient.allergeni
+            let allergeneIngre:[AllergeniIngrediente] = ingredient.allergeni
             allergeniPiatto.append(contentsOf: allergeneIngre)
         }
         
         for ingredient in self.ingredientiSecondari {
-            let allergeneIngre:[Allergeni] = ingredient.allergeni
+            let allergeneIngre:[AllergeniIngrediente] = ingredient.allergeni
             allergeniPiatto.append(contentsOf: allergeneIngre)
         }
         
@@ -68,7 +70,7 @@ struct DishModel: MyModelProtocol {
         print("Calcolo Allergeni Piatto \(self.intestazione)")
         return Array(setAllergeniPiatto)
         
-    }
+    } // Abbiamo spostato gli allergeni nell'ingrediente, quindi il piatto li deriva
     
     var formatiDelPiatto: [DishFormato]
 

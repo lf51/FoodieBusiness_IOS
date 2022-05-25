@@ -34,7 +34,7 @@ class AccounterVM: ObservableObject {
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
-    var allergeni:[Allergeni] = Allergeni.allCases // 19.05 --> Collocazione Temporanea
+    var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // 19.05 --> Collocazione Temporanea
     
     init() {
         

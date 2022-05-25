@@ -17,6 +17,7 @@ struct IngredientModel: MyModelProtocol {
       lhs.provenienza == rhs.provenienza &&
       lhs.produzione == rhs.produzione &&
       lhs.conservazione == rhs.conservazione &&
+      lhs.origine == rhs.origine &&
       lhs.allergeni == rhs.allergeni
     }
     
@@ -32,7 +33,10 @@ struct IngredientModel: MyModelProtocol {
     var produzione: ProduzioneIngrediente
   //  var stagionalita: StagionalitaIngrediente // la stagionalità non ha senso poichè è inserita dal ristoratore, ed è inserita quando? Ha senso se la attribuisce il sistema, ma è complesso.
     var conservazione: ConservazioneIngrediente
-    var allergeni: [Allergeni] = []
+    var allergeni: [AllergeniIngrediente] = []
+    var origine: DishBase = .defaultValue
+    
+ 
     
     var alertItem: AlertModel?
     //
