@@ -45,7 +45,7 @@ struct DishModel: MyModelProtocol {
     // var images: [String] // immagini caricate dal ristoratore o dai clienti // da gestire
     
     var categoria: DishCategoria
-    var aBaseDi: DishBase // Deprecato in futuro --> Abbiamo spostato e rinominato il DishBase in OrigineIngrediente. Qui non saraà più necessario
+    var aBaseDi: OrigineIngrediente // Deprecato in futuro --> Abbiamo spostato e rinominato il DishBase in OrigineIngrediente. Qui non saraà più necessario
     
     
     var metodoCottura: DishCookingMethod
@@ -118,7 +118,7 @@ struct DishModel: MyModelProtocol {
     }
     
    
-    init(intestazione: String, aBaseDi: DishBase, categoria: DishCategoria, tipologia: DishTipologia, status: ModelStatus) {
+    init(intestazione: String, aBaseDi: OrigineIngrediente, categoria: DishCategoria, tipologia: DishTipologia, status: ModelStatus) {
         
         self.intestazione = intestazione
         self.aBaseDi = aBaseDi

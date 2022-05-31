@@ -38,13 +38,13 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         
         switch self {
         case .fresco:
-            return "Questo ingrediente è Fresco"
+            return "Prodotto Fresco"
         case .congelato:
-            return "Questo ingrediente può essere congelato"
+            return "Potrebbe essere Congelato"
         case .surgelato:
-            return "Questo ingrediente può essere surgelato"
+            return "Potrebbe essere Surgelato"
         case .conserva:
-            return "Questo ingrediente è una conserva"
+            return "La conserva va estesa --> da Editare"
         case .custom(let metodoDiConservazione):
             let string = metodoDiConservazione == "" ? "Metodo di Conservazione non Specificato" : "Questo prodotto è \(metodoDiConservazione)"
             return string

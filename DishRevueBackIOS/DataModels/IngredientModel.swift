@@ -34,7 +34,7 @@ struct IngredientModel: MyModelProtocol {
   //  var stagionalita: StagionalitaIngrediente // la stagionalità non ha senso poichè è inserita dal ristoratore, ed è inserita quando? Ha senso se la attribuisce il sistema, ma è complesso.
     var conservazione: ConservazioneIngrediente
     var allergeni: [AllergeniIngrediente] = []
-    var origine: DishBase = .defaultValue
+    var origine: OrigineIngrediente = .defaultValue
     
  
     

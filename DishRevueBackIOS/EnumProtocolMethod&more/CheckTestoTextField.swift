@@ -23,9 +23,15 @@ func csCheckConformitaTextField(testo:String, conformeA: ConformitàTextField ) 
 }
 
 func csCheckIntero(testo:String) -> Bool { Int(testo) != nil }
-func csCheckDouble(testo:String) -> Bool  { Double(testo) != nil }
+func csCheckDouble(testo:String) -> Bool  {
+    // dovrebbe usare una keyboard di tipo decimalPad, che usa la virgola come separatore, e sempre la virgola è l'unico caratttere extra rispetto ai numeri
+    let newText  = testo.replacingOccurrences(of: ",", with: ".")
+    return Double(newText) != nil
+    
+}
+
 func csCheckStringa(testo:String) -> Bool {
-    // da implementare
+    print("csCheckStringa non implementato")
  return true
 }
 

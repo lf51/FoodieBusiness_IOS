@@ -188,7 +188,7 @@ struct ItemModelCategoryViewBuilder: View {
             
             let dataMapping = viewModel.allMyDish.map({$0.aBaseDi})
             let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<DishModel, DishBase>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
+            DataModelCategoryView_SubView<DishModel, OrigineIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
                 
                 let dataFiltering = viewModel.allMyDish.filter({ item in
                     let firstBool = item.aBaseDi.returnTypeCase() == element

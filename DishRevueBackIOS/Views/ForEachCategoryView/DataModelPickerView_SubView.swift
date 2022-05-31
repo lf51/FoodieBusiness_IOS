@@ -124,7 +124,7 @@ struct DataModelPickerView_SubView: View {
             }
         case .base(_):
             
-            CS_PickerDoubleState(selection: DishBase.defaultValue, customLabel: "Scegli..", dataContainer: DishBase.allCases) { category in
+            CS_PickerDoubleState(selection: OrigineIngrediente.defaultValue, customLabel: "Scegli..", dataContainer: OrigineIngrediente.allCases) { category in
                 self.filterCategory = .base(filter: category)
             }
         case .tipologiaPiatto(_):

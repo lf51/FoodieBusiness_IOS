@@ -9,83 +9,76 @@ import SwiftUI
 
 struct FastImport_CorpoScheda:View {
     
-    //@EnvironmentObject var viewModel: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     @Binding var fastDish: DishModel
     let saveAction: (_ :DishModel) -> Void
 
     @State private var areAllergeniOk: Bool = false
     @State private var dishPrice: String = ""
-    private var dishPriceChanged: Bool {
-        dishPrice != ""
-    }
-        
-    @State private var isPriceEmpty: Bool = false
-    @State private var isCategoriaDefault: Bool = false
-    @State private var allergeniConfermati: Bool = true // NON è un duplicato di areAllergeniOk. Serve!
-    
+
+    @State private var checkError: Bool = false // una sorta di interruttore generale. Quando è su true, viene verificato se il form è incompleto
+
     var body: some View {
         
         VStack(alignment:.leading) {
             
-            CSLabel_conVB(placeHolder: "Nome Piatto", imageNameOrEmojy: "fork.knife.circle", backgroundColor: Color.black) {
+            CSLabel_conVB(placeHolder: "Crea Nuovo Piatto:", imageNameOrEmojy: "fork.knife.circle", backgroundColor: Color.black) {
                                 
-                CSButton_image(frontImage: "doc.badge.plus", imageScale: .large, frontColor: Color.blue) { checkBeforeSave() }
+                CSButton_image(frontImage: "doc.badge.plus", imageScale: .large, frontColor: Color.white) { checkBeforeSave() }
+                    ._tightPadding()
+                    .background(
+                        Circle()
+                            .fill(Color.blue.opacity(0.5))
+                            .shadow(radius: 5.0)
+                    )
                 
             }
   
                 VStack(alignment:.leading) {
-                           
-                 //   HStack {
-                        
-                        CSText_tightRectangle(testo: fastDish.intestazione, fontWeight: .semibold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.yellow)
-                        
-                    /*    Spacer()
-                        
-                       
-
-                        
-         
-                        } */
+                    
+                        Text(fastDish.intestazione)
+                            .font(.title)
+                            .foregroundColor(Color.white)
 
                     HStack {
+
+                        csVbSwitchImageText(string: fastDish.categoria.imageAssociated())
                         
-                 
-                            csVbSwitchImageText(string: fastDish.categoria.imageAssociated())
-                            CS_Picker(selection: $fastDish.categoria,customLabel: "Categoria..", dataContainer: DishCategoria.allCases)
-                            if isCategoriaDefault {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .imageScale(.medium)
-                                    .foregroundColor(Color.yellow)
+                        CS_Picker(
+                            selection: $fastDish.categoria,
+                            customLabel: "Categoria..",
+                            dataContainer: DishCategoria.allCases,
+                            backgroundColor: Color.white.opacity(0.5))
+                        .overlay(alignment:.topTrailing) {
+                            if checkError {
+                                let isCategoriaDefault = self.fastDish.categoria == .defaultValue
+                                CS_ErrorMark(checkError: isCategoriaDefault )
+                                        .offset(x: 10, y: -10)
                             }
-                        
-                        
-                        
-                    /*    csVbSwitchImageText(string: fastDish.categoria.imageAssociated())
-                            .font(.subheadline)
-                        
-                        Text(fastDish.categoria.simpleDescriptionSingolare())
-                            .font(.system(.subheadline, design: .monospaced)) */
-                           
-                        Spacer()
-                        
-                        if isPriceEmpty {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .imageScale(.medium)
-                                .foregroundColor(Color.yellow)
+
                         }
                         
+                        Spacer()
+  
                         CSTextField_6(
                             textFieldItem: $dishPrice,
                             placeHolder: "0.00",
                             image: "eurosign.circle",
                             showDelete: false,
-                            keyboardType: .numbersAndPunctuation,
+                            keyboardType: .decimalPad,
                             conformeA: .decimale) {
                                 self.updateDishPrice()
                             }
                             .fixedSize()
-                 
-                        
+                            .overlay(alignment:.topTrailing) {
+                                if checkError {
+                                    let isPriceEmpty = self.fastDish.formatiDelPiatto.isEmpty
+                                    CS_ErrorMark(checkError: isPriceEmpty)
+                                        .offset(x: 10, y: -10)
+                                    }
+                                
+                                }
+             
                             }
                            
                        }
@@ -97,16 +90,31 @@ struct FastImport_CorpoScheda:View {
                         HStack {
                             Spacer()
                             Text("Conferma")
-                            
-                            if allergeniConfermati {
+                                .font(.system(.callout, design: .monospaced))
+   
+                            if checkError && !areAllergeniOk {
                                 
-                                Image(systemName: "allergens")
+                                CS_ErrorMark(checkError: !areAllergeniOk)
                                 
                             } else {
-                                Image(systemName: "exclamationmark.triangle.fill")
+                                
+                                Image(systemName: "allergens")
                                     .imageScale(.medium)
-                                    .foregroundColor(Color.yellow)
+                                
                             }
+                            
+                            
+                          /*  if !checkError {
+                               
+                                Image(systemName: "allergens")
+                                    .imageScale(.medium)
+                                
+                            } else {
+                                
+                                CS_ErrorMark(checkError: !areAllergeniOk)
+                                
+                            } */
+
                         }
                         
                     }
@@ -116,47 +124,76 @@ struct FastImport_CorpoScheda:View {
             ScrollView(showsIndicators: false) {
                 
                 ForEach($fastDish.ingredientiPrincipali) { $ingredient in
-                         
-                        FastImport_IngredientRow(ingredient: $ingredient)
+                    
+                    let isIngredientOld = viewModel.checkExistingModel(model: ingredient).0
+                    
+                    FastImport_IngredientRow(ingredient: $ingredient, checkError: checkError, isIngredientOld: isIngredientOld)
+                    .disabled(isIngredientOld)
+                    .blur(radius: isIngredientOld ? 0.8 : 0.0)
+                    .overlay(alignment:.topTrailing) {
+                        if isIngredientOld{
+                            
+                            Image(systemName: "lock")
+                                .imageScale(.large)
+                                .foregroundColor(Color.white)
+                                .blur(radius: 0.8)
+                        }
+                    }
+                    
                         Divider()
                          
                         }
                 
                 }
-                
-            
-         
+        }.onTapGesture {
+            csHideKeyboard()
         }
-    
-
     }
     
     // Method
-    
+
     private func checkBeforeSave() {
         
-        var scoreValue:Int = 0
+        guard checkAreDishPropertyOk() else {
+            
+            self.checkError = true
+            return }
         
-        if self.fastDish.formatiDelPiatto.isEmpty {
-            self.isPriceEmpty = true
-            scoreValue += 1
-        } else {self.isPriceEmpty = false }
-       
-        if self.fastDish.categoria == .defaultValue {
-            self.isCategoriaDefault = true
-            scoreValue += 1
-        } else { self.isCategoriaDefault = false }
+        guard checkAreIngredientsOk() else {
+            
+            self.checkError = true
+            return }
         
-        if !self.areAllergeniOk {
-            self.allergeniConfermati = false
-            scoreValue += 1
-        } else { self.allergeniConfermati = true }
-        
-        guard scoreValue == 0 else { return }
-        
+        guard self.areAllergeniOk else {
+            
+            self.checkError = true
+            return }
+                
         self.saveAction(fastDish)
         
     }
+    
+    private func checkAreDishPropertyOk() -> Bool {
+        
+        self.fastDish.categoria != .defaultValue && !self.fastDish.formatiDelPiatto.isEmpty
+        
+    }
+    
+    private func checkAreIngredientsOk() -> Bool {
+        
+        for ingredient in fastDish.ingredientiPrincipali {
+            
+            let origineOk = ingredient.origine != .defaultValue
+            let conservazioneOk = ingredient.conservazione != .defaultValue
+            
+            if !origineOk || !conservazioneOk {
+                print("CheckAreIngredientsOk -> \(ingredient.intestazione) non completo")
+                return false}
+        }
+        
+        return true
+    }
+    
     
     private func updateDishPrice() {
         
@@ -182,3 +219,5 @@ struct FastImport_CorpoScheda_Previews: PreviewProvider {
     }
 }
 */
+
+

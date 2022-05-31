@@ -102,7 +102,7 @@ struct InfoDishRow_Previews: PreviewProvider {
         dish.ingredientiPrincipali = []
         dish.ingredientiSecondari = []
         dish.categoria = .defaultValue
-        dish.aBaseDi = .carne
+        dish.aBaseDi = .carneAnimale
         dish.metodoCottura = .padella
       //  dish.allergeni = [.latte_e_derivati,.uova_e_derivati]
         dish.avaibleFor = [.vegariano,.glutenFree]

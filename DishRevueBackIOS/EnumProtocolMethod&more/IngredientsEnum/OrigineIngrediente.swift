@@ -7,17 +7,17 @@
 
 import Foundation
 
-enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
+enum OrigineIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     
-    static var allCases: [DishBase] = [.carne,.pesce,.latteAnimale,.vegetali] // Non essendoci valori Associati, la allCases potrebbe essere implicita, ma la esplicitiamo per omettere il caso NoValue, di modo che non appaia fra le opzioni di scelta
-    static var defaultValue: DishBase = DishBase.noValue
+    static var allCases: [OrigineIngrediente] = [.carneAnimale,.pesce,.latteAnimale,.vegetale] // Non essendoci valori Associati, la allCases potrebbe essere implicita, ma la esplicitiamo per omettere il caso NoValue, di modo che non appaia fra le opzioni di scelta
+    static var defaultValue: OrigineIngrediente = OrigineIngrediente.noValue
     
     // Potremmo Associare un icona ad ogni Tipo
     
-    case carne // a base di carne
+    case carneAnimale // a base di carne
     case latteAnimale
     case pesce // a base di pesce
-    case vegetali // a base di vegetali
+    case vegetale // a base di vegetali
     
     case noValue // lo usiamo per avere un valore di default Nullo
     
@@ -27,10 +27,10 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
         
         switch self {
             
-        case .carne: return "Carne"
+        case .carneAnimale: return "Carne Animale"
         case .latteAnimale: return "Latte Animale"
         case .pesce: return "Pesce"
-        case .vegetali: return "Vegetali"
+        case .vegetale: return "Vegetale"
         case .noValue: return "Nessun Valore"
             
         }
@@ -38,13 +38,13 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
     
     func extendedDescription() -> String? {
         switch self {
-        case .carne:
+        case .carneAnimale:
             return "Origine Animale"
         case .latteAnimale:
-            return "Origine Latte Animale"
+            return "Origine Animale"
         case .pesce:
             return "Origine Animale"
-        case .vegetali:
+        case .vegetale:
             return "Origine Vegetale"
         case .noValue:
             return nil
@@ -56,7 +56,7 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
     
-    func returnTypeCase() -> DishBase {
+    func returnTypeCase() -> OrigineIngrediente {
         
         return self
     }
@@ -65,13 +65,13 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
         
         switch self {
             
-        case .carne:
+        case .carneAnimale:
             return "🐂"
         case .latteAnimale:
             return "🥛"
         case .pesce:
             return "🐟"
-        case .vegetali:
+        case .vegetale:
             return "🌱"
         case .noValue:
             return nil
@@ -82,13 +82,13 @@ enum DishBase: MyEnumProtocol, MyEnumProtocolMapConform {
         
         switch self {
             
-        case .carne:
+        case .carneAnimale:
             return 1
         case .latteAnimale:
             return 3
         case .pesce:
             return 2
-        case .vegetali:
+        case .vegetale:
             return 4
         case .noValue:
             return 0

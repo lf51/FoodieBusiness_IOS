@@ -17,10 +17,7 @@ struct FastImport_MainView: View {
     
     @State private var isUpdateDisable: Bool = true
     @State private var showSubString: Bool = false
-    
-    @State private var ingredientiEstratti: Int = 0
-    @State private var ingredientiAlreadyEsistenti: Int = 0
-    
+ 
     var body: some View {
         
         CSZStackVB(title: "Importazione Rapida", backgroundColorView: backgroundColorView) {
@@ -64,19 +61,11 @@ struct FastImport_MainView: View {
                             .disabled(self.isUpdateDisable)
  
                             Spacer()
-                            
-                            
-                            
-                            Text("N° Piatti: \(allFastDish.count)")
-                            
-                            Text("N° Ingredienti: \(ingredientiEstratti) (\(ingredientiAlreadyEsistenti))")
-                            
-                            
-                         /*   CSButton_tight(title: "Salva", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
-                              //  fastImport()
-                            } */
-                          //  .opacity(self.isCreationDisabled ? 0.6 : 1.0)
-                          //  .disabled(self.isCreationDisabled)
+
+                            Text("N°Piatti:\(allFastDish.count)")
+                                .font(.system(.subheadline, design: .monospaced))
+                                .fontWeight(.medium)
+                                .foregroundColor(Color.white.opacity(0.6))
                             
                         } // Barra dei Bottoni
                         
@@ -99,72 +88,49 @@ struct FastImport_MainView: View {
                                                 Spacer()
                                             }
                                             .padding()
-                                            
-                                            
                                         }
-                            
-                                           
-                                        
-                                            
-                                        
+                                    
                                     }
-                                    
-                                    
-                                    
+                                  
                                 }
-                                
                             }
     
                         } // Chiusa ifshoSubstring
                        
-                        
                 Spacer()
                        // Text("\(manipolaStringa())")
                     }.padding(.horizontal)
                     
                 }
-                
-              //  Spacer()
-                
-                
-                
+       
             }
-            
-           
-            
-            
+       
         }
-        
-   
-        
-        
     }
     
     // Method
     
-    private func fastSave(item: DishModel) { // SOLO PER TEST -> Deprecata -> Da Spostare nel ViewModel
+    private func fastSave(item: DishModel) {
         
-        viewModel.allMyDish.append(item)
-        
-        var newIngredient:[IngredientModel] = []
-        
-        for ingredient in item.ingredientiPrincipali {
+        do {
             
-            if !viewModel.checkExistingIngredient(item: ingredient).0 {
-                
-                newIngredient.append(ingredient)
-            }
+            try self.viewModel.dishAndIngredientsFastSave(item: item)
+            let localIndex = self.allFastDish.firstIndex(of: item)
+            self.allFastDish.remove(at: localIndex!)
+            
+            self.reBuildIngredientContainer()
+            
+        } catch _ {
+            
+            viewModel.alertItem = AlertModel(
+                title: "Errore - Piatto Esistente",
+                message: "Modifica il nome del piatto nell'Editor ed estrai nuovamente il testo.")
             
         }
-        viewModel.allMyIngredients.append(contentsOf: newIngredient)
-        // Deprecata in futuro, il check di unicità andrà fatto nel viewModel.
-        
-        let localIndex = self.allFastDish.firstIndex(of: item)
-        self.allFastDish.remove(at: localIndex!)
-        
-        self.reBuildIngredientContainer()
+ 
     }
     
+    /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
     private func reBuildIngredientContainer() {
         
         var newDishContainer:[DishModel] = []
@@ -177,7 +143,7 @@ struct FastImport_MainView: View {
             
             for ingredient in dish.ingredientiPrincipali {
                 
-                if let oldIngredient = viewModel.checkExistingIngredient(item: ingredient).1 { newDish.ingredientiPrincipali.append(oldIngredient) } else {newDish.ingredientiPrincipali.append(ingredient) }
+                if let oldIngredient = viewModel.checkExistingModel(model: ingredient).1 { newDish.ingredientiPrincipali.append(oldIngredient) } else {newDish.ingredientiPrincipali.append(ingredient) }
        
             }
             
@@ -192,33 +158,32 @@ struct FastImport_MainView: View {
     private func estrapolaStringhe() {
          
      self.allFastDish = []
-     self.ingredientiEstratti = 0
-        
+     
      let containerDish = self.text.split(separator: ".")
-        
+        print("containerDish: \(containerDish.description)")
         for dish in containerDish {
+
+            let step_3b = dish.replacingOccurrences(of: "*", with: "")
             
-            let step_1 = dish.replacingOccurrences(of: "  ", with: " ")
-            let step_2 = step_1.replacingOccurrences(of: ", ", with: ",")
-            let step_3 = step_2.replacingOccurrences(of: " ,", with: ",")
-            let step_3b = step_3.replacingOccurrences(of: "*", with: "")
+            var ingredientContainer = step_3b.split(separator: ",")
             
-            var step_4 = step_3b.split(separator: ",")
+            let dishTitle = String(ingredientContainer[0]).lowercased()
+            let cleanedDishTitle = csStringCleaner(string: dishTitle)
+            ingredientContainer.remove(at: 0)
             
-            let dishTitle = String(step_4[0]).lowercased()
-            step_4.remove(at: 0)
             var step_5:[IngredientModel] = []
             
-            for subString in step_4 {
-             
-                let string = String(subString).lowercased()
-                let ingredient = IngredientModel(nome: string.capitalized)
+            for subString in ingredientContainer {
+
+                let sub = String(subString).lowercased()
+                let newSub = csStringCleaner(string: sub)
                 
-                if let oldIngredient = viewModel.checkExistingIngredient(item: ingredient).1 {
+                let ingredient = IngredientModel(nome: newSub.capitalized)
+                
+                if let oldIngredient = viewModel.checkExistingModel(model: ingredient).1 {
                     
                     step_5.append(oldIngredient)
-                    self.ingredientiAlreadyEsistenti += 1 // info Inutile - Deprecated in futuro
-                    
+   
                 } else {step_5.append(ingredient)}
          
              }
@@ -226,20 +191,18 @@ struct FastImport_MainView: View {
             let fastDish:DishModel = {
                 
                 var dish = DishModel()
-                dish.intestazione = dishTitle.capitalized
+                dish.intestazione = cleanedDishTitle.capitalized
                 dish.ingredientiPrincipali = step_5
                 return dish
                 
             }()
 
             self.allFastDish.append(fastDish)
-            self.ingredientiEstratti += step_5.count
-            print("Dentro Estrapola/Fine Ciclo piatto: \(dishTitle)")
+            print("Dentro Estrapola/Fine Ciclo piatto: \(cleanedDishTitle)")
         }
      
     }
-    
-    
+ 
     
 }
 
@@ -254,7 +217,6 @@ struct FastImportMainView_Previews: PreviewProvider {
     
     }
 }
-
 
 
 

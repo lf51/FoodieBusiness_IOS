@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import MapKit // da togliere quando ripuliamo il codice dai Test
+//import SwiftProtobuf
 
 
 class AccounterVM: ObservableObject {
@@ -45,7 +46,7 @@ class AccounterVM: ObservableObject {
     // Method
     
     /// Esegue un controllo nel container di riferimento utilizzando solo l'ID. Se l'item è presente ritorna true e l'item trovato. Considera infattil'item già salvato di livello superiore come informazioni contenute e dunque lo ritorna.
-    func checkExistingIngredient(item: IngredientModel) -> (Bool,IngredientModel?) {
+   /* func checkExistingIngredient(item: IngredientModel) -> (Bool,IngredientModel?) {
         
         print("AccounterVM/checkExistingIngredient - Ingrediente \(item.intestazione)")
         
@@ -54,11 +55,56 @@ class AccounterVM: ObservableObject {
             let newIngredient:IngredientModel = self.allMyIngredients[index]
             return (true,newIngredient)
             
-    } // Da genericizzare
+    } */ // Deprecated 31.05
     
-    
-    // Method Generic
+    /// Esegue un controllo nel container di riferimento utilizzando solo l'ID. Se l'item è presente ritorna true e l'item trovato. Considera infattil'item già salvato di livello superiore come informazioni contenute e dunque lo ritorna.
+    func checkExistingModel<M:MyModelProtocol>(model: M) -> (Bool,M?) {
+        
+        print("AccounterVM/checkExistingItem - Item: \(model.intestazione)")
+        
+        let containerM = assegnaContainer(itemModel: model).container
+        
+        guard let index = containerM.firstIndex(where: {$0.id == model.id}) else {return (false, nil)}
 
+            let newItem:M = containerM[index]
+        
+            return (true,newItem)
+            
+    }
+
+    ///Richiede un DishModel, e oltre a salvare il piatto, salva anche gli ingredienti Principali nel viewModel. Ideata per Modulo Importazione Veloce
+    func dishAndIngredientsFastSave(item: DishModel) throws {
+        
+        guard !checkExistingModel(model: item).0 else {
+            
+            throw CancellationError()
+            
+        }
+            
+         /*   self.alertItem = AlertModel(
+                title: "Errore - Piatto Esistente",
+                message: "Modifica il nome del piatto nell'Editor ed estrai nuovamente il testo.") */
+            
+             
+        
+        self.allMyDish.append(item)
+        
+        var newIngredient:[IngredientModel] = []
+        
+        for ingredient in item.ingredientiPrincipali {
+            
+            if !checkExistingModel(model: ingredient).0 {
+                
+                newIngredient.append(ingredient)
+            }
+            
+        }
+        
+        self.allMyIngredients.append(contentsOf: newIngredient)
+
+    }
+    
+    
     func createOrUpdateItemModel<T:MyModelProtocol>(itemModel:T) { // 03.05 Deprecated
     
         var (containerT, editAvaible) = assegnaContainer(itemModel: itemModel)
@@ -317,6 +363,7 @@ class AccounterVM: ObservableObject {
         
     }
     
+    /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container e un bool (indicante se il container è o non è editabile)
     private func assegnaContainer<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
         
         switch itemModel.self {
@@ -335,6 +382,7 @@ class AccounterVM: ObservableObject {
         }
     }
     
+    /// Aggiorna il container nel viewModel che ha lo stesso tipo del container passato con il container passato.
     private func aggiornaContainer<T:MyModelProtocol>(containerT: [T]) {
         
         guard !containerT.isEmpty else {
@@ -380,9 +428,9 @@ class AccounterVM: ObservableObject {
     let prop2 = PropertyModel(nome: "Tua", coordinates:  CLLocationCoordinate2D(latitude: 37.510997, longitude: 13.041434))
     let prop3 = PropertyModel(nome: "Sua", coordinates:  CLLocationCoordinate2D(latitude: 37.510927, longitude: 13.041434))
     let prop4 = PropertyModel(nome: "Essa", coordinates: CLLocationCoordinate2D(latitude: 37.510937, longitude: 13.041434))
-    let dish1 = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carne, categoria: .primo, tipologia: .standard, status: .pubblico)
-    let dish2 = DishModel(intestazione: "Bucatini alla Matriciana", aBaseDi: .carne, categoria: .primo, tipologia: .standard,status: .archiviato)
-    let dish4 = DishModel(intestazione: "Tiramisu", aBaseDi: .carne, categoria: .dessert, tipologia: .standard,status: .bozza)
+    let dish1 = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .pubblico)
+    let dish2 = DishModel(intestazione: "Bucatini alla Matriciana", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard,status: .archiviato)
+    let dish4 = DishModel(intestazione: "Tiramisu", aBaseDi: .carneAnimale, categoria: .dessert, tipologia: .standard,status: .bozza)
     let dish3 = DishModel(intestazione: "Fritto Misto", aBaseDi: .pesce, categoria: .secondo, tipologia: .vegariano, status: .inPausa)
 
     let ingre1 = IngredientModel(nome: "Aglio", provenienza: .italia, metodoDiProduzione: .biologico, conservazione: .conserva)

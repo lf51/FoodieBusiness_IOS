@@ -23,7 +23,7 @@ enum MapCategoryContainer:MyEnumProtocolMapConform {
     case provenienza(filter:ProvenienzaIngrediente? = nil) // stored
     
     case categoria(filter:DishCategoria? = nil) // stored
-    case base(filter:DishBase? = nil) // stored
+    case base(filter:OrigineIngrediente? = nil) // stored
     case tipologiaPiatto(filter:DishTipologia? = nil)
     case statusPiatto
     

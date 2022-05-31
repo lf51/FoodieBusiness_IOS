@@ -59,7 +59,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 
                 CSLabel_1Button(placeHolder: "A base di", imageNameOrEmojy: "lanyardcard", backgroundColor: Color.black)
                 
-                EnumScrollCases(cases: DishBase.allCases, dishSingleProperty: self.$newDish.aBaseDi, colorSelection: Color.indigo.opacity(0.8))
+                EnumScrollCases(cases: OrigineIngrediente.allCases, dishSingleProperty: self.$newDish.aBaseDi, colorSelection: Color.indigo.opacity(0.8))
                 
      
                 CSLabel_1Button(placeHolder: "Metodo di cottura", imageNameOrEmojy: "flame", backgroundColor: Color.black, toggleBottone: $creaNuovaCottura)

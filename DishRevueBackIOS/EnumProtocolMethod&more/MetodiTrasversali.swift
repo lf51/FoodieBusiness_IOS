@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+/// trasferisci i valori da un fileJson ad un Oggetto
 func csLoad<T:Decodable>(_ filename:String) -> T {
     
     let data:Data
@@ -74,4 +75,27 @@ func csRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
     let lastStep = secondStep.sorted{$0.orderValue() < $1.orderValue()}
     
    return lastStep
+}
+
+/// Pulisce la stringa da spazi duplici, e da puntiAcapo
+func csStringCleaner(string:String) -> String {
+    
+    let firstStep = string.replacingOccurrences(of: "\n", with: "")
+    
+    let subStringaTesto = firstStep.split(separator: " ")
+    let newStringaTesto: String = {
+        
+        var newString:String = ""
+        for sub in subStringaTesto {
+            
+            newString = newString == "" ? String(sub) : (newString + " " + sub)
+            
+        }
+        
+        return newString
+        
+    }()
+
+    return newStringaTesto
+    
 }
