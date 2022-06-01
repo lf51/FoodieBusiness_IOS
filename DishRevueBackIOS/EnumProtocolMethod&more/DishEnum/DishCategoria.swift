@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
+enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform { // Deprecata in Futuro. Da Sostituire con una Struct
  
     // quando scarichiamo i dati dal server, dobbiamo iterate tutte le tipologie salvate e inserirle nella static allCases. Insieme ai casi "standard" avremo così anche i casi custom.
     
@@ -148,5 +148,51 @@ enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform {
             return (DishCategoria.allCases.count + 1)
         }
     }
+    
+}
+
+struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
+
+    static var allCases: [CategoriaMenu] = []
+    static var defaultValue: CategoriaMenu = CategoriaMenu(nome: "", image: "🍽", listPositionOrder: 0)
+    
+    var id: String { self.nome.replacingOccurrences(of: " ", with: "").lowercased() }
+    
+    let nome: String
+    let image: String
+    var listPositionOrder: Int
+    
+   
+    func createId() -> String { // Deprecata
+        self.nome.replacingOccurrences(of: " ", with: "").lowercased()
+    }
+    
+    func simpleDescription() -> String { // Deprecata
+        <#code#>
+    }
+    
+   
+    
+    func extendedDescription() -> String? { // Deprecata
+        <#code#>
+    }
+    
+    func imageAssociated() -> String? { // Deprecata
+        <#code#>
+    }
+    
+    func returnTypeCase() -> CategoriaMenu { // Deprecata
+        <#code#>
+    }
+    
+    func orderValue() -> Int { // Deprecata
+        <#code#>
+    }
+    
+    
+    
+    
+    
+    
     
 }

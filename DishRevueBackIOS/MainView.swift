@@ -12,7 +12,7 @@ struct MainView: View {
     @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
     @StateObject var viewModel: AccounterVM = AccounterVM()
  
-    let backgroundColorView: Color = Color("BackgroundColorBusiness")
+    let backgroundColorView: Color = Color("BusinessColor_1")
     @State var tabSelector: Int = 0
     
     var body: some View {

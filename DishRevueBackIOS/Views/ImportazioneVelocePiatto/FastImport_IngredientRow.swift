@@ -33,11 +33,11 @@ struct FastImport_IngredientRow: View {
     
     var body: some View {
         
-        ZStack {
+     //   ZStack {
                 
                 VStack(alignment:.leading) {
                     
-                    HStack(alignment:.center) {
+                    HStack(alignment:.lastTextBaseline) {
                         
                        vbMainRow()
              
@@ -107,7 +107,7 @@ struct FastImport_IngredientRow: View {
                 }
                 .padding(.top,10) // o .Vertical
   
-        }
+      //  }
      
     }
     

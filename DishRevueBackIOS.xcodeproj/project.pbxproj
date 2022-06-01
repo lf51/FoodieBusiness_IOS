@@ -143,6 +143,8 @@
 		4DC94A2727E9ECB70080264C /* ChoiceInfoView_NewPropertySubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC94A2627E9ECB70080264C /* ChoiceInfoView_NewPropertySubView.swift */; };
 		4DC94A2927EA1E900080264C /* HomeViewBACKUP2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC94A2827EA1E900080264C /* HomeViewBACKUP2.swift */; };
 		4DC94A2B27EC7BF50080264C /* MapCategoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DC94A2A27EC7BF50080264C /* MapCategoryContainer.swift */; };
+		4DCB316628466D0100464308 /* CS_IconaRomboidale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB316528466D0100464308 /* CS_IconaRomboidale.swift */; };
+		4DCB316A2847466E00464308 /* NuovaCategoriaMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCB31692847466E00464308 /* NuovaCategoriaMenu.swift */; };
 		4DCCD6CF27BAB3DB00F387B2 /* PannelloIngredienti_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6CE27BAB3DB00F387B2 /* PannelloIngredienti_NewDishSubView.swift */; };
 		4DCCD6D127BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D027BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift */; };
 		4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */; };
@@ -275,6 +277,8 @@
 		4DC94A2627E9ECB70080264C /* ChoiceInfoView_NewPropertySubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceInfoView_NewPropertySubView.swift; sourceTree = "<group>"; };
 		4DC94A2827EA1E900080264C /* HomeViewBACKUP2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewBACKUP2.swift; sourceTree = "<group>"; };
 		4DC94A2A27EC7BF50080264C /* MapCategoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapCategoryContainer.swift; sourceTree = "<group>"; };
+		4DCB316528466D0100464308 /* CS_IconaRomboidale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CS_IconaRomboidale.swift; sourceTree = "<group>"; };
+		4DCB31692847466E00464308 /* NuovaCategoriaMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NuovaCategoriaMenu.swift; sourceTree = "<group>"; };
 		4DCCD6CE27BAB3DB00F387B2 /* PannelloIngredienti_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PannelloIngredienti_NewDishSubView.swift; sourceTree = "<group>"; };
 		4DCCD6D027BAB4A400F387B2 /* SelectionPropertyDish_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionPropertyDish_NewDishSubView.swift; sourceTree = "<group>"; };
 		4DCCD6D227BAB54300F387B2 /* DishSpecific_NewDishSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishSpecific_NewDishSubView.swift; sourceTree = "<group>"; };
@@ -518,6 +522,7 @@
 				4D34D54D2837DD3E00A57747 /* FORMTEST.swift */,
 				4D8A1DD6283E3C260016EE27 /* MULTIPicker_TEST.swift */,
 				4DD25B52283F8BD100582DCC /* MENU_TEST.swift */,
+				4DCB316528466D0100464308 /* CS_IconaRomboidale.swift */,
 			);
 			path = TEST;
 			sourceTree = "<group>";
@@ -716,6 +721,7 @@
 				4DC94A1E27E8F76D0080264C /* NuovaProprietà */,
 				4DAD4FBB279EF0C900C0EAE8 /* SubView_trasversali */,
 				4D92579E27D7A84B00D71B9C /* SelettoreMyModel */,
+				4DCB31692847466E00464308 /* NuovaCategoriaMenu.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -892,6 +898,7 @@
 				4DD25B55283FBAE200582DCC /* CSMenu_MultiSelection.swift in Sources */,
 				4DF0C4B527A05DEA00315A73 /* PropertyModel.swift in Sources */,
 				4D8A1DD7283E3C260016EE27 /* MULTIPicker_TEST.swift in Sources */,
+				4DCB316A2847466E00464308 /* NuovaCategoriaMenu.swift in Sources */,
 				4DD29F0C27BD17570065AC2A /* InfoDishRow.swift in Sources */,
 				4DC94A2027E8F94A0080264C /* NewPropertySheetViewBACKUP.swift in Sources */,
 				4DAD4F94279EA7A800C0EAE8 /* PropertyVM.swift in Sources */,
@@ -949,6 +956,7 @@
 				4D4FE6F627FF269F00AC0190 /* AvailabilityMenu.swift in Sources */,
 				4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */,
 				4D7985EE27D8BAE90012FE23 /* ConservazioneIngrediente.swift in Sources */,
+				4DCB316628466D0100464308 /* CS_IconaRomboidale.swift in Sources */,
 				4D29C05B27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift in Sources */,
 				4D8A1DCE283CDBEF0016EE27 /* CheckTestoTextField.swift in Sources */,
 				4DD6308227C68B3000A16E17 /* ListaIngredientiView.swift in Sources */,
@@ -1119,7 +1127,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1151,7 +1159,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 37;
+				CURRENT_PROJECT_VERSION = 38;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

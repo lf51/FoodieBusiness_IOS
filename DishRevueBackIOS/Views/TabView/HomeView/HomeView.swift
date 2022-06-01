@@ -34,12 +34,35 @@ struct HomeView: View {
                
                     // Info Proprietario /DisplayName /SignOut / DeletAccount / potremmo inserire qui la verifica dell'account in modo che valga per tutte le properties.
                     
-                    Text("Box da riempire")
-                    NavigationLink {
-                        FastImport_MainView(backgroundColorView: backgroundColorView)
-                    } label: {
-                        Text("Importazione Veloce")
+                 //   Text("Box da riempire")
+                    
+                    HStack {
+                       
+                        NavigationLink {
+                            FastImport_MainView(backgroundColorView: backgroundColorView)
+                        } label: {
+                        CS_IconaRomboidale(
+                            image: "bolt",
+                            backgroundColor: Color("BusinessColor_1"),
+                            title: "Piatti")
+                        }
+                    //    .fixedSize()
+                        
+                        NavigationLink {
+                          //  FastImport_MainView(backgroundColorView: backgroundColorView)
+                        } label: {
+                        CS_IconaRomboidale(
+                            image: "bolt",
+                            backgroundColor: Color("BusinessColor_1"),
+                            title: "Categorie")
+                        }
+                      //  .fixedSize()
+                 
+                        Spacer()
                     }
+                    
+                    
+                   
 
                     
                     Spacer()
@@ -64,7 +87,7 @@ struct HomeView: View {
         
                     
                 } // VStack End
-
+                .padding(.horizontal)
                /* if self.wannaCreateMenu! {
                     
                     NuovoMenuMainView(dismissView: $wannaCreateMenu).zIndex(1.0)
