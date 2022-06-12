@@ -7,9 +7,110 @@
 
 import SwiftUI
 
+
+/// MenuModel-RowView come label di un Menu con due bottoni, fra cui uno con navigationLink
+struct MenuModel_RowLabelMenu:View {
+    
+    @Binding var menuItem: MenuModel
+    let backgroundColorView: Color
+    @State private var activeEditMenuLink = false
+    
+    var body: some View {
+        
+        
+        Menu {
+            
+            Button {
+                self.activeEditMenuLink = true
+            } label: {
+                HStack {
+                    
+                    Text("Modifica")
+                    Image(systemName: "arrow.up.right.square")
+                      
+                }
+            }
+  
+            vbStatusButton()
+           /* Button {
+                menuItem.status = .completo(.inPausa)
+            } label: {
+                HStack {
+                    Text("Metti in Pausa")
+                    
+                    Image(systemName: "pause.circle")
+                
+                    
+                }
+            } */
+
+            
+        } label: {
+            
+            NavigationLink(isActive: $activeEditMenuLink) {
+            
+                NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: backgroundColorView)
+                
+                
+            } label: {
+                MenuModel_RowView(menuItem: $menuItem)
+            }
+
+            
+            
+           
+        }
+        
+        
+     
+    }
+    
+    // Method
+    
+    @ViewBuilder private func vbStatusButton() -> some View {
+        
+        if menuItem.status == .completo(.pubblico) {
+            
+            Button {
+                menuItem.status = .completo(.inPausa)
+            } label: {
+                HStack {
+                    Text("Metti in Pausa")
+                    
+                    Image(systemName: "pause.circle")
+                
+                    
+                }
+            }
+            
+        } else if menuItem.status == .completo(.inPausa) {
+            
+            Button {
+                menuItem.status = .completo(.pubblico)
+            } label: {
+                HStack {
+                    Text("Ritorna Pubblico")
+                    
+                    Image(systemName: "play.circle")
+                
+                    
+                }
+            }
+            
+            
+        }
+        
+        
+        
+        
+        
+    }
+  
+}
+
 struct MenuModel_RowView: View {
     
-    let item: MenuModel
+    @Binding var menuItem: MenuModel
     
     var body: some View {
         
@@ -26,15 +127,17 @@ struct MenuModel_RowView: View {
                     
                     VStack(alignment:.leading) {
                         
-                        iteratingIntestazioneMenu(item: item)
-                        iteratingTipologiaMenu(item: item)
+                        iteratingIntestazioneMenu(item: menuItem)
+                        iteratingTipologiaMenu(item: menuItem)
                         
                     }
                       
                     Spacer()
                     // Status
-                    Image(systemName: "circle.fill")
-                        .foregroundColor(Color.green)
+                    
+                    vbEstrapolaStatusImage(item: menuItem)
+                 /*   Image(systemName: "circle.fill")
+                        .foregroundColor(Color.green) */
                     //
                 }
                 .padding()
@@ -45,7 +148,7 @@ struct MenuModel_RowView: View {
                         
                         ForEach(GiorniDelServizio.allCases) { day in
          
-                            iteratingGiorniDelServizio(day: day, arrayData: item.giorniDelServizio)
+                            iteratingGiorniDelServizio(day: day, arrayData: menuItem.giorniDelServizio)
                             
                         }
                         
@@ -62,9 +165,14 @@ struct MenuModel_RowView: View {
 
     }
     
+    // Method
+        
 }
 
 struct MenuModel_RowView_Previews: PreviewProvider {
+    
+    @State static var menuItem: MenuModel = MenuModel(nome: "SomeDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi])
+    
     static var previews: some View {
         
         ZStack {
@@ -73,7 +181,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
             
             Group {
                 
-                MenuModel_RowView(item: MenuModel(nome: "SomeDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi]))
+                MenuModel_RowView(menuItem: $menuItem)
                 
               /*  MenuModel_RowView(item: MenuModel(
                     nome: "FerialDay",
@@ -161,3 +269,5 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         .font(.callout)
  
 }
+
+

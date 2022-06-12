@@ -30,7 +30,7 @@ struct PropertyModel_RowView: View {
                             Spacer()
                             
                             NavigationLink {
-                                EditingPropertyModel(itemModel: $itemModel, backgroundColorView: Color.cyan)
+                                EditingPropertyModel(itemModel: $itemModel, backgroundColorView: Color("SeaTurtlePalette_1"))
                             } label: {
                                 Image(systemName:"arrow.up.forward.square") // "rectangle.portrait.and.arrow.right"
                                     .imageScale(.medium)
@@ -84,10 +84,14 @@ struct PropertyModel_RowView_Previews: PreviewProvider {
     
     static var previews: some View {
 
-        NavigationView {
-            EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color.cyan)
-        }.navigationBarTitleDisplayMode(.large)
-            .navigationViewStyle(StackNavigationViewStyle())
+        
+       /* PropertyModel_RowView(itemModel: $testProperty)
+            .environmentObject(AccounterVM()) */
+       NavigationView {
+            EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color("SeaTurtlePalette_1"))
+        }
+        .navigationBarTitleDisplayMode(.large)
+        .navigationViewStyle(StackNavigationViewStyle())
         
     }
 }

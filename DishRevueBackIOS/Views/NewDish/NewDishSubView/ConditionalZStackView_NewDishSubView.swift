@@ -17,6 +17,7 @@ struct ConditionalZStackView_NewDishSubView: View {
    // @Binding var openAddingIngredienteSecondario: Bool?
     @Binding var wannaCreateIngredient: Bool?
     @Binding var wannaProgramAndPublishNewDish: Bool
+  //  @Binding var wannaMakeDietAvaible: Bool?
     
     var backgroundColorView: Color
     
@@ -24,9 +25,9 @@ struct ConditionalZStackView_NewDishSubView: View {
         
         if wannaCreateIngredient! {
                     
-            NuovoIngredienteMainView(backgroundColorView: backgroundColorView, dismissButton: $wannaCreateIngredient)
+           // NuovoIngredienteMainView(backgroundColorView: backgroundColorView, dismissButton: $wannaCreateIngredient)
 
-                }
+                } // Deprecata in futuro - Sostituire con un NavLink
         
         if wannaProgramAndPublishNewDish {
                     
@@ -42,6 +43,8 @@ struct ConditionalZStackView_NewDishSubView: View {
                 closeButton: $wannaAddIngredient)
             
         }
+        
+  
         
     
     }

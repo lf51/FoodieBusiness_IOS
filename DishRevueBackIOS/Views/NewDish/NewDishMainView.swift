@@ -11,7 +11,7 @@ struct NewDishMainView: View {
     
    // @ObservedObject var propertyVM: PropertyVM
     @EnvironmentObject var viewModel: AccounterVM // ATTUALMENTE NON UTILIZZATO
-    var backgroundColorView: Color
+    let backgroundColorView: Color
     
     @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
     @State var wannaDeleteIngredient: Bool? = false // attiva l'eliminazione degli ingredienti
@@ -28,20 +28,21 @@ struct NewDishMainView: View {
     
     var body: some View {
        
-        ZStack {
+        CSZStackVB(title: "Nuovo Piatto", backgroundColorView: backgroundColorView) {
             
-            backgroundColorView.opacity(0.9).ignoresSafeArea()
+         //   backgroundColorView.opacity(0.9).ignoresSafeArea()
             
             VStack {
                 
-               TopBar_3BoolPlusDismiss(title: newDish.intestazione != "" ? newDish.intestazione : "New Dish", enableEnvironmentDismiss: true, doneButton: $wannaAddIngredient, exitButton: $wannaCreateIngredient, cancelButton: $wannaDeleteIngredient)
+           /*    TopBar_3BoolPlusDismiss(title: newDish.intestazione != "" ? newDish.intestazione : "New Dish", enableEnvironmentDismiss: true, doneButton: $wannaAddIngredient, exitButton: $wannaCreateIngredient, cancelButton: $wannaDeleteIngredient)
                     .padding()
                     .background(Color.cyan)
         
                 
-                Spacer()
+                Spacer() */
                 
-                ZStack {
+            //    ZStack {
+                CSDivider()
                     
                     ScrollView { // La View Mobile
 
@@ -59,6 +60,16 @@ struct NewDishMainView: View {
                     .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)
                     .disabled(isThereAReasonToDisabled)
                         
+                        
+                        Spacer()
+                        
+                        BottomBar_NewDishSubView(newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
+                            .padding()
+                          //  .background(Color.cyan)
+                            .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)
+                            .disabled(isThereAReasonToDisabled || self.newDish.intestazione == "")
+                        
+                        
                     }
                     .zIndex(0)
                     .onTapGesture {
@@ -70,18 +81,14 @@ struct NewDishMainView: View {
         
                     ConditionalZStackView_NewDishSubView(newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backgroundColorView: backgroundColorView)
                     
-                    
-                } // end ZStack Interno
+                   
+                CSDivider() // risolve il problema del cambio colore della tabView
+            //    } // end ZStack Interno
+
                 
-                Spacer()
-                
-                BottomBar_NewDishSubView(newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
-                    .padding()
-                    .background(Color.cyan)
-                    .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)
-                    .disabled(isThereAReasonToDisabled || self.newDish.intestazione == "")
-                
-            }.zIndex(1)
+            }
+            .zIndex(1)
+            
           
         } // end ZStack Esterno
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)

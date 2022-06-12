@@ -12,21 +12,22 @@ struct MainView: View {
     @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
     @StateObject var viewModel: AccounterVM = AccounterVM()
  
-    let backgroundColorView: Color = Color("BusinessColor_1")
+    let backgroundColorView: Color = Color("SeaTurtlePalette_1")
     @State var tabSelector: Int = 0
-    
+        
     var body: some View {
             
         TabView(selection:$tabSelector) {
                 
             HomeView(authProcess: authProcess, backgroundColorView: backgroundColorView)
-                    .badge(10) // Il pallino rosso delle notifiche !!!
+                    .badge(0) // Il pallino rosso delle notifiche !!!
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
                     }.tag(0)
 
             MenuListView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
+                .badge(0)
                 .tabItem {
                     Image (systemName: "menucard")//scroll.fill
                     Text("Menu")
@@ -34,12 +35,14 @@ struct MainView: View {
             
             
             DishListView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
+                .badge(0)
                     .tabItem {
                         Image (systemName: "fork.knife.circle")
                         Text("Piatti")
                     }.tag(2)
     
             ListaIngredientiView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
+                .badge(0)
                 .tabItem {
                     Image (systemName: "leaf")
                     Text("Ingredienti")
@@ -52,7 +55,8 @@ struct MainView: View {
         .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
         .environmentObject(viewModel)
-        .accentColor(.cyan)
+       // .accentColor(.cyan)
+        .accentColor(Color("SeaTurtlePalette_3"))
   
     }
 }

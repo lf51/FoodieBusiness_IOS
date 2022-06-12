@@ -60,6 +60,35 @@ struct PropertyModel: MyModelProtocol {
     
     var menuIn: [MenuModel] = [] // doppia scrittura con propertiesWhereIsIn in MenuModel
     
+    lazy var serviceSchedule: [GiorniDelServizio:[(String,String)]] = { // Deprecata
+        
+        print("dentro serviceSchedule in PropertyModel")
+        
+        var giorniServizio:[GiorniDelServizio:[(String,String)]] = [:]
+        
+        for menu in self.menuIn {
+            
+            for day in menu.giorniDelServizio {
+                
+                if giorniServizio[day] != nil {
+                    
+                    giorniServizio[day]?.append((menu.oraInizio.description,menu.oraFine.description))
+                } else {
+                    
+                    giorniServizio[day] = [ (menu.oraInizio.description,menu.oraFine.description)]
+        
+                }
+      
+            }
+           
+        }
+        
+        return giorniServizio
+   
+    }()
+    
+  //  var status: StatusModel = .bozza // Qui non so quanto serva. Da Inquadrare.
+    
     init() { // utile quando creaiamo la @State NewProperty
         
         self.intestazione = ""
@@ -107,6 +136,35 @@ struct PropertyModel: MyModelProtocol {
         self.numeroCivico = ""
         
     }
+    
+    // Method
+    
+    private func creaSchedule() {
+        
+        print("dentro creaSchedule in PropertyModel")
+        
+        var giorniServizio:[GiorniDelServizio:[(String,String)]] = [:]
+        
+        for menu in self.menuIn {
+            
+            for day in menu.giorniDelServizio {
+                
+                if giorniServizio[day] != nil {
+                    
+                    giorniServizio[day]?.append((menu.oraInizio.description,menu.oraFine.description))
+                } else {
+                    
+                    giorniServizio[day] = [ (menu.oraInizio.description,menu.oraFine.description)]
+        
+                }
+      
+            }
+           
+        }
+        
+    }
+    
+    
     
 }
 

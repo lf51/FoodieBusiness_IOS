@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MenuModel:MyModelProtocol {
+struct MenuModel:MyModelProtocol,MyModelStatusConformity {
 
     static func == (lhs: MenuModel, rhs: MenuModel) -> Bool {
         
@@ -26,7 +26,7 @@ struct MenuModel:MyModelProtocol {
     
     var id: String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() }
     
-    var propertiesWhereIsUsed: [PropertyModel] = [] // doppia scrittura con MenuIn in PropertyModel
+    var propertiesWhereIsUsed: [PropertyModel] = [] // doppia scrittura con MenuIn in PropertyModel // DEPRECATA IN FUTURO
     var dishIn: [DishModel] = [] // doppia scrittura con MenuWhereIsIn in DishModel
     
     var intestazione: String = ""
@@ -41,7 +41,9 @@ struct MenuModel:MyModelProtocol {
     var oraInizio: Date = Date()
     var oraFine: Date = Date().advanced(by: 1800)
     
-    var alertItem: AlertModel?
+    var status: StatusModel = .bozza
+    
+    var alertItem: AlertModel? // Deprecata -> Spostata nel ViewModel
 
     init() {
         
@@ -56,3 +58,5 @@ struct MenuModel:MyModelProtocol {
     }
     
 }
+
+

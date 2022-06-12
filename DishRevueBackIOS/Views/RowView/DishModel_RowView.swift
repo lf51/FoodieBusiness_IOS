@@ -50,7 +50,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
             
             Group {
                 
-                DishModel_RowView(item: DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .pubblico))
+                DishModel_RowView(item: DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .bozza))
                 
               /*  IngredientModel_RowView(item: IngredientModel(nome: "Guanciale", provenienza: .Italia, metodoDiProduzione: .convenzionale, conservazione: .custom("Stagionato"))) */
                 
@@ -99,10 +99,10 @@ struct IntestazioneDishRow_Sub: View {
                 Spacer()
 
                 // Status
-                VStack { // TEMPORANEO
+                VStack { // TEMPORANEO -> Deprecato sostituibile con viewBuilder
                     
                     Image(systemName: "circle.fill")
-                        .foregroundColor(item.status == .pubblico ? Color.green : Color.red)
+                        .foregroundColor(item.status == .bozza ? Color.orange : Color.red)
                         .background(
                         
                             Circle()

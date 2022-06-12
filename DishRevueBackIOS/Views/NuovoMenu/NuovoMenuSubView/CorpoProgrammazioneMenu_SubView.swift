@@ -45,7 +45,7 @@ struct CorpoProgrammazioneMenu_SubView: View {
                 
             }
              
-            EnumScrollCases(cases: GiorniDelServizio.allCases, dishCollectionProperty: self.$nuovoMenu.giorniDelServizio, colorSelection: Color.mint)
+            PropertyScrollCases(cases: GiorniDelServizio.allCases, dishCollectionProperty: self.$nuovoMenu.giorniDelServizio, colorSelection: Color.mint)
                     .opacity(self.valueTo.disableDays ? 0.6 : 1.0)
                     .disabled(self.valueTo.disableDays)
                     

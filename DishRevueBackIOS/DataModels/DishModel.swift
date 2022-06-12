@@ -9,7 +9,8 @@
 
 import Foundation
 
-struct DishModel: MyModelProtocol {
+
+struct DishModel: MyModelProtocol,MyModelStatusConformity {
      
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
        
@@ -17,7 +18,8 @@ struct DishModel: MyModelProtocol {
         lhs.intestazione == rhs.intestazione &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
-        lhs.categoria == rhs.categoria &&
+        lhs.categoria == rhs.categoria && // deprecata
+        lhs.categoriaMenu == rhs.categoriaMenu &&
         lhs.aBaseDi == rhs.aBaseDi &&
         lhs.metodoCottura == rhs.metodoCottura &&
         lhs.tipologia == rhs.tipologia &&
@@ -34,9 +36,9 @@ struct DishModel: MyModelProtocol {
     
     var intestazione: String
     var descrizione: String = ""
-    var alertItem: AlertModel?
+    var alertItem: AlertModel? // Deprecata -> alert spostati nel viewModel
     
-    var menuWhereIsIn: [MenuModel] = [] // doppia scrittura con
+    var menuWhereIsIn: [MenuModel] = [] // doppia scrittura con -> Deprecata in futuro
     var ingredientiPrincipali: [IngredientModel]
     var ingredientiSecondari: [IngredientModel]
     
@@ -44,7 +46,8 @@ struct DishModel: MyModelProtocol {
     // var dishIcon: String // Icona standard dei piatti che potremmo in realtà associare direttamente alla categoria
     // var images: [String] // immagini caricate dal ristoratore o dai clienti // da gestire
     
-    var categoria: DishCategoria
+    var categoria: DishCategoria // Deprecata
+    var categoriaMenu: CategoriaMenu
     var aBaseDi: OrigineIngrediente // Deprecato in futuro --> Abbiamo spostato e rinominato il DishBase in OrigineIngrediente. Qui non saraà più necessario
     
     
@@ -72,10 +75,19 @@ struct DishModel: MyModelProtocol {
         
     } // Abbiamo spostato gli allergeni nell'ingrediente, quindi il piatto li deriva
     
+    lazy var tipologiaDieta:[DishTipologia] = {
+        
+    print("tipologiaDieta -> lazy var in dishModel")
+        
+        let dieteOk = DishTipologia.checkDietAvaible(ingredients: self.ingredientiPrincipali,self.ingredientiSecondari)
+        
+        return dieteOk
+    }()
+    
     var formatiDelPiatto: [DishFormato]
 
     var rating: String
-    var status: ModelStatus
+    var status: StatusModel
    // var restaurantWhereIsOnMenu: [PropertyModel] = []
     
     
@@ -95,6 +107,7 @@ struct DishModel: MyModelProtocol {
         self.rating = "9.5"
         self.status = .bozza
         
+        self.categoriaMenu = .defaultValue
      //   self.status = .programmato(day: [.lunedi,.martedi,.mercoledi,.giovedi,.domenica(ora:DateInterval(start: .now, end: .distantFuture))])
     }
     
@@ -114,11 +127,11 @@ struct DishModel: MyModelProtocol {
         self.rating = ""
         self.status = .bozza
         
-        
+        self.categoriaMenu = .defaultValue
     }
     
    
-    init(intestazione: String, aBaseDi: OrigineIngrediente, categoria: DishCategoria, tipologia: DishTipologia, status: ModelStatus) {
+    init(intestazione: String, aBaseDi: OrigineIngrediente, categoria: DishCategoria, tipologia: DishTipologia, status: StatusModel) {
         
         self.intestazione = intestazione
         self.aBaseDi = aBaseDi
@@ -135,6 +148,8 @@ struct DishModel: MyModelProtocol {
         self.rating = "8.5"
         
         self.status = status
+        
+        self.categoriaMenu = .defaultValue
     }
   
 
@@ -142,32 +157,4 @@ struct DishModel: MyModelProtocol {
     
 }
 
-enum ModelStatus:String {
-    
-    static var allCases: [ModelStatus] = [.all,.pubblico,.bozza,.inPausa,.archiviato]
-    static var defaultValue: ModelStatus = .all
-    
-    case bozza // non ancora completo
-    case pubblico // Rimette in moto da una Pausa
-    case inPausa // Stop temporaneo
-    case archiviato // Stop incondizionato
-    case all
-  //  case programmato(day:[GiorniDellaSettimana]) // pubblico in modo condizionato
 
-}
-
-/* Case Programmato :
- 
- Giorni della settimana
- Pranzo / cena / colazione
- Da data a data specifica
- 
- 
-
-enum GiorniDellaSettimana {
-    
-    case lunedi,martedi,mercoledi,giovedi,venerdi,sabato,domenica(ora: DateInterval  )
-   
-    
-}
-*/

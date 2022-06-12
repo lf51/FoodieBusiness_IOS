@@ -48,7 +48,7 @@ struct CSLabel_conVB<Content:View>: View {
                     .fill(backgroundColor.opacity(backgroundOpacity ?? 0.2))
             )
             
-            Spacer()
+          //  Spacer()
             
             content
         }
@@ -57,7 +57,7 @@ struct CSLabel_conVB<Content:View>: View {
 
 
 /// Label (Testo+Image/Emojy) con Bottone Optional (Richiede un Binding Bool)
-struct CSLabel_1Button: View {
+struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2Action
     
     var placeHolder: String
     var imageName: String?
@@ -118,7 +118,7 @@ struct CSLabel_1Button: View {
 }
 
 /// Label (Testo + Image) con due Bottoni Optional (Uno PlusImage e Uno testuale)
-struct CSLabel_2Button: View { // Deprecati in futuro. Sostituire con il ViewBuilder
+struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2Action
     
     var placeHolder: String
     var imageName: String
@@ -184,7 +184,17 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituire con il ViewBui
             
             if toggleBottoneTEXT != nil {
       
-                Button {
+                CSButton_tight(
+                    title: testoBottoneTEXT ?? "",
+                    fontWeight: .semibold,
+                    titleColor: .white,
+                    fillColor: Color("SeaTurtlePalette_2")) {
+                        withAnimation(.default) {
+                            toggleBottoneTEXT!.toggle()
+                        }
+                    }
+                    .disabled(toggleBottonePLUS ?? false)
+              /*  Button {
                     withAnimation(.default) {
                         toggleBottoneTEXT!.toggle()
                     }
@@ -195,12 +205,97 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituire con il ViewBui
                 }
                 .buttonStyle(.borderedProminent)
                 .brightness(toggleBottoneTEXT ?? false ? 0.0 : -0.05)
-                .disabled(toggleBottonePLUS ?? false)
+                .disabled(toggleBottonePLUS ?? false) */
     
             }
         }
     }
 }
+
+///Label (Testo + Image) con due Action Optional (Uno PlusImage e Uno testuale) 
+struct CSLabel_2Action: View {
+    
+    var placeHolder: String
+    var imageName: String
+    var backgroundColor: Color
+    
+    var testoBottoneTEXT: String? = nil
+    var actionPlusButton: (() -> Void)? = nil
+    var actionTextButton: (() -> Void)? = nil
+
+
+    init(placeHolder: String, imageName: String, backgroundColor: Color, testoBottoneTEXT: String? = nil, actionPlusButton: (() -> Void)? = nil, actionTextButton: (() -> Void)? = nil) {
+        
+        self.placeHolder = placeHolder
+        self.imageName = imageName
+        self.backgroundColor = backgroundColor
+
+        self.testoBottoneTEXT = testoBottoneTEXT
+        self.actionPlusButton = actionPlusButton
+        self.actionTextButton = actionTextButton
+        
+    }
+
+    var body: some View {
+        
+        HStack {
+            
+            Label {
+                Text(placeHolder)
+                    .fontWeight(.medium)
+                    .font(.system(.subheadline, design: .monospaced))
+            } icon: {
+                Image(systemName: imageName)
+            }
+            ._tightPadding()
+            .background(
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(backgroundColor.opacity(0.2))
+                    
+            )
+            
+            Spacer()
+            
+            if self.actionPlusButton != nil {
+                
+                Button {
+                    withAnimation(.default) {
+                        
+                        self.actionPlusButton!()
+                    }
+                    
+                } label: {
+                     
+                    Image(systemName: "plus.circle")
+                        .imageScale(.large)
+                        .foregroundColor(.blue)
+                    
+                }//.disabled(toggleBottoneTEXT ?? false)
+            }
+            
+            Spacer()
+            
+            if self.actionTextButton != nil {
+      
+                Button {
+                    withAnimation(.default) {
+                        self.actionTextButton!()
+                    }
+                } label: {
+                    Text(testoBottoneTEXT ?? "")
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.white)
+                }
+                .buttonStyle(.borderedProminent)
+               // .brightness(toggleBottoneTEXT ?? false ? 0.0 : -0.05)
+               // .disabled(toggleBottonePLUS ?? false)
+    
+            }
+        }
+    }
+}
+
 
 /// Label (Testo + Image) + Picker AvailabilityMenu
 struct CSLabel_1Picker: View {

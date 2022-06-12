@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct EnumScrollCases<T:MyEnumProtocol>: View {
+struct PropertyScrollCases<T:MyEnumProtocol>: View {
 
     @Binding var newDishSingleProperty: T
     @Binding var newDishCollectionProperty: [T]

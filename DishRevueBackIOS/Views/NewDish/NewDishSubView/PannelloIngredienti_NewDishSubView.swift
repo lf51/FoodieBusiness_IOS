@@ -27,7 +27,53 @@ struct PannelloIngredienti_NewDishSubView: View {
                       
             VStack {
                 
-                CSLabel_2Button(placeHolder: "Ingredienti Principali", imageName: "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: $wannaCreateIngredient, toggleBottoneTEXT: $wannaAddIngredient, testoBottoneTEXT: "Edit")
+             /*   CSLabel_2Button(placeHolder: "Ingredienti Principali", imageName: "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: $wannaCreateIngredient, toggleBottoneTEXT: $wannaAddIngredient, testoBottoneTEXT: "Edit")
+                
+                
+                CSLabel_2Action(
+                    placeHolder: "Ingredienti Principali",
+                    imageName: "curlybraces",
+                    backgroundColor: Color.black,
+                    testoBottoneTEXT: "Edit",
+                    actionPlusButton: {
+                    self.wannaCreateIngredient?.toggle()
+                    }) {
+                        self.wannaAddIngredient?.toggle()
+                    } */
+                
+                
+                
+                CSLabel_conVB(placeHolder: "Ingredienti Principali", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) {
+ 
+                    Group {
+                        
+                        Spacer()
+                        
+                        NavigationLink {
+                            NuovoIngredienteMainView(backgroundColorView: Color("SeaTurtlePalette_1"))
+                        } label: {
+                            Image(systemName: "plus.circle")
+                                .imageScale(.large)
+                                .foregroundColor(.blue)
+                        }
+  
+                       Spacer()
+                        
+                        Button {
+                            withAnimation(.default) {
+                                self.wannaAddIngredient?.toggle()
+                            }
+                        } label: {
+                            Text("Edit")
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color.white)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        
+                        
+                    }
+      
+                }
                 
                 if !self.newDish.ingredientiPrincipali.isEmpty {
                     

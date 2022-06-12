@@ -26,7 +26,7 @@ class AccounterVM: ObservableObject {
     
     // end creato dal sistema
     
-    @Published var allMyIngredients:[IngredientModel] = [] // tutti gli ingredienti creati dall'accounter
+    @Published var allMyIngredients:[IngredientModel] = []
     @Published var allMyDish:[DishModel] = [] // tutti i piatti creati dall'accounter
     @Published var allMyMenu:[MenuModel] = [] // tutti i menu creati dall'accounter
     @Published var allMyProperties:[PropertyModel] = [] /*{ willSet {
@@ -36,6 +36,8 @@ class AccounterVM: ObservableObject {
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // 19.05 --> Collocazione Temporanea
+    @Published var categoriaMenuAllCases: [CategoriaMenu] = CategoriaMenu.allCases // 02.06 -> Dovrà riempirsi di dati dal server
+
     
     init() {
         
@@ -428,10 +430,10 @@ class AccounterVM: ObservableObject {
     let prop2 = PropertyModel(nome: "Tua", coordinates:  CLLocationCoordinate2D(latitude: 37.510997, longitude: 13.041434))
     let prop3 = PropertyModel(nome: "Sua", coordinates:  CLLocationCoordinate2D(latitude: 37.510927, longitude: 13.041434))
     let prop4 = PropertyModel(nome: "Essa", coordinates: CLLocationCoordinate2D(latitude: 37.510937, longitude: 13.041434))
-    let dish1 = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .pubblico)
-    let dish2 = DishModel(intestazione: "Bucatini alla Matriciana", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard,status: .archiviato)
+    let dish1 = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .bozza)
+    let dish2 = DishModel(intestazione: "Bucatini alla Matriciana", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard,status: .bozza)
     let dish4 = DishModel(intestazione: "Tiramisu", aBaseDi: .carneAnimale, categoria: .dessert, tipologia: .standard,status: .bozza)
-    let dish3 = DishModel(intestazione: "Fritto Misto", aBaseDi: .pesce, categoria: .secondo, tipologia: .vegariano, status: .inPausa)
+    let dish3 = DishModel(intestazione: "Fritto Misto", aBaseDi: .pesce, categoria: .secondo, tipologia: .vegariano, status: .bozza)
 
     let ingre1 = IngredientModel(nome: "Aglio", provenienza: .italia, metodoDiProduzione: .biologico, conservazione: .conserva)
     let ingre2 = IngredientModel(nome: "Aglio Rosso", provenienza: .homeMade, metodoDiProduzione: .naturale, conservazione: .surgelato)

@@ -61,6 +61,7 @@ struct CSButton_tight: View {
       
             Text(title)
                 .fontWeight(fontWeight)
+                .font(.system(.body, design: .rounded))
                 ._tightPadding()
                 .foregroundColor(titleColor)
                 .background(fillColor)

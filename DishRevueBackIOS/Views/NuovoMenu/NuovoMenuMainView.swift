@@ -36,23 +36,25 @@ struct NuovoMenuMainView: View {
  
     var body: some View {
         
-        ZStack {
+        CSZStackVB(title: "Nuovo Menu", backgroundColorView: backgroundColorView) {
             
-            backgroundColorView.opacity(0.9).ignoresSafeArea()
+          //  backgroundColorView.opacity(0.9).ignoresSafeArea()
             
             VStack {
                 
               /*  TopBar_3BoolPlusDismiss(title: nuovoMenu.intestazione != "" ? nuovoMenu.intestazione : "Crea Menu", exitButton: $dismissView, exitButtonTitle: "Chiudi")
                     .padding(.horizontal) */
      
-                TopBar_3BoolPlusDismiss(title: nuovoMenu.intestazione != "" ? nuovoMenu.intestazione : "Crea Menu", enableEnvironmentDismiss: true)
+            /*    TopBar_3BoolPlusDismiss(title: nuovoMenu.intestazione != "" ? nuovoMenu.intestazione : "Crea Menu", enableEnvironmentDismiss: true)
                     .padding()
                     .background(Color.cyan)
                 
                 Spacer()
-                
-                ZStack {
+                 */
+              //  ZStack {
                     
+                CSDivider()
+                
                     ScrollView {
                         
                         VStack(alignment: .leading) {
@@ -100,11 +102,13 @@ struct NuovoMenuMainView: View {
                     }
                     
                     
-                } // Chiusa ZStack Interno
+             //  } // Chiusa ZStack Interno
                 
           
                 
              //   Spacer()
+                
+                CSDivider()
             }
             
            

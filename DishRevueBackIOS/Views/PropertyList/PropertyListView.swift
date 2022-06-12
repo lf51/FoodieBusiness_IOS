@@ -32,10 +32,11 @@ struct PropertyListView: View {
             
             VStack(alignment:.leading, spacing: 10.0) {
                 
-                RoundedRectangle(cornerRadius: 10.0) // da lo stacco per evitare l'inline.
+              /*  RoundedRectangle(cornerRadius: 10.0) // da lo stacco per evitare l'inline.
                     .frame(height: 2.0)
-                    .foregroundColor(Color.cyan) // Color.cyan lo rende invisibile
-            
+                    .foregroundColor(Color.cyan) // Color.cyan lo rende invisibile */
+            CSDivider()
+                
                   ScrollView(showsIndicators: false){
                         
                           ForEach($viewModel.allMyProperties) { $property in
@@ -51,7 +52,7 @@ struct PropertyListView: View {
           .navigationBarItems(
               trailing:
                   
-          LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color.mint, imageFore: Color.white) {
+          LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white) {
               
               withAnimation {
                   self.wannaAddNewProperty.toggle()

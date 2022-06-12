@@ -66,7 +66,18 @@ import SwiftUI
 
 }
 
-
+/// Ritorna l'immagine associata allo Status del Modello
+@ViewBuilder func vbEstrapolaStatusImage<M:MyModelStatusConformity>(item:M) -> some View {
+    
+    let image = item.status.imageAssociated()
+    let color = item.status.transitionStateColor()
+    
+        Image(systemName: image)
+            .imageScale(.large)
+            .foregroundColor(color)
+        
+ 
+}
 
 
 /// ViewBuilder - Riconosce il modello e ritorna la rowView associata
@@ -77,7 +88,7 @@ import SwiftUI
      switch item.self {
          
      case is MenuModel:
-         MenuModel_RowView(item: item as! MenuModel)
+         MenuModel_RowView(menuItem: item as! Binding<MenuModel>)
          
      case is DishModel:
          DishModel_RowView(item: item as! DishModel)
@@ -100,14 +111,14 @@ struct CSZStackVB<Content:View>:View {
     var body: some View {
         
         ZStack {
-            
-            backgroundColorView.edgesIgnoringSafeArea(.top)
-            
-            content
+
+            backgroundColorView.edgesIgnoringSafeArea(.top).zIndex(0)
+            content.zIndex(1)
             
         }
-        .background(backgroundColorView.opacity(0.4))
+        .background(backgroundColorView.opacity(0.6))
         .navigationTitle(Text(title))
+       
     }
 }
 

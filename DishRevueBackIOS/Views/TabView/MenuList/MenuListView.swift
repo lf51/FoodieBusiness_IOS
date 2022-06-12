@@ -13,7 +13,7 @@ struct MenuListView: View {
     @Binding var tabSelection: Int
     let backgroundColorView: Color
     
-    @State private var openCreateNewMenu: Bool = false
+  //  @State private var openCreateNewMenu: Bool = false
     
     var body: some View {
         
@@ -26,13 +26,20 @@ struct MenuListView: View {
             .navigationBarItems(
                 trailing:
              
-                    LargeBar_TextPlusButton(buttonTitle: "Nuovo Menu", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
+                    NavigationLink(destination: {
+                        NuovoMenuMainView(backgroundColorView: backgroundColorView)
+                    }, label: {
+                        LargeBar_Text(title: "Nuovo Menu", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
+                    })
+                    
+                    
+                   /* LargeBar_TextPlusButton(buttonTitle: "Nuovo Menu", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openCreateNewMenu.toggle()
-                    }
+                    } */
                 )
-            .fullScreenCover(isPresented: self.$openCreateNewMenu, content: {
+          /*  .fullScreenCover(isPresented: self.$openCreateNewMenu, content: {
                 NuovoMenuMainView(backgroundColorView: backgroundColorView)
-            })
+            }) */
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }

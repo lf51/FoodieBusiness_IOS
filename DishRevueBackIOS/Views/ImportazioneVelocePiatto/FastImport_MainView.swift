@@ -20,7 +20,7 @@ struct FastImport_MainView: View {
  
     var body: some View {
         
-        CSZStackVB(title: "Importazione Rapida", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: "Piatto + Ingredienti", backgroundColorView: backgroundColorView) {
             
             VStack {
                 
@@ -71,6 +71,35 @@ struct FastImport_MainView: View {
                         
                         if showSubString {
                             
+                            TabView {
+                                
+                                ForEach($allFastDish) { $fastDish in
+                                    
+                                    CSZStackVB_Framed(frameWidth: 380, rateWH: 1.5) {
+
+                                        VStack {
+                                            FastImport_CorpoScheda(fastDish: $fastDish) { newDish in
+                                                withAnimation(.spring()) {
+                                                    fastSave(item: newDish)
+                                                }
+                                            }
+                                            Spacer()
+                                        }
+                                        .padding()
+                                    }
+
+                                }
+                            }
+                            .frame(height:570)
+                            .tabViewStyle(PageTabViewStyle())
+                            
+
+                        } // Chiusa ifshoSubstring
+                        
+                        
+                        
+                      /*  if showSubString {
+                            
                             ScrollView(.horizontal,showsIndicators: false) {
                                 
                                 HStack {
@@ -95,7 +124,7 @@ struct FastImport_MainView: View {
                                 }
                             }
     
-                        } // Chiusa ifshoSubstring
+                        } // Chiusa ifshoSubstring */ // Deprecated 03.06
                        
                 Spacer()
                        // Text("\(manipolaStringa())")

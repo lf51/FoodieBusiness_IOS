@@ -20,7 +20,7 @@ struct LinkSignInSheetView: View {
   
     }()
     
-  //  let backgroundColorView = Color("BusinessColor_1")
+  //  let backgroundColorView = Color("SeaTurtlePalette_1")
     
     var body: some View {
       

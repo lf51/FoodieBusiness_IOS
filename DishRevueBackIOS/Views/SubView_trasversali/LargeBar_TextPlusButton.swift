@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// Ritorna un HStack con testo(optional) + Button(Image(optional) + testo(optionale))
 struct LargeBar_TextPlusButton: View {
     
     var buttonTitle: String? = nil
@@ -47,5 +48,32 @@ struct LargeBar_TextPlusButton: View {
             })
             
         }
+    }
+}
+
+/// Ritorna un HStack con Image(due immagini sovrapposte e clipshaped in Circle customizzabili) + Testo(optional)
+struct LargeBar_Text: View {
+    
+    var title: String? = nil
+    var font: Font? = .largeTitle
+    var imageBack: Color? = Color.blue
+    var imageFore: Color? = Color.white
+    
+    var body: some View {
+                
+            HStack {
+                    
+                    Image(systemName: "plus.circle")
+                        .font(font)
+                        .background(imageBack.clipShape(Circle()))
+                        .foregroundColor(imageFore)
+                     
+                    
+                    Text(title ?? "")
+                        .font(font)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.black)
+                   
+                }
     }
 }

@@ -7,6 +7,21 @@
 
 import Foundation
 
+struct DishAvaibleForDiet: MyModelProtocol {
+
+    var intestazione: String { get {self.diet.intestazione} set { } }
+    var descrizione: String { get {self.diet.descrizione} set { } }
+    var id: String {self.diet.id}
+  //  var status: StatusModel = .bozza // Non serve a nulla || Da sistemare
+    
+    let diet: DishTipologia
+    var ingredientOUT: [IngredientModel]
+    var ingredientIN: [IngredientModel]
+    
+}
+
+
+
 enum DishAvaibleFor: MyEnumProtocol {
     
     // E' la possibilità di un piatto in Categoria standard di essere disponibile con modifiche per un'altra categoria
@@ -45,4 +60,4 @@ enum DishAvaibleFor: MyEnumProtocol {
         
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
-}
+} // deprecata in futuro -> sostituita da una struct

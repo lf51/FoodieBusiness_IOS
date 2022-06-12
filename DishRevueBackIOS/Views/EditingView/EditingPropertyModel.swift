@@ -8,6 +8,7 @@
 import SwiftUI
 import MapKit
 
+
 struct EditingPropertyModel: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -15,6 +16,8 @@ struct EditingPropertyModel: View {
     let backgroundColorView: Color
     
     @State private var openMenuList: Bool? = false
+    @State private var wannaAddDescription: Bool? = false
+    @State private var activeEditMenuLink: Bool = false
     
     var body: some View {
         
@@ -25,52 +28,117 @@ struct EditingPropertyModel: View {
                 CSDivider()
                     
                 ScrollView(showsIndicators:false) {
+
+                    VStack(alignment:.leading) {
+                        
+                        CSLabel_1Button(
+                            placeHolder: "Descrizione Pubblica",
+                            imageNameOrEmojy: "scribble",
+                            backgroundColor: Color.black,
+                            toggleBottone: $wannaAddDescription)
+                                                
+                        if wannaAddDescription ?? false {
+                            
+                            CSTextEditor_ModelDescription(itemModel: $itemModel)
+                        } else {
+                            
+                            Text(itemModel.descrizione == "" ? "Nessuna descrizione inserita. Press [+] " : itemModel.descrizione)
+                                .italic()
+                                .fontWeight(.light)
+                            
+                        }
+                        
+                    }.disabled(openMenuList!)
                     
                     VStack(alignment:.leading) {
                         
-                        Text("Data ultimo aggiornamento gg/mm/yyyy")
-                         
-                    } // Box Iniziale
-                    .padding(.bottom)
-                    
-                    CSLabel_1Button(
-                        placeHolder: "Descrizione",
-                        imageNameOrEmojy: "scribble",
-                        backgroundColor: Color.black)
-                    CSTextEditor_ModelDescription(itemModel: $itemModel)
-                    
-                    CSLabel_1Button(
-                        placeHolder: "Info Servizio",
-                        imageNameOrEmojy: nil,
-                        backgroundColor: Color.black )
-                    
-                    Text("giorno di chiusura - dedotto da menu")
-                    Text("Giorni/Orario di lavoro - dedotto da menu")
-                    
-                  CSLabel_2Button(
-                    placeHolder: "Menu In",
-                    imageName: "scroll",
-                    backgroundColor: Color.black,
-                    toggleBottoneTEXT: $openMenuList,
-                    testoBottoneTEXT: "Seleziona")
-                    
-                    Text("Appariranno i Menu In della Proprietà")
-                    
-                    ForEach(itemModel.menuIn) { menu in
-                        
-                        Text(menu.intestazione)
+                        CSLabel_2Button(
+                          placeHolder: "Menu In",
+                          imageName: "scroll",
+                          backgroundColor: Color.black,
+                          toggleBottoneTEXT: $openMenuList,
+                          testoBottoneTEXT: "Edit")
+                        .disabled(wannaAddDescription!)
+
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                
+                                HStack {
+                                    
+                                    ForEach($itemModel.menuIn) { $myMenu in
+                                     
+                                        
+                                        MenuModel_RowLabelMenu(menuItem: $myMenu, backgroundColorView: backgroundColorView)
+                                        
+                                     /*   Menu {
+                                            
+                                            Button {
+                                                self.activeEditMenuLink = true
+                                            } label: {
+                                                HStack {
+                                                    
+                                                    Text("Modifica")
+                                                    Image(systemName: "arrow.up.right.square")
+                                                      
+                                                }
+                                            }
+
+
+                                            
+                                            Button {
+                                                //
+                                            } label: {
+                                                HStack {
+                                                    Text("Metti in Pausa")
+                                                    
+                                                    Image(systemName: "pause.circle")
+                                                
+                                                    
+                                                }
+                                            }
+
+                                            
+                                        } label: {
+                                            
+                                            NavigationLink(isActive: $activeEditMenuLink) {
+                                            
+                                                NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView)
+                                                
+                                                
+                                            } label: {
+                                                MenuModel_RowView(item: menu)
+                                            }
+
+                                            
+                                            
+                                           
+                                        } */
+
+                                        
+                                        
+                                    }
+                                }
+                            }
                     }
-                     
                     
+                    VStack(alignment:.leading) {
+                        
+                        CSLabel_1Button(
+                              placeHolder: "Servizio",
+                              imageNameOrEmojy: "info.circle",
+                              backgroundColor: Color.black )
+                          
+                         estrapolaGiorniChiusura()
+              
+                    }
+                                       
                 } // Chiusa Scroll View
                 
-                
-              
+             CSDivider()
                 
             } // Chiusa VStack Madre
             .padding(.horizontal)
             
-            if openMenuList! {
+           if openMenuList! {
                 
                 SelettoreMyModel<_,MenuModel>(
                     itemModel: $itemModel,
@@ -82,6 +150,69 @@ struct EditingPropertyModel: View {
         } // Chiusa ZStack Madre
         
     }
+    
+ 
+    private func estrapolaGiorniChiusura() -> some View {
+        
+        var giorniServizio:[GiorniDelServizio] = []
+        
+        for menu in itemModel.menuIn {
+            
+            giorniServizio.append(contentsOf: menu.giorniDelServizio)
+           
+        }
+        
+        let setGiorni = Set(giorniServizio)
+        let setAllDay = Set(GiorniDelServizio.allCases)
+        
+        let dayOff = setAllDay.subtracting(setGiorni)
+    
+        if dayOff.isEmpty {
+            
+            return  HStack {
+                Text("Sempre Aperto")
+                    .fontWeight(.bold)
+                    .foregroundColor(Color.black)
+                
+                Text("Se si intende impostare un giorno di chiusura occorre modificare i giorni di servizio dei menu.")
+                    .italic()
+                    .fontWeight(.light)
+                    .font(.system(.caption, design: .default))
+                    .foregroundColor(Color.black)
+            }
+            
+        } else {
+            
+            let dayOffOrdered = dayOff.sorted{$0.orderValue() < $1.orderValue() }
+            
+            var corpoTesto:[String] = []
+            
+            for day in dayOffOrdered {
+                
+                let dayString = day.simpleDescription()
+               // corpoTesto += "\(dayString) • "
+                corpoTesto.append(dayString)
+                
+            }
+            
+            let incipit = dayOff.count < 2 ? "Giorno" : "Giorni"
+          
+            return HStack(alignment:.top) {
+                
+                Text("\(incipit) di chiusura:")
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color.black)
+                
+               Text("\(corpoTesto, format: .list(type: .and))")
+                   .fontWeight(.heavy)
+                   .font(.system(.body, design: .default))
+                   .foregroundColor(Color.red.opacity(0.9))
+                
+            }
+        }
+    }
+    
+    
 }
 
 struct EditingPropertyModel_Previews: PreviewProvider {
@@ -97,11 +228,12 @@ struct EditingPropertyModel_Previews: PreviewProvider {
     
     static var previews: some View {
 
-        NavigationView {
-            EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color.cyan)
+       NavigationView {
+            EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color("SeaTurtlePalette_1"))
         }
         .navigationBarTitleDisplayMode(.large)
         .navigationViewStyle(StackNavigationViewStyle())
-        .environmentObject(AccounterVM())
+        
     }
 }
+

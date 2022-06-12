@@ -29,7 +29,7 @@ struct SelectionPropertyIngrediente_NewDishSubView: View {
             
             if !(creaCaseConservazione ?? false) {
                 
-                EnumScrollCases(cases: ConservazioneIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.conservazione, colorSelection: Color.green)
+                PropertyScrollCases(cases: ConservazioneIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.conservazione, colorSelection: Color.green)
                 
             } else {
                 
@@ -48,7 +48,7 @@ struct SelectionPropertyIngrediente_NewDishSubView: View {
             
             if !(creaNuovaProvenienza ?? false) {
             
-            EnumScrollCases(cases: ProvenienzaIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.provenienza, colorSelection: Color.brown)
+            PropertyScrollCases(cases: ProvenienzaIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.provenienza, colorSelection: Color.brown)
             
             } else {
                 
@@ -68,7 +68,7 @@ struct SelectionPropertyIngrediente_NewDishSubView: View {
             
             if !(creaNuovoMetodoProduzione ?? false) {
             
-            EnumScrollCases(cases: ProduzioneIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.produzione, colorSelection: Color.green)
+            PropertyScrollCases(cases: ProduzioneIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.produzione, colorSelection: Color.green)
             
             } else {
                 

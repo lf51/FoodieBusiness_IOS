@@ -159,21 +159,31 @@ struct FastImport_IngredientRow: View {
                    .foregroundColor(Color.black.opacity(0.8))
         
         } else {
+            
+            let listaAllergeni:[String] = estrapolaListaAllergeni()
+            
+            Text(listaAllergeni,format: .list(type: .and))
+                .italic()
+                .fontWeight(.light)
+                .font(.caption2)
+                .foregroundColor(Color.black)
   
-                    ForEach(ingredient.allergeni) { allergene in
-
-                        Text(allergene.simpleDescription())
-                            .italic()
-                            .fontWeight(.light)
-                            .font(.caption2)
-                            .foregroundColor(Color.black)
-    
-                        Text("•")
-                            .font(.caption2)
-                            .foregroundColor(Color.red.opacity(0.6))
-                    }
             }
         
+    }
+    
+    private func estrapolaListaAllergeni() -> [String] {
+        
+        var listaAllergeni:[String] = []
+        
+        for allergene in self.ingredient.allergeni {
+            
+            let allergeneName = allergene.simpleDescription()
+            listaAllergeni.append(allergeneName)
+            
+        }
+        
+        return listaAllergeni
     }
     
     

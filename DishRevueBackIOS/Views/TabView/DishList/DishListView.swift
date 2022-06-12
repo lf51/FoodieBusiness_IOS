@@ -52,19 +52,33 @@ struct DishListView: View {
               // }
 
             }
-           // .navigationTitle(Text("I Miei Piatti"))
             .navigationBarItems(
+                 trailing:
+              
+                    NavigationLink(destination: {
+                        NewDishMainView(backgroundColorView: backgroundColorView)
+                    }, label: {
+
+                        LargeBar_Text(title: "Nuovo Piatto", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
+                        
+                        })
+  
+                )
+            
+            
+            
+           /* .navigationBarItems(
                 trailing:
              
                     LargeBar_TextPlusButton(buttonTitle: "Nuovo Piatto", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openCreateNewDish.toggle()
                     }
                 )
-           // .navigationBarTitleDisplayMode(.large)
+
             .fullScreenCover(isPresented: self.$openCreateNewDish, content: {
                 NewDishMainView(backgroundColorView: backgroundColorView)
-            })
-           // .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
+            }) */ // Deprecated 02.06
+    
         
         }.navigationViewStyle(StackNavigationViewStyle())
     }

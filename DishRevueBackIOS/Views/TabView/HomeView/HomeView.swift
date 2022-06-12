@@ -36,30 +36,45 @@ struct HomeView: View {
                     
                  //   Text("Box da riempire")
                     
-                    HStack {
+                    CS_BoxContainer {
+                        FastImport_MainView(backgroundColorView: backgroundColorView)
+                    } smallBoxUp: {
+                        NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
+                    } smallBoxMiddle: {
+                        Text("Box Vuoto")
+                    } smallBoxDown: {
+                        Text("Box Vuoto")
+                    }
+
+                    
+                    
+                    
+                    
+                    
+                 /*   HStack {
                        
                         NavigationLink {
                             FastImport_MainView(backgroundColorView: backgroundColorView)
                         } label: {
                         CS_IconaRomboidale(
                             image: "bolt",
-                            backgroundColor: Color("BusinessColor_1"),
+                            backgroundColor: Color("SeaTurtlePalette_1"),
                             title: "Piatti")
                         }
                     //    .fixedSize()
                         
                         NavigationLink {
-                          //  FastImport_MainView(backgroundColorView: backgroundColorView)
+                          NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
                         } label: {
                         CS_IconaRomboidale(
                             image: "bolt",
-                            backgroundColor: Color("BusinessColor_1"),
+                            backgroundColor: Color("SeaTurtlePalette_1"),
                             title: "Categorie")
                         }
                       //  .fixedSize()
                  
                         Spacer()
-                    }
+                    } */
                     
                     
                    
@@ -104,7 +119,7 @@ struct HomeView: View {
 
                 }, label: {
                     Image(systemName: "person.fill")
-                        .foregroundColor(.black)
+                        .foregroundColor(Color("SeaTurtlePalette_2"))
                 }),
                 trailing: NavigationLink(
                     destination: {
@@ -120,6 +135,7 @@ struct HomeView: View {
                                 .foregroundColor(Color.white)
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                                 .imageScale(.medium)
+                                .foregroundColor(Color.white)
                                 
                         }
                     })
@@ -142,7 +158,7 @@ struct HomeView: View {
             } */
             
         }
-        .accentColor(Color.white)
+      //  .accentColor(Color.white) // --> Non abbiamco capito il lavoro e l'abbiamo disattivata
         .navigationViewStyle(StackNavigationViewStyle())
         
          // End NavigationView

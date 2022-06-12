@@ -23,14 +23,19 @@ struct FastImport_CorpoScheda:View {
         VStack(alignment:.leading) {
             
             CSLabel_conVB(placeHolder: "Crea Nuovo Piatto:", imageNameOrEmojy: "fork.knife.circle", backgroundColor: Color.black) {
-                                
-                CSButton_image(frontImage: "doc.badge.plus", imageScale: .large, frontColor: Color.white) { checkBeforeSave() }
-                    ._tightPadding()
-                    .background(
-                        Circle()
-                            .fill(Color.blue.opacity(0.5))
-                            .shadow(radius: 5.0)
+
+                Group {
+                    
+                    Spacer()
+                    
+                    CSButton_image(frontImage: "doc.badge.plus", imageScale: .large, frontColor: Color.white) { checkBeforeSave() }
+                        ._tightPadding()
+                        .background(
+                            Circle()
+                                .fill(Color.blue.opacity(0.5))
+                                .shadow(radius: 5.0)
                     )
+                }
                 
             }
   

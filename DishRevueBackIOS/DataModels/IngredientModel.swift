@@ -9,7 +9,7 @@ import Foundation
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel: MyModelProtocol {
+struct IngredientModel: MyModelProtocol,MyModelStatusConformity {
     
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return
@@ -36,9 +36,10 @@ struct IngredientModel: MyModelProtocol {
     var allergeni: [AllergeniIngrediente] = []
     var origine: OrigineIngrediente = .defaultValue
     
- 
+    var status: StatusModel = .bozza
     
-    var alertItem: AlertModel?
+    var alertItem: AlertModel? // Deprecata --> Spostata nel viewModel
+    
     //
    
     

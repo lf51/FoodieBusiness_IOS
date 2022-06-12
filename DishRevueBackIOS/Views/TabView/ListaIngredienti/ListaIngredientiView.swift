@@ -29,7 +29,7 @@ struct ListaIngredientiView: View {
     @Binding var tabSelection: Int
     let backgroundColorView: Color
     
-    @State private var openNuovoIngrediente: Bool = false
+   // @State private var openNuovoIngrediente: Bool = false
     
     var body: some View {
         
@@ -53,15 +53,23 @@ struct ListaIngredientiView: View {
             .navigationBarItems(
                 trailing:
                     
-                    LargeBar_TextPlusButton(buttonTitle: "Nuovo Ingrediente", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
+                    
+                NavigationLink(destination: {
+                    NuovoIngredienteMainView(backgroundColorView: backgroundColorView)
+                }, label: {
+                    LargeBar_Text(title: "Nuovo Ingrediente", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
+                })
+                    
+                    
+                  /*  LargeBar_TextPlusButton(buttonTitle: "Nuovo Ingrediente", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openNuovoIngrediente.toggle()
-                    }
+                    } */
                 )
            // .navigationBarTitleDisplayMode(.large)
             //.navigationViewStyle(StackNavigationViewStyle())
-            .fullScreenCover(isPresented: self.$openNuovoIngrediente, content: {
+          /*  .fullScreenCover(isPresented: self.$openNuovoIngrediente, content: {
                 NuovoIngredienteMainView(backgroundColorView: backgroundColorView)
-            })
+            }) */
          //   .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
     
         }.navigationViewStyle(StackNavigationViewStyle())

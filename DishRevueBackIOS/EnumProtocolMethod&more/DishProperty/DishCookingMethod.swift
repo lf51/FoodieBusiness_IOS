@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum DishCookingMethod: MyEnumProtocol  {
+enum DishCookingMethod: MyEnumProtocol  { // Deprecata 03.06 -> Informazione che genera confusione, I singoli ingredienti possono essere cotti in modi diversi, tante volte non c'è modo di indicare la cottura esatta di un piatto. Info che potremmo forse spostare sul singolo ingrediente, ma che potrebbe variare da piatto in piatto. Per cui la mettiamo in STAND-BY
     
     // Valutare di mantenere l'ultima scelta o meno in stile DishType
     

@@ -97,6 +97,8 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
 
 struct DataModelCategoryView_Previews: PreviewProvider {
     
+    @State static var menuItem:MenuModel = MenuModel(nome: "SomeDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi])
+    
     static var previews: some View {
         
         ZStack {
@@ -105,7 +107,7 @@ struct DataModelCategoryView_Previews: PreviewProvider {
             
             Group {
                 
-                MenuModel_RowView(item: MenuModel(nome: "SomeDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi]))
+                MenuModel_RowView(menuItem:$menuItem )
                 
             }
         }
