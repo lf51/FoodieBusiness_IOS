@@ -16,7 +16,7 @@ struct PropertyModel_RowView: View {
     var body: some View {
             
         CSZStackVB_Framed {
-                    
+            
                     VStack(alignment:.leading) {
             
                         HStack(alignment: .center) {

@@ -24,7 +24,7 @@ import SwiftUI
  */
 
 
-
+/* // INIZIO BACKUP 18.06
 
 
 struct ItemModelCategoryViewBuilder: View {
@@ -61,16 +61,28 @@ struct ItemModelCategoryViewBuilder: View {
   
     }
     
-
-    
     @ViewBuilder func vbModelList(mapCategory: MapCategoryContainer, filterCategory: MapCategoryContainer) -> some View {
     
         switch mapCategory {
             
         case .menuAz:
-   
-            DataModelAlphabeticViewTEST_Sub(stringSearch: self.$stringSearch, filterCategory: filterCategory, dataFiltering: $viewModel.allMyMenu)
+            
+     
+            
+           DataModelAlphabeticViewTEST_Sub(stringSearch: self.$stringSearch, dataFiltering: $viewModel.allMyMenu)
           
+         /*   DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyMenu, stringSearch: self.$stringSearch) {
+                
+                let dataFiltering = viewModel.allMyMenu.filter({ model in
+                    
+                    let firstBool = viewModel.deepFiltering(model: model, filterCategory: filterCategory)
+                    let secondBool = viewModel.stringResearch(item: model, stringaRicerca: self.stringSearch)
+                    
+                    return firstBool && secondBool
+                })
+                return dataFiltering
+            } */
+            
         case .ingredientAz:
             DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyIngredients, stringSearch: self.$stringSearch) {
                 
@@ -448,4 +460,4 @@ struct Conferma_Previews: PreviewProvider {
 
 
 
-
+*/ // BACKUP 18.06

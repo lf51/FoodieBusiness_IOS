@@ -17,7 +17,7 @@ struct EditingPropertyModel: View {
     
     @State private var openMenuList: Bool? = false
     @State private var wannaAddDescription: Bool? = false
-    @State private var activeEditMenuLink: Bool = false
+  //  @State private var activeEditMenuLink: Bool = false
     
     var body: some View {
         
@@ -39,7 +39,10 @@ struct EditingPropertyModel: View {
                                                 
                         if wannaAddDescription ?? false {
                             
-                            CSTextEditor_ModelDescription(itemModel: $itemModel)
+                        //    CSTextEditor_ModelDescription(itemModel: $itemModel)
+                            CSTextField_ExpandingBox(itemModel: $itemModel, maxDescriptionLenght: 300)
+                            
+                            
                         } else {
                             
                             Text(itemModel.descrizione == "" ? "Nessuna descrizione inserita. Press [+] " : itemModel.descrizione)
@@ -66,54 +69,18 @@ struct EditingPropertyModel: View {
                                     
                                     ForEach($itemModel.menuIn) { $myMenu in
                                      
-                                        
-                                        MenuModel_RowLabelMenu(menuItem: $myMenu, backgroundColorView: backgroundColorView)
-                                        
-                                     /*   Menu {
+                                        MenuModel_RowLabelMenu(menuItem: $myMenu, backgroundColorView: backgroundColorView) {
                                             
-                                            Button {
-                                                self.activeEditMenuLink = true
-                                            } label: {
-                                                HStack {
-                                                    
-                                                    Text("Modifica")
-                                                    Image(systemName: "arrow.up.right.square")
-                                                      
-                                                }
-                                            }
-
-
-                                            
-                                            Button {
-                                                //
-                                            } label: {
-                                                HStack {
-                                                    Text("Metti in Pausa")
-                                                    
-                                                    Image(systemName: "pause.circle")
+                                            Button("Remove") {
                                                 
-                                                    
-                                                }
-                                            }
-
-                                            
-                                        } label: {
-                                            
-                                            NavigationLink(isActive: $activeEditMenuLink) {
-                                            
-                                                NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView)
+                                                let index = itemModel.menuIn.firstIndex(of: myMenu)
+                                                itemModel.menuIn.remove(at: index!)
                                                 
                                                 
-                                            } label: {
-                                                MenuModel_RowView(item: menu)
                                             }
-
                                             
-                                            
-                                           
-                                        } */
-
-                                        
+                                        }
+                                   
                                         
                                     }
                                 }
@@ -231,8 +198,8 @@ struct EditingPropertyModel_Previews: PreviewProvider {
        NavigationView {
             EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color("SeaTurtlePalette_1"))
         }
-        .navigationBarTitleDisplayMode(.large)
-        .navigationViewStyle(StackNavigationViewStyle())
+      //  .navigationBarTitleDisplayMode(.large)
+       // .navigationViewStyle(StackNavigationViewStyle())
         
     }
 }

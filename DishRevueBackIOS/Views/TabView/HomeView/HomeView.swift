@@ -15,6 +15,93 @@ struct HomeView: View {
     let backgroundColorView: Color
 
     @State private var wannaAddNewProperty:Bool = false
+    var screenHeight: CGFloat = UIScreen.main.bounds.height
+   
+    @State private var path = NavigationPath()
+    
+    var body: some View {
+        
+        NavigationStack(path:$path) {
+      
+            CSZStackVB(title:authProcess.userInfo?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {
+
+                VStack(alignment: .leading) {
+                    
+                    CS_BoxContainer {
+                        FastImport_MainView(backgroundColorView: backgroundColorView)
+                    } smallBoxUp: {
+                        NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
+                    } smallBoxMiddle: {
+                        Text("Box Vuoto")
+                    } smallBoxDown: {
+                        Text("Box Vuoto")
+                    }
+          
+                    Spacer()
+                    // Box Novità
+                    Text("Box Novità")
+                    
+                    Spacer()
+                    
+                } // VStack End
+                .padding(.horizontal)
+            }// chiusa ZStack
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    
+                    NavigationLink {
+                        AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
+                    } label: {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Color("SeaTurtlePalette_2"))
+                    }
+   
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    
+                    NavigationLink {
+                        PropertyListView(backgroundColorView: backgroundColorView)
+                    } label: {
+                        HStack {
+                            Text("Proprietà")
+                                .fontWeight(.bold)
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                                .imageScale(.medium)
+                        }
+                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                    }
+                }
+            }
+          
+        }
+  
+    }
+    
+
+}
+
+struct HomeView_Previews: PreviewProvider {
+ 
+    static var previews: some View {
+        
+        NavigationStack {
+            
+            HomeView(authProcess: AuthPasswordLess(), backgroundColorView: Color("SeaTurtlePalette_1"))
+        }
+
+    }
+}
+
+
+
+/*struct HomeView: View {
+    
+    @ObservedObject var authProcess: AuthPasswordLess
+    @EnvironmentObject var viewModel: AccounterVM
+    let backgroundColorView: Color
+
+    @State private var wannaAddNewProperty:Bool = false
     
   //  @State private var isPresentedMenu: Bool = false // duplica la wannaCreateMenu: Necessaria perchè l'isPresented dello sheet non accetta optional
   //  @State private var wannaCreateMenu: Bool? = false {didSet {isPresentedMenu = wannaCreateMenu!}}
@@ -112,6 +199,7 @@ struct HomeView: View {
             }// chiusa ZStack
           //  .background(backgroundColorView.opacity(0.4))
           //  .navigationTitle("\(Text(authProcess.userInfo?.userDisplayName ?? ""))")
+            
             .navigationBarItems(
                 leading: NavigationLink(destination: {
                     
@@ -132,12 +220,13 @@ struct HomeView: View {
                             
                             Text("Proprietà")
                                 .fontWeight(.bold)
-                                .foregroundColor(Color.white)
+                               // .foregroundColor(Color.white)
                             Image(systemName: "rectangle.portrait.and.arrow.right")
                                 .imageScale(.medium)
-                                .foregroundColor(Color.white)
+                               // .foregroundColor(Color.white)
                                 
                         }
+                        .foregroundColor(Color("SeaTurtlePalette_4"))
                     })
             )
            // .navigationBarTitleDisplayMode(.large)
@@ -180,17 +269,9 @@ struct HomeView: View {
             print("Utente NON Auth, Apertura Sheet Authentication")
         }
     } */
-}
+} */ // BACKUP per Cambio fra NavView to NAvStack 13.06
 
-/*struct HomeView_Previews: PreviewProvider {
- 
-    static var previews: some View {
-        
-    HomeView(authProcess: AuthPasswordLess(), backgroundColorView: Color.cyan)
-        
-      /*  TESTView(accounterVM: AccounterVM(), currentProperty: vm.propertyExample, backgroundColor: Color.cyan)*/
-    }
-} */
+
 
 
 /*struct TESTView: View {

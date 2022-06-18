@@ -7,20 +7,36 @@
 
 import SwiftUI
 
-
-/// MenuModel-RowView come label di un Menu con due bottoni, fra cui uno con navigationLink
-struct MenuModel_RowLabelMenu:View {
+enum MenuModelOption {
     
+    case modifica,duplica
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+        case .modifica:
+            return "Modifica"
+        case .duplica:
+            return "Duplica"
+        }
+    }
+}
+
+/// MenuModel-RowView come label di un Menu 
+struct MenuModel_RowLabelMenu<Content:View>:View {
+    
+    @EnvironmentObject var viewModel: AccounterVM
     @Binding var menuItem: MenuModel
     let backgroundColorView: Color
-    @State private var activeEditMenuLink = false
-    
+    @ViewBuilder var content: Content
+  //  @State private var activeEditMenuLink = false
+   
     var body: some View {
         
         
         Menu {
             
-            Button {
+          /*  Button {
                 self.activeEditMenuLink = true
             } label: {
                 HStack {
@@ -29,45 +45,64 @@ struct MenuModel_RowLabelMenu:View {
                     Image(systemName: "arrow.up.right.square")
                       
                 }
-            }
-  
-            vbStatusButton()
-           /* Button {
-                menuItem.status = .completo(.inPausa)
-            } label: {
-                HStack {
-                    Text("Metti in Pausa")
-                    
-                    Image(systemName: "pause.circle")
-                
-                    
-                }
             } */
+          /*  NavigationLink("Modifica") {
+                Text("Modifica")
+            }
+            NavigationLink("Duplica") {
+                Text("Duplica")
+            } */
+
+                content
+
+      
+                vbStatusButton()
+            
+            
+            Button {
+               let index = self.viewModel.allMyMenu.firstIndex(of: menuItem)
+                self.viewModel.allMyMenu.remove(at: index!)
+            } label: {
+                Text("Rimuovi")
+            }
+
 
             
         } label: {
-            
-            NavigationLink(isActive: $activeEditMenuLink) {
-            
-                NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: backgroundColorView)
-                
-                
-            } label: {
-                MenuModel_RowView(menuItem: $menuItem)
-            }
+
+              MenuModel_RowView(menuItem: $menuItem)
+          /*  NavigationLink(
+                isActive: $activeEditMenuLink) {
+                    NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: backgroundColorView)
+                } label: {
+                    MenuModel_RowView(menuItem: $menuItem)
+                } */
+
+        
 
             
             
            
         }
         
-        
-     
     }
     
     // Method
     
     @ViewBuilder private func vbStatusButton() -> some View {
+        
+        
+        if menuItem.status == .bozza {
+            
+            Button {
+                menuItem.status = .completo(.inPausa)
+            } label: {
+                Text("MarcaCompleto")
+            }
+
+            
+        } // Da ELIMINARE x TEST
+        
         
         if menuItem.status == .completo(.pubblico) {
             
@@ -89,7 +124,7 @@ struct MenuModel_RowLabelMenu:View {
                 menuItem.status = .completo(.pubblico)
             } label: {
                 HStack {
-                    Text("Ritorna Pubblico")
+                    Text("Pubblica")
                     
                     Image(systemName: "play.circle")
                 
@@ -114,11 +149,6 @@ struct MenuModel_RowView: View {
     
     var body: some View {
         
-      /*  ZStack(alignment:.leading) {
-            
-            RoundedRectangle(cornerRadius: 5.0)
-                .fill(Color.white.opacity(0.3))
-                .shadow(radius: 5.0) */
         CSZStackVB_Framed {
             
             VStack {
@@ -136,9 +166,7 @@ struct MenuModel_RowView: View {
                     // Status
                     
                     vbEstrapolaStatusImage(item: menuItem)
-                 /*   Image(systemName: "circle.fill")
-                        .foregroundColor(Color.green) */
-                    //
+
                 }
                 .padding()
                     
@@ -160,13 +188,8 @@ struct MenuModel_RowView: View {
             } // chiuda VStack madre
          
         } // chiusa Zstack Madre
-       // .background(Color.red)
-    //    .frame(width: 300, height: 150)
-
     }
     
-    // Method
-        
 }
 
 struct MenuModel_RowView_Previews: PreviewProvider {
@@ -175,27 +198,22 @@ struct MenuModel_RowView_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        ZStack {
+
+        NavigationStack {
             
-            Color.cyan.ignoresSafeArea()
-            
-            Group {
+           /* MenuModel_RowLabelMenu(menuItem: $menuItem, backgroundColorView: Color("SeaTurtlePalette_1") {
                 
-                MenuModel_RowView(menuItem: $menuItem)
-                
-              /*  MenuModel_RowView(item: MenuModel(
-                    nome: "FerialDay",
-                    tipologia: .fisso(persone: "2", costo: "25"),
-                    giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi]))
-                */
-                
-               /* DishModel_RowView(item: DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carne, categoria: .primo, tipologia: .standard))
-                
-                IngredientModel_RowView(item: IngredientModel(nome: "Guanciale", provenienza: .Italia, metodoDiProduzione: .convenzionale, conservazione: .custom("Stagionato"))) */
-                
-            }
-            
+                Text("Test Preview")
+            } */
+                                   
+            MenuModel_RowLabelMenu(menuItem: $menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), content: {
+                Text("Test Preview")
+            })
+                                   
         }
+                
+            
+        
         
     }
 }
@@ -207,12 +225,14 @@ struct MenuModel_RowView_Previews: PreviewProvider {
             
             Image(systemName: day.imageAssociated() ?? "circle")
                 .imageScale(.large)
+                .foregroundColor(Color("SeaTurtlePalette_2"))
                 .zIndex(0)
             
             if !arrayData.contains(day) {
                 
                 Image(systemName: "circle.slash")
                     .imageScale(.large)
+                    .foregroundColor(Color("SeaTurtlePalette_2"))
                     .zIndex(1)
                 
             }
@@ -237,6 +257,8 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         ForEach(rangePax, id:\.self) { _ in
         
            Image(systemName: "person")
+                .imageScale(.large)
+                .foregroundColor(Color("SeaTurtlePalette_2"))
                 .padding(.trailing,-10)
             
         }
@@ -258,15 +280,16 @@ struct MenuModel_RowView_Previews: PreviewProvider {
             
             case .allaCarta:
                 Image(systemName: "cart")
-                
+                   
             case .fisso(_, let price):
                 Text("( \(price) € )")
-                
+                    
             default: EmptyView()
                 
             }
         }
         .font(.callout)
+        .foregroundColor(Color("SeaTurtlePalette_2"))
  
 }
 

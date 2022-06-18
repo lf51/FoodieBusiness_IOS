@@ -88,7 +88,9 @@ import SwiftUI
      switch item.self {
          
      case is MenuModel:
-         MenuModel_RowView(menuItem: item as! Binding<MenuModel>)
+       //  let bItem = Binding(item as! Binding<MenuModel>)
+         Text("\(item.intestazione)")
+       //  MenuModel_RowView(menuItem: item as! Binding<MenuModel>)
          
      case is DishModel:
          DishModel_RowView(item: item as! DishModel)
@@ -112,7 +114,11 @@ struct CSZStackVB<Content:View>:View {
         
         ZStack {
 
-            backgroundColorView.edgesIgnoringSafeArea(.top).zIndex(0)
+           // backgroundColorView.edgesIgnoringSafeArea(.top).zIndex(0)
+            Rectangle()
+                .fill(backgroundColorView.gradient)
+                .edgesIgnoringSafeArea(.top)
+                .zIndex(0)
             content.zIndex(1)
             
         }
@@ -162,10 +168,12 @@ struct CSZStackVB_Framed<Content:View>:View {
             ZStack(alignment:.leading) {
                 
                 RoundedRectangle(cornerRadius: 5.0)
-                    .fill(Color.white.opacity(backgroundOpacity!))
-                    .shadow(radius: 3.0)
+                    .fill(Color.white.gradient.opacity(backgroundOpacity!))
+                    .shadow(color:Color.black,radius: 5.0)
+                    .zIndex(0)
                 
                 content
+                    .zIndex(1)
                 
             }
             .frame(maxWidth: 400)

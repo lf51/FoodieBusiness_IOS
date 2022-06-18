@@ -70,6 +70,9 @@ struct CSTextField_2: View {
 }
 
 
+
+
+
 /* struct CustomTextFieldView_Previews: PreviewProvider {
     static var previews: some View {
         CSTextField(text: <#Binding<String>#>, placeholder: <#String#>, symbolName: <#String#>)

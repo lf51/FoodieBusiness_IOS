@@ -36,21 +36,23 @@ struct ListaIngredientiView: View {
         NavigationView {
             
             CSZStackVB(title: "I Miei Ingredienti", backgroundColorView: backgroundColorView) {
-                
-            
-          /*  ZStack {
-                
-                backgroundColorView.edgesIgnoringSafeArea(.top) */
-                
-               // VStack(alignment:.leading) {
+
   
                 ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory)
-      
-               // }
 
+            }.toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        NuovoIngredienteMainView(backgroundColorView: backgroundColorView)
+                    } label: {
+                        LargeBar_Text(title: "Nuovo Ingrediente", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
+                    }
+
+                }
             }
-          //  .navigationTitle(Text("I Miei Ingredienti"))
-            .navigationBarItems(
+            
+         
+           /* .navigationBarItems(
                 trailing:
                     
                     
@@ -64,7 +66,7 @@ struct ListaIngredientiView: View {
                   /*  LargeBar_TextPlusButton(buttonTitle: "Nuovo Ingrediente", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openNuovoIngrediente.toggle()
                     } */
-                )
+                ) */
            // .navigationBarTitleDisplayMode(.large)
             //.navigationViewStyle(StackNavigationViewStyle())
           /*  .fullScreenCover(isPresented: self.$openNuovoIngrediente, content: {
@@ -72,7 +74,7 @@ struct ListaIngredientiView: View {
             }) */
          //   .background(backgroundColorView.opacity(0.4)) // colora la tabItemBar
     
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }//.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 /*

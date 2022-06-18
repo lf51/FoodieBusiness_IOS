@@ -114,6 +114,6 @@ struct CS_BoxContainer_Previews: PreviewProvider {
             }
 
             
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }//.navigationViewStyle(StackNavigationViewStyle())
     }
 }

@@ -58,7 +58,10 @@ struct PropertyModel: MyModelProtocol {
     
   //  var scheduleServizio: [IntestazioneMenu] = [.colazione,.pranzo]
     
-    var menuIn: [MenuModel] = [] // doppia scrittura con propertiesWhereIsIn in MenuModel
+    var menuIn: [MenuModel] = [
+        MenuModel(nome: "MenuDaEliminare", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi])
+    
+    ] // doppia scrittura con propertiesWhereIsIn in MenuModel
     
     lazy var serviceSchedule: [GiorniDelServizio:[(String,String)]] = { // Deprecata
         

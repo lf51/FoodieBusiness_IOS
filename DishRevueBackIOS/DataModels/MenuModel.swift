@@ -21,6 +21,7 @@ struct MenuModel:MyModelProtocol,MyModelStatusConformity {
         lhs.giorniDelServizio == rhs.giorniDelServizio &&
         lhs.oraInizio == rhs.oraInizio &&
         lhs.oraFine == rhs.oraFine
+      
         
     }
     

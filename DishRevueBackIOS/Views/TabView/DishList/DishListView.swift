@@ -37,22 +37,22 @@ struct DishListView: View {
         NavigationView {
             
             CSZStackVB(title: "I Miei Piatti", backgroundColorView: backgroundColorView) {
-                
-            
-            
-           /* ZStack {
-                
-                backgroundColorView.edgesIgnoringSafeArea(.top) */
-                
-              //  VStack(alignment:.leading) {
+ 
                     
                         ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allDishMapCategory)
-              
-                
-              // }
 
             }
-            .navigationBarItems(
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        NewDishMainView(backgroundColorView: backgroundColorView)
+                    } label: {
+                        LargeBar_Text(title: "Nuovo Piatto", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
+                    }
+
+                }
+            }
+          /*  .navigationBarItems(
                  trailing:
               
                     NavigationLink(destination: {
@@ -63,7 +63,7 @@ struct DishListView: View {
                         
                         })
   
-                )
+                ) */
             
             
             
@@ -80,7 +80,7 @@ struct DishListView: View {
             }) */ // Deprecated 02.06
     
         
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }//.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

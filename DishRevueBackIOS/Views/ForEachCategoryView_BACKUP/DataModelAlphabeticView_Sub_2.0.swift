@@ -5,28 +5,42 @@
 //  Created by Calogero Friscia on 10/04/22.
 //
 
+/* // INIZIO BACKUP 18.06
+
+
 import SwiftUI
 
-
+@ViewBuilder func csVbSwitchModelRowViewTEST<T:MyModelProtocol>(item:T) -> some View {
+     
+    switch item.self {
+         
+     case is MenuModel:
+     
+            Text("MenuModel")
+            
+        // MenuModel_RowView(menuItem: $item as! Binding<MenuModel>)
+     case is DishModel:
+        
+        Text("Ciao")
+      //   DishModel_RowView(item: item as! DishModel)
+ 
+     case is IngredientModel:
+        Text("Ciao")
+       //  IngredientModel_RowView(item: item as! IngredientModel)
+         
+     default:  Text("item is a notListed Type")
+         
+     }
+ }
 
 
 struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
     
   //  let dataContainer: [T] // Non Serve a nulla ?
   //  @Binding var dataContainer: [T]
-    @EnvironmentObject var viewModel: AccounterVM
     @Binding var stringSearch: String
    // let dataFiltering: () -> [T]
     @Binding var dataFiltering: [T]
-    let filterCategory: MapCategoryContainer
-    
-    init(stringSearch: Binding<String>,filterCategory:MapCategoryContainer, dataFiltering: Binding<[T]>) {
-        _stringSearch = stringSearch  
-        _dataFiltering = dataFiltering
-        self.filterCategory = filterCategory
-    }
-
-    
     var body: some View {
         
             ScrollView(showsIndicators: false) {
@@ -38,13 +52,19 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
                     
                  //   csVbSwitchModelRowViewTEST(item: &dataFiltering)
                    // ForEach(dataFiltering().sorted{$0.intestazione < $1.intestazione})
-                    ForEach($dataFiltering.sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione }){ $item in
+                    ForEach($dataFiltering){ $item in
                         
-                       
-                        
-                       HStack {
-                           csVbSwitchModelRowViewTEST(item: $item)
-                       
+                        HStack {
+                            MenuModel_RowLabelMenu(menuItem: $item as! Binding<MenuModel>, backgroundColorView: Color("SeaTurtlePalette_1")) {
+                                
+                                Text("Modifica Piano")
+                                Button("Rimuovi") {
+                                    let index = dataFiltering.firstIndex(of: item)
+                                    dataFiltering.remove(at: index!)
+                                }
+                            }
+                          // MenuModel_RowView(menuItem: $item as! Binding<MenuModel>)
+                          //  csVbSwitchModelRowViewTEST(item: item)
                             Spacer() // Possiamo mettere una view di fianco ogni schedina
     
                         }
@@ -58,55 +78,11 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
     
     // Method
     
-    @ViewBuilder private func csVbSwitchModelRowViewTEST<T:MyModelProtocol>(item:Binding<T>) -> some View {
-  
-        let localItem: T = item.wrappedValue
-        
-        let isIn: Bool = {
-            
-            let firstBool = viewModel.deepFiltering(model: localItem, filterCategory: self.filterCategory)
-            let secondBool = viewModel.stringResearch(item: localItem, stringaRicerca: self.stringSearch)
-            
-            return firstBool && secondBool
-        
-        }()
-        
-        if isIn {
-            
-            switch item.self {
-                 
-             case is Binding<MenuModel>:
-             
-                    MenuModel_RowLabelMenu(menuItem: item as! Binding<MenuModel>, backgroundColorView: Color("SeaTurtlePalette_1")) {
-                        
-                        Text("Modifica Piano")
-                 
-                    }
-                           
-             case is Binding<DishModel>:
-                
-                Text("Da Settare - Dish: \(localItem.intestazione)")
-             //   DishModel_RowView(item: item as! Binding<DishModel>)
-         
-             case is Binding<IngredientModel>:
-                Text("Da Setttare - Ingrediente: \(localItem.intestazione)")
-               //  IngredientModel_RowView(item: item as! Binding<IngredientModel>)
-                 
-             default:  Text("item is a notListed Type")
-                 
-             }
-            
-            
-            
-            
-        } else { EmptyView()}
-        
-        
-        
-        
-        
-     }
- 
+   
+
+    
+    
+    
 }
 
 
@@ -117,8 +93,8 @@ struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
     let dataContainer: [T] // Non Serve a nulla ?
   //  @Binding var dataContainer: [T]
     @Binding var stringSearch: String
-    let dataFiltering: () -> [T]
-  //  @Binding var dataFiltering: [T]
+   // let dataFiltering: () -> [T]
+    var dataFiltering: () -> [T]
     var body: some View {
         
             ScrollView(showsIndicators: false) {
@@ -127,10 +103,10 @@ struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
                     
                     CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
               
-                   ForEach(dataFiltering().sorted{$0.intestazione < $1.intestazione}) { item in
+                    ForEach(dataFiltering().sorted{$0.intestazione < $1.intestazione}) { item in
                         
                         HStack {
-                         //  csVbSwitchModelRowViewTEST(item: $item)
+                           
                             csVbSwitchModelRowView(item: item)
                             Spacer() // Possiamo mettere una view di fianco ogni schedina
     
@@ -156,3 +132,7 @@ struct DataModelAlphabeticView_Sub_Previews: PreviewProvider {
     }
 }
 */
+
+
+
+ */ // FINE BACKUP 18.06

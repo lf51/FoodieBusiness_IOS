@@ -44,12 +44,34 @@ struct PropertyListView: View {
                                 PropertyModel_RowView(itemModel: $property)
    
                           } // chiusa ForEach
+                      
+                      
+                      
+                      
+                      
+                      
                   }
             }
             .padding(.horizontal)
         }
-        //  .navigationTitle(Text("Le Mie Proprietà"))
-          .navigationBarItems(
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white) {
+                    
+                    withAnimation {
+                        self.wannaAddNewProperty.toggle()
+                    }
+                        }
+            }
+        }
+        .sheet(isPresented: self.$wannaAddNewProperty) {
+            
+            NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
+          
+    }
+        
+        
+          /*.navigationBarItems(
               trailing:
                   
           LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white) {
@@ -58,13 +80,9 @@ struct PropertyListView: View {
                   self.wannaAddNewProperty.toggle()
               }
                   }
-              )
+              ) */
          // .navigationBarTitleDisplayMode(.large)
-          .sheet(isPresented: self.$wannaAddNewProperty) {
-              
-              NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
-            
-      }
+         
        // .background(backgroundColorView.opacity(0.4))
     }
     

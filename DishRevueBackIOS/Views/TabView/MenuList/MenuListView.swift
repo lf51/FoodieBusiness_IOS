@@ -17,13 +17,26 @@ struct MenuListView: View {
     
     var body: some View {
         
-        NavigationView {
+        NavigationStack {
             
             CSZStackVB(title: "I Miei Menu", backgroundColorView: backgroundColorView) {
                     
                 ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
             }
-            .navigationBarItems(
+            .toolbar {
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        NuovoMenuMainView(backgroundColorView: backgroundColorView)
+                    } label: {
+                        LargeBar_Text(title: "Nuovo Menu", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
+                    }
+
+                }
+                
+                
+            }
+           /* .navigationBarItems(
                 trailing:
              
                     NavigationLink(destination: {
@@ -36,11 +49,11 @@ struct MenuListView: View {
                    /* LargeBar_TextPlusButton(buttonTitle: "Nuovo Menu", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
                         self.openCreateNewMenu.toggle()
                     } */
-                )
+                ) */
           /*  .fullScreenCover(isPresented: self.$openCreateNewMenu, content: {
                 NuovoMenuMainView(backgroundColorView: backgroundColorView)
             }) */
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }//.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

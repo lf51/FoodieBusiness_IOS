@@ -17,7 +17,7 @@ struct MainView: View {
         
     var body: some View {
             
-        TabView(selection:$tabSelector) {
+        TabView(selection:$tabSelector) { // Deprecata da Apple / Sostituire
                 
             HomeView(authProcess: authProcess, backgroundColorView: backgroundColorView)
                     .badge(0) // Il pallino rosso delle notifiche !!!

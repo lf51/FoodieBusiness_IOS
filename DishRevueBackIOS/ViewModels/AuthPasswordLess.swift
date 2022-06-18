@@ -20,7 +20,8 @@ class AuthPasswordLess: ObservableObject {
 
     init() {
         print("Init -> AuthPassWordLess")
-        checkUserSignedIn()
+      //  checkUserSignedIn()
+        self.openSignInView = false // -> Ripistinare in futuro il checkUserSignedIn() / l'impostazione su false qui ci serve a bypassare l'auth nel simulatore
     }
     
     func sendSignInLink() {

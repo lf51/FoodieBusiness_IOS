@@ -14,7 +14,8 @@ struct LinkSignInSheetView: View {
     let backgroundColorView: ZStack = {
         
         ZStack {
-            Color.cyan
+          //  Color.cyan
+            Color("SeaTurtlePalette_1")
             Color.white.opacity(0.4)
         }
   
