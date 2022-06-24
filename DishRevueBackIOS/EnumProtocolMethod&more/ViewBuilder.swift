@@ -67,10 +67,10 @@ import SwiftUI
 }
 
 /// Ritorna l'immagine associata allo Status del Modello
-@ViewBuilder func vbEstrapolaStatusImage<M:MyModelStatusConformity>(item:M) -> some View {
+@ViewBuilder func vbEstrapolaStatusImage<M:MyModelStatusConformity>(itemModel:M) -> some View {
     
-    let image = item.status.imageAssociated()
-    let color = item.status.transitionStateColor()
+    let image = itemModel.status.imageAssociated()
+    let color = itemModel.status.transitionStateColor()
     
         Image(systemName: image)
             .imageScale(.large)
@@ -80,10 +80,10 @@ import SwiftUI
 }
 
 
-/// ViewBuilder - Riconosce il modello e ritorna la rowView associata
+/// ViewBuilder - Riconosce il modello e ritorna la rowView associata. Deprecato e sostituito da viewBuilder più articolati creati localmente che usano Binding.
 /// - Parameter item: <#item description#>
 /// - Returns: <#description#>
-@ViewBuilder func csVbSwitchModelRowView<M:MyModelProtocol>(item: M) -> some View {
+/*@ViewBuilder func csVbSwitchModelRowView<M:MyModelProtocol>(item: M) -> some View {
      
      switch item.self {
          
@@ -101,7 +101,34 @@ import SwiftUI
      default:  Text("item is a notListed Type")
          
      }
+ } */
+
+/// ViewBuilder - Riconosce il modello e ritorna la rowView associata.
+/// - Parameter item: <#item description#>
+/// - Returns: <#description#>
+@ViewBuilder func csVbSwitchModelRowView<M:MyModelProtocol>(itemModel: Binding<M>) -> some View {
+     
+     switch itemModel.self {
+         
+     case is Binding<MenuModel>:
+         MenuModel_RowView(menuItem: itemModel as! Binding<MenuModel>)
+         
+     case is Binding<DishModel>:
+         DishModel_RowView(item: itemModel as! Binding<DishModel>)
+ 
+     case is Binding<IngredientModel>:
+         IngredientModel_RowView(item: itemModel as! Binding<IngredientModel>)
+         
+     case is Binding<PropertyModel>:
+         PropertyModel_RowView(itemModel: itemModel as! Binding<PropertyModel>)
+         
+     default:
+         Text("ItemModel type not lysted")
+         
+     }
  }
+
+
 
 ///ZStack con Sfondo Colorato, NavigationTitle e backgroundOpacity a livello tabBar. Standard ListModelView
 struct CSZStackVB<Content:View>:View {

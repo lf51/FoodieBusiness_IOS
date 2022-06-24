@@ -87,9 +87,7 @@ class AccounterVM: ObservableObject {
          /*   self.alertItem = AlertModel(
                 title: "Errore - Piatto Esistente",
                 message: "Modifica il nome del piatto nell'Editor ed estrai nuovamente il testo.") */
-            
-             
-        
+     
         self.allMyDish.append(item)
         
         var newIngredient:[IngredientModel] = []

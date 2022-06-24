@@ -35,7 +35,7 @@ struct ItemModelCategoryViewBuilder: View {
 
     @State private var mapCategory: MapCategoryContainer
     @State private var filterCategory: MapCategoryContainer = .defaultValue // il resetValue
-    @State private var stringSearch: String = ""
+   // @State private var stringSearch: String = "" // deprecato -> Evitiamo di portarci la stringa di ricerca fra i vari picker di filtraggio
     
     init(dataContainer:[MapCategoryContainer]) {
        
@@ -53,7 +53,7 @@ struct ItemModelCategoryViewBuilder: View {
                 DataModelPickerView_SubView(dataContainer: dataContainer, mapCategory: $mapCategory, filterCategory: $filterCategory)
             }
                 
-                vbModelList(mapCategory: mapCategory, filterCategory: filterCategory)
+                vbModelList()
    
                 Spacer()
         }
@@ -61,374 +61,70 @@ struct ItemModelCategoryViewBuilder: View {
   
     }
     
-
-    
-    @ViewBuilder func vbModelList(mapCategory: MapCategoryContainer, filterCategory: MapCategoryContainer) -> some View {
-    
-        switch mapCategory {
+    @ViewBuilder private func vbModelList() -> some View {
+    // Abbiamo realizzato una versione generica che però fatica a funzionare. Non abbiamo voluto perderci tempo per farla funzionare, uno perchè non sapevamo come, e due perchè non volevamo perderci troppo tempo dato che questa versione funziona e non richiede tanto più linee di codice della generica
+        switch self.mapCategory {
             
         case .menuAz:
    
-            DataModelAlphabeticViewTEST_Sub(stringSearch: self.$stringSearch, filterCategory: filterCategory, dataFiltering: $viewModel.allMyMenu)
+            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyMenu)
           
         case .ingredientAz:
-            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyIngredients, stringSearch: self.$stringSearch) {
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ model in
-                    
-                    let firstBool = viewModel.deepFiltering(model: model, filterCategory: filterCategory)
-                    let secondBool = viewModel.stringResearch(item: model, stringaRicerca: self.stringSearch)
-                    
-                    return firstBool && secondBool
-                })
-                return dataFiltering
-            }
+            
+            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyIngredients)
+   
         case .dishAz:
-            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyDish, stringSearch: self.$stringSearch) {
-                
-                let dataFiltering = viewModel.allMyDish.filter({ model in
-                    
-                    let firstBool = viewModel.deepFiltering(model: model, filterCategory: filterCategory)
-                    let secondBool = viewModel.stringResearch(item: model, stringaRicerca: self.stringSearch)
-                    
-                    return firstBool && secondBool
-                })
-                return dataFiltering
-                
-            }
+            
+            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyDish)
             
         case .tipologiaMenu:
-            let dataMapping = viewModel.allMyMenu.map({$0.tipologia})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
+        
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \MenuModel.tipologia, dataPath: \.allMyMenu)
             
-            DataModelCategoryView_SubView<MenuModel, TipologiaMenu>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-       
-                let dataFiltering = viewModel.allMyMenu.filter({ item in
-                    let firstBool = item.tipologia.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
         case .giorniDelServizio:
-            let dataMapping = GiorniDelServizio.allCases
-           // let dataMappingManipolato = myRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<MenuModel, GiorniDelServizio>(dataMapping: dataMapping, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyMenu.filter({ item in
-                    let firstBool = item.giorniDelServizio.contains(element)
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
+         
+            DataModelCategoryView_SubView(dataMapping: GiorniDelServizio.allCases, filterCategory: self.filterCategory, collectionPath: \MenuModel.giorniDelServizio, dataPath: \.allMyMenu)
+            
         case .statusMenu:
             notListed()
             
         case .conservazione:
-            let dataMapping = viewModel.allMyIngredients.map({$0.conservazione})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<IngredientModel, ConservazioneIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ item in
-                    let firstBool = item.conservazione.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .produzione:
-            let dataMapping = viewModel.allMyIngredients.map({$0.produzione})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<IngredientModel, ProduzioneIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ item in
-                    let firstBool = item.produzione.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .provenienza:
-            let dataMapping = viewModel.allMyIngredients.map({$0.provenienza})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<IngredientModel, ProvenienzaIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ item in
-                    let firstBool = item.provenienza.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
             
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.conservazione, dataPath: \.allMyIngredients)
+
+        case .produzione:
+
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.produzione, dataPath: \.allMyIngredients)
+
+        case .provenienza:
+
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.provenienza, dataPath: \.allMyIngredients)
+
         case .categoria:
             
-            let dataMapping = viewModel.allMyDish.map({$0.categoria})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<DishModel, DishCategoria>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyDish.filter({ item in
-                    let firstBool = item.categoria.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.categoria, dataPath: \.allMyDish)
+            
         case .base:
+
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.aBaseDi, dataPath: \.allMyDish)
             
-            let dataMapping = viewModel.allMyDish.map({$0.aBaseDi})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<DishModel, OrigineIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyDish.filter({ item in
-                    let firstBool = item.aBaseDi.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
         case .tipologiaPiatto:
-            
-            let dataMapping = viewModel.allMyDish.map({$0.tipologia})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<DishModel, DishTipologia>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyDish.filter({ item in
-                    let firstBool = item.tipologia.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
+ 
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.tipologia,  dataPath: \.allMyDish)
+
         case .statusPiatto:
             notListed()
             
         case .reset:
             EmptyView() // Non viene mai letto, perchè il .reset non è inserito in nessun AllCases
         }
-    }
+    } // BACKUP 19.06
     
     func notListed() -> some View {
         Text("Dentro ViewBuilder allCases - Case non settato")
     }
     
 }
-
-
-
-/*struct ItemModelCategoryViewBuilder: View {
-    
-    @EnvironmentObject var viewModel: AccounterVM
-
-    let dataContainer:[MapCategoryContainer]
-
-    @State private var mapCategory: MapCategoryContainer
-    @State private var filterCategory: MapCategoryContainer = .defaultValue // il resetValue
-    @State private var stringSearch: String = ""
-    
-    init(dataContainer:[MapCategoryContainer]) {
-       
-        self.dataContainer = dataContainer
-        mapCategory = dataContainer[0] // il default
-        print("INIT -> ItemModelCategoryViewBuilder - Struct:View - type: \(mapCategory.simpleDescription())")
-    }
-    
-    var body: some View {
-
-        VStack(alignment:.leading) {
-
-            HStack {
-                
-                DataModelPickerView_SubView(dataContainer: dataContainer, mapCategory: $mapCategory, filterCategory: $filterCategory)
-            }
-                
-                vbModelList(mapCategory: mapCategory, filterCategory: filterCategory)
-   
-                Spacer()
-        }
-        .padding(.horizontal)
-  
-    }
-    
-    @ViewBuilder func vbModelList(mapCategory: MapCategoryContainer, filterCategory: MapCategoryContainer) -> some View {
-    
-        switch mapCategory {
-            
-        case .menuAz:
-            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyMenu, stringSearch: self.$stringSearch) {
-                
-                let dataFiltering = viewModel.allMyMenu.filter({ model in
-                    
-                    let firstBool = viewModel.deepFiltering(model: model, filterCategory: filterCategory)
-                    let secondBool = viewModel.stringResearch(item: model, stringaRicerca: self.stringSearch)
-                    
-                    return firstBool && secondBool
-                })
-                return dataFiltering
-            }
-        case .ingredientAz:
-            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyIngredients, stringSearch: self.$stringSearch) {
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ model in
-                    
-                    let firstBool = viewModel.deepFiltering(model: model, filterCategory: filterCategory)
-                    let secondBool = viewModel.stringResearch(item: model, stringaRicerca: self.stringSearch)
-                    
-                    return firstBool && secondBool
-                })
-                return dataFiltering
-            }
-        case .dishAz:
-            DataModelAlphabeticView_Sub(dataContainer: viewModel.allMyDish, stringSearch: self.$stringSearch) {
-                
-                let dataFiltering = viewModel.allMyDish.filter({ model in
-                    
-                    let firstBool = viewModel.deepFiltering(model: model, filterCategory: filterCategory)
-                    let secondBool = viewModel.stringResearch(item: model, stringaRicerca: self.stringSearch)
-                    
-                    return firstBool && secondBool
-                })
-                return dataFiltering
-                
-            }
-            
-        case .tipologiaMenu:
-            let dataMapping = viewModel.allMyMenu.map({$0.tipologia})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            
-            DataModelCategoryView_SubView<MenuModel, TipologiaMenu>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-       
-                let dataFiltering = viewModel.allMyMenu.filter({ item in
-                    let firstBool = item.tipologia.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .giorniDelServizio:
-            let dataMapping = GiorniDelServizio.allCases
-           // let dataMappingManipolato = myRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<MenuModel, GiorniDelServizio>(dataMapping: dataMapping, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyMenu.filter({ item in
-                    let firstBool = item.giorniDelServizio.contains(element)
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .statusMenu:
-            notListed()
-            
-        case .conservazione:
-            let dataMapping = viewModel.allMyIngredients.map({$0.conservazione})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<IngredientModel, ConservazioneIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ item in
-                    let firstBool = item.conservazione.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .produzione:
-            let dataMapping = viewModel.allMyIngredients.map({$0.produzione})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<IngredientModel, ProduzioneIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ item in
-                    let firstBool = item.produzione.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .provenienza:
-            let dataMapping = viewModel.allMyIngredients.map({$0.provenienza})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<IngredientModel, ProvenienzaIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyIngredients.filter({ item in
-                    let firstBool = item.provenienza.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-            
-        case .categoria:
-            
-            let dataMapping = viewModel.allMyDish.map({$0.categoria})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<DishModel, DishCategoria>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyDish.filter({ item in
-                    let firstBool = item.categoria.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .base:
-            
-            let dataMapping = viewModel.allMyDish.map({$0.aBaseDi})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<DishModel, OrigineIngrediente>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyDish.filter({ item in
-                    let firstBool = item.aBaseDi.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .tipologiaPiatto:
-            
-            let dataMapping = viewModel.allMyDish.map({$0.tipologia})
-            let dataMappingManipolato = csRipulisciArray(array: dataMapping)
-            DataModelCategoryView_SubView<DishModel, DishTipologia>(dataMapping: dataMappingManipolato, stringSearch: self.$stringSearch) { element in
-                
-                let dataFiltering = viewModel.allMyDish.filter({ item in
-                    let firstBool = item.tipologia.returnTypeCase() == element
-                    let secondBool = viewModel.deepFiltering(model: item, filterCategory: filterCategory)
-                    let thirdBool = viewModel.stringResearch(item: item, stringaRicerca: self.stringSearch)
-                    return firstBool && secondBool && thirdBool
-                })
-                return dataFiltering
-            }
-        case .statusPiatto:
-            notListed()
-            
-        case .reset:
-            EmptyView() // Non viene mai letto, perchè il .reset non è inserito in nessun AllCases
-        }
-    }
-    
-    func notListed() -> some View {
-        Text("Dentro ViewBuilder allCases - Case non settato")
-    }
-    
-}*/ //  BACKUP 17.06 -> Per Trasformazione da let a Binding dei Model nelle Row
-
-
-
 
 
 struct Conferma_Previews: PreviewProvider {

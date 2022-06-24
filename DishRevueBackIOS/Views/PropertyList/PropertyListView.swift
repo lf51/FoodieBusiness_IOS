@@ -24,17 +24,10 @@ struct PropertyListView: View {
     var body: some View {
         
         CSZStackVB(title: "Le Mie Proprietà", backgroundColorView: backgroundColorView) {
-    
-        
-      /*  ZStack {
-            
-            backgroundColorView.edgesIgnoringSafeArea(.top) */
+ 
             
             VStack(alignment:.leading, spacing: 10.0) {
-                
-              /*  RoundedRectangle(cornerRadius: 10.0) // da lo stacco per evitare l'inline.
-                    .frame(height: 2.0)
-                    .foregroundColor(Color.cyan) // Color.cyan lo rende invisibile */
+   
             CSDivider()
                 
                   ScrollView(showsIndicators: false){
@@ -44,24 +37,25 @@ struct PropertyListView: View {
                                 PropertyModel_RowView(itemModel: $property)
    
                           } // chiusa ForEach
-                      
-                      
-                      
-                      
-                      
-                      
+                     
                   }
+               
             }
             .padding(.horizontal)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white) {
+                LargeBar_TextPlusButton(
+                    buttonTitle: "Registra Proprietà",
+                    font: .callout,
+                    imageBack: viewModel.allMyProperties.isEmpty ? Color("SeaTurtlePalette_2") : Color.red.opacity(0.6),
+                    imageFore: Color("SeaTurtlePalette_4")) {
                     
                     withAnimation {
-                        self.wannaAddNewProperty.toggle()
+                      
+                        self.addNewPropertyCheck() // Abbiamo scelto di sviluppare come SingleProperty, ma Manteniamo una impostazione da "MultiProprietà" per eventuali sviluppi futuri e ci limitiamo quindi a disabilitare la possibilità di aggiungere altre proprietà dopo la prima.
                     }
-                        }
+                }
             }
         }
         .sheet(isPresented: self.$wannaAddNewProperty) {
@@ -87,6 +81,20 @@ struct PropertyListView: View {
     }
     
     // Method
+    
+    private func addNewPropertyCheck() {
+        
+        guard viewModel.allMyProperties.isEmpty else {
+            
+            viewModel.alertItem = AlertModel(
+                title: "⛔️ Restrizioni Account",
+                message: "Spiacenti. Raggiunto il numero max di proprietà registrabili.")
+            
+            return }
+        
+        self.wannaAddNewProperty = true
+        
+    }
     
 }
 

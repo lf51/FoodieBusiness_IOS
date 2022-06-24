@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// M1 è il modello da Modificare. M2 è il modello da listare. Ex: M1 è la proprietà, M2 è il MenuModel associato alla proprietà
+/// M1 è il modello da Modificare. M2 è il modello da listare. Ex: M1 è la proprietà, M2 è il Model associato alla proprietà
 struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -68,7 +68,7 @@ struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
            if let destinationKeypath = anyKeyPath as? WritableKeyPath<M1,[M2]> {
   
               MostraEOrdinaModel(listaAttiva: $itemModel[dynamicMember: destinationKeypath])
-            
+              
            } else {Text("Keypath errato")}
        
        }

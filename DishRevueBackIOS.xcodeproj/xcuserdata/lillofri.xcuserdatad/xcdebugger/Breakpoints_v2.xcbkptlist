@@ -46,10 +46,519 @@
             filePath = "DishRevueBackIOS/Views/EditingView/EditingPropertyModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "body"
             landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2285BD7E-137B-4405-B997-CFA872636075"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/OBSOLETE/ForEachCategoryView_BACKUP/ItemModelCategoryViewBuilder_2.0.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "64"
+            endingLineNumber = "64"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "0D6AA786-60B8-4783-B72D-497C40A4D0A6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/OBSOLETE/ForEachCategoryView_BACKUP/ItemModelCategoryViewBuilder_2.0.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4761AB4B-1141-47DD-8FD9-9D11661F16D3"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "fastSave(item:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "FDFBD745-B747-4B74-8600-832E0F024741"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "fastSave(item:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AA41266F-22B2-4CEF-8FC5-DA8BCB2C13DB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "fastSave(item:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F87BE5C4-D944-4B13-94EB-101F2ABA807C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "937A702E-96FC-4EBB-AA1E-6AA218EC25AB"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "136"
+            endingLineNumber = "136"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "06F8FEC9-F096-4CE4-A4AF-C1198C4CE2E2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1BF8A13E-4A7B-4BE7-BFED-725D9823290E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "67B41849-084E-4DAF-B61E-0EE06B940569"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E61861CD-8923-428D-95E4-5D0D68654199"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "143"
+            endingLineNumber = "143"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5A048226-1900-4664-A0A1-72375794E94F"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "145"
+            endingLineNumber = "145"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "5A048226-1900-4664-A0A1-72375794E94F - dcbb95f7eac2a2ef"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "DishRevueBackIOS.FastImport_MainView.reBuildIngredientContainer(localAllFastDish: Swift.Array&lt;DishRevueBackIOS.DishModel&gt;) -&gt; ()"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "145"
+                  endingLineNumber = "145"
+                  offsetFromSymbolStart = "1436">
+               </Location>
+               <Location
+                  uuid = "5A048226-1900-4664-A0A1-72375794E94F - dcbb95f7eac2a2ef"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "DishRevueBackIOS.FastImport_MainView.reBuildIngredientContainer(localAllFastDish: Swift.Array&lt;DishRevueBackIOS.DishModel&gt;) -&gt; ()"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "145"
+                  endingLineNumber = "145"
+                  offsetFromSymbolStart = "1729">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "090D2C0C-3298-4E58-9B3D-C310D412B23E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3B62AE04-8921-4F46-B560-BADC971DB998"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "reBuildIngredientContainer(localAllFastDish:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "563A90B0-9880-4C80-9C0D-56703488330E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
+            landmarkName = "fastSave(item:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "045B5A1F-4EAE-4B1F-B970-62B7C647E1E6"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "119"
+            endingLineNumber = "119"
+            landmarkName = "fastSave(item:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "C1126957-1104-41B6-AEF2-A217369C0529"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "fastSave(item:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "4805A70E-A05D-42F9-A6FE-0C198CDEEB9F"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "fastSave(item:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "4805A70E-A05D-42F9-A6FE-0C198CDEEB9F - 5840ae2af729faaa"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "DishRevueBackIOS.FastImport_MainView.fastSave(item: DishRevueBackIOS.DishModel) -&gt; ()"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "282">
+               </Location>
+               <Location
+                  uuid = "4805A70E-A05D-42F9-A6FE-0C198CDEEB9F - d4f5dc0ce3446353"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (DishRevueBackIOS.DishModel) -&gt; Swift.Bool in DishRevueBackIOS.FastImport_MainView.fastSave(item: DishRevueBackIOS.DishModel) -&gt; ()"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "157"
+                  endingLineNumber = "157"
+                  offsetFromSymbolStart = "101">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D49A5891-C03F-4DC9-ABFB-EFC719662B33"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
+            landmarkName = "estrapolaStringhe()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "053B47FE-D160-408F-AC0D-597CD0043A07"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "462C9833-7F54-4518-A14A-76A8555C64C4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "76"
+            endingLineNumber = "76"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "462C9833-7F54-4518-A14A-76A8555C64C4 - 71e4354f2a6f2222"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, &lt;&lt;opaque return type of SwiftUI.View.onChange&lt;&#x3c4;_0_0 where &#x3c4;_1_0: Swift.Equatable&gt;(of: &#x3c4;_1_0, perform: (&#x3c4;_1_0) -&gt; ()) -&gt; some&gt;&gt;.0, SwiftUI.HStack&lt;SwiftUI.TupleView&lt;(&lt;&lt;opaque return type of SwiftUI.View.disabled(Swift.Bool) -&gt; some&gt;&gt;.0, SwiftUI.Spacer, SwiftUI.Text)&gt;&gt;, Swift.Optional&lt;SwiftUI.ForEach&lt;SwiftUI.Binding&lt;Swift.Array&lt;DishRevueBackIOS.DishModel&gt;&gt;, Swift.String, DishRevueBackIOS.CSZStackVB_Framed&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;&gt;&gt;, SwiftUI.Spacer)&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0 in closure #1 () -&gt; SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, SwiftUI.ScrollView&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;)&gt; in closure #1 () -&gt; SwiftUI.VStack&lt;SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, SwiftUI.ScrollView&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;)&gt;&gt; in DishRevueBackIOS.FastImport_MainView.body.getter : some"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "3841">
+               </Location>
+               <Location
+                  uuid = "462C9833-7F54-4518-A14A-76A8555C64C4 - b33de77a221ab8c7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "implicit closure #1 (SwiftUI.Binding&lt;DishRevueBackIOS.DishModel&gt;) -&gt; DishRevueBackIOS.CSZStackVB_Framed&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt; in closure #1 () -&gt; SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, &lt;&lt;opaque return type of SwiftUI.View.onChange&lt;&#x3c4;_0_0 where &#x3c4;_1_0: Swift.Equatable&gt;(of: &#x3c4;_1_0, perform: (&#x3c4;_1_0) -&gt; ()) -&gt; some&gt;&gt;.0, SwiftUI.HStack&lt;SwiftUI.TupleView&lt;(&lt;&lt;opaque return type of SwiftUI.View.disabled(Swift.Bool) -&gt; some&gt;&gt;.0, SwiftUI.Spacer, SwiftUI.Text)&gt;&gt;, Swift.Optional&lt;SwiftUI.ForEach&lt;SwiftUI.Binding&lt;Swift.Array&lt;DishRevueBackIOS.DishModel&gt;&gt;, Swift.String, DishRevueBackIOS.CSZStackVB_Framed&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;&gt;&gt;, SwiftUI.Spacer)&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0 in closure #1 () -&gt; SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, SwiftUI.ScrollView&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;)&gt; in closure #1 () -&gt; SwiftUI.VStack&lt;SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, SwiftUI.ScrollView&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;)&gt;&gt; in DishRevueBackIOS.FastImport_MainView.body.getter : some"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "139">
+               </Location>
+               <Location
+                  uuid = "462C9833-7F54-4518-A14A-76A8555C64C4 - 30de5383d402f974"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #4 (SwiftUI.Binding&lt;DishRevueBackIOS.DishModel&gt;) -&gt; DishRevueBackIOS.CSZStackVB_Framed&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt; in implicit closure #1 (SwiftUI.Binding&lt;DishRevueBackIOS.DishModel&gt;) -&gt; DishRevueBackIOS.CSZStackVB_Framed&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt; in closure #1 () -&gt; SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, &lt;&lt;opaque return type of SwiftUI.View.onChange&lt;&#x3c4;_0_0 where &#x3c4;_1_0: Swift.Equatable&gt;(of: &#x3c4;_1_0, perform: (&#x3c4;_1_0) -&gt; ()) -&gt; some&gt;&gt;.0, SwiftUI.HStack&lt;SwiftUI.TupleView&lt;(&lt;&lt;opaque return type of SwiftUI.View.disabled(Swift.Bool) -&gt; some&gt;&gt;.0, SwiftUI.Spacer, SwiftUI.Text)&gt;&gt;, Swift.Optional&lt;SwiftUI.ForEach&lt;SwiftUI.Binding&lt;Swift.Array&lt;DishRevueBackIOS.DishModel&gt;&gt;, Swift.String, DishRevueBackIOS.CSZStackVB_Framed&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;&gt;&gt;, SwiftUI.Spacer)&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0 in closure #1 () -&gt; SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, SwiftUI.ScrollView&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;)&gt; in closure #1 () -&gt; SwiftUI.VStack&lt;SwiftUI.TupleView&lt;(DishRevueBackIOS.CSDivider, SwiftUI.ScrollView&lt;&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0&gt;)&gt;&gt; in DishRevueBackIOS.FastImport_MainView.body.getter : some"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "78"
+                  endingLineNumber = "78"
+                  offsetFromSymbolStart = "577">
+               </Location>
+               <Location
+                  uuid = "462C9833-7F54-4518-A14A-76A8555C64C4 - a4a34023d1800bd5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "property wrapper init from projected value of $fastDish : SwiftUI.Binding&lt;DishRevueBackIOS.DishModel&gt;"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "73">
+               </Location>
+               <Location
+                  uuid = "462C9833-7F54-4518-A14A-76A8555C64C4 - 208eba2e29f98a37"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "$fastDish.getter : SwiftUI.Binding&lt;DishRevueBackIOS.DishModel&gt;"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/ImportazioneVelocePiatto/FastImport_MainView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "104">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2A2FD38E-B344-45BF-8AC2-2C74C6503EDD"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/EditingView/EditingPropertyModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2777496F-E000-4BC6-A16C-64BC316A16A2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/ForEachCategoryView/DataModelCategoryView_SubView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "csVbSwitchModelRowView(item:element:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

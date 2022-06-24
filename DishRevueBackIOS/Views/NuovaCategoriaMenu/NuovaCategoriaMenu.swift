@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+
 struct NuovaCategoriaMenu: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -18,6 +20,12 @@ struct NuovaCategoriaMenu: View {
     @State private var nomeCategoria: String = ""
     @State private var image: String = "🍽"
     @State private var positionOrder: Int = 0
+    
+    init(backgroundColorView: Color) {
+       
+        self.backgroundColorView = backgroundColorView
+        UICollectionView.appearance().backgroundColor = .clear // Toglie lo sfondo alla list
+    }
     
     var body: some View {
         
@@ -37,7 +45,7 @@ struct NuovaCategoriaMenu: View {
                
                 }
                 
-                Text("Solo le categorie utilizzate appariranno nei menu; è possibile qui stabilire l'ordine di visualizzazione.")
+                Text("Al pubblico saranno visibili solo le categorie che contengono dei piatti; qui è possibile eliminare quelle superflue e stabilire l'ordine di visualizzazione.")
                     .fontWeight(.light)
                     .font(.system(.caption, design: .rounded))
                 
@@ -59,33 +67,33 @@ struct NuovaCategoriaMenu: View {
                                   } else { self.mode?.wrappedValue = .active}
                             }
                         }
+                    }
 
+                    List {
+      
+                            ForEach(viewModel.categoriaMenuAllCases) { categoria in
+                                
+                                HStack {
+                                    //  Text("\(categoria.listPositionOrder)")
+                                    csVbSwitchImageText(string: categoria.image)
+                                    Text(categoria.nome)
+                                        .fontWeight(.semibold)
+                                        .font(.system(.body, design: .rounded))
+                                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                                }
+                                
+                            }
+                            .onDelete(perform: removeFromList)
+                            .onMove(perform: makeOrder)
+                            .listRowBackground(backgroundColorView)
                         
                     }
+                    .clipShape(RoundedRectangle(cornerRadius: 10.0))
+                    .scaledToFit()
+                    .listStyle(.plain)
+                       
                 
-                
-                List {
-                    
-                    ForEach(viewModel.categoriaMenuAllCases) {categoria in
-                            
-                            HStack {
-                              //  Text("\(categoria.listPositionOrder)")
-                                csVbSwitchImageText(string: categoria.image)
-                                Text(categoria.nome)
-                                    .fontWeight(.semibold)
-                                    .font(.system(.body, design: .rounded))
-                                    .foregroundColor(Color("SeaTurtlePalette_4"))
-                            }
-       
-                        }
-                    .onDelete(perform: removeFromList)
-                    .onMove(perform: makeOrder)
-                    .listRowBackground(backgroundColorView)
-      
-                }
-                .listStyle(PlainListStyle())
-        
-                Spacer()
+               Spacer()
             
             }
             .padding(.horizontal)
@@ -125,7 +133,7 @@ struct NuovaCategoriaMenu: View {
 struct NuovaCategoriaMenu_Previews: PreviewProvider {
     static var previews: some View {
         
-        NavigationView {
+        NavigationStack {
             
             NuovaCategoriaMenu(backgroundColorView: Color("SeaTurtlePalette_1"))
         }

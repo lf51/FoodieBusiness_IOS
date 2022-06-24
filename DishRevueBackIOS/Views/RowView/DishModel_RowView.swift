@@ -9,7 +9,8 @@ import SwiftUI
 
 struct DishModel_RowView: View {
     
-    let item: DishModel
+  //  let item: DishModel
+    @Binding var item: DishModel
     
     var body: some View {
         
@@ -42,6 +43,8 @@ struct DishModel_RowView: View {
 }
 
 struct DishModel_RowView_Previews: PreviewProvider {
+    
+    @State static var dishSample = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .bozza)
     static var previews: some View {
         
         ZStack {
@@ -50,7 +53,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
             
             Group {
                 
-                DishModel_RowView(item: DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .bozza))
+                DishModel_RowView(item: $dishSample)
                 
               /*  IngredientModel_RowView(item: IngredientModel(nome: "Guanciale", provenienza: .Italia, metodoDiProduzione: .convenzionale, conservazione: .custom("Stagionato"))) */
                 

@@ -32,5 +32,14 @@ extension View {
     
 }
 
+#if canImport(Charts)
+extension UICollectionReusableView {
+    
+    override open var backgroundColor: UIColor? {
+        get { .clear }
+        set { }
+    }
+}
+#endif
 
 

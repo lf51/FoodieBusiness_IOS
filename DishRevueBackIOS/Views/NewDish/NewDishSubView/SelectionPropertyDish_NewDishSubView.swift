@@ -70,7 +70,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
                     } label: {
                         Image(systemName: "arrow.up.forward.app")
                             .imageScale(.medium)
-                            .foregroundColor(Color.blue)
+                            .foregroundColor(Color("SeaTurtlePalette_3"))
                             //.foregroundColor(Color("SeaTurtlePalette_4"))
                     }
                   /*  CSButton_image(frontImage: "arrow.up.forward.app", imageScale: .medium, frontColor: Color.white) {
@@ -158,11 +158,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
              //   }
                 
                 */
-                CSLabel_1Button(placeHolder: "Adattabile alla dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black)
-                
-                
-                
-                
+         
                 CSLabel_1Button(placeHolder: "Adattabile alla dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black)
                 
                 PropertyScrollCases(cases: DishAvaibleFor.allCases, dishCollectionProperty: self.$newDish.avaibleFor, colorSelection: Color.blue.opacity(0.8))

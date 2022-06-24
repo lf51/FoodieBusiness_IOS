@@ -54,7 +54,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                         } label: {
                             Image(systemName: "plus.circle")
                                 .imageScale(.large)
-                                .foregroundColor(.blue)
+                                .foregroundColor(Color("SeaTurtlePalette_3"))
                         }
   
                        Spacer()

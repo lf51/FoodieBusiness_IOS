@@ -23,7 +23,7 @@ enum MenuModelOption {
 }
 
 /// MenuModel-RowView come label di un Menu 
-struct MenuModel_RowLabelMenu<Content:View>:View {
+/*struct MenuModel_RowLabelMenu<Content:View>:View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var menuItem: MenuModel
@@ -141,7 +141,7 @@ struct MenuModel_RowLabelMenu<Content:View>:View {
         
     }
   
-}
+} */ // Deprecata 24.06 per trasformazione in Maschera Generica
 
 struct MenuModel_RowView: View {
     
@@ -165,7 +165,7 @@ struct MenuModel_RowView: View {
                     Spacer()
                     // Status
                     
-                    vbEstrapolaStatusImage(item: menuItem)
+                    vbEstrapolaStatusImage(itemModel: menuItem)
 
                 }
                 .padding()
@@ -191,7 +191,7 @@ struct MenuModel_RowView: View {
     }
     
 }
-
+/*
 struct MenuModel_RowView_Previews: PreviewProvider {
     
     @State static var menuItem: MenuModel = MenuModel(nome: "SomeDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi])
@@ -211,12 +211,10 @@ struct MenuModel_RowView_Previews: PreviewProvider {
             })
                                    
         }
-                
-            
-        
+    
         
     }
-}
+} */
 
 @ViewBuilder func iteratingGiorniDelServizio(day:GiorniDelServizio, arrayData:[GiorniDelServizio]) -> some View {
     

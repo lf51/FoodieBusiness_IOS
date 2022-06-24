@@ -16,7 +16,7 @@ struct FastImport_MainView: View {
     @State private var text: String = ""
     
     @State private var isUpdateDisable: Bool = true
-    @State private var showSubString: Bool = false
+   // @State private var showSubString: Bool = false
  
     var body: some View {
         
@@ -24,13 +24,13 @@ struct FastImport_MainView: View {
             
             VStack {
                 
-                CSDivider(isVisible: true)
+                CSDivider()
                 
                 ScrollView(showsIndicators:false) {
                     
                     VStack(alignment:.leading) {
 
-                        CSDivider(isVisible: true) // senza il testo del texeditor va su e si disallinea
+                        CSDivider() // senza il testo del texeditor va su e si disallinea
                       
                         TextEditor(text: $text)
                             .font(.system(.body,design:.rounded))
@@ -49,13 +49,13 @@ struct FastImport_MainView: View {
                 
                         HStack {
                             
-                            CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.mint) {
+                            CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color("SeaTurtlePalette_4"), fillColor: Color("SeaTurtlePalette_2")) {
                                 estrapolaStringhe()
                                 csHideKeyboard()
                                 self.isUpdateDisable = true
-                                withAnimation {
+                              /*  withAnimation {
                                     showSubString = true
-                                }
+                                } */
                             }
                             .opacity(self.isUpdateDisable ? 0.6 : 1.0)
                             .disabled(self.isUpdateDisable)
@@ -69,14 +69,14 @@ struct FastImport_MainView: View {
                             
                         } // Barra dei Bottoni
                         
-                        if showSubString {
+                        if !allFastDish.isEmpty {
                             
-                            TabView {
+                            TabView { // Risolto bug 23.06.2022 Se allFastDish è vuoto, con la TabView andiamo in crash.
                                 
                                 ForEach($allFastDish) { $fastDish in
                                     
                                     CSZStackVB_Framed(frameWidth: 380, rateWH: 1.5) {
-
+                                        
                                         VStack {
                                             FastImport_CorpoScheda(fastDish: $fastDish) { newDish in
                                                 withAnimation(.spring()) {
@@ -87,68 +87,38 @@ struct FastImport_MainView: View {
                                         }
                                         .padding()
                                     }
-
                                 }
                             }
                             .frame(height:570)
                             .tabViewStyle(PageTabViewStyle())
                             
-
-                        } // Chiusa ifshoSubstring
+                        } // Chiusa if
                         
-                        
-                        
-                      /*  if showSubString {
-                            
-                            ScrollView(.horizontal,showsIndicators: false) {
-                                
-                                HStack {
-                                    
-                                    ForEach($allFastDish) { $fastDish in
-                                        
-                                        CSZStackVB_Framed(frameWidth: 380, rateWH: 1.5) {
-                                            
-                                            VStack {
-                                                FastImport_CorpoScheda(fastDish: $fastDish) { newDish in
-                                                    withAnimation(.spring()) {
-                                                        fastSave(item: newDish)
-                                                    }
-                                                }
-                                                Spacer()
-                                            }
-                                            .padding()
-                                        }
-                                    
-                                    }
-                                  
-                                }
-                            }
-    
-                        } // Chiusa ifshoSubstring */ // Deprecated 03.06
-                       
                 Spacer()
-                       // Text("\(manipolaStringa())")
-                    }.padding(.horizontal)
+                 
+                    }//.padding(.horizontal)
                     
                 }
-       
-            }
+                CSDivider()
+            }.padding(.horizontal)
        
         }
     }
     
     // Method
-    
+ 
     private func fastSave(item: DishModel) {
-        
+ 
         do {
             
             try self.viewModel.dishAndIngredientsFastSave(item: item)
-            let localIndex = self.allFastDish.firstIndex(of: item)
-            self.allFastDish.remove(at: localIndex!)
-            
-            self.reBuildIngredientContainer()
-            
+
+            let localAllFastDish:[DishModel] = self.allFastDish.filter {$0.id != item.id}
+ 
+            if !localAllFastDish.isEmpty {
+                self.reBuildIngredientContainer(localAllFastDish: localAllFastDish)
+            }  else {self.allFastDish = localAllFastDish}
+
         } catch _ {
             
             viewModel.alertItem = AlertModel(
@@ -160,12 +130,12 @@ struct FastImport_MainView: View {
     }
     
     /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
-    private func reBuildIngredientContainer() {
+    private func reBuildIngredientContainer(localAllFastDish:[DishModel]) {
         
         var newDishContainer:[DishModel] = []
         var newDish:DishModel = DishModel()
         
-        for dish in self.allFastDish {
+        for dish in localAllFastDish {
             
             newDish = dish
             newDish.ingredientiPrincipali = []
@@ -238,7 +208,7 @@ struct FastImport_MainView: View {
 struct FastImportMainView_Previews: PreviewProvider {
     static var previews: some View {
     
-        NavigationView {
+        NavigationStack {
             FastImport_MainView(backgroundColorView: Color.cyan)
                 
         }

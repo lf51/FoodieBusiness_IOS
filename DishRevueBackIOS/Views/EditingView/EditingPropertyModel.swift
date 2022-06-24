@@ -69,7 +69,20 @@ struct EditingPropertyModel: View {
                                     
                                     ForEach($itemModel.menuIn) { $myMenu in
                                      
-                                        MenuModel_RowLabelMenu(menuItem: $myMenu, backgroundColorView: backgroundColorView) {
+                                        
+                                        GenericItemModel_RowViewMask(
+                                            model: $myMenu,
+                                            backgroundColorView: backgroundColorView) {
+                                                Button("New Remove") {
+                                                    
+                                                    let index = itemModel.menuIn.firstIndex(of: myMenu)
+                                                    itemModel.menuIn.remove(at: index!)
+                                                    
+                                                    
+                                                }
+                                            }
+                                        
+                                     /*   MenuModel_RowLabelMenu(menuItem: $myMenu, backgroundColorView: backgroundColorView) {
                                             
                                             Button("Remove") {
                                                 
@@ -79,7 +92,7 @@ struct EditingPropertyModel: View {
                                                 
                                             }
                                             
-                                        }
+                                        } */
                                    
                                         
                                     }

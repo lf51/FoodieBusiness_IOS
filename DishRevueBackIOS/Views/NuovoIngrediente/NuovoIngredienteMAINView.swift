@@ -10,83 +10,85 @@ import SwiftUI
 // SVILUPPARE CREAZIONE VARIANTI CON LO STESSO NOME
 
 struct NuovoIngredienteMainView: View {
+
+    @EnvironmentObject var viewModel: AccounterVM
+    let backgroundColorView: Color
+  //  @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
     
-    @Environment(\.dismiss) var dismiss
+    @State var nuovoIngrediente: IngredientModel = IngredientModel() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
     
-    @ObservedObject var propertyVM: PropertyVM
-    let backGroundColorView: Color
-    @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment
-    
-    @State var nuovoIngrediente: ModelloIngrediente = ModelloIngrediente() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
-    
-    init(propertyVM: PropertyVM, backGroundColorView: Color, dismissButton: Binding<Bool?>?) {
+  /*  init(backgroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
         
-        self.propertyVM = propertyVM
-        self.backGroundColorView = backGroundColorView
+      //  self.propertyVM = propertyVM
+       // self.accounterVM = accounterVM
+        self.backgroundColorView = backgroundColorView
         _dismissButton = dismissButton ?? Binding.constant(nil)
-    }
+    } */
     
     var body: some View {
         
-       ZStack {
+        CSZStackVB(title: "Nuovo Ingrediente", backgroundColorView: backgroundColorView) {
 
-           if self.dismissButton == nil {backGroundColorView.opacity(0.9).ignoresSafeArea()}
+         //  if self.dismissButton == nil {backgroundColorView.opacity(0.9).ignoresSafeArea()}
                   
-        VStack { // VStack Madre
+       // VStack { // VStack Madre
+               
+         /*   if self.dismissButton == nil {
                 
-                HStack { // una Sorta di NavigationBar
-                    
-                    Text(nuovoIngrediente.nome != "" ? nuovoIngrediente.nome : "Nuovo Ingrediente")
-                        .bold()
-                        .font(.largeTitle)
-                        .foregroundColor(Color.black)
-                    
-                    Spacer()
-             // Default Button
+                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.intestazione != "" ? nuovoIngrediente.intestazione : "Nuovo Ingrediente", enableEnvironmentDismiss:true)
+                    .padding()
+                    .background(Color.cyan)
+                // questo background riguarda la parte alta della View occupata dall'HStack e serve a dare uno stacco di tono
+                
+            } else {
+                
+                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.intestazione != "" ? nuovoIngrediente.intestazione : "Nuovo Ingrediente", exitButton: $dismissButton)
+                    .padding()
+            } */
             
-        CSButton_tight(title: "Dismiss", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.clear) {
-            
-            if self.dismissButton == nil { dismiss() } else { self.dismissButton = false }
-                    }
-   
-                }
-                .padding()
-                .background(self.dismissButton == nil ? Color.cyan : Color.clear)
-            // questo background riguarda la parte alta della View occupata dall'HStack
-
                 VStack(alignment:.leading) {
-                            
-                            InfoIngrediente_NuovoIngredienteSubView(nuovoIngrediente:$nuovoIngrediente)
-                   
-                            SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)
-                            
-                    if self.dismissButton == nil { Spacer() }
                     
-                            CSButton_2(title: "Crea Ingrediente", accentColor: .black, backgroundColor: .black.opacity(0.2), cornerRadius: 10.0) {
-                                    
-                                    test(ingrediente: &nuovoIngrediente)
-                                    print("CREARE Ingrediente SU FIREBASE")
+                    CSDivider()
+                    
+                    ScrollView(showsIndicators: false) {
+                        IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Ingrediente", imageLabel: "doc.badge.plus", coloreContainer: Color.orange, itemModel: $nuovoIngrediente).padding(.horizontal)
                            
-                            }.padding()
+                        SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)
+                                    
+                 //   if self.dismissButton == nil { Spacer() }
+                            
+                          //  Spacer()
+                            
+                            CSButton_large(title: "Crea Ingrediente", accentColor: .black, backgroundColor: .black.opacity(0.2), cornerRadius: 10.0) {
+                                            
+                                            test(ingrediente: &nuovoIngrediente)
+                                            print("CREARE Ingrediente SU FIREBASE-Modificare in NuovoIngredienteView")
+                                   
+                                    }.padding()
                     }
+                    
 
-                
-            } // End VSTACK MADRE
-        .background(self.dismissButton == nil ? RoundedRectangle(cornerRadius: 20.0).fill(Color.clear).shadow(radius: 0.0) : RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
-        .contrast(self.dismissButton == nil ? 1.0 : 1.2)
-        .brightness(self.dismissButton == nil ? 0.0 : 0.08)
+               
+               CSDivider()
+                    
+                    }
+          //  } // End VSTACK MADRE
+      //  .background(self.dismissButton == nil ? RoundedRectangle(cornerRadius: 20.0).fill(Color.clear).shadow(radius: 0.0) : RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
+       // .contrast(self.dismissButton == nil ? 1.0 : 1.2)
+       // .brightness(self.dismissButton == nil ? 0.0 : 0.08)
        
            // end ZStack
        }
+       .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
     }
     
-    func test(ingrediente: inout ModelloIngrediente) {
+    func test(ingrediente: inout IngredientModel) {
         
         for x in 0...100 {
             
-            ingrediente.nome = String(x)
+            ingrediente.intestazione = String(x)
             
-            propertyVM.listaMyIngredients.append(ingrediente)
+            viewModel.allMyIngredients.append(ingrediente)
             
         }
         
@@ -119,7 +121,7 @@ struct NuovoIngredienteView_Previews: PreviewProvider {
             }
             
             
-            NuovoIngredienteMainView(propertyVM: PropertyVM(), backGroundColorView: Color.cyan, dismissButton: nil)
+            NuovoIngredienteMainView(backgroundColorView: Color.cyan)
               // .cornerRadius(20.0)
                 //.padding(.vertical)
                 

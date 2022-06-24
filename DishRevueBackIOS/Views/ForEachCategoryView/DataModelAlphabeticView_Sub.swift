@@ -10,20 +10,18 @@ import SwiftUI
 
 
 
-struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
+struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
     
-  //  let dataContainer: [T] // Non Serve a nulla ?
-  //  @Binding var dataContainer: [T]
     @EnvironmentObject var viewModel: AccounterVM
-    @Binding var stringSearch: String
-   // let dataFiltering: () -> [T]
-    @Binding var dataFiltering: [T]
+    @State private var stringSearch: String = ""
+
     let filterCategory: MapCategoryContainer
+    let dataPath:ReferenceWritableKeyPath<AccounterVM,[T]>
     
-    init(stringSearch: Binding<String>,filterCategory:MapCategoryContainer, dataFiltering: Binding<[T]>) {
-        _stringSearch = stringSearch  
-        _dataFiltering = dataFiltering
+    init(filterCategory:MapCategoryContainer, dataPath:ReferenceWritableKeyPath<AccounterVM,[T]>) {
+
         self.filterCategory = filterCategory
+        self.dataPath = dataPath
     }
 
     
@@ -38,12 +36,11 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
                     
                  //   csVbSwitchModelRowViewTEST(item: &dataFiltering)
                    // ForEach(dataFiltering().sorted{$0.intestazione < $1.intestazione})
-                    ForEach($dataFiltering.sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione }){ $item in
-                        
+                    //ForEach($dataFiltering.sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione })
+                    ForEach($viewModel[dynamicMember:dataPath].sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione }){ $item in
                        
-                        
                        HStack {
-                           csVbSwitchModelRowViewTEST(item: $item)
+                           csVbSwitchModelRowView(item: $item)
                        
                             Spacer() // Possiamo mettere una view di fianco ogni schedina
     
@@ -58,7 +55,7 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
     
     // Method
     
-    @ViewBuilder private func csVbSwitchModelRowViewTEST<T:MyModelProtocol>(item:Binding<T>) -> some View {
+    @ViewBuilder private func csVbSwitchModelRowView<T:MyModelProtocol>(item:Binding<T>) -> some View {
   
         let localItem: T = item.wrappedValue
         
@@ -73,7 +70,14 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
         
         if isIn {
             
-            switch item.self {
+            
+            GenericItemModel_RowViewMask(
+                model: item,
+                backgroundColorView: Color("SeaTurtlePalette_1")) {
+                    Text("New Modifica Piano -> \(localItem.intestazione)")
+                }
+            
+         /*   switch item.self {
                  
              case is Binding<MenuModel>:
              
@@ -85,16 +89,18 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
                            
              case is Binding<DishModel>:
                 
-                Text("Da Settare - Dish: \(localItem.intestazione)")
+                DishModel_RowView(item: item as! Binding<DishModel>)
+                
+              //  Text("Da Settare - Dish: \(localItem.intestazione)")
              //   DishModel_RowView(item: item as! Binding<DishModel>)
          
              case is Binding<IngredientModel>:
-                Text("Da Setttare - Ingrediente: \(localItem.intestazione)")
-               //  IngredientModel_RowView(item: item as! Binding<IngredientModel>)
+              //  Text("Da Setttare - Ingrediente: \(localItem.intestazione)")
+                 IngredientModel_RowView(item: item as! Binding<IngredientModel>)
                  
              default:  Text("item is a notListed Type")
                  
-             }
+             } */
             
             
             
@@ -109,40 +115,6 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
  
 }
 
-
-
-
-struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
-    
-    let dataContainer: [T] // Non Serve a nulla ?
-  //  @Binding var dataContainer: [T]
-    @Binding var stringSearch: String
-    let dataFiltering: () -> [T]
-  //  @Binding var dataFiltering: [T]
-    var body: some View {
-        
-            ScrollView(showsIndicators: false) {
-                
-                ScrollViewReader { proxy in
-                    
-                    CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
-              
-                   ForEach(dataFiltering().sorted{$0.intestazione < $1.intestazione}) { item in
-                        
-                        HStack {
-                         //  csVbSwitchModelRowViewTEST(item: $item)
-                            csVbSwitchModelRowView(item: item)
-                            Spacer() // Possiamo mettere una view di fianco ogni schedina
-    
-                        }
-                    }
-                    .id(1)
-                    .onAppear {proxy.scrollTo(1, anchor: .top)}
-                    
-                }
-            }
-    }
-}  // BACKUP 17.06 -> Trasformazione da let a Binding
 
 /*
 struct DataModelAlphabeticView_Sub_Previews: PreviewProvider {

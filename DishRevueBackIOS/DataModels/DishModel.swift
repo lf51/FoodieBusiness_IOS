@@ -24,8 +24,10 @@ struct DishModel: MyModelProtocol,MyModelStatusConformity {
         lhs.metodoCottura == rhs.metodoCottura &&
         lhs.tipologia == rhs.tipologia &&
         lhs.avaibleFor == rhs.avaibleFor &&
-      //  lhs.allergeni == rhs.allergeni &&
-        lhs.formatiDelPiatto == rhs.formatiDelPiatto
+        lhs.allergeni == rhs.allergeni &&
+        lhs.formatiDelPiatto == rhs.formatiDelPiatto &&
+        lhs.status == rhs.status &&
+        lhs.rating == rhs.rating
        
        // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
     }
@@ -51,7 +53,7 @@ struct DishModel: MyModelProtocol,MyModelStatusConformity {
     var aBaseDi: OrigineIngrediente // Deprecato in futuro --> Abbiamo spostato e rinominato il DishBase in OrigineIngrediente. Qui non saraà più necessario
     
     
-    var metodoCottura: DishCookingMethod
+    var metodoCottura: DishCookingMethod // Deprecato in futuro
     var tipologia: DishTipologia // Deprecato in futuro --> Deriveremo il tipo di piatto dall'origine degli ingredienti
     var avaibleFor: [DishAvaibleFor]
   //  var allergeni: [Allergeni] // DEPRECATED 19.05.2022 Li deriviamo dagli Ingredienti

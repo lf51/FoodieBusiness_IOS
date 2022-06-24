@@ -18,7 +18,8 @@ struct IngredientModel: MyModelProtocol,MyModelStatusConformity {
       lhs.produzione == rhs.produzione &&
       lhs.conservazione == rhs.conservazione &&
       lhs.origine == rhs.origine &&
-      lhs.allergeni == rhs.allergeni
+      lhs.allergeni == rhs.allergeni &&
+      lhs.status == rhs.status
     }
     
     var dishWhereIsUsed: [DishModel] = [] // doppia scrittura con ListaIngredienti Principali e Secondari nel DishModel

@@ -45,7 +45,7 @@ struct PropertyModel_RowView: View {
 
                                 Text(itemModel.cityName)
                                 .fontWeight(.semibold)
-
+                                
                                 Text("\(itemModel.streetAdress), \(itemModel.numeroCivico)")
                                     .italic()
                                     .fontWeight(.light)
@@ -62,7 +62,7 @@ struct PropertyModel_RowView: View {
                                     .fontWeight(.semibold)
                                 }
                 
-                            }
+                            }.foregroundColor(Color.black)
                    
                     } // chiuda VStack madre
                     ._tightPadding()
