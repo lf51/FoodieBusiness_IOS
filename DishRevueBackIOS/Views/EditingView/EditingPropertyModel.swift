@@ -6,18 +6,22 @@
 //
 
 import SwiftUI
-import MapKit
-
 
 struct EditingPropertyModel: View {
     
-    @EnvironmentObject var viewModel: AccounterVM
+   // @EnvironmentObject var viewModel: AccounterVM
+   // @Binding var itemModel: PropertyModel
     @Binding var itemModel: PropertyModel
     let backgroundColorView: Color
     
     @State private var openMenuList: Bool? = false
     @State private var wannaAddDescription: Bool? = false
-  //  @State private var activeEditMenuLink: Bool = false
+  
+  /*  init(itemModel: Binding<PropertyModel>, backgroundColorView: Color) {
+        _itemModel = Binding(projectedValue: itemModel)
+        self.backgroundColorView = backgroundColorView
+     
+    } */
     
     var body: some View {
         
@@ -69,7 +73,6 @@ struct EditingPropertyModel: View {
                                     
                                     ForEach($itemModel.menuIn) { $myMenu in
                                      
-                                        
                                         GenericItemModel_RowViewMask(
                                             model: $myMenu,
                                             backgroundColorView: backgroundColorView) {
@@ -194,7 +197,7 @@ struct EditingPropertyModel: View {
     
     
 }
-
+/*
 struct EditingPropertyModel_Previews: PreviewProvider {
     
     @State static var testProperty: PropertyModel = PropertyModel(
@@ -216,4 +219,4 @@ struct EditingPropertyModel_Previews: PreviewProvider {
         
     }
 }
-
+*/

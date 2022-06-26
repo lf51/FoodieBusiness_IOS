@@ -16,7 +16,11 @@ import MapKit
 
 */
 
-struct PropertyModel: MyModelProtocol {
+struct PropertyModel: MyModelProtocol,Hashable {
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
     
     var intestazione: String = "" // deve sostituire il nome
     var descrizione: String = ""

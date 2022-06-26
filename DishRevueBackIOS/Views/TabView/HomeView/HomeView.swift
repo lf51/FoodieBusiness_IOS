@@ -8,6 +8,17 @@
 import SwiftUI
 import UIKit
 
+enum Destination {
+    
+    case accountSetup
+    case propertyList
+    
+    
+}
+
+
+
+
 struct HomeView: View {
     
     @ObservedObject var authProcess: AuthPasswordLess
@@ -17,11 +28,13 @@ struct HomeView: View {
     @State private var wannaAddNewProperty:Bool = false
     var screenHeight: CGFloat = UIScreen.main.bounds.height
    
-    @State private var path = NavigationPath()
+  // @State private var path = NavigationPath()
     
     var body: some View {
         
-        NavigationStack(path:$path) {
+      //  NavigationStack(path:$path) {
+        
+        NavigationStack(path:$viewModel.homeViewPath) {
       
             CSZStackVB(title:authProcess.userInfo?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {
 
@@ -46,21 +59,40 @@ struct HomeView: View {
                 } // VStack End
                 .padding(.horizontal)
             }// chiusa ZStack
+            .navigationDestination(for: Destination.self, destination: { destination in
+                vbDestinationAdress(destination: destination)
+            })
+            .navigationDestination(for: PropertyModel.self, destination: { property in
+                Text(property.intestazione)
+            })
+          /*  .navigationDestination(for: PropertyModel.self, destination: { property in
+                
+               let index = viewModel.allMyProperties.firstIndex(of: property)
+                
+                EditingPropertyModel(itemModel:$viewModel.allMyProperties[index!] , backgroundColorView: backgroundColorView)
+            }) */
+            
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     
-                    NavigationLink {
+                  /*  NavigationLink {
                         AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
                     } label: {
                         Image(systemName: "person.fill")
                             .foregroundColor(Color("SeaTurtlePalette_2"))
-                    }
+                    } */
    
+                    NavigationLink(value: Destination.accountSetup) {
+                        Image(systemName: "person.fill")
+                            .foregroundColor(Color("SeaTurtlePalette_2"))
+                    }
+                    
+                    
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     
-                    NavigationLink {
+                 /*   NavigationLink {
                         PropertyListView(backgroundColorView: backgroundColorView)
                     } label: {
                         HStack {
@@ -70,14 +102,39 @@ struct HomeView: View {
                                 .imageScale(.medium)
                         }
                         .foregroundColor(Color("SeaTurtlePalette_4"))
+                    } */
+                    
+                    NavigationLink(value: Destination.propertyList) {
+                        HStack {
+                            Text("Proprietà")
+                                .fontWeight(.bold)
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                                .imageScale(.medium)
+                        }
+                        .foregroundColor(Color("SeaTurtlePalette_4"))
                     }
+                    
+                    
                 }
             }
           
         }
   
     }
+    // Method
     
+    @ViewBuilder private func vbDestinationAdress(destination:Destination) -> some View {
+        
+        
+        switch destination {
+            
+        case .accountSetup:
+            AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
+        case .propertyList:
+            PropertyListView(backgroundColorView: backgroundColorView)
+        }
+        
+    }
 
 }
 

@@ -40,6 +40,16 @@ class AccounterVM: ObservableObject {
     @Published var categoriaMenuAllCases: [CategoriaMenu] = CategoriaMenu.allCases // 02.06 -> Dovrà riempirsi di dati dal server
 
     
+    // AREA TEST NAVIGATIONSTACK
+    
+    @Published var homeViewPath = NavigationPath()
+    
+    
+    // FINE AREA TEST
+    
+    
+    
+    
     init() {
         
         fillFromListaBaseModello()
@@ -179,7 +189,7 @@ class AccounterVM: ObservableObject {
         
     } */
     
-    /// Manda un alert peri Confermare le Modifiche
+    /// Manda un alert peri Confermare le Modifiche all'oggetto MyModelProtocol
     func updateItemModel<T:MyModelProtocol>(messaggio:String, action: @escaping () -> T )  {
         
         self.alertItem = AlertModel(
@@ -201,18 +211,18 @@ class AccounterVM: ObservableObject {
         
         var (containerT, _) = assegnaContainer(itemModel: itemModel)
   
-        guard let oldItemIndex = containerT.firstIndex(of: itemModel) else {return}
-            
-           // containerT.remove(at: oldItemIndex)
-          //  containerT.insert(itemModel, at: oldItemIndex)
+        guard let oldItemIndex = containerT.firstIndex(of: itemModel) else {
+            self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
+            return}
+
         print("elementi nel Container Pre-Update: \(containerT.count)")
             containerT[oldItemIndex] = itemModel
-            aggiornaContainer(containerT: containerT)
+            aggiornaContainer(containerT: containerT, modelT: itemModel)
         print("elementi nel Container POST-Update: \(containerT.count)")
         print("updateItemModelExecutive executed")
     }
     
-    /// Manda un alert di conferma prima di eliminare l' Oggetto
+    /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
     func deleteItemModel<T:MyModelProtocol>(itemModel: T) {
         
         self.alertItem = AlertModel(
@@ -238,26 +248,10 @@ class AccounterVM: ObservableObject {
             return }
         
         containerT.remove(at: index)
+        self.aggiornaContainer(containerT: containerT, modelT: itemModel)
         self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!")
         
-        self.aggiornaContainer(containerT: containerT)
-       /* switch itemModel.self {
-            
-        case is IngredientModel:
-            self.allMyIngredients = containerT as! [IngredientModel]
-        case is DishModel:
-            self.allMyDish = containerT as! [DishModel]
-        case is MenuModel:
-            self.allMyMenu = containerT as! [MenuModel]
-        case is PropertyModel:
-            self.allMyProperties = containerT as! [PropertyModel]
-            
-        default: return
-            
-        } */
     }
-    
-   
     
     
     func deepFiltering<M:MyModelProtocol>(model:M, filterCategory:MapCategoryContainer) -> Bool {
@@ -383,17 +377,10 @@ class AccounterVM: ObservableObject {
         }
     }
     
-    /// Aggiorna il container nel viewModel che ha lo stesso tipo del container passato con il container passato.
-    private func aggiornaContainer<T:MyModelProtocol>(containerT: [T]) {
-        
-        guard !containerT.isEmpty else {
-            print("ContainerT vuoto. updateContainer non eseguito")
-            return
-        }
-        
-        let exampleItem = containerT[0]
-        
-        switch exampleItem.self {
+    /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
+    private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
+                        
+        switch modelT.self {
             
         case is IngredientModel:
             self.allMyIngredients = containerT as! [IngredientModel]
@@ -407,7 +394,7 @@ class AccounterVM: ObservableObject {
         default: return
             
         }
-   
+   // Il parametro modelT è in apparenza superfluo. Potremmo difatti farne a meno nel 99% dei casi, ma quando il containerT è vuoto, se lo usassimo per comprendere il tipo T avremmo dei bug.
     }
     
     

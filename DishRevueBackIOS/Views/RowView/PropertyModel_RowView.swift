@@ -29,13 +29,13 @@ struct PropertyModel_RowView: View {
                      
                             Spacer()
                             
-                            NavigationLink {
+                          /*  NavigationLink {
                                 EditingPropertyModel(itemModel: $itemModel, backgroundColorView: Color("SeaTurtlePalette_1"))
                             } label: {
                                 Image(systemName:"arrow.up.forward.square") // "rectangle.portrait.and.arrow.right"
                                     .imageScale(.medium)
                                     .foregroundColor(Color.white)
-                            }
+                            } */
              
                         }
                         
@@ -71,6 +71,7 @@ struct PropertyModel_RowView: View {
     }
 }
 
+/*
 struct PropertyModel_RowView_Previews: PreviewProvider {
     
     @State static var testProperty: PropertyModel = PropertyModel(
@@ -96,4 +97,4 @@ struct PropertyModel_RowView_Previews: PreviewProvider {
     }
 }
 
-
+*/

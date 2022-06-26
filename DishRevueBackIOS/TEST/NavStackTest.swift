@@ -7,110 +7,75 @@
 
 import SwiftUI
 
-struct ViewDue:View {
+enum Destination2 {
     
-    var title: String
+    case firstPage
+    case secondPage
     
-    var body: some View {
-        
-        VStack {
-            
-            NavigationLink {
-                Text("End")
-            } label: {
-                Text(title)
-            }
-
-            
-        }
-        
-        
-    }
     
 }
 
-struct ViewUno:View {
+@ViewBuilder private func viewForDestination(destination:Destination2) -> some View {
     
-    var title: String
-    
-    var body: some View {
+    switch destination {
         
-        VStack {
+    case .firstPage:
+        ZStack {
             
-       
-                NavigationLink(value: "Come Mai") {
-                    Text("+ Modifier")
-                }
-            
-            
-            
-            
-        }.navigationDestination(for: String.self) { string in
-            ViewDue(title: string)
+            Color.red.ignoresSafeArea()
+           
+            NavigationLink("Go to Second page", value: Destination2.secondPage)
         }
+    case .secondPage:
         
-        
+        ZStack {
+            
+            Color.orange.ignoresSafeArea()
+            Text("This is my Second Page")
+                .bold()
+            
+        }
     }
     
+    
 }
+
 
 struct NavStackTest: View {
-    
-  /*  @State private var menuItem: MenuModel = MenuModel(nome: "Test", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi]) */
-    let menuItem:StatusModel = .bozza
-    let backgroundColorView = Color("SeaTurtlePalette_1")
-    @State private var activeEditMenuLink = false
-    
+
     var body: some View {
         
-        NavigationStack {
-            
-            CSZStackVB(title: "Test View", backgroundColorView: Color("SeaTurtlePalette_1")) {
-                
-                VStack {
-                    
-                    NavigationLink(value: activeEditMenuLink) {
-                        Text("isValueActive or Not")
-            
-                    }
-                    
-                    Menu {
-                        
-                        Button("Active") {
-                            self.activeEditMenuLink = true
-                        }
-                        
-                        NavigationLink(value: activeEditMenuLink) {
-                            Text("isValueActive or Not")
-                
-                        }
-                        
-                        
-                    } label: {
-                        Text("Open Menu")
-                    }
-
-                    
-              
-                }.navigationDestination(for: Bool.self) { value in
-                    Text("isValueActive:\(value.description)")
-                }
-                
-                
-            }
-     
-        }
+           NavigationStack {
+               VStack {
+                   Text("Navigation stack")
+                       .padding()
+                   NavigationLink("NavigationLink to enter first page", value: Destination2.firstPage)
+                       .padding()
+                   NavigationLink("NavigationLink to enter second page", value: Destination2.secondPage)
+                       .padding()
+                   List(1..<3) { index in
+                       NavigationLink("Nav Link \(index)", value: index)
+                   }
+               }
+               .navigationDestination(for: Destination2.self) { destination in
+                   viewForDestination(destination: destination)
+               }
+               .navigationDestination(for: Int.self) { index in
+                   Text("index \(index)")
+               }
+           }
+       }
         
         
     }
-}
+
 
 struct NavStackTest_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationStack {
+       
             
             NavStackTest()
             
-        }
+        
     }
 }
