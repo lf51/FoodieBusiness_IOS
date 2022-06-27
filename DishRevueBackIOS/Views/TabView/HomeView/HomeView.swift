@@ -63,8 +63,12 @@ struct HomeView: View {
                 vbDestinationAdress(destination: destination)
             })
             .navigationDestination(for: PropertyModel.self, destination: { property in
-                Text(property.intestazione)
+                EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)
             })
+            
+           /* .navigationDestination(for: PropertyModel.self, destination: { property in
+                Text(property.intestazione)
+            }) */
           /*  .navigationDestination(for: PropertyModel.self, destination: { property in
                 
                let index = viewModel.allMyProperties.firstIndex(of: property)

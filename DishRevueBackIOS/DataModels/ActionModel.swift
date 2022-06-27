@@ -18,6 +18,7 @@ struct ActionModel {
         case elimina
         case conferma
         case prosegui
-        case continua        
+        case continua
+        case salva
     }
 }

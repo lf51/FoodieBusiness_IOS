@@ -9,20 +9,22 @@ import SwiftUI
 
 struct EditingPropertyModel: View {
     
-   // @EnvironmentObject var viewModel: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
    // @Binding var itemModel: PropertyModel
-    @Binding var itemModel: PropertyModel
+   // @Binding var itemModel: PropertyModel
+    @State private var itemModel: PropertyModel
     let backgroundColorView: Color
     
     @State private var openMenuList: Bool? = false
     @State private var wannaAddDescription: Bool? = false
+    @State private var itemModelChanged: Bool = false
   
-  /*  init(itemModel: Binding<PropertyModel>, backgroundColorView: Color) {
-        _itemModel = Binding(projectedValue: itemModel)
+    init(itemModel: PropertyModel, backgroundColorView: Color) {
+        _itemModel = State(wrappedValue: itemModel)
         self.backgroundColorView = backgroundColorView
-     
-    } */
-    
+        
+    }
+
     var body: some View {
         
         CSZStackVB(title: itemModel.intestazione, backgroundColorView: backgroundColorView) {
@@ -57,7 +59,7 @@ struct EditingPropertyModel: View {
                         
                     }.disabled(openMenuList!)
                     
-                    VStack(alignment:.leading) {
+                 /*   VStack(alignment:.leading) {
                         
                         CSLabel_2Button(
                           placeHolder: "Menu In",
@@ -84,24 +86,13 @@ struct EditingPropertyModel: View {
                                                     
                                                 }
                                             }
-                                        
-                                     /*   MenuModel_RowLabelMenu(menuItem: $myMenu, backgroundColorView: backgroundColorView) {
-                                            
-                                            Button("Remove") {
-                                                
-                                                let index = itemModel.menuIn.firstIndex(of: myMenu)
-                                                itemModel.menuIn.remove(at: index!)
-                                                
-                                                
-                                            }
-                                            
-                                        } */
+
                                    
                                         
                                     }
                                 }
                             }
-                    }
+                    } */
                     
                     VStack(alignment:.leading) {
                         
@@ -131,9 +122,51 @@ struct EditingPropertyModel: View {
             }
             
         } // Chiusa ZStack Madre
+        .onChange(of: itemModel, perform: { _ in
+            self.itemModelChanged = true
+        })
+        .onDisappear {
+            
+            if itemModelChanged {
+                
+                viewModel.alertItem = AlertModel(
+                    title: "✋ Modifiche Non Salvate",
+                    message: "",
+                    actionPlus: ActionModel(title: .salva, action: {
+                        self.saveEdit()
+                    })
+                )
+                
+            }
+            
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                
+                Button {
+                    
+                  saveEdit()
+                    
+                } label: {
+                    Text("Salva")
+                        .bold(itemModelChanged)
+                }.disabled(!itemModelChanged)
+
+                
+                
+            }
+        }
+        
         
     }
     
+    // Method
+    
+    private func saveEdit() {
+
+        viewModel.updateItemModel(messaggio: "Salva Modifiche della proprietà \(itemModel.intestazione)", itemModel: itemModel)
+   
+    }
  
     private func estrapolaGiorniChiusura() -> some View {
         

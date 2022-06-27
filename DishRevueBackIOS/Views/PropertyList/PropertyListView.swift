@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+
+
+
+
+
 struct PropertyListView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
@@ -14,7 +19,7 @@ struct PropertyListView: View {
     let backgroundColorView: Color
     @State private var wannaAddNewProperty: Bool = false
         
-    @State private var wannaEditProperty: Bool = false // TEST
+  //  @State private var wannaEditProperty: Bool = false // TEST
     
     init(backgroundColorView:Color){
         
@@ -34,50 +39,42 @@ struct PropertyListView: View {
                 
                   ScrollView(showsIndicators: false){
                         
-                          ForEach($viewModel.allMyProperties) { $property in
+                          ForEach(viewModel.allMyProperties) { property in
                                     
-                              NavigationLink {
-                                 
-                                  VStack {
-                                      
-                                      Text(property.intestazione)
-                                      
-                                      Button("Change Name") {
-                                          property.intestazione = property.intestazione == "MaraMeo" ? "oldName" : "MaraMeo"
-                                      }
-                                      
-                                      
-                                      
-                                  }
-                                  
-                                  
-                                  
+                           /*   NavigationLink {
+                                  EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)
                               } label: {
+                                  Text("EDIT \(property.intestazione)")
+                              } */
+
+                              
+                              NavigationLink(value: property) {
                                   HStack {
                                       Image(systemName:"arrow.up.forward.square")
-                                      Text("Edit \(property.intestazione)")
+                                      Text("EDIT \(property.intestazione)")
                                   }
                               }
                               
+
                               
                             /*  GenericItemModel_RowViewMask(
                                 model: $property,
                                 backgroundColorView: backgroundColorView) {
-                                    NavigationLink {
+                                  /*  NavigationLink {
                                         EditingPropertyModel(itemModel: $property, backgroundColorView: Color("SeaTurtlePalette_1"))
                                     } label: {
                                         HStack {
                                             Image(systemName:"arrow.up.forward.square")
                                             Text("Edit")
                                         }
-                                    }
+                                    } */
                                        
-                                  /*  NavigationLink(value: property) {
+                                    NavigationLink(value: property) {
                                         HStack {
                                             Image(systemName:"arrow.up.forward.square")
                                             Text("Edit")
                                         }
-                                    } */
+                                    }
                             
                                   /*  Button {
                                         viewModel.homeViewPath.append(property)
@@ -129,7 +126,7 @@ struct PropertyListView: View {
             NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
           
         }
-      
+
         
         
           /*.navigationBarItems(

@@ -23,8 +23,8 @@ struct DishRevueBackIOSApp: App {
         
          //   CS_Shape2(imageBehind: "trash.fill")
          
-         MainView()
-     //   NavStackTest()
+        MainView()
+      //  NavStackTest()
          //   ImportazioneVeloceDishIngredient(backgroundColorView: Color.cyan)
                 
           //  DishSpecificView(newDish:.constant(DishModel()))

@@ -7,63 +7,102 @@
 
 import SwiftUI
 
-enum Destination2 {
+struct TestViewForNavigation: View {
     
-    case firstPage
-    case secondPage
+   // @State private var testItem:PropertyModel = PropertyModel(nome: "Osteria del Buco Nero")
+    @ObservedObject var viewModel:AccounterVM
+    @State private var testItem:PropertyModel
     
-    
-}
-
-@ViewBuilder private func viewForDestination(destination:Destination2) -> some View {
-    
-    switch destination {
-        
-    case .firstPage:
-        ZStack {
-            
-            Color.red.ignoresSafeArea()
-           
-            NavigationLink("Go to Second page", value: Destination2.secondPage)
-        }
-    case .secondPage:
-        
-        ZStack {
-            
-            Color.orange.ignoresSafeArea()
-            Text("This is my Second Page")
-                .bold()
-            
-        }
+    init(testItem: PropertyModel? = PropertyModel(nome:"Trattoria del buco nero"), viewModel: AccounterVM) {
+        _testItem = State(wrappedValue: testItem!)
+        self.viewModel = viewModel
     }
     
+    var body: some View {
+        
+      //  CSZStackVB(title: testItem.intestazione, backgroundColorView: Color.black) {
+            
+            VStack{
+                
+                Text("\(testItem.intestazione)")
+                    .bold()
+                   // .foregroundColor(Color.white)
+                    
+                
+                Button {
+                    
+                    self.testItem.intestazione = "This is Better"
+                    
+                    
+                } label: {
+                    Text("Cambia Intestazione")
+                }
+                
+                Text(testItem.descrizione)
+                    .italic()
+                
+                
+                Button {
+                    self.testItem.descrizione = self.testItem.descrizione == "" ? "Try it!" : ""
+                } label: {
+                    Text("Cambia Descrizione")
+                }
+
+                Spacer()
+                
+                Button {
+                    
+                    let index = viewModel.allMyProperties.firstIndex(where: {$0.id == testItem.id})
+                    viewModel.allMyProperties[index!] = testItem
+                    
+                    
+                    
+                } label: {
+                    Text("Salva Modifiche")
+                }
+
+                
+                
+            }
+           
+     //   }
+               
+    }
     
 }
 
 
 struct NavStackTest: View {
 
+    @StateObject var viewModel:AccounterVM = AccounterVM()
+    
+   
+    
     var body: some View {
         
-           NavigationStack {
+        NavigationStack {
+            
                VStack {
-                   Text("Navigation stack")
-                       .padding()
-                   NavigationLink("NavigationLink to enter first page", value: Destination2.firstPage)
-                       .padding()
-                   NavigationLink("NavigationLink to enter second page", value: Destination2.secondPage)
-                       .padding()
-                   List(1..<3) { index in
-                       NavigationLink("Nav Link \(index)", value: index)
+                   
+                   Text("property in: \(viewModel.allMyProperties.count)")
+                   
+                   ForEach(viewModel.allMyProperties) { property in
+                       
+                       NavigationLink {
+                           TestViewForNavigation(testItem: property, viewModel: viewModel)
+                       } label: {
+                           Text("Edit \(property.intestazione) / \(property.id)")
+                       }
+ 
                    }
+                   
+            
+                   
                }
-               .navigationDestination(for: Destination2.self) { destination in
-                   viewForDestination(destination: destination)
-               }
-               .navigationDestination(for: Int.self) { index in
-                   Text("index \(index)")
-               }
-           }
+               
+               
+               
+           }.onAppear { viewModel.allMyProperties.append(PropertyModel(nome: "Osteria Vera")) }
        }
         
         

@@ -43,7 +43,7 @@ class AccounterVM: ObservableObject {
     // AREA TEST NAVIGATIONSTACK
     
     @Published var homeViewPath = NavigationPath()
-    
+    @Published var currentProperty: PropertyModel = PropertyModel()
     
     // FINE AREA TEST
     
@@ -189,6 +189,7 @@ class AccounterVM: ObservableObject {
         
     } */
     
+    /*
     /// Manda un alert peri Confermare le Modifiche all'oggetto MyModelProtocol
     func updateItemModel<T:MyModelProtocol>(messaggio:String, action: @escaping () -> T )  {
         
@@ -204,14 +205,29 @@ class AccounterVM: ObservableObject {
                 
                                     }))
         
-    }
+    } */
     
+    /// Manda un alert peri Confermare le Modifiche all'oggetto MyModelProtocol
+    func updateItemModel<T:MyModelProtocol>(messaggio:String, itemModel:T )  {
+        
+        self.alertItem = AlertModel(
+            title: "Confermare Modifiche",
+            message: messaggio,
+            actionPlus: ActionModel(
+                title: .conferma,
+                action: {
+    
+                    self.updateItemModelExecutive(itemModel: itemModel)
+                
+                                    }))
+        
+    }
     
     private func updateItemModelExecutive<T:MyModelProtocol>(itemModel: T) {
         
         var (containerT, _) = assegnaContainer(itemModel: itemModel)
   
-        guard let oldItemIndex = containerT.firstIndex(of: itemModel) else {
+        guard let oldItemIndex = containerT.firstIndex(where: {$0.id == itemModel.id}) else {
             self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
             return}
 

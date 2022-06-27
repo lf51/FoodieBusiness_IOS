@@ -139,12 +139,12 @@ struct CSTextEditor_ModelDescription<M:MyModelProtocol>: View {
         self.isEditorActive = false
         csHideKeyboard()
 
-        viewModel.updateItemModel(messaggio: "Test") { () -> M in
+     /*   viewModel.updateItemModel(messaggio: "Test") { () -> M in
             
             var varianteProperty = itemModel
             varianteProperty.descrizione = description
             return varianteProperty
-        }
+        } */
    
     }
     
