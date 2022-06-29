@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
-import MapKit // necessario per la preview. Da eliminare
+//import MapKit // necessario per la preview. Da eliminare
 
 struct PropertyModel_RowView: View {
 
-    @EnvironmentObject var viewModel: AccounterVM
-    @Binding var itemModel: PropertyModel
-
+   // @EnvironmentObject var viewModel: AccounterVM
+    //@Binding var itemModel: PropertyModel
+    let itemModel: PropertyModel
+    
     var body: some View {
             
         CSZStackVB_Framed {

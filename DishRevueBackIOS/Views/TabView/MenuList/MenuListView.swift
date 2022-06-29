@@ -17,20 +17,33 @@ struct MenuListView: View {
     
     var body: some View {
         
-        NavigationStack {
+        NavigationStack(path:$viewModel.menuListPath) {
             
             CSZStackVB(title: "I Miei Menu", backgroundColorView: backgroundColorView) {
                     
                 ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
             }
+            .navigationDestination(for: MenuModel.self, destination: { menu in
+                NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView)
+            })
             .toolbar {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
+                    
+                    LargeBar_TextPlusButton(
+                        buttonTitle: "Nuovo Menu",
+                        font: .callout,
+                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageFore: Color.white) {
+                            self.viewModel.menuListPath.append(MenuModel())
+                        }
+                    
+                    
+                  /*  NavigationLink {
                         NuovoMenuMainView(backgroundColorView: backgroundColorView)
                     } label: {
                         LargeBar_Text(title: "Nuovo Menu", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
-                    }
+                    } */
 
                 }
                 

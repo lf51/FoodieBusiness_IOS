@@ -9,8 +9,9 @@ import SwiftUI
 
 struct IngredientModel_RowView: View {
     
-    @Binding var item: IngredientModel
-   // let item: IngredientModel
+   // @Binding var item: IngredientModel
+    let item: IngredientModel
+    
     var body: some View {
         
       /*  ZStack(alignment:.leading){
@@ -119,7 +120,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
             
             Color.cyan.ignoresSafeArea()
             
-            IngredientModel_RowView(item: $ingredientSample)
+            IngredientModel_RowView(item: ingredientSample)
         }
     }
 }

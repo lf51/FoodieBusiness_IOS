@@ -145,7 +145,8 @@ enum MenuModelOption {
 
 struct MenuModel_RowView: View {
     
-    @Binding var menuItem: MenuModel
+   // @Binding var menuItem: MenuModel
+    let menuItem: MenuModel
     
     var body: some View {
         

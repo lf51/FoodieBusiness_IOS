@@ -10,12 +10,10 @@ import SwiftUI
 struct EditingPropertyModel: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-   // @Binding var itemModel: PropertyModel
-   // @Binding var itemModel: PropertyModel
     @State private var itemModel: PropertyModel
     let backgroundColorView: Color
     
-    @State private var openMenuList: Bool? = false
+   // @State private var openMenuList: Bool? = false
     @State private var wannaAddDescription: Bool? = false
     @State private var itemModelChanged: Bool = false
   
@@ -38,61 +36,73 @@ struct EditingPropertyModel: View {
                     VStack(alignment:.leading) {
                         
                         CSLabel_1Button(
-                            placeHolder: "Descrizione Pubblica",
+                            placeHolder: "Descrizione Attività",
                             imageNameOrEmojy: "scribble",
                             backgroundColor: Color.black,
                             toggleBottone: $wannaAddDescription)
                                                 
                         if wannaAddDescription ?? false {
-                            
-                        //    CSTextEditor_ModelDescription(itemModel: $itemModel)
+
                             CSTextField_ExpandingBox(itemModel: $itemModel, maxDescriptionLenght: 300)
-                            
-                            
+                                                        
                         } else {
                             
                             Text(itemModel.descrizione == "" ? "Nessuna descrizione inserita. Press [+] " : itemModel.descrizione)
                                 .italic()
                                 .fontWeight(.light)
-                            
                         }
                         
-                    }.disabled(openMenuList!)
+                    }//.disabled(openMenuList!)
                     
-                 /*   VStack(alignment:.leading) {
+                   VStack(alignment:.leading) {
                         
-                        CSLabel_2Button(
+                       
+                          
+                       CSLabel_1Button(
+                        placeHolder: "Menu Attivi",
+                        imageNameOrEmojy: "scroll",
+                        backgroundColor: Color.black)
+                       /* CSLabel_2Button(
                           placeHolder: "Menu In",
                           imageName: "scroll",
                           backgroundColor: Color.black,
                           toggleBottoneTEXT: $openMenuList,
                           testoBottoneTEXT: "Edit")
-                        .disabled(wannaAddDescription!)
+                            .disabled(wannaAddDescription!) */
 
                             ScrollView(.horizontal, showsIndicators: false) {
                                 
                                 HStack {
                                     
-                                    ForEach($itemModel.menuIn) { $myMenu in
+                                    ForEach($viewModel.allMyMenu.sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione}) { $myMenu in
+                                        
+                                        vbCambioStatusMenuIn(myMenu: $myMenu)
+                                        
+                                      /*  GenericItemModel_RowViewMask(
+                                            model: $myMenu.wrappedValue,
+                                            backgroundColorView: backgroundColorView) {
+                                                vbStatusButton(model: $myMenu)
+                                            } */
+                                        
+                                        
+                                         
+                                       }
+                                    
+                                    
+                                 /*   ForEach(itemModel.menuIn) { myMenu in
                                      
                                         GenericItemModel_RowViewMask(
-                                            model: $myMenu,
+                                            model: myMenu,
                                             backgroundColorView: backgroundColorView) {
-                                                Button("New Remove") {
-                                                    
-                                                    let index = itemModel.menuIn.firstIndex(of: myMenu)
-                                                    itemModel.menuIn.remove(at: index!)
-                                                    
-                                                    
-                                                }
+                                               
+                                                Text("Archivia")
+                                                Text("In Pausa")
                                             }
-
-                                   
-                                        
-                                    }
+                                      
+                                    } */
                                 }
                             }
-                    } */
+                    }
                     
                     VStack(alignment:.leading) {
                         
@@ -112,14 +122,14 @@ struct EditingPropertyModel: View {
             } // Chiusa VStack Madre
             .padding(.horizontal)
             
-           if openMenuList! {
+          /* if openMenuList! {
                 
                 SelettoreMyModel<_,MenuModel>(
                     itemModel: $itemModel,
                     allModelList: ModelList.propertyMenuList,
                     closeButton: $openMenuList)
                 
-            }
+            } */
             
         } // Chiusa ZStack Madre
         .onChange(of: itemModel, perform: { _ in
@@ -162,21 +172,30 @@ struct EditingPropertyModel: View {
     
     // Method
     
+    
+    
+    
     private func saveEdit() {
 
         viewModel.updateItemModel(messaggio: "Salva Modifiche della proprietà \(itemModel.intestazione)", itemModel: itemModel)
    
+        self.itemModelChanged = false
     }
  
     private func estrapolaGiorniChiusura() -> some View {
         
         var giorniServizio:[GiorniDelServizio] = []
         
-        for menu in itemModel.menuIn {
+      /*  for menu in itemModel.menuIn {
             
             giorniServizio.append(contentsOf: menu.giorniDelServizio)
            
-        }
+        } */
+        
+        for menu in viewModel.allMyMenu {
+              
+            if menu.status == .completo(.pubblico) {giorniServizio.append(contentsOf: menu.giorniDelServizio)} else { continue }
+          }
         
         let setGiorni = Set(giorniServizio)
         let setAllDay = Set(GiorniDelServizio.allCases)
@@ -228,8 +247,71 @@ struct EditingPropertyModel: View {
         }
     }
     
+    /// Gestisce il cambio di Status delle rowMask dei Menu In EditingPropertyModel
+    @ViewBuilder private func vbCambioStatusMenuIn(myMenu: Binding<MenuModel>) -> some View {
+        
+        let currentMenu = myMenu.wrappedValue
+        
+        if currentMenu.status == .completo(.pubblico) {
+            
+            GenericItemModel_RowViewMask(
+                model: currentMenu) {
+                    
+                    Button {
+                        myMenu.wrappedValue.status = .completo(.inPausa)
+                        
+                    } label: {
+                        HStack{
+                            Text("Metti in Pausa")
+                            Image(systemName: "pause.circle")
+                        }
+                    }
+                    
+                    Button {
+                        myMenu.wrappedValue.status = .completo(.archiviato)
+                        
+                    } label: {
+                        HStack{
+                            Text("Archivia")
+                            Image(systemName: "archivebox")
+                        }
+                    }
+                    
+                }
+            
+        } else if currentMenu.status == .completo(.inPausa) {
+            
+            GenericItemModel_RowViewMask(
+                model: currentMenu) {
+                    
+                    Button {
+                        myMenu.wrappedValue.status = .completo(.pubblico)
+                        
+                    } label: {
+                        HStack{
+                            Text("Pubblica")
+                            Image(systemName: "play.circle")
+                        }
+                    }
+                    
+                    Button {
+                        myMenu.wrappedValue.status = .completo(.archiviato)
+                        
+                    } label: {
+                        HStack{
+                            Text("Archivia")
+                            Image(systemName: "archivebox")
+                        }
+                    }
+                }
+        }
+                else {EmptyView()}
+    }
     
 }
+
+
+
 /*
 struct EditingPropertyModel_Previews: PreviewProvider {
     
@@ -253,3 +335,7 @@ struct EditingPropertyModel_Previews: PreviewProvider {
     }
 }
 */
+
+
+
+

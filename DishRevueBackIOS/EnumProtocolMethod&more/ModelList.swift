@@ -42,7 +42,7 @@ enum ModelList: Equatable, Hashable {
     
     ///Case Predefinito per la relazione Proprietà/Menu.
     static var propertyMenuList: [ModelList] = [
-        .viewModelContainer("Menu Disponibili",\.allMyMenu, .fonte),
+        .viewModelContainer("Menu Completi",\.allMyMenu, .fonte),
         .itemModelContainer("Menu In",\PropertyModel.menuIn, .destinazione(Color.yellow, grado: .principale))
     ]
     

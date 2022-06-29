@@ -13,12 +13,19 @@ struct NewDishMainView: View {
     @EnvironmentObject var viewModel: AccounterVM // ATTUALMENTE NON UTILIZZATO
     let backgroundColorView: Color
     
-    @State var newDish: DishModel = DishModel() // ogni volta che parte la view viene creato un piatto vuoto, lo modifichiamo e lo aggiungiamo alla dishlist.
-    @State var wannaDeleteIngredient: Bool? = false // attiva l'eliminazione degli ingredienti
-    @State var wannaAddIngredient: Bool? = false // apre per tuttiGliIngredienti
+   // @State var newDish: DishModel = DishModel() // Deprecato 29.06
+    @State private var newDish: DishModel
+    @State private var wannaDeleteIngredient: Bool? = false // attiva l'eliminazione degli ingredienti
+    @State private var wannaAddIngredient: Bool? = false // apre per tuttiGliIngredienti
  //   @State var openAddingIngredienteSecondario: Bool? = false // in disuso // da eliminare
-    @State var wannaCreateIngredient: Bool? = false
-    @State var wannaProgramAndPublishNewDish: Bool = false 
+    @State private var wannaCreateIngredient: Bool? = false
+    @State private var wannaProgramAndPublishNewDish: Bool = false
+    
+    init(newDish: DishModel,backgroundColorView: Color) {
+        
+        _newDish = State(wrappedValue: newDish)
+        self.backgroundColorView = backgroundColorView
+    }
     
     private var isThereAReasonToDisabled: Bool {
         

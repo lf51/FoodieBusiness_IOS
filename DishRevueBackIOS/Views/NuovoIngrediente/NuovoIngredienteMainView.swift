@@ -12,10 +12,17 @@ import SwiftUI
 struct NuovoIngredienteMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-    let backgroundColorView: Color
+    
   //  @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
     
-    @State var nuovoIngrediente: IngredientModel = IngredientModel() // ogni volta che parte la view viene creato un ingrediente vuoto, lo modifichiamo e lo aggiungiamo alla listaIngredienti.
+   // @State var nuovoIngrediente: IngredientModel = IngredientModel() // deprecata 29.06
+    @State private var nuovoIngrediente: IngredientModel
+    let backgroundColorView: Color
+    
+    init(nuovoIngrediente: IngredientModel,backgroundColorView: Color) {
+        self.backgroundColorView = backgroundColorView
+        _nuovoIngrediente = State(wrappedValue: nuovoIngrediente)
+    }
     
   /*  init(backgroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
         
@@ -96,6 +103,7 @@ struct NuovoIngredienteMainView: View {
     
 }
 
+/*
 struct NuovoIngredienteView_Previews: PreviewProvider {
     static var previews: some View {
         
@@ -129,7 +137,7 @@ struct NuovoIngredienteView_Previews: PreviewProvider {
      
     }
 }
-
+*/
 
 
 

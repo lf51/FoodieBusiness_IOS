@@ -83,14 +83,12 @@ import SwiftUI
 /// ViewBuilder - Riconosce il modello e ritorna la rowView associata. Deprecato e sostituito da viewBuilder più articolati creati localmente che usano Binding.
 /// - Parameter item: <#item description#>
 /// - Returns: <#description#>
-/*@ViewBuilder func csVbSwitchModelRowView<M:MyModelProtocol>(item: M) -> some View {
+@ViewBuilder func csVbSwitchModelRowView<M:MyModelProtocol>(item: M) -> some View {
      
      switch item.self {
          
      case is MenuModel:
-       //  let bItem = Binding(item as! Binding<MenuModel>)
-         Text("\(item.intestazione)")
-       //  MenuModel_RowView(menuItem: item as! Binding<MenuModel>)
+         MenuModel_RowView(menuItem: item as! MenuModel)
          
      case is DishModel:
          DishModel_RowView(item: item as! DishModel)
@@ -98,11 +96,16 @@ import SwiftUI
      case is IngredientModel:
          IngredientModel_RowView(item: item as! IngredientModel)
          
+     case is PropertyModel:
+         PropertyModel_RowView(itemModel: item as! PropertyModel)
+         
      default:  Text("item is a notListed Type")
          
      }
- } */
+ }
 
+
+/*
 /// ViewBuilder - Riconosce il modello e ritorna la rowView associata.
 /// - Parameter item: <#item description#>
 /// - Returns: <#description#>
@@ -126,7 +129,7 @@ import SwiftUI
          Text("ItemModel type not lysted")
          
      }
- }
+ } */ // Deprecata il 28.06 per ritorno a delle Row senza Binding
 
 
 

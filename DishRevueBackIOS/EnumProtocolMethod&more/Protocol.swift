@@ -32,7 +32,7 @@ protocol MyModelProtocol: Identifiable, Equatable {
     
 }
 
-protocol MyModelStatusConformity {
+protocol MyModelStatusConformity: MyModelProtocol,Hashable {
     
     var status: StatusModel {get set}
     

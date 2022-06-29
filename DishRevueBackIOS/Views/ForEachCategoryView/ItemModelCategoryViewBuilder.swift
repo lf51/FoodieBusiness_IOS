@@ -67,50 +67,50 @@ struct ItemModelCategoryViewBuilder: View {
             
         case .menuAz:
    
-            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyMenu)
+            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyMenu, navPath: \.menuListPath)
           
         case .ingredientAz:
             
-            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyIngredients)
+            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyIngredients, navPath: \.ingredientListPath)
    
         case .dishAz:
             
-            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyDish)
+            DataModelAlphabeticView_Sub(filterCategory: self.filterCategory, dataPath: \.allMyDish, navPath: \.dishListPath)
             
         case .tipologiaMenu:
         
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \MenuModel.tipologia, dataPath: \.allMyMenu)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \MenuModel.tipologia, dataPath: \.allMyMenu, navPath: \.menuListPath)
             
         case .giorniDelServizio:
          
-            DataModelCategoryView_SubView(dataMapping: GiorniDelServizio.allCases, filterCategory: self.filterCategory, collectionPath: \MenuModel.giorniDelServizio, dataPath: \.allMyMenu)
+            DataModelCategoryView_SubView(dataMapping: GiorniDelServizio.allCases, filterCategory: self.filterCategory, collectionPath: \MenuModel.giorniDelServizio, dataPath: \.allMyMenu, navPath: \.menuListPath)
             
         case .statusMenu:
             notListed()
             
         case .conservazione:
             
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.conservazione, dataPath: \.allMyIngredients)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.conservazione, dataPath: \.allMyIngredients, navPath: \.ingredientListPath)
 
         case .produzione:
 
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.produzione, dataPath: \.allMyIngredients)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.produzione, dataPath: \.allMyIngredients, navPath: \.ingredientListPath)
 
         case .provenienza:
 
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.provenienza, dataPath: \.allMyIngredients)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \IngredientModel.provenienza, dataPath: \.allMyIngredients, navPath: \.ingredientListPath)
 
         case .categoria:
             
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.categoria, dataPath: \.allMyDish)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.categoria, dataPath: \.allMyDish, navPath: \.dishListPath)
             
         case .base:
 
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.aBaseDi, dataPath: \.allMyDish)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.aBaseDi, dataPath: \.allMyDish, navPath: \.dishListPath)
             
         case .tipologiaPiatto:
  
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.tipologia,  dataPath: \.allMyDish)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.tipologia,  dataPath: \.allMyDish, navPath: \.dishListPath)
 
         case .statusPiatto:
             notListed()

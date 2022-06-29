@@ -7,8 +7,12 @@
 
 import Foundation
 
-struct MenuModel:MyModelProtocol,MyModelStatusConformity {
+struct MenuModel:MyModelStatusConformity {
 
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     static func == (lhs: MenuModel, rhs: MenuModel) -> Bool {
         
         lhs.id == rhs.id &&
@@ -30,7 +34,7 @@ struct MenuModel:MyModelProtocol,MyModelStatusConformity {
     var propertiesWhereIsUsed: [PropertyModel] = [] // doppia scrittura con MenuIn in PropertyModel // DEPRECATA IN FUTURO
     var dishIn: [DishModel] = [] // doppia scrittura con MenuWhereIsIn in DishModel
     
-    var intestazione: String = ""
+    var intestazione: String = "Menu Vuoto - Intestazione"
     var descrizione: String = ""
     
     var tipologia: TipologiaMenu = .defaultValue

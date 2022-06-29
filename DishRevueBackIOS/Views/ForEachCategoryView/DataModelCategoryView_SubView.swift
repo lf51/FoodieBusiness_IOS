@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConform>:View {
+struct DataModelCategoryView_SubView<M:MyModelStatusConformity,G:MyEnumProtocolMapConform>:View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @State private var stringSearch: String = ""
@@ -16,25 +16,28 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
     let path:KeyPath<M,G>?
     let collectionPath:KeyPath<M,[G]>?
     let dataPath:ReferenceWritableKeyPath<AccounterVM,[M]>
+    let navPath: ReferenceWritableKeyPath<AccounterVM,NavigationPath>
     let dataMapping:[G]?
     
     /// Necessita di un Keypath (alias path) che conduce ad una proprietà singola G. Il Mapping è implicito, avviene sull'array del dataPath attraverso la proprietà G del path.
-    init(filterCategory: MapCategoryContainer, path: KeyPath<M,G>, dataPath:ReferenceWritableKeyPath<AccounterVM,[M]>) {
+    init(filterCategory: MapCategoryContainer, path: KeyPath<M,G>, dataPath:ReferenceWritableKeyPath<AccounterVM,[M]>, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) {
 
         self.dataMapping = nil
         self.filterCategory = filterCategory
         self.path = path
         self.collectionPath = nil
         self.dataPath = dataPath
+        self.navPath = navPath
     }
     /// Necessita un Keypath (alias collectionPath) che conduce ad un array [G]. Il Mapping avviene su un array passato esplicitamente, il dataMapping.
-    init(dataMapping:[G],filterCategory: MapCategoryContainer, collectionPath:KeyPath<M,[G]>, dataPath:ReferenceWritableKeyPath<AccounterVM,[M]>) {
+    init(dataMapping:[G],filterCategory: MapCategoryContainer, collectionPath:KeyPath<M,[G]>, dataPath:ReferenceWritableKeyPath<AccounterVM,[M]>,navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) {
 
         self.dataMapping = dataMapping
         self.filterCategory = filterCategory
         self.path = nil
         self.collectionPath = collectionPath
         self.dataPath = dataPath
+        self.navPath = navPath
 
     }
      
@@ -104,38 +107,12 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
         
         if isIn {
             
-            GenericItemModel_RowViewMask(
-                model: item,
-                backgroundColorView: Color("SeaTurtlePalette_1")) {
+            vbCambioStatusModelList(myModel: item, viewModel: viewModel,navPath: navPath)
+          /*  GenericItemModel_RowViewMask(
+                model: localItem /*item*/) {
                     Text("\(localItem.intestazione) -> test Label")
-                }
-            
-            
-          /*  switch item.self {
-                 
-             case is Binding<MenuModel>:
-             
-                    MenuModel_RowLabelMenu(menuItem: item as! Binding<MenuModel>, backgroundColorView: Color("SeaTurtlePalette_1")) {
-                        
-                        Text("Modifica Piano")
-                 
-                    }
-                           
-             case is Binding<DishModel>:
-                
-               // Text("Da Settare - Dish: \(localItem.intestazione)")
-                DishModel_RowView(item: item as! Binding<DishModel>)
-         
-             case is Binding<IngredientModel>:
-               // Text("Da Setttare - Ingrediente: \(localItem.intestazione)")
-                 IngredientModel_RowView(item: item as! Binding<IngredientModel>)
-                 
-             default:  Text("item is a notListed Type")
-                 
-             } */
-            
-            
-            
+                } */
+      
             
         } else { EmptyView()}
         
@@ -144,7 +121,7 @@ struct DataModelCategoryView_SubView<M:MyModelProtocol,G:MyEnumProtocolMapConfor
         
         
      }
-    
+ 
     
 }
 
@@ -161,9 +138,122 @@ struct DataModelCategoryView_Previews: PreviewProvider {
             
             Group {
                 
-                MenuModel_RowView(menuItem:$menuItem )
+                MenuModel_RowView(menuItem:menuItem )
                 
             }
         }
     }
+}
+
+
+@ViewBuilder func vbCambioStatusModelList<M:MyModelStatusConformity>(myModel: Binding<M>,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    
+    let currentModel = myModel.wrappedValue
+    
+    if currentModel.status == .completo(.pubblico) {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.inPausa)
+                    
+                } label: {
+                    HStack{
+                        Text("Metti in Pausa")
+                        Image(systemName: "pause.circle")
+                    }
+                }
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.archiviato)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                    }
+                }
+                
+            }
+        
+    } else if currentModel.status == .completo(.inPausa) {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.pubblico)
+                    
+                } label: {
+                    HStack{
+                        Text("Pubblica")
+                        Image(systemName: "play.circle")
+                    }
+                }
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.archiviato)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                    }
+                }
+            }
+    } else if currentModel.status == .completo(.archiviato) {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.pubblico)
+                    
+                } label: {
+                    HStack{
+                        Text("Pubblica")
+                        Image(systemName: "play.circle")
+                    }
+                }
+                
+                Button {
+                    viewModel.deleteItemModel(itemModel: currentModel)
+                    
+                } label: {
+                    HStack{
+                        Text("Elimina")
+                        Image(systemName: "archivebox")
+                    }
+                }
+            }
+    } else if currentModel.status == .bozza {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                Button {
+                    
+                    viewModel[keyPath: navPath].append(currentModel)
+                    
+                } label: {
+                    HStack{
+                        Text("Completa")
+                        Image(systemName: "play.circle")
+                    }
+                }
+                
+                Button {
+                    viewModel.deleteItemModel(itemModel: currentModel)
+                    
+                } label: {
+                    HStack{
+                        Text("Elimina")
+                        Image(systemName: "archivebox")
+                    }
+                }
+            }
+        
+    }
+           
 }

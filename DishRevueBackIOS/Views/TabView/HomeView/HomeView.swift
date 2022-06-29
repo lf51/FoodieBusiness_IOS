@@ -50,6 +50,15 @@ struct HomeView: View {
                         Text("Box Vuoto")
                     }
           
+                    Button {
+                        viewModel.homeViewPath.append(Destination.propertyList)
+                        viewModel.homeViewPath.append(viewModel.allMyProperties[0])
+                    } label: {
+                        Text("Gestisci Menu")
+                    }.disabled(viewModel.allMyProperties.isEmpty)
+                        
+                    
+                    
                     Spacer()
                     // Box Novità
                     Text("Box Novità")

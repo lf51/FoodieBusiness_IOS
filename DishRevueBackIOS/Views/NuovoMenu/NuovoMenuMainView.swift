@@ -10,12 +10,19 @@ import SwiftUI
 struct NuovoMenuMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-    @State var nuovoMenu: MenuModel = MenuModel()
-  //  @Binding var dismissView:Bool?
+   // @State var nuovoMenu: MenuModel = MenuModel() // Deprecata 29.06
+
+    @State private var nuovoMenu: MenuModel
     @State private var nuovaIntestazioneMenu: String = ""
     @State private var openDishList: Bool? = false
     
     let backgroundColorView: Color
+    
+    init(nuovoMenu: MenuModel, backgroundColorView: Color) {
+        
+        _nuovoMenu = State(wrappedValue: nuovoMenu)
+        self.backgroundColorView = backgroundColorView
+    }
     
    /* init(editMenu:MenuModel? = MenuModel(), dismissView: Binding<Bool?>? = nil, backgroundColorView: Color) {
         

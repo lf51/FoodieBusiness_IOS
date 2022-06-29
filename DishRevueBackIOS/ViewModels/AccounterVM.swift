@@ -31,7 +31,7 @@ class AccounterVM: ObservableObject {
     @Published var allMyMenu:[MenuModel] = [] // tutti i menu creati dall'accounter
     @Published var allMyProperties:[PropertyModel] = [] /*{ willSet {
         print("cambio Valore allMyProperties")
-        objectWillChange.send() } }*/ // Deprecato per Blocco ad una singola Proprietà per Account. Manteniamo la forma dell'array per motivi tecnici, per il momento ci limitiamo a bloccare (azione non ancora implementata) l'eventuale incremento del contenuto oltre la singola unità.
+        objectWillChange.send() } }*/ // Deprecato per Blocco ad una singola Proprietà per Account. Manteniamo la forma dell'array per motivi tecnici, per il momento ci limitiamo a bloccare l'eventuale incremento del contenuto oltre la singola unità.
     
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
@@ -43,7 +43,14 @@ class AccounterVM: ObservableObject {
     // AREA TEST NAVIGATIONSTACK
     
     @Published var homeViewPath = NavigationPath()
-    @Published var currentProperty: PropertyModel = PropertyModel()
+    @Published var menuListPath = NavigationPath()
+    @Published var dishListPath = NavigationPath()
+    @Published var ingredientListPath = NavigationPath()
+    
+    
+    
+    
+    var defaultProperty: PropertyModel? { allMyProperties[0] } // NON SO SE MI SERVE al 28.06
     
     // FINE AREA TEST
     

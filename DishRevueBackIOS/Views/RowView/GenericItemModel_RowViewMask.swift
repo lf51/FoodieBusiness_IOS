@@ -7,6 +7,32 @@
 
 import SwiftUI
 
+
+struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
+    
+    @EnvironmentObject var viewModel: AccounterVM
+ //   @Binding var model: M
+    let model: M
+   // let backgroundColorView: Color
+    @ViewBuilder var interactiveMenuContent: Content
+   
+    var body: some View {
+                
+        Menu {
+               interactiveMenuContent
+            Text("Linea TEST")
+        
+        } label: {
+
+            csVbSwitchModelRowView(item: model)
+           
+        }
+    }
+
+}
+
+
+/*
 struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -29,7 +55,7 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
         }
     }
 
-}
+} */ // Deprecata 28.06 per trasformazione da Binding<M> a M
 
 /*
 struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
@@ -38,6 +64,8 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     }
 } */
 
+
+/*
 /// ViewBuilder - Modifica lo Status di un Model Generico, passando da completo(.pubblico) a completo(.inPausa) e viceversa
 @ViewBuilder func vbStatusButton<M:MyModelStatusConformity>(model:Binding<M>) -> some View {
     
@@ -51,7 +79,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
             HStack {
                 Text("Metti in Pausa")
                 Image(systemName: "pause.circle")
-            }.foregroundColor(Color.black)
+            }
         }
         
     } else if localModel.status == .completo(.inPausa) {
@@ -63,7 +91,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                 Text("Pubblica")
                 Image(systemName: "play.circle")
             
-            }.foregroundColor(Color.black)
+            }
         }
         
         
@@ -73,4 +101,6 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     
     
     
-}
+} */ // 28.06 Deprecata
+
+

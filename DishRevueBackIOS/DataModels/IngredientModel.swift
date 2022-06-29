@@ -9,7 +9,11 @@ import Foundation
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel: MyModelProtocol,MyModelStatusConformity {
+struct IngredientModel:MyModelStatusConformity {
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
     
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return

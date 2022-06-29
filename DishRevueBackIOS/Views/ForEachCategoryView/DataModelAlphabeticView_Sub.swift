@@ -7,24 +7,22 @@
 
 import SwiftUI
 
-
-
-
-struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
+struct DataModelAlphabeticView_Sub<T:MyModelStatusConformity>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @State private var stringSearch: String = ""
 
     let filterCategory: MapCategoryContainer
     let dataPath:ReferenceWritableKeyPath<AccounterVM,[T]>
+    let navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>
     
-    init(filterCategory:MapCategoryContainer, dataPath:ReferenceWritableKeyPath<AccounterVM,[T]>) {
+    init(filterCategory:MapCategoryContainer, dataPath:ReferenceWritableKeyPath<AccounterVM,[T]>,navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) {
 
         self.filterCategory = filterCategory
         self.dataPath = dataPath
+        self.navPath = navPath
     }
 
-    
     var body: some View {
         
             ScrollView(showsIndicators: false) {
@@ -33,10 +31,6 @@ struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
                     
                     CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
               
-                    
-                 //   csVbSwitchModelRowViewTEST(item: &dataFiltering)
-                   // ForEach(dataFiltering().sorted{$0.intestazione < $1.intestazione})
-                    //ForEach($dataFiltering.sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione })
                     ForEach($viewModel[dynamicMember:dataPath].sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione }){ $item in
                        
                        HStack {
@@ -55,10 +49,10 @@ struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
     
     // Method
     
-    @ViewBuilder private func csVbSwitchModelRowView<T:MyModelProtocol>(item:Binding<T>) -> some View {
+    @ViewBuilder private func csVbSwitchModelRowView<T:MyModelStatusConformity>(item:Binding<T>) -> some View {
   
         let localItem: T = item.wrappedValue
-        
+       
         let isIn: Bool = {
             
             let firstBool = viewModel.deepFiltering(model: localItem, filterCategory: self.filterCategory)
@@ -70,46 +64,10 @@ struct DataModelAlphabeticView_Sub<T:MyModelProtocol>: View {
         
         if isIn {
             
-            
-            GenericItemModel_RowViewMask(
-                model: item,
-                backgroundColorView: Color("SeaTurtlePalette_1")) {
-                    Text("New Modifica Piano -> \(localItem.intestazione)")
-                }
-            
-         /*   switch item.self {
-                 
-             case is Binding<MenuModel>:
-             
-                    MenuModel_RowLabelMenu(menuItem: item as! Binding<MenuModel>, backgroundColorView: Color("SeaTurtlePalette_1")) {
-                        
-                        Text("Modifica Piano")
-                 
-                    }
-                           
-             case is Binding<DishModel>:
-                
-                DishModel_RowView(item: item as! Binding<DishModel>)
-                
-              //  Text("Da Settare - Dish: \(localItem.intestazione)")
-             //   DishModel_RowView(item: item as! Binding<DishModel>)
-         
-             case is Binding<IngredientModel>:
-              //  Text("Da Setttare - Ingrediente: \(localItem.intestazione)")
-                 IngredientModel_RowView(item: item as! Binding<IngredientModel>)
-                 
-             default:  Text("item is a notListed Type")
-                 
-             } */
-            
-            
-            
-            
+            vbCambioStatusModelList(myModel: item,viewModel: viewModel,navPath: navPath)
+     
         } else { EmptyView()}
-        
-        
-        
-        
+    
         
      }
  

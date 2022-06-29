@@ -50,7 +50,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                         Spacer()
                         
                         NavigationLink {
-                            NuovoIngredienteMainView(backgroundColorView: Color("SeaTurtlePalette_1"))
+                          //  NuovoIngredienteMainView(backgroundColorView: Color("SeaTurtlePalette_1"))
                         } label: {
                             Image(systemName: "plus.circle")
                                 .imageScale(.large)

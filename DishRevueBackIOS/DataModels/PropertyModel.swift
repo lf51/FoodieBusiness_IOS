@@ -65,10 +65,7 @@ struct PropertyModel: MyModelProtocol, Hashable{
     
   //  var scheduleServizio: [IntestazioneMenu] = [.colazione,.pranzo]
     
-    var menuIn: [MenuModel] = [
-        MenuModel(nome: "MenuDaEliminare", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi])
-    
-    ] // doppia scrittura con propertiesWhereIsIn in MenuModel
+    var menuIn: [MenuModel] = [] // riempito Automaticamente con i Menu marchiati come completo(.pubblico) // Forse Deprecata 28.06 Accediamo direttamente ai menu salvati nel viewModel filtrandoli per lo status. Evitiamo così di duplicare "inutilmente?" i dati
     
     lazy var serviceSchedule: [GiorniDelServizio:[(String,String)]] = { // Deprecata
         

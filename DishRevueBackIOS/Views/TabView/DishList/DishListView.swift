@@ -34,21 +34,32 @@ struct DishListView: View {
     
     var body: some View {
         
-        NavigationView {
+        NavigationStack(path:$viewModel.dishListPath) {
             
             CSZStackVB(title: "I Miei Piatti", backgroundColorView: backgroundColorView) {
  
-                    
                         ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allDishMapCategory)
 
             }
+            .navigationDestination(for: DishModel.self, destination: { dish in
+                NewDishMainView(newDish: dish, backgroundColorView: backgroundColorView)
+            })
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
+                    
+                    LargeBar_TextPlusButton(
+                        buttonTitle: "Nuovo Piatto",
+                        font: .callout,
+                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageFore: Color.white) {
+                            viewModel.dishListPath.append(DishModel())
+                        }
+                    
+                  /*  NavigationLink {
                         NewDishMainView(backgroundColorView: backgroundColorView)
                     } label: {
                         LargeBar_Text(title: "Nuovo Piatto", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
-                    }
+                    } */
 
                 }
             }

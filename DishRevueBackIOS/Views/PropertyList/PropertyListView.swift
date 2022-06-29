@@ -48,18 +48,17 @@ struct PropertyListView: View {
                               } */
 
                               
-                              NavigationLink(value: property) {
+                            /*  NavigationLink(value: property) {
                                   HStack {
                                       Image(systemName:"arrow.up.forward.square")
                                       Text("EDIT \(property.intestazione)")
                                   }
-                              }
+                              } */
                               
 
                               
-                            /*  GenericItemModel_RowViewMask(
-                                model: $property,
-                                backgroundColorView: backgroundColorView) {
+                              GenericItemModel_RowViewMask(
+                                model: property) {
                                   /*  NavigationLink {
                                         EditingPropertyModel(itemModel: $property, backgroundColorView: Color("SeaTurtlePalette_1"))
                                     } label: {
@@ -69,21 +68,24 @@ struct PropertyListView: View {
                                         }
                                     } */
                                        
-                                    NavigationLink(value: property) {
+                                  /*  NavigationLink(value: property) {
                                         HStack {
                                             Image(systemName:"arrow.up.forward.square")
                                             Text("Edit")
                                         }
-                                    }
+                                    } */
                             
-                                  /*  Button {
+                                    
+                                    
+                                    
+                                    Button {
                                         viewModel.homeViewPath.append(property)
                                     } label: {
                                         HStack {
                                             Image(systemName:"arrow.up.forward.square")
                                             Text("Edit")
                                         }
-                                    } */
+                                    }
 
                                     
                                     
@@ -98,7 +100,10 @@ struct PropertyListView: View {
                                             
                                         }
                                     }
-                                } */
+                                    
+                                    Text("Chiedi Verifica")
+                                    
+                                }
    
                           } // chiusa ForEach
                   }

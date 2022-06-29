@@ -31,20 +31,12 @@ struct LargeBar_TextPlusButton: View {
         
             Button(action: {self.action()}, label: {
                 
-                HStack {
-                    
-                    Image(systemName: "plus.circle")
-                        .font(font)
-                        .background(imageBack.clipShape(Circle()))
-                        .foregroundColor(imageFore)
-                      //  .padding(.trailing)
-                    
-                    Text(buttonTitle ?? "")
-                        .font(font)
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color.black)
-                       // .padding(.leading)
-                }
+                LargeBar_Text(
+                    title: buttonTitle ?? "",
+                    font: font,
+                    imageBack: imageBack,
+                    imageFore: imageFore)
+
             })
             
         }

@@ -26,6 +26,7 @@ import SwiftUI
 
 struct ListaIngredientiView: View {
     
+    @EnvironmentObject var viewModel: AccounterVM
     @Binding var tabSelection: Int
     let backgroundColorView: Color
     
@@ -33,20 +34,32 @@ struct ListaIngredientiView: View {
     
     var body: some View {
         
-        NavigationView {
+        NavigationStack(path:$viewModel.ingredientListPath) {
             
             CSZStackVB(title: "I Miei Ingredienti", backgroundColorView: backgroundColorView) {
 
-  
                 ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory)
 
-            }.toolbar {
+            }
+            .navigationDestination(for: IngredientModel.self, destination: { ingredient in
+                NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView)
+            })
+            .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    NavigationLink {
+                    
+                    LargeBar_TextPlusButton(
+                        buttonTitle: "Nuovo Ingrediente",
+                        font: .callout,
+                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageFore: Color.white) {
+                            viewModel.ingredientListPath.append(IngredientModel())
+                        }
+                    
+                 /*   NavigationLink {
                         NuovoIngredienteMainView(backgroundColorView: backgroundColorView)
                     } label: {
                         LargeBar_Text(title: "Nuovo Ingrediente", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
-                    }
+                    } */
 
                 }
             }

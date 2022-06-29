@@ -10,8 +10,12 @@
 import Foundation
 
 
-struct DishModel: MyModelProtocol,MyModelStatusConformity {
+struct DishModel:MyModelStatusConformity {
      
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
        
         lhs.id == rhs.id &&
