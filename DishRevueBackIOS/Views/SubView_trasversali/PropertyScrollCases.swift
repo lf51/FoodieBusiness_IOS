@@ -48,7 +48,16 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
                     
                     ForEach(enumCases) { type in
                         
-                        CSText_bigRectangle(testo: type.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.checkSelectionOrContainer(type: type) ? Color.clear : Color.blue, fillColor: self.checkSelectionOrContainer(type: type) ? colorSelection : Color.clear)
+                        let isSelected = self.checkSelectionOrContainer(type: type)
+                        
+                        CSText_bigRectangle(testo: type.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: isSelected ? Color.blue : Color.red, fillColor: isSelected ? colorSelection : Color.clear)
+                            .overlay(content: {
+                                Rectangle()
+                                    .padding(.horizontal)
+                                    .frame(height: 1.0)
+                                    .foregroundColor(isSelected ? Color.clear : Color.red)
+                                  
+                            })
                             .onTapGesture {self.addingValueTo(newValue: type)}
                     }
                 }

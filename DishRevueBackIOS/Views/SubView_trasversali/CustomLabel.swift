@@ -61,15 +61,17 @@ struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
     
     var placeHolder: String
     var imageName: String?
+    var imageColor: Color?
     var backgroundColor: Color
     var backgroundOpacity: Double?
     
     @Binding var toggleBottone: Bool?
     
-    init(placeHolder: String, imageNameOrEmojy: String? = nil, backgroundColor: Color, backgroundOpacity:Double? = nil, toggleBottone: Binding<Bool?>? = nil) {
+    init(placeHolder: String, imageNameOrEmojy: String? = nil,imageColor:Color? = Color.black, backgroundColor: Color, backgroundOpacity:Double? = nil, toggleBottone: Binding<Bool?>? = nil) {
         
         self.placeHolder = placeHolder
         self.imageName = imageNameOrEmojy
+        self.imageColor = imageColor
         self.backgroundColor = backgroundColor
         self.backgroundOpacity = backgroundOpacity
 
@@ -88,6 +90,7 @@ struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
             } icon: {
          
                 csVbSwitchImageText(string: imageName)
+                    .foregroundColor(imageColor)
             }
             ._tightPadding()
             .background(
@@ -305,10 +308,10 @@ struct CSLabel_1Picker: View {
     let labelColor: Color
     let pickerColor: Color    
     
-    @Binding var selectedProgram: AvailabilityMenu
+    @Binding var selectedProgram: AvailabilityMenu?
     var isThereConditionToDisablePicker: Bool
     
-    init(placeHolder: String, imageName: String, backgroundColor: Color, pickerColor:Color? = nil, availabilityMenu: Binding<AvailabilityMenu>, conditionToDisablePicker: Bool? = nil) {
+    init(placeHolder: String, imageName: String, backgroundColor: Color, pickerColor:Color? = nil, availabilityMenu: Binding<AvailabilityMenu?>, conditionToDisablePicker: Bool? = nil) {
         
         self.placeHolder = placeHolder
         self.imageName = imageName
@@ -344,7 +347,7 @@ struct CSLabel_1Picker: View {
                 
                 ForEach(AvailabilityMenu.allCases, id:\.self) {schedule in
                     
-                    Text(schedule.shortDescription())
+                    Text(schedule.shortDescription()).tag(schedule as AvailabilityMenu?)
                     
                 }
                 

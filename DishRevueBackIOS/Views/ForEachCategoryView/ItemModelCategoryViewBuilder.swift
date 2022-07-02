@@ -79,8 +79,8 @@ struct ItemModelCategoryViewBuilder: View {
             
         case .tipologiaMenu:
         
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \MenuModel.tipologia, dataPath: \.allMyMenu, navPath: \.menuListPath)
-            
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \MenuModel.tipologia!, dataPath: \.allMyMenu, navPath: \.menuListPath)
+
         case .giorniDelServizio:
          
             DataModelCategoryView_SubView(dataMapping: GiorniDelServizio.allCases, filterCategory: self.filterCategory, collectionPath: \MenuModel.giorniDelServizio, dataPath: \.allMyMenu, navPath: \.menuListPath)

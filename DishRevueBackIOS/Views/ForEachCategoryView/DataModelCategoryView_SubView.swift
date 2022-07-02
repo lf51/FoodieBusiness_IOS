@@ -128,7 +128,7 @@ struct DataModelCategoryView_SubView<M:MyModelStatusConformity,G:MyEnumProtocolM
 
 struct DataModelCategoryView_Previews: PreviewProvider {
     
-    @State static var menuItem:MenuModel = MenuModel(nome: "SomeDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi])
+    @State static var menuItem:MenuModel = MenuModel()
     
     static var previews: some View {
         

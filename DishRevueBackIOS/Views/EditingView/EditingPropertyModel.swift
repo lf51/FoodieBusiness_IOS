@@ -14,7 +14,7 @@ struct EditingPropertyModel: View {
     let backgroundColorView: Color
     
    // @State private var openMenuList: Bool? = false
-    @State private var wannaAddDescription: Bool? = false
+  //  @State private var wannaAddDescription: Bool? = false
     @State private var itemModelChanged: Bool = false
   
     init(itemModel: PropertyModel, backgroundColorView: Color) {
@@ -33,31 +33,10 @@ struct EditingPropertyModel: View {
                     
                 ScrollView(showsIndicators:false) {
 
-                    VStack(alignment:.leading) {
-                        
-                        CSLabel_1Button(
-                            placeHolder: "Descrizione Attività",
-                            imageNameOrEmojy: "scribble",
-                            backgroundColor: Color.black,
-                            toggleBottone: $wannaAddDescription)
-                                                
-                        if wannaAddDescription ?? false {
-
-                            CSTextField_ExpandingBox(itemModel: $itemModel, maxDescriptionLenght: 300)
-                                                        
-                        } else {
-                            
-                            Text(itemModel.descrizione == "" ? "Nessuna descrizione inserita. Press [+] " : itemModel.descrizione)
-                                .italic()
-                                .fontWeight(.light)
-                        }
-                        
-                    }//.disabled(openMenuList!)
-                    
+                    BoxDescriptionModel_Generic(itemModel: $itemModel, labelString: "Descrizione Attività")
+  
                    VStack(alignment:.leading) {
                         
-                       
-                          
                        CSLabel_1Button(
                         placeHolder: "Menu Attivi",
                         imageNameOrEmojy: "scroll",

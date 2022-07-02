@@ -251,7 +251,11 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         
     case .fisso(let pax, _):
         
-        let rangePax = 1...(Int(pax) ?? 1)
+        Image(systemName: pax.imageAssociated() ?? "circle")
+             .imageScale(.large)
+             .foregroundColor(Color("SeaTurtlePalette_2"))
+             .padding(.trailing,-10)
+      /*  let rangePax = 1...(Int(pax) ?? 1)
         
         ForEach(rangePax, id:\.self) { _ in
         
@@ -260,7 +264,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                 .foregroundColor(Color("SeaTurtlePalette_2"))
                 .padding(.trailing,-10)
             
-        }
+        } */
         
     default: EmptyView()
         
@@ -272,7 +276,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
     
         HStack {
             
-            Text(item.tipologia.simpleDescription().lowercased())
+            Text(item.tipologia?.simpleDescription().lowercased() ?? "")
                 .italic()
             
             switch item.tipologia {

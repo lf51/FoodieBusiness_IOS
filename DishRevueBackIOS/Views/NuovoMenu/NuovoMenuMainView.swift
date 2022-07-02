@@ -13,7 +13,7 @@ struct NuovoMenuMainView: View {
    // @State var nuovoMenu: MenuModel = MenuModel() // Deprecata 29.06
 
     @State private var nuovoMenu: MenuModel
-    @State private var nuovaIntestazioneMenu: String = ""
+  //  @State private var nuovaIntestazioneMenu: String = ""
     @State private var openDishList: Bool? = false
     
     let backgroundColorView: Color
@@ -24,49 +24,33 @@ struct NuovoMenuMainView: View {
         self.backgroundColorView = backgroundColorView
     }
     
-   /* init(editMenu:MenuModel? = MenuModel(), dismissView: Binding<Bool?>? = nil, backgroundColorView: Color) {
-        
-        _dismissView = dismissView ?? .constant(nil)
-        _nuovoMenu = State(wrappedValue: editMenu!)
-        
-        self.backgroundColorView = backgroundColorView
-            
-    } */
-    
     var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool) {
 
       let disableTipologia = self.nuovoMenu.intestazione == ""
-      let disableProgrammazione = self.nuovoMenu.tipologia == .defaultValue
+      let disableProgrammazione = self.nuovoMenu.tipologia == nil
         
       return (disableTipologia,disableProgrammazione)
     }
  
     var body: some View {
         
-        CSZStackVB(title: "Nuovo Menu", backgroundColorView: backgroundColorView) {
-            
-          //  backgroundColorView.opacity(0.9).ignoresSafeArea()
+        CSZStackVB(title: self.nuovoMenu.intestazione == "" ? "Nuovo Menu" : self.nuovoMenu.intestazione, backgroundColorView: backgroundColorView) {
             
             VStack {
                 
-              /*  TopBar_3BoolPlusDismiss(title: nuovoMenu.intestazione != "" ? nuovoMenu.intestazione : "Crea Menu", exitButton: $dismissView, exitButtonTitle: "Chiudi")
-                    .padding(.horizontal) */
-     
-            /*    TopBar_3BoolPlusDismiss(title: nuovoMenu.intestazione != "" ? nuovoMenu.intestazione : "Crea Menu", enableEnvironmentDismiss: true)
-                    .padding()
-                    .background(Color.cyan)
-                
-                Spacer()
-                 */
-              //  ZStack {
-                    
                 CSDivider()
                 
                     ScrollView {
                         
                         VStack(alignment: .leading) {
                             
-                            IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (Interno)", imageLabel: "doc.badge.plus", coloreContainer: Color.red, itemModel: $nuovoMenu)
+                            IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (\(self.nuovoMenu.status.simpleDescription().capitalized))", imageLabel: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $nuovoMenu)
+                                
+                           
+                            
+                            
+                            
+                            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)")
                             
                             CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black)
                             
@@ -74,21 +58,35 @@ struct NuovoMenuMainView: View {
                                 .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
                                 .disabled(isThereAReasonToDisable.tipologia)
 
-                           
-                            
                             CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
-                                
-                            CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
 
-                          //  Spacer()
+                            if !isThereAReasonToDisable.programmazione {
+                                
+                                Text(self.nuovoMenu.isAvaibleWhen?.extendedDescription() ?? "Seleziona il tipo di intervallo temporale")
+                                    .font(.caption)
+                                    .fontWeight(.light)
+                                    .italic()
+                            }
+                            
+                            if self.nuovoMenu.isAvaibleWhen != nil {
+                      
+                                CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
+                            }
+                    //  Spacer()
                             
                             CSLabel_2Button(placeHolder: "Piatti", imageName: "circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi")
-                               // .opacity(0.4)
-                               // .disabled(true)
-                            ForEach(nuovoMenu.dishIn) { dish in
-                                
-                                Text(dish.intestazione)
-                            }
+
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    
+                                    HStack {
+                                        
+                                        ForEach(nuovoMenu.dishIn) { dish in
+                                            
+                                            DishModel_RowView(item: dish)
+                                        }
+                                        
+                                    }
+                                }
                             
                             BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu){self.scheduleANewMenu()}
              
@@ -107,25 +105,12 @@ struct NuovoMenuMainView: View {
                         .zIndex(1)
                         
                     }
-                    
-                    
-             //  } // Chiusa ZStack Interno
-                
-          
-                
-             //   Spacer()
-                
+
                 CSDivider()
             }
-            
-           
-            
-            
-           /* .padding(.top)
-            .background(RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
-            .contrast(1.2)
-            .brightness(0.08) */
+
         }
+        
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
 
     }
@@ -133,17 +118,11 @@ struct NuovoMenuMainView: View {
     // Method
     
     private func scheduleANewMenu() {
-            
+ 
         self.viewModel.createOrUpdateItemModel(itemModel: self.nuovoMenu)
-        
-        print("Nome Menu: \(self.nuovoMenu.intestazione)")
-        print("data Inizio:\(self.nuovoMenu.dataInizio.ISO8601Format())")
-        print("data Fine: \(self.nuovoMenu.dataFine.ISO8601Format())")
-        print("nei giorni di: \(self.nuovoMenu.giorniDelServizio.description)")
-        print("dalle \(self.nuovoMenu.oraInizio.ISO8601Format()) alle \(self.nuovoMenu.oraFine.ISO8601Format())")
-        
-        
-       print("Salvare MenuModel nel firebase e/o nell'elenco dei Menu in un ViewModel")
+        print(nuovoMenu.intestazione)
+        print(nuovoMenu.descrizione)
+       print("Dentro ScheduleANewMenu() in NuovoMenuMainView")
     }
 }
 

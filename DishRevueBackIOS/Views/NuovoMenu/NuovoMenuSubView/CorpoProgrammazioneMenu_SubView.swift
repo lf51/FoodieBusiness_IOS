@@ -10,7 +10,8 @@ import SwiftUI
 struct CorpoProgrammazioneMenu_SubView: View {
     
     @Binding var nuovoMenu: MenuModel
-    var valueTo:(disableDataInizio:Bool, disableDataFine:Bool, disableDays:Bool, disableOrari:Bool, titlePicker:String) {
+    
+    var valueFor:(disableDataInizio:Bool, disableDataFine:Bool, disableDays:Bool, disableOrari:Bool, titlePicker:String) {
          
          switch self.nuovoMenu.isAvaibleWhen {
              
@@ -20,9 +21,8 @@ struct CorpoProgrammazioneMenu_SubView: View {
              return(false,true,false,false,"dal:")
          case .intervalloChiuso:
              return(false,false,false,false,"dal:")
-         case .noValue:
+         case nil:
              return(true,true,true,true,"dal")
-             
          }
          
      }
@@ -33,33 +33,34 @@ struct CorpoProgrammazioneMenu_SubView: View {
             
             HStack {
                 
-                DatePicker(valueTo.titlePicker, selection: self.$nuovoMenu.dataInizio,in:Date()..., displayedComponents: .date)
-                    .opacity(self.valueTo.disableDataInizio ? 0.6 : 1.0)
-                    .disabled(self.valueTo.disableDataInizio)
+                DatePicker(valueFor.titlePicker, selection: self.$nuovoMenu.dataInizio,in:Date()..., displayedComponents: .date)
+                    .opacity(self.valueFor.disableDataInizio ? 0.6 : 1.0)
+                    .disabled(self.valueFor.disableDataInizio)
                 
                 Text("  |  ")
                 
                 DatePicker("al:", selection: self.$nuovoMenu.dataFine, in:(self.nuovoMenu.dataInizio.advanced(by: 604800))... ,displayedComponents: .date)
-                    .opacity(self.valueTo.disableDataFine ? 0.6 : 1.0)
-                    .disabled(self.valueTo.disableDataFine)
+                    .opacity(self.valueFor.disableDataFine ? 0.6 : 1.0)
+                    .disabled(self.valueFor.disableDataFine)
                 
             }
              
             PropertyScrollCases(cases: GiorniDelServizio.allCases, dishCollectionProperty: self.$nuovoMenu.giorniDelServizio, colorSelection: Color.mint)
-                    .opacity(self.valueTo.disableDays ? 0.6 : 1.0)
-                    .disabled(self.valueTo.disableDays)
+                    .opacity(self.valueFor.disableDays ? 0.6 : 1.0)
+                    .disabled(self.valueFor.disableDays)
                     
             HStack {
                 
                 DatePicker("dalle:", selection: self.$nuovoMenu.oraInizio, displayedComponents: .hourAndMinute)
-                    .opacity(self.valueTo.disableOrari ? 0.6 : 1.0)
-                    .disabled(self.valueTo.disableOrari)
+                    .opacity(self.valueFor.disableOrari ? 0.6 : 1.0)
+                    .disabled(self.valueFor.disableOrari)
+                    
                     
                 Text("  |  ")
                 
                 DatePicker("alle:", selection: self.$nuovoMenu.oraFine, in: (self.nuovoMenu.oraInizio.addingTimeInterval(1800.0))... ,displayedComponents: .hourAndMinute)
-                    .opacity(self.valueTo.disableOrari ? 0.6 : 1.0)
-                    .disabled(self.valueTo.disableOrari)
+                    .opacity(self.valueFor.disableOrari ? 0.6 : 1.0)
+                    .disabled(self.valueFor.disableOrari)
                 
             }
            // .opacity(self.isThereAReasonToDisable.date ? 0.4 : 1.0)

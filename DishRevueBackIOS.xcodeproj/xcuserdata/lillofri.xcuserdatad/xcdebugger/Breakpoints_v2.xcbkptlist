@@ -46,8 +46,8 @@
             filePath = "DishRevueBackIOS/Views/EditingView/EditingPropertyModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -564,54 +564,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "88710A1C-5CCA-4DBC-934E-52ED91B3F133"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DishRevueBackIOS/Views/TabView/HomeView/HomeView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "81"
-            endingLineNumber = "81"
-            landmarkName = "body"
-            landmarkType = "24">
-            <Locations>
-               <Location
-                  uuid = "88710A1C-5CCA-4DBC-934E-52ED91B3F133 - e4abe7cace4fdd12"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.toolbar&lt;&#x3c4;_0_0 where &#x3c4;_1_0: SwiftUI.ToolbarContent&gt;(content: () -&gt; &#x3c4;_1_0) -&gt; some&gt;&gt;.0 in DishRevueBackIOS.HomeView.body.getter : some"
-                  moduleName = "DishRevueBackIOS"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/TabView/HomeView/HomeView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "65"
-                  endingLineNumber = "65"
-                  offsetFromSymbolStart = "1317">
-               </Location>
-               <Location
-                  uuid = "88710A1C-5CCA-4DBC-934E-52ED91B3F133 - 89b46917a92cd7b1"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #3 (DishRevueBackIOS.PropertyModel) -&gt; DishRevueBackIOS.EditingPropertyModel in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.toolbar&lt;&#x3c4;_0_0 where &#x3c4;_1_0: SwiftUI.ToolbarContent&gt;(content: () -&gt; &#x3c4;_1_0) -&gt; some&gt;&gt;.0 in DishRevueBackIOS.HomeView.body.getter : some"
-                  moduleName = "DishRevueBackIOS"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/lillofri/Documents/H_App/2_OnBOARD/2_DishRevue/BackEnd_Ristoratore/DishRevueBackIOS/DishRevueBackIOS/Views/TabView/HomeView/HomeView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "66"
-                  endingLineNumber = "66"
-                  offsetFromSymbolStart = "209">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "804F0A30-FFE4-4B74-AE88-C890975D401C"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -619,8 +571,8 @@
             filePath = "DishRevueBackIOS/Views/TabView/HomeView/HomeView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
             landmarkName = "body"
             landmarkType = "24">
             <Locations>
@@ -655,6 +607,22 @@
                   offsetFromSymbolStart = "69">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5635929A-40AD-4699-A473-026DDC98FEE5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/NuovoMenu/NuovoMenuSubView/SpecificTipologiaNuovoMenu_SubView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "136"
+            endingLineNumber = "136"
+            landmarkName = "validateAndAddSpecificValue()"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

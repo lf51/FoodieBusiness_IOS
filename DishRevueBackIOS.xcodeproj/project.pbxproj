@@ -139,6 +139,7 @@
 		4D9716F3285DDD8B0004B732 /* DataModelPickerView_SubView_2.0.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9716F2285DDD8B0004B732 /* DataModelPickerView_SubView_2.0.swift */; };
 		4D9716F5285DDD9C0004B732 /* DataModelAlphabeticView_Sub_2.0.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9716F4285DDD9C0004B732 /* DataModelAlphabeticView_Sub_2.0.swift */; };
 		4D97292B27D233270042C481 /* SelettoreIngrediente_NewDishSubViewBACKUP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D97292A27D233270042C481 /* SelettoreIngrediente_NewDishSubViewBACKUP.swift */; };
+		4D9AC1FE28704E2900742936 /* BoxDescriptionModel_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D9AC1FD28704E2900742936 /* BoxDescriptionModel_Generic.swift */; };
 		4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4615A27AD14D200BD648D /* HomeView.swift */; };
 		4DA4615D27AD3FE900BD648D /* DishVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4615C27AD3FE900BD648D /* DishVM.swift */; };
 		4DA4616027AD8A2000BD648D /* EditDishView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DA4615F27AD8A2000BD648D /* EditDishView.swift */; };
@@ -293,6 +294,7 @@
 		4D9716F2285DDD8B0004B732 /* DataModelPickerView_SubView_2.0.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModelPickerView_SubView_2.0.swift; sourceTree = "<group>"; };
 		4D9716F4285DDD9C0004B732 /* DataModelAlphabeticView_Sub_2.0.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModelAlphabeticView_Sub_2.0.swift; sourceTree = "<group>"; };
 		4D97292A27D233270042C481 /* SelettoreIngrediente_NewDishSubViewBACKUP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelettoreIngrediente_NewDishSubViewBACKUP.swift; sourceTree = "<group>"; };
+		4D9AC1FD28704E2900742936 /* BoxDescriptionModel_Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxDescriptionModel_Generic.swift; sourceTree = "<group>"; };
 		4DA4615A27AD14D200BD648D /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4DA4615C27AD3FE900BD648D /* DishVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishVM.swift; sourceTree = "<group>"; };
 		4DA4615F27AD8A2000BD648D /* EditDishView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDishView.swift; sourceTree = "<group>"; };
@@ -636,6 +638,7 @@
 				4DD25B54283FBAE200582DCC /* CSMenu_MultiSelection.swift */,
 				4D8A1DD3283D1CC20016EE27 /* CustomPicker.swift */,
 				4DD25B562841238D00582DCC /* CS_ErrorMark.swift */,
+				4D9AC1FD28704E2900742936 /* BoxDescriptionModel_Generic.swift */,
 			);
 			path = SubView_trasversali;
 			sourceTree = "<group>";
@@ -952,6 +955,7 @@
 				4DC3EBC927ABD02C00FFC50E /* NewPropertyMainView.swift in Sources */,
 				4D168C1C285235C9000B137E /* CS_CircleSnakeView.swift in Sources */,
 				4D7985DB27D8B92E0012FE23 /* AllergeniIngrediente.swift in Sources */,
+				4D9AC1FE28704E2900742936 /* BoxDescriptionModel_Generic.swift in Sources */,
 				4D4FE6F227FF265400AC0190 /* GiorniDelServizio.swift in Sources */,
 				4D56A62428018D1000A43E80 /* IngredientModel_RowView.swift in Sources */,
 				4D56A62A2805DEF700A43E80 /* ItemModelCategoryViewBuilderBACKUP.swift in Sources */,
@@ -1223,7 +1227,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1254,7 +1258,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

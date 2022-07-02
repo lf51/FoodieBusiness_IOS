@@ -16,8 +16,7 @@ struct BottomNuovoMenu_SubView: View {
     var isThereAReasonToDisable:(reset: Bool, done:Bool) {
         
         let disableReset = self.nuovoMenu.intestazione == ""
-        
-        let disableDone = self.nuovoMenu.isAvaibleWhen == .defaultValue
+        let disableDone = self.nuovoMenu.isAvaibleWhen == nil
         
         return (disableReset,disableDone)
     }
@@ -26,16 +25,11 @@ struct BottomNuovoMenu_SubView: View {
        
         HStack {
                 
-          /*  Text("Il menu \(nuovoMenu.intestazione) è attivo dalle \(timeFormatter.string(from: self.nuovoMenu.oraInizio)) alle \(timeFormatter.string(from: self.nuovoMenu.oraFine)) nei giorni di \(dayDescription(),format:.list(type: .and))")
-                    .italic().fontWeight(.light).font(.caption) */
-            
-            Text(self.nuovoMenu.isAvaibleWhen.extendedDescription() ?? "")
-                .font(.caption)
-                .fontWeight(.light)
+            menuDescription()
                 .italic()
-                
-                
-            
+                .fontWeight(.light)
+                .font(.caption)
+
             Spacer()
             
             CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) {
@@ -46,11 +40,9 @@ struct BottomNuovoMenu_SubView: View {
            .opacity(self.isThereAReasonToDisable.reset ? 0.6 : 1.0)
            .disabled(self.isThereAReasonToDisable.reset)
             
-         
-           CSButton_tight(title: "Done", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
+           CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
 
-               self.showDialog = true // test
-              // self.scheduleANewMenu()
+               self.showDialog = true
                 
            }
            .opacity(self.isThereAReasonToDisable.done ? 0.6 : 1.0)
@@ -70,7 +62,6 @@ struct BottomNuovoMenu_SubView: View {
     
     // Method
 
- 
     private func resetValue() {
 
         self.nuovoMenu = MenuModel()
@@ -100,8 +91,10 @@ struct BottomNuovoMenu_SubView: View {
            return Text("Il menu \(nome) sarà attivo a partire dal giorno \(dataInizio), nei giorni di \(giorniServizio,format: .list(type: .and)), dalle ore \(oraInizio) alle ore \(oraFine)")
        case .intervalloChiuso:
            return Text("Il menu \(nome) sarà attivo dal \(dataInizio) al \(dataFine), nei giorni di \(giorniServizio,format: .list(type: .and)), dalle ore \(oraInizio) alle ore \(oraFine)")
-       case .noValue:
-           return Text("")
+     //  case .noValue:
+       //    return Text("")
+       case nil:
+           return Text("Nessuna Info")
            
        }
 

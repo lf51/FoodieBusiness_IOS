@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct IntestazioneNuovoOggetto_Generic<T:MyModelProtocol>: View {
+struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
     
     let placeHolderItemName: String
     let imageLabel: String
+    var imageColor: Color? = nil
     let coloreContainer: Color
     
     @State private var nuovaStringa: String = ""
@@ -22,7 +23,7 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelProtocol>: View {
         
         VStack(alignment: .leading) {
             
-            CSLabel_1Button(placeHolder: editNuovaStringa ? "Edit Nome \(placeHolderItemName)" : "Nome \(placeHolderItemName)", imageNameOrEmojy: editNuovaStringa ? "gear" : imageLabel, backgroundColor: Color.black)
+            CSLabel_1Button(placeHolder: placeHolderItemName, imageNameOrEmojy: imageLabel,imageColor: imageColor, backgroundColor: Color.black)
             
             if self.itemModel.intestazione == "" || self.editNuovaStringa {
                 
@@ -40,18 +41,24 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelProtocol>: View {
                 
                 if !editNuovaStringa {
                     
-                    CSText_tightRectangle(testo: self.itemModel.intestazione, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: coloreContainer)
-                        .onLongPressGesture {
-                            self.editNuovaStringa = true
-                        }
-                    
+                        CSText_tightRectangle(testo: self.itemModel.intestazione, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: coloreContainer)
+                            .onLongPressGesture {
+                                self.editNuovaStringa = true
+                            }
+
                 } else {
-                    
-                    CSText_RotatingRectangleDynamicDeletingFace(testo: self.itemModel.intestazione, fontWeight: .bold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.blue, fillColor: coloreContainer.opacity(0.4), showDeleteImage: false)
-                        .onTapGesture {
-                            self.editNuovaStringa = false
-                        }
+                        
+                        CSText_RotatingRectangleDynamicDeletingFace(testo: self.itemModel.intestazione, fontWeight: .bold, textColor: Color.white, scaleFactor: 1.0, strokeColor: Color.blue, fillColor: coloreContainer.opacity(0.4), showDeleteImage: false)
+                            .onTapGesture {
+                                self.editNuovaStringa = false
+                            }
                     }
+                
+                Text(editNuovaStringa ? "Click per annullare" : "Premi a lungo per modificare")
+                    .font(.caption)
+                    .fontWeight(.light)
+                    .italic()
+                
                 }
 
         }

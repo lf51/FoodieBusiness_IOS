@@ -9,26 +9,26 @@ import Foundation
 
 enum AvailabilityMenu:Hashable {
     
-    static var defaultValue: AvailabilityMenu = .noValue
-    static var allCases:[AvailabilityMenu] = [.intervalloChiuso,.dataEsatta,.intervalloAperto]
+  //  static var defaultValue: AvailabilityMenu = .noValue
+    static var allCases:[AvailabilityMenu] = [.dataEsatta,.intervalloAperto,.intervalloChiuso]
 
     case dataEsatta
     case intervalloChiuso
     case intervalloAperto
-    case noValue
+  //  case noValue
     
     func shortDescription() -> String {
         
         switch self {
             
         case .dataEsatta:
-            return "Data"
+            return "Esatto"
         case .intervalloChiuso:
-            return "<..>"
+            return "Chiuso"
         case .intervalloAperto:
-            return "<..."
-        case .noValue:
-            return ""
+            return "Aperto"
+     //   case .noValue:
+      //      return ""
         }
     }
     
@@ -36,13 +36,13 @@ enum AvailabilityMenu:Hashable {
         
         switch self {
         case .dataEsatta:
-            return "Scegli una data esatta. Es: Menu di Natale"
+            return "Programma il Menu in una data esatta"
         case .intervalloChiuso:
             return "Programma il Menu con un Inizio e una Fine"
         case .intervalloAperto:
             return "Programma il Menu con un Inizio senza una Fine"
-        case .noValue:
-            return nil 
+    //    case .noValue:
+     //       return nil 
         }
         
     }

@@ -7,16 +7,58 @@
 
 import Foundation
 
+enum PaxMenuFisso:MyEnumProtocolMapConform  {
+
+    static var allCases: [PaxMenuFisso] = [.uno,.due]
+    
+    case uno
+    case due
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+        case .uno:
+            return "1"
+        case .due:
+            return "2"
+        }
+    }
+    
+    func imageAssociated() -> String? {
+        
+        switch self {
+        case .uno:
+            return "person.fill"
+        case .due:
+            return "person.2.fill"
+        }
+    }
+    
+    func returnTypeCase() -> PaxMenuFisso {
+        PaxMenuFisso.uno
+    }
+    
+    func orderValue() -> Int {
+        switch self {
+        case .uno:
+            return 1
+        case .due:
+            return 2
+        }
+    }
+}
+
+
 enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
    
-    static var allCases: [TipologiaMenu] = [.fisso(costo: "n/d"),.allaCarta]
-    static var defaultValue: TipologiaMenu = .noValue
+    static var allCases: [TipologiaMenu] = [.fisso(persone: .uno, costo: "n/d"),.allaCarta]
+    static var defaultValue: TipologiaMenu = .allaCarta // deprecato 01.07 -> Togliere dal Protocollo
     
     var id:String {self.createId()}
     
-    case fisso(persone:String = "1",costo: String)
+    case fisso(persone:PaxMenuFisso,costo: String)
     case allaCarta
-    case noValue
+ //   case noValue
     
     func simpleDescription() -> String {
         
@@ -25,8 +67,8 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return "Fisso"
         case .allaCarta:
             return "Alla Carta"
-        case .noValue:
-            return ""
+     //   case .noValue:
+       //     return ""
         }
     }
     
@@ -47,8 +89,8 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return true
         case .allaCarta:
             return false
-        case .noValue:
-            return false
+      //  case .noValue:
+       //     return false
         }
         
     }
@@ -58,7 +100,7 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
         switch self {
             
         case .fisso(_, _):
-            return .fisso(costo: "n/d")
+            return .fisso(persone: .uno, costo: "n/d")
         default: return self
             
         }
@@ -72,8 +114,8 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return "dollarsign.circle"
         case .allaCarta:
             return "cart"
-        case .noValue:
-            return nil
+      //  case .noValue:
+        //    return nil
         }
     }
     
@@ -85,8 +127,8 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return 1
         case .allaCarta:
             return 2
-        case .noValue:
-            return 0
+    //    case .noValue:
+      //      return 0
         }
     }
     

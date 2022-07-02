@@ -8,14 +8,14 @@
 import Foundation
 import SwiftUI
 
-enum StatusTransition {
+enum StatusTransition:String {
     
   //  static var allCases: [StatusTransition] = [.pubblico,.inPausa,.archiviato]
  //   static var defaultValue: StatusTransition = .archiviato
     
     case pubblico // Rimette in moto da una Pausa
-    case inPausa // Stop temporaneo --> Solo per gli ingredienti, quando temporaneamente in pausa vorrei dare la possibilità all'utente di sostituirli.
-    case archiviato // Stop incondizionato
+    case inPausa = "in Pausa"// Stop temporaneo --> Solo per gli ingredienti, quando temporaneamente in pausa vorrei dare la possibilità all'utente di sostituirli.
+    case archiviato = "pubblicabile" // Stop incondizionato
 
     func colorAssociated() -> Color {
         
@@ -55,6 +55,16 @@ enum StatusModel:Equatable {
             return statusTransition.colorAssociated()
         }
         
+    }
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+        case .bozza:
+            return "bozza"
+        case .completo(let statusTransition):
+            return statusTransition.rawValue
+        }
     }
     
     

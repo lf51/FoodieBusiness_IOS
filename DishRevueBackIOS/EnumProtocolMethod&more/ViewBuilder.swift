@@ -154,6 +154,7 @@ struct CSZStackVB<Content:View>:View {
         }
         .background(backgroundColorView.opacity(0.6))
         .navigationTitle(Text(title))
+        
        
     }
 }
