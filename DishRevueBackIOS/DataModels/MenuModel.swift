@@ -9,6 +9,12 @@ import Foundation
 
 struct MenuModel:MyModelStatusConformity {
 
+    func pathDestination() -> DestinationPathView {
+        
+        DestinationPathView.menu(self)
+    }
+    
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

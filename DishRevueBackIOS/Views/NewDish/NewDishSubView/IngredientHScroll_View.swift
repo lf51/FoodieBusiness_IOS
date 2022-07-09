@@ -7,7 +7,37 @@
 
 import SwiftUI
 
-struct CustomGrid_GenericsView<R:MyModelProtocol>:View {
+struct IngredientHScroll_View:View {
+    
+    let inhredientsToShow: [IngredientModel]
+    let baseColor: Color
+    
+    var body: some View {
+
+        ScrollView(.horizontal,showsIndicators: false) {
+            
+            HStack {
+                
+                ForEach(inhredientsToShow) { model in
+                       
+                    CSText_tightRectangle(
+                        testo: model.intestazione,
+                        fontWeight: .bold,
+                        textColor: Color.white,
+                        strokeColor: Color.blue,
+                        fillColor: baseColor)
+
+                    
+                }
+            }
+        }
+    }
+ 
+    
+}
+
+
+/* struct CustomGrid_GenericsView<R:MyModelProtocol>:View {
     
   //  @Binding var openEditingIngrediente: Bool
     @Binding var wannaDeleteItem: Bool?
@@ -72,7 +102,7 @@ struct CustomGrid_GenericsView<R:MyModelProtocol>:View {
          
      }
     
-}
+} */ // Deprecata 08.07
 
 /*struct GridInfoDishValue_NewDishSubView_Previews: PreviewProvider {
     static var previews: some View {

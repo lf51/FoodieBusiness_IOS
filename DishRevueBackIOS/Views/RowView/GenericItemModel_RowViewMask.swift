@@ -11,17 +11,14 @@ import SwiftUI
 struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
     
     @EnvironmentObject var viewModel: AccounterVM
- //   @Binding var model: M
     let model: M
-   // let backgroundColorView: Color
     @ViewBuilder var interactiveMenuContent: Content
    
     var body: some View {
                 
         Menu {
                interactiveMenuContent
-            Text("Linea TEST")
-        
+ 
         } label: {
 
             csVbSwitchModelRowView(item: model)

@@ -50,14 +50,7 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
                         
                         let isSelected = self.checkSelectionOrContainer(type: type)
                         
-                        CSText_bigRectangle(testo: type.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: isSelected ? Color.blue : Color.red, fillColor: isSelected ? colorSelection : Color.clear)
-                            .overlay(content: {
-                                Rectangle()
-                                    .padding(.horizontal)
-                                    .frame(height: 1.0)
-                                    .foregroundColor(isSelected ? Color.clear : Color.red)
-                                  
-                            })
+                        CSText_tightRectangle(testo: type.simpleDescription(), fontWeight: .semibold, textColor: Color.white, strokeColor: isSelected ? Color.white : Color("SeaTurtlePalette_3"), fillColor: isSelected ? colorSelection : Color.clear)
                             .onTapGesture {self.addingValueTo(newValue: type)}
                     }
                 }
@@ -83,10 +76,11 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
             
         }
 
-        else if checkInit == "Collection" { }
-        
-        return self.newDishCollectionProperty.contains(type)
-        
+        else {
+            
+            return self.newDishCollectionProperty.contains(type)
+        }
+   
     }
      
     func addingValueTo(newValue: T) {

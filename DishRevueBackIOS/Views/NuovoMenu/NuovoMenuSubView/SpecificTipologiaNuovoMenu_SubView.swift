@@ -28,8 +28,8 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             
                 ForEach(TipologiaMenu.allCases) { tipologia in
                     
-                    CSText_bigRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia?.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia?.id == tipologia.id ? Color.orange : Color.clear)
-
+                  /*  CSText_bigRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia?.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia?.id == tipologia.id ? Color.orange : Color.clear) */
+                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia?.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia?.id == tipologia.id ? Color.orange : Color.clear)
                         .onTapGesture {
                             withAnimation(.default) {
                               

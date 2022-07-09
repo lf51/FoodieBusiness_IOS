@@ -50,11 +50,22 @@ enum DishAvaibleFor: MyEnumProtocol {
         }
     }
     
+
+    
     func extendedDescription() -> String? {
         
-        print("Dentro DishAvaibleFor. DescrizioneEstesa non sviluppata")
-        return nil
+        switch self {
+            
+     //   case .standard: return "Contiene ingredienti di origine animale e suoi derivati"
+        case .vegetariano: return "Priva di ingredienti di origine animale (escluso latte e derivati) e pesce."
+        case .vegariano: return "Priva di latte animale e ingredienti derivati."
+        case .vegano: return "Contenente solo ingredienti di origine vegetale."
+        case .glutenFree: return "Priva di Glutine."
+        case .noValue: return nil
+        }
+        
     }
+    
     
     func createId() -> String {
         

@@ -46,17 +46,11 @@ class AccounterVM: ObservableObject {
     @Published var menuListPath = NavigationPath()
     @Published var dishListPath = NavigationPath()
     @Published var ingredientListPath = NavigationPath()
-    
-    
-    
-    
+
     var defaultProperty: PropertyModel? { allMyProperties[0] } // NON SO SE MI SERVE al 28.06
     
     // FINE AREA TEST
-    
-    
-    
-    
+   
     init() {
         
         fillFromListaBaseModello()
@@ -77,6 +71,24 @@ class AccounterVM: ObservableObject {
             
     } */ // Deprecated 31.05
     
+    
+    /// azzera il path di riferimento Passato
+    func refreshPath(destinationPath: DestinationPath) {
+        
+        switch destinationPath {
+        case .homeView:
+            self.homeViewPath = NavigationPath()
+        case .menuList:
+            self.menuListPath = NavigationPath()
+        case .dishList:
+            self.dishListPath = NavigationPath()
+        case .ingredientList:
+            self.ingredientListPath = NavigationPath()
+        }
+        
+        
+    }
+
     /// Esegue un controllo nel container di riferimento utilizzando solo l'ID. Se l'item è presente ritorna true e l'item trovato. Considera infattil'item già salvato di livello superiore come informazioni contenute e dunque lo ritorna.
     func checkExistingModel<M:MyModelProtocol>(model: M) -> (Bool,M?) {
         
@@ -183,54 +195,81 @@ class AccounterVM: ObservableObject {
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
     }
 
- /*   func updateItemModel<T:MyModelProtocol>(itemModel: T) { // Deprecated 06.05
+    /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto. 
+    func createItemModel<T:MyModelProtocol>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) {
         
-        self.alertItem = AlertModel(
-            title: "Confermare Modifiche",
-            message: itemModel.descrizione,
-            actionPlus: ActionModel(
-                title: .conferma,
-                action: {
-                    self.updateItemModelExecutive(itemModel: itemModel)
-                }))
+        if !showAlert {
+            
+            self.createItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)
+            
+        } else {
+            
+            self.alertItem = AlertModel(
+                title: "Crea \(itemModel.intestazione)",
+                message: messaggio,
+                actionPlus: ActionModel(
+                    title: .conferma,
+                    action: {
         
-    } */
+                        self.createItemModelExecutive(itemModel: itemModel, destinationPath: destinationPath)
+                    
+                                        }))
+        }
+    }
+        
+    private func createItemModelExecutive<T:MyModelProtocol>(itemModel:T, destinationPath:DestinationPath? = nil) {
+        
+        var (containerT,_) = assegnaContainer(itemModel: itemModel)
+        
+        guard !containerT.contains(where: {$0.id == itemModel.id}) else {
+            
+        return self.alertItem = AlertModel(
+                title: "Errore",
+                message: "Id Oggetto Esistente")
+        
+            
+        }
+        
+        containerT.append(itemModel)
+        aggiornaContainer(containerT: containerT, modelT: itemModel)
+        if let path = destinationPath {
+            
+            self.refreshPath(destinationPath: path)
+            
+        }
+      /*  self.alertItem = AlertModel(
+            title: "\(itemModel.intestazione)",
+            message: "Oggetto Creato con Successo!") */
     
-    /*
-    /// Manda un alert peri Confermare le Modifiche all'oggetto MyModelProtocol
-    func updateItemModel<T:MyModelProtocol>(messaggio:String, action: @escaping () -> T )  {
-        
-        self.alertItem = AlertModel(
-            title: "Confermare Modifiche",
-            message: messaggio,
-            actionPlus: ActionModel(
-                title: .conferma,
-                action: {
-                 
-                    let itemModel = action()
-                    self.updateItemModelExecutive(itemModel: itemModel)
-                
-                                    }))
-        
-    } */
-    
-    /// Manda un alert peri Confermare le Modifiche all'oggetto MyModelProtocol
-    func updateItemModel<T:MyModelProtocol>(messaggio:String, itemModel:T )  {
-        
-        self.alertItem = AlertModel(
-            title: "Confermare Modifiche",
-            message: messaggio,
-            actionPlus: ActionModel(
-                title: .conferma,
-                action: {
-    
-                    self.updateItemModelExecutive(itemModel: itemModel)
-                
-                                    }))
+        print("Nuovo Oggeto \(itemModel.intestazione) creato con id: \(itemModel.id)")
         
     }
     
-    private func updateItemModelExecutive<T:MyModelProtocol>(itemModel: T) {
+    /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
+    func updateItemModel<T:MyModelProtocol>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil)  {
+        
+        if !showAlert {
+            
+            self.updateItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)
+       
+        } else {
+            
+            self.alertItem = AlertModel(
+                title: "Confermare Modifiche",
+                message: messaggio,
+                actionPlus: ActionModel(
+                    title: .conferma,
+                    action: {
+        
+                        self.updateItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)
+                    
+                                        }))
+        }
+       
+        
+    }
+    
+    private func updateItemModelExecutive<T:MyModelProtocol>(itemModel: T, destinationPath: DestinationPath? = nil) {
         
         var (containerT, _) = assegnaContainer(itemModel: itemModel)
   
@@ -241,6 +280,13 @@ class AccounterVM: ObservableObject {
         print("elementi nel Container Pre-Update: \(containerT.count)")
             containerT[oldItemIndex] = itemModel
             aggiornaContainer(containerT: containerT, modelT: itemModel)
+        if let path = destinationPath {
+            
+            self.refreshPath(destinationPath: path)
+            
+        }
+        
+        
         print("elementi nel Container POST-Update: \(containerT.count)")
         print("updateItemModelExecutive executed")
     }
@@ -402,21 +448,33 @@ class AccounterVM: ObservableObject {
     
     /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
     private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
-                        
+            
+        let nomeContainer:String
+        
         switch modelT.self {
             
         case is IngredientModel:
             self.allMyIngredients = containerT as! [IngredientModel]
+            nomeContainer = "Lista Ingredienti"
         case is DishModel:
             self.allMyDish = containerT as! [DishModel]
+            nomeContainer = "Lista Piatti"
         case is MenuModel:
             self.allMyMenu = containerT as! [MenuModel]
+            nomeContainer = "Lista Menu"
         case is PropertyModel:
             self.allMyProperties = containerT as! [PropertyModel]
+            nomeContainer = "Lista Proprietà"
             
         default: return
             
         }
+        
+        self.alertItem = AlertModel(
+            title: modelT.intestazione,
+            message: "\(nomeContainer) aggiornata con Successo!")
+    
+        
    // Il parametro modelT è in apparenza superfluo. Potremmo difatti farne a meno nel 99% dei casi, ma quando il containerT è vuoto, se lo usassimo per comprendere il tipo T avremmo dei bug.
     }
     

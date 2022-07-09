@@ -33,7 +33,7 @@ struct EditingPropertyModel: View {
                     
                 ScrollView(showsIndicators:false) {
 
-                    BoxDescriptionModel_Generic(itemModel: $itemModel, labelString: "Descrizione Attività")
+                    BoxDescriptionModel_Generic(itemModel: $itemModel, labelString: "Descrizione Attività", disabledCondition: nil)
   
                    VStack(alignment:.leading) {
                         
@@ -156,8 +156,7 @@ struct EditingPropertyModel: View {
     
     private func saveEdit() {
 
-        viewModel.updateItemModel(messaggio: "Salva Modifiche della proprietà \(itemModel.intestazione)", itemModel: itemModel)
-   
+        self.viewModel.updateItemModel(itemModel: itemModel, showAlert: true, messaggio: "Salva Modifiche della proprietà \(itemModel.intestazione)")
         self.itemModelChanged = false
     }
  

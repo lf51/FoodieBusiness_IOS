@@ -41,9 +41,12 @@ struct ListaIngredientiView: View {
                 ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory)
 
             }
-            .navigationDestination(for: IngredientModel.self, destination: { ingredient in
-                NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView)
+            .navigationDestination(for: DestinationPathView.self, destination: { destination in
+                destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .ingredientList)
             })
+          /*  .navigationDestination(for: IngredientModel.self, destination: { ingredient in
+                NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView)
+            }) */
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     
@@ -52,7 +55,8 @@ struct ListaIngredientiView: View {
                         font: .callout,
                         imageBack: Color("SeaTurtlePalette_2"),
                         imageFore: Color.white) {
-                            viewModel.ingredientListPath.append(IngredientModel())
+                           // viewModel.ingredientListPath.append(IngredientModel())
+                            viewModel.ingredientListPath.append(DestinationPathView.ingrediente(IngredientModel()))
                         }
                     
                  /*   NavigationLink {

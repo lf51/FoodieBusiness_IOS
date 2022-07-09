@@ -12,6 +12,10 @@ import Foundation
 
 struct DishModel:MyModelStatusConformity {
      
+    func pathDestination() -> DestinationPathView {
+        DestinationPathView.piatto(self)
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
@@ -81,14 +85,16 @@ struct DishModel:MyModelStatusConformity {
         
     } // Abbiamo spostato gli allergeni nell'ingrediente, quindi il piatto li deriva
     
-    lazy var tipologiaDieta:[DishTipologia] = {
+   /* lazy var tipologiaDieta:[DishTipologia] = {
         
     print("tipologiaDieta -> lazy var in dishModel")
         
         let dieteOk = DishTipologia.checkDietAvaible(ingredients: self.ingredientiPrincipali,self.ingredientiSecondari)
         
         return dieteOk
-    }()
+    }() */
+    
+    var dieteCompatibili:[DishTipologia] = [.standard]
     
     var formatiDelPiatto: [DishFormato]
 

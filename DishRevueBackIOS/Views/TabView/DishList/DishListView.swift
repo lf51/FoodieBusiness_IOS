@@ -41,9 +41,12 @@ struct DishListView: View {
                         ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allDishMapCategory)
 
             }
-            .navigationDestination(for: DishModel.self, destination: { dish in
-                NewDishMainView(newDish: dish, backgroundColorView: backgroundColorView)
+            .navigationDestination(for: DestinationPathView.self, destination: { destination in
+                destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .dishList)
             })
+          /*  .navigationDestination(for: DishModel.self, destination: { dish in
+                NewDishMainView(newDish: dish, backgroundColorView: backgroundColorView,destinationPath: .dishList)
+            }) */
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     
@@ -52,7 +55,8 @@ struct DishListView: View {
                         font: .callout,
                         imageBack: Color("SeaTurtlePalette_2"),
                         imageFore: Color.white) {
-                            viewModel.dishListPath.append(DishModel())
+                           // viewModel.dishListPath.append(DishModel())
+                            viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
                         }
                     
                   /*  NavigationLink {

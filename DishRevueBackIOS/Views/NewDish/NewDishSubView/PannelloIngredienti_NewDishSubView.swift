@@ -10,48 +10,22 @@ import SwiftUI
 
 struct PannelloIngredienti_NewDishSubView: View {
     
-    @Binding var newDish: DishModel
-  
-    @Binding var wannaDeleteIngredient: Bool?
+    let newDish: DishModel
     @Binding var wannaAddIngredient: Bool?
-  //  @Binding var openAddingIngredienteSecondario: Bool?
-    @Binding var wannaCreateIngredient: Bool?
-    
+
     var body: some View {
         
         VStack(alignment: .leading) {
-            
-            
-       //    IntestazioneNuovoOggetto_Generic(placeHolderLabel: "Nome del Piatto", imageLabel: "gear", itemModel: $newDish)
-            
-                      
+
             VStack {
-                
-             /*   CSLabel_2Button(placeHolder: "Ingredienti Principali", imageName: "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: $wannaCreateIngredient, toggleBottoneTEXT: $wannaAddIngredient, testoBottoneTEXT: "Edit")
-                
-                
-                CSLabel_2Action(
-                    placeHolder: "Ingredienti Principali",
-                    imageName: "curlybraces",
-                    backgroundColor: Color.black,
-                    testoBottoneTEXT: "Edit",
-                    actionPlusButton: {
-                    self.wannaCreateIngredient?.toggle()
-                    }) {
-                        self.wannaAddIngredient?.toggle()
-                    } */
-                
-                
-                
+
                 CSLabel_conVB(placeHolder: "Ingredienti Principali", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) {
  
                     Group {
                         
                         Spacer()
                         
-                        NavigationLink {
-                          //  NuovoIngredienteMainView(backgroundColorView: Color("SeaTurtlePalette_1"))
-                        } label: {
+                        NavigationLink(value: DestinationPathView.ingrediente(IngredientModel())) {
                             Image(systemName: "plus.circle")
                                 .imageScale(.large)
                                 .foregroundColor(Color("SeaTurtlePalette_3"))
@@ -69,16 +43,14 @@ struct PannelloIngredienti_NewDishSubView: View {
                                 .foregroundColor(Color.white)
                         }
                         .buttonStyle(.borderedProminent)
-                        
-                        
+                                                
                     }
       
                 }
                 
                 if !self.newDish.ingredientiPrincipali.isEmpty {
                     
-                    CustomGrid_GenericsView(wannaDeleteItem: $wannaDeleteIngredient, genericDataToShow: self.$newDish.ingredientiPrincipali, baseColor: Color.mint)
-                    
+                    IngredientHScroll_View(inhredientsToShow: self.newDish.ingredientiPrincipali, baseColor: Color.mint)
                 }
             }
             
@@ -86,30 +58,16 @@ struct PannelloIngredienti_NewDishSubView: View {
                 
                 CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black)
                 
-             /*   CSLabel_2Button(placeHolder: "Ingredienti Secondari", imageName: "curlybraces", backgroundColor: Color.black, toggleBottonePLUS: nil, toggleBottoneTEXT: nil, testoBottoneTEXT: "") */
-                
                 if !self.newDish.ingredientiSecondari.isEmpty {
                     
-                    CustomGrid_GenericsView(wannaDeleteItem: $wannaDeleteIngredient, genericDataToShow: self.$newDish.ingredientiSecondari, baseColor: Color.orange)
-                    
+                    IngredientHScroll_View(inhredientsToShow: self.newDish.ingredientiSecondari, baseColor: Color.yellow)
+
                 }
       
             }
         }
     }
     
-    // function Space
-    
-   private func removeItem(array: inout [IngredientModel], item: IngredientModel) {
-        
-        let positionIndex = array.firstIndex(of: item)
-        
-        array.remove(at: positionIndex!)
-        
-    }
-    
-  
- 
 }
 
 

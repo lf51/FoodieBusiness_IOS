@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-
-
-
-
-
 struct PropertyListView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
@@ -79,7 +74,8 @@ struct PropertyListView: View {
                                     
                                     
                                     Button {
-                                        viewModel.homeViewPath.append(property)
+                                    //   viewModel.homeViewPath.append(property)
+                                       viewModel.homeViewPath.append(DestinationPathView.property(property))
                                     } label: {
                                         HStack {
                                             Image(systemName:"arrow.up.forward.square")

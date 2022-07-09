@@ -23,9 +23,9 @@ struct MenuListView: View {
                     
                 ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
             }
-            .navigationDestination(for: MenuModel.self, destination: { menu in
-                NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView)
-            })
+        .navigationDestination(for: DestinationPathView.self, destination: { destination in
+             destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .menuList)
+         })
             .toolbar {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -35,15 +35,10 @@ struct MenuListView: View {
                         font: .callout,
                         imageBack: Color("SeaTurtlePalette_2"),
                         imageFore: Color.white) {
-                            self.viewModel.menuListPath.append(MenuModel())
+                        //    self.viewModel.menuListPath.append(MenuModel())
+                            self.viewModel.menuListPath.append(DestinationPathView.menu(MenuModel()))
                         }
                     
-                    
-                  /*  NavigationLink {
-                        NuovoMenuMainView(backgroundColorView: backgroundColorView)
-                    } label: {
-                        LargeBar_Text(title: "Nuovo Menu", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
-                    } */
 
                 }
                 
@@ -68,6 +63,11 @@ struct MenuListView: View {
             }) */
         }//.navigationViewStyle(StackNavigationViewStyle())
     }
+    
+    // Method
+
+
+    
 }
 
 /*
@@ -77,3 +77,5 @@ struct DisheListView_Previews: PreviewProvider {
     }
 }
 */
+
+

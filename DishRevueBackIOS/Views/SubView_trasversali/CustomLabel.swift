@@ -64,19 +64,20 @@ struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
     var imageColor: Color?
     var backgroundColor: Color
     var backgroundOpacity: Double?
+    let disabledCondition: Bool?
     
     @Binding var toggleBottone: Bool?
     
-    init(placeHolder: String, imageNameOrEmojy: String? = nil,imageColor:Color? = Color.black, backgroundColor: Color, backgroundOpacity:Double? = nil, toggleBottone: Binding<Bool?>? = nil) {
+    init(placeHolder: String, imageNameOrEmojy: String? = nil,imageColor:Color? = Color.black, backgroundColor: Color, backgroundOpacity:Double? = nil, toggleBottone: Binding<Bool?>? = nil, disabledCondition:Bool? = nil) {
         
         self.placeHolder = placeHolder
         self.imageName = imageNameOrEmojy
         self.imageColor = imageColor
         self.backgroundColor = backgroundColor
         self.backgroundOpacity = backgroundOpacity
-
-        _toggleBottone = toggleBottone ?? Binding.constant(nil)
         
+        _toggleBottone = toggleBottone ?? Binding.constant(nil)
+        self.disabledCondition = disabledCondition
     } // VOGLIO TROVARE UN MODO PER OMETTERE IL TOGGLEBOTTONE INVECE DI PASSARE ESPLICITAMENTE NIL
 
     var body: some View {
@@ -113,6 +114,8 @@ struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
                         .imageScale(.large)
                         .foregroundColor(toggleBottone! ? .red : Color("SeaTurtlePalette_3"))
                 }
+                .opacity(disabledCondition ?? false ? 0.6 : 1.0)
+                .disabled(disabledCondition ?? false)
             }
             
             Spacer()
@@ -131,8 +134,9 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
     @Binding var toggleBottoneTEXT: Bool?
     
     var testoBottoneTEXT: String?
+    let disabledCondition:Bool?
     
-    init(placeHolder: String, imageName: String, backgroundColor: Color, toggleBottonePLUS: Binding<Bool?>? = nil, toggleBottoneTEXT: Binding<Bool?>? = nil, testoBottoneTEXT: String) {
+    init(placeHolder: String, imageName: String, backgroundColor: Color, toggleBottonePLUS: Binding<Bool?>? = nil, toggleBottoneTEXT: Binding<Bool?>? = nil, testoBottoneTEXT: String, disabledCondition:Bool? = nil) {
         
         self.placeHolder = placeHolder
         self.imageName = imageName
@@ -142,7 +146,7 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
         _toggleBottoneTEXT = toggleBottoneTEXT ?? Binding.constant(nil)
         
         self.testoBottoneTEXT = testoBottoneTEXT
-        
+        self.disabledCondition = disabledCondition
     }
 
     var body: some View {
@@ -180,7 +184,10 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
                         .imageScale(.large)
                         .foregroundColor(toggleBottonePLUS! ? .red : Color("SeaTurtlePalette_3"))
                     
-                }.disabled(toggleBottoneTEXT ?? false)
+                }
+                .opacity(disabledCondition ?? false ? 0.6 : 1.0)
+                .disabled(disabledCondition ?? false)
+                .disabled(toggleBottoneTEXT ?? false)
             }
             
             Spacer()
@@ -196,19 +203,9 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
                             toggleBottoneTEXT!.toggle()
                         }
                     }
+                    .opacity(disabledCondition ?? false ? 0.6 : 1.0)
+                    .disabled(disabledCondition ?? false)
                     .disabled(toggleBottonePLUS ?? false)
-              /*  Button {
-                    withAnimation(.default) {
-                        toggleBottoneTEXT!.toggle()
-                    }
-                } label: {
-                    Text(testoBottoneTEXT ?? "")
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color.white)
-                }
-                .buttonStyle(.borderedProminent)
-                .brightness(toggleBottoneTEXT ?? false ? 0.0 : -0.05)
-                .disabled(toggleBottonePLUS ?? false) */
     
             }
         }

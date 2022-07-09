@@ -10,26 +10,31 @@ import SwiftUI
 struct NuovoMenuMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-   // @State var nuovoMenu: MenuModel = MenuModel() // Deprecata 29.06
-
     @State private var nuovoMenu: MenuModel
-  //  @State private var nuovaIntestazioneMenu: String = ""
-    @State private var openDishList: Bool? = false
-    
     let backgroundColorView: Color
     
-    init(nuovoMenu: MenuModel, backgroundColorView: Color) {
+    let menuArchiviato: MenuModel // per il reset
+    let destinationPath: DestinationPath
+    
+    @State private var openDishList: Bool? = false
+  
+    init(nuovoMenu: MenuModel, backgroundColorView: Color, destinationPath:DestinationPath) {
         
         _nuovoMenu = State(wrappedValue: nuovoMenu)
         self.backgroundColorView = backgroundColorView
+        
+        self.menuArchiviato = nuovoMenu
+        self.destinationPath = destinationPath
+
     }
     
-    var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool) {
+    var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool, bottom: Bool) {
 
       let disableTipologia = self.nuovoMenu.intestazione == ""
       let disableProgrammazione = self.nuovoMenu.tipologia == nil
+      let dissableBottom = self.nuovoMenu == self.menuArchiviato
         
-      return (disableTipologia,disableProgrammazione)
+      return (disableTipologia,disableProgrammazione,dissableBottom)
     }
  
     var body: some View {
@@ -45,19 +50,16 @@ struct NuovoMenuMainView: View {
                         VStack(alignment: .leading) {
                             
                             IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (\(self.nuovoMenu.status.simpleDescription().capitalized))", imageLabel: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $nuovoMenu)
+                                            
+                          
+                            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: isThereAReasonToDisable.tipologia)
                                 
-                           
-                            
-                            
-                            
-                            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)")
-                            
-                            CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black)
-                            
-                            SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
-                                .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
-                                .disabled(isThereAReasonToDisable.tipologia)
-
+                                CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black)
+                                
+                                SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
+                                    .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
+                                    .disabled(isThereAReasonToDisable.tipologia)
+                                                                   
                             CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
 
                             if !isThereAReasonToDisable.programmazione {
@@ -74,22 +76,43 @@ struct NuovoMenuMainView: View {
                             }
                     //  Spacer()
                             
-                            CSLabel_2Button(placeHolder: "Piatti", imageName: "circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi")
-
+                            CSLabel_2Button(placeHolder: "Piatti", imageName: "fork.knife.circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi", disabledCondition: self.nuovoMenu.isAvaibleWhen == nil)
+                               
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     
                                     HStack {
                                         
                                         ForEach(nuovoMenu.dishIn) { dish in
                                             
-                                            DishModel_RowView(item: dish)
+                                            DishModel_RowView(item: dish) // Rendere Cliccabile
                                         }
                                         
                                     }
                                 }
-                            
-                            BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu){self.scheduleANewMenu()}
              
+                            BottomViewGeneric_NewModelSubView(
+                                wannaDisableSaveButton: self.nuovoMenu.isAvaibleWhen == nil) {
+                                    self.menuDescription()
+                                } resetAction: {
+                                    resetModel(modelAttivo: &self.nuovoMenu, modelArchiviato: self.menuArchiviato)
+                                   // self.resetMenu()
+                                } saveButtonDialogView: {
+                                    self.scheduleANewMenu()
+                                }
+                                .opacity(isThereAReasonToDisable.bottom ? 0.6 : 1.0)
+                                .disabled(isThereAReasonToDisable.bottom)
+
+                            
+                         /*   BottomNuovoMenu_SubView(
+                                nuovoMenu: $nuovoMenu) {
+                                    self.resetMenu()
+                                } dialogView: {
+                                    self.scheduleANewMenu()
+                                }
+                                .opacity(isThereAReasonToDisable.bottom ? 0.6 : 1.0)
+                                .disabled(isThereAReasonToDisable.bottom) */
+
+                            
                         }.padding(.horizontal)
                         
                         
@@ -107,6 +130,7 @@ struct NuovoMenuMainView: View {
                     }
 
                 CSDivider()
+
             }
 
         }
@@ -117,14 +141,88 @@ struct NuovoMenuMainView: View {
     
     // Method
     
-    private func scheduleANewMenu() {
+    private func menuDescription() -> Text {
+           
+              var giorniServizio: [String] = []
+           
+           for day in self.nuovoMenu.giorniDelServizio {
+               
+               giorniServizio.append(day.simpleDescription())
+           }
+           
+              let nome = self.nuovoMenu.intestazione
+              let dataInizio = csTimeFormatter().data.string(from:self.nuovoMenu.dataInizio)
+              let dataFine = csTimeFormatter().data.string(from:self.nuovoMenu.dataFine)
+              let oraInizio = csTimeFormatter().ora.string(from: self.nuovoMenu.oraInizio)
+              let oraFine = csTimeFormatter().ora.string(from: self.nuovoMenu.oraFine)
+              
+          switch self.nuovoMenu.isAvaibleWhen {
+              
+          case .dataEsatta:
+              return Text("Il menu \(nome) sarà attivo il giorno \(dataInizio), dalle ore \(oraInizio) alle ore \(oraFine)")
+          case .intervalloAperto:
+              return Text("Il menu \(nome) sarà attivo a partire dal giorno \(dataInizio), nei giorni di \(giorniServizio,format: .list(type: .and)), dalle ore \(oraInizio) alle ore \(oraFine)")
+          case .intervalloChiuso:
+              return Text("Il menu \(nome) sarà attivo dal \(dataInizio) al \(dataFine), nei giorni di \(giorniServizio,format: .list(type: .and)), dalle ore \(oraInizio) alle ore \(oraFine)")
+
+          case nil:
+              return Text("Nessuna Info")
+              
+          }
+              
+       }
+    
+   @ViewBuilder private func scheduleANewMenu() -> some View {
  
-        self.viewModel.createOrUpdateItemModel(itemModel: self.nuovoMenu)
-        print(nuovoMenu.intestazione)
-        print(nuovoMenu.descrizione)
-       print("Dentro ScheduleANewMenu() in NuovoMenuMainView")
+        if self.menuArchiviato.intestazione == "" {
+            // crea un Nuovo Oggettp
+            Group {
+                
+                Button("Salva Nuovo Menu", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.nuovoMenu,destinationPath: destinationPath)
+                }
+       
+            }
+        }
+        
+        else if self.menuArchiviato.intestazione == self.nuovoMenu.intestazione {
+            // modifica l'oggetto corrente
+            
+            Group {
+                
+                Button("Salva Modifiche", role: .none) {
+                    
+                self.viewModel.updateItemModel(itemModel: self.nuovoMenu, destinationPath: destinationPath)
+                }
+            }
+        }
+        
+        else {
+            
+            Group {
+                
+                Button("Salva Modifiche", role: .none) {
+                    
+                self.viewModel.updateItemModel(itemModel: self.nuovoMenu, destinationPath: destinationPath)
+                }
+                
+                Button("Salva come Nuovo Menu", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.nuovoMenu,destinationPath: destinationPath)
+                }
+                
+            }
+            
+            
+        }
+ 
     }
+    
+    
 }
+
+
 
 
 /* struct NuovoMenuMainView: View {

@@ -8,15 +8,54 @@
 import SwiftUI
 import UIKit
 
-enum Destination:Hashable {
+enum DestinationPathView:Hashable {
     
-    case accountSetup
+    case accountSetup(_ :AuthPasswordLess)
     case propertyList
     
-    case nuovoMenu(_ :MenuModel)
-    case nuovoPiatto(_ :DishModel)
-    case nuovoIngrediente(_ :IngredientModel)
+    case property(_ :PropertyModel)
+    case menu(_ :MenuModel)
+    case piatto(_ :DishModel)
+    case ingrediente(_ :IngredientModel)
     
+    case categoriaMenu
+    
+    @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath) -> some View {
+        
+        switch self {
+
+        case .accountSetup(let authProcess):
+            AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
+            
+        case .propertyList:
+            PropertyListView(backgroundColorView: backgroundColorView)
+            
+        case .property(let property):
+            EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)
+            
+        case .menu(let menu):
+            NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+            
+        case .piatto(let piatto):
+            NewDishMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+            
+        case .ingrediente(let ingredient):
+            NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+            
+        case .categoriaMenu:
+            NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
+        }
+        
+    }
+    
+}
+
+enum DestinationPath {
+    
+    case homeView
+    case menuList
+    case dishList
+    case ingredientList
 }
 
 struct HomeView: View {
@@ -47,7 +86,7 @@ struct HomeView: View {
                     }
           
                     Button {
-                        viewModel.homeViewPath.append(Destination.propertyList)
+                        viewModel.homeViewPath.append(DestinationPathView.propertyList)
                         viewModel.homeViewPath.append(viewModel.allMyProperties[0])
                     } label: {
                         Text("Gestisci Menu")
@@ -56,14 +95,14 @@ struct HomeView: View {
                     HStack {
                         
                         Button {
-                            viewModel.homeViewPath.append(Destination.nuovoMenu(MenuModel()))
-                            
+                            viewModel.homeViewPath.append(DestinationPathView.menu(MenuModel()))
+            
                         } label: {
                             Text("Crea Nuovo Menu")
                         }
                         
                         Button {
-                            viewModel.homeViewPath.append(Destination.nuovoPiatto(DishModel()))
+                            viewModel.homeViewPath.append(DestinationPathView.piatto(DishModel()))
                             
                         } label: {
                             Text("Crea Nuovo Piatto")
@@ -71,7 +110,7 @@ struct HomeView: View {
                         
                         
                         Button {
-                            viewModel.homeViewPath.append(Destination.nuovoIngrediente(IngredientModel()))
+                            viewModel.homeViewPath.append(DestinationPathView.ingrediente(IngredientModel()))
                             
                         } label: {
                             Text("Crea Nuovo Ingrediente")
@@ -88,18 +127,18 @@ struct HomeView: View {
                 } // VStack End
                 .padding(.horizontal)
             }// chiusa ZStack
-            .navigationDestination(for: Destination.self, destination: { destination in
-                vbDestinationAdress(destination: destination)
+            .navigationDestination(for: DestinationPathView.self, destination: { destination in
+                destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .homeView)
             })
-            .navigationDestination(for: PropertyModel.self, destination: { property in
+         /*  .navigationDestination(for: PropertyModel.self, destination: { property in
                 EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)
-            })
-  
+            }) */
+           
             
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
    
-                    NavigationLink(value: Destination.accountSetup) {
+                    NavigationLink(value: DestinationPathView.accountSetup(authProcess)) {
                         Image(systemName: "person.fill")
                             .foregroundColor(Color("SeaTurtlePalette_2"))
                     }
@@ -108,7 +147,7 @@ struct HomeView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     
-                    NavigationLink(value: Destination.propertyList) {
+                    NavigationLink(value: DestinationPathView.propertyList) {
                         HStack {
                             Text("Proprietà")
                                 .fontWeight(.bold)
@@ -126,29 +165,7 @@ struct HomeView: View {
   
     }
     // Method
-    
-    @ViewBuilder private func vbDestinationAdress(destination:Destination) -> some View {
-        
-        switch destination {
-            
-        case .accountSetup:
-            AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
-            
-        case .propertyList:
-            PropertyListView(backgroundColorView: backgroundColorView)
-            
-        case .nuovoMenu(let menu):
-            NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView)
-            
-        case .nuovoPiatto(let piatto):
-            NewDishMainView(newDish: piatto, backgroundColorView: backgroundColorView)
-            
-        case .nuovoIngrediente(let ingredient):
-            NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView)
-            
-        }
-        
-    }
+
 
 }
 

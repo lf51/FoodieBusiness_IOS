@@ -11,6 +11,10 @@ import Foundation
 
 struct IngredientModel:MyModelStatusConformity {
     
+    func pathDestination() -> DestinationPathView {
+        DestinationPathView.ingrediente(self)
+    }
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

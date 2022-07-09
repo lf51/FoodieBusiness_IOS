@@ -24,12 +24,20 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
         VStack(alignment: .leading) {
             
             CSLabel_1Button(placeHolder: placeHolderItemName, imageNameOrEmojy: imageLabel,imageColor: imageColor, backgroundColor: Color.black)
-            
+        
             if self.itemModel.intestazione == "" || self.editNuovaStringa {
                 
                 CSTextField_3(textFieldItem: self.$nuovaStringa, placeHolder: self.itemModel.intestazione == "" ? "Nuovo Nome" : "Cambia Nome") {
                     
-                    self.itemModel.intestazione = self.nuovaStringa
+                    let newText = csStringCleaner(string: self.nuovaStringa)
+                    
+                    guard csCheckStringa(testo: newText) else {
+                        
+                        self.nuovaStringa = ""
+                        
+                        return }
+                    
+                    self.itemModel.intestazione = newText
                     self.nuovaStringa = ""
                     self.editNuovaStringa = false
                    

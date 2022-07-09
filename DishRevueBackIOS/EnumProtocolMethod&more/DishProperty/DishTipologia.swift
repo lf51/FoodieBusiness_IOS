@@ -13,7 +13,7 @@ enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform, MyModelProtocol {
     var descrizione: String { get {self.extendedDescription() ?? "noDescription"} set { } }
    // var status: StatusModel = .bozza // Non serve a niente. Da Sistemare
     
-    static var allCases: [DishTipologia] = [.standard,.vegetariano,.vegariano,.vegano,.glutenFree]
+    static var allCases: [DishTipologia] = [/*.standard,*/.vegetariano,.vegariano,.vegano,.glutenFree]
     static var defaultValue: DishTipologia = DishTipologia.standard
 
     case standard // contiene di tutto
@@ -30,9 +30,9 @@ enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform, MyModelProtocol {
         switch self {
             
         case .standard: return "Standard"
-        case .vegetariano: return "Vegetariano"
-        case .vegariano: return "Vegariano"
-        case .vegano: return "Vegano"
+        case .vegetariano: return "Vegetariana"
+        case .vegariano: return "Vegariana"
+        case .vegano: return "Vegana"
         case .glutenFree: return "Senza Glutine"
         
         }
@@ -48,10 +48,10 @@ enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform, MyModelProtocol {
         switch self {
             
         case .standard: return "Contiene ingredienti di origine animale e suoi derivati"
-        case .vegetariano: return "Privo di ingredienti di origine animale e pesce. Può contenere latte animale."
-        case .vegariano: return "Privo di latte animale e ingredienti derivati."
-        case .vegano: return "Contiene solo ingredienti di origine vegetale"
-        case .glutenFree: return "Contiene solo ingredienti senza Glutine"
+        case .vegetariano: return "Priva di ingredienti di origine animale (escluso latte e derivati) e pesce."
+        case .vegariano: return "Priva di latte animale e ingredienti derivati."
+        case .vegano: return "Contenente solo ingredienti di origine vegetale."
+        case .glutenFree: return "Priva di Glutine."
         
         }
         
@@ -129,7 +129,6 @@ enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform, MyModelProtocol {
         else if animalOrFish.isEmpty {dieteOk.append(.vegetariano)}
         else {dieteOk.append(.standard) }
  
-        
         return dieteOk
     }
     

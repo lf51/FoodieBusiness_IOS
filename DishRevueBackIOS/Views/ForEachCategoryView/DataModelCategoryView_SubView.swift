@@ -108,21 +108,10 @@ struct DataModelCategoryView_SubView<M:MyModelStatusConformity,G:MyEnumProtocolM
         if isIn {
             
             vbCambioStatusModelList(myModel: item, viewModel: viewModel,navPath: navPath)
-          /*  GenericItemModel_RowViewMask(
-                model: localItem /*item*/) {
-                    Text("\(localItem.intestazione) -> test Label")
-                } */
-      
-            
+   
         } else { EmptyView()}
-        
-        
-        
-        
-        
+
      }
- 
-    
 }
 
 
@@ -146,114 +135,4 @@ struct DataModelCategoryView_Previews: PreviewProvider {
 }
 
 
-@ViewBuilder func vbCambioStatusModelList<M:MyModelStatusConformity>(myModel: Binding<M>,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-    
-    let currentModel = myModel.wrappedValue
-    
-    if currentModel.status == .completo(.pubblico) {
-        
-        GenericItemModel_RowViewMask(
-            model: currentModel) {
-                
-                Button {
-                    myModel.wrappedValue.status = .completo(.inPausa)
-                    
-                } label: {
-                    HStack{
-                        Text("Metti in Pausa")
-                        Image(systemName: "pause.circle")
-                    }
-                }
-                
-                Button {
-                    myModel.wrappedValue.status = .completo(.archiviato)
-                    
-                } label: {
-                    HStack{
-                        Text("Archivia")
-                        Image(systemName: "archivebox")
-                    }
-                }
-                
-            }
-        
-    } else if currentModel.status == .completo(.inPausa) {
-        
-        GenericItemModel_RowViewMask(
-            model: currentModel) {
-                
-                Button {
-                    myModel.wrappedValue.status = .completo(.pubblico)
-                    
-                } label: {
-                    HStack{
-                        Text("Pubblica")
-                        Image(systemName: "play.circle")
-                    }
-                }
-                
-                Button {
-                    myModel.wrappedValue.status = .completo(.archiviato)
-                    
-                } label: {
-                    HStack{
-                        Text("Archivia")
-                        Image(systemName: "archivebox")
-                    }
-                }
-            }
-    } else if currentModel.status == .completo(.archiviato) {
-        
-        GenericItemModel_RowViewMask(
-            model: currentModel) {
-                
-                Button {
-                    myModel.wrappedValue.status = .completo(.pubblico)
-                    
-                } label: {
-                    HStack{
-                        Text("Pubblica")
-                        Image(systemName: "play.circle")
-                    }
-                }
-                
-                Button {
-                    viewModel.deleteItemModel(itemModel: currentModel)
-                    
-                } label: {
-                    HStack{
-                        Text("Elimina")
-                        Image(systemName: "archivebox")
-                    }
-                }
-            }
-    } else if currentModel.status == .bozza {
-        
-        GenericItemModel_RowViewMask(
-            model: currentModel) {
-                
-                Button {
-                    
-                    viewModel[keyPath: navPath].append(currentModel)
-                    
-                } label: {
-                    HStack{
-                        Text("Completa")
-                        Image(systemName: "play.circle")
-                    }
-                }
-                
-                Button {
-                    viewModel.deleteItemModel(itemModel: currentModel)
-                    
-                } label: {
-                    HStack{
-                        Text("Elimina")
-                        Image(systemName: "archivebox")
-                    }
-                }
-            }
-        
-    }
-           
-}
+

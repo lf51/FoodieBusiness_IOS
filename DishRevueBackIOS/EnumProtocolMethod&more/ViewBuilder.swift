@@ -211,3 +211,126 @@ struct CSZStackVB_Framed<Content:View>:View {
             .frame(width: frameWidth! < 400 ? frameWidth! : 400, height: frameHeight)
         }
     }
+
+/// Gestisce il Menu della RowModel in base al cambio di Status. Generic conforme al MyModelStatusConformity
+@ViewBuilder func vbCambioStatusModelList<M:MyModelStatusConformity>(myModel: Binding<M>,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    
+    let currentModel = myModel.wrappedValue
+    
+    if currentModel.status == .completo(.pubblico) {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.inPausa)
+                    
+                } label: {
+                    HStack{
+                        Text("Metti in Pausa")
+                        Image(systemName: "pause.circle")
+                    }
+                }
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.archiviato)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                    }
+                }
+                
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+                
+            }
+        
+    } else if currentModel.status == .completo(.inPausa) {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.pubblico)
+                    
+                } label: {
+                    HStack{
+                        Text("Pubblica")
+                        Image(systemName: "play.circle")
+                    }
+                }
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.archiviato)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                    }
+                }
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+            }
+    } else if currentModel.status == .completo(.archiviato) {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.pubblico)
+                    
+                } label: {
+                    HStack{
+                        Text("Pubblica")
+                        Image(systemName: "play.circle")
+                    }
+                }
+                
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+
+            }
+    } else if currentModel.status == .bozza {
+        
+        GenericItemModel_RowViewMask(
+            model: currentModel) {
+                
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath, titleOne: "Completa")
+                
+            }
+        
+    }
+           
+}
+
+@ViewBuilder func vbScopoDestinazionePathButton<M:MyModelStatusConformity>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>,titleOne:String = "Modifica OLE") -> some View {
+    
+    VStack {
+        
+        Button {
+          //  viewModel[keyPath: navPath].append(currentModel)
+            let currentDestination:DestinationPathView = currentModel.pathDestination()
+            viewModel[keyPath: navPath].append(currentDestination)
+              
+          } label: {
+              HStack{
+                  Text(titleOne)
+                  Image(systemName: "gear")
+              }
+          }
+
+        Button {
+            
+              viewModel.deleteItemModel(itemModel: currentModel)
+              
+          } label: {
+              HStack{
+                  Text("Elimina")
+                  Image(systemName: "trash")
+              }
+          }
+        
+    }
+   
+}
+

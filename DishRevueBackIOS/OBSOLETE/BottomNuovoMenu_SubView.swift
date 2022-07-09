@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-struct BottomNuovoMenu_SubView: View {
+/*struct BottomNuovoMenu_SubView<Content: View>: View {
     
     @Binding var nuovoMenu: MenuModel
     @State private var showDialog: Bool = false
-    let doneAction: () -> Void
+    let resetAction: () -> Void
+    @ViewBuilder var dialogView:Content
     
-    var isThereAReasonToDisable:(reset: Bool, done:Bool) {
-        
-        let disableReset = self.nuovoMenu.intestazione == ""
+   var isThereAReasonToDisable:Bool {
+
         let disableDone = self.nuovoMenu.isAvaibleWhen == nil
         
-        return (disableReset,disableDone)
+        return disableDone
     }
-    
+
     var body: some View {
        
         HStack {
@@ -32,41 +32,26 @@ struct BottomNuovoMenu_SubView: View {
 
             Spacer()
             
-            CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) {
-                
-                self.resetValue()
-                
-            }
-           .opacity(self.isThereAReasonToDisable.reset ? 0.6 : 1.0)
-           .disabled(self.isThereAReasonToDisable.reset)
-            
-           CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
+            CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) { self.resetAction() }
+
+            CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
 
                self.showDialog = true
                 
            }
-           .opacity(self.isThereAReasonToDisable.done ? 0.6 : 1.0)
-           .disabled(self.isThereAReasonToDisable.done)
+           .opacity(self.isThereAReasonToDisable ? 0.6 : 1.0)
+           .disabled(self.isThereAReasonToDisable)
             
         }
         .padding(.vertical)
         .confirmationDialog(
                 menuDescription(),
                 isPresented: $showDialog,
-                titleVisibility: .visible) {
-                
-                Button("Conferma Menu", role: .none) {self.doneAction()}
-            }
+                titleVisibility: .visible) { dialogView }
         
     }
     
     // Method
-
-    private func resetValue() {
-
-        self.nuovoMenu = MenuModel()
-
-    }
     
    private func menuDescription() -> Text {
         
@@ -100,20 +85,8 @@ struct BottomNuovoMenu_SubView: View {
 
                  
     }
-    
-    
-  /*  private func scheduleANewMenu() {
-            
-        print("Nome Menu: \(self.nuovoMenu.intestazione)")
-        print("data Inizio:\(self.nuovoMenu.dataInizio.ISO8601Format())")
-        print("data Fine: \(self.nuovoMenu.dataFine.ISO8601Format())")
-        print("nei giorni di: \(self.nuovoMenu.giorniDelServizio.description)")
-        print("dalle \(self.nuovoMenu.oraInizio.ISO8601Format()) alle \(self.nuovoMenu.oraFine.ISO8601Format())")
-        
-        
-       print("Salvare MenuModel nel firebase e/o nell'elenco dei Menu in un ViewModel")
-    } */
-}
+
+} */// Deprecata 09.07 in favore di una generics
 
 /*struct BottomNuovoMenu_SubView_Previews: PreviewProvider {
     static var previews: some View {

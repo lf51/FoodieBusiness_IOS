@@ -36,6 +36,8 @@ protocol MyModelStatusConformity: MyModelProtocol,Hashable {
     
     var status: StatusModel {get set}
     
+    func pathDestination() -> DestinationPathView
+    
 }
 /*protocol MyModelProtocolMapConform {
     
@@ -44,5 +46,4 @@ protocol MyModelStatusConformity: MyModelProtocol,Hashable {
     var staticMapCategory: MapProperty { get }
   
 } */
-
 

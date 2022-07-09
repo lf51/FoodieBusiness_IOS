@@ -121,3 +121,9 @@ func csReturnEmojyCollection() -> [String] {
         
         
     }
+
+/// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
+func resetModel<M:MyModelStatusConformity>(modelAttivo:inout M,modelArchiviato:M) {
+  
+    modelAttivo = modelArchiviato
+}

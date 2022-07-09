@@ -8,45 +8,39 @@
 import SwiftUI
 
 struct ConditionalZStackView_NewDishSubView: View {
-    
-   // @ObservedObject var propertyVM: PropertyVM
+
     @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var newDish: DishModel
-    @Binding var wannaAddIngredient: Bool?
-   // @Binding var openAddingIngredienteSecondario: Bool?
-    @Binding var wannaCreateIngredient: Bool?
-    @Binding var wannaProgramAndPublishNewDish: Bool
-  //  @Binding var wannaMakeDietAvaible: Bool?
-    
     var backgroundColorView: Color
+    
+    @Binding var conditionOne: Bool?
+    @Binding var conditionTwo: Bool?
+    @Binding var conditionThree: Bool
     
     var body: some View {
         
-        if wannaCreateIngredient! {
-                    
-           // NuovoIngredienteMainView(backgroundColorView: backgroundColorView, dismissButton: $wannaCreateIngredient)
-
-                } // Deprecata in futuro - Sostituire con un NavLink
-        
-        if wannaProgramAndPublishNewDish {
-                    
-           Text("Scheda Pubblicazione e Programmazione Piatto")
-
-                }
-   
-        if wannaAddIngredient! {
+        if conditionOne ?? false {
    
             SelettoreMyModel<_,IngredientModel>(
                 itemModel: $newDish,
                 allModelList: ModelList.dishIngredientsList,
-                closeButton: $wannaAddIngredient)
+                closeButton: $conditionOne)
             
         }
         
-  
+       else if conditionTwo ?? false {
+                    
+           Text("Condizione DUE")
+
+                }
         
-    
+       else if conditionThree {
+                    
+           Text("Condizione TRE")
+
+                }
+  
     }
     // Method
 

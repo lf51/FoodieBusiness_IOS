@@ -30,9 +30,10 @@ func csCheckDouble(testo:String) -> Bool  {
     
 }
 
-func csCheckStringa(testo:String) -> Bool {
-    print("csCheckStringa non implementato")
- return true
+func csCheckStringa(testo:String, minLenght: Int = 5) -> Bool {
+    
+    print("inside csCheckStringa")
+    if testo.count >= minLenght {return true} else { return false}
 }
 
 

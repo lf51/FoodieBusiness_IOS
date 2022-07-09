@@ -8,23 +8,28 @@
 import SwiftUI
 
 struct NewDishMainView: View {
+
+    @EnvironmentObject var viewModel: AccounterVM
     
-   // @ObservedObject var propertyVM: PropertyVM
-    @EnvironmentObject var viewModel: AccounterVM // ATTUALMENTE NON UTILIZZATO
+    @State private var newDish: DishModel
     let backgroundColorView: Color
     
-   // @State var newDish: DishModel = DishModel() // Deprecato 29.06
-    @State private var newDish: DishModel
+    let piattoArchiviato: DishModel // per il reset
+    let destinationPath: DestinationPath
+    
     @State private var wannaDeleteIngredient: Bool? = false // attiva l'eliminazione degli ingredienti
     @State private var wannaAddIngredient: Bool? = false // apre per tuttiGliIngredienti
  //   @State var openAddingIngredienteSecondario: Bool? = false // in disuso // da eliminare
     @State private var wannaCreateIngredient: Bool? = false
     @State private var wannaProgramAndPublishNewDish: Bool = false
     
-    init(newDish: DishModel,backgroundColorView: Color) {
+    init(newDish: DishModel,backgroundColorView: Color, destinationPath:DestinationPath) {
         
         _newDish = State(wrappedValue: newDish)
         self.backgroundColorView = backgroundColorView
+        
+        self.piattoArchiviato = newDish
+        self.destinationPath = destinationPath
     }
     
     private var isThereAReasonToDisabled: Bool {
@@ -35,48 +40,50 @@ struct NewDishMainView: View {
     
     var body: some View {
        
-        CSZStackVB(title: "Nuovo Piatto", backgroundColorView: backgroundColorView) {
-            
-         //   backgroundColorView.opacity(0.9).ignoresSafeArea()
+        CSZStackVB(title: self.newDish.intestazione == "" ? "Nuovo Piatto" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
             
             VStack {
-                
-           /*    TopBar_3BoolPlusDismiss(title: newDish.intestazione != "" ? newDish.intestazione : "New Dish", enableEnvironmentDismiss: true, doneButton: $wannaAddIngredient, exitButton: $wannaCreateIngredient, cancelButton: $wannaDeleteIngredient)
-                    .padding()
-                    .background(Color.cyan)
-        
-                
-                Spacer() */
-                
-            //    ZStack {
+
                 CSDivider()
                     
                     ScrollView { // La View Mobile
 
-                    VStack(alignment:.leading) {
-                             
-                    IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Piatto", imageLabel: "doc.badge.plus", coloreContainer: Color.green, itemModel: $newDish)
-                        
-                    PannelloIngredienti_NewDishSubView(newDish: $newDish, wannaDeleteIngredient: $wannaDeleteIngredient, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient)
-
-                    SelectionPropertyDish_NewDishSubView(newDish: $newDish)
-                    DishSpecific_NewDishSubView(newDish: $newDish)
-           
+                        VStack(alignment:.leading) {
+                            
+                            Group {
+                                
+                                IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Piatto (\(self.newDish.status.simpleDescription().capitalized))", imageLabel: self.newDish.status.imageAssociated(),imageColor: self.newDish.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $newDish)
+                                
+                                PannelloIngredienti_NewDishSubView(newDish: newDish, wannaAddIngredient: $wannaAddIngredient)
+                                
+                                SelectionPropertyDish_NewDishSubView(newDish: $newDish)
+                                
+                                DishSpecific_NewDishSubView(newDish: $newDish)
+                                
+                                
+                            }
+                            .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)
+                            .disabled(isThereAReasonToDisabled)
+                            
+                            Spacer()
+                            
+                            BottomViewGeneric_NewModelSubView(
+                                wannaDisableSaveButton: false) {
+                                    infoPiatto()
+                                } resetAction: {
+                                    resetModel(modelAttivo: &self.newDish, modelArchiviato: self.piattoArchiviato)
+                                } saveButtonDialogView: {
+                                    scheduleANewDish()
+                                }
+                            
+                            
                         }
                     .padding(.horizontal)
-                    .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)
-                    .disabled(isThereAReasonToDisabled)
+                    
                         
                         
-                        Spacer()
-                        
-                        BottomBar_NewDishSubView(newDish: $newDish, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish)
-                            .padding()
-                          //  .background(Color.cyan)
-                            .opacity(isThereAReasonToDisabled ? 0.4 : 1.0)
-                            .disabled(isThereAReasonToDisabled || self.newDish.intestazione == "")
-                        
-                        
+                       
+      
                     }
                     .zIndex(0)
                     .onTapGesture {
@@ -86,7 +93,7 @@ struct NewDishMainView: View {
                       // self.openAddingIngredienteSecondario = false
                     }
         
-                    ConditionalZStackView_NewDishSubView(newDish: $newDish, wannaAddIngredient: $wannaAddIngredient, wannaCreateIngredient: $wannaCreateIngredient, wannaProgramAndPublishNewDish: $wannaProgramAndPublishNewDish, backgroundColorView: backgroundColorView)
+                ConditionalZStackView_NewDishSubView(newDish: $newDish, backgroundColorView: backgroundColorView, conditionOne: $wannaAddIngredient, conditionTwo: $wannaCreateIngredient, conditionThree: $wannaProgramAndPublishNewDish)
                     
                    
                 CSDivider() // risolve il problema del cambio colore della tabView
@@ -106,7 +113,85 @@ struct NewDishMainView: View {
            )
          } */
     }
+    
+    // Method
+    
+    private func infoPiatto() -> Text {
+        
+        Text("No Description Yet")
+    }
+    
+    @ViewBuilder private func scheduleANewDish() -> some View {
+        
+        if self.piattoArchiviato.intestazione == "" {
+            // crea un Nuovo Oggettp
+            Group {
+                
+                Button("Salva e Crea Nuovo", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.newDish)
+                self.newDish = DishModel()
+                    
+                }
+                
+                Button("Salva ed Esci", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.newDish,destinationPath: destinationPath)
+                }
+       
+                
+   
+            }
+        }
+        
+        else if self.piattoArchiviato.intestazione == self.newDish.intestazione {
+            // modifica l'oggetto corrente
+            
+            Group {
+                
+                vbEditingSaveButton()
+
+            }
+        }
+        
+        else {
+            
+            Group {
+                
+                vbEditingSaveButton()
+                
+                Button("Salva come Nuovo Piatto", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.newDish,destinationPath: destinationPath)
+                }
+                
+            }
+            
+            
+        }
+ 
+    }
+    
+    @ViewBuilder private func vbEditingSaveButton() -> some View {
+        
+        Button("Salva Modifiche e Crea Nuovo", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.newDish)
+        self.newDish = DishModel()
+        }
+        
+        Button("Salva Modifiche ed Esci", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.newDish, destinationPath: destinationPath)
+        }
+        
+        
+    }
+    
 }
+
+
+
 
 /*struct NewDishMAINView_Previews: PreviewProvider {
     static var previews: some View {

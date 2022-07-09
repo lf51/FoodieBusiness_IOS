@@ -8,7 +8,15 @@
 import Foundation
 import Firebase
 
-class AuthPasswordLess: ObservableObject {
+class AuthPasswordLess: ObservableObject, Hashable {
+    
+    static func == (lhs: AuthPasswordLess, rhs: AuthPasswordLess) -> Bool {
+        lhs.userInfo == rhs.userInfo
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(userInfo?.userUID)
+    }
 
     @Published var userInfo: UserModel?
     
