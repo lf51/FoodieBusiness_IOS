@@ -94,7 +94,7 @@ class AccounterVM: ObservableObject {
         
         print("AccounterVM/checkExistingItem - Item: \(model.intestazione)")
         
-        let containerM = assegnaContainer(itemModel: model).container
+        let containerM = assegnaContainer(itemModel: model)
         
         guard let index = containerM.firstIndex(where: {$0.id == model.id}) else {return (false, nil)}
 
@@ -135,7 +135,7 @@ class AccounterVM: ObservableObject {
     }
     
     
-    func createOrUpdateItemModel<T:MyModelProtocol>(itemModel:T) { // 03.05 Deprecated ma non ancora sostituita (02.07)
+   /* func createOrUpdateItemModel<T:MyModelProtocol>(itemModel:T) { // 03.05 Deprecated ma non ancora sostituita (02.07)
     
         var (containerT, editAvaible) = assegnaContainer(itemModel: itemModel)
   
@@ -193,7 +193,7 @@ class AccounterVM: ObservableObject {
         
     // Matriciana 5CE7F174-1E10-45F4-8387-4139C59E42ED
     // Carbonara 6389FF91-89A4-4458-B336-E00BD96571BF
-    }
+    } */ // Deprecta 11.07
 
     /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto. 
     func createItemModel<T:MyModelProtocol>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) {
@@ -219,7 +219,7 @@ class AccounterVM: ObservableObject {
         
     private func createItemModelExecutive<T:MyModelProtocol>(itemModel:T, destinationPath:DestinationPath? = nil) {
         
-        var (containerT,_) = assegnaContainer(itemModel: itemModel)
+        var containerT = assegnaContainer(itemModel: itemModel)
         
         guard !containerT.contains(where: {$0.id == itemModel.id}) else {
             
@@ -271,7 +271,7 @@ class AccounterVM: ObservableObject {
     
     private func updateItemModelExecutive<T:MyModelProtocol>(itemModel: T, destinationPath: DestinationPath? = nil) {
         
-        var (containerT, _) = assegnaContainer(itemModel: itemModel)
+        var containerT = assegnaContainer(itemModel: itemModel)
   
         guard let oldItemIndex = containerT.firstIndex(where: {$0.id == itemModel.id}) else {
             self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
@@ -310,7 +310,7 @@ class AccounterVM: ObservableObject {
     
     private func deleteItemModelExecution<T:MyModelProtocol>(itemModel: T) {
         
-        var (containerT, _) = assegnaContainer(itemModel: itemModel)
+        var containerT = assegnaContainer(itemModel: itemModel)
         
         guard let index = containerT.firstIndex(of: itemModel) else {
             self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
@@ -396,6 +396,7 @@ class AccounterVM: ObservableObject {
         
         let ricerca = stringaRicerca.replacingOccurrences(of: " ", with: "").lowercased()
         print("Dentro Stringa Ricerca")
+        
         switch item.self {
             
         case is IngredientModel:
@@ -428,7 +429,28 @@ class AccounterVM: ObservableObject {
     }
     
     /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container e un bool (indicante se il container è o non è editabile)
-    private func assegnaContainer<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
+    private func assegnaContainer<T:MyModelProtocol>(itemModel:T) -> [T] {
+       
+        let pathContainer = itemModel.viewModelContainer().pathContainer
+        print("ViewModel/assegnaContainer() per itemModel: \(itemModel.intestazione)")
+        return self[keyPath: pathContainer]
+
+    }
+    
+    /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
+   private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
+
+       let (pathContainer,nomeContainer) = modelT.viewModelContainer()
+       self[keyPath: pathContainer] = containerT
+       
+       self.alertItem = AlertModel(
+            title: modelT.intestazione,
+            message: "\(nomeContainer) aggiornata con Successo!")
+
+    }
+    
+    /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container e un bool (indicante se il container è o non è editabile)
+  /*  private func assegnaContainer<T:MyModelProtocol>(itemModel:T) -> (container:[T],editAvaible:Bool) {
         
         switch itemModel.self {
             
@@ -444,10 +466,10 @@ class AccounterVM: ObservableObject {
         default: return([],false)
             
         }
-    }
+    } */ // Deprecata 11.07
     
     /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
-    private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
+  /*  private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
             
         let nomeContainer:String
         
@@ -476,7 +498,7 @@ class AccounterVM: ObservableObject {
     
         
    // Il parametro modelT è in apparenza superfluo. Potremmo difatti farne a meno nel 99% dei casi, ma quando il containerT è vuoto, se lo usassimo per comprendere il tipo T avremmo dei bug.
-    }
+    }*/ // Deprecata 11.07
     
     
   // AREA TEST -> DA ELIMINARE

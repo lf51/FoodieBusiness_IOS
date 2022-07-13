@@ -78,7 +78,9 @@ struct NewPropertyMainView: View {
     
     private func actionAddButton() {
         
-        self.viewModel.createOrUpdateItemModel(itemModel: newProperty)
+      //  self.viewModel.createOrUpdateItemModel(itemModel: newProperty)
+        self.viewModel.createItemModel(itemModel: newProperty)
+        print("CONTROLLARE ACRIONADDBUTTON() in NEWPROPERTYMAINVIEW")
         self.showActivityInfo = false
         self.queryResults = []
         self.queryRequest = ""

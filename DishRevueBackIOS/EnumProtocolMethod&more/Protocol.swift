@@ -28,22 +28,21 @@ protocol MyModelProtocol: Identifiable, Equatable {
     
     var intestazione: String {get set}
     var descrizione: String {get set}
-   
-    
+
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String)
 }
 
-protocol MyModelStatusConformity: MyModelProtocol,Hashable {
+protocol MyModelStatusConformity: MyModelProtocol, Hashable {
     
     var status: StatusModel {get set}
     
     func pathDestination() -> DestinationPathView
     
 }
-/*protocol MyModelProtocolMapConform {
+
+/*protocol MyModelConformity {
     
-    associatedtype MapProperty:MyEnumProtocol,MyEnumProtocolMapConform
- 
-    var staticMapCategory: MapProperty { get }
-  
+    func viewModelContainer() -> WritableKeyPath<AccounterVM,[Self]>
+    
 } */
 

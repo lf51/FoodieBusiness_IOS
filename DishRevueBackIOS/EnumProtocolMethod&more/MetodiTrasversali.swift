@@ -37,7 +37,7 @@ func csValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
        if let rightValue = Int(value) { if rightValue > 0 {return true} else {return false} } else {return false}
        
    }
-}
+} // Deprecata in futuro // da sostituire
 
 func csTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     

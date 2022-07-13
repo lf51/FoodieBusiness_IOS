@@ -11,7 +11,12 @@ import Foundation
 
 
 struct DishModel:MyModelStatusConformity {
-     
+    
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String) {
+        
+        return (\.allMyDish, "Lista Piatti")
+    }
+       
     func pathDestination() -> DestinationPathView {
         DestinationPathView.piatto(self)
     }
@@ -26,8 +31,10 @@ struct DishModel:MyModelStatusConformity {
         lhs.intestazione == rhs.intestazione &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
+        lhs.dieteCompatibili == rhs.dieteCompatibili &&
         lhs.categoria == rhs.categoria && // deprecata
         lhs.categoriaMenu == rhs.categoriaMenu &&
+        lhs.pricingPiatto == rhs.pricingPiatto &&
         lhs.aBaseDi == rhs.aBaseDi &&
         lhs.metodoCottura == rhs.metodoCottura &&
         lhs.tipologia == rhs.tipologia &&
@@ -80,7 +87,8 @@ struct DishModel:MyModelStatusConformity {
         }
         
         let setAllergeniPiatto = Set(allergeniPiatto)
-        print("Calcolo Allergeni Piatto \(self.intestazione)")
+      //  print("Calcolo Allergeni Piatto \(self.intestazione) - DA SISTEMARE")
+        // SISTEMARE - IN QUESTA FORMA CALCOLA IL CONTENUTO UN NUMERO SPROPOSITATO DI VOLTE - 11.07
         return Array(setAllergeniPiatto)
         
     } // Abbiamo spostato gli allergeni nell'ingrediente, quindi il piatto li deriva
@@ -94,9 +102,11 @@ struct DishModel:MyModelStatusConformity {
         return dieteOk
     }() */
     
-    var dieteCompatibili:[DishTipologia] = [.standard]
+
+    var dieteCompatibili:[DishTipologia] = [.standard] // Se non qui, lo mettiamo nell'init, il piatto andrà creato come .standard
     
-    var formatiDelPiatto: [DishFormato]
+    var formatiDelPiatto: [DishFormato] // deprecated 12.07
+    var pricingPiatto:[DishFormat] = [DishFormat(type: .mandatory)]
 
     var rating: String
     var status: StatusModel

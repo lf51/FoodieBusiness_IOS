@@ -7,7 +7,9 @@
 
 import Foundation
 
-struct DishAvaibleForDiet: MyModelProtocol {
+struct DishAvaibleForDiet {
+  
+    
 
     var intestazione: String { get {self.diet.intestazione} set { } }
     var descrizione: String { get {self.diet.descrizione} set { } }
@@ -18,7 +20,7 @@ struct DishAvaibleForDiet: MyModelProtocol {
     var ingredientOUT: [IngredientModel]
     var ingredientIN: [IngredientModel]
     
-}
+} // NON ANCORA USATA al 11.07
 
 
 

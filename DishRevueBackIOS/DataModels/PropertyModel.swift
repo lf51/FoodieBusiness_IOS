@@ -18,6 +18,12 @@ import MapKit
 
 struct PropertyModel: MyModelProtocol, Hashable{
     
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String) {
+        
+        return (\.allMyProperties,"Lista Proprietà")
+    }
+
+    
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

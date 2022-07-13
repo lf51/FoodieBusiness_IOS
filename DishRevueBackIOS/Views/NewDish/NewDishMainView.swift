@@ -67,6 +67,10 @@ struct NewDishMainView: View {
                             
                             Spacer()
                             
+                         
+                            
+                            
+                            
                             BottomViewGeneric_NewModelSubView(
                                 wannaDisableSaveButton: false) {
                                     infoPiatto()
@@ -79,11 +83,7 @@ struct NewDishMainView: View {
                             
                         }
                     .padding(.horizontal)
-                    
-                        
-                        
-                       
-      
+     
                     }
                     .zIndex(0)
                     .onTapGesture {
@@ -122,6 +122,9 @@ struct NewDishMainView: View {
     }
     
     @ViewBuilder private func scheduleANewDish() -> some View {
+        
+        //self.newDish.dieteCompatibili = [.glutenFree]
+        
         
         if self.piattoArchiviato.intestazione == "" {
             // crea un Nuovo Oggettp

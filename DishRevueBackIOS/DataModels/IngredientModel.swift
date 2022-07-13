@@ -11,6 +11,11 @@ import Foundation
 
 struct IngredientModel:MyModelStatusConformity {
     
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String) {
+        
+        return (\.allMyIngredients, "Lista Ingredienti")
+    }
+
     func pathDestination() -> DestinationPathView {
         DestinationPathView.ingrediente(self)
     }

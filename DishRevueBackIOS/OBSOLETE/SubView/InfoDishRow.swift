@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct InfoDishRow: View { // DEPRECATED
+/*struct InfoDishRow: View { // DEPRECATED
     
     let borderColor:Color
     let fillColor:Color
@@ -113,3 +113,4 @@ struct InfoDishRow_Previews: PreviewProvider {
     
     
 }
+ */ // Deprecated

@@ -31,7 +31,7 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
                     
                     let newText = csStringCleaner(string: self.nuovaStringa)
                     
-                    guard csCheckStringa(testo: newText) else {
+                    guard csCheckStringa(testo: newText,minLenght: 5) else {
                         
                         self.nuovaStringa = ""
                         

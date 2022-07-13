@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 struct AlertModel: Identifiable {
     
   let id = UUID()

@@ -14,8 +14,8 @@
             filePath = "DishRevueBackIOS/Views/NuovaProprieta&#x300;/NewPropertyMainView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
             landmarkName = "queryResearch()"
             landmarkType = "7">
          </BreakpointContent>
@@ -30,8 +30,8 @@
             filePath = "DishRevueBackIOS/Views/NuovaProprieta&#x300;/NewPropertyMainView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "queryResearch()"
             landmarkType = "7">
          </BreakpointContent>
@@ -555,10 +555,10 @@
             filePath = "DishRevueBackIOS/ViewModels/AccounterVM.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "450"
-            endingLineNumber = "450"
-            landmarkName = "aggiornaContainer(containerT:modelT:)"
-            landmarkType = "7">
+            startingLineNumber = "472"
+            endingLineNumber = "472"
+            landmarkName = "AccounterVM"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -667,22 +667,6 @@
             filePath = "DishRevueBackIOS/Views/NuovaProprieta&#x300;/NewPropertyMainView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
-            landmarkName = "showPlaceData(place:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1598542B-0998-460B-8F07-32B6EDBB2265"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DishRevueBackIOS/Views/NuovaProprieta&#x300;/NewPropertyMainView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
             startingLineNumber = "90"
             endingLineNumber = "90"
             landmarkName = "showPlaceData(place:)"
@@ -692,7 +676,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "46767F25-9CA4-44B3-A92C-9F31DAEB47BB"
+            uuid = "1598542B-0998-460B-8F07-32B6EDBB2265"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -708,7 +692,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "BEB5FFB5-7573-4544-910E-8882E68AB4D1"
+            uuid = "46767F25-9CA4-44B3-A92C-9F31DAEB47BB"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
@@ -717,6 +701,22 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "94"
             endingLineNumber = "94"
+            landmarkName = "showPlaceData(place:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "BEB5FFB5-7573-4544-910E-8882E68AB4D1"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "DishRevueBackIOS/Views/NuovaProprieta&#x300;/NewPropertyMainView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "96"
+            endingLineNumber = "96"
             landmarkName = "showPlaceData(place:)"
             landmarkType = "7">
          </BreakpointContent>

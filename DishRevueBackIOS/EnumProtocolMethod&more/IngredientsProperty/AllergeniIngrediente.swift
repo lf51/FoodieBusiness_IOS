@@ -8,6 +8,11 @@
 import Foundation
 
 enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
+    
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String) {
+        
+        return (\.allergeni, "Elenco Allergeni")
+    }
 
     var intestazione: String {get{ self.simpleDescription() } set{ }}
     var descrizione: String { get {self.extendedDescription() ?? "noDescription"} set { } }

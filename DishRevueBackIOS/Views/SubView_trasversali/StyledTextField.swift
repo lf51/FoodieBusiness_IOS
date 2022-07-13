@@ -184,7 +184,7 @@ struct CSTextField_4: View {
     }
 }
 
-/// Identico al TextField4 con la differenza che accetta una image di tipo Image e non String
+/// Identico al TextField4. Crea l'image attraverso un viewBuilder (Utile per il checkVisuale)
 struct CSTextField_4b<VisualContent:View>: View {
     
     @Binding var textFieldItem: String
@@ -296,11 +296,17 @@ struct CSTextField_6: View {
     
     var body: some View {
         
-        CSTextField_4b(textFieldItem: $textFieldItem, placeHolder: placeHolder, showDelete: showDelete, keyboardType: keyboardType) { visualCheck() }
+        CSTextField_4b(textFieldItem: $textFieldItem, placeHolder: placeHolder, showDelete: showDelete, keyboardType: keyboardType) {
+            csVisualCheck(
+                testo: self.textFieldItem,
+                imagePrincipal: self.image,
+                conformeA: conformeA)
+            
+        }
             .onSubmit(self.action)
             .onChange(of: textFieldItem) { newValue in
                 
-                let delay = 1.5
+                let delay = 2.0
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                     if newValue == textFieldItem {
@@ -312,7 +318,7 @@ struct CSTextField_6: View {
     } // Chiusa Body
     
     
-    private func visualCheck() -> some View {
+  /*  private func visualCheck() -> some View {
         
         guard self.textFieldItem != "" else {
             
@@ -335,7 +341,7 @@ struct CSTextField_6: View {
                 .imageScale(.medium)
                 .foregroundColor(Color.red)
         }
-    }
+    } */ // Deprecated
     
 
     

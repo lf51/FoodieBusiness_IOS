@@ -8,6 +8,10 @@
 import Foundation
 
 struct MenuModel:MyModelStatusConformity {
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String) {
+        
+        return (\.allMyMenu, "Lista Menu")
+    }
 
     func pathDestination() -> DestinationPathView {
         

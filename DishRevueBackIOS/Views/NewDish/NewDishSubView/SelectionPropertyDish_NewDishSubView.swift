@@ -12,17 +12,25 @@ struct SelectionPropertyDish_NewDishSubView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     @Binding var newDish: DishModel
+    let dietAvaible:[DishTipologia]
+    let dietAvaibleString:[String]
+  // @State private var mostraDescrizioneDieta: Bool = false
+  //  @State private var descrizioneDieta: String = ""
     
-    @State private var mostraDescrizioneDieta: Bool = false
-    @State private var descrizioneDieta: String = ""
+  //  @State private var creaNuovaTipologia:Bool = false
+  //  @State private var nuovaTipologia: String = ""
     
-    @State private var creaNuovaTipologia:Bool = false
-    @State private var nuovaTipologia: String = ""
-    
-    @State private var creaNuovaCottura: Bool? = false
-    @State private var nuovaCottura: String = ""
+   // @State private var creaNuovaCottura: Bool? = false
+  //  @State private var nuovaCottura: String = ""
     
     @State private var confermaDiete: Bool = false
+    
+    init(newDish:Binding<DishModel>) {
+       
+        _newDish = newDish
+        (self.dietAvaible,self.dietAvaibleString) = DishTipologia.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
+    }
+    
     
     var body: some View {
         
@@ -74,25 +82,54 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 
             }
             
-            VStack {
+            VStack(alignment: .leading) {
                 
-              /*  CSLabel_1Button(placeHolder: "Adatto ad una dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) */
+                /*  CSLabel_1Button(placeHolder: "Adatto ad una dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) */
                 CSLabel_conVB(placeHolder: "Dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) {
-                 
+                    
                     Toggle(isOn: $confermaDiete) {
-                      
+                        
                         HStack {
-                           Spacer()
+                            Spacer()
                             Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
                                 .foregroundColor(confermaDiete ? Color.green : Color.gray)
-                               // .imageScale(.small)
+                            // .imageScale(.small)
                             Text(confermaDiete ? "Confermato" : "Non Confermato")
                         }
-                       
+                        
                     }
                 }
                 
-                DietScrollCasesCmpatibility(currentDish: newDish)
+                DietScrollCasesCmpatibility(currentDish: self.newDish, instanceCases: self.dietAvaible) {
+                    
+                    VStack(alignment:.leading) {
+
+                        let string = self.confermaDiete ? "Diete Confermate" : "Diete compatibili"
+                            
+                        Text("\(string): \(dietAvaibleString, format: .list(type: .and)).")
+                                   .bold(self.confermaDiete)
+                                   .font(.caption)
+                                   .foregroundColor(self.confermaDiete ? .green : .black)
+                        
+                        if !self.confermaDiete {
+      
+                            let diet = self.newDish.dieteCompatibili[0].simpleDescription()
+                            
+                            Text("Confermata dieta \(diet)")
+                                  .underline()
+                                  .fontWeight(.semibold)
+                                  .font(.caption)
+                                  .foregroundColor(Color.black)
+                        }
+                    }
+                }
+                
+                
+               
+                
+                
+              /*  Text("Diete Confermate: \(self.newDish.dieteCompatibili.debugDescription)")
+                    .font(.caption) */
                 
               /*  PropertyScrollCasesPlus(cases: DishTipologia.allCases, dishCollectionProperty: newDish.tipologiaDieta) */
                 
@@ -137,7 +174,37 @@ struct SelectionPropertyDish_NewDishSubView: View {
             
             
         }
+        .onChange(of: self.dietAvaible, perform: { _ in
+            self.confermaDiete = false
+        })
+        .onChange(of: self.confermaDiete) { newValue in
+            if newValue {
+ 
+                viewModel.alertItem = AlertModel(
+                    title: "Conferma Diete",
+                    message: "Si conferma la compatibilità del Piatto con le diete: \(dietAvaibleString.formatted(.list(type: .and)))."
+                        )
+                self.newDish.dieteCompatibili = self.dietAvaible
+                 }
+            else {
+                
+                self.newDish.dieteCompatibili = [.standard]
+            }
+
+        }
     }
+    
+    // Method
+    
+   /* private func resetDieteCompatibili(withAlert:Bool) {
+        
+        viewModel.alertItem = AlertModel(
+            title: "Piatto Standard",
+            message: "Contiene ingredienti di orgine animale, pesce, latte e/o derivati."
+                )
+        self.newDish.dieteCompatibili = [.standard]
+        
+    } */
     
    /* @ViewBuilder private func showExtendedDescription() -> some View {
         

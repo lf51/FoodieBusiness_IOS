@@ -11,193 +11,92 @@ import SwiftUI
 struct DishSpecific_NewDishSubView: View {
     
     @Binding var newDish: DishModel
- 
-    @State private var grammi: String = ""
-    @State private var pax: String = ""
-    @State private var prezzo: String = ""
+    @State private var allDishFormats: [DishFormat]
     
-    @State private var formatoCorrente: DishFormato = .defaultValue
-    @State private var wannaInsertFormatValue: Bool = false
+    init(newDish: Binding<DishModel>) {
+        _newDish = newDish
+        _allDishFormats = State(wrappedValue: newDish.pricingPiatto.wrappedValue)
+    }
     
-    @State private var creaNuovoFormato: Bool? = false
-    @State private var nuovoFormato: String = ""
-
     var body: some View {
         
         VStack(alignment: .leading) {
-            
-            CSLabel_1Button(placeHolder: "Formato", imageNameOrEmojy: "doc.text.magnifyingglass", backgroundColor: Color.black, toggleBottone: $creaNuovoFormato).disabled(self.wannaInsertFormatValue)
-            
-            if !(creaNuovoFormato ?? false) {
-                
-                VStack {
-                    
-                    if !self.wannaInsertFormatValue {
-                        
-                        ScrollView(.horizontal,showsIndicators: false) {
-                            
-                            HStack {
-                                
-                                ForEach(DishFormato.allCases) { taglia in
         
-                                    CSText_bigRectangle(testo: taglia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.clear : Color.blue, fillColor: taglia.isTagliaAlreadyIn(newDish: self.newDish) ? Color.mint : Color.clear)
-                                    
-                                        .opacity(taglia.isSceltaBloccata(newDish: self.newDish) ? 0.4 : 1.0 )
-                                        .onTapGesture {
-                                            withAnimation(.default) {
-                                                if taglia.isSceltaBloccata(newDish: self.newDish) {
-                                                    
-                                                    self.newDish.alertItem = AlertModel (
-                                                        title: "Scelta Bloccata",
-                                                        message: "\(taglia.qualeComboIsAvaible())\n\n - Premi a lungo un'opzione qualsiasi per Resettare - "
-                                                                    )
-                                                            }
-                                                else {
-                                                    self.wannaInsertFormatValue = true
-                                                    self.formatoCorrente = taglia
-                                                }
-                                            }
-                                        }
-                                        .onLongPressGesture {
-                                            withAnimation(.default) {
-                                                self.newDish.formatiDelPiatto = []
-                                                        }
-                                                    }
-                                        }
-                                    }
-                                }
+            CSLabel_conVB(
+                placeHolder: "Prezzatura",
+                imageNameOrEmojy: "doc.text.magnifyingglass",
+                backgroundColor: Color.black) {
+                                 
+                    HStack {
                         
-                            } else {
-                        
-                        VStack(alignment: .leading) {
-                            
-                            HStack {
-                                
-                                CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark", keyboardType: .numberPad)
-                                CSTextField_4(textFieldItem: $grammi, placeHolder: "0 gr", image: "scalemass.fill",keyboardType: .decimalPad)
-                                CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle", keyboardType: .decimalPad)
-                                
-                            }
-                            
-                            HStack {
-                                
-                                CSText_tightRectangle(testo: self.formatoCorrente.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: Color.clear, fillColor: Color.mint)
-                                
-                                Spacer()
-                                
-                                Button("Close") { self.wannaInsertFormatValue = false}
-                                .padding(.trailing)
-                                
-                                Button {
-     
-                                    self.validateAndAddSpecificValue()
-                                    self.wannaInsertFormatValue = false
-                                    
-                                } label: {
-                                    
-                                    CSText_tightRectangle(testo: self.formatoCorrente.isTagliaAlreadyIn(newDish: self.newDish) ? "Modifica" : "Aggiungi", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
-      
+                        CSButton_image(
+                            frontImage: "plus.circle",
+                            imageScale: .large,
+                            frontColor:  Color("SeaTurtlePalette_3")) {
+                                withAnimation {
+                                    let newFormat = DishFormat(type: .opzionale)
+                                    self.allDishFormats.append(newFormat)
                                 }
                             }
-                        }
+                        
+                        Text("LabelCount:\(self.allDishFormats.count)") // Temporary
+                      
+                        CSButton_image(
+                            frontImage: "tray.and.arrow.down",
+                            imageScale: .large,
+                            frontColor:  Color("SeaTurtlePalette_3")) {
+                                withAnimation {
+                                    self.saveFormats()
+                                }
+                            }
+                        
                     }
+        
                 }
-                
-            } else {
-                
-                CSTextField_3(textFieldItem: $nuovoFormato, placeHolder: "Aggiungi un Nuovo Formato") {
-                    
-                    if DishFormato.isCustomCaseNameOriginal(customName: nuovoFormato) {
-                        
-                        DishFormato.allCases.insert(.custom(nuovoFormato, "n/d", "1", "n/d"), at: 0)
-                   
-                    } else { newDish.alertItem = AlertModel(
-                        title: "Controlla Scroll specifiche",
-                        message: "La specifica \"\(nuovoFormato)\" esiste già"
-                                            )
-                                    }
-                    
-                    print(DishFormato.allCases.description)
-                    self.nuovoFormato = ""
-                    self.creaNuovoFormato = false
-                    
-                }
-            }
+
+            createFormatRow()
             
         }
     }
     
     // Method Space
     
-    private func validateAndAddSpecificValue() {
-        
-        guard csValidateValue(value: self.grammi, convalidaAsDouble: true) else {
-        
-            self.newDish.alertItem = AlertModel(
-                title: "Errore Inserimento Peso",
-                message: "Valore inserito non valido. Ex: 150 o 150,5" )
-            
-            print("Valore inserito in grammi NON VALIDO")
-            self.grammi = ""
-            return }
-        
-        guard csValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
-    
-            self.newDish.alertItem = AlertModel(
-                title: "Errore Inserimento Prezzo",
-                message: "Valore inserito non valido. Ex: 180 o 180,5" )
-            
-            print("Valore inserito in prezzo NON VALIDO")
-            self.prezzo = ""
-            return}
-        
-        guard csValidateValue(value: self.pax, convalidaAsDouble: false) else {
-        
-            self.newDish.alertItem = AlertModel(
-                title: "Errore Inserimento Porzioni",
-                message: "Il valore si riferisce al numero di persono e deve essere un numero intero positivo. Ex: 2 - Errato 1/2" )
-            
-            print("Valore inserito in pax NON VALIDO")
-            self.pax = ""
-            return}
-        
-        switch self.formatoCorrente {
-            
-        case .unico:
-            self.formatoCorrente = .unico(self.grammi, self.pax, self.prezzo)
-        case .doppio:
-            self.formatoCorrente = .doppio(self.grammi, self.pax, self.prezzo)
-        case .piccolo:
-            self.formatoCorrente = .piccolo(self.grammi, self.pax, self.prezzo)
-        case .medio:
-            self.formatoCorrente = .medio(self.grammi, self.pax, self.prezzo)
-        case .grande:
-            self.formatoCorrente = .grande(self.grammi, self.pax, self.prezzo)
-            
-        case .custom(let name,_,_,_):
-            self.formatoCorrente = .custom(name,self.grammi,self.pax,self.prezzo)
-       
-        }
+    @ViewBuilder private func createFormatRow() -> some View {
 
-        print("pax: \(self.pax) - grammi: \(self.grammi) - price: \(self.prezzo)")
-        print("currentDish: \(formatoCorrente.simpleDescription())")
-        
-        self.grammi = ""
-        self.prezzo = ""
-        self.pax = ""
-        
-        if self.formatoCorrente.isTagliaAlreadyIn(newDish: self.newDish) {
+        VStack {
             
-            let index = self.newDish.formatiDelPiatto.firstIndex(where: {$0.id == self.formatoCorrente.id})
-            
-            self.newDish.formatiDelPiatto.remove(at: index!)
-        } // se già presente lo rimuoviamo
+            ForEach(self.$allDishFormats, id:\.self) { $formato in
+           
+                PriceRow(formatoPiatto: $formato,labelsCount: allDishFormats.count)  { formato in
+                    self.reduceRow(formato: formato)
+                }
+
                 
-        self.newDish.formatiDelPiatto.append(self.formatoCorrente)
-        print("taglieCount: \(self.newDish.formatiDelPiatto.count)")
-
+            }
+            
+        }
+      
     }
- 
+    
+    private func reduceRow(formato:DishFormat) {
+        
+       let index = self.allDishFormats.firstIndex(of: formato)
+       self.allDishFormats.remove(at: index!)
+        
+    }
+
+    private func saveFormats() {
+        
+       self.newDish.pricingPiatto = self.allDishFormats
+        
+        for format in self.newDish.pricingPiatto {
+            
+            print("formato label:\(format.label) price:\(format.price)")
+            
+        }
+        
+    }
+
 }
 
 /* struct DishSpecific_NewDishSubView_Previews: PreviewProvider {
@@ -206,3 +105,118 @@ struct DishSpecific_NewDishSubView: View {
     }
 }
  */
+
+struct PriceRow:View {
+    
+    @Binding var formatoPiatto: DishFormat
+    let labelsCount:Int
+    let delAction:(_ formato:DishFormat) -> Void
+  //  let submitAction:(_ formato:DishFormat) -> Void
+    @State private var label:String
+    @State private var price:String
+    
+    init(formatoPiatto: Binding<DishFormat>, labelsCount: Int, delAction: @escaping (_: DishFormat) -> Void ) {
+        
+        _formatoPiatto = formatoPiatto
+        _label = State(wrappedValue: formatoPiatto.wrappedValue.label)
+        _price = State(wrappedValue: formatoPiatto.wrappedValue.price)
+        self.labelsCount = labelsCount
+        self.delAction = delAction
+        
+    }
+        
+    var body: some View {
+     
+        HStack {
+            
+            
+            CSTextField_6(
+                textFieldItem: $label,
+                placeHolder: "labelNew",
+                image: "rectangle.dashed.and.paperclip",
+                keyboardType: .default,
+                conformeA: .stringa(minLenght: 3)) {
+                    self.formatoPiatto.label = self.label
+                }
+            
+            
+           /* CSTextField_4b(
+                textFieldItem: $label,
+                placeHolder: "label",
+                showDelete: false,
+                keyboardType: .default) {
+                    csVisualCheck(testo: self.label, imagePrincipal: "rectangle.dashed.and.paperclip", conformeA: .stringa(minLenght: 3))
+                } */
+                .overlay {
+                    if labelsCount == 1 && formatoPiatto.type == .mandatory {
+                        ZStack {
+                            Color("SeaTurtlePalette_1").cornerRadius(5.0)
+                            Text("Label Non Richiesta")
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color.white)
+                        }
+                  
+                    }
+                }
+            
+          /*  CSTextField_4b(
+                textFieldItem: $price,
+                placeHolder: "000.00",
+                showDelete: false,
+                keyboardType: .decimalPad) {
+                    csVisualCheck(testo: price, imagePrincipal: "eurosign.circle", conformeA: .decimale)
+                } */
+            
+            CSTextField_6(
+                textFieldItem: $price,
+                placeHolder: "000.00",
+                image: "eurosign.circle",
+                keyboardType: .decimalPad,
+                conformeA: .decimale) {
+                    self.formatoPiatto.price = self.price
+                }
+            
+                .fixedSize() // fixedSize significa che la view avrà una grandezza variabile che può eccedere quella in cui è contenuta. Viene impostato alla sua grandezza ideale. Per questo muterà se inseriamo, in questo caso, tante cifre. Dato che ipotizziamo che in un ristorante difficilmente supereremo le 5 cifre, lo impostiamo su questa linea. Dovesse comunque succedere non fa nulla :-)
+                        
+            if formatoPiatto.type == .opzionale {
+                
+                CSButton_image(frontImage: "trash", imageScale: .medium, frontColor: Color.white) {
+                    withAnimation {
+                        self.delAction(formatoPiatto)
+                        }
+                    }
+                    ._tightPadding()
+                    .background(
+                        Circle()
+                            .fill(Color.red.opacity(0.5))
+                            .shadow(radius: 5.0)
+                    )
+           
+            } else {
+                
+                CSButton_image(frontImage: "trash", imageScale: .medium, frontColor: Color.white) {
+                    self.delAction(formatoPiatto)
+                    }
+                    ._tightPadding()
+                    .background(
+                        Circle()
+                            .fill(Color.red.opacity(0.5))
+                            .shadow(radius: 5.0)
+                    )
+                    .hidden()
+                    .overlay {
+                        Image(systemName: "circle")
+                            .foregroundColor(Color.green)
+                      
+                    }
+                
+            }
+            
+        }
+     
+    }
+    
+    // Method
+    
+    
+}

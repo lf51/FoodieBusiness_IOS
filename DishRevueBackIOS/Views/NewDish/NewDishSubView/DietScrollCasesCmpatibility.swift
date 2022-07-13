@@ -8,21 +8,25 @@
 import SwiftUI
 
 /// Versione specifica della PropertyScrollCases per la DishTipologia.
-struct DietScrollCasesCmpatibility: View {
+struct DietScrollCasesCmpatibility<Content:View>: View {
 
     @EnvironmentObject var viewModel:AccounterVM
     
     let currentDish: DishModel
     let allCases: [DishTipologia]
     let instanceCases:[DishTipologia]
+   // let instanceCasesString:[String]
     let colorSelection: Color
+    @ViewBuilder var content: Content
   
-    init(currentDish: DishModel, allCases: [DishTipologia] = DishTipologia.allCases, colorSelection: Color = Color.clear) {
+    init(currentDish: DishModel, allCases: [DishTipologia] = DishTipologia.allCases,instanceCases:[DishTipologia], colorSelection: Color = Color.clear, dieteConfermate: () -> Content) {
         
         self.currentDish = currentDish
         self.allCases = allCases
         self.colorSelection = colorSelection
-        self.instanceCases = DishTipologia.checkDietAvaible(ingredients: currentDish.ingredientiPrincipali,currentDish.ingredientiSecondari)
+        self.instanceCases = instanceCases
+        self.content = dieteConfermate()
+      //  self.instanceCasesString = instanceCasesString
     }
     
     var body: some View {
@@ -49,7 +53,12 @@ struct DietScrollCasesCmpatibility: View {
                 }
             }
 
-            showDescription()
+            content
+         /*   Text("Diete compatibili: \(instanceCasesString, format: .list(type: .and)).")
+                .fontWeight(.light)
+                .font(.caption)
+                .foregroundColor(.black) */
+            
             
         }
     }
@@ -60,7 +69,7 @@ struct DietScrollCasesCmpatibility: View {
         
     }
      
-     private func showDescription() -> some View {
+    /* private func showDescription() -> some View {
         
         var dietName:[String] = []
         
@@ -76,7 +85,7 @@ struct DietScrollCasesCmpatibility: View {
              .foregroundColor(.black)
         
         
-    }
+    }*/
 
     
     
