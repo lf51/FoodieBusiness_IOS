@@ -2,21 +2,23 @@
 //  DishSpecific_NewDishSubView.swift
 //  DishRevueBackIOS
 //
-//  Created by Calogero Friscia on 14/02/22.
+//  Created by Calogero Friscia on 12/07/22.
 //
 
 import SwiftUI
-// Ultima pulizia codice 01.03.2022
 
 struct DishSpecific_NewDishSubView: View {
     
-    @Binding var newDish: DishModel
-    @State private var allDishFormats: [DishFormat]
+   // @Binding var newDish: DishModel
+    @Binding var allDishFormats: [DishFormat]
+    @Binding var generalErrorCheck: Bool
     
-    init(newDish: Binding<DishModel>) {
+    @State private var formatsIn:Int = 0
+    
+  /*  init(newDish: Binding<DishModel>) {
         _newDish = newDish
         _allDishFormats = State(wrappedValue: newDish.pricingPiatto.wrappedValue)
-    }
+    } */
     
     var body: some View {
         
@@ -39,8 +41,12 @@ struct DishSpecific_NewDishSubView: View {
                                 }
                             }
                         
-                        Text("LabelCount:\(self.allDishFormats.count)") // Temporary
-                      
+                      //  Spacer()
+                        
+                     /*   Text("\(self.formatsIn)/\(self.allDishFormats.count)")
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                    
                         CSButton_image(
                             frontImage: "tray.and.arrow.down",
                             imageScale: .large,
@@ -48,7 +54,7 @@ struct DishSpecific_NewDishSubView: View {
                                 withAnimation {
                                     self.saveFormats()
                                 }
-                            }
+                            } */
                         
                     }
         
@@ -67,7 +73,7 @@ struct DishSpecific_NewDishSubView: View {
             
             ForEach(self.$allDishFormats, id:\.self) { $formato in
            
-                PriceRow(formatoPiatto: $formato,labelsCount: allDishFormats.count)  { formato in
+                PriceRow(formatoPiatto: $formato, checkError: $generalErrorCheck,labelsCount: allDishFormats.count)  { formato in
                     self.reduceRow(formato: formato)
                 }
 
@@ -85,17 +91,39 @@ struct DishSpecific_NewDishSubView: View {
         
     }
 
-    private func saveFormats() {
+  /* private func saveFormats() { // deprecated 14.07
         
-       self.newDish.pricingPiatto = self.allDishFormats
-        
-        for format in self.newDish.pricingPiatto {
+        if self.allDishFormats.count == 1 {
             
-            print("formato label:\(format.label) price:\(format.price)")
+            let format = self.allDishFormats[0]
             
+            if csCheckDouble(testo: format.price) {
+                
+                self.newDish.pricingPiatto = self.allDishFormats
+                
+            } else { self.checkErrors = true }
+     
+        } else {
+            
+            var formatsOK:[DishFormat] = []
+            
+            for format in self.allDishFormats {
+                
+                if csCheckStringa(testo: format.label, minLenght: 3) && csCheckDouble(testo: format.price) {
+                    
+                    formatsOK.append(format)
+                    
+                } else {
+                    self.checkErrors = true
+                    return
+                    
+                }
+            }
+            
+            self.newDish.pricingPiatto = formatsOK
+            self.formatsIn = formatsOK.count
         }
-        
-    }
+    } */ // Deprecata 14.07
 
 }
 
@@ -109,15 +137,17 @@ struct DishSpecific_NewDishSubView: View {
 struct PriceRow:View {
     
     @Binding var formatoPiatto: DishFormat
+    @Binding var checkError: Bool
     let labelsCount:Int
     let delAction:(_ formato:DishFormat) -> Void
-  //  let submitAction:(_ formato:DishFormat) -> Void
+    
     @State private var label:String
     @State private var price:String
     
-    init(formatoPiatto: Binding<DishFormat>, labelsCount: Int, delAction: @escaping (_: DishFormat) -> Void ) {
+    init(formatoPiatto: Binding<DishFormat>, checkError:Binding<Bool>, labelsCount: Int, delAction: @escaping (_: DishFormat) -> Void ) {
         
         _formatoPiatto = formatoPiatto
+        _checkError = checkError
         _label = State(wrappedValue: formatoPiatto.wrappedValue.label)
         _price = State(wrappedValue: formatoPiatto.wrappedValue.price)
         self.labelsCount = labelsCount
@@ -129,7 +159,6 @@ struct PriceRow:View {
      
         HStack {
             
-            
             CSTextField_6(
                 textFieldItem: $label,
                 placeHolder: "labelNew",
@@ -138,34 +167,21 @@ struct PriceRow:View {
                 conformeA: .stringa(minLenght: 3)) {
                     self.formatoPiatto.label = self.label
                 }
-            
-            
-           /* CSTextField_4b(
-                textFieldItem: $label,
-                placeHolder: "label",
-                showDelete: false,
-                keyboardType: .default) {
-                    csVisualCheck(testo: self.label, imagePrincipal: "rectangle.dashed.and.paperclip", conformeA: .stringa(minLenght: 3))
-                } */
                 .overlay {
-                    if labelsCount == 1 && formatoPiatto.type == .mandatory {
+                    if labelsCount == 1 {
                         ZStack {
                             Color("SeaTurtlePalette_1").cornerRadius(5.0)
                             Text("Label Non Richiesta")
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color.white)
                         }
-                  
                     }
                 }
-            
-          /*  CSTextField_4b(
-                textFieldItem: $price,
-                placeHolder: "000.00",
-                showDelete: false,
-                keyboardType: .decimalPad) {
-                    csVisualCheck(testo: price, imagePrincipal: "eurosign.circle", conformeA: .decimale)
-                } */
+                .csWarningModifier(isPresented: checkError) {
+                    if labelsCount > 1 {
+                        return !csCheckStringa(testo: self.label, minLenght: 3) } else {
+                            return false}
+                }
             
             CSTextField_6(
                 textFieldItem: $price,
@@ -175,9 +191,21 @@ struct PriceRow:View {
                 conformeA: .decimale) {
                     self.formatoPiatto.price = self.price
                 }
-            
                 .fixedSize() // fixedSize significa che la view avrà una grandezza variabile che può eccedere quella in cui è contenuta. Viene impostato alla sua grandezza ideale. Per questo muterà se inseriamo, in questo caso, tante cifre. Dato che ipotizziamo che in un ristorante difficilmente supereremo le 5 cifre, lo impostiamo su questa linea. Dovesse comunque succedere non fa nulla :-)
+                .csWarningModifier(isPresented: checkError) {
+                    !csCheckDouble(testo: self.price)
+                }
+               /* .overlay(alignment:.topTrailing) {
+                    if checkError {
                         
+                        let error = !csCheckDouble(testo: self.price)
+                        CS_ErrorMarkView(checkError: error)
+                            .offset(x: 10, y: -10)
+                        
+                    }
+                } */
+            
+            
             if formatoPiatto.type == .opzionale {
                 
                 CSButton_image(frontImage: "trash", imageScale: .medium, frontColor: Color.white) {
@@ -195,7 +223,7 @@ struct PriceRow:View {
             } else {
                 
                 CSButton_image(frontImage: "trash", imageScale: .medium, frontColor: Color.white) {
-                    self.delAction(formatoPiatto)
+                 //   self.delAction(formatoPiatto)
                     }
                     ._tightPadding()
                     .background(
@@ -209,14 +237,7 @@ struct PriceRow:View {
                             .foregroundColor(Color.green)
                       
                     }
-                
             }
-            
         }
-     
     }
-    
-    // Method
-    
-    
 }

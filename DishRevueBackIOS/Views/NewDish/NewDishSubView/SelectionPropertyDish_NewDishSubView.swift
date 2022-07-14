@@ -12,6 +12,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     @Binding var newDish: DishModel
+    @Binding var generalErrorCheck: Bool 
     let dietAvaible:[DishTipologia]
     let dietAvaibleString:[String]
   // @State private var mostraDescrizioneDieta: Bool = false
@@ -24,10 +25,12 @@ struct SelectionPropertyDish_NewDishSubView: View {
   //  @State private var nuovaCottura: String = ""
     
     @State private var confermaDiete: Bool = false
+    @State private var areAllergeniOk: Bool = false
     
-    init(newDish:Binding<DishModel>) {
+    init(newDish:Binding<DishModel>, generalErrorCheck:Binding<Bool>) {
        
         _newDish = newDish
+        _generalErrorCheck = generalErrorCheck
         (self.dietAvaible,self.dietAvaibleString) = DishTipologia.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
     }
     
@@ -38,7 +41,31 @@ struct SelectionPropertyDish_NewDishSubView: View {
             
             VStack {
                 
-                CSLabel_1Button(placeHolder: "Allergeni Presenti", imageNameOrEmojy: "exclamationmark.triangle",imageColor: Color.yellow, backgroundColor: Color.black)
+                CSLabel_conVB(
+                    placeHolder: "Allergeni",
+                    imageNameOrEmojy: "allergens",
+                    backgroundColor: Color.black) {
+                        
+                        Toggle(isOn: $areAllergeniOk) {
+                            
+                            HStack {
+                                Spacer()
+                                Text("Dare Conferma")
+                                    .font(.system(.callout, design: .monospaced))
+                                
+                                if generalErrorCheck && !areAllergeniOk {
+                                    
+                                    CS_ErrorMarkViewDEPRECATO(checkError: !areAllergeniOk)
+                                    
+                                } else {
+                                    
+                                    Image(systemName: "allergens")
+                                        .imageScale(.medium)
+                                    
+                                }
+                            }
+                        }
+                    }
                 
                 ScrollView(.horizontal, showsIndicators: false) {
                     
@@ -91,10 +118,12 @@ struct SelectionPropertyDish_NewDishSubView: View {
                         
                         HStack {
                             Spacer()
+                            
+                            Text(confermaDiete ? "Confermato" : "Non Confermato")
+                                .font(.system(.callout, design: .monospaced))
                             Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
                                 .foregroundColor(confermaDiete ? Color.green : Color.gray)
-                            // .imageScale(.small)
-                            Text(confermaDiete ? "Confermato" : "Non Confermato")
+                                .imageScale(.medium)
                         }
                         
                     }

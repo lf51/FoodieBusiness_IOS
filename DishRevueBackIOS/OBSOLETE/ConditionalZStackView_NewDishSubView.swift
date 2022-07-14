@@ -9,14 +9,14 @@ import SwiftUI
 
 struct ConditionalZStackView_NewDishSubView: View {
 
-    @EnvironmentObject var viewModel: AccounterVM
+  //  @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var newDish: DishModel
-    var backgroundColorView: Color
+  //  var backgroundColorView: Color
     
-    @Binding var conditionOne: Bool?
+    @Binding var conditionOne: Bool? 
     @Binding var conditionTwo: Bool?
-    @Binding var conditionThree: Bool
+    @Binding var conditionThree: Bool?
     
     var body: some View {
         
@@ -35,7 +35,7 @@ struct ConditionalZStackView_NewDishSubView: View {
 
                 }
         
-       else if conditionThree {
+       else if conditionThree ?? false {
                     
            Text("Condizione TRE")
 
@@ -45,7 +45,7 @@ struct ConditionalZStackView_NewDishSubView: View {
     // Method
 
     
-}
+} // Deprecated
 
 /*struct ConditionalZStackView_NewDishSubView_Previews: PreviewProvider {
     static var previews: some View {

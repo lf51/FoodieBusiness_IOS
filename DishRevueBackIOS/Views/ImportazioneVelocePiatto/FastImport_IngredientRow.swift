@@ -54,13 +54,13 @@ struct FastImport_IngredientRow: View {
                         
                         CS_Picker(selection: $ingredient.origine, customLabel: "Origine..", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                             .overlay(alignment:.topTrailing) {
-                                CS_ErrorMark(checkError: isOrgineDefault)
+                                CS_ErrorMarkViewDEPRECATO(checkError: isOrgineDefault)
                                     .offset(x: 10, y: -10)
                             }
 
                         CS_Picker(selection: $ingredient.conservazione, customLabel: "Conservazione..", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                             .overlay(alignment:.topTrailing) {
-                                CS_ErrorMark(checkError: isConservazioneDefault)
+                                CS_ErrorMarkViewDEPRECATO(checkError: isConservazioneDefault)
                                     .offset(x: 10, y: -10)
                             }
  

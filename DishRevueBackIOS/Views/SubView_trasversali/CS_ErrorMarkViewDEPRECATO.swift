@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-/// Mostra un exclamationMark nel caso in cui il Bool di controllo (checkError:Bool) è true
-struct CS_ErrorMark:View {
+/// DEPRECATO in Futuro -> Sostituire con il ViewModifier .csErrorMark
+struct CS_ErrorMarkViewDEPRECATO:View {
     
     let checkError:Bool
     

@@ -18,6 +18,7 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
     @State private var editNuovaStringa: Bool = false
     
     @Binding var itemModel: T
+    @Binding var generalErrorCheck: Bool
     
     var body: some View {
         
@@ -41,6 +42,10 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
                     self.nuovaStringa = ""
                     self.editNuovaStringa = false
                    
+                }
+                .csWarningModifier(isPresented: generalErrorCheck) {
+                    let newText = csStringCleaner(string: self.nuovaStringa)
+                    return !csCheckStringa(testo: newText,minLenght: 5)
                 }
         
             }

@@ -8,6 +8,33 @@
 import Foundation
 import SwiftUI
 
+/// Se il generalErrorCheck è true esegue un controllo sulla localErrorCondition, e se ques'ultima è true mostra un exclamationMark in overlay
+struct CS_ErrorMarkModifier:ViewModifier {
+    
+    let generalErrorCheck:Bool
+    let localErrorCondition:Bool
+    
+    func body(content: Content) -> some View {
+        content
+            .overlay(alignment: .topTrailing) {
+                if generalErrorCheck {
+                    
+                    if localErrorCondition {
+                        
+                        Image(systemName: "exclamationmark.triangle.fill")
+                            .imageScale(.medium)
+                            .foregroundColor(Color.red)
+                            .offset(x: 10, y: -10)
+                        
+                    }
+                }
+            }
+    }
+    
+    
+}
+
+
 struct CS_AlertModifier: ViewModifier {
     
     @Binding var isPresented: Bool

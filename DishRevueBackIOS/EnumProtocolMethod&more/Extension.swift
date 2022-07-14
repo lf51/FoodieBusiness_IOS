@@ -11,6 +11,14 @@ import SwiftUI
 
 extension View {
     
+    /// lf51 -> Se isPresented e localErrorCondition are true, mostra un warning in overlay TopTrailing
+    func csWarningModifier(isPresented:Bool, localErrorCondition:() -> Bool) -> some View {
+        
+        self.modifier(CS_ErrorMarkModifier(generalErrorCheck: isPresented, localErrorCondition: localErrorCondition()))
+    }
+    
+    
+    /// lf51 - Send an Alert
     func csAlertModifier(isPresented: Binding<Bool>, item: AlertModel?) -> some View {
         
         self.modifier(CS_AlertModifier(isPresented: isPresented, item: item))

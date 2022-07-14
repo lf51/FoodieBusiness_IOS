@@ -7,12 +7,14 @@
 
 import SwiftUI
 
-/// Questa View è la bottom Standard - Reset Salva - per i Nuovi Modelli. E' una generic non in senso stretto
+/// Questa View è la bottom Standard - Reset Salva - per i Nuovi Modelli. E' una generic non in senso stretto. Esegue un check Preliminare prima di aprire la confirmationDialog. Rende obsoleto i disabled dei singoli oggetti. Permette di mandare tramite il checkPrelimare il segnale per un warning.
 struct BottomViewGeneric_NewModelSubView<Content: View>: View {
     
-    let wannaDisableSaveButton: Bool
-    let menuDescription: () -> Text
+    @Binding var generalErrorCheck:Bool
+    let wannaDisableButtonBar: Bool
+    let description: () -> Text
     let resetAction: () -> Void
+    let checkPreliminare: () -> Bool
     @ViewBuilder var saveButtonDialogView: Content
     
     @State private var showDialog: Bool = false
@@ -21,7 +23,7 @@ struct BottomViewGeneric_NewModelSubView<Content: View>: View {
        
         HStack {
                 
-            menuDescription()
+            description()
                 .italic()
                 .fontWeight(.light)
                 .font(.caption)
@@ -30,14 +32,17 @@ struct BottomViewGeneric_NewModelSubView<Content: View>: View {
             
             CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) { self.resetAction() }
 
-            CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) { self.showDialog = true }
-           .opacity(self.wannaDisableSaveButton ? 0.6 : 1.0)
-           .disabled(self.wannaDisableSaveButton)
-            
+            CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
+                let check = checkPreliminare()
+                if check { self.showDialog = true}
+                else { self.generalErrorCheck = true }
+            }
         }
+        .opacity(wannaDisableButtonBar ? 0.6 : 1.0)
+        .disabled(wannaDisableButtonBar)
         .padding(.vertical)
         .confirmationDialog(
-                menuDescription(),
+                description(),
                 isPresented: $showDialog,
                 titleVisibility: .visible) { saveButtonDialogView }
         

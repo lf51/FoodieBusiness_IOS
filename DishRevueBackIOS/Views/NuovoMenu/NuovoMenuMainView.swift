@@ -49,7 +49,7 @@ struct NuovoMenuMainView: View {
                         
                         VStack(alignment: .leading) {
                             
-                            IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (\(self.nuovoMenu.status.simpleDescription().capitalized))", imageLabel: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $nuovoMenu)
+                            IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (\(self.nuovoMenu.status.simpleDescription().capitalized))", imageLabel: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $nuovoMenu, generalErrorCheck: .constant(false))
                                             
                           
                             BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: isThereAReasonToDisable.tipologia)
@@ -90,7 +90,7 @@ struct NuovoMenuMainView: View {
                                     }
                                 }
              
-                            BottomViewGeneric_NewModelSubView(
+                          /*  BottomViewGeneric_NewModelSubView(
                                 wannaDisableSaveButton: self.nuovoMenu.isAvaibleWhen == nil) {
                                     self.menuDescription()
                                 } resetAction: {
@@ -100,7 +100,7 @@ struct NuovoMenuMainView: View {
                                     self.scheduleANewMenu()
                                 }
                                 .opacity(isThereAReasonToDisable.bottom ? 0.6 : 1.0)
-                                .disabled(isThereAReasonToDisable.bottom)
+                                .disabled(isThereAReasonToDisable.bottom) */
 
                             
                          /*   BottomNuovoMenu_SubView(

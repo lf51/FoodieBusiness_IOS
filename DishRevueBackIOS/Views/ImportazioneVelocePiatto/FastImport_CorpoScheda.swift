@@ -57,7 +57,7 @@ struct FastImport_CorpoScheda:View {
                         .overlay(alignment:.topTrailing) {
                             if checkError {
                                 let isCategoriaDefault = self.fastDish.categoria == .defaultValue
-                                CS_ErrorMark(checkError: isCategoriaDefault )
+                                CS_ErrorMarkViewDEPRECATO(checkError: isCategoriaDefault )
                                         .offset(x: 10, y: -10)
                             }
 
@@ -78,7 +78,7 @@ struct FastImport_CorpoScheda:View {
                             .overlay(alignment:.topTrailing) {
                                 if checkError {
                                     let isPriceEmpty = self.fastDish.formatiDelPiatto.isEmpty
-                                    CS_ErrorMark(checkError: isPriceEmpty)
+                                    CS_ErrorMarkViewDEPRECATO(checkError: isPriceEmpty)
                                         .offset(x: 10, y: -10)
                                     }
                                 
@@ -99,7 +99,7 @@ struct FastImport_CorpoScheda:View {
    
                             if checkError && !areAllergeniOk {
                                 
-                                CS_ErrorMark(checkError: !areAllergeniOk)
+                                CS_ErrorMarkViewDEPRECATO(checkError: !areAllergeniOk)
                                 
                             } else {
                                 
