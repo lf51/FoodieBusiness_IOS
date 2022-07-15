@@ -11,6 +11,7 @@ import SwiftUI
 struct PannelloIngredienti_NewDishSubView: View {
     
     let newDish: DishModel
+    let generalErrorCheck: Bool
     @Binding var wannaAddIngredient: Bool?
 
     var body: some View {
@@ -20,8 +21,10 @@ struct PannelloIngredienti_NewDishSubView: View {
             VStack {
 
                 CSLabel_conVB(placeHolder: "Ingredienti Principali", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) {
- 
-                    Group {
+              
+                    HStack {
+                        
+                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty)
                         
                         Spacer()
                         
@@ -31,7 +34,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                                 .foregroundColor(Color("SeaTurtlePalette_3"))
                         }
   
-                       Spacer()
+                    //   Spacer()
                         
                         Button {
                             withAnimation(.default) {

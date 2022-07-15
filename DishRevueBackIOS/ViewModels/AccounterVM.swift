@@ -440,7 +440,7 @@ class AccounterVM: ObservableObject {
     /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
    private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
 
-       let (pathContainer,nomeContainer) = modelT.viewModelContainer()
+       let (pathContainer,nomeContainer,_) = modelT.viewModelContainer()
        self[keyPath: pathContainer] = containerT
        
        self.alertItem = AlertModel(

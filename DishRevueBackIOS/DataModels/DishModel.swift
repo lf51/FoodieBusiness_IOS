@@ -12,9 +12,17 @@ import Foundation
 
 struct DishModel:MyModelStatusConformity {
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String) {
+    func creaID(fromValue: String) -> String {
+        fromValue.replacingOccurrences(of: " ", with: "").lowercased()
+    }
+    
+    func modelStatusDescription() -> String {
+        "Piatto (\(self.status.simpleDescription().capitalized))"
+    }
+    
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String) {
         
-        return (\.allMyDish, "Lista Piatti")
+        return (\.allMyDish, "Lista Piatti", "Piatto")
     }
        
     func pathDestination() -> DestinationPathView {
@@ -40,6 +48,7 @@ struct DishModel:MyModelStatusConformity {
         lhs.tipologia == rhs.tipologia &&
         lhs.avaibleFor == rhs.avaibleFor &&
         lhs.allergeni == rhs.allergeni &&
+        lhs.areAllergeniOk == rhs.areAllergeniOk &&
         lhs.formatiDelPiatto == rhs.formatiDelPiatto &&
         lhs.status == rhs.status &&
         lhs.rating == rhs.rating
@@ -47,9 +56,11 @@ struct DishModel:MyModelStatusConformity {
        // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
     }
     
-    var id:String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() }
+  //  var id:String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() } // Deprecated 15.07
   //  var id:String = UUID().uuidString // deprecated il 16.03.2022 --> Formarlo in altro Modo
    // var status: DishStatus // in beta
+    
+    var id: String { creaID(fromValue: self.intestazione) }
     
     var intestazione: String
     var descrizione: String = ""
@@ -72,6 +83,7 @@ struct DishModel:MyModelStatusConformity {
     var tipologia: DishTipologia // Deprecato in futuro --> Deriveremo il tipo di piatto dall'origine degli ingredienti
     var avaibleFor: [DishAvaibleFor]
   //  var allergeni: [Allergeni] // DEPRECATED 19.05.2022 Li deriviamo dagli Ingredienti
+    var areAllergeniOk: Bool = false 
     var allergeni: [AllergeniIngrediente] { // la forma = {}() per funzionare necessita il lazy, ma al momento non funziona perchè le rowModel passano delle Var/let, quando passeranno delle State magari funzionerà
         
         var allergeniPiatto:[AllergeniIngrediente] = []

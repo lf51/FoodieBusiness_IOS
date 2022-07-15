@@ -12,28 +12,19 @@ struct SelectionPropertyDish_NewDishSubView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     @Binding var newDish: DishModel
-    @Binding var generalErrorCheck: Bool 
+    let generalErrorCheck: Bool 
     let dietAvaible:[DishTipologia]
     let dietAvaibleString:[String]
-  // @State private var mostraDescrizioneDieta: Bool = false
-  //  @State private var descrizioneDieta: String = ""
-    
-  //  @State private var creaNuovaTipologia:Bool = false
-  //  @State private var nuovaTipologia: String = ""
-    
-   // @State private var creaNuovaCottura: Bool? = false
-  //  @State private var nuovaCottura: String = ""
     
     @State private var confermaDiete: Bool = false
-    @State private var areAllergeniOk: Bool = false
+   // @State private var areAllergeniOk: Bool = false
     
-    init(newDish:Binding<DishModel>, generalErrorCheck:Binding<Bool>) {
+    init(newDish:Binding<DishModel>, generalErrorCheck:Bool) {
        
         _newDish = newDish
-        _generalErrorCheck = generalErrorCheck
+        self.generalErrorCheck = generalErrorCheck
         (self.dietAvaible,self.dietAvaibleString) = DishTipologia.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
     }
-    
     
     var body: some View {
         
@@ -46,14 +37,15 @@ struct SelectionPropertyDish_NewDishSubView: View {
                     imageNameOrEmojy: "allergens",
                     backgroundColor: Color.black) {
                         
-                        Toggle(isOn: $areAllergeniOk) {
+                        Toggle(isOn: self.$newDish.areAllergeniOk) {
                             
                             HStack {
                                 Spacer()
                                 Text("Dare Conferma")
                                     .font(.system(.callout, design: .monospaced))
                                 
-                                if generalErrorCheck && !areAllergeniOk {
+                                CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.newDish.areAllergeniOk)
+                              /*  if generalErrorCheck && !areAllergeniOk {
                                     
                                     CS_ErrorMarkViewDEPRECATO(checkError: !areAllergeniOk)
                                     
@@ -62,7 +54,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
                                     Image(systemName: "allergens")
                                         .imageScale(.medium)
                                     
-                                }
+                                } */
                             }
                         }
                     }
@@ -97,10 +89,15 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 
                 CSLabel_conVB(placeHolder: "Categoria Menu", imageNameOrEmojy: "list.bullet.below.rectangle", backgroundColor: Color.black) {
                     
-                    NavigationLink(value: DestinationPathView.categoriaMenu) {
-                        Image(systemName: "arrow.up.forward.app")
-                            .imageScale(.medium)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                    HStack {
+                        
+                        NavigationLink(value: DestinationPathView.categoriaMenu) {
+                            Image(systemName: "arrow.up.forward.app")
+                                .imageScale(.medium)
+                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                        }
+                        
+                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.categoriaMenu == .defaultValue)
                     }
                     
                 }

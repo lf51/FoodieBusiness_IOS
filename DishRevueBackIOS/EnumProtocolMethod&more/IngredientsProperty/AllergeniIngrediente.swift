@@ -9,9 +9,9 @@ import Foundation
 
 enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String) {
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String, nomeOggetto:String) {
         
-        return (\.allergeni, "Elenco Allergeni")
+        return (\.allergeni, "Elenco Allergeni", "Allergene")
     }
 
     var intestazione: String {get{ self.simpleDescription() } set{ }}

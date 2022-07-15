@@ -12,21 +12,26 @@ struct FastImport_IngredientRow: View {
     @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var ingredient: IngredientModel
+    let checkError: Bool
     let isIngredientOld: Bool
     
-    private var isOrgineDefault: Bool = false
-    private var isConservazioneDefault: Bool = false
+  //  private var isOrgineDefault: Bool = false
+  //  private var isConservazioneDefault: Bool = false
 
     init(ingredient:Binding<IngredientModel>,checkError:Bool,isIngredientOld:Bool) {
         
         _ingredient = ingredient
+        
+        self.checkError = isIngredientOld ? false : checkError
         self.isIngredientOld = isIngredientOld
         
-        if checkError && !isIngredientOld {
+       // self.isIngredientOld = isIngredientOld
+        
+      /*  if checkError && !isIngredientOld {
             
             self.isOrgineDefault = ingredient.origine.id == OrigineIngrediente.defaultValue.id
             self.isConservazioneDefault = ingredient.conservazione.id == ConservazioneIngrediente.defaultValue.id
-        }
+        } */
         
         print("Init -> FastImport_IngredientRow")
     }
@@ -37,7 +42,7 @@ struct FastImport_IngredientRow: View {
                 
                 VStack(alignment:.leading) {
                     
-                    HStack(alignment:.lastTextBaseline) {
+                    HStack(alignment:.bottom) {
                         
                        vbMainRow()
              
@@ -53,16 +58,25 @@ struct FastImport_IngredientRow: View {
                     HStack {
                         
                         CS_Picker(selection: $ingredient.origine, customLabel: "Origine..", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                            .overlay(alignment:.topTrailing) {
+                            .csWarningModifier(isPresented: checkError) {
+                                self.ingredient.origine == .defaultValue
+                            }
+                          /*  .overlay(alignment:.topTrailing) {
                                 CS_ErrorMarkViewDEPRECATO(checkError: isOrgineDefault)
                                     .offset(x: 10, y: -10)
-                            }
+                            } */
 
                         CS_Picker(selection: $ingredient.conservazione, customLabel: "Conservazione..", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                            .overlay(alignment:.topTrailing) {
+                            .csWarningModifier(isPresented: checkError) {
+                                self.ingredient.conservazione == .defaultValue
+                            }
+                           /* .csWarningModifier(isPresented: <#T##Bool#>) {
+                                isConservazioneDefault
+                            } */
+                           /* .overlay(alignment:.topTrailing) {
                                 CS_ErrorMarkViewDEPRECATO(checkError: isConservazioneDefault)
                                     .offset(x: 10, y: -10)
-                            }
+                            } */
  
                         Spacer()
                         

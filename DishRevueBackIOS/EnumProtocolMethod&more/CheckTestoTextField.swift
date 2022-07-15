@@ -9,11 +9,11 @@ import Foundation
 import SwiftUI
 
 /// Esegue un check di convalida sulla stringa di un TextField e ritorna una Image. Non esegue alcuna azione.
-func csVisualCheck(testo:String, imagePrincipal:String, conformeA:ConformitàTextField) -> some View {
+func csVisualCheck(testo:String, staticImage:String, editingImage:String? = nil, imageScale:Image.Scale = .medium, conformeA:ConformitàTextField) -> some View {
     
     guard testo != "" else {
         
-        return Image(systemName: imagePrincipal).imageScale(.medium).foregroundColor(Color.gray)
+        return Image(systemName: staticImage).imageScale(imageScale).foregroundColor(Color.gray)
                    
     }
     
@@ -21,15 +21,14 @@ func csVisualCheck(testo:String, imagePrincipal:String, conformeA:ConformitàTex
     
     if isConforme {
         
-        return Image(systemName: imagePrincipal)
-            .imageScale(.medium)
+        return Image(systemName: editingImage ?? "circle")
+            .imageScale(imageScale)
             .foregroundColor(Color.green)
-        
         
     } else {
         
         return Image(systemName: "exclamationmark.circle")
-            .imageScale(.medium)
+            .imageScale(imageScale)
             .foregroundColor(Color.red)
     }
 }
@@ -58,10 +57,10 @@ func csCheckDouble(testo:String) -> Bool  {
     
 }
 
+/// Esegue un check sulla lunghezza della string. Teniamo lo stringCleaner fuori, perchè modifica la stringa di partenza
 func csCheckStringa(testo:String, minLenght: Int) -> Bool {
-    
     print("inside csCheckStringa")
-    if testo.count >= minLenght {return true} else { return false}
+    return testo.count >= minLenght
 }
 
 enum ConformitàTextField {

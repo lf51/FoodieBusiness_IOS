@@ -8,9 +8,18 @@
 import Foundation
 
 struct MenuModel:MyModelStatusConformity {
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String) {
+    
+    func creaID(fromValue: String) -> String {
+        fromValue.replacingOccurrences(of: " ", with: "").lowercased() 
+    }
+    
+    func modelStatusDescription() -> String {
+        "Menu (\(self.status.simpleDescription().capitalized))"
+    }
+    
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String, nomeOggetto:String) {
         
-        return (\.allMyMenu, "Lista Menu")
+        return (\.allMyMenu, "Lista Menu", "Menu")
     }
 
     func pathDestination() -> DestinationPathView {
@@ -39,7 +48,9 @@ struct MenuModel:MyModelStatusConformity {
       
     }
     
-    var id: String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() }
+ //   var id: String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() } // deprecated 15.07
+    
+    var id: String { creaID(fromValue: self.intestazione) }
 
     var intestazione: String = "" // Categoria Filtraggio
     var descrizione: String = ""

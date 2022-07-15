@@ -66,6 +66,5 @@ enum StatusModel:Equatable {
             return statusTransition.rawValue
         }
     }
-    
-    
+
 }

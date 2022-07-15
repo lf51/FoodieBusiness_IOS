@@ -11,7 +11,7 @@ struct DishSpecific_NewDishSubView: View {
     
    // @Binding var newDish: DishModel
     @Binding var allDishFormats: [DishFormat]
-    @Binding var generalErrorCheck: Bool
+    let generalErrorCheck: Bool
     
     @State private var formatsIn:Int = 0
     
@@ -73,7 +73,7 @@ struct DishSpecific_NewDishSubView: View {
             
             ForEach(self.$allDishFormats, id:\.self) { $formato in
            
-                PriceRow(formatoPiatto: $formato, checkError: $generalErrorCheck,labelsCount: allDishFormats.count)  { formato in
+                PriceRow(formatoPiatto: $formato, checkError: generalErrorCheck,labelsCount: allDishFormats.count)  { formato in
                     self.reduceRow(formato: formato)
                 }
 
@@ -137,17 +137,17 @@ struct DishSpecific_NewDishSubView: View {
 struct PriceRow:View {
     
     @Binding var formatoPiatto: DishFormat
-    @Binding var checkError: Bool
+    let checkError: Bool
     let labelsCount:Int
     let delAction:(_ formato:DishFormat) -> Void
     
     @State private var label:String
     @State private var price:String
     
-    init(formatoPiatto: Binding<DishFormat>, checkError:Binding<Bool>, labelsCount: Int, delAction: @escaping (_: DishFormat) -> Void ) {
+    init(formatoPiatto: Binding<DishFormat>, checkError:Bool, labelsCount: Int, delAction: @escaping (_: DishFormat) -> Void ) {
         
         _formatoPiatto = formatoPiatto
-        _checkError = checkError
+        self.checkError = checkError
         _label = State(wrappedValue: formatoPiatto.wrappedValue.label)
         _price = State(wrappedValue: formatoPiatto.wrappedValue.price)
         self.labelsCount = labelsCount

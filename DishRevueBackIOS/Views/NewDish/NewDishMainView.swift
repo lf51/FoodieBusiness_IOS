@@ -41,17 +41,21 @@ struct NewDishMainView: View {
 
                         VStack(alignment:.leading) {
                             
-                            Group {
+                        //    Group {
                                 
-                                IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Piatto (\(self.newDish.status.simpleDescription().capitalized))", imageLabel: self.newDish.status.imageAssociated(),imageColor: self.newDish.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $newDish, generalErrorCheck: $generalErrorCheck)
-                                
-                                PannelloIngredienti_NewDishSubView(newDish: newDish, wannaAddIngredient: $wannaAddIngredient)
-                                
-                                SelectionPropertyDish_NewDishSubView(newDish: $newDish, generalErrorCheck:$generalErrorCheck)
+                                IntestazioneNuovoOggetto_Generic(
+                                    itemModel: $newDish,
+                                    generalErrorCheck: generalErrorCheck,
+                                    minLenght: 3,
+                                    coloreContainer: Color("SeaTurtlePalette_2"))
  
-                                DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: $generalErrorCheck)
+                                PannelloIngredienti_NewDishSubView(newDish: newDish, generalErrorCheck: generalErrorCheck, wannaAddIngredient: $wannaAddIngredient)
                                 
-                            }
+                                SelectionPropertyDish_NewDishSubView(newDish: $newDish, generalErrorCheck:generalErrorCheck)
+ 
+                                DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
+                                
+                          //  }
                             
                             Spacer()
                                     
@@ -60,7 +64,7 @@ struct NewDishMainView: View {
                             } resetAction: {
                                 resetModel(modelAttivo: &self.newDish, modelArchiviato: self.piattoArchiviato)
                             } checkPreliminare: {
-                                checkFormats()
+                                checkPreliminare()
                             } saveButtonDialogView: {
                                 scheduleANewDish()
                             }
@@ -96,7 +100,7 @@ struct NewDishMainView: View {
     
     private func infoPiatto() -> Text {
         
-        Text("No Description Yet")
+        Text("Da Implementare")
     }
     
     @ViewBuilder private func scheduleANewDish() -> some View {
@@ -154,6 +158,45 @@ struct NewDishMainView: View {
         }
         
         
+    }
+    
+    private func checkPreliminare() -> Bool {
+        
+        guard checkIntestazione() else { return false }
+      
+        guard checkIngredienti() else { return false }
+       
+        guard checkAllergeni() else { return false }
+        
+        guard checkCategoria() else { return false }
+       
+        guard checkFormats() else { return false }
+       
+        return true
+        
+    }
+    
+    private func checkAllergeni() -> Bool {
+
+        return self.newDish.areAllergeniOk
+    }
+    
+    private func checkCategoria() -> Bool {
+        
+       return self.newDish.categoriaMenu != .defaultValue
+    }
+    
+    private func checkIngredienti() -> Bool {
+        
+        return !self.newDish.ingredientiPrincipali.isEmpty
+    }
+    
+    private func checkIntestazione() -> Bool {
+        
+        // controllare unicità del piatto
+        return self.newDish.intestazione != ""
+        // i controlli sono già eseguiti all'interno sulla proprietà temporanea, se il valore è stato passato al newDish vuol dire che è buono. Per cui basta controllare se l'intestazione è diversa dal valore vuoto
+
     }
     
     private func checkFormats() -> Bool {

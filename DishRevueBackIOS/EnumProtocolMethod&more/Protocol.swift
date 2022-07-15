@@ -29,15 +29,19 @@ protocol MyModelProtocol: Identifiable, Equatable {
     var intestazione: String {get set}
     var descrizione: String {get set}
 
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String)
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
 }
 
 protocol MyModelStatusConformity: MyModelProtocol, Hashable {
     
+    var id: String { get }
     var status: StatusModel {get set}
     
     func pathDestination() -> DestinationPathView
+    func modelStatusDescription() -> String
     
+    /// Ideata per avere un accesso dall'esterno su un un possibile ID da verificare ancora prima di creare un Modello
+    func creaID(fromValue:String) -> String
 }
 
 /*protocol MyModelConformity {

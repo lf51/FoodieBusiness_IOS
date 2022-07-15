@@ -17,20 +17,12 @@ struct CS_ErrorMarkModifier:ViewModifier {
     func body(content: Content) -> some View {
         content
             .overlay(alignment: .topTrailing) {
-                if generalErrorCheck {
-                    
-                    if localErrorCondition {
-                        
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .imageScale(.medium)
-                            .foregroundColor(Color.red)
-                            .offset(x: 10, y: -10)
-                        
-                    }
-                }
+           CS_ErrorMarkView(
+            generalErrorCheck: generalErrorCheck,
+            localErrorCondition: localErrorCondition)
+           .offset(x: 10, y: -10)
             }
     }
-    
     
 }
 

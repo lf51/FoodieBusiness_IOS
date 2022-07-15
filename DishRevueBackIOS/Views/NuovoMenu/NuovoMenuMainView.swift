@@ -49,8 +49,12 @@ struct NuovoMenuMainView: View {
                         
                         VStack(alignment: .leading) {
                             
-                            IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (\(self.nuovoMenu.status.simpleDescription().capitalized))", imageLabel: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $nuovoMenu, generalErrorCheck: .constant(false))
-                                            
+                          /*  IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (\(self.nuovoMenu.status.simpleDescription().capitalized))", imageLabel: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $nuovoMenu, generalErrorCheck: false) */
+                                   
+                            IntestazioneNuovoOggetto_Generic(
+                                itemModel: $nuovoMenu,
+                                generalErrorCheck: false, minLenght: 3,
+                                coloreContainer: Color("SeaTurtlePalette_2"))
                           
                             BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: isThereAReasonToDisable.tipologia)
                                 

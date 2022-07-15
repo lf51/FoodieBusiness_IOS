@@ -13,7 +13,7 @@ struct FastImport_CorpoScheda:View {
     @Binding var fastDish: DishModel
     let saveAction: (_ :DishModel) -> Void
 
-    @State private var areAllergeniOk: Bool = false
+   // @State private var areAllergeniOk: Bool = false
     @State private var dishPrice: String = ""
 
     @State private var checkError: Bool = false // una sorta di interruttore generale. Quando è su true, viene verificato se il form è incompleto
@@ -54,14 +54,18 @@ struct FastImport_CorpoScheda:View {
                             customLabel: "Categoria..",
                             dataContainer: DishCategoria.allCases,
                             backgroundColor: Color.white.opacity(0.5))
-                        .overlay(alignment:.topTrailing) {
+                        .csWarningModifier(
+                            isPresented: checkError) {
+                                self.fastDish.categoria == .defaultValue
+                            }
+                      /*  .overlay(alignment:.topTrailing) {
                             if checkError {
                                 let isCategoriaDefault = self.fastDish.categoria == .defaultValue
                                 CS_ErrorMarkViewDEPRECATO(checkError: isCategoriaDefault )
                                         .offset(x: 10, y: -10)
                             }
 
-                        }
+                        } */
                         
                         Spacer()
   
@@ -75,14 +79,18 @@ struct FastImport_CorpoScheda:View {
                                 self.updateDishPrice()
                             }
                             .fixedSize()
-                            .overlay(alignment:.topTrailing) {
+                            .csWarningModifier(
+                                isPresented: checkError) {
+                                    self.fastDish.formatiDelPiatto.isEmpty
+                                }
+                          /*  .overlay(alignment:.topTrailing) {
                                 if checkError {
                                     let isPriceEmpty = self.fastDish.formatiDelPiatto.isEmpty
                                     CS_ErrorMarkViewDEPRECATO(checkError: isPriceEmpty)
                                         .offset(x: 10, y: -10)
                                     }
                                 
-                                }
+                                } */
              
                             }
                            
@@ -90,14 +98,16 @@ struct FastImport_CorpoScheda:View {
 
             CSLabel_conVB(placeHolder: "Ingredienti:",imageNameOrEmojy: "leaf", backgroundColor: Color.black) {
                
-                    Toggle(isOn: $areAllergeniOk) {
+                Toggle(isOn: self.$fastDish.areAllergeniOk) {
                         
                         HStack {
                             Spacer()
                             Text("Conferma")
                                 .font(.system(.callout, design: .monospaced))
    
-                            if checkError && !areAllergeniOk {
+                            CS_ErrorMarkView(generalErrorCheck: checkError, localErrorCondition: !self.fastDish.areAllergeniOk)
+                            
+                           /* if checkError && !areAllergeniOk {
                                 
                                 CS_ErrorMarkViewDEPRECATO(checkError: !areAllergeniOk)
                                 
@@ -106,7 +116,7 @@ struct FastImport_CorpoScheda:View {
                                 Image(systemName: "allergens")
                                     .imageScale(.medium)
                                 
-                            }
+                            } */
                             
                             
                           /*  if !checkError {
@@ -169,7 +179,7 @@ struct FastImport_CorpoScheda:View {
             self.checkError = true
             return }
         
-        guard self.areAllergeniOk else {
+        guard self.fastDish.areAllergeniOk else {
             
             self.checkError = true
             return }

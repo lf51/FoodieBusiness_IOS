@@ -15,6 +15,7 @@ extension View {
     func csWarningModifier(isPresented:Bool, localErrorCondition:() -> Bool) -> some View {
         
         self.modifier(CS_ErrorMarkModifier(generalErrorCheck: isPresented, localErrorCondition: localErrorCondition()))
+          //  .offset(x: 10, y: -10)
     }
     
     

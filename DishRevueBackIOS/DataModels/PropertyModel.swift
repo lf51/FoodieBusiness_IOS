@@ -18,9 +18,9 @@ import MapKit
 
 struct PropertyModel: MyModelProtocol, Hashable{
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String) {
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String) {
         
-        return (\.allMyProperties,"Lista Proprietà")
+        return (\.allMyProperties,"Lista Proprietà", "Proprietà")
     }
 
     

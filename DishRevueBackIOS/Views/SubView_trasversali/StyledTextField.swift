@@ -123,6 +123,49 @@ struct CSTextField_3: View {
     }
 }
 
+/// Identico al TextField3 + un visualCheck del Contenuto
+struct CSTextField_3b<VisualContent:View>: View {
+    
+    @Binding var textFieldItem: String
+    let placeHolder: String
+    @ViewBuilder var visualConten: VisualContent
+    let action: () -> Void
+    
+    var body: some View {
+        
+        HStack {
+            
+            visualConten
+                .padding(.leading)
+            
+            TextField (self.placeHolder, text: $textFieldItem)
+                .padding()
+                .accentColor(Color.white)
+                
+            Button(action: self.action) {
+                    
+                    Image(systemName: "plus.circle")
+                        .imageScale(.large)
+                        .foregroundColor(Color.white)
+                        .padding(.trailing)
+                }.disabled(self.textFieldItem == "")
+        
+        }.background(
+            
+            RoundedRectangle(cornerRadius: 5.0)
+                .strokeBorder(Color.blue)
+                .background(
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .fill(Color.gray.opacity(self.textFieldItem != "" ? 0.6 : 0.2))
+                    
+                )
+                .shadow(radius: 3.0)
+        )
+            .onSubmit(self.action)
+            .animation(Animation.easeInOut, value: self.textFieldItem)
+    }
+}
+
 /// Small Custom textfield con una immagine e TightPadding
 struct CSTextField_4: View {
     
@@ -299,7 +342,7 @@ struct CSTextField_6: View {
         CSTextField_4b(textFieldItem: $textFieldItem, placeHolder: placeHolder, showDelete: showDelete, keyboardType: keyboardType) {
             csVisualCheck(
                 testo: self.textFieldItem,
-                imagePrincipal: self.image,
+                staticImage: self.image,
                 conformeA: conformeA)
             
         }

@@ -11,9 +11,18 @@ import Foundation
 
 struct IngredientModel:MyModelStatusConformity {
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String) {
+    func creaID(fromValue: String) -> String {
+        fromValue.replacingOccurrences(of: " ", with: "").lowercased()
+    }
+    
+    func modelStatusDescription() -> String {
+        "Ingrediente (\(self.status.simpleDescription().capitalized))"
+    }
+    
+    
+    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String) {
         
-        return (\.allMyIngredients, "Lista Ingredienti")
+        return (\.allMyIngredients, "Lista Ingredienti", "Ingrediente")
     }
 
     func pathDestination() -> DestinationPathView {
@@ -37,7 +46,9 @@ struct IngredientModel:MyModelStatusConformity {
     
     var dishWhereIsUsed: [DishModel] = [] // doppia scrittura con ListaIngredienti Principali e Secondari nel DishModel
     
-    var id: String { self.intestazione.replacingOccurrences(of:" ", with:"").lowercased() }
+  //  var id: String { self.intestazione.replacingOccurrences(of:" ", with:"").lowercased() } // deprecated 15.07
+    
+    var id: String { creaID(fromValue: self.intestazione) }
 
     var intestazione: String
     var descrizione: String = ""
