@@ -13,7 +13,8 @@ import Foundation
 struct DishModel:MyModelStatusConformity {
     
     func creaID(fromValue: String) -> String {
-        fromValue.replacingOccurrences(of: " ", with: "").lowercased()
+        print("DishModel/creaID()")
+      return fromValue.replacingOccurrences(of: " ", with: "").lowercased()
     }
     
     func modelStatusDescription() -> String {
@@ -83,8 +84,9 @@ struct DishModel:MyModelStatusConformity {
     var tipologia: DishTipologia // Deprecato in futuro --> Deriveremo il tipo di piatto dall'origine degli ingredienti
     var avaibleFor: [DishAvaibleFor]
   //  var allergeni: [Allergeni] // DEPRECATED 19.05.2022 Li deriviamo dagli Ingredienti
-    var areAllergeniOk: Bool = false 
-    var allergeni: [AllergeniIngrediente] { // la forma = {}() per funzionare necessita il lazy, ma al momento non funziona perchè le rowModel passano delle Var/let, quando passeranno delle State magari funzionerà
+    var areAllergeniOk: Bool = false
+    var allergeni: [AllergeniIngrediente] = []
+   /* var allergeni: [AllergeniIngrediente] { // la forma = {}() per funzionare necessita il lazy, ma al momento non funziona perchè le rowModel passano delle Var/let, quando passeranno delle State magari funzionerà
         
         var allergeniPiatto:[AllergeniIngrediente] = []
         
@@ -103,7 +105,7 @@ struct DishModel:MyModelStatusConformity {
         // SISTEMARE - IN QUESTA FORMA CALCOLA IL CONTENUTO UN NUMERO SPROPOSITATO DI VOLTE - 11.07
         return Array(setAllergeniPiatto)
         
-    } // Abbiamo spostato gli allergeni nell'ingrediente, quindi il piatto li deriva
+    } */ // Deprecata 16.07 -> Come per la dishTipologia, gli allergeni saranno calcolati da un metodo custodito nella propria enum/struct che sarà invocata nella newDishMainView. In caso di conferma saranno passati qui come stored.
     
    /* lazy var tipologiaDieta:[DishTipologia] = {
         
@@ -123,8 +125,7 @@ struct DishModel:MyModelStatusConformity {
     var rating: String
     var status: StatusModel
    // var restaurantWhereIsOnMenu: [PropertyModel] = []
-    
-    
+        
     
     init() { // init di un piatto nuovo e "vuoto" -> Necessario per creare nuovi piatti @State
         

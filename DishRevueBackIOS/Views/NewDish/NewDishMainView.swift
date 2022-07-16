@@ -40,8 +40,6 @@ struct NewDishMainView: View {
                     ScrollView { // La View Mobile
 
                         VStack(alignment:.leading) {
-                            
-                        //    Group {
                                 
                                 IntestazioneNuovoOggetto_Generic(
                                     itemModel: $newDish,
@@ -54,8 +52,7 @@ struct NewDishMainView: View {
                                 SelectionPropertyDish_NewDishSubView(newDish: $newDish, generalErrorCheck:generalErrorCheck)
  
                                 DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
-                                
-                          //  }
+ 
                             
                             Spacer()
                                     
@@ -66,7 +63,7 @@ struct NewDishMainView: View {
                             } checkPreliminare: {
                                 checkPreliminare()
                             } saveButtonDialogView: {
-                                scheduleANewDish()
+                                vbScheduleANewDish()
                             }
                             
                         }
@@ -92,8 +89,6 @@ struct NewDishMainView: View {
             }
       
         } // end ZStack Esterno
-      //  .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
-
     }
     
     // Method
@@ -103,7 +98,7 @@ struct NewDishMainView: View {
         Text("Da Implementare")
     }
     
-    @ViewBuilder private func scheduleANewDish() -> some View {
+    @ViewBuilder private func vbScheduleANewDish() -> some View {
         
         if self.piattoArchiviato.intestazione == "" {
             // crea un Nuovo Oggetto
@@ -192,8 +187,7 @@ struct NewDishMainView: View {
     }
     
     private func checkIntestazione() -> Bool {
-        
-        // controllare unicità del piatto
+    
         return self.newDish.intestazione != ""
         // i controlli sono già eseguiti all'interno sulla proprietà temporanea, se il valore è stato passato al newDish vuol dire che è buono. Per cui basta controllare se l'intestazione è diversa dal valore vuoto
 

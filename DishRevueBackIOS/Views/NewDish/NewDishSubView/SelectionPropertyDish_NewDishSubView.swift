@@ -11,26 +11,30 @@ import SwiftUI
 struct SelectionPropertyDish_NewDishSubView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
+    
     @Binding var newDish: DishModel
-    let generalErrorCheck: Bool 
+    let generalErrorCheck: Bool
+    
     let dietAvaible:[DishTipologia]
     let dietAvaibleString:[String]
+    let allergeniIn:[AllergeniIngrediente]
     
     @State private var confermaDiete: Bool = false
-   // @State private var areAllergeniOk: Bool = false
     
     init(newDish:Binding<DishModel>, generalErrorCheck:Bool) {
        
         _newDish = newDish
         self.generalErrorCheck = generalErrorCheck
+    
         (self.dietAvaible,self.dietAvaibleString) = DishTipologia.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
+        self.allergeniIn = AllergeniIngrediente.returnAllergeniIn(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
     }
     
     var body: some View {
         
         VStack(alignment:.leading) {
             
-            VStack {
+            VStack(alignment:.leading) {
                 
                 CSLabel_conVB(
                     placeHolder: "Allergeni",
@@ -41,48 +45,47 @@ struct SelectionPropertyDish_NewDishSubView: View {
                             
                             HStack {
                                 Spacer()
-                                Text("Dare Conferma")
+                                Text(self.newDish.areAllergeniOk ? "Confermato" : "Da Confermare")
                                     .font(.system(.callout, design: .monospaced))
                                 
                                 CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.newDish.areAllergeniOk)
-                              /*  if generalErrorCheck && !areAllergeniOk {
-                                    
-                                    CS_ErrorMarkViewDEPRECATO(checkError: !areAllergeniOk)
-                                    
-                                } else {
-                                    
-                                    Image(systemName: "allergens")
-                                        .imageScale(.medium)
-                                    
-                                } */
+       
                             }
                         }
                     }
                 
                 ScrollView(.horizontal, showsIndicators: false) {
-                    
-                    if newDish.allergeni.isEmpty {
-                        
-                        Text("Nessun Allergene Indicato negli Ingredienti")
-                            .italic()
-                            .fontWeight(.light)
-                            .font(.caption)
-                            .foregroundColor(Color.black)
-                        
-                    } else {
-                        
+
                         HStack {
                             
-                            ForEach(newDish.allergeni) { allergene in
+                            ForEach(self.allergeniIn) { allergene in
                                 
                                 CSText_tightRectangle(testo: allergene.simpleDescription(), fontWeight: .light, textColor: Color.red, strokeColor: Color.red, fillColor: Color.clear)
                                 
                             }
                         }
-                    }
-                    
                 }
                 
+                VStack(alignment:.leading) {
+
+                    let string_1 = self.newDish.areAllergeniOk ? "Confermata" : "Non Confermata"
+                   
+                    let string_2 = self.allergeniIn.isEmpty ? "l'assenza" : "la presenza"
+                        
+                    HStack(spacing:0) {
+                        Text("\(string_1) \(string_2) ")
+                            .bold(self.newDish.areAllergeniOk)
+                            .underline(self.newDish.areAllergeniOk, color: Color.black)
+                                
+                             Text("di Allergeni negli Ingredienti.")
+                       }
+                        .italic()
+                        .fontWeight(.light)
+                        .font(.caption)
+                        .foregroundColor(Color.black)
+    
+                }
+          
             }
             
             VStack(alignment: .leading) {
@@ -149,59 +152,32 @@ struct SelectionPropertyDish_NewDishSubView: View {
                         }
                     }
                 }
-                
-                
-               
-                
-                
-              /*  Text("Diete Confermate: \(self.newDish.dieteCompatibili.debugDescription)")
-                    .font(.caption) */
-                
-              /*  PropertyScrollCasesPlus(cases: DishTipologia.allCases, dishCollectionProperty: newDish.tipologiaDieta) */
-                
-                
-                /*   ScrollView(.horizontal, showsIndicators: false) {
-                 
-                 HStack {
-                 
-                 ForEach(newDish.tipologiaDieta) { dieta in
-                 
-                 CSText_tightRectangle(testo: dieta.simpleDescription(), fontWeight: .light, textColor: Color.white, strokeColor: Color.gray, fillColor: Color.clear)
-                 /*  .onTapGesture {
-                  self.descrizioneDieta = dieta.extendedDescription() ?? ""
-                  self.mostraDescrizioneDieta.toggle()
-                  } */
-                 
-                 }
-                 }
-                 
-                 } */
-                
-             /*   if self.mostraDescrizioneDieta {
-                    
-                    Text(descrizioneDieta)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .italic()
-                        .foregroundColor(Color.black)
-                    
-                }*/
+
                 
             }
-            
-          /*  VStack(alignment:.leading) {
-                
-                CSLabel_1Button(placeHolder: "Adattabile ad una dieta", imageNameOrEmojy: "person.fill", backgroundColor: Color.black)
-                
-                PropertyScrollCases(cases: DishAvaibleFor.allCases, dishCollectionProperty: self.$newDish.avaibleFor, colorSelection: Color.blue.opacity(0.8))
-                
-                showExtendedDescription()
-            } */
-            
             
         }
         .onChange(of: self.dietAvaible, perform: { _ in
             self.confermaDiete = false
+        })
+        .onChange(of: self.allergeniIn, perform: { _ in
+            self.newDish.areAllergeniOk = false
+        })
+        .onChange(of: self.newDish.areAllergeniOk, perform: { newValue in
+            
+            if newValue {
+                
+                viewModel.alertItem = AlertModel(
+                    title: "⚠️ Conferma Allergeni",
+                    message: "Articolo di legge"
+                )
+                self.newDish.allergeni = self.allergeniIn
+                
+            } else {
+                
+                self.newDish.allergeni = []
+            }
+            
         })
         .onChange(of: self.confermaDiete) { newValue in
             if newValue {
@@ -221,34 +197,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
     }
     
     // Method
-    
-   /* private func resetDieteCompatibili(withAlert:Bool) {
         
-        viewModel.alertItem = AlertModel(
-            title: "Piatto Standard",
-            message: "Contiene ingredienti di orgine animale, pesce, latte e/o derivati."
-                )
-        self.newDish.dieteCompatibili = [.standard]
-        
-    } */
-    
-   /* @ViewBuilder private func showExtendedDescription() -> some View {
-        
-        VStack(alignment:.leading) {
-            
-            ForEach(self.newDish.avaibleFor) { diet in
-                
-                Text(diet.extendedDescription() ?? "")
-                    .fontWeight(.light)
-                    .font(.caption)
-                    .foregroundColor(Color.black)
-                
-            }
-            
-        }
-        
-    } */
-    
 }
 /* struct SelectionMenu_NewDishSubView_Previews: PreviewProvider {
     static var previews: some View {

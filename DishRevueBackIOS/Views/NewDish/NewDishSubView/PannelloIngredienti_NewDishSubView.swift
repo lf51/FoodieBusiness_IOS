@@ -57,14 +57,21 @@ struct PannelloIngredienti_NewDishSubView: View {
                 }
             }
             
-            VStack {
+            VStack(alignment:.leading) {
                 
                 CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black)
                 
-                if !self.newDish.ingredientiSecondari.isEmpty {
+                if self.newDish.ingredientiSecondari.isEmpty {
+                    
+                    Text("Ingredienti usati anche in piccole quantità nella preparazione del piatto.")
+                        .italic()
+                        .fontWeight(.light)
+                        .font(.caption)
+                        .foregroundColor(Color.black)
+
+                } else {
                     
                     IngredientHScroll_View(inhredientsToShow: self.newDish.ingredientiSecondari, baseColor: Color.yellow)
-
                 }
       
             }

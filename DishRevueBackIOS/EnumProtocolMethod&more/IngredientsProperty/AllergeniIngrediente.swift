@@ -74,4 +74,25 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
     
+   static func returnAllergeniIn(ingredients: [IngredientModel]...) -> [AllergeniIngrediente] {
+     
+           var allergeniPiatto:[AllergeniIngrediente] = []
+           
+        for list in ingredients {
+            
+            for ingredient in list {
+                
+                let allergeneIngre:[AllergeniIngrediente] = ingredient.allergeni
+                allergeniPiatto.append(contentsOf: allergeneIngre)
+            }
+ 
+        }
+
+           let setAllergeniPiatto = Set(allergeniPiatto)
+      
+           return Array(setAllergeniPiatto)
+   
+    }
+    
+    
 }
