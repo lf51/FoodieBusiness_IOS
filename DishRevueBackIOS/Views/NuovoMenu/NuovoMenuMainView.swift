@@ -48,8 +48,7 @@ struct NuovoMenuMainView: View {
                     ScrollView {
                         
                         VStack(alignment: .leading) {
-                            
-                          /*  IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (\(self.nuovoMenu.status.simpleDescription().capitalized))", imageLabel: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), coloreContainer: Color("SeaTurtlePalette_2"), itemModel: $nuovoMenu, generalErrorCheck: false) */
+
                                    
                             IntestazioneNuovoOggetto_Generic(
                                 itemModel: $nuovoMenu,
@@ -125,11 +124,11 @@ struct NuovoMenuMainView: View {
                     
                     if openDishList! {
                         
-                        SelettoreMyModel<_,DishModel>(
+                       /* SelettoreMyModel<_,DishModel>(
                             itemModel: $nuovoMenu,
                             allModelList:ModelList.menuDishList ,
                             closeButton: $openDishList)
-                        .zIndex(1)
+                        .zIndex(1) */
                         
                     }
 
@@ -139,7 +138,7 @@ struct NuovoMenuMainView: View {
 
         }
         
-        .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
+     //   .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
 
     }
     

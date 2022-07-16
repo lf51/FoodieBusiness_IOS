@@ -47,16 +47,16 @@ struct FastImport_CorpoScheda:View {
 
                     HStack {
 
-                        csVbSwitchImageText(string: fastDish.categoria.imageAssociated())
+                        csVbSwitchImageText(string: fastDish.categoriaMenu.imageAssociated())
                         
                         CS_Picker(
-                            selection: $fastDish.categoria,
+                            selection: $fastDish.categoriaMenu,
                             customLabel: "Categoria..",
-                            dataContainer: DishCategoria.allCases,
+                            dataContainer: CategoriaMenu.allCases,
                             backgroundColor: Color.white.opacity(0.5))
                         .csWarningModifier(
                             isPresented: checkError) {
-                                self.fastDish.categoria == .defaultValue
+                                self.fastDish.categoriaMenu == .defaultValue
                             }
                       /*  .overlay(alignment:.topTrailing) {
                             if checkError {
@@ -81,7 +81,8 @@ struct FastImport_CorpoScheda:View {
                             .fixedSize()
                             .csWarningModifier(
                                 isPresented: checkError) {
-                                    self.fastDish.formatiDelPiatto.isEmpty
+                                  //  self.fastDish.formatiDelPiatto.isEmpty
+                                    self.fastDish.pricingPiatto.isEmpty
                                 }
                           /*  .overlay(alignment:.topTrailing) {
                                 if checkError {
@@ -190,7 +191,8 @@ struct FastImport_CorpoScheda:View {
     
     private func checkAreDishPropertyOk() -> Bool {
         
-        self.fastDish.categoria != .defaultValue && !self.fastDish.formatiDelPiatto.isEmpty
+     //   self.fastDish.categoria != .defaultValue && !self.fastDish.formatiDelPiatto.isEmpty
+        self.fastDish.categoriaMenu != .defaultValue && !self.fastDish.pricingPiatto.isEmpty
         
     }
     
@@ -209,8 +211,25 @@ struct FastImport_CorpoScheda:View {
         return true
     }
     
-    
     private func updateDishPrice() {
+        
+        // creiamo un piatto in formato standard "Unico", per una persona e senza indicazione di peso.
+        self.fastDish.pricingPiatto = []
+        guard self.dishPrice != "" else {return}
+        guard csCheckDouble(testo: self.dishPrice) else { return }
+
+        let formatoDish: DishFormat = {
+            var newFormat = DishFormat(type: .mandatory)
+            newFormat.price = self.dishPrice
+            return newFormat
+            
+        }()
+        
+        self.fastDish.pricingPiatto.append(formatoDish)
+        print("Update DishPrice")
+        
+    }
+   /* private func updateDishPrice() {
         
         // creiamo un piatto in formato standard "Unico", per una persona e senza indicazione di peso.
         self.fastDish.formatiDelPiatto = []
@@ -222,7 +241,7 @@ struct FastImport_CorpoScheda:View {
         self.fastDish.formatiDelPiatto.append(formatoDish)
         print("Update DishPrice")
         
-    }
+    } */ // deprecata 16.07
     
     
 }

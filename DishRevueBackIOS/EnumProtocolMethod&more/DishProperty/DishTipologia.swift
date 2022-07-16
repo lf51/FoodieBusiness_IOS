@@ -8,9 +8,7 @@
 import Foundation
 
 enum DishTipologia: MyEnumProtocol,MyEnumProtocolMapConform/*, MyModelProtocol*/ {
-    
-    
-    
+
     var intestazione: String {get{ self.simpleDescription() } set{ }}
     var descrizione: String { get {self.extendedDescription() ?? "noDescription"} set { } }
    // var status: StatusModel = .bozza // Non serve a niente. Da Sistemare

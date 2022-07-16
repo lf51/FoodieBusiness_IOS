@@ -14,7 +14,6 @@ struct BoxDescriptionModel_Generic<M:MyModelProtocol>: View {
     let disabledCondition: Bool?
     @State private var wannaAddDescription: Bool? = false
     
-    
     var body: some View {
         
         VStack(alignment:.leading) {

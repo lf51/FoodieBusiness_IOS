@@ -9,16 +9,6 @@ import Foundation
 
 struct DishFormat: Hashable /*Identifiable, Equatable */ {
     
-  /*  var id: String = UUID().uuidString
-
-    static func == (lhs:DishFormat,rhs:DishFormat) -> Bool {
-        
-        lhs.label == rhs.label &&
-        lhs.price == rhs.price
-        
-    } */
-    
-    
     var label: String
     var price: String
     
@@ -37,7 +27,7 @@ enum DishFormatType {
     case mandatory,opzionale
 }
 
-
+/*
 enum DishFormato: MyEnumProtocol, Hashable {
     
     static var defaultValue: DishFormato = DishFormato.custom("","n/d", "1", "n/d")
@@ -182,4 +172,4 @@ enum DishFormato: MyEnumProtocol, Hashable {
         
     }
     
-}
+} */ // Deprecato 16.07

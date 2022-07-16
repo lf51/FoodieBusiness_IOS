@@ -14,7 +14,7 @@ enum ModelList: Equatable, Hashable {
     static var dishIngredientsList: [ModelList] = [
     
         .viewModelContainer("My Ingredients",\.allMyIngredients,.fonte),
-        .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),
+       /* .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),*/
         .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale)),
         .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondari,.destinazione(Color.orange, grado: .secondario))
     

@@ -21,7 +21,7 @@ struct CS_ErrorMarkView:View {
                 
                 Image(systemName: "exclamationmark.triangle.fill")
                     .imageScale(.medium)
-                    .foregroundColor(Color.red)
+                    .foregroundColor(Color.yellow)
                 }
         }
    

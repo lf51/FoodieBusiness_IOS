@@ -19,6 +19,7 @@ class AccounterVM: ObservableObject {
 
     // create dal sistema
 
+    // Deprecata in futuro (COmmunityIngredientModel)
     var allTheCommunityIngredients:[CommunityIngredientModel] = [] // tutti gli ingredienti di sistema o della community. Unico elemento "Social" dell'app Business. Published perchè qualora diventasse una communityIngredients dinamica deve aggiornarsi. Nella prima versione, cioè come array di ingredienti caricati dal sistema, potrebbe non essere published, perchè verrebbe caricata in apertura e stop. // load(fileJson)
     // la lista appIngredients sarà riempita da un json che creeremo con una lista di nomi di ingredienti. Dal nome verrà creato un Modello Ingrediente nel momento in cui sarà scelto dal ristoratore
     
@@ -85,7 +86,22 @@ class AccounterVM: ObservableObject {
         case .ingredientList:
             self.ingredientListPath = NavigationPath()
         }
+    }
+    
+    /// Aggiunge una destinaziona al Path. Utile per aggiungere View tramite Bottone
+    func addToThePath(destinationPath:DestinationPath, destinationView:DestinationPathView) {
         
+        switch destinationPath {
+            
+        case .homeView:
+            self.homeViewPath.append(destinationView)
+        case .menuList:
+            self.menuListPath.append(destinationView)
+        case .dishList:
+            self.dishListPath.append(destinationView)
+        case .ingredientList:
+            self.ingredientListPath.append(destinationView)
+        }
         
     }
 
@@ -365,7 +381,7 @@ class AccounterVM: ObservableObject {
            
            guard filter != nil else { return true}
            let dishModel = model as! DishModel
-           return dishModel.categoria == filter
+           return dishModel.categoriaMenu == filter
            
        case .base(let filter):
            
@@ -377,7 +393,7 @@ class AccounterVM: ObservableObject {
            
            guard filter != nil else { return true}
            let dishModel = model as! DishModel
-           return dishModel.tipologia == filter
+           return dishModel.dieteCompatibili.contains(filter!)
            
        case .statusPiatto:
            print("Dentro statusPiatto/deepFiltering - Da Settare")
@@ -519,11 +535,7 @@ class AccounterVM: ObservableObject {
     let prop2 = PropertyModel(nome: "Tua", coordinates:  CLLocationCoordinate2D(latitude: 37.510997, longitude: 13.041434))
     let prop3 = PropertyModel(nome: "Sua", coordinates:  CLLocationCoordinate2D(latitude: 37.510927, longitude: 13.041434))
     let prop4 = PropertyModel(nome: "Essa", coordinates: CLLocationCoordinate2D(latitude: 37.510937, longitude: 13.041434))
-    let dish1 = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .bozza)
-    let dish2 = DishModel(intestazione: "Bucatini alla Matriciana", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard,status: .bozza)
-    let dish4 = DishModel(intestazione: "Tiramisu", aBaseDi: .carneAnimale, categoria: .dessert, tipologia: .standard,status: .bozza)
-    let dish3 = DishModel(intestazione: "Fritto Misto", aBaseDi: .pesce, categoria: .secondo, tipologia: .vegariano, status: .bozza)
-
+ 
     let ingre1 = IngredientModel(nome: "Aglio", provenienza: .italia, metodoDiProduzione: .biologico, conservazione: .conserva)
     let ingre2 = IngredientModel(nome: "Aglio Rosso", provenienza: .homeMade, metodoDiProduzione: .naturale, conservazione: .surgelato)
     let ingre3 = IngredientModel(nome: "Cipolla", provenienza: .europa, metodoDiProduzione: .convenzionale, conservazione: .congelato)
@@ -545,12 +557,12 @@ class AccounterVM: ObservableObject {
          }
          
        //  let menuList = [menu1,menu2,menu3,menu4]
-         let dishList = [dish1,dish2,dish3,dish4]
+       //  let dishList = [dish1,dish2,dish3,dish4]
        //  let propList = [prop1,prop2,prop3,prop4]
        //  let ingrList = [ingre1,ingre2,ingre3,ingre4, ingre5]
          
        //  allMyMenu.append(contentsOf: menuList)
-         allMyDish.append(contentsOf: dishList)
+         //allMyDish.append(contentsOf: dishList)
        //  allMyProperties.append(contentsOf: propList)
        //  allMyIngredients.append(contentsOf: ingrList)
   

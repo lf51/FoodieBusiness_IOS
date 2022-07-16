@@ -22,18 +22,18 @@ struct PICKERTEST: View {
                 
                 Spacer()
                 
-                CS_Picker(selection: $fastDish.categoria, customLabel: "Scegli..", dataContainer: DishCategoria.allCases)
+                CS_Picker(selection: $fastDish.categoriaMenu, customLabel: "Scegli..", dataContainer: CategoriaMenu.allCases)
             
                 }
 
 
             HStack {
                 
-                csVbSwitchImageText(string: fastDish.categoria.imageAssociated())
+           /*     csVbSwitchImageText(string: fastDish.categoria.imageAssociated())
                     .font(.subheadline)
                 
                 Text(fastDish.categoria.simpleDescriptionSingolare())
-                    .font(.system(.subheadline, design: .monospaced))
+                    .font(.system(.subheadline, design: .monospaced)) */
                     
                 Spacer()
                 

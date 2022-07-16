@@ -23,7 +23,7 @@ struct BottomBar_NewDishSubView: View {
               //  accounterVM.createNewOrEditOldDish(dish: self.newDish)
             //    viewModel.createOrUpdateItemModel(itemModel: self.newDish)
                 
-                self.newDish.categoria.mantieniUltimaScelta() // mette l'ultima type utilizzata come default per il prox piatto
+             //   self.newDish.categoria.mantieniUltimaScelta() // mette l'ultima type utilizzata come default per il prox piatto
                 self.newDish = DishModel() // inizializza un piatto nuovo
                 
             }

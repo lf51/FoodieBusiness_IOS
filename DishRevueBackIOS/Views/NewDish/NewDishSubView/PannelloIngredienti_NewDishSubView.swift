@@ -22,21 +22,33 @@ struct PannelloIngredienti_NewDishSubView: View {
 
                 CSLabel_conVB(placeHolder: "Ingredienti Principali", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) {
               
+               //     Spacer()
+                    
                     HStack {
                         
-                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty)
-                        
-                        Spacer()
-                        
-                        NavigationLink(value: DestinationPathView.ingrediente(IngredientModel())) {
+
+                     //   Spacer()
+                      /*  CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty) */
+  
+                    /*   NavigationLink(value: DestinationPathView.ingrediente(IngredientModel())) {
                             Image(systemName: "plus.circle")
                                 .imageScale(.large)
                                 .foregroundColor(Color("SeaTurtlePalette_3"))
-                        }
+                        } */
   
-                    //   Spacer()
+                    //  Spacer()
                         
-                        Button {
+                        CSButton_image(
+                            frontImage: "plus.circle",
+                            imageScale: .large,
+                            frontColor: Color("SeaTurtlePalette_3")) {
+                                withAnimation(.default) {
+                                    self.wannaAddIngredient?.toggle()
+                                }
+                            }
+                        
+                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty)
+                      /*  Button {
                             withAnimation(.default) {
                                 self.wannaAddIngredient?.toggle()
                             }
@@ -45,7 +57,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color.white)
                         }
-                        .buttonStyle(.borderedProminent)
+                        .buttonStyle(.borderedProminent) */
                                                 
                     }
       
@@ -88,3 +100,30 @@ struct PannelloIngredienti_NewDishSubView: View {
     }
 }
 */
+
+struct IngredientHScroll_View:View {
+    
+    let inhredientsToShow: [IngredientModel]
+    let baseColor: Color
+    
+    var body: some View {
+
+        ScrollView(.horizontal,showsIndicators: false) {
+            
+            HStack {
+                
+                ForEach(inhredientsToShow) { model in
+                       
+                    CSText_tightRectangle(
+                        testo: model.intestazione,
+                        fontWeight: .bold,
+                        textColor: Color.white,
+                        strokeColor: Color.blue,
+                        fillColor: baseColor)
+
+                    
+                }
+            }
+        }
+    }
+}

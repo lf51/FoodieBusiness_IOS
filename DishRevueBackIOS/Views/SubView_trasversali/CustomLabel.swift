@@ -37,6 +37,7 @@ struct CSLabel_conVB<Content:View>: View {
                 Text(placeHolder)
                     .fontWeight(.medium)
                     .font(.system(.subheadline, design: .monospaced))
+                    .lineLimit(1)
             } icon: {
          
                 csVbSwitchImageText(string: imageName)

@@ -48,7 +48,10 @@ struct CS_AlertModifier: ViewModifier {
                 }
           
             } message: { alert in
-                Text(alert.message)
+         
+                    Text(alert.message)
+                    .multilineTextAlignment(.leading)
+                    
             }
         
     }

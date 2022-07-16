@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Deprecata 16.07
 enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform { // Deprecata in Futuro. Da Sostituire con CategoriaMenu (Struct)
  
     // quando scarichiamo i dati dal server, dobbiamo iterate tutte le tipologie salvate e inserirle nella static allCases. Insieme ai casi "standard" avremo così anche i casi custom.

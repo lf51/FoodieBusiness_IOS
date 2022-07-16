@@ -44,7 +44,7 @@ struct DishModel_RowView: View {
 
 struct DishModel_RowView_Previews: PreviewProvider {
     
-    @State static var dishSample = DishModel(intestazione: "Spaghetti alla Carbonara", aBaseDi: .carneAnimale, categoria: .primo, tipologia: .standard, status: .bozza)
+    @State static var dishSample = DishModel()
     static var previews: some View {
         
         ZStack {
@@ -128,9 +128,9 @@ struct IntestazioneDishRow_Sub: View {
      
      var prices: [String] = []
      
-     for x in self.item.formatiDelPiatto {
+     for x in self.item.pricingPiatto {
          
-         let price = x.showAssociatedValue().prezzo
+         let price = x.price
          prices.append(price)
          
      }

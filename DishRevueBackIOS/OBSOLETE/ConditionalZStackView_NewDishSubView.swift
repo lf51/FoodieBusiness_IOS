@@ -22,10 +22,10 @@ struct ConditionalZStackView_NewDishSubView: View {
         
         if conditionOne ?? false {
    
-            SelettoreMyModel<_,IngredientModel>(
+         /*   SelettoreMyModel<_,IngredientModel>(
                 itemModel: $newDish,
                 allModelList: ModelList.dishIngredientsList,
-                closeButton: $conditionOne)
+                closeButton: $conditionOne) */
             
         }
         
@@ -45,7 +45,7 @@ struct ConditionalZStackView_NewDishSubView: View {
     // Method
 
     
-} // Deprecated
+} // Deprecated 15.07
 
 /*struct ConditionalZStackView_NewDishSubView_Previews: PreviewProvider {
     static var previews: some View {

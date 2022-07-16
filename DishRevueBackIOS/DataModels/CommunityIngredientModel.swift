@@ -15,6 +15,6 @@ struct CommunityIngredientModel {
     
     let nome: String
     
-}
+} // deprecata in futuro
 
 

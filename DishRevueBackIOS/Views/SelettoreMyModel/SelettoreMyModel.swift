@@ -13,7 +13,7 @@ struct CheckCount {
     
     static var initCount: Int = 0
     static var itemCount: Int = 0
-}
+} 
 
 struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
@@ -21,9 +21,11 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
 
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var itemModel: M1
-    @Binding var closeButton: Bool?
-    @Binding var creaButton: Bool?
+  
+   // @Binding var creaButton: Bool?
     let allModelList: [ModelList]
+    @Binding var closeButton: Bool?
+    let action: () -> Void
 
     @State private var modelListCorrente: String = ""
     
@@ -32,12 +34,14 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     @State private var temporaryDestinationModelContainer: [String:[M2]] = [:]
     
-    init(itemModel: Binding<M1>, allModelList: [ModelList], closeButton:Binding<Bool?>, creaButton:Binding<Bool?>? = nil) {
+    init(itemModel: Binding<M1>, allModelList: [ModelList], closeButton:Binding<Bool?>,action:@escaping () -> Void /*creaButton:Binding<Bool?>? = nil*/) {
         
         _itemModel = itemModel
-        _closeButton = closeButton
-        _creaButton = creaButton ?? .constant(nil)
+       
+      //  _creaButton = creaButton ?? .constant(nil)
         self.allModelList = allModelList
+        _closeButton = closeButton
+        self.action = action
         
         let currentList:String
         (self.viewModelList, self.itemModelList, currentList) = splitModelList(allModelList: allModelList)
@@ -75,8 +79,8 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
             
             HStack {
                 
-                Text("Init: \(CheckCount.initCount)")
-                Text("Item: \(CheckCount.itemCount)")
+               // Text("Init: \(CheckCount.initCount)")
+               // Text("Item: \(CheckCount.itemCount)")
                 
               /*  CSButton_large(
                     title: self.creaButton != nil ? "[+] Nuovo" : "Selettore",
@@ -86,6 +90,14 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
                     corners:.bottomRight,
                     paddingValue: 5.0) { self.creaButton!.toggle() }.disabled(self.creaButton == nil) */
                     
+                CSButton_large(
+                    title: "[+] Nuovo",
+                    accentColor: Color.white,
+                    backgroundColor: Color("SeaTurtlePalette_3"),
+                    cornerRadius: 20.0,
+                    corners:.bottomRight,
+                    paddingValue: 5.0) { self.action()}
+                
                 CSButton_large(
                     title: "Chiudi",
                     accentColor: Color.red,

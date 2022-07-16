@@ -117,10 +117,12 @@ struct DataModelPickerView_SubView: View {
             
         case .categoria(_):
             
-            CS_PickerDoubleState(selection: DishCategoria.defaultValue, customLabel: "Scegli..", dataContainer: DishCategoria.allCases) { category in
+          /*  CS_PickerDoubleState(selection: DishCategoria.defaultValue, customLabel: "Scegli..", dataContainer: DishCategoria.allCases) { category in
                 
-                self.filterCategory = .categoria(filter: category)
-                
+                self.filterCategory = .categoria(filter: category) */
+            CS_PickerDoubleState(selection: CategoriaMenu.defaultValue, customLabel: "Scegli..", dataContainer: CategoriaMenu.allCases) { category in
+                  
+                  self.filterCategory = .categoria(filter: category)
             }
         case .base(_):
             

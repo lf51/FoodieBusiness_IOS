@@ -3,7 +3,7 @@
 //  DishRevueBackIOS
 //
 //  Created by Calogero Friscia on 01/03/22.
-//
+//  Last deeper Modifing terminate 16.07
 
 import SwiftUI
 
@@ -41,19 +41,24 @@ struct NewDishMainView: View {
 
                         VStack(alignment:.leading) {
                                 
-                                IntestazioneNuovoOggetto_Generic(
+                            IntestazioneNuovoOggetto_Generic(
                                     itemModel: $newDish,
                                     generalErrorCheck: generalErrorCheck,
                                     minLenght: 3,
                                     coloreContainer: Color("SeaTurtlePalette_2"))
  
-                                PannelloIngredienti_NewDishSubView(newDish: newDish, generalErrorCheck: generalErrorCheck, wannaAddIngredient: $wannaAddIngredient)
-                                
-                                SelectionPropertyDish_NewDishSubView(newDish: $newDish, generalErrorCheck:generalErrorCheck)
- 
-                                DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
- 
+                            BoxDescriptionModel_Generic(itemModel: $newDish, labelString: "Descrizione (Optional)", disabledCondition: wannaAddIngredient)
                             
+                            CategoriaScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
+                            
+                            PannelloIngredienti_NewDishSubView(newDish: newDish, generalErrorCheck: generalErrorCheck, wannaAddIngredient: $wannaAddIngredient)
+                                
+                            AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
+ 
+                            DietScrollView_NewDishSub(newDish: $newDish)
+ 
+                            DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
+ 
                             Spacer()
                                     
                             BottomViewGeneric_NewModelSubView(generalErrorCheck:$generalErrorCheck, wannaDisableButtonBar:(newDish == piattoArchiviato)) {
@@ -76,10 +81,21 @@ struct NewDishMainView: View {
     
                 if wannaAddIngredient! {
            
+                   /* SelettoreMyModel<_,IngredientModel>(
+                        itemModel: $newDish,
+                        allModelList: ModelList.dishIngredientsList,
+                        closeButton: $wannaAddIngredient, action: () -> Void) */
+                    
                     SelettoreMyModel<_,IngredientModel>(
                         itemModel: $newDish,
                         allModelList: ModelList.dishIngredientsList,
-                        closeButton: $wannaAddIngredient)
+                        closeButton: $wannaAddIngredient) {
+                            
+                            viewModel.addToThePath(
+                                destinationPath: destinationPath,
+                                destinationView: .ingrediente(IngredientModel()))
+                            
+                        }
                     
                 }
             

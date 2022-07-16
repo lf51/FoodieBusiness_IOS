@@ -22,9 +22,9 @@ enum MapCategoryContainer:MyEnumProtocolMapConform {
     case produzione(filter:ProduzioneIngrediente? = nil) // stored
     case provenienza(filter:ProvenienzaIngrediente? = nil) // stored
     
-    case categoria(filter:DishCategoria? = nil) // stored
+    case categoria(filter:CategoriaMenu? = nil) // stored
     case base(filter:OrigineIngrediente? = nil) // stored
-    case tipologiaPiatto(filter:DishTipologia? = nil)
+    case tipologiaPiatto(filter:DishTipologia? = nil) // collection
     case statusPiatto
     
     case menuAz
