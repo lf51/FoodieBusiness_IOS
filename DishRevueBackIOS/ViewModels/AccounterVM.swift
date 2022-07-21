@@ -54,7 +54,7 @@ class AccounterVM: ObservableObject {
    
     init() {
         
-        fillFromListaBaseModello()
+      //  fillFromListaBaseModello()
         print("Init -> AccounterVM")
     }
     
@@ -338,7 +338,7 @@ class AccounterVM: ObservableObject {
         
     }
     
-    
+    ///Deprecata in futuro. Da Ottimizzare attraverso l'uso del keypath.
     func deepFiltering<M:MyModelProtocol>(model:M, filterCategory:MapCategoryContainer) -> Bool {
        
        switch filterCategory {
@@ -406,14 +406,16 @@ class AccounterVM: ObservableObject {
      
    }
     
-    func stringResearch<T:MyModelProtocol>(item: T, stringaRicerca: String) -> Bool {
+    func stringResearch<T:MyModelStatusConformity>(item: T, stringaRicerca: String) -> Bool {
         
         guard stringaRicerca != "" else { return true }
         
         let ricerca = stringaRicerca.replacingOccurrences(of: " ", with: "").lowercased()
         print("Dentro Stringa Ricerca")
         
-        switch item.self {
+        let result = item.modelStringResearch(string: ricerca)
+        return result
+      /*  switch item.self {
             
         case is IngredientModel:
             let itemModel = item as! IngredientModel
@@ -437,11 +439,7 @@ class AccounterVM: ObservableObject {
             
         default: return false
             
-            
-        }
-        
-       
-        
+        } */// Deprecata 19.07
     }
     
     /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container e un bool (indicante se il container è o non è editabile)
@@ -536,39 +534,12 @@ class AccounterVM: ObservableObject {
     let prop3 = PropertyModel(nome: "Sua", coordinates:  CLLocationCoordinate2D(latitude: 37.510927, longitude: 13.041434))
     let prop4 = PropertyModel(nome: "Essa", coordinates: CLLocationCoordinate2D(latitude: 37.510937, longitude: 13.041434))
  
-    let ingre1 = IngredientModel(nome: "Aglio", provenienza: .italia, metodoDiProduzione: .biologico, conservazione: .conserva)
-    let ingre2 = IngredientModel(nome: "Aglio Rosso", provenienza: .homeMade, metodoDiProduzione: .naturale, conservazione: .surgelato)
-    let ingre3 = IngredientModel(nome: "Cipolla", provenienza: .europa, metodoDiProduzione: .convenzionale, conservazione: .congelato)
-    let ingre4 = IngredientModel(nome: "Prezzemolo", provenienza: .restoDelMondo, metodoDiProduzione: .selvatico, conservazione: .fresco)
-    let ingre5 = IngredientModel(nome: "TestIngr", provenienza: .italia, metodoDiProduzione: .biologico, conservazione: .fresco)
+
     
   //  let menu5 = MenuModel.Filter.tipologia(.allaCarta)
  //   let menu6 = MenuModel.Filter.tipologia(.fisso(costo: "25"))
     
-     func fillFromListaBaseModello() { // TEST CODE DA MODIFICARE
-                  
-         let ingList = [ing1,ing2,ing3,ing4,ing5,ing6,ing7]
-         
-         for ing in ingList {
-             
-             let ingMod = IngredientModel(nome: ing.nome)
-             listoneFromListaBaseModelloIngrediente.append(ingMod)
-           //  allMyIngredients.append(ingMod)
-         }
-         
-       //  let menuList = [menu1,menu2,menu3,menu4]
-       //  let dishList = [dish1,dish2,dish3,dish4]
-       //  let propList = [prop1,prop2,prop3,prop4]
-       //  let ingrList = [ingre1,ingre2,ingre3,ingre4, ingre5]
-         
-       //  allMyMenu.append(contentsOf: menuList)
-         //allMyDish.append(contentsOf: dishList)
-       //  allMyProperties.append(contentsOf: propList)
-       //  allMyIngredients.append(contentsOf: ingrList)
-  
-        
-         
-     }
+ 
 }
 
 

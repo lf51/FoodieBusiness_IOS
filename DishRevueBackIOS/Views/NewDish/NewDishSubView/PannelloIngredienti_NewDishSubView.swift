@@ -12,13 +12,13 @@ struct PannelloIngredienti_NewDishSubView: View {
     
     let newDish: DishModel
     let generalErrorCheck: Bool
-    @Binding var wannaAddIngredient: Bool?
+    @Binding var wannaAddIngredient: Bool
 
     var body: some View {
         
         VStack(alignment: .leading) {
 
-            VStack {
+            VStack(alignment:.leading) {
 
                 CSLabel_conVB(placeHolder: "Ingredienti Principali", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) {
               
@@ -43,7 +43,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                             imageScale: .large,
                             frontColor: Color("SeaTurtlePalette_3")) {
                                 withAnimation(.default) {
-                                    self.wannaAddIngredient?.toggle()
+                                    self.wannaAddIngredient.toggle()
                                 }
                             }
                         
@@ -65,7 +65,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                 
                 if !self.newDish.ingredientiPrincipali.isEmpty {
                     
-                    IngredientHScroll_View(inhredientsToShow: self.newDish.ingredientiPrincipali, baseColor: Color.mint)
+                    SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiPrincipali, fillColor: Color.mint)
                 }
             }
             
@@ -83,7 +83,7 @@ struct PannelloIngredienti_NewDishSubView: View {
 
                 } else {
                     
-                    IngredientHScroll_View(inhredientsToShow: self.newDish.ingredientiSecondari, baseColor: Color.yellow)
+                    SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiSecondari, fillColor: Color.yellow)
                 }
       
             }
@@ -101,29 +101,4 @@ struct PannelloIngredienti_NewDishSubView: View {
 }
 */
 
-struct IngredientHScroll_View:View {
-    
-    let inhredientsToShow: [IngredientModel]
-    let baseColor: Color
-    
-    var body: some View {
 
-        ScrollView(.horizontal,showsIndicators: false) {
-            
-            HStack {
-                
-                ForEach(inhredientsToShow) { model in
-                       
-                    CSText_tightRectangle(
-                        testo: model.intestazione,
-                        fontWeight: .bold,
-                        textColor: Color.white,
-                        strokeColor: Color.blue,
-                        fillColor: baseColor)
-
-                    
-                }
-            }
-        }
-    }
-}

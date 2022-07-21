@@ -12,7 +12,6 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
     @EnvironmentObject var viewModel:AccounterVM
     @Binding var newMenu: MenuModel
 
-   // @State private var pax: String = ""
     @State private var pax: PaxMenuFisso = .uno
     @State private var prezzo: String = ""
 
@@ -20,15 +19,14 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
     
     var body: some View {
         
-        VStack {
+        VStack(alignment:.leading) {
                 
         if !self.wannaInsertValues {
                         
             HStack {
                             
                 ForEach(TipologiaMenu.allCases) { tipologia in
-                    
-                  /*  CSText_bigRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia?.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia?.id == tipologia.id ? Color.orange : Color.clear) */
+ 
                     CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia?.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia?.id == tipologia.id ? Color.orange : Color.clear)
                         .onTapGesture {
                             withAnimation(.default) {
@@ -48,19 +46,25 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                                     }
                         .onLongPressGesture {
                             withAnimation(.default) {
-                                self.newMenu.tipologia = nil
+                                
+                                if tipologia.editingAvaible() { self.newMenu.tipologia = nil }
+                               
                                                     }
                                                 }
                                     }
                                 }
+                Text(self.newMenu.tipologia?.extendedDescription() ?? "")
+                    .font(.caption)
+                    .fontWeight(.light)
+                    .italic()
+                    .foregroundColor(Color.black)
             
                         } else {
                     
                     VStack(alignment: .leading) {
                         
                         HStack {
-                            
-                          /*  CSTextField_4(textFieldItem: $pax, placeHolder: ">=1", image: "person.fill.questionmark", keyboardType: .numberPad) */
+
                             CS_Picker(
                                 selection: $pax,
                                 customLabel: "Pax",
@@ -77,7 +81,6 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             Spacer()
                             
                             Button("Chiudi") {
-                               // self.tipologiaCorrente = .defaultValue
                                 self.wannaInsertValues = false }
                             .foregroundColor(Color.blue)
                             .padding(.trailing)
@@ -96,7 +99,6 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                     }
                 }
             }
-            
         }
         
     // Method
@@ -104,40 +106,15 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
     private func validateAndAddSpecificValue() {
                 
         guard csValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
-    
-           /* self.newMenu.alertItem = AlertModel(
-                title: "Errore Inserimento Prezzo",
-                message: "Valore inserito non valido. Ex: 180 o 180.5" ) */
             
             self.viewModel.alertItem = AlertModel(
                 title: "Errore Inserimento Prezzo",
                 message: "Valore inserito non valido. Ex: 180 o 180.5" )
             
-            print("Valore inserito in prezzo NON VALIDO - DEVE ESSERE APPARSO UN ALERT")
             self.prezzo = ""
-            //self.tipologiaCorrente = .defaultValue
             return}
-        
-      /*  guard csValidateValue(value: self.pax, convalidaAsDouble: false) else {
-        
-          /*  self.newMenu.alertItem = AlertModel(
-                title: "Errore Inserimento Porzioni",
-                message: "Il valore si riferisce al numero di persono e deve essere un numero intero positivo. Ex: 2 - Errato 1/2" ) */
-            
-            viewModel.alertItem = AlertModel(
-                title: "Errore Inserimento Porzioni",
-                message: "Il valore si riferisce al numero di persono e deve essere un numero intero positivo. Ex: 2 - Errato 1/2" )
-            
-            print("Valore inserito in pax NON VALIDO - DEVE ESSERE APPARSO UN ALERT")
-            self.pax = ""
-           // self.tipologiaCorrente = .defaultValue
-            return} */
-        
-    //    self.newMenu.tipologia = .fisso(persone: self.pax, costo: self.prezzo)
+    
         self.newMenu.tipologia = .fisso(persone: self.pax, costo: self.prezzo)
-        
-        print("pax: \(self.pax.simpleDescription()) - price: \(self.prezzo)")
-        print("nuovoMenuTipologia: \(self.newMenu.tipologia?.simpleDescription() ?? "Tipologia Menu is Nil")")
 
         self.prezzo = ""
         self.pax = .uno

@@ -51,7 +51,7 @@ struct DataModelCategoryView_SubView<M:MyModelStatusConformity,G:MyEnumProtocolM
                    
                    ForEach(csDataMapping(), id:\.self) { category in
                        
-                       CSLabel_1Button(placeHolder: category.simpleDescription(), imageNameOrEmojy: category.imageAssociated(), backgroundColor: Color.blue, backgroundOpacity: 0.3)
+                       CSLabel_1Button(placeHolder: category.simpleDescription(), imageNameOrEmojy: category.imageAssociated(), backgroundColor: Color("SeaTurtlePalette_1"), backgroundOpacity: 0.3)
     
                        ScrollView(.horizontal,showsIndicators: false) {
                            

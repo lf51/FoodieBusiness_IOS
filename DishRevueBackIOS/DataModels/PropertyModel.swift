@@ -7,6 +7,7 @@
 
 import Foundation
 import MapKit
+import SwiftUI
 
 /* La registrazione di una proprietò avviene da Maps. Se l'attività non è ancora presente in Maps la registrazione non può avvenire. Potremmo predisporre una registrazione manuale ma non lo facciamo per i seguenti motivi:
  • Usando Maps ci affidiamo ad un servizio già collaudato e non ci dobbiamo preoccupare di verificare l'esistenza reale di quella proprietà, cosa che invece diventerebbe necessaria in caso di inserimento manuale.
@@ -17,6 +18,14 @@ import MapKit
 */
 
 struct PropertyModel: MyModelProtocol, Hashable{
+    
+    func returnNewModel() -> (tipo: PropertyModel, nometipo: String) {
+        (PropertyModel(),"Nuova Proprietà")
+    }
+
+    func returnModelRowView() -> some View {
+        PropertyModel_RowView(itemModel: self)
+    }
     
     func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String) {
         

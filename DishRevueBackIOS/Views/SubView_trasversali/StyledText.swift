@@ -7,16 +7,20 @@
 
 import SwiftUI
 
-struct CSText_tightRectangle: View {
+/// Duplica il CSText-TightRectangle ma aggiunge un visualContent al posto del Text
+struct CSText_tightRectangleVisual<VisualContent:View>: View {
     
-    let testo:String
+   // let testo:String
     let fontWeight:Font.Weight
     let textColor:Color
     let strokeColor:Color
     let fillColor:Color
-
+    
+    @ViewBuilder var content:() -> VisualContent
+    
     var body: some View {
-        Text(testo)
+
+            content()
             .fontWeight(fontWeight)
             .foregroundColor(textColor)
             ._tightPadding()
@@ -29,6 +33,35 @@ struct CSText_tightRectangle: View {
                     .shadow(radius: 3.0)
                                )
                 )
+    }
+}
+
+/// Plain Text con rettangolo di sfondo tightPadding
+struct CSText_tightRectangle: View {
+    
+    let testo:String
+    let fontWeight:Font.Weight
+    let textColor:Color
+    let strokeColor:Color
+    let fillColor:Color
+    
+    var body: some View {
+
+            Text(testo)
+            .fontWeight(fontWeight)
+            .foregroundColor(textColor)
+          // .shadow(color: Color.black, radius: 1.5)
+            ._tightPadding()
+            .background (
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .strokeBorder(strokeColor)
+                    .background(RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(fillColor.opacity(0.8))
+                   // .shadow(radius: 3.0)
+                               )
+                )
+           
     }
 }
 
@@ -178,9 +211,9 @@ struct CSText_RotatingRectangleDynamicDeletingFace: View {
 }
 
 
-
+/*
 struct CSText_tight_Previews: PreviewProvider {
     static var previews: some View {
         CSText_tightRectangle(testo:"Pronto Prova", fontWeight: .bold, textColor: Color.mint, strokeColor: Color.clear, fillColor:Color.white)
     }
-}
+} */

@@ -8,9 +8,22 @@
 // Modifiche 14.02
 
 import Foundation
-
+import SwiftUI
 
 struct DishModel:MyModelStatusConformity {
+    
+    func returnNewModel() -> (tipo: DishModel, nometipo: String) {
+        (DishModel(),"Nuovo Piatto")
+    }
+    
+    func modelStringResearch(string: String) -> Bool {
+        self.intestazione.lowercased().contains(string)
+    }
+    
+    func returnModelRowView() -> some View {
+        DishModel_RowView(item: self)
+    }
+    
     
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
        
@@ -22,7 +35,7 @@ struct DishModel:MyModelStatusConformity {
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
         lhs.categoriaMenu == rhs.categoriaMenu &&
-        lhs.areAllergeniOk == rhs.areAllergeniOk &&
+       //lhs.areAllergeniOk == rhs.areAllergeniOk &&
         lhs.allergeni == rhs.allergeni &&
         lhs.dieteCompatibili == rhs.dieteCompatibili &&
         lhs.pricingPiatto == rhs.pricingPiatto &&
@@ -43,7 +56,7 @@ struct DishModel:MyModelStatusConformity {
     
     var categoriaMenu: CategoriaMenu
     
-    var areAllergeniOk: Bool = false
+  //  var areAllergeniOk: Bool = false
     var allergeni: [AllergeniIngrediente] // derivati dagli ingredienti
 
     var dieteCompatibili:[DishTipologia] // derivate dagli ingredienti
@@ -56,11 +69,11 @@ struct DishModel:MyModelStatusConformity {
         self.intestazione = ""
         self.descrizione = ""
         self.rating = ""
-        self.status = .bozza
+        self.status = .vuoto
         self.ingredientiPrincipali = []
         self.ingredientiSecondari = []
         self.categoriaMenu = .defaultValue
-        self.areAllergeniOk = false
+      //  self.areAllergeniOk = false
         self.allergeni = []
         self.dieteCompatibili = [.standard]
         self.pricingPiatto =  [DishFormat(type: .mandatory)]

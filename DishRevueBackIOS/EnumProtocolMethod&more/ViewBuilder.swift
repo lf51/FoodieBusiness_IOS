@@ -12,7 +12,7 @@ import SwiftUI
 /// Deprecata in futuro -- usare csVbSwitchImageText(string: String?,size:Image.Scale)
 /// - Parameter string: <#string description#>
 /// - Returns: <#description#>
-@ViewBuilder func csVbSwitchImageText(string: String?) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emnojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.04
+@ViewBuilder func csVbSwitchImageText(string: String?) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.04
     
         if let imageName = string {
             
@@ -80,10 +80,10 @@ import SwiftUI
 }
 
 
-/// ViewBuilder - Riconosce il modello e ritorna la rowView associata. Deprecato e sostituito da viewBuilder più articolati creati localmente che usano Binding.
+/// ViewBuilder - Riconosce il modello e ritorna la rowView associata. Deprecata 19.07 Sostituita da una func nel Protocolo
 /// - Parameter item: <#item description#>
 /// - Returns: <#description#>
-@ViewBuilder func csVbSwitchModelRowView<M:MyModelProtocol>(item: M) -> some View {
+/*@ViewBuilder func csVbSwitchModelRowView<M:MyModelProtocol>(item: M) -> some View {
      
      switch item.self {
          
@@ -102,7 +102,7 @@ import SwiftUI
      default:  Text("item is a notListed Type")
          
      }
- }
+ } */ // Deprecata 19.07
 
 
 /*
@@ -295,7 +295,7 @@ struct CSZStackVB_Framed<Content:View>:View {
         GenericItemModel_RowViewMask(
             model: currentModel) {
                 
-                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath, titleOne: "Completa")
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath, titleOne: "Completa Bozza")
                 
             }
         
@@ -333,4 +333,3 @@ struct CSZStackVB_Framed<Content:View>:View {
     }
    
 }
-

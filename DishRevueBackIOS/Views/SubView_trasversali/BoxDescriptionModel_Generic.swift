@@ -11,7 +11,7 @@ struct BoxDescriptionModel_Generic<M:MyModelProtocol>: View {
     
     @Binding var itemModel:M
     let labelString: String
-    let disabledCondition: Bool?
+    let disabledCondition: Bool
     @State private var wannaAddDescription: Bool? = false
     
     var body: some View {

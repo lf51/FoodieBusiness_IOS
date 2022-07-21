@@ -7,99 +7,250 @@
 
 import SwiftUI
 
-// SVILUPPARE CREAZIONE VARIANTI CON LO STESSO NOME
-
 struct NuovoIngredienteMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-    
-  //  @Binding var dismissButton: Bool? // se passiamo nil viene usato il dismiss dell'enviroment e la view è diversa
-    
-   // @State var nuovoIngrediente: IngredientModel = IngredientModel() // deprecata 29.06
+
     @State private var nuovoIngrediente: IngredientModel
     let backgroundColorView: Color
     
-    init(nuovoIngrediente: IngredientModel,backgroundColorView: Color) {
-        self.backgroundColorView = backgroundColorView
-        _nuovoIngrediente = State(wrappedValue: nuovoIngrediente)
-    }
+    let ingredienteArchiviato: IngredientModel // per il reset
+    let destinationPath: DestinationPath
     
-  /*  init(backgroundColorView: Color, dismissButton: Binding<Bool?>? = nil) {
+    @State private var generalErrorCheck: Bool = false
+    
+    @State private var isConservazioneOk: Bool = false
+    @State private var areAllergeniOk: Bool = false
+    @State private var wannaAddAllergeni: Bool = false
+    
+    init(nuovoIngrediente: IngredientModel,backgroundColorView: Color,destinationPath:DestinationPath) {
         
-      //  self.propertyVM = propertyVM
-       // self.accounterVM = accounterVM
+        _nuovoIngrediente = State(wrappedValue: nuovoIngrediente)
         self.backgroundColorView = backgroundColorView
-        _dismissButton = dismissButton ?? Binding.constant(nil)
-    } */
+        self.destinationPath = destinationPath
+        
+        self.ingredienteArchiviato = nuovoIngrediente
+       
+    }
     
     var body: some View {
         
-        CSZStackVB(title: "Nuovo Ingrediente", backgroundColorView: backgroundColorView) {
-
-         //  if self.dismissButton == nil {backgroundColorView.opacity(0.9).ignoresSafeArea()}
-                  
-       // VStack { // VStack Madre
-               
-         /*   if self.dismissButton == nil {
-                
-                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.intestazione != "" ? nuovoIngrediente.intestazione : "Nuovo Ingrediente", enableEnvironmentDismiss:true)
-                    .padding()
-                    .background(Color.cyan)
-                // questo background riguarda la parte alta della View occupata dall'HStack e serve a dare uno stacco di tono
-                
-            } else {
-                
-                TopBar_3BoolPlusDismiss(title: nuovoIngrediente.intestazione != "" ? nuovoIngrediente.intestazione : "Nuovo Ingrediente", exitButton: $dismissButton)
-                    .padding()
-            } */
+        CSZStackVB(title:self.nuovoIngrediente.intestazione == "" ? "Nuovo Ingrediente" : self.nuovoIngrediente.intestazione, backgroundColorView: backgroundColorView) {
             
-                VStack(alignment:.leading) {
+                VStack {
                     
                     CSDivider()
                     
                     ScrollView(showsIndicators: false) {
-                        IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Ingrediente", imageLabel: "doc.badge.plus", coloreContainer: Color.orange, itemModel: $nuovoIngrediente).padding(.horizontal)
+                      
+                        VStack(alignment:.leading){
+                            
+                            IntestazioneNuovoOggetto_Generic(
+                                itemModel: $nuovoIngrediente,
+                                generalErrorCheck: generalErrorCheck,
+                                minLenght: 3,
+                                coloreContainer: Color("SeaTurtlePalette_3"))
+                               
+                            BoxDescriptionModel_Generic(
+                                itemModel: $nuovoIngrediente,
+                                labelString: "Descrizione (Optional)",
+                                disabledCondition: wannaAddAllergeni)
+                            
+                            // Origine
+                            OrigineScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente, generalErrorCheck: generalErrorCheck)
                            
-                        SelectionPropertyIngrediente_NewDishSubView(nuovoIngrediente: $nuovoIngrediente)
-                                    
-                 //   if self.dismissButton == nil { Spacer() }
                             
-                          //  Spacer()
+                            // Allergeni
+                            AllergeniScrollView_NewIngredientSubView(
+                                nuovoIngrediente: self.$nuovoIngrediente,
+                                generalErrorCheck: generalErrorCheck,
+                                areAllergeniOk: $areAllergeniOk,
+                                wannaAddAllergene: $wannaAddAllergeni)
                             
-                            CSButton_large(title: "Crea Ingrediente", accentColor: .black, backgroundColor: .black.opacity(0.2), cornerRadius: 10.0) {
-                                            
-                                            test(ingrediente: &nuovoIngrediente)
-                                            print("CREARE Ingrediente SU FIREBASE-Modificare in NuovoIngredienteView")
-                                   
-                                    }.padding()
+                           ConservazioneScrollView_NewIngredientSubView(
+                            nuovoIngrediente: $nuovoIngrediente,
+                            generalErrorCheck: generalErrorCheck,
+                            isConservazioneOk: $isConservazioneOk)
+                            
+                            ProduzioneScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente)
+                            
+                            ProvenienzaScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente, generalErrorCheck: generalErrorCheck)
+
+                            BottomViewGeneric_NewModelSubView(
+                                itemModel: $nuovoIngrediente,
+                                generalErrorCheck: $generalErrorCheck,
+                                itemModelArchiviato: ingredienteArchiviato,
+                                destinationPath: destinationPath) {
+                                    infoIngrediente()
+                                } checkPreliminare: {
+                                    checkPreliminare()
+                                }
+
+                            
+                               /* BottomViewGeneric_NewModelSubView(
+                                    generalErrorCheck: $generalErrorCheck,
+                                    wannaDisableButtonBar: (nuovoIngrediente == ingredienteArchiviato)) {
+                                        infoIngrediente()
+                                    } resetAction: {
+                                        csResetModel(modelAttivo: &self.nuovoIngrediente, modelArchiviato: self.ingredienteArchiviato)
+                                    } checkPreliminare: {
+                                        checkPreliminare()
+                                    } saveButtonDialogView: {
+                                       vbScheduleANuovoIngrediente()
+                                    } */
+
+                            
+                        }.padding(.horizontal)
+                      
+                    }
+                    .zIndex(0)
+                    .opacity(wannaAddAllergeni ? 0.6 : 1.0)
+                    .disabled(wannaAddAllergeni)
+
+                    if wannaAddAllergeni {
+               
+                        SelettoreMyModel<_,AllergeniIngrediente>(
+                            itemModel: $nuovoIngrediente,
+                            allModelList: ModelList.ingredientAllergeniList,
+                            closeButton: $wannaAddAllergeni,
+                            backgroundColorView: backgroundColorView,
+                            actionTitle: "Normativa") {
+                                print("Inserire Link Normativa Allergeni")
+                            }
+                        
                     }
                     
-
-               
+                    
                CSDivider()
                     
                     }
-          //  } // End VSTACK MADRE
-      //  .background(self.dismissButton == nil ? RoundedRectangle(cornerRadius: 20.0).fill(Color.clear).shadow(radius: 0.0) : RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
-       // .contrast(self.dismissButton == nil ? 1.0 : 1.2)
-       // .brightness(self.dismissButton == nil ? 0.0 : 0.08)
-       
-           // end ZStack
-       }
-       .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
-    }
     
-    func test(ingrediente: inout IngredientModel) {
+       }
+      // .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
+    }
+    // Method
+    
+    private func infoIngrediente() -> Text {
         
-        for x in 0...100 {
+        var stringaAlllergeni: String = "Presenza/assenza Allergeni non Confermata"
+        var stringaCongeSurge: String = "Metodo di Conservazione non confermato"
+        var metodoProduzione: String = ""
+        
+        if areAllergeniOk {
             
-            ingrediente.intestazione = String(x)
+            if self.nuovoIngrediente.allergeni.isEmpty {
+                stringaAlllergeni = "Questo ingrediente è privo di Allergeni."
+            } else {
+    
+                let count = self.nuovoIngrediente.allergeni.count
+                stringaAlllergeni = "Questo ingrediente contiene \(count > 1 ? "\(count) Allergeni" : "1 Allergene")."
+            }
+        }
+        
+        if isConservazioneOk {
             
-            viewModel.allMyIngredients.append(ingrediente)
+             stringaCongeSurge = "Questo prodotto \( self.nuovoIngrediente.conservazione.extendedDescription() ?? "")."
             
         }
         
+        if self.nuovoIngrediente.produzione == .biologico {
+            metodoProduzione = "Prodotto BIO."
+        }
+        
+        return Text("\(stringaAlllergeni)\n\(stringaCongeSurge)\n\(metodoProduzione)")
     }
+    
+    private func checkPreliminare() -> Bool {
+        
+        guard checkIntestazione() else { return false }
+        
+        guard checkOrigine() else { return false }
+        
+        guard self.areAllergeniOk else { return false }
+        
+        guard self.isConservazioneOk else { return false }
+        
+        guard checkLuogoProduzione() else { return false }
+        
+        self.nuovoIngrediente.status = .completo(.archiviato)
+        return true 
+    }
+    
+    private func checkLuogoProduzione() -> Bool {
+        
+        self.nuovoIngrediente.provenienza != .defaultValue
+    }
+    
+    private func checkOrigine() -> Bool {
+        
+         self.nuovoIngrediente.origine != .defaultValue
+        
+    }
+    
+    private func checkIntestazione() -> Bool {
+    
+         self.nuovoIngrediente.intestazione != ""
+   
+    }
+    
+    /*
+    @ViewBuilder private func vbScheduleANuovoIngrediente() -> some View {
+        
+        if self.ingredienteArchiviato.intestazione == "" {
+            // crea un Nuovo Oggetto
+            Group {
+                
+                Button("Salva e Crea Nuovo", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.nuovoIngrediente)
+                self.nuovoIngrediente = IngredientModel()
+                    
+                }
+                
+                Button("Salva ed Esci", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.nuovoIngrediente,destinationPath: destinationPath)
+                }
+
+            }
+        }
+        
+        else if self.ingredienteArchiviato.intestazione == self.nuovoIngrediente.intestazione {
+            // modifica l'oggetto corrente
+            
+            Group { vbEditingSaveButton() }
+        }
+        
+        else {
+            
+            Group {
+                
+                vbEditingSaveButton()
+                
+                Button("Salva come Nuovo Ingrediente", role: .none) {
+                    
+                self.viewModel.createItemModel(itemModel: self.nuovoIngrediente,destinationPath: destinationPath)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder private func vbEditingSaveButton() -> some View {
+        
+        Button("Salva Modifiche e Crea Nuovo", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.nuovoIngrediente)
+        self.nuovoIngrediente = IngredientModel()
+        }
+        
+        Button("Salva Modifiche ed Esci", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.nuovoIngrediente, destinationPath: destinationPath)
+        }
+        
+        
+    } */
+ 
     
 }
 

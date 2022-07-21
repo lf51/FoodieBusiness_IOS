@@ -11,6 +11,7 @@ import SwiftUI
 struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
+    
     @Binding var itemModel: M1
     @Binding var modelListCorrente: String
     
@@ -31,11 +32,11 @@ struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
 
     var body: some View {
 
-        List {
+       // List {
             
             vbShowCurrentModelList()
-        }
-        .listStyle(.plain)
+      //  }
+      //  .listStyle(.plain)
         
     }
     

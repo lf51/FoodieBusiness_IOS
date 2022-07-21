@@ -18,7 +18,9 @@ struct NewDishMainView: View {
     let destinationPath: DestinationPath
     
     @State private var generalErrorCheck: Bool = false
-    @State private var wannaAddIngredient: Bool? = false
+    @State private var wannaAddIngredient: Bool = false
+    
+    @State private var areAllergeniOk: Bool = false 
     
     init(newDish: DishModel,backgroundColorView: Color, destinationPath:DestinationPath) {
         
@@ -53,33 +55,44 @@ struct NewDishMainView: View {
                             
                             PannelloIngredienti_NewDishSubView(newDish: newDish, generalErrorCheck: generalErrorCheck, wannaAddIngredient: $wannaAddIngredient)
                                 
-                            AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
+                            AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck, areAllergeniOk: $areAllergeniOk)
  
                             DietScrollView_NewDishSub(newDish: $newDish)
  
                             DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
  
-                            Spacer()
+                         //   Spacer()
+                            
+                            BottomViewGeneric_NewModelSubView(
+                                itemModel: $newDish,
+                                generalErrorCheck: $generalErrorCheck,
+                                itemModelArchiviato: piattoArchiviato,
+                                destinationPath: destinationPath) {
+                                    infoPiatto()
+                                } checkPreliminare: {
+                                    checkPreliminare()
+                                }
+
                                     
-                            BottomViewGeneric_NewModelSubView(generalErrorCheck:$generalErrorCheck, wannaDisableButtonBar:(newDish == piattoArchiviato)) {
+                         /*   BottomViewGeneric_NewModelSubView(generalErrorCheck:$generalErrorCheck, wannaDisableButtonBar:(newDish == piattoArchiviato)) {
                                 infoPiatto()
                             } resetAction: {
-                                resetModel(modelAttivo: &self.newDish, modelArchiviato: self.piattoArchiviato)
+                                csResetModel(modelAttivo: &self.newDish, modelArchiviato: self.piattoArchiviato)
                             } checkPreliminare: {
                                 checkPreliminare()
                             } saveButtonDialogView: {
                                 vbScheduleANewDish()
-                            }
+                            } */
                             
                         }
                     .padding(.horizontal)
      
                     }
                     .zIndex(0)
-                    .opacity(wannaAddIngredient! ? 0.6 : 1.0)
-                    .disabled(wannaAddIngredient!)
+                    .opacity(wannaAddIngredient ? 0.6 : 1.0)
+                    .disabled(wannaAddIngredient)
     
-                if wannaAddIngredient! {
+                if wannaAddIngredient {
            
                    /* SelettoreMyModel<_,IngredientModel>(
                         itemModel: $newDish,
@@ -89,7 +102,9 @@ struct NewDishMainView: View {
                     SelettoreMyModel<_,IngredientModel>(
                         itemModel: $newDish,
                         allModelList: ModelList.dishIngredientsList,
-                        closeButton: $wannaAddIngredient) {
+                        closeButton: $wannaAddIngredient,
+                        backgroundColorView: backgroundColorView,
+                        actionTitle: "[+] Ingrediente") {
                             
                             viewModel.addToThePath(
                                 destinationPath: destinationPath,
@@ -110,65 +125,41 @@ struct NewDishMainView: View {
     // Method
     
     private func infoPiatto() -> Text {
+           
+        var stringIngredientiPrincipali:[String] = []
+        var stringIngredientiSecondari:[String] = []
+        var stringAllergeni:[String] = []
         
-        Text("Da Implementare")
-    }
-    
-    @ViewBuilder private func vbScheduleANewDish() -> some View {
+        var stringValueAllergeni = "Nessun allergene indicato negli ingredienti."
         
-        if self.piattoArchiviato.intestazione == "" {
-            // crea un Nuovo Oggetto
-            Group {
+        for ingredient in self.newDish.ingredientiPrincipali {
+            
+            let stringValue = ingredient.intestazione
+            stringIngredientiPrincipali.append(stringValue)
+            
+        }
+        
+        for ingredient in self.newDish.ingredientiSecondari {
+            
+            let stringValue = ingredient.intestazione
+            stringIngredientiSecondari.append(stringValue)
+            
+        }
+        
+        if !self.newDish.allergeni.isEmpty {
+            
+            for allergene in self.newDish.allergeni {
                 
-                Button("Salva e Crea Nuovo", role: .none) {
-                    
-                self.viewModel.createItemModel(itemModel: self.newDish)
-                self.newDish = DishModel()
-                    
-                }
+                let stringValue = allergene.simpleDescription()
+                stringAllergeni.append(stringValue)
                 
-                Button("Salva ed Esci", role: .none) {
-                    
-                self.viewModel.createItemModel(itemModel: self.newDish,destinationPath: destinationPath)
-                }
-
             }
+            stringValueAllergeni = "Indicata la presenza degli allergeni:"
         }
         
-        else if self.piattoArchiviato.intestazione == self.newDish.intestazione {
-            // modifica l'oggetto corrente
+        return Text("\(self.newDish.intestazione)\n\(stringIngredientiPrincipali,format: .list(type: .and))\n\(stringValueAllergeni) \(stringAllergeni,format: .list(type: .and))")
             
-            Group { vbEditingSaveButton() }
-        }
-        
-        else {
-            
-            Group {
-                
-                vbEditingSaveButton()
-                
-                Button("Salva come Nuovo Piatto", role: .none) {
-                    
-                self.viewModel.createItemModel(itemModel: self.newDish,destinationPath: destinationPath)
-                }
-            }
-        }
-    }
-    
-    @ViewBuilder private func vbEditingSaveButton() -> some View {
-        
-        Button("Salva Modifiche e Crea Nuovo", role: .none) {
-            
-        self.viewModel.updateItemModel(itemModel: self.newDish)
-        self.newDish = DishModel()
-        }
-        
-        Button("Salva Modifiche ed Esci", role: .none) {
-            
-        self.viewModel.updateItemModel(itemModel: self.newDish, destinationPath: destinationPath)
-        }
-        
-        
+           
     }
     
     private func checkPreliminare() -> Bool {
@@ -183,13 +174,14 @@ struct NewDishMainView: View {
        
         guard checkFormats() else { return false }
        
+        self.newDish.status = .completo(.archiviato) // vedi Nota Consegna 17.07
         return true
         
     }
     
     private func checkAllergeni() -> Bool {
 
-        return self.newDish.areAllergeniOk
+        return self.areAllergeniOk
     }
     
     private func checkCategoria() -> Bool {
@@ -228,7 +220,64 @@ struct NewDishMainView: View {
         return true
       }
     
-    
+    /*
+     @ViewBuilder private func vbScheduleANewDish() -> some View {
+         
+         if self.piattoArchiviato.intestazione == "" {
+             // crea un Nuovo Oggetto
+             Group {
+                 
+                 Button("Salva e Crea Nuovo", role: .none) {
+                     
+                 self.viewModel.createItemModel(itemModel: self.newDish)
+                 self.newDish = DishModel()
+                     
+                 }
+                 
+                 Button("Salva ed Esci", role: .none) {
+                     
+                 self.viewModel.createItemModel(itemModel: self.newDish,destinationPath: destinationPath)
+                 }
+
+             }
+         }
+         
+         else if self.piattoArchiviato.intestazione == self.newDish.intestazione {
+             // modifica l'oggetto corrente
+             
+             Group { vbEditingSaveButton() }
+         }
+         
+         else {
+             
+             Group {
+                 
+                 vbEditingSaveButton()
+                 
+                 Button("Salva come Nuovo Piatto", role: .none) {
+                     
+                 self.viewModel.createItemModel(itemModel: self.newDish,destinationPath: destinationPath)
+                 }
+             }
+         }
+     }
+     
+     @ViewBuilder private func vbEditingSaveButton() -> some View {
+         
+         Button("Salva Modifiche e Crea Nuovo", role: .none) {
+             
+         self.viewModel.updateItemModel(itemModel: self.newDish)
+         self.newDish = DishModel()
+         }
+         
+         Button("Salva Modifiche ed Esci", role: .none) {
+             
+         self.viewModel.updateItemModel(itemModel: self.newDish, destinationPath: destinationPath)
+         }
+         
+         
+     }
+     */
 }
 
 

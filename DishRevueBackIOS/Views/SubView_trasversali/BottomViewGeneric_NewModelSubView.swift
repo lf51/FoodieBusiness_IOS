@@ -8,6 +8,126 @@
 import SwiftUI
 
 /// Questa View è la bottom Standard - Reset Salva - per i Nuovi Modelli. E' una generic non in senso stretto. Esegue un check Preliminare prima di aprire la confirmationDialog. Rende obsoleto i disabled dei singoli oggetti. Permette di mandare tramite il checkPrelimare il segnale per un warning.
+struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
+    
+    @EnvironmentObject var viewModel: AccounterVM
+    
+    @Binding var itemModel: M
+    @Binding var generalErrorCheck:Bool
+   // let wannaDisableButtonBar: Bool
+    let itemModelArchiviato: M
+    let destinationPath: DestinationPath
+    let description: () -> Text
+   // let resetAction: () -> Void
+    let checkPreliminare: () -> Bool
+  //  @ViewBuilder var saveButtonDialogView: Content
+    
+    @State private var showDialog: Bool = false
+    
+    var body: some View {
+       
+        HStack {
+                
+            description()
+                .italic()
+                .fontWeight(.light)
+                .font(.caption)
+
+            Spacer()
+            
+            CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) { self.resetAction() }
+
+            CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
+                let check = checkPreliminare()
+                if check { self.showDialog = true}
+                else { self.generalErrorCheck = true }
+            }
+        }
+        .opacity(itemModel == itemModelArchiviato ? 0.6 : 1.0)
+        .disabled(itemModel == itemModelArchiviato)
+        .padding(.vertical)
+        .confirmationDialog(
+                description(),
+                isPresented: $showDialog,
+                titleVisibility: .visible) { saveButtonDialogView() }
+        
+    }
+    
+    // Method
+    
+    /// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
+   private func resetAction() {
+      
+        self.itemModel = itemModelArchiviato
+      //  modelAttivo = modelArchiviato
+    }
+
+    @ViewBuilder private func saveButtonDialogView() -> some View {
+        
+        let (newModelType,newModelName) = self.itemModel.returnNewModel()
+        
+        if itemModelArchiviato.intestazione == "" {
+            // crea un Nuovo Oggetto
+            Group {
+                
+                Button("Salva e Crea Nuovo", role: .none) {
+                    
+                    self.viewModel.createItemModel(itemModel: self.itemModel)
+                    self.itemModel = newModelType
+                    
+                }
+                
+                Button("Salva ed Esci", role: .none) {
+                    
+                    self.viewModel.createItemModel(itemModel: self.itemModel,destinationPath: self.destinationPath)
+                }
+
+            }
+        }
+        
+        else if self.itemModelArchiviato.intestazione == self.itemModel.intestazione {
+            // modifica l'oggetto corrente
+            
+            Group { vbEditingSaveButton(modelVuoto: newModelType) }
+        }
+        
+        else {
+            
+            Group {
+                
+                vbEditingSaveButton(modelVuoto: newModelType)
+                
+                Button("Salva come \(newModelName)", role: .none) {
+                    
+                    self.viewModel.createItemModel(itemModel: self.itemModel,destinationPath: self.destinationPath)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder private func vbEditingSaveButton(modelVuoto:M) -> some View {
+        
+        Button("Salva Modifiche e Crea Nuovo", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.itemModel)
+            self.itemModel = modelVuoto
+        }
+        
+        Button("Salva Modifiche ed Esci", role: .none) {
+            
+            self.viewModel.updateItemModel(itemModel: self.itemModel, destinationPath: self.destinationPath)
+        }
+        
+        
+    }
+    
+    
+}
+
+
+
+/*
+/// Questa View è la bottom Standard - Reset Salva - per i Nuovi Modelli. E' una generic non in senso stretto. Esegue un check Preliminare prima di aprire la confirmationDialog. Rende obsoleto i disabled dei singoli oggetti. Permette di mandare tramite il checkPrelimare il segnale per un warning.
 struct BottomViewGeneric_NewModelSubView<Content: View>: View {
     
     @Binding var generalErrorCheck:Bool
@@ -52,7 +172,7 @@ struct BottomViewGeneric_NewModelSubView<Content: View>: View {
     
 
 
-}
+} */ // Deprecata 20.07
 
 /*
 struct OverlayTEST_Previews: PreviewProvider {

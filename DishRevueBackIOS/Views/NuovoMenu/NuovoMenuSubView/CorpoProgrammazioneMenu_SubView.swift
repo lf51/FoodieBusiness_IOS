@@ -55,7 +55,6 @@ struct CorpoProgrammazioneMenu_SubView: View {
                     .opacity(self.valueFor.disableOrari ? 0.6 : 1.0)
                     .disabled(self.valueFor.disableOrari)
                     
-                    
                 Text("  |  ")
                 
                 DatePicker("alle:", selection: self.$nuovoMenu.oraFine, in: (self.nuovoMenu.oraInizio.addingTimeInterval(1800.0))... ,displayedComponents: .hourAndMinute)

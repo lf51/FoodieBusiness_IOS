@@ -6,8 +6,17 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
+    
+    func returnNewModel() -> (tipo: AllergeniIngrediente, nometipo: String) {
+        (AllergeniIngrediente.noValue,"Nuovo Allergene")
+    }
+    
+    func returnModelRowView() -> some View {
+        EmptyView()
+    }
     
     func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String, nomeOggetto:String) {
         
@@ -72,6 +81,10 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
     func createId() -> String {
         
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
+    }
+    
+    func imageAssociated() -> String? {
+        nil
     }
     
    static func returnAllergeniIn(ingredients: [IngredientModel]...) -> [AllergeniIngrediente] {

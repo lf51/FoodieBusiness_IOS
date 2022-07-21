@@ -39,9 +39,9 @@ struct DietScrollView_NewDishSub: View {
                         
                         Text(confermaDiete ? "Confermato" : "Non Confermato")
                             .font(.system(.callout, design: .monospaced))
-                        Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
+                     /*   Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
                             .foregroundColor(confermaDiete ? Color.green : Color.gray)
-                            .imageScale(.medium)
+                            .imageScale(.medium) */
                     }
                     
                 }

@@ -6,8 +6,21 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct MenuModel:MyModelStatusConformity {
+    
+    func returnNewModel() -> (tipo: MenuModel, nometipo: String) {
+        (MenuModel(), "Nuovo Menu")
+    }
+    
+    func modelStringResearch(string: String) -> Bool {
+        self.intestazione.lowercased().contains(string)
+    }
+    
+    func returnModelRowView() -> some View {
+        MenuModel_RowView(menuItem: self)
+    }
     
     func creaID(fromValue: String) -> String {
         fromValue.replacingOccurrences(of: " ", with: "").lowercased() 
@@ -39,6 +52,7 @@ struct MenuModel:MyModelStatusConformity {
         lhs.descrizione == rhs.descrizione &&
         lhs.dishIn == rhs.dishIn &&
         lhs.tipologia == rhs.tipologia &&
+        lhs.status == rhs.status &&
         lhs.isAvaibleWhen == rhs.isAvaibleWhen &&
         lhs.dataInizio == rhs.dataInizio &&
         lhs.dataFine == rhs.dataFine &&
@@ -55,10 +69,10 @@ struct MenuModel:MyModelStatusConformity {
     var intestazione: String = "" // Categoria Filtraggio
     var descrizione: String = ""
     
-    var dishIn: [DishModel] = [] {willSet {status = newValue.isEmpty ? .bozza : .completo(.archiviato)}}
+    var dishIn: [DishModel] = [] /*{willSet {status = newValue.isEmpty ? .vuoto : .completo(.archiviato)}} */
     
     var tipologia: TipologiaMenu? // Categoria di Filtraggio
-    var status: StatusModel = .bozza
+    var status: StatusModel = .vuoto
     
     var isAvaibleWhen: AvailabilityMenu? {willSet {giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
     

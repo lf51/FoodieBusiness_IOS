@@ -9,23 +9,17 @@ import SwiftUI
 
 ///Selettore Generico di MyModelProtocol. I [ModelList] hanno un un limite max (teorico/grafico) di 4 liste, di cui almeno una per tipo (container destinazione o container fonte), e un limite min di 2 (una per tipo). Il value dei keypath deve portare ad un array.
 
-struct CheckCount {
-    
-    static var initCount: Int = 0
-    static var itemCount: Int = 0
-} 
-
 struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
-    var screenHeight: CGFloat = UIScreen.main.bounds.height
-
     @EnvironmentObject var viewModel: AccounterVM
-    @Binding var itemModel: M1
   
-   // @Binding var creaButton: Bool?
+    @Binding var itemModel: M1
     let allModelList: [ModelList]
-    @Binding var closeButton: Bool?
-    let action: () -> Void
+    @Binding var closeButton: Bool
+    let backgroundColorView: Color
+    
+    var actionTitle: String
+    var action: (() -> Void)? = nil
 
     @State private var modelListCorrente: String = ""
     
@@ -34,42 +28,41 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     @State private var temporaryDestinationModelContainer: [String:[M2]] = [:]
     
-    init(itemModel: Binding<M1>, allModelList: [ModelList], closeButton:Binding<Bool?>,action:@escaping () -> Void /*creaButton:Binding<Bool?>? = nil*/) {
+    let screenHeight: CGFloat = UIScreen.main.bounds.height
+    
+    
+    init(itemModel: Binding<M1>, allModelList: [ModelList], closeButton:Binding<Bool>, backgroundColorView:Color, actionTitle:String = "", action: (() -> Void)? = nil)  {
         
         _itemModel = itemModel
-       
-      //  _creaButton = creaButton ?? .constant(nil)
+
         self.allModelList = allModelList
         _closeButton = closeButton
+        self.backgroundColorView = Color("SeaTurtlePalette_2")//backgroundColorView.opacity(0.8)
+        self.actionTitle = actionTitle
         self.action = action
         
         let currentList:String
+        
         (self.viewModelList, self.itemModelList, currentList) = splitModelList(allModelList: allModelList)
         
         _modelListCorrente = State(initialValue: currentList)
-        CheckCount.initCount += 1
+       
         
     }
 
     private var isButtonDisabled: Bool {
-        
-    //    print("IsButtonDisabled - step 1")
-        
+ 
         for itemList in itemModelList {
             
             if itemList.returnAssociatedValue().0 == self.modelListCorrente { return true }
             
         }
-        
-     //   print("IsButtonDisabled - step 2")
      
         for (_,container) in temporaryDestinationModelContainer {
             
             if !container.isEmpty {return false}
             
         }
-     //   print("IsButtonDisabled - step 3")
-        
         return true
     }
  
@@ -78,60 +71,65 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
         VStack(alignment: .leading) {
             
             HStack {
-                
-               // Text("Init: \(CheckCount.initCount)")
-               // Text("Item: \(CheckCount.itemCount)")
-                
-              /*  CSButton_large(
-                    title: self.creaButton != nil ? "[+] Nuovo" : "Selettore",
-                    accentColor: self.creaButton != nil ? Color.white : Color.black,
-                    backgroundColor: Color.cyan.opacity(0.5),
-                    cornerRadius: 20.0,
-                    corners:.bottomRight,
-                    paddingValue: 5.0) { self.creaButton!.toggle() }.disabled(self.creaButton == nil) */
+ 
+                if action != nil {
                     
-                CSButton_large(
-                    title: "[+] Nuovo",
-                    accentColor: Color.white,
-                    backgroundColor: Color("SeaTurtlePalette_3"),
-                    cornerRadius: 20.0,
-                    corners:.bottomRight,
-                    paddingValue: 5.0) { self.action()}
+                    CSButton_large(
+                        title: actionTitle,
+                        accentColor: Color.white,
+                        backgroundColor: backgroundColorView,
+                        cornerRadius: 20.0,
+                        corners:.bottomRight,
+                        paddingValue: 5.0) { self.action!() }
+                    
+                } else {
+                    
+                    CSButton_large(
+                        title: actionTitle,
+                        accentColor: Color.white,
+                        backgroundColor: backgroundColorView,
+                        cornerRadius: 20.0,
+                        corners:.bottomRight,
+                        paddingValue: 5.0) {  }
+                        .hidden()
+                }
                 
                 CSButton_large(
                     title: "Chiudi",
                     accentColor: Color.red,
-                    backgroundColor: Color.cyan.opacity(0.5),
+                    backgroundColor: backgroundColorView,
                     cornerRadius: 20.0,
                     corners:.bottomLeft,
-                    paddingValue: 5.0) { self.closeButton!.toggle() }
+                    paddingValue: 5.0) { self.closeButton.toggle() }
              
             }
    
             SwitchItemModelContainer<_,M2>(itemModel:$itemModel,itemModelList: itemModelList, modelListCorrente: $modelListCorrente)
                 .padding(.horizontal)
-              //  .padding(.top)
             
             SwitchViewModelContainer(viewModelList: viewModelList, modelListCorrente: $modelListCorrente)
                 .padding()
-                .background(Color.cyan.opacity(0.5))
+                .background(backgroundColorView)
                 
             CurrentModelListView<_, M2>(itemModel: $itemModel, modelListCorrente: $modelListCorrente, allModelList: allModelList, itemModelList: itemModelList, temporaryDestinationModelList: $temporaryDestinationModelContainer)
             // .refreshable -> per aggiornare
             
-            CSButton_large(title: "Aggiungi", accentColor: Color.white, backgroundColor: Color.cyan.opacity(0.5), cornerRadius: 0.0) {
+            CSButton_large(title: "Aggiungi", accentColor: Color.white, backgroundColor: backgroundColorView, cornerRadius: 0.0) {
                 
                 self.addModelToItemContainer()
                 
                 }
                 .disabled(isButtonDisabled)
         }
-        .background(Color.white.cornerRadius(20.0).shadow(radius: 5.0))
+       // .background(Color.yellow.cornerRadius(20.0).shadow(radius: 5.0))
+        .background(Color.white)
+        .clipShape(
+            RoundedRectangle(cornerRadius: 20.0)
+        )
         .frame(width: (screenHeight * 0.40))
         .frame(height: screenHeight * 0.60 )
-        .onChange(of: itemModel) { _ in
-            CheckCount.itemCount += 1
-        }
+        .shadow(radius: 5.0)
+       
   
     }
     

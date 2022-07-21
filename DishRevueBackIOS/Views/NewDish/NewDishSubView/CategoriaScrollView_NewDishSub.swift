@@ -24,7 +24,7 @@ struct CategoriaScrollView_NewDishSub: View {
                     
                     NavigationLink(value: DestinationPathView.categoriaMenu) {
                         Image(systemName: "arrow.up.forward.app")
-                            .imageScale(.medium)
+                            .imageScale(.large)
                             .foregroundColor(Color("SeaTurtlePalette_3"))
                     }
                     

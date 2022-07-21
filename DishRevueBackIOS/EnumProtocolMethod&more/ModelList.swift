@@ -13,21 +13,21 @@ enum ModelList: Equatable, Hashable {
     ///Case Predefinito per la relazione Piatto/Ingredienti.
     static var dishIngredientsList: [ModelList] = [
     
-        .viewModelContainer("My Ingredients",\.allMyIngredients,.fonte),
+        .viewModelContainer("I Miei Ingredienti",\.allMyIngredients,.fonte),
        /* .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),*/
         .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale)),
         .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondari,.destinazione(Color.orange, grado: .secondario))
     
     ]
+ 
+    /// Case predefinito per la relazione Ingrediente/Allergene
+    static var ingredientAllergeniList: [ModelList] = [
     
-   /* static var dishIngredientsList: [ModelList] = [
+        .viewModelContainer("Lista Allergeni", \.allergeni, .fonte),
+        .itemModelContainer("Allergeni Contenuti", \IngredientModel.allergeni, .destinazione(Color.red, grado: .principale))
     
-        .viewModelContainer("My Ingredients",\.allMyIngredients,.fonte),
-       
-        .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale))
     
-    ] */
-    
+    ]
     
     ///Case Predefinito per la relazione Piatto/Menu.
     static var dishMenuList: [ModelList] = [ ]

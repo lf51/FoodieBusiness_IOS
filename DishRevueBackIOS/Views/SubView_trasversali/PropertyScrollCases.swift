@@ -50,8 +50,17 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
                         
                         let isSelected = self.checkSelectionOrContainer(type: type)
                         
-                        CSText_tightRectangle(testo: type.simpleDescription(), fontWeight: .semibold, textColor: Color.white, strokeColor: isSelected ? Color.white : Color("SeaTurtlePalette_3"), fillColor: isSelected ? colorSelection : Color.clear)
-                            .onTapGesture {self.addingValueTo(newValue: type)}
+                        CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: isSelected ? Color.white : Color("SeaTurtlePalette_3"), fillColor: isSelected ? colorSelection : Color.clear) {
+                            
+                            HStack {
+                                
+                                csVbSwitchImageText(string: type.imageAssociated(), size: .large)
+                                Text(type.simpleDescription())
+                                
+                            }
+                        }
+                        .opacity(isSelected ? 1.0 : 0.65)
+                        .onTapGesture {self.addingValueTo(newValue: type)}
                     }
                 }
             }
@@ -60,7 +69,8 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
                     
                         Text(extendedDescription)
                             .font(.caption)
-                            .fontWeight(.semibold)
+                           // .fontWeight(.semibold)
+                            .fontWeight(.light)
                             .italic()
                             .foregroundColor(Color.black)
                         
@@ -68,7 +78,8 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
         }
     }
     
-    func checkSelectionOrContainer(type: T) -> Bool {
+    
+    private func checkSelectionOrContainer(type: T) -> Bool {
         
         if checkInit == "Single" {
             
@@ -83,7 +94,7 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
    
     }
      
-    func addingValueTo(newValue: T) {
+    private func addingValueTo(newValue: T) {
         
         if self.checkInit == "Single" {
             

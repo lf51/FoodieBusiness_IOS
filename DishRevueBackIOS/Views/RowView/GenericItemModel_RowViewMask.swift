@@ -21,7 +21,8 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
  
         } label: {
 
-            csVbSwitchModelRowView(item: model)
+            //csVbSwitchModelRowView(item: model)
+            model.returnModelRowView()
            
         }
     }

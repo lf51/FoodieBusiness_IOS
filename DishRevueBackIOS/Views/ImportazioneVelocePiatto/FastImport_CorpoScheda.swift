@@ -13,7 +13,7 @@ struct FastImport_CorpoScheda:View {
     @Binding var fastDish: DishModel
     let saveAction: (_ :DishModel) -> Void
 
-   // @State private var areAllergeniOk: Bool = false
+    @State private var areAllergeniOk: Bool = false
     @State private var dishPrice: String = ""
 
     @State private var checkError: Bool = false // una sorta di interruttore generale. Quando è su true, viene verificato se il form è incompleto
@@ -99,14 +99,14 @@ struct FastImport_CorpoScheda:View {
 
             CSLabel_conVB(placeHolder: "Ingredienti:",imageNameOrEmojy: "leaf", backgroundColor: Color.black) {
                
-                Toggle(isOn: self.$fastDish.areAllergeniOk) {
+                Toggle(isOn: self.$areAllergeniOk) {
                         
                         HStack {
                             Spacer()
                             Text("Conferma")
                                 .font(.system(.callout, design: .monospaced))
    
-                            CS_ErrorMarkView(generalErrorCheck: checkError, localErrorCondition: !self.fastDish.areAllergeniOk)
+                            CS_ErrorMarkView(generalErrorCheck: checkError, localErrorCondition: !self.areAllergeniOk)
                             
                            /* if checkError && !areAllergeniOk {
                                 
@@ -180,7 +180,7 @@ struct FastImport_CorpoScheda:View {
             self.checkError = true
             return }
         
-        guard self.fastDish.areAllergeniOk else {
+        guard self.areAllergeniOk else {
             
             self.checkError = true
             return }

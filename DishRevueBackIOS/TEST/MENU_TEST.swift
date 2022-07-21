@@ -10,7 +10,7 @@ import SwiftUI
 struct MENU_TEST: View {
     
     @StateObject var viewModel: AccounterVM = AccounterVM()
-    @State private var ingredient:IngredientModel = IngredientModel(nome: "Guanciale Nero")
+    @State private var ingredient:IngredientModel = IngredientModel()
     
     @State private var color:Color = Color.yellow
     @State private var closeButton:Bool = false

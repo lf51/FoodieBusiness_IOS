@@ -54,7 +54,31 @@ struct ContainerRowLabel_Plain:View {
     
     var body: some View {
 
-        Text(listTitle)
+        Button {
+            withAnimation(.easeOut) {
+                self.modelListCorrente = listTitle
+            }
+        } label: {
+            
+            HStack {
+                
+                Text(listTitle)
+                    .fontWeight(modelListCorrente == listTitle ? .bold : .light)
+                    .shadow(radius: modelListCorrente == listTitle ? 0.0 : 1.0)
+                    .foregroundColor(Color.black)
+                  
+                  Image(systemName: "arrow.up.forward.square")
+                      .imageScale(.medium)
+                      .foregroundColor(Color.blue)
+                
+            }
+            
+        }
+        
+        
+        
+        
+    /*    Text(listTitle)
             .fontWeight(modelListCorrente == listTitle ? .bold : .light)
             .shadow(radius: modelListCorrente == listTitle ? 0.0 : 1.0)
             .onTapGesture {
@@ -62,7 +86,7 @@ struct ContainerRowLabel_Plain:View {
                 withAnimation(.easeOut) {
                     self.modelListCorrente = listTitle
                 }
-            }  
+            }   */
     }
 }
 

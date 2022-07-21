@@ -31,16 +31,19 @@ enum StatusTransition:String {
     }
 }
 
-enum StatusModel:Equatable {
+enum StatusModel:Equatable { // vedi Nota Consegna 17.07
     
+    case vuoto
     case bozza
     case completo(StatusTransition)
     
     func imageAssociated() -> String {
         
         switch self {
+        case .vuoto:
+            return "doc.badge.plus"
         case .bozza:
-           return "gear.badge.xmark"
+           return "doc.badge.gearshape"
         case .completo:
             return "circle.fill"
         }
@@ -49,6 +52,8 @@ enum StatusModel:Equatable {
     func transitionStateColor() -> Color {
         
         switch self {
+        case .vuoto:
+            return Color.black
         case .bozza:
             return Color.black
         case .completo(let statusTransition):
@@ -60,6 +65,8 @@ enum StatusModel:Equatable {
     func simpleDescription() -> String {
         
         switch self {
+        case .vuoto:
+            return "nuovo"
         case .bozza:
             return "bozza"
         case .completo(let statusTransition):

@@ -50,7 +50,7 @@
 		4D1BC747279C1FED000B463C /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1BC746279C1FED000B463C /* MainView.swift */; };
 		4D1BC749279C5C43000B463C /* LogoAppBackEndView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1BC748279C5C43000B463C /* LogoAppBackEndView.swift */; };
 		4D1F21BB285B694E00E16DE6 /* CSTextField_ExpandingBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1F21BA285B694E00E16DE6 /* CSTextField_ExpandingBox.swift */; };
-		4D28C85E27C53F12009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28C85D27C53F11009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift */; };
+		4D28C85E27C53F12009ECC4C /* ProvenienzaScrollView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D28C85D27C53F11009ECC4C /* ProvenienzaScrollView_NewIngredientSubView.swift */; };
 		4D29C05B27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D29C05A27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift */; };
 		4D34D549283289B300A57747 /* MenuListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D34D548283289B300A57747 /* MenuListView.swift */; };
 		4D34D54C283545AB00A57747 /* ImportazioneVeloceDishIngredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D34D54B283545AB00A57747 /* ImportazioneVeloceDishIngredient.swift */; };
@@ -60,6 +60,11 @@
 		4D3C7277287D7CC400BAFE0B /* DishSpecific_NewDishSubViewBACKUP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C7276287D7CC400BAFE0B /* DishSpecific_NewDishSubViewBACKUP.swift */; };
 		4D3C72792883037700BAFE0B /* AllergeniScrollView_NewDishSub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C72782883037700BAFE0B /* AllergeniScrollView_NewDishSub.swift */; };
 		4D3C727B2883038A00BAFE0B /* CategoriaScrollView_NewDishSub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C727A2883038A00BAFE0B /* CategoriaScrollView_NewDishSub.swift */; };
+		4D3C727D2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C727C2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift */; };
+		4D3C727F28871AFB00BAFE0B /* ProduzioneScrollView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C727E28871AFB00BAFE0B /* ProduzioneScrollView_NewIngredientSubView.swift */; };
+		4D3C728128871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C728028871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift */; };
+		4D3C72832887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C72822887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift */; };
+		4D3C72852887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C72842887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift */; };
 		4D3D40CD284911580031590E /* NewDishMainViewBACKUP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3D40CC284911580031590E /* NewDishMainViewBACKUP.swift */; };
 		4D3DA64E2829537E00E8BB3F /* SelettoreIngrediente_NewDishSubViewD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3DA64D2829537E00E8BB3F /* SelettoreIngrediente_NewDishSubViewD.swift */; };
 		4D3DA6502829538E00E8BB3F /* MostraEOrdinaIngredienti_SelettoreSubViewD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3DA64F2829538E00E8BB3F /* MostraEOrdinaIngredienti_SelettoreSubViewD.swift */; };
@@ -210,7 +215,7 @@
 		4D1BC746279C1FED000B463C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		4D1BC748279C5C43000B463C /* LogoAppBackEndView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogoAppBackEndView.swift; sourceTree = "<group>"; };
 		4D1F21BA285B694E00E16DE6 /* CSTextField_ExpandingBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CSTextField_ExpandingBox.swift; sourceTree = "<group>"; };
-		4D28C85D27C53F11009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionPropertyIngrediente_NewDishSubView.swift; sourceTree = "<group>"; };
+		4D28C85D27C53F11009ECC4C /* ProvenienzaScrollView_NewIngredientSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProvenienzaScrollView_NewIngredientSubView.swift; sourceTree = "<group>"; };
 		4D29C05A27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBar_3BoolPlusDismiss.swift; sourceTree = "<group>"; };
 		4D34D548283289B300A57747 /* MenuListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuListView.swift; sourceTree = "<group>"; };
 		4D34D54B283545AB00A57747 /* ImportazioneVeloceDishIngredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportazioneVeloceDishIngredient.swift; sourceTree = "<group>"; };
@@ -220,6 +225,11 @@
 		4D3C7276287D7CC400BAFE0B /* DishSpecific_NewDishSubViewBACKUP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DishSpecific_NewDishSubViewBACKUP.swift; sourceTree = "<group>"; };
 		4D3C72782883037700BAFE0B /* AllergeniScrollView_NewDishSub.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergeniScrollView_NewDishSub.swift; sourceTree = "<group>"; };
 		4D3C727A2883038A00BAFE0B /* CategoriaScrollView_NewDishSub.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriaScrollView_NewDishSub.swift; sourceTree = "<group>"; };
+		4D3C727C2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConservazioneScrollView_NewIngredientSubView.swift; sourceTree = "<group>"; };
+		4D3C727E28871AFB00BAFE0B /* ProduzioneScrollView_NewIngredientSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProduzioneScrollView_NewIngredientSubView.swift; sourceTree = "<group>"; };
+		4D3C728028871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergeniScrollView_NewIngredientSubView.swift; sourceTree = "<group>"; };
+		4D3C72822887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleModelScrollGeneric_SubView.swift; sourceTree = "<group>"; };
+		4D3C72842887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrigineScrollView_NewIngredientSubView.swift; sourceTree = "<group>"; };
 		4D3D40CC284911580031590E /* NewDishMainViewBACKUP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewDishMainViewBACKUP.swift; sourceTree = "<group>"; };
 		4D3DA64D2829537E00E8BB3F /* SelettoreIngrediente_NewDishSubViewD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelettoreIngrediente_NewDishSubViewD.swift; sourceTree = "<group>"; };
 		4D3DA64F2829538E00E8BB3F /* MostraEOrdinaIngredienti_SelettoreSubViewD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MostraEOrdinaIngredienti_SelettoreSubViewD.swift; sourceTree = "<group>"; };
@@ -537,7 +547,6 @@
 				4D7985DE27D8B98C0012FE23 /* DishTipologia.swift */,
 				4D7985DC27D8B96A0012FE23 /* DishAvaibleFor.swift */,
 				4D7985E627D8BA250012FE23 /* DishFormato.swift */,
-				4D3C7274287D798600BAFE0B /* DishFormatoDEPRECATED.swift */,
 			);
 			path = DishProperty;
 			sourceTree = "<group>";
@@ -643,6 +652,7 @@
 				4D8A1DD3283D1CC20016EE27 /* CustomPicker.swift */,
 				4DD25B562841238D00582DCC /* CS_ErrorMarkView.swift */,
 				4D9AC1FD28704E2900742936 /* BoxDescriptionModel_Generic.swift */,
+				4D3C72822887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift */,
 			);
 			path = SubView_trasversali;
 			sourceTree = "<group>";
@@ -664,6 +674,7 @@
 				4DC94A1F27E8F94A0080264C /* NewPropertySheetViewBACKUP.swift */,
 				4D9716ED285DDD400004B732 /* ForEachCategoryView_BACKUP */,
 				4D168C11284A609A000B137E /* SelectionPropertyDish_NewDishSubViewBACKUP0306.swift */,
+				4D3C7274287D798600BAFE0B /* DishFormatoDEPRECATED.swift */,
 				4DF0C4AE27A009C400315A73 /* BottomBar_NewDishSubView.swift */,
 				4D14238327CE934900CFF4AE /* ConditionalZStackView_NewDishSubView.swift */,
 				4D3C7276287D7CC400BAFE0B /* DishSpecific_NewDishSubViewBACKUP.swift */,
@@ -778,7 +789,11 @@
 		4DD6308927C6910C00A16E17 /* NuovoIngredienteSubView */ = {
 			isa = PBXGroup;
 			children = (
-				4D28C85D27C53F11009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift */,
+				4D28C85D27C53F11009ECC4C /* ProvenienzaScrollView_NewIngredientSubView.swift */,
+				4D3C72842887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift */,
+				4D3C728028871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift */,
+				4D3C727E28871AFB00BAFE0B /* ProduzioneScrollView_NewIngredientSubView.swift */,
+				4D3C727C2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift */,
 			);
 			path = NuovoIngredienteSubView;
 			sourceTree = "<group>";
@@ -961,6 +976,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D4FE6E827FCA8B700AC0190 /* DataModelPickerView_SubView.swift in Sources */,
+				4D3C727D2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift in Sources */,
 				4DC3EBC927ABD02C00FFC50E /* NewPropertyMainView.swift in Sources */,
 				4D3C72792883037700BAFE0B /* AllergeniScrollView_NewDishSub.swift in Sources */,
 				4D3C727B2883038A00BAFE0B /* CategoriaScrollView_NewDishSub.swift in Sources */,
@@ -985,11 +1001,14 @@
 				4D92C41E27BE46E60084D214 /* StyledText.swift in Sources */,
 				4DB75EDD280EC73A008C1765 /* AccounterMainView.swift in Sources */,
 				4D534EA12856526E008F2AD5 /* StatusModel.swift in Sources */,
+				4D3C727F28871AFB00BAFE0B /* ProduzioneScrollView_NewIngredientSubView.swift in Sources */,
 				4D7985EA27D8BAAC0012FE23 /* ProvenienzaIngrediente.swift in Sources */,
 				4D43CA9F28630F07002D6B46 /* ListTEST.swift in Sources */,
 				4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */,
 				4DA089A4287862F300167298 /* BottomViewGeneric_NewModelSubView.swift in Sources */,
 				4D34D5512838DBB800A57747 /* FastImport_MainView.swift in Sources */,
+				4D3C72832887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift in Sources */,
+				4D3C728128871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift in Sources */,
 				4DD25B55283FBAE200582DCC /* CSMenu_MultiSelection.swift in Sources */,
 				4DF0C4B527A05DEA00315A73 /* PropertyModel.swift in Sources */,
 				4D8A1DD7283E3C260016EE27 /* MULTIPicker_TEST.swift in Sources */,
@@ -1067,6 +1086,7 @@
 				4D7985EE27D8BAE90012FE23 /* ConservazioneIngrediente.swift in Sources */,
 				4DCB316628466D0100464308 /* CS_IconaRomboidale.swift in Sources */,
 				4D29C05B27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift in Sources */,
+				4D3C72852887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift in Sources */,
 				4D8A1DCE283CDBEF0016EE27 /* CheckTestoTextField.swift in Sources */,
 				4DD6308227C68B3000A16E17 /* ListaIngredientiView.swift in Sources */,
 				4DC94A1627E3870F0080264C /* SpecificTipologiaNuovoMenu_SubView.swift in Sources */,
@@ -1092,7 +1112,7 @@
 				4D4947022822DD890093AFD6 /* CSDivider.swift in Sources */,
 				4DD25B53283F8BD100582DCC /* MENU_TEST.swift in Sources */,
 				4D8A1DD0283D13770016EE27 /* FastImport_CorpoScheda.swift in Sources */,
-				4D28C85E27C53F12009ECC4C /* SelectionPropertyIngrediente_NewDishSubView.swift in Sources */,
+				4D28C85E27C53F12009ECC4C /* ProvenienzaScrollView_NewIngredientSubView.swift in Sources */,
 				4D7985D827D8B8990012FE23 /* Protocol.swift in Sources */,
 				4DC94A2727E9ECB70080264C /* ChoiceInfoView_NewPropertySubView.swift in Sources */,
 				4D4FE6E627FCA88E00AC0190 /* DataModelCategoryView_SubView.swift in Sources */,
@@ -1239,7 +1259,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 53;
+				CURRENT_PROJECT_VERSION = 54;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1270,7 +1290,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 53;
+				CURRENT_PROJECT_VERSION = 54;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

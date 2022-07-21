@@ -24,6 +24,16 @@ enum PaxMenuFisso:MyEnumProtocolMapConform  {
         }
     }
     
+    func extendedDescription() -> String {
+        
+        switch self {
+        case .uno:
+            return "una persona"
+        case .due:
+            return "due persone"
+        }
+    }
+    
     func imageAssociated() -> String? {
         
         switch self {
@@ -58,7 +68,16 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
     
     case fisso(persone:PaxMenuFisso,costo: String)
     case allaCarta
- //   case noValue
+    
+    func returnMenuPriceValue() -> String {
+        
+        switch self {
+        case .fisso(_, let costo):
+            return costo
+        case .allaCarta:
+            return "0.00"
+        }
+    }
     
     func simpleDescription() -> String {
         
@@ -67,14 +86,20 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return "Fisso"
         case .allaCarta:
             return "Alla Carta"
-     //   case .noValue:
-       //     return ""
+
         }
     }
     
     func extendedDescription() -> String? {
-        print("Dentro Tipologia Menu. DescrizioneEstesa non sviluppata")
-        return nil
+       
+        switch self {
+            
+        case .fisso(let persone, let costo):
+            return "Il costo del menu è di € \(costo) per \(persone.extendedDescription())."
+        case .allaCarta:
+            return "Il costo del menu non è predeterminato."
+        }
+
     }
     
     func createId() -> String {

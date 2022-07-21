@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import SwiftUI
 
 protocol MyEnumProtocol: /*CaseIterable,*/ Identifiable, Equatable { // Protocollo utile per un Generic di modo da passare differenti oggetti(ENUM) alla stessa View
     
     func simpleDescription() -> String
     func createId() -> String
     func extendedDescription() -> String?
+    func imageAssociated() -> String?
 
     static var defaultValue: Self { get }
 }
@@ -26,10 +28,16 @@ protocol MyEnumProtocolMapConform : Hashable { // deve essere conforme ad HAshab
 
 protocol MyModelProtocol: Identifiable, Equatable {
     
+    associatedtype RowView: View
+    
     var intestazione: String {get set}
     var descrizione: String {get set}
 
     func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
+    
+    func returnModelRowView() -> RowView
+    func returnNewModel() -> (tipo:Self,nometipo:String)
+  
 }
 
 protocol MyModelStatusConformity: MyModelProtocol, Hashable {
@@ -42,6 +50,9 @@ protocol MyModelStatusConformity: MyModelProtocol, Hashable {
     
     /// Ideata per avere un accesso dall'esterno su un un possibile ID da verificare ancora prima di creare un Modello
     func creaID(fromValue:String) -> String
+    
+    /// StringResearch per le liste
+    func modelStringResearch(string: String) -> Bool 
 }
 
 /*protocol MyModelConformity {

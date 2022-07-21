@@ -108,6 +108,7 @@ struct IngredientModel_RowView: View {
     }
 }
 
+/*
 struct IngredientModel_RowView_Previews: PreviewProvider {
     @State static var ingredientSample =  IngredientModel(
         nome: "Guanciale",
@@ -123,4 +124,4 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
             IngredientModel_RowView(item: ingredientSample)
         }
     }
-}
+} */

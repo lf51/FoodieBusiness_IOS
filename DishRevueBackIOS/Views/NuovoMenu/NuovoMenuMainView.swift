@@ -10,13 +10,15 @@ import SwiftUI
 struct NuovoMenuMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
+    
     @State private var nuovoMenu: MenuModel
     let backgroundColorView: Color
     
     let menuArchiviato: MenuModel // per il reset
     let destinationPath: DestinationPath
     
-    @State private var openDishList: Bool? = false
+    @State private var openDishList: Bool = false
+    @State private var generalErrorCheck: Bool = false
   
     init(nuovoMenu: MenuModel, backgroundColorView: Color, destinationPath:DestinationPath) {
         
@@ -28,14 +30,14 @@ struct NuovoMenuMainView: View {
 
     }
     
-    var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool, bottom: Bool) {
+  /*  var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool, bottom: Bool) {
 
       let disableTipologia = self.nuovoMenu.intestazione == ""
       let disableProgrammazione = self.nuovoMenu.tipologia == nil
       let dissableBottom = self.nuovoMenu == self.menuArchiviato
         
       return (disableTipologia,disableProgrammazione,dissableBottom)
-    }
+    } */
  
     var body: some View {
         
@@ -49,29 +51,43 @@ struct NuovoMenuMainView: View {
                         
                         VStack(alignment: .leading) {
 
-                                   
                             IntestazioneNuovoOggetto_Generic(
                                 itemModel: $nuovoMenu,
-                                generalErrorCheck: false, minLenght: 3,
+                                generalErrorCheck: generalErrorCheck,
+                                minLenght: 3,
                                 coloreContainer: Color("SeaTurtlePalette_2"))
                           
-                            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: isThereAReasonToDisable.tipologia)
+                            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: openDishList)
                                 
-                                CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black)
+                             /*   CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black) */
+                            
+                               CSLabel_conVB(
+                                placeHolder: "Tipologia Menu",
+                                imageNameOrEmojy: "dollarsign.circle",
+                                backgroundColor: Color.black) {
+                                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.tipologia == nil)
+                                }
                                 
                                 SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
-                                    .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
-                                    .disabled(isThereAReasonToDisable.tipologia)
-                                                                   
-                            CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
 
-                            if !isThereAReasonToDisable.programmazione {
+                            CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen)
+
+                        //    if !isThereAReasonToDisable.programmazione {
+                        
+                            HStack {
                                 
                                 Text(self.nuovoMenu.isAvaibleWhen?.extendedDescription() ?? "Seleziona il tipo di intervallo temporale")
                                     .font(.caption)
                                     .fontWeight(.light)
                                     .italic()
+                                    .foregroundColor(Color.black)
+                                
+                                CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.isAvaibleWhen == nil)
+                                
                             }
+                            
+                                
+                       //     }
                             
                             if self.nuovoMenu.isAvaibleWhen != nil {
                       
@@ -79,8 +95,22 @@ struct NuovoMenuMainView: View {
                             }
                     //  Spacer()
                             
-                            CSLabel_2Button(placeHolder: "Piatti", imageName: "fork.knife.circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi", disabledCondition: self.nuovoMenu.isAvaibleWhen == nil)
+                          /*  CSLabel_2Button(placeHolder: "Piatti in Menu", imageName: "fork.knife.circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi", disabledCondition: self.nuovoMenu.isAvaibleWhen == nil) */
                                
+                            CSLabel_conVB(
+                                placeHolder: "Piatti in Menu",
+                                imageNameOrEmojy: "fork.knife.circle",
+                                backgroundColor: Color.black) {
+                                    CSButton_image(
+                                        frontImage: "plus.circle",
+                                        imageScale: .large,
+                                        frontColor: Color("SeaTurtlePalette_3")) {
+                                            withAnimation(.default) {
+                                                self.openDishList.toggle()
+                                            }
+                                        }
+                                }
+                            
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     
                                     HStack {
@@ -93,6 +123,32 @@ struct NuovoMenuMainView: View {
                                     }
                                 }
              
+                            BottomViewGeneric_NewModelSubView(
+                                itemModel: $nuovoMenu,
+                                generalErrorCheck: $generalErrorCheck,
+                                itemModelArchiviato: menuArchiviato,
+                                destinationPath: destinationPath) {
+                                    menuDescription()
+                                } checkPreliminare: {
+                                    checkPreliminare()
+                                }
+
+                            
+                            /*
+                            BottomViewGeneric_NewModelSubView(
+                                generalErrorCheck: $generalErrorCheck,
+                                wannaDisableButtonBar: (nuovoMenu == menuArchiviato)) {
+                                    self.menuDescription()
+                                } resetAction: {
+                                    csResetModel(modelAttivo: &self.nuovoMenu, modelArchiviato: self.menuArchiviato)
+                                } checkPreliminare: {
+                                    self.checkPreliminare()
+                                } saveButtonDialogView: {
+                                    self.scheduleANewMenu()
+                                } */
+
+                            
+                            
                           /*  BottomViewGeneric_NewModelSubView(
                                 wannaDisableSaveButton: self.nuovoMenu.isAvaibleWhen == nil) {
                                     self.menuDescription()
@@ -105,30 +161,28 @@ struct NuovoMenuMainView: View {
                                 .opacity(isThereAReasonToDisable.bottom ? 0.6 : 1.0)
                                 .disabled(isThereAReasonToDisable.bottom) */
 
-                            
-                         /*   BottomNuovoMenu_SubView(
-                                nuovoMenu: $nuovoMenu) {
-                                    self.resetMenu()
-                                } dialogView: {
-                                    self.scheduleANewMenu()
-                                }
-                                .opacity(isThereAReasonToDisable.bottom ? 0.6 : 1.0)
-                                .disabled(isThereAReasonToDisable.bottom) */
+
 
                             
                         }.padding(.horizontal)
+                            .zIndex(0)
                         
                         
                     } // Chiusa ScrollView
-                    .disabled(openDishList!)
+                    .disabled(openDishList)
                     
-                    if openDishList! {
+                    if openDishList {
                         
-                       /* SelettoreMyModel<_,DishModel>(
+                        SelettoreMyModel<_,DishModel>(
                             itemModel: $nuovoMenu,
-                            allModelList:ModelList.menuDishList ,
-                            closeButton: $openDishList)
-                        .zIndex(1) */
+                            allModelList: ModelList.menuDishList,
+                            closeButton: $openDishList,
+                            backgroundColorView: backgroundColorView,
+                            actionTitle: "[+] Piatto") {
+                                viewModel.addToThePath(
+                                    destinationPath: destinationPath,
+                                    destinationView: .piatto(DishModel()))
+                            }
                         
                     }
 
@@ -136,7 +190,7 @@ struct NuovoMenuMainView: View {
 
             }
 
-        }
+        } // Chiusa ZStack MAdre
         
      //   .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
 
@@ -175,16 +229,57 @@ struct NuovoMenuMainView: View {
               
        }
     
+    private func checkPreliminare() -> Bool {
+        
+        guard checkIntestazione() else { return false }
+      
+        guard checkTipologiaMenu() else { return false }
+       
+        guard checkProgrammazione() else { return false }
+       
+        if self.nuovoMenu.dishIn.isEmpty { self.nuovoMenu.status = .bozza}
+        else {  self.nuovoMenu.status = .completo(.archiviato) }
+      
+        return true
+        
+    }
+    
+    private func checkIntestazione() -> Bool {
+        
+        return self.nuovoMenu.intestazione != ""
+    }
+    
+    private func checkTipologiaMenu() -> Bool {
+        
+        return self.nuovoMenu.tipologia != nil
+    }
+    
+    private func checkProgrammazione() -> Bool {
+        
+        return self.nuovoMenu.isAvaibleWhen != nil
+    }
+
+  /*
+   
    @ViewBuilder private func scheduleANewMenu() -> some View {
  
         if self.menuArchiviato.intestazione == "" {
             // crea un Nuovo Oggettp
             Group {
                 
-                Button("Salva Nuovo Menu", role: .none) {
+                Button("Salva e Crea Nuovo", role: .none) {
                     
-                self.viewModel.createItemModel(itemModel: self.nuovoMenu,destinationPath: destinationPath)
+                self.viewModel.createItemModel(itemModel: self.nuovoMenu)
+                self.nuovoMenu = MenuModel()
                 }
+                
+                Button("Salva ed Esci", role: .none) {
+                    
+                self.viewModel.createItemModel(
+                    itemModel: self.nuovoMenu,
+                    destinationPath: destinationPath)
+                }
+                
        
             }
         }
@@ -194,10 +289,11 @@ struct NuovoMenuMainView: View {
             
             Group {
                 
-                Button("Salva Modifiche", role: .none) {
+                vbEditingSaveButton()
+               /* Button("Salva Modifiche", role: .none) {
                     
                 self.viewModel.updateItemModel(itemModel: self.nuovoMenu, destinationPath: destinationPath)
-                }
+                } */
             }
         }
         
@@ -205,10 +301,12 @@ struct NuovoMenuMainView: View {
             
             Group {
                 
-                Button("Salva Modifiche", role: .none) {
+                vbEditingSaveButton()
+                
+             /*   Button("Salva Modifiche", role: .none) {
                     
                 self.viewModel.updateItemModel(itemModel: self.nuovoMenu, destinationPath: destinationPath)
-                }
+                } */
                 
                 Button("Salva come Nuovo Menu", role: .none) {
                     
@@ -222,94 +320,24 @@ struct NuovoMenuMainView: View {
  
     }
     
-    
+    @ViewBuilder private func vbEditingSaveButton() -> some View {
+        
+        Button("Salva Modifiche e Crea Nuovo", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.nuovoMenu)
+        self.nuovoMenu = MenuModel()
+        }
+        
+        Button("Salva Modifiche ed Esci", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.nuovoMenu, destinationPath: destinationPath)
+        }
+        
+        
+    }
+   */
 }
 
-
-
-
-/* struct NuovoMenuMainView: View {
-
-    @EnvironmentObject var viewModel: AccounterVM
-    @State private var nuovoMenu: MenuModel
-    @Binding var dismissView:Bool?
-    @State private var nuovaIntestazioneMenu: String = ""
-    
-    init(editMenu:MenuModel? = MenuModel(), dismissView: Binding<Bool?>? = nil) {
-        
-        _dismissView = dismissView ?? .constant(nil)
-        _nuovoMenu = State(wrappedValue: editMenu!)
-            
-    }
-    
-    var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool) {
-
-      let disableTipologia = self.nuovoMenu.intestazione == ""
-      let disableProgrammazione = self.nuovoMenu.tipologia == .defaultValue
-        
-      return (disableTipologia,disableProgrammazione)
-    }
- 
-    var body: some View {
-        
-        VStack {
-            
-            TopBar_3BoolPlusDismiss(title: nuovoMenu.intestazione != "" ? nuovoMenu.intestazione : "Crea Menu", exitButton: $dismissView, exitButtonTitle: "Chiudi")
-                .padding(.horizontal)
- 
-            VStack(alignment: .leading) {
-                
-                IntestazioneNuovoOggetto_Generic(placeHolderItemName: "Menu (Interno)", imageLabel: "doc.badge.plus", coloreContainer: Color.red, itemModel: $nuovoMenu)
-                
-                CSLabel_1Button(placeHolder: "Tipologia", imageName: "dollarsign.circle", backgroundColor: Color.black)
-                
-                SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
-                    .opacity(isThereAReasonToDisable.tipologia ? 0.6 : 1.0)
-                    .disabled(isThereAReasonToDisable.tipologia)
-
-                CSLabel_2Button(placeHolder: "Ristoranti", imageName: "circle", backgroundColor: Color.black, toggleBottoneTEXT: .constant(false), testoBottoneTEXT: "Scegli")
-                    .opacity(0.4)
-                    .disabled(true)
-                
-                CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen, conditionToDisablePicker: isThereAReasonToDisable.programmazione)
-                    
-                CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
-
-                BottomNuovoMenu_SubView(nuovoMenu: $nuovoMenu){self.scheduleANewMenu()}
- 
-            }.padding(.horizontal)
-            
-            
-        }
-        .padding(.top)
-        .background(RoundedRectangle(cornerRadius: 20.0).fill(Color.cyan.opacity(0.9)).shadow(radius: 5.0))
-        .contrast(1.2)
-        .brightness(0.08)
-       // .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
-       /*.alert(item:$viewModel.alertItem) { alert -> Alert in
-           Alert(
-             title: Text(alert.title),
-             message: Text(alert.message)
-           )
-         }*/ // non funziona
-    }
-    
-    // Method
-    
-    private func scheduleANewMenu() {
-            
-        self.viewModel.createOrEditItemModel(itemModel: self.nuovoMenu)
-        
-        print("Nome Menu: \(self.nuovoMenu.intestazione)")
-        print("data Inizio:\(self.nuovoMenu.dataInizio.ISO8601Format())")
-        print("data Fine: \(self.nuovoMenu.dataFine.ISO8601Format())")
-        print("nei giorni di: \(self.nuovoMenu.giorniDelServizio.description)")
-        print("dalle \(self.nuovoMenu.oraInizio.ISO8601Format()) alle \(self.nuovoMenu.oraFine.ISO8601Format())")
-        
-        
-       print("Salvare MenuModel nel firebase e/o nell'elenco dei Menu in un ViewModel")
-    }
-} */ // BAckUp 28.04
 
 
 /*

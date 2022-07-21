@@ -103,7 +103,7 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
             
             return }
         
-        // 2° Check
+        // 2° Check Unicità del nome
         
         let temporaryID = self.itemModel.creaID(fromValue: newText)
         let (containerPath, _, nomeOggetto) = self.itemModel.viewModelContainer()
@@ -116,6 +116,7 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
             return }
 
         self.itemModel.intestazione = newText
+    //    self.itemModel.status = .bozza // vedi Nota Consegna 17.07
         self.nuovaStringa = ""
         self.editNuovaStringa = false
         

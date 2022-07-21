@@ -67,12 +67,40 @@ struct ContainerRowLabel<M1:MyModelProtocol, M2:MyModelProtocol>: View {
         
         HStack{
             
-            Text(localListTitle)
+            Button {
+                withAnimation(.easeOut) {
+                    self.modelListCorrente = localListTitle
+                }
+                
+            } label: {
+                
+                HStack {
+                    
+                    Text(localListTitle)
+                          .fontWeight(modelListCorrente == localListTitle ? .bold : .light)
+                          .foregroundColor(Color.black)
+                          .lineLimit(1)
+                         
+                      Image(systemName: "arrow.up.forward.square")
+                          .imageScale(.medium)
+                          .foregroundColor(Color.blue)
+                    
+                }
+                
+            }
+
+            
+          /*  Text(localListTitle)
                 .fontWeight(modelListCorrente == localListTitle ? .bold : .light)
+                .foregroundColor(Color.black)
                 .lineLimit(1)
                 .onTapGesture {
                     modelListCorrente = localListTitle
                 }
+            
+            Image(systemName: "arrow.up.forward.square")
+                .imageScale(.medium)
+                .foregroundColor(Color.blue) */
             
             Spacer()
             

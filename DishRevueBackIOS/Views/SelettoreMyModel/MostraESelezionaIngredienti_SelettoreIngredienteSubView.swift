@@ -15,11 +15,17 @@ struct MostraESelezionaModel<M2:MyModelProtocol>: View {
 
         var body: some View {
                 
+            List {
+                
                 ForEach(listaAttiva) { model in
 
                     vbManageGraficElement(model: model)
                     
                 }.listRowSeparator(.hidden)
+                
+            }
+            .listStyle(.plain)
+            
         }
     // Method
     

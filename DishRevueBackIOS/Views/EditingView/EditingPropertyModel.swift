@@ -13,8 +13,6 @@ struct EditingPropertyModel: View {
     @State private var itemModel: PropertyModel
     let backgroundColorView: Color
     
-   // @State private var openMenuList: Bool? = false
-  //  @State private var wannaAddDescription: Bool? = false
     @State private var itemModelChanged: Bool = false
   
     init(itemModel: PropertyModel, backgroundColorView: Color) {
@@ -33,7 +31,7 @@ struct EditingPropertyModel: View {
                     
                 ScrollView(showsIndicators:false) {
 
-                    BoxDescriptionModel_Generic(itemModel: $itemModel, labelString: "Descrizione Attività", disabledCondition: nil)
+                    BoxDescriptionModel_Generic(itemModel: $itemModel, labelString: "Descrizione Attività", disabledCondition: false)
   
                    VStack(alignment:.leading) {
                         

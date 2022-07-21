@@ -177,7 +177,12 @@ struct FastImport_MainView: View {
                 let sub = String(subString).lowercased()
                 let newSub = csStringCleaner(string: sub)
                 
-                let ingredient = IngredientModel(nome: newSub.capitalized)
+          //      let ingredient = IngredientModel(nome: newSub.capitalized)
+                let ingredient = {
+                   var newIngredient = IngredientModel()
+                    newIngredient.intestazione = newSub.capitalized
+                    return newIngredient
+                }()
                 
                 if let oldIngredient = viewModel.checkExistingModel(model: ingredient).1 {
                     
