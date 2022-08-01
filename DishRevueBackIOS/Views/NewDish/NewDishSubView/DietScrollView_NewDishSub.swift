@@ -13,7 +13,7 @@ struct DietScrollView_NewDishSub: View {
     
     @Binding var newDish: DishModel
     
-    let dietAvaible:[DishTipologia]
+    let dietAvaible:[TipoDieta]
     let dietAvaibleString:[String]
     
     @State private var confermaDiete: Bool = false
@@ -22,7 +22,7 @@ struct DietScrollView_NewDishSub: View {
        
         _newDish = newDish
      
-        (self.dietAvaible,self.dietAvaibleString) = DishTipologia.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
+        (self.dietAvaible,self.dietAvaibleString) = TipoDieta.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
  
     }
     

@@ -41,7 +41,7 @@ struct CS_Picker<E:MyEnumProtocolMapConform>: View {
                             .shadow(radius: 1.0)
                     )
                     
-                        .onChange(of: selection) { _ in
+                          .onChange(of: selection) { _ in
                                self.showCustomLabel = false
                                     }
 

@@ -10,204 +10,363 @@ import SwiftUI
 struct DishModel_RowView: View {
     
     let item: DishModel
-  //  @Binding var item: DishModel
     
     var body: some View {
         
-     /*   ZStack(alignment:.leading){
-            
-            RoundedRectangle(cornerRadius: 5.0)
-                .fill(Color.white.opacity(0.3))
-                .shadow(radius: 2.0) */
         CSZStackVB_Framed {
             
-            VStack {
-    
-                IntestazioneDishRow_Sub(item: item)
-                    .padding(.top)
-                    .padding(.horizontal)
+            VStack(alignment:.leading) {
                 
-                Spacer()
-     
-                Divider().padding(.horizontal)
+                VStack{
+
+                    vbIntestazioneDishRow()
+                    vbSubIntestazioneDishRow()
+ 
+                }
+                 .padding(.top,5)
                 
-                BottomDishRow_Sub(item: item)
+              //  Spacer()
+                
+              //  vbDieteCompatibili()
+                
+              //  Spacer()
+
+                VStack(spacing:10){
+                    
+                    vbDieteCompatibili()
+                    
+                    vbIngredientScrollRow()
+ 
+                    vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                       
+                }
+                .padding(.vertical,5)
                 
             } // chiuda VStack madre
+            .padding(.horizontal)
                             
         } // chiusa Zstack Madre
-       // .frame(width: 300, height: 150)
     
     }
     
-}
-
-struct DishModel_RowView_Previews: PreviewProvider {
+    // Method
     
-    @State static var dishSample = DishModel()
-    static var previews: some View {
+    @ViewBuilder private func vbIntestazioneDishRow() -> some View {
         
-        ZStack {
+        HStack(alignment:.bottom) {
             
-            Color.cyan.ignoresSafeArea()
+            Text(self.item.intestazione)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+                .foregroundColor(Color.white)
             
-            Group {
-                
-                DishModel_RowView(item: dishSample)
-                
-              /*  IngredientModel_RowView(item: IngredientModel(nome: "Guanciale", provenienza: .Italia, metodoDiProduzione: .convenzionale, conservazione: .custom("Stagionato"))) */
-                
-            }
+            Spacer()
+            
+            vbEstrapolaStatusImage(itemModel: self.item)
             
         }
         
     }
-}
-
-
-struct IntestazioneDishRow_Sub: View {
     
-    let item: DishModel
-
-    var body: some View {
-                    
-            HStack(alignment:.top) {
-                
-                HStack(alignment: .top) {
-                    
-                    Text(item.intestazione)
-                        .font(.title3)
-                        .fontWeight(.semibold)
-                        .lineLimit(2)
-                        .foregroundColor(Color.white)
-                    
-                    Text(item.aBaseDi.imageAssociated() ?? "")
-                }
+    @ViewBuilder private func vbSubIntestazioneDishRow() -> some View {
+        
+        let (price,count) = csIterateDishPricing()
+        
+        HStack(alignment:.bottom,spacing: 3) {
             
-                Spacer()
-                
-                Text(item.rating)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .foregroundColor(Color.white)
-                    ._tightPadding()
-                    .background(
-                        Circle()
-                            .stroke()
-                            .fill(Color.white)
-                            .scaledToFill()
-
-                    )
-
-                Spacer()
-
-                // Status
-                VStack { // TEMPORANEO -> Deprecato sostituibile con viewBuilder
-                    
-                    Image(systemName: "circle.fill")
-                        .foregroundColor(item.status == .bozza ? Color.orange : Color.red)
-                        .background(
-                        
-                            Circle()
-                                .strokeBorder()
-                                .foregroundColor(Color.black.opacity(0.8))
-                               
-                        )
-                    
-                  test()
-                    
-                } // TEMPORANEO
-                // end Status
+            Text(item.rating) // media
+                .fontWeight(.light)
+                .foregroundColor(Color("SeaTurtlePalette_1"))
+                .padding(.horizontal,5)
+                .background(
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .fill(Color("SeaTurtlePalette_2"))
+                )
+               // ._tightPadding()
+              /*  .background(
+                    Circle()
+                        .fill(Color("SeaTurtlePalette_2"))
+                )*/
+            
+            Group {
+                Text("/")
+                Text("3.500 recensioni") // valore da importare
+                    .italic()
             }
-
-    }
-    
-    // Method
-
- func test() -> some View { // Temporanea
-     
-     var prices: [String] = []
-     
-     for x in self.item.pricingPiatto {
-         
-         let price = x.price
-         prices.append(price)
-         
-     }
-     
-     
-     if !prices.isEmpty {
-        return Text(prices[0])
-         
-     } else {return Text("€ 0,00") }
-     
-     
- }
-        
+            .fontWeight(.semibold)
+            .foregroundColor(Color("SeaTurtlePalette_2"))
+            
+            Spacer()
+            
+            HStack(alignment:.top,spacing:1) {
+                
+                Text("€ \(price)")
+                    .fontWeight(.bold)
+                    .font(.title3)
+                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                
+                Text("+\(count)")
+                    .fontWeight(.bold)
+                    .font(.caption2)
+                    .foregroundColor(Color("SeaTurtlePalette_3"))
+            }
+            
+            
+        }
+       .font(.subheadline)
         
     }
-
-
-struct BottomDishRow_Sub: View {
     
-    var item: DishModel
-    
-    var body: some View {
+    private func csIterateDishPricing() -> (price:String,count:String) {
         
-        VStack {
+        var mandatoryPrice:String = "0.00"
+        var priceCount:Int = 0
+        
+        guard !self.item.pricingPiatto.isEmpty else {
+            let stringCount = String(priceCount)
+            return (mandatoryPrice,stringCount)
+        }
+        
+        if self.item.pricingPiatto.count == 1 {
+            
+            mandatoryPrice = self.item.pricingPiatto[0].price
+            let stringCount = String(priceCount)
+            return (mandatoryPrice,stringCount)
+            
+        } else {
+            
+            for format in self.item.pricingPiatto {
+                
+                if format.type == .mandatory { mandatoryPrice = format.price }
+                priceCount += 1
+                
+            }
+            
+            let stringCount = String(priceCount)
+            return (mandatoryPrice,stringCount)
+            
+        }
+    }
+    
+    @ViewBuilder private func vbDieteCompatibili() -> some View {
+        
+        HStack(spacing: 4.0) {
+            
+            Image(systemName: "person.fill.checkmark")
+                .imageScale(.medium)
+                .foregroundColor(Color("SeaTurtlePalette_4"))
+         
+            ScrollView(.horizontal,showsIndicators: false) {
+                
+                HStack(spacing: 2.0) {
+                    
+                    ForEach(self.item.dieteCompatibili) { diet in
+                        
+                        Text(diet.simpleDescription())
+                            .font(.callout)
+                            .fontWeight(.black)
+                            .foregroundColor(Color("SeaTurtlePalette_4"))
+                        
+                        Text("•")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color("SeaTurtlePalette_4"))
+
+                    }
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder private func vbIngredientScrollRow() -> some View {
+        
+        let allTheIngredients = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
+        
+      //  VStack {
 
             HStack(spacing: 4.0) {
                 
                 Image(systemName: "list.bullet.rectangle")
                     .imageScale(.medium)
+                    .foregroundColor(Color("SeaTurtlePalette_4"))
              
                 ScrollView(.horizontal,showsIndicators: false) {
                     
                     HStack(spacing: 2.0) {
                         
-                        ForEach(item.ingredientiPrincipali) { ingredient in
+                        ForEach(allTheIngredients) { ingredient in
+                            
+                            let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
+                            let hasAllergene = !ingredient.allergeni.isEmpty
                             
                             Text(ingredient.intestazione)
-                                .font(.callout)
-                                .fontWeight(.thin)
-                                .foregroundColor(Color.black)
+                                .font(isPrincipal ? .headline : .subheadline)
+                                .foregroundColor(Color("SeaTurtlePalette_4"))
+                                .overlay(alignment:.topTrailing) {
+                                    if hasAllergene {
+                                        Text("*")
+                                            .foregroundColor(Color.black)
+                                            .offset(x: 5, y: -3)
+                                    }
+                                }
                             
                             Text("•")
-                            
-                        }
-                    }
-                }
-            }
-            
-            HStack(spacing: 4.0) {
-                
-                Image(systemName: "allergens")
-                    .imageScale(.medium)
-            
-                ScrollView(.horizontal,showsIndicators: false) {
-                    
-                    HStack(spacing: 2.0) {
-                        
-                        ForEach(item.allergeni) { allergene in
-                            
-                            Text(allergene.simpleDescription().replacingOccurrences(of: " ", with: ""))
                                 .font(.caption)
-                                .foregroundColor(Color.black)
-                                .italic()
-                            
-                            Text("•")
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("SeaTurtlePalette_4"))
                             
                         }
-                        
                     }
                 }
             }
-     
-        }
-        ._tightPadding()
+       // }
+    }
+    
+    
+    
+} // chiusa Struct
+
+
+struct DishModel_RowView_Previews: PreviewProvider {
+    
+   
         
+    static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [.anidride_solforosa_e_solfiti,.arachidi_e_derivati], origine: .carneAnimale, status: .vuoto, idIngredienteDiRiserva: "")
+        
+    static let ing2 = IngredientModel(intestazione: "Prezzemolo", descrizione: "", conservazione: .congelato, produzione: .convenzionale, provenienza: .restoDelMondo, allergeni: [.sedano], origine: .vegetale, status: .vuoto, idIngredienteDiRiserva: "")
+    static let ing3 = IngredientModel(intestazione: "Latte Scremato", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [.glutine], origine: .latteAnimale, status: .vuoto, idIngredienteDiRiserva: "")
+    
+    static let ing4 = IngredientModel(intestazione: "Basilico", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [], origine: .vegetale, status: .vuoto, idIngredienteDiRiserva: "")
+    
+    static var dishSample = {
+       
+        var dish = DishModel()
+        dish.intestazione = "Spaghetti alla Carbonara"
+        dish.status = .completo(.inPausa)
+        dish.rating = "9.9"
+        
+        let price = {
+           var priceFirst = DishFormat(type: .mandatory)
+            priceFirst.price = "12.5"
+            return priceFirst
+        }()
+        
+        dish.pricingPiatto = [price]
+        dish.ingredientiPrincipali = [ing1,ing2]
+        dish.ingredientiSecondari = [ing3,ing4]
+        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
+        
+        return dish
+    }()
+    static var dishSample2 = {
+       
+        var dish = DishModel()
+        dish.intestazione = "Bucatini alla Matriciana"
+        dish.status = .completo(.archiviato)
+        dish.rating = "10.0"
+        
+        let price1 = {
+           var priceFirst = DishFormat(type: .opzionale)
+            priceFirst.label = "Pizzetta"
+            priceFirst.price = "4.5"
+            return priceFirst
+        }()
+        let price2 = {
+           var priceFirst = DishFormat(type: .mandatory)
+            priceFirst.label = "Pizza"
+            priceFirst.price = "9.5"
+            return priceFirst
+        }()
+        let price3 = {
+           var priceFirst = DishFormat(type: .opzionale)
+            priceFirst.label = "Tabisca"
+            priceFirst.price = "14.9"
+            return priceFirst
+        }()
+        
+        dish.pricingPiatto = [price1,price2,price3]
+        dish.ingredientiPrincipali = [ing1,ing4]
+        dish.ingredientiSecondari = [ing2,ing3]
+        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
+        dish.dieteCompatibili = TipoDieta.returnDietAvaible(ingredients: [ing1,ing2,ing3,ing4]).inDishTipologia
+        
+        return dish
+    }()
+    static var dishSample3 = {
+       
+        var dish = DishModel()
+        dish.intestazione = "Trofie Pesto Noci e Gamberi"
+        dish.rating = "4.0"
+        
+        let price1 = {
+           var priceFirst = DishFormat(type: .mandatory)
+            priceFirst.label = "Mezza Pinta"
+            priceFirst.price = "4.0"
+            return priceFirst
+        }()
+        let price2 = {
+           var priceFirst = DishFormat(type: .opzionale)
+            priceFirst.label = "Pinta"
+            priceFirst.price = "7.5"
+            return priceFirst
+        }()
+    
+        dish.pricingPiatto = [price1,price2]
+        dish.ingredientiPrincipali = [ing3]
+        dish.ingredientiSecondari = [ing1,ing2,ing4]
+        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
+        
+        return dish
+    }()
+    
+    static var dishSample4 = {
+       
+        var dish = DishModel()
+        dish.intestazione = "Birra bionda alla Spina"
+        dish.rating = "4.0"
+        
+        let price1 = {
+           var priceFirst = DishFormat(type: .mandatory)
+            priceFirst.label = "Mezza Pinta"
+            priceFirst.price = "4.0"
+            return priceFirst
+        }()
+        let price2 = {
+           var priceFirst = DishFormat(type: .opzionale)
+            priceFirst.label = "Pinta"
+            priceFirst.price = "7.5"
+            return priceFirst
+        }()
+    
+        dish.pricingPiatto = [price1,price2]
+        dish.ingredientiPrincipali = [ing4]
+        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing4])
+        
+        
+        return dish
+    }()
+    
+    static var previews: some View {
+        
+        NavigationStack {
+            
+            ZStack {
+                
+                Color("SeaTurtlePalette_1").ignoresSafeArea()
+                
+                VStack(spacing:15) {
+                    
+                    DishModel_RowView(item: dishSample)
+                    DishModel_RowView(item: dishSample2)
+                    DishModel_RowView(item: dishSample3)
+                    DishModel_RowView(item: dishSample4)
+                    
+                }
+                
+            }
+            
+        }
         
     }
 }
-
-

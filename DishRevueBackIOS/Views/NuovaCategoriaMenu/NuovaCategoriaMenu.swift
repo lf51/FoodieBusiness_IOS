@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct NuovaCategoriaMenu: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -89,7 +87,7 @@ struct NuovaCategoriaMenu: View {
                         
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 10.0))
-                    .scaledToFit()
+                  //  .scaledToFit() 
                     .listStyle(.plain)
                        
                 

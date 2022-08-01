@@ -65,16 +65,15 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
                 }
             }
 
-            if let extendedDescription = newDishSingleProperty.extendedDescription() {
+         //   if let extendedDescription = newDishSingleProperty.extendedDescription() {
                     
-                        Text(extendedDescription)
+                        Text(newDishSingleProperty.extendedDescription())
                             .font(.caption)
-                           // .fontWeight(.semibold)
                             .fontWeight(.light)
                             .italic()
                             .foregroundColor(Color.black)
                         
-                }
+             //   }
         }
     }
     

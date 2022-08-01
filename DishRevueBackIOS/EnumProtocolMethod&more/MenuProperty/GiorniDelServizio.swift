@@ -42,9 +42,9 @@ enum GiorniDelServizio: MyEnumProtocol, MyEnumProtocolMapConform {
         }
     }
     
-    func extendedDescription() -> String? {
+    func extendedDescription() -> String {
         print("Dentro GiorniDelServizio. DescrizioneEstesa non sviluppata")
-        return nil
+        return ""
     }
     
     func shortDescription() -> String {
@@ -74,7 +74,7 @@ enum GiorniDelServizio: MyEnumProtocol, MyEnumProtocolMapConform {
         self.simpleDescription().lowercased()
     }
     
-    func imageAssociated() -> String? {
+    func imageAssociated() -> String {
         
         switch self {
             

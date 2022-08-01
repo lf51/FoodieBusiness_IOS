@@ -28,8 +28,7 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     @State private var temporaryDestinationModelContainer: [String:[M2]] = [:]
     
-    let screenHeight: CGFloat = UIScreen.main.bounds.height
-    
+    let currentViewHeight: CGFloat
     
     init(itemModel: Binding<M1>, allModelList: [ModelList], closeButton:Binding<Bool>, backgroundColorView:Color, actionTitle:String = "", action: (() -> Void)? = nil)  {
         
@@ -41,13 +40,14 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
         self.actionTitle = actionTitle
         self.action = action
         
-        let currentList:String
+        self.currentViewHeight = UIScreen.main.bounds.height
         
+        let currentList:String
+       
         (self.viewModelList, self.itemModelList, currentList) = splitModelList(allModelList: allModelList)
         
         _modelListCorrente = State(initialValue: currentList)
-       
-        
+    
     }
 
     private var isButtonDisabled: Bool {
@@ -126,8 +126,8 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
         .clipShape(
             RoundedRectangle(cornerRadius: 20.0)
         )
-        .frame(width: (screenHeight * 0.40))
-        .frame(height: screenHeight * 0.60 )
+        .frame(width: (currentViewHeight * 0.40))
+        .frame(height: currentViewHeight * 0.60 )
         .shadow(radius: 5.0)
        
   

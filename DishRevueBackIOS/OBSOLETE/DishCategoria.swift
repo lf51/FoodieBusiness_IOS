@@ -7,6 +7,7 @@
 
 import Foundation
 
+/*
 /// Deprecata 16.07
 enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform { // Deprecata in Futuro. Da Sostituire con CategoriaMenu (Struct)
  
@@ -150,6 +151,6 @@ enum DishCategoria: MyEnumProtocol,MyEnumProtocolMapConform { // Deprecata in Fu
         }
     }
     
-}
+} */
 
 

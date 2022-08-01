@@ -48,17 +48,17 @@ struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
         self.nome
     }
     
-    func extendedDescription() -> String? { // Deprecata
+    func extendedDescription() -> String { // Deprecata
         print("Dentro ExtendedDescription in CategoriaMenu")
-        return nil
+        return ""
     }
     
-    func imageAssociated() -> String? { // Deprecata
+    func imageAssociated() -> String { // Deprecata
         self.image
     }
     
     func returnTypeCase() -> CategoriaMenu { // Deprecata
-        self
+        return CategoriaMenu(nome: "", image: "")
     }
     
     func orderValue() -> Int { // Deprecata

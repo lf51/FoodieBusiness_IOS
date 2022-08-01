@@ -188,10 +188,10 @@ struct CSZStackVB_Framed<Content:View>:View {
 ///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 300/150).MaxWidth: 400.
 struct CSZStackVB_Framed<Content:View>:View {
         
-        var frameWidth: CGFloat? = 300
-        var rateWH: CGFloat? = 0.5
-        var backgroundOpacity: Double? = 0.3
-        var frameHeight: CGFloat { frameWidth! * rateWH! }
+        var frameWidth: CGFloat = 300
+        var rateWH: CGFloat = 0.5
+        var backgroundOpacity: Double = 0.3
+        var frameHeight: CGFloat { frameWidth * rateWH }
         @ViewBuilder var content: Content
         
         var body: some View {
@@ -199,7 +199,7 @@ struct CSZStackVB_Framed<Content:View>:View {
             ZStack(alignment:.leading) {
                 
                 RoundedRectangle(cornerRadius: 5.0)
-                    .fill(Color.white.gradient.opacity(backgroundOpacity!))
+                    .fill(Color.white.gradient.opacity(backgroundOpacity))
                     .shadow(color:Color.black,radius: 5.0)
                     .zIndex(0)
                 
@@ -208,7 +208,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                 
             }
             .frame(maxWidth: 400)
-            .frame(width: frameWidth! < 400 ? frameWidth! : 400, height: frameHeight)
+            .frame(width: frameWidth < 400 ? frameWidth : 400, height: frameHeight)
         }
     }
 
@@ -332,4 +332,47 @@ struct CSZStackVB_Framed<Content:View>:View {
         
     }
    
+}
+
+/// Ritorna uno scroll orizzontale degli Allergeni utile per le rowView del Dish e dell'ingredient
+@ViewBuilder func vbAllergeneScrollRowView(listaAllergeni:[AllergeniIngrediente]) -> some View {
+    
+    HStack(spacing: 4.0) {
+        
+        Image(systemName: "allergens")
+            .imageScale(.small)
+            .foregroundColor(Color.black)
+    
+        ScrollView(.horizontal,showsIndicators: false) {
+            
+            HStack(spacing: 2.0) {
+                
+                if !listaAllergeni.isEmpty {
+                    
+                    ForEach(listaAllergeni) { allergene in
+                        
+                        Text(allergene.simpleDescription().replacingOccurrences(of: " ", with: ""))
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(Color.black)
+                            .italic()
+                        
+                        Text("•")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                        
+                    }
+                    
+                } else {
+                    Text("Nessun Allergene indicato negli Ingredienti")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.black)
+                }
+                
+             
+                
+            }
+        }
+    }
 }

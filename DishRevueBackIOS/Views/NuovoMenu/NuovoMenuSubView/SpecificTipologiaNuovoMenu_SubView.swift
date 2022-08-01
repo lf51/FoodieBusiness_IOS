@@ -27,7 +27,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             
                 ForEach(TipologiaMenu.allCases) { tipologia in
  
-                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia?.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia?.id == tipologia.id ? Color.orange : Color.clear)
+                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia.id == tipologia.id ? Color.orange : Color.clear)
                         .onTapGesture {
                             withAnimation(.default) {
                               
@@ -39,7 +39,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                                 
                                 else {
                                     
-                                    self.newMenu.tipologia = self.newMenu.tipologia?.id == tipologia.id ? nil : tipologia
+                                    self.newMenu.tipologia = self.newMenu.tipologia.id == tipologia.id ? .defaultValue : tipologia
                                     
                                             }
                                         }
@@ -47,13 +47,13 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                         .onLongPressGesture {
                             withAnimation(.default) {
                                 
-                                if tipologia.editingAvaible() { self.newMenu.tipologia = nil }
+                                if tipologia.editingAvaible() { self.newMenu.tipologia = .defaultValue }
                                
                                                     }
                                                 }
                                     }
                                 }
-                Text(self.newMenu.tipologia?.extendedDescription() ?? "")
+                Text(self.newMenu.tipologia.extendedDescription())
                     .font(.caption)
                     .fontWeight(.light)
                     .italic()
@@ -92,7 +92,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                                 
                             } label: {
                                 
-                                CSText_tightRectangle(testo: self.newMenu.tipologia?.id != "fisso" ? "Aggiungi" : "Modifica", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
+                                CSText_tightRectangle(testo: self.newMenu.tipologia.id != "fisso" ? "Aggiungi" : "Modifica", fontWeight: .heavy, textColor: Color.white, strokeColor: Color.red, fillColor: Color.red)
   
                             }
                         }

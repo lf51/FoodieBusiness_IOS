@@ -20,6 +20,7 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
     let description: () -> Text
    // let resetAction: () -> Void
     let checkPreliminare: () -> Bool
+    let salvaECreaPostAction: () -> Void
   //  @ViewBuilder var saveButtonDialogView: Content
     
     @State private var showDialog: Bool = false
@@ -64,7 +65,8 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
 
     @ViewBuilder private func saveButtonDialogView() -> some View {
         
-        let (newModelType,newModelName) = self.itemModel.returnNewModel()
+      //  let (_,newModelName) = self.itemModel.returnNewModel()
+        let newModelName = self.itemModel.returnNewModel().nometipo
         
         if itemModelArchiviato.intestazione == "" {
             // crea un Nuovo Oggetto
@@ -73,7 +75,9 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
                 Button("Salva e Crea Nuovo", role: .none) {
                     
                     self.viewModel.createItemModel(itemModel: self.itemModel)
-                    self.itemModel = newModelType
+                 //   self.generalErrorCheck = false
+                  //  self.itemModel = newModelType
+                    self.salvaECreaPostAction()
                     
                 }
                 
@@ -88,14 +92,14 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
         else if self.itemModelArchiviato.intestazione == self.itemModel.intestazione {
             // modifica l'oggetto corrente
             
-            Group { vbEditingSaveButton(modelVuoto: newModelType) }
+            Group { vbEditingSaveButton() }
         }
         
         else {
             
             Group {
                 
-                vbEditingSaveButton(modelVuoto: newModelType)
+                vbEditingSaveButton()
                 
                 Button("Salva come \(newModelName)", role: .none) {
                     
@@ -105,12 +109,14 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
         }
     }
     
-    @ViewBuilder private func vbEditingSaveButton(modelVuoto:M) -> some View {
+    @ViewBuilder private func vbEditingSaveButton() -> some View {
         
         Button("Salva Modifiche e Crea Nuovo", role: .none) {
             
         self.viewModel.updateItemModel(itemModel: self.itemModel)
-            self.itemModel = modelVuoto
+           // self.generalErrorCheck = false
+          //  self.itemModel = modelVuoto
+            self.salvaECreaPostAction()
         }
         
         Button("Salva Modifiche ed Esci", role: .none) {

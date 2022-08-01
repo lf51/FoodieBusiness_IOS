@@ -7,9 +7,8 @@
 
 import Foundation
 
+/*
 struct DishAvaibleForDiet {
-  
-    
 
     var intestazione: String { get {self.diet.intestazione} set { } }
     var descrizione: String { get {self.diet.descrizione} set { } }
@@ -20,10 +19,10 @@ struct DishAvaibleForDiet {
     var ingredientOUT: [IngredientModel]
     var ingredientIN: [IngredientModel]
     
-} // NON ANCORA USATA al 11.07
+}*/ // NON ANCORA USATA al 11.07
 
 
-
+/*
 enum DishAvaibleFor: MyEnumProtocol {
     
     // E' la possibilità di un piatto in Categoria standard di essere disponibile con modifiche per un'altra categoria
@@ -61,7 +60,7 @@ enum DishAvaibleFor: MyEnumProtocol {
         switch self {
             
      //   case .standard: return "Contiene ingredienti di origine animale e suoi derivati"
-        case .vegetariano: return "Priva di ingredienti di origine animale (ad eccezione del latte e suoi derivati) e pesce.
+        case .vegetariano: return "Priva di ingredienti di origine animale (ad eccezione del latte e suoi derivati) e pesce."
         case .vegariano: return "Priva di latte animale e ingredienti derivati."
         case .vegano: return "Consente solo ingredienti di origine vegetale."
         case .glutenFree: return "Priva di Glutine."
@@ -75,4 +74,4 @@ enum DishAvaibleFor: MyEnumProtocol {
         
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
-} // deprecata in futuro -> sostituita da una struct
+} */// deprecata in futuro -> sostituita da una struct

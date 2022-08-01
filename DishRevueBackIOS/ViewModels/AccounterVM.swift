@@ -347,7 +347,7 @@ class AccounterVM: ObservableObject {
            
            guard internalFilter != nil else { return true}
            let menuModel = model as! MenuModel
-           return menuModel.tipologia?.returnTypeCase() == internalFilter
+           return menuModel.tipologia.returnTypeCase() == internalFilter
            
        case .giorniDelServizio(let filter):
            

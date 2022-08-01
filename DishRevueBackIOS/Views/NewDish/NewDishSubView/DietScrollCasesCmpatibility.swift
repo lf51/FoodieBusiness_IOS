@@ -13,13 +13,13 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
     @EnvironmentObject var viewModel:AccounterVM
     
     let currentDish: DishModel
-    let allCases: [DishTipologia]
-    let instanceCases:[DishTipologia]
+    let allCases: [TipoDieta]
+    let instanceCases:[TipoDieta]
    // let instanceCasesString:[String]
     let colorSelection: Color
     @ViewBuilder var content: Content
   
-    init(currentDish: DishModel, allCases: [DishTipologia] = DishTipologia.allCases,instanceCases:[DishTipologia], colorSelection: Color = Color.clear, dieteConfermate: () -> Content) {
+    init(currentDish: DishModel, allCases: [TipoDieta] = TipoDieta.allCases,instanceCases:[TipoDieta], colorSelection: Color = Color.clear, dieteConfermate: () -> Content) {
         
         self.currentDish = currentDish
         self.allCases = allCases
@@ -46,7 +46,7 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
                             .onTapGesture {
                                 self.viewModel.alertItem = AlertModel(
                                     title: type.simpleDescription(),
-                                    message: type.extendedDescription() ?? "")
+                                    message: type.extendedDescription())
                             }
                            
                     }
@@ -63,7 +63,7 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
         }
     }
     
-    private func checkSelectionOrContainer(type: DishTipologia) -> Bool {
+    private func checkSelectionOrContainer(type: TipoDieta) -> Bool {
 
         return self.instanceCases.contains(type)
         

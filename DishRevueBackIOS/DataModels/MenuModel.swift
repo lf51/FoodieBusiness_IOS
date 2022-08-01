@@ -71,10 +71,10 @@ struct MenuModel:MyModelStatusConformity {
     
     var dishIn: [DishModel] = [] /*{willSet {status = newValue.isEmpty ? .vuoto : .completo(.archiviato)}} */
     
-    var tipologia: TipologiaMenu? // Categoria di Filtraggio
+    var tipologia: TipologiaMenu = .noValue // Categoria di Filtraggio
     var status: StatusModel = .vuoto
     
-    var isAvaibleWhen: AvailabilityMenu? {willSet {giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
+    var isAvaibleWhen: AvailabilityMenu = .defaultValue { willSet {giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
     
     var dataInizio: Date = Date() {willSet {dataFine = newValue.advanced(by: 604800)}} // data inizio del Menu, che contiene al suo interno anche l'ora (estrapolabile) in cui è stato creato
     var dataFine: Date = Date().advanced(by: 604800) // opzionale perchè possiamo non avere una fine in caso di data fissa

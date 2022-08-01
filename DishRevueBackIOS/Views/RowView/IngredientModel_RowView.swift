@@ -8,17 +8,10 @@
 import SwiftUI
 
 struct IngredientModel_RowView: View {
-    
-   // @Binding var item: IngredientModel
+
     let item: IngredientModel
     
     var body: some View {
-        
-      /*  ZStack(alignment:.leading){
-            
-            RoundedRectangle(cornerRadius: 5.0)
-                .fill(Color.white.opacity(0.3))
-                .shadow(radius: 3.0) */
                 
         CSZStackVB_Framed {
         
@@ -34,45 +27,12 @@ struct IngredientModel_RowView: View {
                     
                     Spacer()
                 }
-              //  ._tightPadding()
                 
                 Spacer()
-     
-             //   Divider().padding(.horizontal)
+ 
+               /* AllergeniBottomScroll_GenericSubView(allergeniItem: item.allergeni) */
                 
-             //   Spacer()
-                
-                VStack(alignment:.leading) {
-                    
-                    HStack {
-                        
-                        CSText_tightRectangle(
-                            testo: item.provenienza.simpleDescription(),
-                            fontWeight: .semibold,
-                            textColor: Color.black,
-                            strokeColor: Color.white,
-                            fillColor: Color.cyan)
-                        
-                        CSText_tightRectangle(
-                            testo: item.conservazione.simpleDescription(),
-                            fontWeight: .semibold,
-                            textColor: Color.black,
-                            strokeColor: Color.white,
-                            fillColor: Color.yellow)
-        
-                    }
-                    
-                    CSText_tightRectangle(
-                        testo: item.produzione.simpleDescription(),
-                        fontWeight: .semibold,
-                        textColor: Color.black,
-                        strokeColor: Color.white,
-                        fillColor: Color.green.opacity(0.5))
-                    
-                    
-                }
-         
-                HStack(spacing: 4.0) {
+              /*  HStack(spacing: 4.0) {
                     
                     Image(systemName: "allergens")
                         .imageScale(.medium)
@@ -94,7 +54,7 @@ struct IngredientModel_RowView: View {
                             
                         }
                     }
-                }
+                }*/
 
                 
                 
@@ -108,13 +68,18 @@ struct IngredientModel_RowView: View {
     }
 }
 
-/*
+
 struct IngredientModel_RowView_Previews: PreviewProvider {
     @State static var ingredientSample =  IngredientModel(
-        nome: "Guanciale",
-        provenienza: .custom("Argentina"),
-        metodoDiProduzione: .custom("All'Aperto"),
-        conservazione: .custom("Stagionato 12Mesi"))
+        intestazione: "Guanciale Nero",
+        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
+        conservazione: .altro,
+        produzione: .convenzionale,
+        provenienza: .italia,
+        allergeni: [.glutine,.anidride_solforosa_e_solfiti],
+        origine: .carneAnimale,
+        status: .vuoto)
+    
     static var previews: some View {
         
         ZStack {
@@ -124,4 +89,4 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
             IngredientModel_RowView(item: ingredientSample)
         }
     }
-} */
+}

@@ -50,6 +50,8 @@ struct AllergeniScrollView_NewIngredientSubView: View {
                         
             SimpleModelScrollGeneric_SubView(modelToShow: self.nuovoIngrediente.allergeni, fontWeight: .semibold, strokeColor: Color.red)
             
+        }.onChange(of: self.nuovoIngrediente.allergeni) { _ in
+            self.areAllergeniOk = false 
         }
 
     }

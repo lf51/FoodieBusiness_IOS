@@ -65,6 +65,7 @@
 		4D3C728128871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C728028871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift */; };
 		4D3C72832887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C72822887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift */; };
 		4D3C72852887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C72842887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift */; };
+		4D3C7287288AA00000BAFE0B /* SostituzioneIngredienteView_NewIngredientSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3C7286288AA00000BAFE0B /* SostituzioneIngredienteView_NewIngredientSubView.swift */; };
 		4D3D40CD284911580031590E /* NewDishMainViewBACKUP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3D40CC284911580031590E /* NewDishMainViewBACKUP.swift */; };
 		4D3DA64E2829537E00E8BB3F /* SelettoreIngrediente_NewDishSubViewD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3DA64D2829537E00E8BB3F /* SelettoreIngrediente_NewDishSubViewD.swift */; };
 		4D3DA6502829538E00E8BB3F /* MostraEOrdinaIngredienti_SelettoreSubViewD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3DA64F2829538E00E8BB3F /* MostraEOrdinaIngredienti_SelettoreSubViewD.swift */; };
@@ -110,7 +111,7 @@
 		4D7985D827D8B8990012FE23 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985D727D8B8990012FE23 /* Protocol.swift */; };
 		4D7985DB27D8B92E0012FE23 /* AllergeniIngrediente.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985DA27D8B92E0012FE23 /* AllergeniIngrediente.swift */; };
 		4D7985DD27D8B96A0012FE23 /* DishAvaibleFor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985DC27D8B96A0012FE23 /* DishAvaibleFor.swift */; };
-		4D7985DF27D8B98C0012FE23 /* DishTipologia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985DE27D8B98C0012FE23 /* DishTipologia.swift */; };
+		4D7985DF27D8B98C0012FE23 /* TipoDieta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985DE27D8B98C0012FE23 /* TipoDieta.swift */; };
 		4D7985E127D8B9AD0012FE23 /* OrigineIngrediente.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985E027D8B9AD0012FE23 /* OrigineIngrediente.swift */; };
 		4D7985E327D8B9CF0012FE23 /* DishCategoria.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985E227D8B9CF0012FE23 /* DishCategoria.swift */; };
 		4D7985E527D8B9EA0012FE23 /* DishCookingMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7985E427D8B9EA0012FE23 /* DishCookingMethod.swift */; };
@@ -230,6 +231,7 @@
 		4D3C728028871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AllergeniScrollView_NewIngredientSubView.swift; sourceTree = "<group>"; };
 		4D3C72822887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleModelScrollGeneric_SubView.swift; sourceTree = "<group>"; };
 		4D3C72842887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrigineScrollView_NewIngredientSubView.swift; sourceTree = "<group>"; };
+		4D3C7286288AA00000BAFE0B /* SostituzioneIngredienteView_NewIngredientSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SostituzioneIngredienteView_NewIngredientSubView.swift; sourceTree = "<group>"; };
 		4D3D40CC284911580031590E /* NewDishMainViewBACKUP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewDishMainViewBACKUP.swift; sourceTree = "<group>"; };
 		4D3DA64D2829537E00E8BB3F /* SelettoreIngrediente_NewDishSubViewD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelettoreIngrediente_NewDishSubViewD.swift; sourceTree = "<group>"; };
 		4D3DA64F2829538E00E8BB3F /* MostraEOrdinaIngredienti_SelettoreSubViewD.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MostraEOrdinaIngredienti_SelettoreSubViewD.swift; sourceTree = "<group>"; };
@@ -273,7 +275,7 @@
 		4D7985D727D8B8990012FE23 /* Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocol.swift; sourceTree = "<group>"; };
 		4D7985DA27D8B92E0012FE23 /* AllergeniIngrediente.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllergeniIngrediente.swift; sourceTree = "<group>"; };
 		4D7985DC27D8B96A0012FE23 /* DishAvaibleFor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishAvaibleFor.swift; sourceTree = "<group>"; };
-		4D7985DE27D8B98C0012FE23 /* DishTipologia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishTipologia.swift; sourceTree = "<group>"; };
+		4D7985DE27D8B98C0012FE23 /* TipoDieta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipoDieta.swift; sourceTree = "<group>"; };
 		4D7985E027D8B9AD0012FE23 /* OrigineIngrediente.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrigineIngrediente.swift; sourceTree = "<group>"; };
 		4D7985E227D8B9CF0012FE23 /* DishCategoria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishCategoria.swift; sourceTree = "<group>"; };
 		4D7985E427D8B9EA0012FE23 /* DishCookingMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishCookingMethod.swift; sourceTree = "<group>"; };
@@ -542,10 +544,8 @@
 		4D7985E827D8BA550012FE23 /* DishProperty */ = {
 			isa = PBXGroup;
 			children = (
-				4D7985E227D8B9CF0012FE23 /* DishCategoria.swift */,
-				4D7985E427D8B9EA0012FE23 /* DishCookingMethod.swift */,
-				4D7985DE27D8B98C0012FE23 /* DishTipologia.swift */,
-				4D7985DC27D8B96A0012FE23 /* DishAvaibleFor.swift */,
+				4D168C0D284A41E0000B137E /* CategoriaMenu.swift */,
+				4D7985DE27D8B98C0012FE23 /* TipoDieta.swift */,
 				4D7985E627D8BA250012FE23 /* DishFormato.swift */,
 			);
 			path = DishProperty;
@@ -674,7 +674,10 @@
 				4DC94A1F27E8F94A0080264C /* NewPropertySheetViewBACKUP.swift */,
 				4D9716ED285DDD400004B732 /* ForEachCategoryView_BACKUP */,
 				4D168C11284A609A000B137E /* SelectionPropertyDish_NewDishSubViewBACKUP0306.swift */,
+				4D7985DC27D8B96A0012FE23 /* DishAvaibleFor.swift */,
+				4D7985E227D8B9CF0012FE23 /* DishCategoria.swift */,
 				4D3C7274287D798600BAFE0B /* DishFormatoDEPRECATED.swift */,
+				4D7985E427D8B9EA0012FE23 /* DishCookingMethod.swift */,
 				4DF0C4AE27A009C400315A73 /* BottomBar_NewDishSubView.swift */,
 				4D14238327CE934900CFF4AE /* ConditionalZStackView_NewDishSubView.swift */,
 				4D3C7276287D7CC400BAFE0B /* DishSpecific_NewDishSubViewBACKUP.swift */,
@@ -705,7 +708,6 @@
 				4D4FE6F127FF265300AC0190 /* GiorniDelServizio.swift */,
 				4D4FE6F327FF267800AC0190 /* TipologiaMenu.swift */,
 				4D4FE6F527FF269F00AC0190 /* AvailabilityMenu.swift */,
-				4D168C0D284A41E0000B137E /* CategoriaMenu.swift */,
 			);
 			path = MenuProperty;
 			sourceTree = "<group>";
@@ -794,6 +796,7 @@
 				4D3C728028871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift */,
 				4D3C727E28871AFB00BAFE0B /* ProduzioneScrollView_NewIngredientSubView.swift */,
 				4D3C727C2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift */,
+				4D3C7286288AA00000BAFE0B /* SostituzioneIngredienteView_NewIngredientSubView.swift */,
 			);
 			path = NuovoIngredienteSubView;
 			sourceTree = "<group>";
@@ -1000,6 +1003,7 @@
 				4DAD4FB8279EEE5400C0EAE8 /* MapView.swift in Sources */,
 				4D92C41E27BE46E60084D214 /* StyledText.swift in Sources */,
 				4DB75EDD280EC73A008C1765 /* AccounterMainView.swift in Sources */,
+				4D3C7287288AA00000BAFE0B /* SostituzioneIngredienteView_NewIngredientSubView.swift in Sources */,
 				4D534EA12856526E008F2AD5 /* StatusModel.swift in Sources */,
 				4D3C727F28871AFB00BAFE0B /* ProduzioneScrollView_NewIngredientSubView.swift in Sources */,
 				4D7985EA27D8BAAC0012FE23 /* ProvenienzaIngrediente.swift in Sources */,
@@ -1122,7 +1126,7 @@
 				4D8A1DD4283D1CC20016EE27 /* CustomPicker.swift in Sources */,
 				4D9257A227D7C95600D71B9C /* MostraESelezionaIngredienti_SelettoreIngredienteSubView.swift in Sources */,
 				4DD6308527C68E7400A16E17 /* NuovoIngredienteMainView.swift in Sources */,
-				4D7985DF27D8B98C0012FE23 /* DishTipologia.swift in Sources */,
+				4D7985DF27D8B98C0012FE23 /* TipoDieta.swift in Sources */,
 				4D7985F627DB638B0012FE23 /* HomeViewBACKUP.swift in Sources */,
 				4D1F21BB285B694E00E16DE6 /* CSTextField_ExpandingBox.swift in Sources */,
 				4D471A3227CA1CE300547F8A /* IngredientModel.swift in Sources */,

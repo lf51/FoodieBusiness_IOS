@@ -23,8 +23,8 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
         return (\.allergeni, "Elenco Allergeni", "Allergene")
     }
 
-    var intestazione: String {get{ self.simpleDescription() } set{ }}
-    var descrizione: String { get {self.extendedDescription() ?? "noDescription"} set { } }
+    var intestazione: String {get { self.simpleDescription() } set{ } }
+    var descrizione: String { get { self.extendedDescription() } set { } }
     
     static var allCases: [AllergeniIngrediente] = [.arachidi_e_derivati,.anidride_solforosa_e_solfiti,.crostacei,.fruttaAguscio,.glutine,.latte_e_derivati,.lupini,.molluschi,.pesce,.sedano,.senape,.sesamo,.soia,.uova_e_derivati]
     static var defaultValue: AllergeniIngrediente = AllergeniIngrediente.noValue
@@ -73,9 +73,9 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
         
     }
     
-    func extendedDescription() -> String? {
+    func extendedDescription() -> String {
         print("Dentro DishAllergeni. DescrizioneEstesa non sviluppata")
-        return nil
+        return ""
     }
     
     func createId() -> String {
@@ -83,8 +83,8 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
         self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
     }
     
-    func imageAssociated() -> String? {
-        nil
+    func imageAssociated() -> String {
+        "square.and.arrow.up.trianglebadge.exclamationmark"
     }
     
    static func returnAllergeniIn(ingredients: [IngredientModel]...) -> [AllergeniIngrediente] {

@@ -55,4 +55,4 @@ enum DishCookingMethod: MyEnumProtocol  { // Deprecata 03.06 -> Informazione che
     }
     
 
-} */ // Deprecata
+} */ // Deprecata 21.07

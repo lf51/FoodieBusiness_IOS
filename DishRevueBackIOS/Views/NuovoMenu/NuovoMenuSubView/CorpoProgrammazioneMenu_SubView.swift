@@ -21,7 +21,7 @@ struct CorpoProgrammazioneMenu_SubView: View {
              return(false,true,false,false,"dal:")
          case .intervalloChiuso:
              return(false,false,false,false,"dal:")
-         case nil:
+         case .noValue:
              return(true,true,true,true,"dal")
          }
          

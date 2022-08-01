@@ -71,6 +71,8 @@ struct NewDishMainView: View {
                                     infoPiatto()
                                 } checkPreliminare: {
                                     checkPreliminare()
+                                } salvaECreaPostAction: {
+                                    self.salvaECreaPostAction()
                                 }
 
                                     
@@ -123,6 +125,13 @@ struct NewDishMainView: View {
     }
     
     // Method
+    
+    private func salvaECreaPostAction() {
+        
+        self.generalErrorCheck = false
+        self.areAllergeniOk = false
+        self.newDish = DishModel()
+    }
     
     private func infoPiatto() -> Text {
            

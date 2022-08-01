@@ -306,10 +306,10 @@ struct CSLabel_1Picker: View {
     let labelColor: Color
     let pickerColor: Color    
     
-    @Binding var selectedProgram: AvailabilityMenu?
+    @Binding var selectedProgram: AvailabilityMenu
     var isThereConditionToDisablePicker: Bool
     
-    init(placeHolder: String, imageName: String, backgroundColor: Color, pickerColor:Color? = nil, availabilityMenu: Binding<AvailabilityMenu?>, conditionToDisablePicker: Bool? = nil) {
+    init(placeHolder: String, imageName: String, backgroundColor: Color, pickerColor:Color? = nil, availabilityMenu: Binding<AvailabilityMenu>, conditionToDisablePicker: Bool? = nil) {
         
         self.placeHolder = placeHolder
         self.imageName = imageName

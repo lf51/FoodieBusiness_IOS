@@ -24,7 +24,7 @@ enum MapCategoryContainer:MyEnumProtocolMapConform {
     
     case categoria(filter:CategoriaMenu? = nil) // stored
     case base(filter:OrigineIngrediente? = nil) // stored
-    case tipologiaPiatto(filter:DishTipologia? = nil) // collection
+    case tipologiaPiatto(filter:TipoDieta? = nil) // collection
     case statusPiatto
     
     case menuAz
@@ -100,7 +100,7 @@ enum MapCategoryContainer:MyEnumProtocolMapConform {
         
     }
     
-    func imageAssociated() -> String? {
+    func imageAssociated() -> String {
         return "eye"
     }
     

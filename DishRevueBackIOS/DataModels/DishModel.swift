@@ -35,7 +35,6 @@ struct DishModel:MyModelStatusConformity {
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
         lhs.categoriaMenu == rhs.categoriaMenu &&
-       //lhs.areAllergeniOk == rhs.areAllergeniOk &&
         lhs.allergeni == rhs.allergeni &&
         lhs.dieteCompatibili == rhs.dieteCompatibili &&
         lhs.pricingPiatto == rhs.pricingPiatto &&
@@ -47,7 +46,7 @@ struct DishModel:MyModelStatusConformity {
     
     var intestazione: String
     var descrizione: String
-    var rating: String
+    var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
 
     var status: StatusModel
     
@@ -55,14 +54,13 @@ struct DishModel:MyModelStatusConformity {
     var ingredientiSecondari: [IngredientModel]
     
     var categoriaMenu: CategoriaMenu
-    
-  //  var areAllergeniOk: Bool = false
+
     var allergeni: [AllergeniIngrediente] // derivati dagli ingredienti
 
-    var dieteCompatibili:[DishTipologia] // derivate dagli ingredienti
+    var dieteCompatibili:[TipoDieta] // derivate dagli ingredienti
     var pricingPiatto:[DishFormat]
 
-    var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti
+    var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti // deprecata in futuro
     
     init() {
         

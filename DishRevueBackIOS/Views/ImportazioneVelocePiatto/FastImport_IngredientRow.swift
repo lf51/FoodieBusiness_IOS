@@ -42,7 +42,7 @@ struct FastImport_IngredientRow: View {
                 
                 VStack(alignment:.leading) {
                     
-                    HStack(alignment:.bottom) {
+                    HStack(alignment:.center) {
                         
                        vbMainRow()
              
@@ -98,7 +98,7 @@ struct FastImport_IngredientRow: View {
                             Image(systemName: "thermometer.snowflake")
                                 .imageScale(.small)
                             
-                            Text(ingredient.conservazione.extendedDescription() ?? "")
+                            Text(ingredient.conservazione.extendedDescription())
                                 .italic()
                                 .fontWeight(.light)
                                 .font(.caption2)
@@ -129,11 +129,14 @@ struct FastImport_IngredientRow: View {
 
     @ViewBuilder private func vbOrigineIcon() -> some View {
         
-        if let image = self.ingredient.origine.imageAssociated() {
+        let image = self.ingredient.origine.imageAssociated()
+        
+        csVbSwitchImageText(string: image, size: .large)
+     /*   if let image = self.ingredient.origine.imageAssociated() {
             
             csVbSwitchImageText(string: image, size: .large)
             
-        } else {EmptyView()}
+        } else {EmptyView()} */
         
     }
     

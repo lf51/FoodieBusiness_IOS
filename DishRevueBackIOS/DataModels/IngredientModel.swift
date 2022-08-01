@@ -12,6 +12,36 @@ import SwiftUI
 
 struct IngredientModel:MyModelStatusConformity {
     
+  static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
+       return
+      lhs.id == rhs.id &&
+      lhs.intestazione == rhs.intestazione &&
+      lhs.descrizione == rhs.descrizione &&
+      lhs.provenienza == rhs.provenienza &&
+      lhs.produzione == rhs.produzione &&
+      lhs.conservazione == rhs.conservazione &&
+      lhs.origine == rhs.origine &&
+      lhs.allergeni == rhs.allergeni &&
+      lhs.status == rhs.status &&
+      lhs.idIngredienteDiRiserva == rhs.idIngredienteDiRiserva
+    }
+    
+    var id: String { creaID(fromValue: self.intestazione) }
+
+    var intestazione: String = ""
+    var descrizione: String = ""
+    
+    var conservazione: ConservazioneIngrediente = .defaultValue
+    var produzione: ProduzioneIngrediente = .defaultValue
+    var provenienza: ProvenienzaIngrediente = .defaultValue
+    
+    var allergeni: [AllergeniIngrediente] = []
+    var origine: OrigineIngrediente = .defaultValue
+    
+    var status: StatusModel = .vuoto
+    
+    var idIngredienteDiRiserva:String = "" // questo è il riferimento all'ingrediente con cui va sostituito nel caso venga messo in pausa
+    
     func returnNewModel() -> (tipo: IngredientModel, nometipo: String) {
         (IngredientModel(),"Nuovo Ingrediente")
     }
@@ -46,32 +76,5 @@ struct IngredientModel:MyModelStatusConformity {
         hasher.combine(id)
     }
     
-  static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
-       return
-      lhs.id == rhs.id &&
-      lhs.intestazione == rhs.intestazione &&
-      lhs.descrizione == rhs.descrizione &&
-      lhs.provenienza == rhs.provenienza &&
-      lhs.produzione == rhs.produzione &&
-      lhs.conservazione == rhs.conservazione &&
-      lhs.origine == rhs.origine &&
-      lhs.allergeni == rhs.allergeni &&
-      lhs.status == rhs.status
-    }
     
-    var id: String { creaID(fromValue: self.intestazione) }
-
-    var intestazione: String = ""
-    var descrizione: String = ""
-    
-    var conservazione: ConservazioneIngrediente = .defaultValue
-    var produzione: ProduzioneIngrediente = .defaultValue
-    var provenienza: ProvenienzaIngrediente = .defaultValue
-    
-    var allergeni: [AllergeniIngrediente] = []
-    var origine: OrigineIngrediente = .defaultValue
-    
-    var status: StatusModel = .vuoto
-    
-
 }

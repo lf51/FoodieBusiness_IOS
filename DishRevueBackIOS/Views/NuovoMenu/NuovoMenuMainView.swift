@@ -65,7 +65,7 @@ struct NuovoMenuMainView: View {
                                 placeHolder: "Tipologia Menu",
                                 imageNameOrEmojy: "dollarsign.circle",
                                 backgroundColor: Color.black) {
-                                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.tipologia == nil)
+                                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.tipologia == .defaultValue)
                                 }
                                 
                                 SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
@@ -76,20 +76,20 @@ struct NuovoMenuMainView: View {
                         
                             HStack {
                                 
-                                Text(self.nuovoMenu.isAvaibleWhen?.extendedDescription() ?? "Seleziona il tipo di intervallo temporale")
+                                Text(self.nuovoMenu.isAvaibleWhen.extendedDescription())
                                     .font(.caption)
                                     .fontWeight(.light)
                                     .italic()
                                     .foregroundColor(Color.black)
                                 
-                                CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.isAvaibleWhen == nil)
+                                CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.isAvaibleWhen == .defaultValue)
                                 
                             }
                             
                                 
                        //     }
                             
-                            if self.nuovoMenu.isAvaibleWhen != nil {
+                            if self.nuovoMenu.isAvaibleWhen != .defaultValue {
                       
                                 CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
                             }
@@ -131,6 +131,8 @@ struct NuovoMenuMainView: View {
                                     menuDescription()
                                 } checkPreliminare: {
                                     checkPreliminare()
+                                } salvaECreaPostAction: {
+                                    self.salvaECreaPostAction()
                                 }
 
                             
@@ -198,6 +200,14 @@ struct NuovoMenuMainView: View {
     
     // Method
     
+    private func salvaECreaPostAction() {
+        
+        self.generalErrorCheck = false
+        
+        self.nuovoMenu = MenuModel()
+        
+    }
+    
     private func menuDescription() -> Text {
            
               var giorniServizio: [String] = []
@@ -221,8 +231,7 @@ struct NuovoMenuMainView: View {
               return Text("Il menu \(nome) sarà attivo a partire dal giorno \(dataInizio), nei giorni di \(giorniServizio,format: .list(type: .and)), dalle ore \(oraInizio) alle ore \(oraFine)")
           case .intervalloChiuso:
               return Text("Il menu \(nome) sarà attivo dal \(dataInizio) al \(dataFine), nei giorni di \(giorniServizio,format: .list(type: .and)), dalle ore \(oraInizio) alle ore \(oraFine)")
-
-          case nil:
+          case .noValue:
               return Text("Nessuna Info")
               
           }
@@ -251,12 +260,12 @@ struct NuovoMenuMainView: View {
     
     private func checkTipologiaMenu() -> Bool {
         
-        return self.nuovoMenu.tipologia != nil
+        return self.nuovoMenu.tipologia != .defaultValue
     }
     
     private func checkProgrammazione() -> Bool {
         
-        return self.nuovoMenu.isAvaibleWhen != nil
+        return self.nuovoMenu.isAvaibleWhen != .defaultValue
     }
 
   /*

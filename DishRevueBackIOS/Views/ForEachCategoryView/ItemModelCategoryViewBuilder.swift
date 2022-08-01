@@ -79,7 +79,7 @@ struct ItemModelCategoryViewBuilder: View {
             
         case .tipologiaMenu:
         
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \MenuModel.tipologia!, dataPath: \.allMyMenu, navPath: \.menuListPath)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \MenuModel.tipologia, dataPath: \.allMyMenu, navPath: \.menuListPath)
 
         case .giorniDelServizio:
          
@@ -111,7 +111,7 @@ struct ItemModelCategoryViewBuilder: View {
         case .tipologiaPiatto:
  
           //  DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.dieteCompatibili,  dataPath: \.allMyDish, navPath: \.dishListPath)
-            DataModelCategoryView_SubView(dataMapping: DishTipologia.allCases, filterCategory: self.filterCategory, collectionPath: \DishModel.dieteCompatibili, dataPath: \.allMyDish, navPath: \.dishListPath)
+            DataModelCategoryView_SubView(dataMapping: TipoDieta.allCases, filterCategory: self.filterCategory, collectionPath: \DishModel.dieteCompatibili, dataPath: \.allMyDish, navPath: \.dishListPath)
 
         case .statusPiatto:
             notListed()

@@ -34,7 +34,7 @@ enum PaxMenuFisso:MyEnumProtocolMapConform  {
         }
     }
     
-    func imageAssociated() -> String? {
+    func imageAssociated() -> String {
         
         switch self {
         case .uno:
@@ -62,19 +62,21 @@ enum PaxMenuFisso:MyEnumProtocolMapConform  {
 enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
    
     static var allCases: [TipologiaMenu] = [.fisso(persone: .uno, costo: "n/d"),.allaCarta]
-    static var defaultValue: TipologiaMenu = .allaCarta // deprecato 01.07 -> Togliere dal Protocollo
+    static var defaultValue: TipologiaMenu = .noValue
     
     var id:String {self.createId()}
     
     case fisso(persone:PaxMenuFisso,costo: String)
     case allaCarta
     
+    case noValue
+    
     func returnMenuPriceValue() -> String {
         
         switch self {
         case .fisso(_, let costo):
             return costo
-        case .allaCarta:
+        default:
             return "0.00"
         }
     }
@@ -86,11 +88,13 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return "Fisso"
         case .allaCarta:
             return "Alla Carta"
+        case .noValue:
+            return "Selezionare tipologia menu"
 
         }
     }
     
-    func extendedDescription() -> String? {
+    func extendedDescription() -> String {
        
         switch self {
             
@@ -98,6 +102,9 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return "Il costo del menu è di € \(costo) per \(persone.extendedDescription())."
         case .allaCarta:
             return "Il costo del menu non è predeterminato."
+        case .noValue:
+            return "Selezionare tipologia menu"
+           
         }
 
     }
@@ -114,8 +121,8 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return true
         case .allaCarta:
             return false
-      //  case .noValue:
-       //     return false
+        case .noValue:
+            return false
         }
         
     }
@@ -126,12 +133,14 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             
         case .fisso(_, _):
             return .fisso(persone: .uno, costo: "n/d")
-        default: return self
+        
+        default:
+            return self
             
         }
     }
     
-    func imageAssociated() -> String? {
+    func imageAssociated() -> String {
         
         switch self {
             
@@ -139,8 +148,8 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return "dollarsign.circle"
         case .allaCarta:
             return "cart"
-      //  case .noValue:
-        //    return nil
+        case .noValue:
+            return "gear.badge.xmark"
         }
     }
     
@@ -152,8 +161,8 @@ enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
             return 1
         case .allaCarta:
             return 2
-    //    case .noValue:
-      //      return 0
+        case .noValue:
+           return 0
         }
     }
     
