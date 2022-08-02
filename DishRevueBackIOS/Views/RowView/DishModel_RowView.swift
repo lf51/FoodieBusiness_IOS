@@ -25,12 +25,6 @@ struct DishModel_RowView: View {
                 }
                  .padding(.top,5)
                 
-              //  Spacer()
-                
-              //  vbDieteCompatibili()
-                
-              //  Spacer()
-
                 VStack(spacing:10){
                     
                     vbDieteCompatibili()
@@ -72,10 +66,11 @@ struct DishModel_RowView: View {
     @ViewBuilder private func vbSubIntestazioneDishRow() -> some View {
         
         let (price,count) = csIterateDishPricing()
+        let (mediaRating,ratingCount) = csIterateDishRating(item: self.item)
         
         HStack(alignment:.bottom,spacing: 3) {
             
-            Text(item.rating) // media
+            Text(mediaRating) // media
                 .fontWeight(.light)
                 .foregroundColor(Color("SeaTurtlePalette_1"))
                 .padding(.horizontal,5)
@@ -91,7 +86,7 @@ struct DishModel_RowView: View {
             
             Group {
                 Text("/")
-                Text("3.500 recensioni") // valore da importare
+                Text("\(ratingCount) recensioni") // valore da importare
                     .italic()
             }
             .fontWeight(.semibold)
@@ -117,36 +112,53 @@ struct DishModel_RowView: View {
        .font(.subheadline)
         
     }
+    /*
+    private func csIterateDishRating() -> (media:String,count:String) {
+        
+        var sommaVoti: Double = 0.0
+        var mediaRating: String = "0.00"
+        
+        let ratingCount: Int = self.item.rating.count
+        let stringCount = String(ratingCount)
+        
+        guard !self.item.rating.isEmpty else {
+            
+            return (mediaRating,stringCount)
+        }
+        
+        for rating in self.item.rating {
+            
+            let voto = Double(rating.voto)
+            sommaVoti += voto ?? 0.00
+        }
+        
+        let mediaAritmetica = sommaVoti / Double(ratingCount)
+        mediaRating = String(format:"%.1f", mediaAritmetica)
+        return (mediaRating,stringCount)
+        
+    } */ // deprecata come Private - resa Public per essere utilizzata nella DishRatingList
     
     private func csIterateDishPricing() -> (price:String,count:String) {
         
         var mandatoryPrice:String = "0.00"
-        var priceCount:Int = 0
+        let stringCount:String = String(self.item.pricingPiatto.count)
         
         guard !self.item.pricingPiatto.isEmpty else {
-            let stringCount = String(priceCount)
+          
             return (mandatoryPrice,stringCount)
         }
-        
-        if self.item.pricingPiatto.count == 1 {
-            
-            mandatoryPrice = self.item.pricingPiatto[0].price
-            let stringCount = String(priceCount)
-            return (mandatoryPrice,stringCount)
-            
-        } else {
             
             for format in self.item.pricingPiatto {
                 
-                if format.type == .mandatory { mandatoryPrice = format.price }
-                priceCount += 1
-                
+                if format.type == .mandatory {
+                    mandatoryPrice = format.price
+                    break
+                }
+               
             }
-            
-            let stringCount = String(priceCount)
+
             return (mandatoryPrice,stringCount)
             
-        }
     }
     
     @ViewBuilder private func vbDieteCompatibili() -> some View {
@@ -244,7 +256,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
         var dish = DishModel()
         dish.intestazione = "Spaghetti alla Carbonara"
         dish.status = .completo(.inPausa)
-        dish.rating = "9.9"
+        dish.rating = [
+            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+        ]
         
         let price = {
            var priceFirst = DishFormat(type: .mandatory)
@@ -264,7 +278,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
         var dish = DishModel()
         dish.intestazione = "Bucatini alla Matriciana"
         dish.status = .completo(.archiviato)
-        dish.rating = "10.0"
+        dish.rating = [
+            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+        ]
         
         let price1 = {
            var priceFirst = DishFormat(type: .opzionale)
@@ -273,13 +289,13 @@ struct DishModel_RowView_Previews: PreviewProvider {
             return priceFirst
         }()
         let price2 = {
-           var priceFirst = DishFormat(type: .mandatory)
+           var priceFirst = DishFormat(type: .opzionale)
             priceFirst.label = "Pizza"
             priceFirst.price = "9.5"
             return priceFirst
         }()
         let price3 = {
-           var priceFirst = DishFormat(type: .opzionale)
+           var priceFirst = DishFormat(type: .mandatory)
             priceFirst.label = "Tabisca"
             priceFirst.price = "14.9"
             return priceFirst
@@ -297,7 +313,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
        
         var dish = DishModel()
         dish.intestazione = "Trofie Pesto Noci e Gamberi"
-        dish.rating = "4.0"
+        dish.rating = [
+            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+        ]
         
         let price1 = {
            var priceFirst = DishFormat(type: .mandatory)
@@ -324,7 +342,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
        
         var dish = DishModel()
         dish.intestazione = "Birra bionda alla Spina"
-        dish.rating = "4.0"
+        dish.rating = [
+            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+        ]
         
         let price1 = {
            var priceFirst = DishFormat(type: .mandatory)
@@ -347,6 +367,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         return dish
     }()
     
+    
     static var previews: some View {
         
         NavigationStack {
@@ -356,6 +377,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
                 Color("SeaTurtlePalette_1").ignoresSafeArea()
                 
                 VStack(spacing:15) {
+
                     
                     DishModel_RowView(item: dishSample)
                     DishModel_RowView(item: dishSample2)
@@ -370,3 +392,5 @@ struct DishModel_RowView_Previews: PreviewProvider {
         
     }
 }
+
+

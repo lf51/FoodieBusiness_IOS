@@ -10,27 +10,74 @@
 import Foundation
 import SwiftUI
 
+struct DishRating:Hashable {
+    
+    let voto: String // il voto deve avere il formato INT
+    let titolo: String // deve avere un limite di caratteri
+    let commento: String
+    let dataRilascio: Date
+    
+    func rateColor() -> Color {
+        
+        guard let vote = Double(self.voto) else { return Color.gray }
+      
+        if vote <= 6.0 { return Color.red }
+        else if vote <= 8.0 { return Color.orange }
+        else if vote == 9.0 { return Color.yellow }
+        else { return Color.green }
+        
+    }
+    
+    func isVoteInRange(min:Int,max:Int) -> Bool {
+        
+        guard let vote = Double(self.voto) else { return false }
+        
+        let intVote = Int(vote)
+        
+        return intVote >= min && intVote <= max
+        
+    }
+    
+    
+    
+    
+    
+    init(voto: String, titolo: String, commento: String) {
+        self.voto = voto
+        self.titolo = titolo
+        self.commento = commento
+        
+        self.dataRilascio = Date() // viene inizializzata in automatico con la data di init che dovrebbe corrispondere alla data di rilascio della review
+    }
+}
+
+
 struct DishModel:MyModelStatusConformity {
     
-    func returnNewModel() -> (tipo: DishModel, nometipo: String) {
-        (DishModel(),"Nuovo Piatto")
+    func customInteractiveMenu() -> some View {
+        
+        VStack {
+            
+            Button {
+               // myModel.wrappedValue.status = .completo(.inPausa)
+                
+            } label: {
+                HStack{
+                    Text("Vedi Recensioni")
+                    Image(systemName: "eye")
+                }
+            }
+            
+        }
+
     }
     
-    func modelStringResearch(string: String) -> Bool {
-        self.intestazione.lowercased().contains(string)
-    }
-    
-    func returnModelRowView() -> some View {
-        DishModel_RowView(item: self)
-    }
-    
-    
+
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
        
         lhs.id == rhs.id &&
         lhs.intestazione == rhs.intestazione &&
         lhs.descrizione == rhs.descrizione &&
-        lhs.rating == rhs.rating &&
         lhs.status == rhs.status &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
@@ -44,29 +91,30 @@ struct DishModel:MyModelStatusConformity {
     
     var id: String { creaID(fromValue: self.intestazione) }
     
-    var intestazione: String
-    var descrizione: String
-    var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
+    var intestazione: String = ""
+    var descrizione: String = ""
+  //  var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
+    var rating: [DishRating] = []
 
-    var status: StatusModel
+    var status: StatusModel = .vuoto
     
-    var ingredientiPrincipali: [IngredientModel]
-    var ingredientiSecondari: [IngredientModel]
+    var ingredientiPrincipali: [IngredientModel] = []
+    var ingredientiSecondari: [IngredientModel] = []
     
-    var categoriaMenu: CategoriaMenu
+    var categoriaMenu: CategoriaMenu = .defaultValue
 
-    var allergeni: [AllergeniIngrediente] // derivati dagli ingredienti
+    var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti
 
-    var dieteCompatibili:[TipoDieta] // derivate dagli ingredienti
-    var pricingPiatto:[DishFormat]
+    var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti
+    var pricingPiatto:[DishFormat] = [DishFormat(type: .mandatory)]
 
     var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti // deprecata in futuro
     
-    init() {
+   /* init() {
         
         self.intestazione = ""
         self.descrizione = ""
-        self.rating = ""
+     //   self.rating = ""
         self.status = .vuoto
         self.ingredientiPrincipali = []
         self.ingredientiSecondari = []
@@ -76,7 +124,7 @@ struct DishModel:MyModelStatusConformity {
         self.dieteCompatibili = [.standard]
         self.pricingPiatto =  [DishFormat(type: .mandatory)]
  
-    }
+    } */
     
     func creaID(fromValue: String) -> String {
         print("DishModel/creaID()")
@@ -100,6 +148,17 @@ struct DishModel:MyModelStatusConformity {
         hasher.combine(id)
     }
     
+    func returnNewModel() -> (tipo: DishModel, nometipo: String) {
+        (DishModel(),"Nuovo Piatto")
+    }
+    
+    func modelStringResearch(string: String) -> Bool {
+        self.intestazione.lowercased().contains(string)
+    }
+    
+    func returnModelRowView() -> some View {
+        DishModel_RowView(item: self)
+    }
 }
 
 

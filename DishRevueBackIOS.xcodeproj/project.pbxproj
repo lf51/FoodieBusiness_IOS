@@ -32,6 +32,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		3F250CCF28995DE800166E46 /* DishRating_RowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F250CCE28995DE800166E46 /* DishRating_RowView.swift */; };
+		3F250CD128996CD400166E46 /* DishRatingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F250CD028996CD400166E46 /* DishRatingListView.swift */; };
 		4D04E28427C7A2BD002F0486 /* SelettoreMyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */; };
 		4D11D23228495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D11D23128495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift */; };
 		4D14238227CE7F0C00CFF4AE /* NewDishMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D14238127CE7F0C00CFF4AE /* NewDishMainView.swift */; };
@@ -198,6 +200,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3F250CCE28995DE800166E46 /* DishRating_RowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRating_RowView.swift; sourceTree = "<group>"; };
+		3F250CD028996CD400166E46 /* DishRatingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRatingListView.swift; sourceTree = "<group>"; };
 		4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelettoreMyModel.swift; sourceTree = "<group>"; };
 		4D11D23128495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuovoIngredienteMainViewBACKUP0206.swift; sourceTree = "<group>"; };
 		4D14238127CE7F0C00CFF4AE /* NewDishMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishMainView.swift; sourceTree = "<group>"; };
@@ -376,6 +380,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3F250CD228996CDC00166E46 /* DishRatingList */ = {
+			isa = PBXGroup;
+			children = (
+				3F250CD028996CD400166E46 /* DishRatingListView.swift */,
+			);
+			path = DishRatingList;
+			sourceTree = "<group>";
+		};
 		4D1BC745279C1FB6000B463C /* TemporaryVIEW */ = {
 			isa = PBXGroup;
 			children = (
@@ -510,6 +522,7 @@
 				4D4FE6F727FF34FB00AC0190 /* DishModel_RowView.swift */,
 				4D56A62328018D1000A43E80 /* IngredientModel_RowView.swift */,
 				4DB75EDE2812BC22008C1765 /* PropertyModel_RowView.swift */,
+				3F250CCE28995DE800166E46 /* DishRating_RowView.swift */,
 			);
 			path = RowView;
 			sourceTree = "<group>";
@@ -818,6 +831,7 @@
 				4D34D54F2838DABD00A57747 /* ImportazioneVelocePiatto */,
 				4D4FE6E427FC88E800AC0190 /* ForEachCategoryView */,
 				4D4FE6ED27FEEC0100AC0190 /* RowView */,
+				3F250CD228996CDC00166E46 /* DishRatingList */,
 				4D45241B28268385009E6128 /* EditingView */,
 				4DF0C4B027A009CB00315A73 /* TabView */,
 				4DB75EE02813155E008C1765 /* PropertyList */,
@@ -1011,6 +1025,7 @@
 				4D403B9227981BC200EB4E1B /* ContentView.swift in Sources */,
 				4DA089A4287862F300167298 /* BottomViewGeneric_NewModelSubView.swift in Sources */,
 				4D34D5512838DBB800A57747 /* FastImport_MainView.swift in Sources */,
+				3F250CD128996CD400166E46 /* DishRatingListView.swift in Sources */,
 				4D3C72832887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift in Sources */,
 				4D3C728128871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift in Sources */,
 				4DD25B55283FBAE200582DCC /* CSMenu_MultiSelection.swift in Sources */,
@@ -1133,6 +1148,7 @@
 				4DCCD6D927BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift in Sources */,
 				4DB75EDF2812BC22008C1765 /* PropertyModel_RowView.swift in Sources */,
 				4DF7D9D527A4429F001DB949 /* VariousTabStyle.swift in Sources */,
+				3F250CCF28995DE800166E46 /* DishRating_RowView.swift in Sources */,
 				4D395901282FFCE800EA3FAA /* ViewModifier&.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1263,7 +1279,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 54;
+				CURRENT_PROJECT_VERSION = 55;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1294,7 +1310,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 54;
+				CURRENT_PROJECT_VERSION = 55;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

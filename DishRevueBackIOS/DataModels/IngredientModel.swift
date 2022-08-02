@@ -12,6 +12,23 @@ import SwiftUI
 
 struct IngredientModel:MyModelStatusConformity {
     
+    func customInteractiveMenu() -> some View {
+        
+        VStack {
+            
+            Button {
+                // myModel.wrappedValue.status = .completo(.inPausa)
+                
+            } label: {
+                HStack{
+                    Text("Vedi Recensioni")
+                    Image(systemName: "eye")
+                }
+            }
+            
+        }
+    }
+    
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return
       lhs.id == rhs.id &&

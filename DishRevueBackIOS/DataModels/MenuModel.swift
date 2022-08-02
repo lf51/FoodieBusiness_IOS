@@ -10,6 +10,23 @@ import SwiftUI
 
 struct MenuModel:MyModelStatusConformity {
     
+    func customInteractiveMenu() -> some View {
+        
+        VStack {
+            
+            Button {
+                // myModel.wrappedValue.status = .completo(.inPausa)
+                
+            } label: {
+                HStack{
+                    Text("Vedi Recensioni")
+                    Image(systemName: "eye")
+                }
+            }
+            
+        }
+    }
+    
     func returnNewModel() -> (tipo: MenuModel, nometipo: String) {
         (MenuModel(), "Nuovo Menu")
     }

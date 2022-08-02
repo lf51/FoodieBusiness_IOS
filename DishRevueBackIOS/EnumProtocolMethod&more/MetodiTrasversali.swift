@@ -122,6 +122,32 @@ func csReturnEmojyCollection() -> [String] {
         
     }
 
+/// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse sempre in Stringa
+func csIterateDishRating(item: DishModel) -> (media:String,count:String) {
+    
+    var sommaVoti: Double = 0.0
+    var mediaRating: String = "0.00"
+    
+    let ratingCount: Int = item.rating.count
+    let stringCount = String(ratingCount)
+    
+    guard !item.rating.isEmpty else {
+        
+        return (mediaRating,stringCount)
+    }
+    
+    for rating in item.rating {
+        
+        let voto = Double(rating.voto)
+        sommaVoti += voto ?? 0.00
+    }
+    
+    let mediaAritmetica = sommaVoti / Double(ratingCount)
+    mediaRating = String(format:"%.1f", mediaAritmetica)
+    return (mediaRating,stringCount)
+    
+}
+
 /*
 /// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
 func csResetModel<M:MyModelStatusConformity>(modelAttivo:inout M,modelArchiviato:M) {

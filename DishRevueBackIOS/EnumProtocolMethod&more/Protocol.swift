@@ -44,6 +44,8 @@ protocol MyModelProtocol: Identifiable, Equatable {
 
 protocol MyModelStatusConformity: MyModelProtocol, Hashable {
     
+    associatedtype InteractiveMenuContent: View
+    
     var id: String { get }
     var status: StatusModel {get set}
     
@@ -54,5 +56,8 @@ protocol MyModelStatusConformity: MyModelProtocol, Hashable {
     func creaID(fromValue:String) -> String
     
     /// StringResearch per le liste
-    func modelStringResearch(string: String) -> Bool 
+    func modelStringResearch(string: String) -> Bool
+    
+    /// Bottoni per il menu Interattivo specifici del modello
+    func customInteractiveMenu() -> InteractiveMenuContent
 }
