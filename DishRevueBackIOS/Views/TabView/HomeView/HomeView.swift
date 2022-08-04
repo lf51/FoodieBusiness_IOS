@@ -19,6 +19,7 @@ enum DestinationPathView:Hashable {
     case ingrediente(_ :IngredientModel)
     
     case categoriaMenu
+    case recensioni(_ :DishModel)
     
     @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath) -> some View {
         
@@ -44,6 +45,9 @@ enum DestinationPathView:Hashable {
             
         case .categoriaMenu:
             NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
+            
+        case .recensioni(let dish):
+            DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView)
         }
         
     }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DishRating_RowView: View {
     
-    let rating: DishRating
+    let rating: DishRatingModel
     
     var body: some View {
         
@@ -73,11 +73,11 @@ struct DishRating_RowView: View {
 
 struct DishRating_RowView_Previews: PreviewProvider {
     
-    static var ratings: [DishRating] = [
-    DishRating(voto: "8.9", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino."),
-    DishRating(voto: "4.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore"),
-    DishRating(voto: "6.5", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male."),
-    DishRating(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!")
+    static var ratings: [DishRatingModel] = [
+    DishRatingModel(voto: "8.9", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino."),
+    DishRatingModel(voto: "4.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore"),
+    DishRatingModel(voto: "6.5", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male."),
+    DishRatingModel(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!")
     
     ]
     

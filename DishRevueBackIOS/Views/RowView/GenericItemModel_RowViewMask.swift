@@ -12,12 +12,15 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
     
     @EnvironmentObject var viewModel: AccounterVM
     let model: M
+    let navigationPath: ReferenceWritableKeyPath<AccounterVM,NavigationPath>
     @ViewBuilder var interactiveMenuContent: Content
    
     var body: some View {
                 
         Menu {
-               interactiveMenuContent
+            
+            interactiveMenuContent
+            model.customInteractiveMenu(viewModel: viewModel, navigationPath: navigationPath )
  
         } label: {
 

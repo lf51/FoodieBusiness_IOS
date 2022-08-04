@@ -18,6 +18,10 @@ import SwiftUI
 */
 
 struct PropertyModel: MyModelProtocol, Hashable{
+
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        EmptyView()
+    }
     
     func returnNewModel() -> (tipo: PropertyModel, nometipo: String) {
         (PropertyModel(),"Nuova Proprietà")

@@ -10,56 +10,15 @@
 import Foundation
 import SwiftUI
 
-struct DishRating:Hashable {
-    
-    let voto: String // il voto deve avere il formato INT
-    let titolo: String // deve avere un limite di caratteri
-    let commento: String
-    let dataRilascio: Date
-    
-    func rateColor() -> Color {
-        
-        guard let vote = Double(self.voto) else { return Color.gray }
-      
-        if vote <= 6.0 { return Color.red }
-        else if vote <= 8.0 { return Color.orange }
-        else if vote == 9.0 { return Color.yellow }
-        else { return Color.green }
-        
-    }
-    
-    func isVoteInRange(min:Int,max:Int) -> Bool {
-        
-        guard let vote = Double(self.voto) else { return false }
-        
-        let intVote = Int(vote)
-        
-        return intVote >= min && intVote <= max
-        
-    }
-    
-    
-    
-    
-    
-    init(voto: String, titolo: String, commento: String) {
-        self.voto = voto
-        self.titolo = titolo
-        self.commento = commento
-        
-        self.dataRilascio = Date() // viene inizializzata in automatico con la data di init che dovrebbe corrispondere alla data di rilascio della review
-    }
-}
-
-
 struct DishModel:MyModelStatusConformity {
-    
-    func customInteractiveMenu() -> some View {
+        
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         VStack {
             
             Button {
-               // myModel.wrappedValue.status = .completo(.inPausa)
+                
+                viewModel[keyPath: navigationPath].append(DestinationPathView.recensioni(self))
                 
             } label: {
                 HStack{
@@ -94,7 +53,7 @@ struct DishModel:MyModelStatusConformity {
     var intestazione: String = ""
     var descrizione: String = ""
   //  var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
-    var rating: [DishRating] = []
+    var rating: [DishRatingModel] = []
 
     var status: StatusModel = .vuoto
     

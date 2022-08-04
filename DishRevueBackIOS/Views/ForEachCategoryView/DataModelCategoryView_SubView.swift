@@ -49,6 +49,8 @@ struct DataModelCategoryView_SubView<M:MyModelStatusConformity,G:MyEnumProtocolM
                ScrollViewReader { proxy in
                    CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
                    
+                   CSDivider()
+                   
                    ForEach(csDataMapping(), id:\.self) { category in
                        
                        CSLabel_1Button(placeHolder: category.simpleDescription(), imageNameOrEmojy: category.imageAssociated(), backgroundColor: Color("SeaTurtlePalette_1"), backgroundOpacity: 0.3)
@@ -107,7 +109,9 @@ struct DataModelCategoryView_SubView<M:MyModelStatusConformity,G:MyEnumProtocolM
         
         if isIn {
             
-            vbCambioStatusModelList(myModel: item, viewModel: viewModel,navPath: navPath)
+            GenericItemModel_RowViewMask(model: localItem, navigationPath: navPath) {
+                vbCambioStatusModelList(myModel: item, viewModel: viewModel,navPath: navPath)
+            }  
    
         } else { EmptyView()}
 

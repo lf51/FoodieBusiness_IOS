@@ -62,6 +62,7 @@ struct NuovaCategoriaMenu: View {
                                   if self.mode?.wrappedValue.isEditing == true {
                                         
                                       self.mode?.wrappedValue = .inactive
+                                      
                                   } else { self.mode?.wrappedValue = .active}
                             }
                         }
@@ -129,11 +130,13 @@ struct NuovaCategoriaMenu: View {
 }
 
 struct NuovaCategoriaMenu_Previews: PreviewProvider {
+
     static var previews: some View {
         
         NavigationStack {
             
-            NuovaCategoriaMenu(backgroundColorView: Color("SeaTurtlePalette_1"))
+            NuovaCategoriaMenu(backgroundColorView: Color("SeaTurtlePalette_1")).environmentObject(AccounterVM())
+                
         }
         
        
@@ -151,7 +154,7 @@ struct CorpoNuovaCategoria:View {
     
     var body: some View {
         
-        Picker(selection: $image) {
+      /*  Picker(selection: $image) {
             ForEach(csReturnEmojyCollection(), id:\.self) { emojy in
                 
                 Text(emojy)
@@ -160,41 +163,72 @@ struct CorpoNuovaCategoria:View {
             }
         } label: {
             Text("")
-        }.pickerStyle(WheelPickerStyle())
-           
-        HStack {
-            
-            CSTextField_4b(
-                textFieldItem: $nomeCategoria,
-                placeHolder: "Associa un Nome..",
-                showDelete: true) {
-                    csVbSwitchImageText(string: self.image, size: .large)
+        }.pickerStyle(WheelPickerStyle()) */
+        
+        VStack {
+       
+            ScrollView(.horizontal,showsIndicators: false) {
+                
+                HStack(spacing:10) {
+                    
+                    ForEach(csReturnEmojyCollection(),id:\.self) { emojy in
+                        
+                        Text(emojy)
+                            .onTapGesture {
+                                self.image = emojy
+                            }
+    
+                    }
                 }
+                
+            }.padding(.vertical)
             
-            Spacer()
-            CSButton_tight(
-                title: "Aggiungi",
-                fontWeight: .semibold,
-                titleColor: Color("SeaTurtlePalette_4"),
-                fillColor: Color("SeaTurtlePalette_2")) {
-                   // self.creaCategoria()
-                    creAction()
+         /*   Grid(alignment:.center) {
+                
+               // let emojySubArray = [["a","b"],["c","f"]]
+                let emojySubArray = disponiRowEmojy()
+                
+                ForEach(emojySubArray,id:\.self) { subArray in
 
-                }
-                .opacity(self.nomeCategoria == "" ? 0.6 : 1.0)
-                .disabled(self.nomeCategoria == "")
+                    GridRow {
+                        Text("\(subArray.count)")
+                        ForEach(subArray,id:\.self) { emojy in
+                            csVbSwitchImageText(string: emojy)
+                            }
+                   
+                        }
+                    }
+                } */
             
+            HStack {
+                
+                CSTextField_4b(
+                    textFieldItem: $nomeCategoria,
+                    placeHolder: "Associa un Nome..",
+                    showDelete: true) {
+                        csVbSwitchImageText(string: self.image, size: .large)
+                    }
+                
+                Spacer()
+                CSButton_tight(
+                    title: "Aggiungi",
+                    fontWeight: .semibold,
+                    titleColor: Color("SeaTurtlePalette_4"),
+                    fillColor: Color("SeaTurtlePalette_2")) {
+                       // self.creaCategoria()
+                        creAction()
+
+                    }
+                    .opacity(self.nomeCategoria == "" ? 0.6 : 1.0)
+                    .disabled(self.nomeCategoria == "")
+                
+                
+            }
             
         }
-  
-        
-        
-        
+    
     }
     
-    
+   // method
     
 }
-
-
-

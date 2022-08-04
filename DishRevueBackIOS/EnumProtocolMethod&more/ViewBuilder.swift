@@ -218,6 +218,95 @@ struct CSZStackVB_Framed<Content:View>:View {
     let currentModel = myModel.wrappedValue
     
     if currentModel.status == .completo(.pubblico) {
+                
+        VStack {
+            
+            Button {
+                myModel.wrappedValue.status = .completo(.inPausa)
+                
+            } label: {
+                HStack{
+                    Text("Metti in Pausa")
+                    Image(systemName: "pause.circle")
+                }
+            }
+            
+            Button {
+                myModel.wrappedValue.status = .completo(.archiviato)
+                
+            } label: {
+                HStack{
+                    Text("Archivia")
+                    Image(systemName: "archivebox")
+                }
+            }
+            
+            vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+        }
+
+        
+    } else if currentModel.status == .completo(.inPausa) {
+        
+            VStack {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.pubblico)
+                    
+                } label: {
+                    HStack{
+                        Text("Pubblica")
+                        Image(systemName: "play.circle")
+                    }
+                }
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.archiviato)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                    }
+                }
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+            }
+        
+    } else if currentModel.status == .completo(.archiviato) {
+        
+            VStack {
+                
+                Button {
+                    myModel.wrappedValue.status = .completo(.pubblico)
+                    
+                } label: {
+                    HStack{
+                        Text("Pubblica")
+                        Image(systemName: "play.circle")
+                    }
+                }
+                
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+
+            }
+    } else if currentModel.status == .bozza {
+        
+        VStack {
+                
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath, titleOne: "Completa Bozza")
+                
+            }
+        
+    }
+           
+}
+
+
+/// Gestisce il Menu della RowModel in base al cambio di Status. Generic conforme al MyModelStatusConformity
+/*@ViewBuilder func vbCambioStatusModelList<M:MyModelStatusConformity>(myModel: Binding<M>,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    
+    let currentModel = myModel.wrappedValue
+    
+    if currentModel.status == .completo(.pubblico) {
         
         GenericItemModel_RowViewMask(
             model: currentModel) {
@@ -301,7 +390,7 @@ struct CSZStackVB_Framed<Content:View>:View {
         
     }
            
-}
+} */ // Deprecato. Portato fuori la View Generic e creato un viewBulder che ritorna una lista di bottoni che valgono per tutti i myModel
 
 @ViewBuilder func vbScopoDestinazionePathButton<M:MyModelStatusConformity>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>,titleOne:String = "Modifica OLE") -> some View {
     

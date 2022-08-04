@@ -31,6 +31,7 @@ protocol MyEnumProtocolMapConform : Hashable { // deve essere conforme ad HAshab
 protocol MyModelProtocol: Identifiable, Equatable {
     
     associatedtype RowView: View
+    associatedtype InteractiveMenuContent: View
     
     var intestazione: String {get set}
     var descrizione: String {get set}
@@ -39,13 +40,13 @@ protocol MyModelProtocol: Identifiable, Equatable {
     
     func returnModelRowView() -> RowView
     func returnNewModel() -> (tipo:Self,nometipo:String) // deprecata in futuro il ritorno del Self. al 22.07 usato soltanto il nomeTipo
-  
+    
+    /// Bottoni per il menu Interattivo specifici del modello
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> InteractiveMenuContent
 }
 
 protocol MyModelStatusConformity: MyModelProtocol, Hashable {
-    
-    associatedtype InteractiveMenuContent: View
-    
+
     var id: String { get }
     var status: StatusModel {get set}
     
@@ -58,6 +59,5 @@ protocol MyModelStatusConformity: MyModelProtocol, Hashable {
     /// StringResearch per le liste
     func modelStringResearch(string: String) -> Bool
     
-    /// Bottoni per il menu Interattivo specifici del modello
-    func customInteractiveMenu() -> InteractiveMenuContent
+   
 }

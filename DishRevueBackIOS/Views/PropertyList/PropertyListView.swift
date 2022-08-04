@@ -53,7 +53,7 @@ struct PropertyListView: View {
 
                               
                               GenericItemModel_RowViewMask(
-                                model: property) {
+                                model: property,navigationPath: \.homeViewPath) {
                                   /*  NavigationLink {
                                         EditingPropertyModel(itemModel: $property, backgroundColorView: Color("SeaTurtlePalette_1"))
                                     } label: {

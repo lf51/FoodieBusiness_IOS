@@ -31,6 +31,8 @@ struct DataModelAlphabeticView_Sub<T:MyModelStatusConformity>: View {
                     
                     CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
               
+                    CSDivider()
+                    
                     ForEach($viewModel[dynamicMember:dataPath].sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione }){ $item in
                        
                        HStack {
@@ -64,7 +66,12 @@ struct DataModelAlphabeticView_Sub<T:MyModelStatusConformity>: View {
         
         if isIn {
             
-            vbCambioStatusModelList(myModel: item,viewModel: viewModel,navPath: navPath)
+            GenericItemModel_RowViewMask(model: localItem,navigationPath: navPath) {
+                
+                vbCambioStatusModelList(myModel: item,viewModel: viewModel, navPath: navPath)
+            }
+            
+            
      
         } else { EmptyView()}
     

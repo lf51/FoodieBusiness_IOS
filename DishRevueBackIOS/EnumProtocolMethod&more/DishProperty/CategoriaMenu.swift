@@ -9,6 +9,17 @@ import Foundation
 
 struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    } // forse inutile
+    
+    static func == (lhs:CategoriaMenu, rhs:CategoriaMenu) -> Bool {
+        
+        lhs.id == rhs.id &&
+        lhs.nome == rhs.nome &&
+        lhs.image == rhs.image
+    } // forse inutile
+     
     static var allCases: [CategoriaMenu] = [
         CategoriaMenu(
             nome: "Antipasti",
@@ -37,7 +48,7 @@ struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
     var id: String { self.createId() }
     
     let nome: String
-    let image: String
+    var image: String = "🍰"
   //  var listPositionOrder: Int
     
     func createId() -> String { // Deprecata
@@ -46,6 +57,7 @@ struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
     
     func simpleDescription() -> String { // Deprecata
         self.nome
+      //  "Dessert"
     }
     
     func extendedDescription() -> String { // Deprecata
@@ -55,6 +67,8 @@ struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
     
     func imageAssociated() -> String { // Deprecata
         self.image
+     //   "🍰"
+        
     }
     
     func returnTypeCase() -> CategoriaMenu { // Deprecata

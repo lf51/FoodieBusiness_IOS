@@ -141,7 +141,9 @@ struct DishModel_RowView: View {
     private func csIterateDishPricing() -> (price:String,count:String) {
         
         var mandatoryPrice:String = "0.00"
-        let stringCount:String = String(self.item.pricingPiatto.count)
+        let pricingCount = self.item.pricingPiatto.count
+        let normalizedCount = pricingCount > 0 ? (pricingCount - 1) : pricingCount
+        let stringCount:String = String(normalizedCount)
         
         guard !self.item.pricingPiatto.isEmpty else {
           
@@ -257,7 +259,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.intestazione = "Spaghetti alla Carbonara"
         dish.status = .completo(.inPausa)
         dish.rating = [
-            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+            DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ]
         
         let price = {
@@ -279,7 +281,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.intestazione = "Bucatini alla Matriciana"
         dish.status = .completo(.archiviato)
         dish.rating = [
-            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+            DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ]
         
         let price1 = {
@@ -314,7 +316,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         var dish = DishModel()
         dish.intestazione = "Trofie Pesto Noci e Gamberi"
         dish.rating = [
-            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+            DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ]
         
         let price1 = {
@@ -343,7 +345,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         var dish = DishModel()
         dish.intestazione = "Birra bionda alla Spina"
         dish.rating = [
-            DishRating(voto: "5.7", titolo: "", commento: ""),DishRating(voto: "6.7", titolo: "", commento: ""),DishRating(voto: "8.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: ""),DishRating(voto: "9.7", titolo: "", commento: "")
+            DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ]
         
         let price1 = {

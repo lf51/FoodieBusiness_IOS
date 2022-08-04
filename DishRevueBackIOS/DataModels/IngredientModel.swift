@@ -12,7 +12,7 @@ import SwiftUI
 
 struct IngredientModel:MyModelStatusConformity {
     
-    func customInteractiveMenu() -> some View {
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         VStack {
             

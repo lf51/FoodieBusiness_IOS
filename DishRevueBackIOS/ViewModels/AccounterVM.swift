@@ -78,13 +78,17 @@ class AccounterVM: ObservableObject {
         
         switch destinationPath {
         case .homeView:
-            self.homeViewPath = NavigationPath()
+          //  self.homeViewPath = NavigationPath()
+            self.homeViewPath.removeLast()
         case .menuList:
-            self.menuListPath = NavigationPath()
+          //  self.menuListPath = NavigationPath()
+            self.menuListPath.removeLast()
         case .dishList:
-            self.dishListPath = NavigationPath()
+           // self.dishListPath = NavigationPath()
+            self.dishListPath.removeLast()
         case .ingredientList:
-            self.ingredientListPath = NavigationPath()
+           // self.ingredientListPath = NavigationPath()
+            self.ingredientListPath.removeLast()
         }
     }
     

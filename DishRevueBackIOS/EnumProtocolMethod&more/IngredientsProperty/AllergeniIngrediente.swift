@@ -10,6 +10,10 @@ import SwiftUI
 
 enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
     
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        EmptyView()
+    }
+    
     func returnNewModel() -> (tipo: AllergeniIngrediente, nometipo: String) {
         (AllergeniIngrediente.noValue,"Nuovo Allergene")
     }

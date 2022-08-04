@@ -10,13 +10,12 @@ import SwiftUI
 struct DishRatingListView: View {
     
     let dishTitle: String
-    let dishRating: [DishRating]
+    let dishRating: [DishRatingModel]
     let ratingsCount: String
     let mediaRating: String
     let backgroundColorView: Color
     
-    @State private var minMaxRange: (Int,Int) = (0,10)
-    //@State private var maxRange: Int = 10
+    @State private var minMaxRange: (Double,Double) = (0.0,10.0)
     
     init(dishItem:DishModel,backgroundColorView: Color) {
         self.dishTitle = dishItem.intestazione
@@ -36,7 +35,8 @@ struct DishRatingListView: View {
                     
                     csSplitRatingByVote()
                         .font(.system(.subheadline, design: .rounded, weight: .light))
-                 //   Spacer()
+                    
+                   Spacer()
                     
                     VStack {
                         
@@ -82,7 +82,7 @@ struct DishRatingListView: View {
         let from9To10 = "da 9 a 10"
         
         var ratingContainer: [String:Int] = [fromZeroToSix:0,fromSixTo8:0,from9To10:0]
-        let ratingRangeValue: [String:(Int,Int)] = [fromZeroToSix:(0,6),fromSixTo8:(6,8),from9To10:(9,10)]
+        let ratingRangeValue: [String:(Double,Double)] = [fromZeroToSix:(0.0,6.0),fromSixTo8:(7.0,8.0),from9To10:(9.0,10.0)]
         
         for rating in self.dishRating {
             
@@ -92,10 +92,41 @@ struct DishRatingListView: View {
             else if vote <= 8.0 { ratingContainer[fromSixTo8]! += 1 }
             else { ratingContainer[from9To10]! += 1 }
         }
+
+        return Grid(alignment:.leading) {
+            
+            ForEach(ratingContainer.sorted(by: >), id: \.key) { key, value in
+                
+                let isTheRangeActive = self.minMaxRange == ratingRangeValue[key]!
+                
+                GridRow {
+                    
+                    Text(key)
+                        .foregroundColor(Color.black)
+                    
+                    Text("( \(value) )")
+                        .fontWeight(.black)
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                    
+                    Button {
+                        withAnimation {
+                            self.minMaxRange = isTheRangeActive ? (0.0,10.0) : ratingRangeValue[key]!
+                        }
+                    } label: {
+                        Image(systemName: isTheRangeActive ? "eye" : "eye.slash")
+                            .imageScale(.medium)
+                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .opacity(isTheRangeActive ? 1.0 : 0.6)
+                    }
+                    
+                } // GridRow
+                
+            }
+            
+        }
         
         
-        
-        return VStack(alignment:.leading) {
+       /* return VStack(alignment:.leading) {
 
           ForEach(ratingContainer.sorted(by: >), id: \.key) { key, value in
                         
@@ -105,13 +136,14 @@ struct DishRatingListView: View {
                   
                   Text(key)
                       .foregroundColor(Color.black)
+                  
                   Text("( \(value) )")
                       .fontWeight(.black)
                       .foregroundColor(Color("SeaTurtlePalette_3"))
                   
                   Button {
                       withAnimation {
-                          self.minMaxRange = isTheRangeActive ? (0,10) : ratingRangeValue[key]!
+                          self.minMaxRange = isTheRangeActive ? (0.0,10.0) : ratingRangeValue[key]!
                       }
                   } label: {
                       Image(systemName: isTheRangeActive ? "eye" : "eye.slash")
@@ -125,7 +157,7 @@ struct DishRatingListView: View {
                   
                     }
             }
-        }
+        } */
         
        // interna
     }
@@ -139,29 +171,19 @@ struct DishRatingListView_Previews: PreviewProvider {
     static var dishItem: DishModel = {
         
         var newDish = DishModel()
-        newDish.intestazione = "Spaghetti alla Carbo"
+        newDish.intestazione = "Spaghetti alla Carbonara"
         newDish.rating = [
-            DishRating(voto: "8.0", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino."),
-            DishRating(voto: "5.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore"),
-            DishRating(voto: "9.0", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male."),
-            DishRating(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!"),
-            DishRating(voto: "4.0", titolo: "Sapore di Niente", commento: "NoComment")
+            DishRatingModel(voto: "9.0", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino."),
+            DishRatingModel(voto: "5.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore"),
+            DishRatingModel(voto: "9.0", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male."),
+            DishRatingModel(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!"),
+            DishRatingModel(voto: "4.0", titolo: "Sapore di Niente", commento: "NoComment")
             
             ]
         return newDish
     }()
-    
-  //  static var title = "Spaghetti alla Carbonara"
+
     static var background = Color("SeaTurtlePalette_1")
-    
-  /*  static var ratings: [DishRating] = [
-    DishRating(voto: "8.9", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino."),
-    DishRating(voto: "4.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore"),
-    DishRating(voto: "9.5", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male."),
-    DishRating(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!"),
-    DishRating(voto: "4.0", titolo: "Sapore di Niente", commento: "NoComment")
-    
-    ] */
     
     static var previews: some View {
         
