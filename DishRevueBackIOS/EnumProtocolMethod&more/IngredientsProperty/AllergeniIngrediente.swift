@@ -109,7 +109,7 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
       
            return Array(setAllergeniPiatto)
    
-    }
+    } // deprecata in futuro - Creata una chiamata nel piatto ad una funziona che calcola gli allergeni presenti negli ingredienti
     
     
 }

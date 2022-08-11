@@ -9,7 +9,16 @@ import SwiftUI
 
 struct DishModel_RowView: View {
     
+    @EnvironmentObject var viewModel: AccounterVM
     let item: DishModel
+    let listaAllergeni:[AllergeniIngrediente]
+    
+    init(item: DishModel) {
+        self.item = item
+        self.listaAllergeni = item.calcolaAllergeniNelPiatto()
+    }
+  //  var idSelectedIngredient: String = ""
+  //  var nomeIngredienteSostituto: String = ""
     
     var body: some View {
         
@@ -31,7 +40,8 @@ struct DishModel_RowView: View {
                     
                     vbIngredientScrollRow()
  
-                    vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                    vbAllergeneScrollRowView(listaAllergeni: self.listaAllergeni)
+                  //  vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
                        
                 }
                 .padding(.vertical,5)
@@ -196,6 +206,8 @@ struct DishModel_RowView: View {
     @ViewBuilder private func vbIngredientScrollRow() -> some View {
         
         let allTheIngredients = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
+      //  let allTemporaryOff = self.item.sostituzioneIngredientiTemporanea
+      //  let allTemporaryOff = self.item.elencoIngredientiOff
         
       //  VStack {
 
@@ -207,35 +219,246 @@ struct DishModel_RowView: View {
              
                 ScrollView(.horizontal,showsIndicators: false) {
                     
-                    HStack(spacing: 2.0) {
+                    HStack(alignment:.lastTextBaseline, spacing: 2.0) {
                         
                         ForEach(allTheIngredients) { ingredient in
                             
-                            let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
-                            let hasAllergene = !ingredient.allergeni.isEmpty
+                            let (isPrincipal,hasAllergene,isTemporaryOff,isThereSostituto,nameSostituto) = self.analizingIngredient(ingredient: ingredient)
                             
-                            Text(ingredient.intestazione)
-                                .font(isPrincipal ? .headline : .subheadline)
-                                .foregroundColor(Color("SeaTurtlePalette_4"))
-                                .overlay(alignment:.topTrailing) {
-                                    if hasAllergene {
-                                        Text("*")
-                                            .foregroundColor(Color.black)
-                                            .offset(x: 5, y: -3)
+                            
+                     /*   let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
+                        let hasAllergene = !ingredient.allergeni.isEmpty
+                            
+                        let (isTemporaryOff,isThereSostituto,nameSostituto):(Bool,Bool,String) = {
+                                
+                            guard allTemporaryOff.keys.contains(ingredient.id) else {
+                               return (false,false,"")
+                            }
+                            
+                            if let modelSostituto = allTemporaryOff[ingredient.id] {
+                                let nomeSostituto = modelSostituto!.intestazione
+                                return (true,true,nomeSostituto)
+                           
+                            } else {
+                                return(true,false,"")
+                            }
+
+                            
+                            }() */
+                            
+                           HStack(spacing:5) {
+                                
+                                Text(ingredient.intestazione)
+                                    .font(isPrincipal ? .headline : .subheadline)
+                                    .foregroundColor(isTemporaryOff ? Color("SeaTurtlePalette_1") : Color("SeaTurtlePalette_4"))
+                                    .strikethrough(isTemporaryOff, color: Color.gray)
+                                    .overlay(alignment:.topTrailing) {
+                                        if hasAllergene {
+                                            Text("*")
+                                                .foregroundColor(Color.black)
+                                                .offset(x: 5, y: -3)
+                                        }
                                     }
+                                
+                                if isTemporaryOff && isThereSostituto {
+                                    
+                                    Text("(\(nameSostituto))")
+                                        .font(isPrincipal ? .headline : .subheadline)
+                                        .foregroundColor(Color("SeaTurtlePalette_3"))
                                 }
+    
+                            }
                             
                             Text("•")
-                                .font(.caption)
+                                .font(.subheadline)
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color("SeaTurtlePalette_4"))
-                            
+           
                         }
                     }
                 }
             }
        // }
     }
+    
+    private func analizingIngredient(ingredient:IngredientModel) -> (isPrincipal:Bool,hasAllergene:Bool,isTemporary:Bool,isThereSostituto:Bool,nomeSostituto:String) {
+        
+      //  let allTheIngredients = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
+        let allTemporaryOff = self.item.elencoIngredientiOff
+        
+        let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
+        let hasAllergene = !ingredient.allergeni.isEmpty
+            
+        let isOff = allTemporaryOff.keys.contains(ingredient.id)
+        var isThereSosti: Bool = false
+        var nomeSosti: String = ""
+        
+        if isOff {
+            
+            for (key,value) in allTemporaryOff {
+                
+                if ingredient.id == key && value != nil {
+                    isThereSosti = true
+                    nomeSosti = value!.intestazione
+                    break
+                }
+                
+            }
+        }
+        
+        return (isPrincipal,hasAllergene,isOff,isThereSosti,nomeSosti)
+       
+        
+        
+      /*  let (isTemporaryOff,isThereSostituto,nameSostituto):(Bool,Bool,String) = {
+                
+            guard allTemporaryOff.keys.contains(ingredient.id) else {
+               return (false,false,"")
+            }
+            
+            if let modelSostituto = allTemporaryOff[ingredient.id] {
+                let nomeSostituto = modelSostituto!.intestazione
+                return (true,true,nomeSostituto)
+           
+            } else {
+                return(true,false,"")
+            }
+
+            
+            }() */
+        
+        
+    }
+    
+    /*
+    @ViewBuilder private func vbIngredientScrollRow() -> some View {
+        
+        let allTheIngredients = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
+        let allTemporaryOff = self.item.sostituzioneIngredientiTemporanea
+        
+      //  VStack {
+
+            HStack(spacing: 4.0) {
+                
+                Image(systemName: "list.bullet.rectangle")
+                    .imageScale(.medium)
+                    .foregroundColor(Color("SeaTurtlePalette_4"))
+             
+                ScrollView(.horizontal,showsIndicators: false) {
+                    
+                    HStack(alignment:.lastTextBaseline, spacing: 2.0) {
+                        
+                        ForEach(allTheIngredients) { ingredient in
+                            
+                        let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
+                        let hasAllergene = !ingredient.allergeni.isEmpty
+                            
+                        let (isTemporaryOff,isThereSostituto,nameSostituto):(Bool,Bool,String) = {
+                                
+                            guard allTemporaryOff.keys.contains(ingredient.id) else {
+                               return (false,false,"")
+                            }
+                            var nomeSostituto = allTemporaryOff[ingredient.id]!
+                            let isSostituto = nomeSostituto != ""
+                            if isSostituto {
+                                nomeSostituto = self.viewModel.findModelFromId(id: nomeSostituto)
+                            }
+                            return (true,isSostituto,nomeSostituto)
+                            }()
+                            
+                           HStack(spacing:5) {
+                                
+                                Text(ingredient.intestazione)
+                                    .font(isPrincipal ? .headline : .subheadline)
+                                    .foregroundColor(isTemporaryOff ? Color("SeaTurtlePalette_1") : Color("SeaTurtlePalette_4"))
+                                    .strikethrough(isTemporaryOff, color: Color.gray)
+                                    .overlay(alignment:.topTrailing) {
+                                        if hasAllergene {
+                                            Text("*")
+                                                .foregroundColor(Color.black)
+                                                .offset(x: 5, y: -3)
+                                        }
+                                    }
+                                
+                                if isTemporaryOff && isThereSostituto {
+                                    
+                                    Text("(\(nameSostituto))")
+                                        .font(isPrincipal ? .headline : .subheadline)
+                                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                                }
+    
+                            }
+                            
+                            Text("•")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("SeaTurtlePalette_4"))
+           
+                        }
+                    }
+                }
+            }
+       // }
+    } */ // deprecata 11.08
+    
+    
+   /* @ViewBuilder private func vbIngredientScrollRow() -> some View {
+        
+        let allTheIngredients = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
+        
+      //  VStack {
+
+            HStack(spacing: 4.0) {
+                
+                Image(systemName: "list.bullet.rectangle")
+                    .imageScale(.medium)
+                    .foregroundColor(Color("SeaTurtlePalette_4"))
+             
+                ScrollView(.horizontal,showsIndicators: false) {
+                    
+                    HStack(alignment:.lastTextBaseline, spacing: 2.0) {
+                        
+                        ForEach(allTheIngredients) { ingredient in
+                            
+                            let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
+                            let hasAllergene = !ingredient.allergeni.isEmpty
+                            let isSelected = ingredient.id == idSelectedIngredient
+                            let isThereSostituto: Bool = nomeIngredienteSostituto != ""
+                            
+                            HStack(spacing:5) {
+                                
+                                Text(ingredient.intestazione)
+                                    .font(isPrincipal ? .headline : .subheadline)
+                                    .foregroundColor(isSelected ? Color.blue : Color("SeaTurtlePalette_4"))
+                                    .strikethrough(isSelected && isThereSostituto, color: Color.gray)
+                                    .overlay(alignment:.topTrailing) {
+                                        if hasAllergene {
+                                            Text("*")
+                                                .foregroundColor(Color.black)
+                                                .offset(x: 5, y: -3)
+                                        }
+                                    }
+                                
+                                if isSelected && isThereSostituto {
+                                    
+                                    Text("\(nomeIngredienteSostituto)")
+                                        .font(isPrincipal ? .headline : .subheadline)
+                                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                                }
+    
+                            }
+                            
+                            Text("•")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundColor(Color("SeaTurtlePalette_4"))
+           
+                        }
+                    }
+                }
+            }
+       // }
+    }*/ //BackUp 08.08
     
     
     

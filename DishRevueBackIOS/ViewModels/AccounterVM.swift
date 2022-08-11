@@ -72,6 +72,34 @@ class AccounterVM: ObservableObject {
             
     } */ // Deprecated 31.05
     
+    func findModelFromId(id:String) -> String {
+        
+        guard let model = self.allMyIngredients.first(where: {$0.id == id}) else { return ""}
+        return model.intestazione
+    } // da implementare per tutti i modelli. Al momento in uso per ritornare il nome di un ingrediente dal suo id // Deprecata in futuro
+    
+    func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
+        
+        let filteredDish = self.allMyDish.filter { dish in
+            dish.ingredientiPrincipali.contains(where: { $0.id == idIngredient }) ||
+            dish.ingredientiSecondari.contains(where: { $0.id == idIngredient })
+        }
+        
+        return filteredDish
+
+    }
+    
+    /// dato un idIngrediente ritorna un array con tutti gli ingredienti nel viewModel meno quello, e quello singolarmente come IngredientModel
+    func ingredientsFilteredByIngredient(idIngredient:String) -> (allMinusThat:[IngredientModel],model:IngredientModel?) {
+        
+        guard let model = self.allMyIngredients.first(where: {$0.id == idIngredient}) else {
+            return ([],nil)
+        }
+        let filterArray = self.allMyIngredients.filter({$0 != model})
+        
+        return (filterArray,model)
+    }
+    
     
     /// azzera il path di riferimento Passato
     func refreshPath(destinationPath: DestinationPath) {
@@ -267,7 +295,7 @@ class AccounterVM: ObservableObject {
     
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
     func updateItemModel<T:MyModelProtocol>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil)  {
-        
+        print("UpdateItemModel()")
         if !showAlert {
             
             self.updateItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)

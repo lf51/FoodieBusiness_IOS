@@ -453,7 +453,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                     }
                     
                 } else {
-                    Text("Nessun Allergene indicato negli Ingredienti")
+                    Text("Nessun Allergene indicato")
                         .font(.caption)
                         .fontWeight(.semibold)
                         .foregroundColor(Color.black)

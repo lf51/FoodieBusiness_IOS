@@ -17,12 +17,14 @@ struct IngredientModel:MyModelStatusConformity {
         VStack {
             
             Button {
-                // myModel.wrappedValue.status = .completo(.inPausa)
+               
+                viewModel[keyPath: navigationPath].append(DestinationPathView.dishListByIngredient(self))
                 
             } label: {
                 HStack{
-                    Text("Vedi Recensioni")
+                    Text("Sostituisci con..")
                     Image(systemName: "eye")
+                    // In teoria l'ingrediente andrebbe anche messo in pausa
                 }
             }
             
@@ -78,7 +80,6 @@ struct IngredientModel:MyModelStatusConformity {
     func modelStatusDescription() -> String {
         "Ingrediente (\(self.status.simpleDescription().capitalized))"
     }
-    
     
     func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String) {
         

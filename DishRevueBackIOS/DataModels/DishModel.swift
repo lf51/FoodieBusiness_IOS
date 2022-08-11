@@ -40,10 +40,12 @@ struct DishModel:MyModelStatusConformity {
         lhs.status == rhs.status &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
+        lhs.elencoIngredientiOff == rhs.elencoIngredientiOff &&
         lhs.categoriaMenu == rhs.categoriaMenu &&
         lhs.allergeni == rhs.allergeni &&
         lhs.dieteCompatibili == rhs.dieteCompatibili &&
         lhs.pricingPiatto == rhs.pricingPiatto &&
+       // lhs.sostituzioneIngredientiTemporanea == rhs.sostituzioneIngredientiTemporanea &&
         lhs.aBaseDi == rhs.aBaseDi
        // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
     }
@@ -59,10 +61,13 @@ struct DishModel:MyModelStatusConformity {
     
     var ingredientiPrincipali: [IngredientModel] = []
     var ingredientiSecondari: [IngredientModel] = []
+    var elencoIngredientiOff: [String:IngredientModel?] = [:]
+    
+    //var sostituzioneIngredientiTemporanea: [String:String] = [:] // key = idSostituito / value = idSostituto // deprecato - Sostituire con [String:IngredientModel]
     
     var categoriaMenu: CategoriaMenu = .defaultValue
 
-    var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti
+    var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti // deprecata in futuro - sostituita da un metodo
 
     var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti
     var pricingPiatto:[DishFormat] = [DishFormat(type: .mandatory)]
@@ -116,8 +121,97 @@ struct DishModel:MyModelStatusConformity {
     }
     
     func returnModelRowView() -> some View {
-        DishModel_RowView(item: self)
+        DishModel_RowView(item: self) // conforme al Protocollo
     }
+
+    /// Controlla la presenza dell'idIngrediente sia fra gl iingredienti Principali e Secondari, sia fra i sostituti
+    func checkIngredientsIn(idIngrediente:String) -> Bool {
+        
+        var allSostituti:[IngredientModel] = []
+        
+        if !self.elencoIngredientiOff.isEmpty {
+            
+            for (_,ingredient) in self.elencoIngredientiOff {
+                
+                if ingredient != nil {
+                    allSostituti.append(ingredient!)
+                }
+               
+                
+            }
+        }
+ 
+        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari + allSostituti
+        let condition = allTheIngredients.contains(where: {$0.id == idIngrediente })
+        
+        return condition
+
+    }
+    
+    /// ritorna solo gli ingredienti Attivi, dunque toglie gli eventuali ingredienti SOSTITUITI e li rimpiazza con i SOSTITUTI
+    private func ritornaTuttiGliIngredientiAttivi() -> [IngredientModel] {
+        
+        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari
+        
+        guard !self.elencoIngredientiOff.isEmpty else {
+            return allTheIngredients
+        }
+        
+        var allFinalIngredients = allTheIngredients
+    
+        for (key,value) in self.elencoIngredientiOff {
+            
+            if allTheIngredients.contains(where: {$0.id == key}) && value != nil {
+                
+                let position = allFinalIngredients.firstIndex{$0.id == key}
+                allFinalIngredients[position!] = value!
+            }
+            
+        }
+        
+        
+        
+      /*  for ingredient in allTheIngredients {
+            
+            if allTheKeys.contains(ingredient.id) {
+
+                let position = allFinalIngredients.firstIndex{$0.id == ingredient.id}
+                self.elencoIngredientiOff[ingredient.id]
+                
+                if let newOne = self.elencoIngredientiOff[ingredient.id] {
+                    allFinalIngredients[position!] = newOne!
+                }
+            }
+        } */
+        
+        return allFinalIngredients
+        
+    }
+    
+    func calcolaAllergeniNelPiatto() -> [AllergeniIngrediente] {
+      
+        let allIngredients = ritornaTuttiGliIngredientiAttivi()
+        var allergeniPiatto:[AllergeniIngrediente] = []
+        
+             for ingredient in allIngredients {
+                 
+                 let allergeneIngre:[AllergeniIngrediente] = ingredient.allergeni
+                 allergeniPiatto.append(contentsOf: allergeneIngre)
+             }
+
+            let setAllergeniPiatto = Set(allergeniPiatto)
+            let orderedAllergeni = Array(setAllergeniPiatto).sorted { $0.simpleDescription() < $1.simpleDescription() }
+        
+            return orderedAllergeni
+    
+     }
+    
+   /* func filteredByIngrediet(idIngredient:String) -> Bool {
+        
+     self.ingredientiPrincipali.contains(where: { $0.id == idIngredient }) ||
+     self.ingredientiSecondari.contains(where: { $0.id == idIngredient })
+     
+    } */ // Deprecata - spostata nel viewModel
 }
 
 

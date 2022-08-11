@@ -59,7 +59,7 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         case .surgelato:
             return "❄️"
         case .altro:
-            return "square.and.arrow.up.trianglebadge.exclamationmark"
+            return "💚" //heart
    
         }
      
