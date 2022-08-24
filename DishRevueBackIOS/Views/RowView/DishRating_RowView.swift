@@ -13,7 +13,7 @@ struct DishRating_RowView: View {
     
     var body: some View {
         
-        CSZStackVB_Framed(frameWidth:400, rateWH: 0.6) {
+        CSZStackVB_Framed {
             
             VStack(alignment:.leading) {
                 

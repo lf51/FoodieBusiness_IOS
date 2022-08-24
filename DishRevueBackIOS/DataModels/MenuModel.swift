@@ -28,7 +28,7 @@ struct MenuModel:MyModelStatusConformity {
     }
     
     func returnNewModel() -> (tipo: MenuModel, nometipo: String) {
-        (MenuModel(), "Nuovo Menu")
+        (MenuModel(), "Menu")
     }
     
     func modelStringResearch(string: String) -> Bool {
@@ -81,8 +81,9 @@ struct MenuModel:MyModelStatusConformity {
     
  //   var id: String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() } // deprecated 15.07
     
-    var id: String { creaID(fromValue: self.intestazione) }
-
+ //   var id: String { creaID(fromValue: self.intestazione) } // Deprecata 18.08
+    var id: String = UUID().uuidString
+    
     var intestazione: String = "" // Categoria Filtraggio
     var descrizione: String = ""
     

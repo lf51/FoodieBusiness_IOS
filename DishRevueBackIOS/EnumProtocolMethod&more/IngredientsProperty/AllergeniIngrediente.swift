@@ -8,8 +8,8 @@
 import Foundation
 import SwiftUI
 
-enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
-    
+enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol{
+
     func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         EmptyView()
     }
@@ -51,7 +51,7 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol {
     
     case noValue // lo usiamo per avere un valore di default Nullo
  
-    var id: String { self.createId() }
+    var id: String { get { self.createId() } set { } }
     
     func simpleDescription() -> String {
         

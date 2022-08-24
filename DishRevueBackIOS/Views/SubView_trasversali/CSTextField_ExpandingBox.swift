@@ -12,7 +12,7 @@ struct CSTextField_ExpandingBox<M:MyModelProtocol>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var itemModel: M
-  //  @Binding var dismissButton: Bool
+    @Binding var dismissButton: Bool?
     var maxDescriptionLenght: Int?
     
     @State private var description: String = ""
@@ -20,10 +20,10 @@ struct CSTextField_ExpandingBox<M:MyModelProtocol>: View {
     @State private var isEditorActive: Bool = false
     @State private var isTextChanged: Bool = false
    
-    init(itemModel: Binding<M>, maxDescriptionLenght: Int? = nil) {
+    init(itemModel: Binding<M>, dismissButton: Binding<Bool?>, maxDescriptionLenght: Int? = nil) {
         
         _itemModel = itemModel
-      //  _dismissButton = dismissButton
+        _dismissButton = dismissButton
         let newDescription = itemModel.descrizione.wrappedValue
         _description = State(wrappedValue: newDescription)
         self.maxDescriptionLenght = maxDescriptionLenght ?? 300
@@ -90,14 +90,15 @@ struct CSTextField_ExpandingBox<M:MyModelProtocol>: View {
                             }
                             
                             CSButton_tight(
-                                title: "Fatto",
+                                title: "Salva",
                                 fontWeight: .heavy,
                                 titleColor: .green,
                                 fillColor: .clear) {
 
-                                    self.isEditorActive = false
+                                    self.saveAction()
+                                   /* self.isEditorActive = false
                                     csHideKeyboard()
-                                    self.itemModel.descrizione = description
+                                    self.itemModel.descrizione = description */
                                   //  self.dismissButton.toggle()
                                     
                                 }
@@ -126,14 +127,28 @@ struct CSTextField_ExpandingBox<M:MyModelProtocol>: View {
    
     } */ // Salvataggio spostato nella View MAdre in data 27.06
     
+    private func saveAction() {
+        
+        self.isEditorActive = false
+        csHideKeyboard()
+        // 22.08
+        let newDescription = csStringCleaner(string: description)
+        self.itemModel.descrizione = newDescription
+        self.dismissButton = false 
+        //
+       // self.itemModel.descrizione = description
+       
+    }
+    
     private func cancelAction() {
         
-        csHideKeyboard()
+     //   csHideKeyboard()
         
         withAnimation {
-            self.isEditorActive = false
+         //   self.isEditorActive = false
           //  self.showPlaceHolder = itemModel.descrizione == ""
-            self.description = itemModel.descrizione
+          //  self.description = itemModel.descrizione
+            self.description = ""
         
         }
         

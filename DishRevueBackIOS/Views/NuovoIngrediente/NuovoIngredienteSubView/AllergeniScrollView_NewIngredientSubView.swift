@@ -47,8 +47,16 @@ struct AllergeniScrollView_NewIngredientSubView: View {
                 }
 
             }
-                        
-            SimpleModelScrollGeneric_SubView(modelToShow: self.nuovoIngrediente.allergeni, fontWeight: .semibold, strokeColor: Color.red)
+                    
+            if self.nuovoIngrediente.allergeni.isEmpty {
+                Text("Non contiene Allergeni")
+                    .font(.caption)
+                    .fontWeight(.light)
+                    .italic()
+                    .foregroundColor(Color.black)
+            }
+            else {SimpleModelScrollGeneric_SubView(modelToShow: self.nuovoIngrediente.allergeni, fontWeight: .semibold, strokeColor: Color.red)}
+            
             
         }.onChange(of: self.nuovoIngrediente.allergeni) { _ in
             self.areAllergeniOk = false 

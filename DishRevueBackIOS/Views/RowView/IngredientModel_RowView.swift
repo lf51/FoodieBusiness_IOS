@@ -4,7 +4,10 @@
 //
 //  Created by Calogero Friscia on 09/04/22.
 //
-
+/*
+ Spaghetti,pesto.Bucatini,sugo,basilico.Trofie,gamberi,aglio,olio
+ 
+ */
 import SwiftUI
 
 struct IngredientModel_RowView: View {
@@ -27,8 +30,7 @@ struct IngredientModel_RowView: View {
              
                     .padding(.top,5)
                 
-                
-          //     Spacer()
+               Spacer()
                 
                 HStack {
                     
@@ -47,13 +49,13 @@ struct IngredientModel_RowView: View {
                     }
                 }
                 
-             //   Spacer()
+                Spacer()
                 
-                VStack(spacing:3) {
-                    
-                    vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                VStack(spacing:10) {
                     
                     vbConservazioneIngrediente()
+                    vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                    
                 }
                .padding(.vertical,5)
      
@@ -111,7 +113,7 @@ struct IngredientModel_RowView: View {
         HStack(alignment:.lastTextBaseline) {
             
             Text(self.item.intestazione)
-                .font(.title3)
+                .font(.title2)
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .foregroundColor(Color.white)

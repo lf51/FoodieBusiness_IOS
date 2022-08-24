@@ -12,15 +12,15 @@ struct DietScrollView_NewDishSub: View {
     @EnvironmentObject var viewModel:AccounterVM
     
     @Binding var newDish: DishModel
+    @Binding var confermaDiete: Bool
     
     let dietAvaible:[TipoDieta]
     let dietAvaibleString:[String]
     
-    @State private var confermaDiete: Bool = false
-    
-    init(newDish:Binding<DishModel>) {
+    init(newDish:Binding<DishModel>,confermaDiete:Binding<Bool>) {
        
         _newDish = newDish
+        _confermaDiete = confermaDiete
      
         (self.dietAvaible,self.dietAvaibleString) = TipoDieta.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
  

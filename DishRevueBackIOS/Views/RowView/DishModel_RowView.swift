@@ -34,11 +34,17 @@ struct DishModel_RowView: View {
                 }
                  .padding(.top,5)
                 
+                Spacer()
+                
+                vbIngredientScrollRow()
+                
+                Spacer()
+                
                 VStack(spacing:10){
                     
                     vbDieteCompatibili()
                     
-                    vbIngredientScrollRow()
+                 //   vbIngredientScrollRow()
  
                     vbAllergeneScrollRowView(listaAllergeni: self.listaAllergeni)
                   //  vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
@@ -60,7 +66,7 @@ struct DishModel_RowView: View {
         HStack(alignment:.bottom) {
             
             Text(self.item.intestazione)
-                .font(.title3)
+                .font(.title2)
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .foregroundColor(Color.white)

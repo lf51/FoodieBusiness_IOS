@@ -117,7 +117,7 @@ struct NuovoMenuMainView: View {
                                         
                                         ForEach(nuovoMenu.dishIn) { dish in
                                             
-                                            DishModel_RowView(item: dish) // Rendere Cliccabile
+                                            DishModel_RowView(item: dish) // Rendere Cliccabile? non so
                                         }
                                         
                                     }
@@ -128,9 +128,11 @@ struct NuovoMenuMainView: View {
                                 generalErrorCheck: $generalErrorCheck,
                                 itemModelArchiviato: menuArchiviato,
                                 destinationPath: destinationPath) {
-                                    menuDescription()
+                                    self.menuDescription()
+                                } resetAction: {
+                                    self.resetAction()
                                 } checkPreliminare: {
-                                    checkPreliminare()
+                                    self.checkPreliminare()
                                 } salvaECreaPostAction: {
                                     self.salvaECreaPostAction()
                                 }
@@ -199,6 +201,12 @@ struct NuovoMenuMainView: View {
     }
     
     // Method
+    
+    private func resetAction() {
+        
+        self.nuovoMenu = self.menuArchiviato
+        self.generalErrorCheck = false
+    }
     
     private func salvaECreaPostAction() {
         

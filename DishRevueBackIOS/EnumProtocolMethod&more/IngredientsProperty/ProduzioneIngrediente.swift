@@ -9,14 +9,15 @@ import Foundation
 
 enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
 
-    static var allCases: [ProduzioneIngrediente] = [.biologico]
+    static var allCases: [ProduzioneIngrediente] = [.biologico,.convenzionale]
     
-    static var defaultValue: ProduzioneIngrediente = .convenzionale
+    static var defaultValue: ProduzioneIngrediente = .noValue
     
     var id: String { self.createId()}
 
     case convenzionale
     case biologico
+    case noValue
    
     func simpleDescription() -> String {
         
@@ -24,6 +25,7 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
             
         case .convenzionale: return "Metodo Convenzionale"
         case .biologico: return "Metodo Biologico"
+        case .noValue: return ""
         
         }
         
@@ -37,6 +39,8 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
             return "Prodotto con metodo Convenzionale: Possibile uso intensivo di prodotti di sintesi chimica."
         case .biologico:
             return "Prodotto con metodo Biologico: Esclude l'utilizzo di prodotti di sintesi, salvo deroghe limitate e regolate."
+        case .noValue:
+            return ""
         }
      
     }
@@ -50,9 +54,11 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         switch self {
             
         case .convenzionale:
-            return "square.and.arrow.up.trianglebadge.exclamationmark"
+            return "🚜"
         case .biologico:
-            return "🍀"
+            return "♻️"
+        case .noValue:
+            return "⚙️"
        
         }
     }
@@ -67,6 +73,8 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
             return 2
         case .biologico:
             return 1
+        case .noValue:
+            return 0
    
         }
     }

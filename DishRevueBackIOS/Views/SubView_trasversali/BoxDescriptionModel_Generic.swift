@@ -27,7 +27,7 @@ struct BoxDescriptionModel_Generic<M:MyModelProtocol>: View {
                                     
             if wannaAddDescription ?? false {
 
-                CSTextField_ExpandingBox(itemModel: $itemModel, maxDescriptionLenght: 300)
+                CSTextField_ExpandingBox(itemModel: $itemModel, dismissButton: $wannaAddDescription, maxDescriptionLenght: 150)
                                             
             } else {
                 
@@ -48,4 +48,5 @@ struct BoxDescriptionModel_Generic_Previews: PreviewProvider {
         BoxDescriptionModel_Generic()
     }
 }
+
 */

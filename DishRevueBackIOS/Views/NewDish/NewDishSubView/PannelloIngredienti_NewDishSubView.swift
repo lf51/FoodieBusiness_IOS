@@ -63,10 +63,23 @@ struct PannelloIngredienti_NewDishSubView: View {
       
                 }
                 
-                if !self.newDish.ingredientiPrincipali.isEmpty {
+             /*   if !self.newDish.ingredientiPrincipali.isEmpty {
                     
                     SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiPrincipali, fillColor: Color.mint)
+                } */ // deprecata 17.08
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    
+                    HStack {
+                        
+                        ForEach(self.newDish.ingredientiPrincipali) { ingredient in
+                            
+                            IngredientModel_RowView(item: ingredient)
+                        }
+                        
+                    }
                 }
+                
             }
             
             VStack(alignment:.leading) {
@@ -75,7 +88,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                 
                 if self.newDish.ingredientiSecondari.isEmpty {
                     
-                    Text("Ingredienti usati anche in piccole quantità nella preparazione del piatto.")
+                    Text("I secondari sono ingredienti usati anche in piccole quantità nella preparazione del piatto.")
                         .italic()
                         .fontWeight(.light)
                         .font(.caption)
@@ -83,7 +96,20 @@ struct PannelloIngredienti_NewDishSubView: View {
 
                 } else {
                     
-                    SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiSecondari, fillColor: Color.yellow)
+                  /*  SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiSecondari, fillColor: Color.yellow) */
+                    // deprecata 17.08
+                    
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        
+                        HStack {
+                            
+                            ForEach(self.newDish.ingredientiSecondari) { ingredient in
+                                
+                                IngredientModel_RowView(item: ingredient)
+                            }
+                            
+                        }
+                    }
                 }
       
             }

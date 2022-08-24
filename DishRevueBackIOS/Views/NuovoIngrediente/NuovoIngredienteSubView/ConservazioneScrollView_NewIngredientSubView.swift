@@ -12,7 +12,7 @@ struct ConservazioneScrollView_NewIngredientSubView: View {
     @Binding var nuovoIngrediente: IngredientModel
     let generalErrorCheck: Bool
     
-    @Binding var isConservazioneOk: Bool
+  //  @Binding var isConservazioneOk: Bool
     
     var body: some View {
         
@@ -23,17 +23,19 @@ struct ConservazioneScrollView_NewIngredientSubView: View {
                 imageNameOrEmojy: "thermometer",
                 backgroundColor: Color.black) {
                     
-                    Toggle(isOn: self.$isConservazioneOk) {
+                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoIngrediente.conservazione == .defaultValue)
+                    
+                   /* Toggle(isOn: self.$isConservazioneOk) {
                         
                         HStack {
                             Spacer()
                             Text(self.isConservazioneOk ? "Confermato" : "Da Confermare")
-                                .font(.system(.callout, design: .monospaced))
+                                .font(.system(.callout, design: .monospaced)) */
                             
-                            CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.isConservazioneOk)
+                         /*   CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.isConservazioneOk) */
    
-                        }
-                    }
+                    //    }
+                  //  }
                 
                     
                 }
@@ -41,9 +43,9 @@ struct ConservazioneScrollView_NewIngredientSubView: View {
             PropertyScrollCases(cases: ConservazioneIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.conservazione, colorSelection: Color.cyan)
              
                 
-        }.onChange(of: self.nuovoIngrediente.conservazione) { _ in
+        }/*.onChange(of: self.nuovoIngrediente.conservazione) { _ in
             self.isConservazioneOk = false
-        }
+        } */
         
     }
 }

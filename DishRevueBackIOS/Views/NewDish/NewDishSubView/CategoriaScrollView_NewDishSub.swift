@@ -34,7 +34,7 @@ struct CategoriaScrollView_NewDishSub: View {
             }
 
                 PropertyScrollCases(cases:viewModel.categoriaMenuAllCases, dishSingleProperty: self.$newDish.categoriaMenu, colorSelection: Color.green.opacity(0.8))
-                    .padding(.vertical,5)
+                    .padding(.top,5)
 
         }
         

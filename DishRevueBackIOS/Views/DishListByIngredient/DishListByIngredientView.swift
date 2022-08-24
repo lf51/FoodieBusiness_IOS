@@ -366,9 +366,30 @@ struct DishChangingIngredient_RowSubView: View {
             Text("Choice: \(isThereChoice.description)")
             Text("model: \(self.modelSostitutoGlobale?.intestazione ?? "nil")")
             Text("ChangeLocal: \(changeLocal)")
+            
             HStack {
                 
-                dish.returnModelRowView()
+                GenericItemModel_RowViewMask(model: self.dish,pushImage: "arrow.left.arrow.right.circle") {
+                    ForEach(mapArray,id:\.self) { ingredient in
+                        
+                        //  let (isIngredientIn,isIngredientSelected) = isInAndSelected(idIngredient: ingredient.id)
+                        let (isIngredientIn,isIngredientSelected) = isInAndSelected(ingredientModel: ingredient)
+                        
+                        Button {
+                            self.action(isIngredientSelected: isIngredientSelected, ingredient: ingredient)
+                        } label: {
+                            HStack {
+                                Text(ingredient.intestazione)
+                                    .foregroundColor(Color.black)
+                                
+                                Image(systemName: isIngredientSelected ? "checkmark.circle" : "circle")
+                                
+                            }
+                        }.disabled(isIngredientIn)
+                    }
+                }
+                
+               /* dish.returnModelRowView()
                     .overlay(alignment: .bottomTrailing) {
                         
                         Menu {
@@ -397,7 +418,11 @@ struct DishChangingIngredient_RowSubView: View {
                                 .foregroundColor(Color("SeaTurtlePalette_3"))
                             
                         }.offset(x:10,y:15)
-                    }
+                    } */
+                
+                
+                
+                
                 
                 Spacer()
                 

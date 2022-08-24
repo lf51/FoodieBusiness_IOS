@@ -9,14 +9,15 @@ import Foundation
 
 enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
 
-    static var allCases: [ConservazioneIngrediente] = [.congelato,.surgelato]
-    static var defaultValue: ConservazioneIngrediente = .altro // deprecato in futuro togliere dal protocollo
+    static var allCases: [ConservazioneIngrediente] = [.congelato,.surgelato,.altro]
+    static var defaultValue: ConservazioneIngrediente = .noValue // deprecato in futuro togliere dal protocollo
     
     var id: String {self.createId()}
 
     case congelato
     case surgelato
     case altro
+    case noValue
  
     func simpleDescription() -> String {
         
@@ -24,7 +25,8 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
 
         case .surgelato: return "Surgelato"
         case .congelato: return "Congelato"
-        case .altro: return ""
+        case .altro: return "Altro"
+        case .noValue: return ""
             
         }
     }
@@ -39,6 +41,7 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
             return "potrebbe essere Surgelato"
         case .altro:
             return "è conservato fresco o in altro modo"
+        case .noValue: return ""
 
         }
 
@@ -59,7 +62,9 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         case .surgelato:
             return "❄️"
         case .altro:
-            return "💚" //heart
+            return "🌀" //heart
+        case .noValue:
+            return "⚙️"
    
         }
      
@@ -70,10 +75,12 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         switch self {
         
         case .congelato:
-            return 1
+            return 3
         case .surgelato:
             return 2
         case .altro:
+            return 1
+        case .noValue:
             return 0
       
         }

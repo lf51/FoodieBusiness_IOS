@@ -36,6 +36,8 @@ protocol MyModelProtocol: Identifiable, Equatable {
     var intestazione: String {get set}
     var descrizione: String {get set}
 
+    var id: String { get set }
+    
     func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
     
     func returnModelRowView() -> RowView
@@ -47,7 +49,7 @@ protocol MyModelProtocol: Identifiable, Equatable {
 
 protocol MyModelStatusConformity: MyModelProtocol, Hashable {
 
-    var id: String { get }
+    var id: String { get set }
     var status: StatusModel {get set}
     
     func pathDestination() -> DestinationPathView

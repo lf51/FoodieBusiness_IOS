@@ -276,8 +276,18 @@ class AccounterVM: ObservableObject {
                 message: "Id Oggetto Esistente")
         
             
+        } // 18.08 Una volta cambiato l'id in UUIDString, questo problema è obsoleto, serviva per controllare l'unicità del nome. Lo manteniamo ma lo potremmo in futuro deprecare
+        
+        // Add 18.08
+        
+        guard !containerT.contains(where: {creaNomeUnivocoModello(fromIntestazione: $0.intestazione) == creaNomeUnivocoModello(fromIntestazione: itemModel.intestazione)}) else {
+            
+            return self.alertItem = AlertModel(
+                    title: "Errore",
+                    message: "Nome \(itemModel.returnNewModel().nometipo) Esistente")
         }
         
+        // End Adding 18.08
         containerT.append(itemModel)
         aggiornaContainer(containerT: containerT, modelT: itemModel)
         if let path = destinationPath {
@@ -291,6 +301,11 @@ class AccounterVM: ObservableObject {
     
         print("Nuovo Oggeto \(itemModel.intestazione) creato con id: \(itemModel.id)")
         
+    }
+    
+    /// La usiamo per creare un nome univoco dei Model per un confronto sull'unicità del nome
+    private func creaNomeUnivocoModello(fromIntestazione:String) -> String {
+        fromIntestazione.replacingOccurrences(of: " ", with: "").lowercased()
     }
     
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol

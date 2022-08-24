@@ -18,7 +18,7 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
     let itemModelArchiviato: M
     let destinationPath: DestinationPath
     let description: () -> Text
-   // let resetAction: () -> Void
+    let resetAction: () -> Void
     let checkPreliminare: () -> Bool
     let salvaECreaPostAction: () -> Void
   //  @ViewBuilder var saveButtonDialogView: Content
@@ -57,11 +57,11 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
     // Method
     
     /// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
-   private func resetAction() {
+ /*  private func resetAction() {
       
         self.itemModel = itemModelArchiviato
       //  modelAttivo = modelArchiviato
-    }
+    } */
 
     @ViewBuilder private func saveButtonDialogView() -> some View {
         
@@ -101,8 +101,11 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
                 
                 vbEditingSaveButton()
                 
-                Button("Salva come \(newModelName)", role: .none) {
-                    
+                Button("Salva come Nuovo \(newModelName)", role: .none) {
+                    // Add 18.08
+                    self.itemModel.id = UUID().uuidString
+                    // assegniamo un nuovo id e salviamo così un nuovo oggetto
+                    // end
                     self.viewModel.createItemModel(itemModel: self.itemModel,destinationPath: self.destinationPath)
                 }
             }
@@ -111,20 +114,19 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
     
     @ViewBuilder private func vbEditingSaveButton() -> some View {
         
-        Button("Salva Modifiche e Crea Nuovo", role: .none) {
-            
-        self.viewModel.updateItemModel(itemModel: self.itemModel)
-           // self.generalErrorCheck = false
-          //  self.itemModel = modelVuoto
-            self.salvaECreaPostAction()
-        }
-        
         Button("Salva Modifiche ed Esci", role: .none) {
             
             self.viewModel.updateItemModel(itemModel: self.itemModel, destinationPath: self.destinationPath)
         }
         
-        
+        Button("Salva Modifiche e Crea Nuovo", role: .none) {
+            
+        self.viewModel.updateItemModel(itemModel: self.itemModel)
+           // self.generalErrorCheck = false
+          //  self.itemModel = modelVuoto
+            self.salvaECreaPostAction() // BUG -> deve partire se dall'update non torna un errore - Da sistemare
+        }
+ 
     }
     
     

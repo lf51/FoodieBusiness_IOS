@@ -23,6 +23,10 @@ struct DataModelAlphabeticView_Sub<T:MyModelStatusConformity>: View {
         self.navPath = navPath
     }
 
+    /* 22.08
+    let screenWidth:CGFloat = UIScreen.main.bounds.width
+     // Risolve il problema della barra di ricerca. Questa nella conf originale non scala qualora la schedina abbia una grandezza "teorica" superiore allo schermo ma effettiva pari allo schermo minus 20. Mettendo qui la stessa condizione di maxWidth risolviamo il problema. Da prendere in considerazione in futuro quando rimetteremo mani alle liste
+    */
     var body: some View {
         
             ScrollView(showsIndicators: false) {
@@ -30,6 +34,7 @@ struct DataModelAlphabeticView_Sub<T:MyModelStatusConformity>: View {
                 ScrollViewReader { proxy in
                     
                     CSTextField_4(textFieldItem: $stringSearch, placeHolder: "Ricerca..", image: "text.magnifyingglass", showDelete: true).id(0)
+                       // .frame(maxWidth: screenWidth - 20)
               
                     CSDivider()
                     

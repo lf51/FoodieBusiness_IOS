@@ -28,7 +28,7 @@ struct FastImport_CorpoScheda:View {
                     
                     Spacer()
                     
-                    CSButton_image(frontImage: "doc.badge.plus", imageScale: .large, frontColor: Color.white) { checkBeforeSave() }
+                    CSButton_image(frontImage: "doc.badge.plus", imageScale: .large, frontColor: Color.white) { self.checkBeforeSave() }
                         ._tightPadding()
                         .background(
                             Circle()
@@ -47,25 +47,17 @@ struct FastImport_CorpoScheda:View {
 
                     HStack {
 
-                        csVbSwitchImageText(string: fastDish.categoriaMenu.imageAssociated())
-                        
                         CS_Picker(
                             selection: $fastDish.categoriaMenu,
-                            customLabel: "Categoria..",
-                            dataContainer: CategoriaMenu.allCases,
+                            customLabel: "Categoria",
+                            dataContainer: viewModel.categoriaMenuAllCases,//CategoriaMenu.allCases,
                             backgroundColor: Color.white.opacity(0.5))
-                        .csWarningModifier(
-                            isPresented: checkError) {
-                                self.fastDish.categoriaMenu == .defaultValue
-                            }
-                      /*  .overlay(alignment:.topTrailing) {
-                            if checkError {
-                                let isCategoriaDefault = self.fastDish.categoria == .defaultValue
-                                CS_ErrorMarkViewDEPRECATO(checkError: isCategoriaDefault )
-                                        .offset(x: 10, y: -10)
-                            }
+                            .csWarningModifier(
+                                isPresented: checkError) {
+                                        self.fastDish.categoriaMenu == .defaultValue
+                                    }
 
-                        } */
+                        csVbSwitchImageText(string: fastDish.categoriaMenu.imageAssociated())
                         
                         Spacer()
   
@@ -84,14 +76,7 @@ struct FastImport_CorpoScheda:View {
                                   //  self.fastDish.formatiDelPiatto.isEmpty
                                     self.fastDish.pricingPiatto.isEmpty
                                 }
-                          /*  .overlay(alignment:.topTrailing) {
-                                if checkError {
-                                    let isPriceEmpty = self.fastDish.formatiDelPiatto.isEmpty
-                                    CS_ErrorMarkViewDEPRECATO(checkError: isPriceEmpty)
-                                        .offset(x: 10, y: -10)
-                                    }
-                                
-                                } */
+
              
                             }
                            

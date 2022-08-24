@@ -38,6 +38,7 @@ struct DishModel:MyModelStatusConformity {
         lhs.intestazione == rhs.intestazione &&
         lhs.descrizione == rhs.descrizione &&
         lhs.status == rhs.status &&
+        lhs.rating == rhs.rating &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
         lhs.elencoIngredientiOff == rhs.elencoIngredientiOff &&
@@ -50,7 +51,8 @@ struct DishModel:MyModelStatusConformity {
        // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
     }
     
-    var id: String { creaID(fromValue: self.intestazione) }
+  //  var id: String { creaID(fromValue: self.intestazione) } // deprecata 18.08
+    var id: String = UUID().uuidString
     
     var intestazione: String = ""
     var descrizione: String = ""
@@ -66,11 +68,12 @@ struct DishModel:MyModelStatusConformity {
     //var sostituzioneIngredientiTemporanea: [String:String] = [:] // key = idSostituito / value = idSostituto // deprecato - Sostituire con [String:IngredientModel]
     
     var categoriaMenu: CategoriaMenu = .defaultValue
+    var pricingPiatto:[DishFormat] = [DishFormat(type: .mandatory)]
 
     var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti // deprecata in futuro - sostituita da un metodo
 
-    var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti
-    var pricingPiatto:[DishFormat] = [DishFormat(type: .mandatory)]
+    var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti // deprecata in futuro - sostituire con un metodo
+   
 
     var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti // deprecata in futuro
     
@@ -113,7 +116,7 @@ struct DishModel:MyModelStatusConformity {
     }
     
     func returnNewModel() -> (tipo: DishModel, nometipo: String) {
-        (DishModel(),"Nuovo Piatto")
+        (DishModel(),"Piatto")
     }
     
     func modelStringResearch(string: String) -> Bool {

@@ -184,7 +184,70 @@ struct CSZStackVB_Framed<Content:View>:View {
         }
     } */
 
+/*
+///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 400/200).MaxWidth: larghezza Schermo - 20 punti
+struct CSZStackVB_Framed<Content:View>:View {
+        
+        var frameWidth: CGFloat = 400//300
+        var rateWH: CGFloat = 0.5
+        var backgroundOpacity: Double = 0.3
+     //   var frameHeight: CGFloat { frameWidth * rateWH }
+        var frameHeight: CGFloat = 80
+      
+        @ViewBuilder var content: Content
+        
+        let screenWidth:CGFloat = UIScreen.main.bounds.width
+    
+        var body: some View {
+            
+            ZStack(alignment:.leading) {
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color.white.gradient.opacity(backgroundOpacity))
+                    .shadow(color:Color.black,radius: 5.0)
+                    .zIndex(0)
+                
+                content
+                  //  .padding(.horizontal)
+                    .zIndex(1)
+                
+              /*  VStack {
+                    
+                    Text("screenWidth:\(screenWidth)")
+                    
+                    Text("frameWidth:\(frameWidth)")
+                    Text("frameHeight:\(frameHeight)")
+                    
+                    Text("maxWidth: \(screenWidth - 20)")
+                    Text("maxHeight: \((screenWidth - 20) * rateWH)")
+                    
+                }
+                .padding(.vertical)
+                .zIndex(1) */
+            
+                
+                
+              /*  Circle()
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(Color("SeaTurtlePalette_1"))
+                  // .offset(x: 10, y: 10)
+                    .zIndex(2) */
+                
+            }
+            
+          //  .padding(.horizontal)
+            .frame(maxHeight: (screenWidth - 20) * rateWH )
+            .frame(maxWidth: screenWidth - 20) // fisso un limite max che permetterà di scalare sugli schermi più stretti
+            
+            .frame(width: frameWidth, height: frameHeight)
+           // .padding(.vertical)
+            
+           // .frame(width: frameWidth < 400 ? frameWidth : 400)
+           // .frame(height: frameHeight < 200 ? frameHeight : 200)
+        }
+    }*/ // BackUp 23.08
 
+/*
 ///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 300/150).MaxWidth: 400.
 struct CSZStackVB_Framed<Content:View>:View {
         
@@ -209,6 +272,40 @@ struct CSZStackVB_Framed<Content:View>:View {
             }
             .frame(maxWidth: 400)
             .frame(width: frameWidth < 400 ? frameWidth : 400, height: frameHeight)
+        }
+    } */ // BAckUp 21.08 - Prova modifica larghezza
+
+///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 400/200).MaxWidth: larghezza Schermo - 20 punti
+struct CSZStackVB_Framed<Content:View>:View {
+        
+        var frameWidth: CGFloat = 400//300
+       // var rateWH: CGFloat = 0.5
+        var backgroundOpacity: Double = 0.3
+       // var frameHeight: CGFloat { frameWidth * rateWH }
+      
+        @ViewBuilder var content: Content
+        
+        let screenWidth:CGFloat = UIScreen.main.bounds.width
+    
+        var body: some View {
+            
+            ZStack(alignment:.leading) {
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color.white.gradient.opacity(backgroundOpacity))
+                    .shadow(color:Color.black,radius: 5.0)
+                    .zIndex(0)
+                
+                content
+                    .zIndex(1)
+       
+            }
+           // .background(Color.red.opacity(0.4))
+          //  .frame(maxHeight: (screenWidth - 20) * rateWH )
+            .frame(maxWidth: screenWidth - 30) // fisso un limite max che permetterà di scalare sugli schermi più stretti
+            .frame(width:frameWidth)
+          //  .frame(width: frameWidth, height: frameHeight)
+          
         }
     }
 
@@ -440,16 +537,19 @@ struct CSZStackVB_Framed<Content:View>:View {
                     
                     ForEach(listaAllergeni) { allergene in
                         
+                        if listaAllergeni[0] != allergene {
+                            Text("•")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                            
+                        }
+                        
                         Text(allergene.simpleDescription().replacingOccurrences(of: " ", with: ""))
                             .font(.caption)
                             .fontWeight(.semibold)
                             .foregroundColor(Color.black)
                             .italic()
-                        
-                        Text("•")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                        
+      
                     }
                     
                 } else {

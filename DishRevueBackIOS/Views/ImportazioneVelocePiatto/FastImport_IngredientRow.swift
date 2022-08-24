@@ -53,30 +53,38 @@ struct FastImport_IngredientRow: View {
                         
                         Spacer()
                         
+                        Text("Principale/secondario")
+                        
                     }
         
                     HStack {
                         
-                        CS_Picker(selection: $ingredient.origine, customLabel: "Origine..", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                            .csWarningModifier(isPresented: checkError) {
-                                self.ingredient.origine == .defaultValue
-                            }
-                          /*  .overlay(alignment:.topTrailing) {
-                                CS_ErrorMarkViewDEPRECATO(checkError: isOrgineDefault)
-                                    .offset(x: 10, y: -10)
-                            } */
+                        VStack(alignment:.leading) {
+                            
+                            CS_Picker(selection: $ingredient.origine, customLabel: "Origine", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                                .csWarningModifier(isPresented: checkError) {
+                                    self.ingredient.origine == .defaultValue
+                                }.fixedSize()
 
-                        CS_Picker(selection: $ingredient.conservazione, customLabel: "Conservazione..", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                            .csWarningModifier(isPresented: checkError) {
-                                self.ingredient.conservazione == .defaultValue
-                            }
-                           /* .csWarningModifier(isPresented: <#T##Bool#>) {
-                                isConservazioneDefault
-                            } */
-                           /* .overlay(alignment:.topTrailing) {
-                                CS_ErrorMarkViewDEPRECATO(checkError: isConservazioneDefault)
-                                    .offset(x: 10, y: -10)
-                            } */
+
+                            CS_Picker(selection: $ingredient.conservazione, customLabel: "Conservazione", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                                .csWarningModifier(isPresented: checkError) {
+                                    self.ingredient.conservazione == .defaultValue
+                                }.fixedSize()
+                            
+                            CS_Picker(selection: $ingredient.produzione, customLabel: "Produzione", dataContainer: ProduzioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                                .csWarningModifier(isPresented: checkError) {
+                                    self.ingredient.produzione == .defaultValue
+                                }.fixedSize()
+                            
+                            CS_Picker(selection: $ingredient.provenienza, customLabel: "Provenienza", dataContainer: ProvenienzaIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                                .csWarningModifier(isPresented: checkError) {
+                                    self.ingredient.provenienza == .defaultValue
+                                }.fixedSize()
+                          
+                            
+                        }
+                      
  
                         Spacer()
                         

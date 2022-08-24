@@ -8,7 +8,7 @@
 import SwiftUI
 
 ///BoxEditor per i Model. Lunghezza di default 300 caratteri. Deprecato/Sostituito da CsTextField_ExpandingBox
-struct CSTextEditor_ModelDescription<M:MyModelProtocol>: View {
+/*struct CSTextEditor_ModelDescription<M:MyModelProtocol>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     @Binding var itemModel: M
@@ -31,7 +31,7 @@ struct CSTextEditor_ModelDescription<M:MyModelProtocol>: View {
     
     var body: some View {
 
-        CSZStackVB_Framed(frameWidth: 400, backgroundOpacity: 0.0) {
+        CSZStackVB_Framed(backgroundOpacity: 0.0) {
             
             VStack {
                 
@@ -161,7 +161,7 @@ struct CSTextEditor_ModelDescription<M:MyModelProtocol>: View {
         
     }
     
-}
+} */ // deprecato 23.08
 
 /*
 struct CSTextEditor_ModelDescription_Previews: PreviewProvider {

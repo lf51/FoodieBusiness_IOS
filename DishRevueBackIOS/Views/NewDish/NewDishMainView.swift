@@ -20,7 +20,8 @@ struct NewDishMainView: View {
     @State private var generalErrorCheck: Bool = false
     @State private var wannaAddIngredient: Bool = false
     
-    @State private var areAllergeniOk: Bool = false 
+    @State private var areAllergeniOk: Bool = false
+    @State private var confermaDiete: Bool = false
     
     init(newDish: DishModel,backgroundColorView: Color, destinationPath:DestinationPath) {
         
@@ -57,7 +58,7 @@ struct NewDishMainView: View {
                                 
                             AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck, areAllergeniOk: $areAllergeniOk)
  
-                            DietScrollView_NewDishSub(newDish: $newDish)
+                            DietScrollView_NewDishSub(newDish: $newDish, confermaDiete: $confermaDiete)
  
                             DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
  
@@ -68,9 +69,11 @@ struct NewDishMainView: View {
                                 generalErrorCheck: $generalErrorCheck,
                                 itemModelArchiviato: piattoArchiviato,
                                 destinationPath: destinationPath) {
-                                    infoPiatto()
+                                    self.infoPiatto()
+                                } resetAction: {
+                                    self.resetAction()
                                 } checkPreliminare: {
-                                    checkPreliminare()
+                                    self.checkPreliminare()
                                 } salvaECreaPostAction: {
                                     self.salvaECreaPostAction()
                                 }
@@ -125,6 +128,15 @@ struct NewDishMainView: View {
     }
     
     // Method
+    
+    private func resetAction() {
+        
+        self.newDish = self.piattoArchiviato
+        self.generalErrorCheck = false
+        self.areAllergeniOk = false
+        self.confermaDiete = false
+
+    }
     
     private func salvaECreaPostAction() {
         
@@ -292,10 +304,16 @@ struct NewDishMainView: View {
 
 
 
-/*struct NewDishMAINView_Previews: PreviewProvider {
+struct NewDishMainView_Previews: PreviewProvider {
+
     static var previews: some View {
-        NewDishMAINView()
+        
+        NavigationStack {
+            
+            NewDishMainView(newDish: DishModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList)
+            
+        }.environmentObject(AccounterVM())
     }
-} */
+}
 
 

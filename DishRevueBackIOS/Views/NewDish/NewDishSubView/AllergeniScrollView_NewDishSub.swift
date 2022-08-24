@@ -23,7 +23,8 @@ struct AllergeniScrollView_NewDishSub: View {
         self.generalErrorCheck = generalErrorCheck
         _areAllergeniOk = areAllergeniOk
     
-        self.allergeniIn = AllergeniIngrediente.returnAllergeniIn(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
+      /*  self.allergeniIn = AllergeniIngrediente.returnAllergeniIn(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari) */
+        self.allergeniIn = newDish.wrappedValue.calcolaAllergeniNelPiatto()
     }
 
     var body: some View {
@@ -48,7 +49,12 @@ struct AllergeniScrollView_NewDishSub: View {
                     }
                 }
             
-            ScrollView(.horizontal, showsIndicators: false) {
+            
+            SimpleModelScrollGeneric_SubView(
+                modelToShow: self.allergeniIn,
+                fontWeight: .light,
+                strokeColor: Color.red)
+          /*  ScrollView(.horizontal, showsIndicators: false) {
 
                     HStack {
                         
@@ -58,7 +64,7 @@ struct AllergeniScrollView_NewDishSub: View {
                             
                         }
                     }
-            }
+            } */ // Deprecata 17.08
             
             VStack(alignment:.leading) {
 
@@ -81,9 +87,9 @@ struct AllergeniScrollView_NewDishSub: View {
             }
       
         }
-        .onChange(of: self.allergeniIn, perform: { _ in
+      /* .onChange(of: self.allergeniIn, perform: { _ in
             self.areAllergeniOk = false
-        })
+        }) */
         .onChange(of: self.areAllergeniOk, perform: { newValue in
             
             if newValue {

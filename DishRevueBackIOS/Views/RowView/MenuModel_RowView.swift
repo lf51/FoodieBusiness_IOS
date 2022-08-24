@@ -42,52 +42,59 @@ struct MenuModel_RowView: View {
                         iteratingTipologiaMenu()
                         
                     }
-                      
+                    
                     Spacer()
                     // Status
-                    
-                    vbEstrapolaStatusImage(itemModel: menuItem)
-
+                    VStack(alignment:.trailing,spacing:3) {
+                        
+                        vbEstrapolaStatusImage(itemModel: menuItem)
+                        vbDishCountInMenu()
+                        
+                    }
+   
                 }
-              //  .padding(.horizontal)
+                //  .padding(.horizontal)
                 .padding(.top,5)
-                    
+                
                 Spacer()
                 
-                    iteratingCalendarMenuInformation()
-                    
+                iteratingCalendarMenuInformation()
+                
                 Spacer()
                 
                 HStack(spacing:2){
+                    
+                    ForEach(GiorniDelServizio.allCases) { day in
                         
-                        ForEach(GiorniDelServizio.allCases) { day in
-         
-                            iteratingGiorniDelServizio(day: day)
-                            
-                        }
+                        iteratingGiorniDelServizio(day: day)
                         
+                    }
+                    
                     Spacer()
                     
-                    Text("\(menuItem.dishIn.count)")
-                        .fontWeight(.light)
-                        .foregroundColor(Color.white)
-                    Image(systemName: "fork.knife.circle.fill")
-                        .imageScale(.large)
-                        .foregroundColor(Color.white)
-
+                    /*   Text("\(menuItem.dishIn.count)")
+                     .fontWeight(.light)
+                     .foregroundColor(Color.white)
+                     Image(systemName: "fork.knife.circle.fill")
+                     .imageScale(.large)
+                     .foregroundColor(Color.white) */
+                    
+                    //  Spacer()
+                    
                 }
-              //  .padding(.horizontal)
+                //  .padding(.horizontal)
                 .padding(.bottom,5)
                 
             } // chiuda VStack madre
-            .padding(.horizontal)
+             .padding(.horizontal)
         } // chiusa Zstack Madre
+        
     }
     
     // Method
    
     @ViewBuilder private func iteratingCalendarMenuInformation() -> some View {
-        
+          
         let avaibility = self.menuItem.isAvaibleWhen
         let(incipit,postFix,showPost) = avaibility.iteratingAvaibilityMenu()
         
@@ -176,17 +183,21 @@ struct MenuModel_RowView: View {
     
     @ViewBuilder private func iteratingIntestazioneMenu() -> some View {
         
-        HStack {
+      //  HStack {
             
             Text(self.menuItem.intestazione)
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.semibold)
+                .lineLimit(1)
+              //  .scaledToFit()
+              //  .minimumScaleFactor(0.5)
                 .foregroundColor(Color.white)
+               
             
-        switch self.menuItem.tipologia {
+      /*  switch self.menuItem.tipologia {
             
         case .fisso(let pax, _):
-            
+            Spacer()
             Image(systemName: pax.imageAssociated())
                  .imageScale(.large)
                  .foregroundColor(Color("SeaTurtlePalette_2"))
@@ -194,13 +205,28 @@ struct MenuModel_RowView: View {
             
         default: EmptyView()
             
-            }
-        }
+            } */
+      //  }
     }
 
+    @ViewBuilder private func vbDishCountInMenu() -> some View {
+        
+        HStack(spacing:3) {
+            
+            Text("\(self.menuItem.dishIn.count)")
+            Image(systemName: "fork.knife.circle")
+                .imageScale(.large)
+            
+        }
+            .fontWeight(.semibold)
+            .foregroundColor(Color("SeaTurtlePalette_4"))
+            .padding(.leading,5)
+            .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
+    }
+    
     @ViewBuilder private func iteratingTipologiaMenu() -> some View {
         
-            HStack {
+        HStack {
                 
                 Text(self.menuItem.tipologia.simpleDescription().lowercased())
                     .italic()
@@ -210,18 +236,23 @@ struct MenuModel_RowView: View {
                 case .allaCarta:
                     Image(systemName: "cart")
                        
-                case .fisso(_, let price):
-                    Text("€ \(price)")
-                        .bold()
-                      //  .foregroundColor(Color.white)
-                        
+                case .fisso(let pax, let price):
+
+                        Text("€ \(price)")
+                            .bold()
+                        HStack(spacing:0) {
+                            Text("x")
+                            Image(systemName: pax.imageAssociated())
+                                 .imageScale(.large)
+                                 .foregroundColor(Color("SeaTurtlePalette_2"))
+                        }
+                    
                 default: EmptyView()
                     
                 }
             }
             .font(.callout)
             .foregroundColor(Color("SeaTurtlePalette_2"))
-     
     }
     
     

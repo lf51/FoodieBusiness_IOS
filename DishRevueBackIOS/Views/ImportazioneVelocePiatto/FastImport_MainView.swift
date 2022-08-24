@@ -13,7 +13,7 @@ struct FastImport_MainView: View {
     @State private var allFastDish: [DishModel] = []
     
     let backgroundColorView: Color
-    @State private var text: String = ""
+    @State private var text: String = "Spaghetti,pesto.Bucatini,pomodoro,basilico,menta"
     
     @State private var isUpdateDisable: Bool = true
    // @State private var showSubString: Bool = false
@@ -75,7 +75,8 @@ struct FastImport_MainView: View {
                                 
                                 ForEach($allFastDish) { $fastDish in
                                     
-                                    CSZStackVB_Framed(frameWidth: 380, rateWH: 1.5) {
+                                  //  CSZStackVB_Framed(frameWidth: 380, rateWH: 1.5) {
+                                    CSZStackVB_Framed(frameWidth:1200) {
                                         
                                         VStack {
                                             FastImport_CorpoScheda(fastDish: $fastDish) { newDish in
@@ -83,14 +84,19 @@ struct FastImport_MainView: View {
                                                     fastSave(item: newDish)
                                                 }
                                             }
+                                           
                                             Spacer()
                                         }
                                         .padding()
+                                        
+                                       
                                     }
                                 }
                             }
-                            .frame(height:570)
+                            .frame(height:800)
                             .tabViewStyle(PageTabViewStyle())
+                            
+                            
                             
                         } // Chiusa if
                         
@@ -214,9 +220,9 @@ struct FastImportMainView_Previews: PreviewProvider {
     static var previews: some View {
     
         NavigationStack {
-            FastImport_MainView(backgroundColorView: Color.cyan)
+            FastImport_MainView(backgroundColorView: Color("SeaTurtlePalette_1"))
                 
-        }
+        }.environmentObject(AccounterVM())
          //   Color.cyan
     
     }

@@ -15,12 +15,14 @@ struct MENU_TEST: View {
     @State private var color:Color = Color.yellow
     @State private var closeButton:Bool = false
     
+    @State private var primary: Bool = false
     
     var body: some View {
 
         
         VStack {
             
+            Text("primary is: \(primary.description)")
             Text(ingredient.conservazione.simpleDescription())
             Text(ingredient.origine.simpleDescription())
             ForEach(ingredient.allergeni) { allergene in
@@ -50,6 +52,8 @@ struct MENU_TEST: View {
      
             } label: {
                 Text("Editing Lento")
+            } primaryAction: {
+                self.primary.toggle()
             }
  
 

@@ -12,40 +12,22 @@ import SwiftUI
 
 struct IngredientModel:MyModelStatusConformity {
     
-    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-        
-        VStack {
-            
-            Button {
-               
-                viewModel[keyPath: navigationPath].append(DestinationPathView.dishListByIngredient(self))
-                
-            } label: {
-                HStack{
-                    Text("Sostituisci con..")
-                    Image(systemName: "eye")
-                    // In teoria l'ingrediente andrebbe anche messo in pausa
-                }
-            }
-            
-        }
-    }
-    
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return
       lhs.id == rhs.id &&
       lhs.intestazione == rhs.intestazione &&
       lhs.descrizione == rhs.descrizione &&
-      lhs.provenienza == rhs.provenienza &&
-      lhs.produzione == rhs.produzione &&
       lhs.conservazione == rhs.conservazione &&
-      lhs.origine == rhs.origine &&
+      lhs.produzione == rhs.produzione &&
+      lhs.provenienza == rhs.provenienza &&
       lhs.allergeni == rhs.allergeni &&
+      lhs.origine == rhs.origine &&
       lhs.status == rhs.status &&
       lhs.idIngredienteDiRiserva == rhs.idIngredienteDiRiserva
     }
     
-    var id: String { creaID(fromValue: self.intestazione) }
+   // var id: String { creaID(fromValue: self.intestazione) } // Deprecata 18.08
+    var id: String = UUID().uuidString
 
     var intestazione: String = ""
     var descrizione: String = ""
@@ -59,10 +41,10 @@ struct IngredientModel:MyModelStatusConformity {
     
     var status: StatusModel = .vuoto
     
-    var idIngredienteDiRiserva:String = "" // questo è il riferimento all'ingrediente con cui va sostituito nel caso venga messo in pausa
+    var idIngredienteDiRiserva:String = "" // questo è il riferimento all'ingrediente con cui va sostituito nel caso venga messo in pausa // deprecata in futuro
     
     func returnNewModel() -> (tipo: IngredientModel, nometipo: String) {
-        (IngredientModel(),"Nuovo Ingrediente")
+        (IngredientModel(),"Ingrediente")
     }
  
     func modelStringResearch(string: String) -> Bool {
@@ -94,5 +76,23 @@ struct IngredientModel:MyModelStatusConformity {
         hasher.combine(id)
     }
     
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        VStack {
+            
+            Button {
+               
+                viewModel[keyPath: navigationPath].append(DestinationPathView.dishListByIngredient(self))
+                
+            } label: {
+                HStack{
+                    Text("Sostituisci con..")
+                    Image(systemName: "eye")
+                    // In teoria l'ingrediente andrebbe anche messo in pausa
+                }
+            }
+            
+        }
+    }
     
 }
