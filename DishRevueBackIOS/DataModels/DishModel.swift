@@ -68,7 +68,7 @@ struct DishModel:MyModelStatusConformity {
     //var sostituzioneIngredientiTemporanea: [String:String] = [:] // key = idSostituito / value = idSostituto // deprecato - Sostituire con [String:IngredientModel]
     
     var categoriaMenu: CategoriaMenu = .defaultValue
-    var pricingPiatto:[DishFormat] = [DishFormat(type: .mandatory)]
+    var pricingPiatto:[DishFormat] = []//[DishFormat(type: .mandatory)]
 
     var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti // deprecata in futuro - sostituita da un metodo
 

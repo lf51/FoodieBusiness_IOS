@@ -192,7 +192,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         produzione: .convenzionale,
         provenienza: .restoDelMondo,
         allergeni: [.glutine],
-        origine: .carneAnimale,
+        origine: .animale,
         status: .completo(.archiviato),
         idIngredienteDiRiserva: "merluzzo"
     )
@@ -204,7 +204,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         produzione: .convenzionale,
         provenienza: .italia,
         allergeni: [.pesce],
-        origine: .pesce,
+        origine: .animale,
         status: .completo(.inPausa),
         idIngredienteDiRiserva: "guancialenero"
             )
@@ -226,7 +226,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         produzione: .convenzionale,
         provenienza: .europa,
         allergeni: [.latte_e_derivati,.anidride_solforosa_e_solfiti,.arachidi_e_derivati,.crostacei],
-        origine: .latteAnimale,
+        origine: .animale,
         status: .vuoto,
         idIngredienteDiRiserva: "basilico")
     

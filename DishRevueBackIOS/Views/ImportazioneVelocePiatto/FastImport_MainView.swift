@@ -50,12 +50,10 @@ struct FastImport_MainView: View {
                         HStack {
                             
                             CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color("SeaTurtlePalette_4"), fillColor: Color("SeaTurtlePalette_2")) {
-                                estrapolaStringhe()
-                                csHideKeyboard()
-                                self.isUpdateDisable = true
-                              /*  withAnimation {
-                                    showSubString = true
-                                } */
+                               
+                                self.estrapolaStringhe()
+                                self.postEstrapolaAction()
+                             
                             }
                             .opacity(self.isUpdateDisable ? 0.6 : 1.0)
                             .disabled(self.isUpdateDisable)
@@ -213,6 +211,15 @@ struct FastImport_MainView: View {
      
     }
  
+    private func postEstrapolaAction() {
+        
+        csHideKeyboard()
+        self.isUpdateDisable = true
+        viewModel.alertItem = AlertModel(
+            title: "⚠️ Attenzione",
+            message: SystemMessage.allergeni.simpleDescription())
+        
+    }
     
 }
 

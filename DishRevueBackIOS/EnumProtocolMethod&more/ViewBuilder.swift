@@ -520,6 +520,7 @@ struct CSZStackVB_Framed<Content:View>:View {
    
 }
 
+/*
 /// Ritorna uno scroll orizzontale degli Allergeni utile per le rowView del Dish e dell'ingredient
 @ViewBuilder func vbAllergeneScrollRowView(listaAllergeni:[AllergeniIngrediente]) -> some View {
     
@@ -564,4 +565,53 @@ struct CSZStackVB_Framed<Content:View>:View {
             }
         }
     }
+} */ // Deprecata 24.08
+/// Ritorna uno scroll orizzontale degli Allergeni utile per le rowView del Dish e dell'ingredient
+@ViewBuilder func vbAllergeneScrollRowView(listaAllergeni:[AllergeniIngrediente]) -> some View {
+    
+    HStack(spacing: 4.0) {
+        
+        Image(systemName: "allergens")
+            .imageScale(.small)
+            .foregroundColor(Color.black)
+    
+        ScrollView(.horizontal,showsIndicators: false) {
+            
+            HStack(spacing: 2.0) {
+                
+                if !listaAllergeni.isEmpty {
+                    
+                    let listaA:[String] = estrapolaListaAllergeni(listaAllergeni: listaAllergeni)
+                    
+                    Text(listaA,format: .list(type: .and))
+                        .italic()
+                        .fontWeight(.semibold)
+                        .font(.caption)
+                        .foregroundColor(Color.black)
+ 
+                    
+                } else {
+                    Text("Nessun Allergene indicato")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .foregroundColor(Color.black)
+                }   
+            }
+        }
+    }
+}
+
+/// Crea un Array di stringhe con i nomi degli allergeni
+private func estrapolaListaAllergeni(listaAllergeni:[AllergeniIngrediente]) -> [String] {
+    
+    var lista:[String] = []
+    
+    for allergene in listaAllergeni {
+        
+        let allergeneName = allergene.simpleDescription()
+        lista.append(allergeneName)
+        
+    }
+    
+    return lista
 }

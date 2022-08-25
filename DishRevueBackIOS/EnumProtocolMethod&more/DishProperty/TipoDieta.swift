@@ -110,7 +110,7 @@ enum TipoDieta: MyEnumProtocol,MyEnumProtocolMapConform {
             
             for ingredient in list {
                 
-                if ingredient.origine != .vegetale {
+                if ingredient.origine == .animale {
                     if ingredient.allergeni.contains(.latte_e_derivati) { milkIn.append(ingredient) }
                     else { animalOrFish.append(ingredient) }
                             }
@@ -142,5 +142,4 @@ enum TipoDieta: MyEnumProtocol,MyEnumProtocolMapConform {
         return (dieteOk,dieteOkInStringa)
     }
     
- 
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 
 /// Semplice Menu multiSelezione. Funziona Step by Step (Aggiunge ed Esce). Se si vuole la persistenza usare il SelettoreMyModel
-struct CSMenu_MultiSelection: View {
+struct CSMenuAllergeni_MultiSelection: View {
     
     @Binding var ingredient: IngredientModel
 

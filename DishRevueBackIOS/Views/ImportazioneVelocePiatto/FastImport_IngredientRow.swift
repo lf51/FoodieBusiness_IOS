@@ -12,19 +12,22 @@ struct FastImport_IngredientRow: View {
     @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var ingredient: IngredientModel
+    @Binding var areAllergeniOk: Bool
     let checkError: Bool
     let isIngredientOld: Bool
     
+    let isPrincipal:(_:Bool) -> Void
   //  private var isOrgineDefault: Bool = false
   //  private var isConservazioneDefault: Bool = false
 
-    init(ingredient:Binding<IngredientModel>,checkError:Bool,isIngredientOld:Bool) {
+    init(ingredient:Binding<IngredientModel>,areAllergeniOk:Binding<Bool>,checkError:Bool,isIngredientOld:Bool,isPrincipal:@escaping (_:Bool) -> Void) {
         
         _ingredient = ingredient
+        _areAllergeniOk = areAllergeniOk
         
         self.checkError = isIngredientOld ? false : checkError
         self.isIngredientOld = isIngredientOld
-        
+        self.isPrincipal = isPrincipal
        // self.isIngredientOld = isIngredientOld
         
       /*  if checkError && !isIngredientOld {
@@ -42,91 +45,111 @@ struct FastImport_IngredientRow: View {
                 
                 VStack(alignment:.leading) {
                     
-                    HStack(alignment:.center) {
+                    HStack(alignment:.center,spacing: 4) {
                         
                        vbMainRow()
              
                        vbOrigineIcon()
                        vbConservazioneIcon()
-                       vbAllergeneCheck()
+                     //  vbAllergeneCheck()
+                       vbProduzioneCheck()
                         
                         
                         Spacer()
                         
-                        Text("Principale/secondario")
+                        HStack {
+                            
+                            Text("Principale")
+                            Button {
+                                isPrincipal(true)
+                            } label: {
+                                Image(systemName: "circle")
+                            }
+
+                        }
                         
                     }
         
-                    HStack {
+                    VStack(alignment:.leading) {
                         
-                        VStack(alignment:.leading) {
+                        HStack {
                             
-                            CS_Picker(selection: $ingredient.origine, customLabel: "Origine", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                                .csWarningModifier(isPresented: checkError) {
-                                    self.ingredient.origine == .defaultValue
-                                }.fixedSize()
-
-
                             CS_Picker(selection: $ingredient.conservazione, customLabel: "Conservazione", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                                 .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.conservazione == .defaultValue
-                                }.fixedSize()
+                                }//.fixedSize()
                             
                             CS_Picker(selection: $ingredient.produzione, customLabel: "Produzione", dataContainer: ProduzioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                                 .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.produzione == .defaultValue
-                                }.fixedSize()
+                                }//.fixedSize()
+                        }
+                        
+                        HStack {
                             
+                            CS_Picker(selection: $ingredient.origine, customLabel: "Origine", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                                .csWarningModifier(isPresented: checkError) {
+                                    self.ingredient.origine == .defaultValue
+                                }//.fixedSize()
+
+
                             CS_Picker(selection: $ingredient.provenienza, customLabel: "Provenienza", dataContainer: ProvenienzaIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                                 .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.provenienza == .defaultValue
-                                }.fixedSize()
+                                }//.fixedSize()
                           
+                            CSMenuAllergeni_MultiSelection(ingredient: $ingredient)
+                                ._tightPadding()
+                                .background(
+                                    Circle()
+                                        .fill(Color.white.opacity(0.5))
+                                        .shadow(radius: 5.0)
+                                )
                             
                         }
-                      
- 
-                        Spacer()
-                        
-                        CSMenu_MultiSelection(ingredient: $ingredient)
-                            ._tightPadding()
-                            .background(
-                                Circle()
-                                    .fill(Color.white.opacity(0.5))
-                                    .shadow(radius: 5.0)
-                            )
-                        
-                        
                     }
                     
-                    VStack(alignment:.leading,spacing:0) {
+                    VStack(alignment:.leading,spacing:4) {
                         
-                        HStack(alignment:.bottom) {
+                        HStack(alignment:.center) {
                             
                             Image(systemName: "thermometer.snowflake")
                                 .imageScale(.small)
                             
-                            Text(ingredient.conservazione.extendedDescription())
-                                .italic()
-                                .fontWeight(.light)
-                                .font(.caption2)
-                                .foregroundColor(Color.black)
+                            if self.ingredient.conservazione == .defaultValue {
+                                
+                                Text("Metodo di conservazione non indicato")
+                                    .italic()
+                                    .fontWeight(.semibold)
+                                    .font(.caption)
+                                    .foregroundColor(Color.black)
+                            } else {
+                                Text(ingredient.conservazione.extendedDescription())
+                                    .italic()
+                                    .fontWeight(.semibold)
+                                    .font(.caption)
+                                    .foregroundColor(Color.black)
+                            }
                             
                         }
                         
-                        HStack(alignment:.bottom) {
+                        vbAllergeneScrollRowView(listaAllergeni: self.ingredient.allergeni)
+                      /*  HStack(alignment:.bottom) {
                             
                             Image(systemName: "allergens")
                                 .imageScale(.small)
 
                             ScrollView(.horizontal,showsIndicators: false) {
                                 
-                                HStack(alignment:.bottom) { vbAllergeneBottomRow() }
+                                HStack(alignment:.bottom) { vbAllergeneScrollRowView(listaAllergeni: self.ingredient.allergeni) }
                                 
                                 }
-                        }                        
+                        } */
                     }
                 }
+                .onChange(of: self.ingredient.allergeni, perform: { _ in
+                    self.areAllergeniOk = false
+                })
                 .padding(.top,10) // o .Vertical
   
       //  }
@@ -135,17 +158,35 @@ struct FastImport_IngredientRow: View {
     
     // Method
 
-    @ViewBuilder private func vbOrigineIcon() -> some View {
+   @ViewBuilder private func vbOrigineIcon() -> some View {
         
-        let image = self.ingredient.origine.imageAssociated()
+       let allergeni = self.ingredient.allergeni
+    
+       if allergeni.isEmpty {
+           let image = self.ingredient.origine.imageAssociated()
+           csVbSwitchImageText(string: image, size: .large)
+           
+       } else {
+           let image = iterateAllergeni()
+           csVbSwitchImageText(string: image, size: .large)
+           Image(systemName: "allergens")
+               .imageScale(.small)
+               .foregroundColor(Color.black)
+       }
+         
+    }
+    
+    private func iterateAllergeni() -> String {
         
-        csVbSwitchImageText(string: image, size: .large)
-     /*   if let image = self.ingredient.origine.imageAssociated() {
-            
-            csVbSwitchImageText(string: image, size: .large)
-            
-        } else {EmptyView()} */
+        let allergeni = self.ingredient.allergeni
+        var image = self.ingredient.origine.imageAssociated()
         
+        if allergeni.contains(.latte_e_derivati) { image = "🥛"}
+        else if allergeni.contains(where: {
+            $0 == .pesce || $0 == .crostacei || $0 == .molluschi
+        }) { image = "🐟"}
+        
+        return image
     }
     
     @ViewBuilder private func vbConservazioneIcon() -> some View {
@@ -154,7 +195,7 @@ struct FastImport_IngredientRow: View {
             
         case .congelato, .surgelato:
             let image = ingredient.conservazione.imageAssociated()
-            csVbSwitchImageText(string: image, size: .small)
+            csVbSwitchImageText(string: image, size: .large)
                 .foregroundColor(Color.white)
             
         default:
@@ -163,7 +204,7 @@ struct FastImport_IngredientRow: View {
   
     }
     
-    @ViewBuilder private func vbAllergeneCheck() -> some View {
+  /*  @ViewBuilder private func vbAllergeneCheck() -> some View {
         
         if ingredient.allergeni.isEmpty { EmptyView() }
         else {
@@ -172,8 +213,24 @@ struct FastImport_IngredientRow: View {
                 .foregroundColor(Color.black.opacity(0.8))
         }
         
+    } */ // deprecata 24.08
+    
+    @ViewBuilder private func vbProduzioneCheck() -> some View {
+        
+        switch self.ingredient.produzione {
+            
+        case .biologico:
+            Text("Bio")
+                .font(.system(.caption2, design: .monospaced, weight: .black))
+                .foregroundColor(Color.green)
+        default:
+            EmptyView()
+            
+        }
+        
     }
     
+    /*
     @ViewBuilder private func vbAllergeneBottomRow() -> some View {
         
         if ingredient.allergeni.isEmpty {
@@ -209,7 +266,7 @@ struct FastImport_IngredientRow: View {
         }
         
         return listaAllergeni
-    }
+    } */
     
     
     @ViewBuilder private func vbMainRow() -> some View {

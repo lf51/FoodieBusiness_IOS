@@ -25,7 +25,13 @@ struct NewDishMainView: View {
     
     init(newDish: DishModel,backgroundColorView: Color, destinationPath:DestinationPath) {
         
-        _newDish = State(wrappedValue: newDish)
+        let newD: DishModel = {
+            var new = newDish
+            if new.pricingPiatto.isEmpty {new.pricingPiatto = [DishFormat(type: .mandatory)]}
+            return new
+        }()
+        
+        _newDish = State(wrappedValue: newD)
         self.backgroundColorView = backgroundColorView
         
         self.piattoArchiviato = newDish

@@ -475,10 +475,10 @@ struct DishModel_RowView_Previews: PreviewProvider {
     
    
         
-    static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [.anidride_solforosa_e_solfiti,.arachidi_e_derivati], origine: .carneAnimale, status: .vuoto, idIngredienteDiRiserva: "")
+    static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [.anidride_solforosa_e_solfiti,.arachidi_e_derivati], origine: .animale, status: .vuoto, idIngredienteDiRiserva: "")
         
     static let ing2 = IngredientModel(intestazione: "Prezzemolo", descrizione: "", conservazione: .congelato, produzione: .convenzionale, provenienza: .restoDelMondo, allergeni: [.sedano], origine: .vegetale, status: .vuoto, idIngredienteDiRiserva: "")
-    static let ing3 = IngredientModel(intestazione: "Latte Scremato", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [.glutine], origine: .latteAnimale, status: .vuoto, idIngredienteDiRiserva: "")
+    static let ing3 = IngredientModel(intestazione: "Latte Scremato", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [.glutine], origine: .animale, status: .vuoto, idIngredienteDiRiserva: "")
     
     static let ing4 = IngredientModel(intestazione: "Basilico", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [], origine: .vegetale, status: .vuoto, idIngredienteDiRiserva: "")
     

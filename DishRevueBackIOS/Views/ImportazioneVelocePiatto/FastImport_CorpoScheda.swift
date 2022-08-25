@@ -86,40 +86,22 @@ struct FastImport_CorpoScheda:View {
                
                 Toggle(isOn: self.$areAllergeniOk) {
                         
-                        HStack {
+                    HStack(alignment:.bottom) {
                             Spacer()
                             Text("Conferma")
                                 .font(.system(.callout, design: .monospaced))
+                                .lineLimit(1)
    
-                            CS_ErrorMarkView(generalErrorCheck: checkError, localErrorCondition: !self.areAllergeniOk)
-                            
-                           /* if checkError && !areAllergeniOk {
-                                
-                                CS_ErrorMarkViewDEPRECATO(checkError: !areAllergeniOk)
-                                
-                            } else {
-                                
-                                Image(systemName: "allergens")
-                                    .imageScale(.medium)
-                                
-                            } */
-                            
-                            
-                          /*  if !checkError {
-                               
-                                Image(systemName: "allergens")
-                                    .imageScale(.medium)
-                                
-                            } else {
-                                
-                                CS_ErrorMark(checkError: !areAllergeniOk)
-                                
-                            } */
-
+                            Image(systemName: "allergens")
+                                .imageScale(.medium)
+                                .foregroundColor(Color.black)
+  
+                        }
+                        .csWarningModifier(isPresented: checkError) {
+                            !self.areAllergeniOk
                         }
                         
                     }
-                    
             }
             
             ScrollView(showsIndicators: false) {
@@ -128,7 +110,9 @@ struct FastImport_CorpoScheda:View {
                     
                     let isIngredientOld = viewModel.checkExistingModel(model: ingredient).0
                     
-                    FastImport_IngredientRow(ingredient: $ingredient, checkError: checkError, isIngredientOld: isIngredientOld)
+                    FastImport_IngredientRow(ingredient: $ingredient,areAllergeniOk: $areAllergeniOk, checkError: checkError, isIngredientOld: isIngredientOld){ value in
+                        // smistiamo l'ingrediente fra principale e secondario
+                    }
                     .disabled(isIngredientOld)
                     .blur(radius: isIngredientOld ? 0.8 : 0.0)
                     .overlay(alignment:.topTrailing) {
@@ -149,6 +133,7 @@ struct FastImport_CorpoScheda:View {
         }.onTapGesture {
             csHideKeyboard()
         }
+        
     }
     
     // Method
@@ -175,8 +160,7 @@ struct FastImport_CorpoScheda:View {
     }
     
     private func checkAreDishPropertyOk() -> Bool {
-        
-     //   self.fastDish.categoria != .defaultValue && !self.fastDish.formatiDelPiatto.isEmpty
+
         self.fastDish.categoriaMenu != .defaultValue && !self.fastDish.pricingPiatto.isEmpty
         
     }
@@ -187,8 +171,10 @@ struct FastImport_CorpoScheda:View {
             
             let origineOk = ingredient.origine != .defaultValue
             let conservazioneOk = ingredient.conservazione != .defaultValue
+            let produzioneOk = ingredient.produzione != .defaultValue
+            let provenienzaOk = ingredient.provenienza != .defaultValue
             
-            if !origineOk || !conservazioneOk {
+            if !origineOk || !conservazioneOk || !produzioneOk || !provenienzaOk {
                 print("CheckAreIngredientsOk -> \(ingredient.intestazione) non completo")
                 return false}
         }
@@ -199,7 +185,7 @@ struct FastImport_CorpoScheda:View {
     private func updateDishPrice() {
         
         // creiamo un piatto in formato standard "Unico", per una persona e senza indicazione di peso.
-        self.fastDish.pricingPiatto = []
+     //   self.fastDish.pricingPiatto = [] // deprecata 24.08
         guard self.dishPrice != "" else {return}
         guard csCheckDouble(testo: self.dishPrice) else { return }
 

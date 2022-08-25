@@ -9,6 +9,76 @@ import Foundation
 
 enum OrigineIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
     
+    static var allCases: [OrigineIngrediente] = [.vegetale,.animale]
+    static var defaultValue: OrigineIngrediente = .noValue
+
+    case animale // a base di carne
+    case vegetale // a base di vegetali
+    
+    case noValue // lo usiamo per avere un valore di default Nullo
+    
+    var id: String { self.createId() }
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+            
+        case .animale: return "Animale"
+        case .vegetale: return "Vegetale"
+        case .noValue: return "Nessun Valore"
+            
+        }
+    }
+    
+    func extendedDescription() -> String {
+        switch self {
+        case .animale:
+            return "Ingrediente di Origine Animale: Carne/Pesce/Uova/Latte/ecc"
+        case .vegetale:
+            return "Ingrediente di Origine Vegetale"
+        case .noValue:
+            return ""
+        }
+    }
+    
+    func createId() -> String {
+        
+        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // standardizziamo le stringhe ID in lowercases senza spazi
+    }
+    
+    func returnTypeCase() -> OrigineIngrediente { self }
+    
+    func imageAssociated() -> String {
+        
+        switch self {
+            
+        case .animale:
+            return "🐂"
+        case .vegetale:
+            return "🌱"
+        case .noValue:
+            return ""
+        }
+    }
+
+    
+    func orderValue() -> Int {
+        
+        switch self {
+            
+        case .animale:
+            return 2
+        case .vegetale:
+            return 1
+        case .noValue:
+            return 0
+        }
+    }
+}
+
+/*
+enum OrigineIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
+    
     static var allCases: [OrigineIngrediente] = [.vegetale,.carneAnimale,.pesce,.latteAnimale]
     static var defaultValue: OrigineIngrediente = .noValue
 
@@ -89,4 +159,4 @@ enum OrigineIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
             return 0
         }
     }
-}
+} */ // Deprecata 24.08 --> Passaggio a due macro categorie: Vegetale / Animale

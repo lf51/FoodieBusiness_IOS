@@ -33,7 +33,7 @@ struct CS_Picker<E:MyEnumProtocolMapConform>: View {
                 } label: {Text("")}
                           .pickerStyle(MenuPickerStyle())
                           .accentColor(Color.black)
-                          .padding(.horizontal)
+                         // .padding(.horizontal)
                           .background(
                         
                         RoundedRectangle(cornerRadius: 5.0)
