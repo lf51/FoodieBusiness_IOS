@@ -38,7 +38,10 @@ protocol MyModelProtocol: Identifiable, Equatable {
 
     var id: String { get set }
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
+    /// Stessa funzione di viewModelContainer() Solo che abbiamo l'accesso dal type
+    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM,[Self]>
+    
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
     
     func returnModelRowView() -> RowView
     func returnNewModel() -> (tipo:Self,nometipo:String) // deprecata in futuro il ritorno del Self. al 22.07 usato soltanto il nomeTipo

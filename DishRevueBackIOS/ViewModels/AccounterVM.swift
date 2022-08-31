@@ -60,44 +60,94 @@ class AccounterVM: ObservableObject {
     
     // Method
     
-    /// Esegue un controllo nel container di riferimento utilizzando solo l'ID. Se l'item è presente ritorna true e l'item trovato. Considera infattil'item già salvato di livello superiore come informazioni contenute e dunque lo ritorna.
-   /* func checkExistingIngredient(item: IngredientModel) -> (Bool,IngredientModel?) {
-        
-        print("AccounterVM/checkExistingIngredient - Ingrediente \(item.intestazione)")
-        
-        guard let index = self.allMyIngredients.firstIndex(where: {$0.id == item.id}) else {return (false, nil)}
-            
-            let newIngredient:IngredientModel = self.allMyIngredients[index]
-            return (true,newIngredient)
-            
-    } */ // Deprecated 31.05
+    // Modifiche 25.08 / 30.08 - Metodi di compilazione per trasformazione da Oggetto a riferimento degli ingredienti nei Dish
     
-    func findModelFromId(id:String) -> String {
+    func infoFromId<M:MyModelStatusConformity>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> (isActive:Bool,nome:String,hasAllergeni:Bool) {
         
-        guard let model = self.allMyIngredients.first(where: {$0.id == id}) else { return ""}
-        return model.intestazione
+        guard let model = modelFromId(id: id, modelPath: modelPath) else { return (false,"",false) }
+        
+        let isActive = model.status == .completo(.disponibile)
+        let name = model.intestazione
+        var allergeniIn:Bool = false
+        
+        if let ingredient = model as? IngredientModel {
+            allergeniIn = !ingredient.allergeni.isEmpty
+        }
+        
+        return (isActive,name,allergeniIn)
+        
+    }
+    
+    func ingredientFromId(id:String) -> IngredientModel? {
+        
+        self.allMyIngredients.first(where: {$0.id == id})
+    } // deprecata in futuro per genericizzazione in modelFromId()
+    
+    func modelFromId<M:MyModelProtocol>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
+        
+        let containerM = assegnaContainerFromPath(path: modelPath)
+      
+        return containerM.first(where: {$0.id == id})
+    }
+    
+    func modelCollectionFromCollectionID<M:MyModelProtocol>(collectionId:[String],modelPath:KeyPath<AccounterVM,[M]>) -> [M] {
+         
+         var modelCollection:[M] = []
+        
+         for id in collectionId {
+             
+             if let model = modelFromId(id: id, modelPath: modelPath) {modelCollection.append(model)}
+         }
+         
+         return modelCollection
+     }
+    
+    func nomeIngredienteFromId(id:String) -> String? {
+        
+        if let model = self.ingredientFromId(id: id) { return model.intestazione} else { return nil}
+       
     } // da implementare per tutti i modelli. Al momento in uso per ritornare il nome di un ingrediente dal suo id // Deprecata in futuro
     
+    
+    // fine modifiche 25.08
+    
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
+        // Da modificare per considerare anche gli ingredienti Sostituti
         
         let filteredDish = self.allMyDish.filter { dish in
-            dish.ingredientiPrincipali.contains(where: { $0.id == idIngredient }) ||
-            dish.ingredientiSecondari.contains(where: { $0.id == idIngredient })
+            dish.ingredientiPrincipali.contains(where: { $0 == idIngredient }) ||
+            dish.ingredientiSecondari.contains(where: { $0 == idIngredient })
         }
         
         return filteredDish
 
     }
+    /*
+    func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
+        
+        let filteredDish = self.allMyDish.filter { dish in
+            dish.ingredientiPrincipaliDEPRECATO.contains(where: { $0.id == idIngredient }) ||
+            dish.ingredientiSecondariDEPRECATO.contains(where: { $0.id == idIngredient })
+        }
+        
+        return filteredDish
+
+    } */ // Deprecata 29.08
     
     /// dato un idIngrediente ritorna un array con tutti gli ingredienti nel viewModel meno quello, e quello singolarmente come IngredientModel
-    func ingredientsFilteredByIngredient(idIngredient:String) -> (allMinusThat:[IngredientModel],model:IngredientModel?) {
-        
-        guard let model = self.allMyIngredients.first(where: {$0.id == idIngredient}) else {
+    func ingredientsFilteredByIngredientAndStatus(idIngredient:String) ->[IngredientModel] {
+             // Modifiche 31.08
+      /*  guard let model = self.allMyIngredients.first(where: {$0.id == idIngredient}) else {
             return ([],nil)
-        }
-        let filterArray = self.allMyIngredients.filter({$0 != model})
+        } */
+        let filterArray = self.allMyIngredients.filter({
+            $0.id != idIngredient &&
+            $0.status == .completo(.disponibile)
+            
+        })
         
-        return (filterArray,model)
+        // end 31.08
+        return filterArray
     }
     
     
@@ -138,7 +188,7 @@ class AccounterVM: ObservableObject {
     }
 
     /// Esegue un controllo nel container di riferimento utilizzando solo l'ID. Se l'item è presente ritorna true e l'item trovato. Considera infattil'item già salvato di livello superiore come informazioni contenute e dunque lo ritorna.
-    func checkExistingModel<M:MyModelProtocol>(model: M) -> (Bool,M?) {
+    func checkExistingUniqueModelID<M:MyModelProtocol>(model: M) -> (Bool,M?) {
         
         print("AccounterVM/checkExistingItem - Item: \(model.intestazione)")
         
@@ -150,12 +200,72 @@ class AccounterVM: ObservableObject {
         
             return (true,newItem)
             
+    } // deprecata in futuro. Usata per controllare l'unicità dell'intestazione quando l'id era l'intestazione messa minuscolo e senza spazi. Con l'id alfanumerico è diventata obsoleta per l'uso fattene finora.
+    
+    func checkExistingUniqueModelName<M:MyModelProtocol>(model:M) -> (Bool,M?) {
+        
+        print("NEW AccounterVM/checkModelExist - Item: \(model.intestazione)")
+        
+        let containerM = assegnaContainer(itemModel: model)
+        let newItemUniqueName = creaNomeUnivocoModello(fromIntestazione: model.intestazione)
+        
+        guard let index = containerM.firstIndex(where: {creaNomeUnivocoModello(fromIntestazione: $0.intestazione) == newItemUniqueName}) else {return (false, nil)}
+        
+        let oldItem:M = containerM[index]
+        return (true,oldItem)
+        
     }
 
+    ///Richiede un TemporaryModel, e oltre a salvare il piatto, salva anche gli ingredienti nel viewModel. Ideata per Modulo Importazione Veloce
+    func dishAndIngredientsFastSave(item: TemporaryModel) throws {
+
+        guard !checkExistingUniqueModelName(model: item.dish).0 else { // da spostare a monte, nell'estrapolazione delle Stringhe
+            
+            throw CancellationError()
+            
+        }
+        
+        let ingredients = item.ingredients
+        let rifSecondari = item.rifIngredientiSecondari
+        
+        var modelIngredients:[IngredientModel] = []
+        var rifIngredientiPrincipali:[String] = []
+        var rifIngredientiSecondari:[String] = []
+        
+        for ingredient in ingredients {
+            
+            if !checkExistingUniqueModelID(model: ingredient).0 {
+                modelIngredients.append(ingredient)
+                // copia il modello solo se già non esiste
+            }
+            
+            if rifSecondari.contains(where: {$0 == ingredient.id})  {
+                rifIngredientiSecondari.append(ingredient.id)
+            } else {
+                rifIngredientiPrincipali.append(ingredient.id)
+            }
+            // mentre salva il riferimento sempre per il piatto
+            
+        }
+        
+        let dish = {
+            var new = item.dish
+            new.ingredientiPrincipali = rifIngredientiPrincipali
+            new.ingredientiSecondari = rifIngredientiSecondari
+            return new
+            
+        }()
+ 
+        self.allMyDish.append(dish)
+        self.allMyIngredients.append(contentsOf: modelIngredients)
+
+    }
+    
+    /*
     ///Richiede un DishModel, e oltre a salvare il piatto, salva anche gli ingredienti Principali nel viewModel. Ideata per Modulo Importazione Veloce
     func dishAndIngredientsFastSave(item: DishModel) throws {
         
-        guard !checkExistingModel(model: item).0 else {
+        guard !checkExistingUniqueModelID(model: item).0 else {
             
             throw CancellationError()
             
@@ -169,9 +279,9 @@ class AccounterVM: ObservableObject {
         
         var newIngredient:[IngredientModel] = []
         
-        for ingredient in item.ingredientiPrincipali {
+        for ingredient in item.ingredientiPrincipaliDEPRECATO {
             
-            if !checkExistingModel(model: ingredient).0 {
+            if !checkExistingUniqueModelID(model: ingredient).0 {
                 
                 newIngredient.append(ingredient)
             }
@@ -180,7 +290,7 @@ class AccounterVM: ObservableObject {
         
         self.allMyIngredients.append(contentsOf: newIngredient)
 
-    }
+    } */ // Deprecata 28.08
     
     
    /* func createOrUpdateItemModel<T:MyModelProtocol>(itemModel:T) { // 03.05 Deprecated ma non ancora sostituita (02.07)
@@ -492,16 +602,23 @@ class AccounterVM: ObservableObject {
     /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container e un bool (indicante se il container è o non è editabile)
     private func assegnaContainer<T:MyModelProtocol>(itemModel:T) -> [T] {
        
-        let pathContainer = itemModel.viewModelContainer().pathContainer
+        let pathContainer = itemModel.viewModelContainerInstance().pathContainer
         print("ViewModel/assegnaContainer() per itemModel: \(itemModel.intestazione)")
         return self[keyPath: pathContainer]
 
     }
     
+    /// Come AssegnaContainer ma richiede come parametro direttamente il path
+    private func assegnaContainerFromPath<M:MyModelProtocol>(path:KeyPath<AccounterVM,[M]>) -> [M] {
+        
+        self[keyPath: path]
+        
+    }
+    
     /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
    private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
 
-       let (pathContainer,nomeContainer,_) = modelT.viewModelContainer()
+       let (pathContainer,nomeContainer,_) = modelT.viewModelContainerInstance()
        self[keyPath: pathContainer] = containerT
        
        self.alertItem = AlertModel(

@@ -62,9 +62,9 @@ struct NewDishMainView: View {
                             
                             PannelloIngredienti_NewDishSubView(newDish: newDish, generalErrorCheck: generalErrorCheck, wannaAddIngredient: $wannaAddIngredient)
                                 
-                            AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck, areAllergeniOk: $areAllergeniOk)
+                            AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck, areAllergeniOk: $areAllergeniOk, viewModel: viewModel)
  
-                            DietScrollView_NewDishSub(newDish: $newDish, confermaDiete: $confermaDiete)
+                            DietScrollView_NewDishSub(newDish: $newDish, confermaDiete: $confermaDiete, viewModel: viewModel)
  
                             DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
  
@@ -159,14 +159,52 @@ struct NewDishMainView: View {
         
         var stringValueAllergeni = "Nessun allergene indicato negli ingredienti."
         
-        for ingredient in self.newDish.ingredientiPrincipali {
+        for idIngredient in self.newDish.ingredientiPrincipali {
+            
+            if let stringValue = self.viewModel.nomeIngredienteFromId(id: idIngredient) {
+                stringIngredientiPrincipali.append(stringValue)
+            }
+        }
+        
+        for ingredient in self.newDish.ingredientiSecondari {
+            
+            if let stringValue = self.viewModel.nomeIngredienteFromId(id: ingredient) {
+                stringIngredientiSecondari.append(stringValue)
+            }
+        }
+        
+        if !self.newDish.allergeni.isEmpty {
+            
+            for allergene in self.newDish.allergeni {
+                
+                let stringValue = allergene.simpleDescription()
+                stringAllergeni.append(stringValue)
+                
+            }
+            stringValueAllergeni = "Indicata la presenza degli allergeni:"
+        }
+        
+        return Text("\(self.newDish.intestazione)\n\(stringIngredientiPrincipali,format: .list(type: .and))\n\(stringValueAllergeni) \(stringAllergeni,format: .list(type: .and))")
+            
+           
+    }
+    
+ /*   private func infoPiatto() -> Text {
+           
+        var stringIngredientiPrincipali:[String] = []
+        var stringIngredientiSecondari:[String] = []
+        var stringAllergeni:[String] = []
+        
+        var stringValueAllergeni = "Nessun allergene indicato negli ingredienti."
+        
+        for ingredient in self.newDish.ingredientiPrincipaliDEPRECATO {
             
             let stringValue = ingredient.intestazione
             stringIngredientiPrincipali.append(stringValue)
             
         }
         
-        for ingredient in self.newDish.ingredientiSecondari {
+        for ingredient in self.newDish.ingredientiSecondariDEPRECATO {
             
             let stringValue = ingredient.intestazione
             stringIngredientiSecondari.append(stringValue)
@@ -187,7 +225,7 @@ struct NewDishMainView: View {
         return Text("\(self.newDish.intestazione)\n\(stringIngredientiPrincipali,format: .list(type: .and))\n\(stringValueAllergeni) \(stringAllergeni,format: .list(type: .and))")
             
            
-    }
+    } */ // Deprecata 25.08
     
     private func checkPreliminare() -> Bool {
         

@@ -170,7 +170,7 @@ struct EditingPropertyModel: View {
         
         for menu in viewModel.allMyMenu {
               
-            if menu.status == .completo(.pubblico) {giorniServizio.append(contentsOf: menu.giorniDelServizio)} else { continue }
+            if menu.status == .completo(.disponibile) {giorniServizio.append(contentsOf: menu.giorniDelServizio)} else { continue }
           }
         
         let setGiorni = Set(giorniServizio)
@@ -228,7 +228,7 @@ struct EditingPropertyModel: View {
         
         let currentMenu = myMenu.wrappedValue
         
-        if currentMenu.status == .completo(.pubblico) {
+        if currentMenu.status == .completo(.disponibile) {
             
             GenericItemModel_RowViewMask(
                 model: currentMenu,navigationPath: \.homeViewPath) {
@@ -261,7 +261,7 @@ struct EditingPropertyModel: View {
                 model: currentMenu,navigationPath: \.homeViewPath) {
                     
                     Button {
-                        myMenu.wrappedValue.status = .completo(.pubblico)
+                        myMenu.wrappedValue.status = .completo(.disponibile)
                         
                     } label: {
                         HStack{

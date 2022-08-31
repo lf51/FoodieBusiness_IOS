@@ -11,27 +11,11 @@ import Foundation
 import SwiftUI
 
 struct DishModel:MyModelStatusConformity {
-        
-    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-        
-        VStack {
-            
-            Button {
-                
-                viewModel[keyPath: navigationPath].append(DestinationPathView.recensioni(self))
-                
-            } label: {
-                HStack{
-                    Text("Vedi Recensioni")
-                    Image(systemName: "eye")
-                }
-            }
-            
-        }
-
+    
+    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
+        return \.allMyDish
     }
     
-
    static func == (lhs: DishModel, rhs: DishModel) -> Bool {
        
         lhs.id == rhs.id &&
@@ -42,6 +26,7 @@ struct DishModel:MyModelStatusConformity {
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
         lhs.elencoIngredientiOff == rhs.elencoIngredientiOff &&
+        lhs.idIngredienteDaSostituire == rhs.idIngredienteDaSostituire &&
         lhs.categoriaMenu == rhs.categoriaMenu &&
         lhs.allergeni == rhs.allergeni &&
         lhs.dieteCompatibili == rhs.dieteCompatibili &&
@@ -59,13 +44,16 @@ struct DishModel:MyModelStatusConformity {
   //  var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
     var rating: [DishRatingModel] = []
 
-    var status: StatusModel = .vuoto
+    var status: StatusModel = .nuovo
     
-    var ingredientiPrincipali: [IngredientModel] = []
-    var ingredientiSecondari: [IngredientModel] = []
-    var elencoIngredientiOff: [String:IngredientModel?] = [:]
+  //  var ingredientiPrincipaliDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
+  //  var ingredientiSecondariDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
+   // var elencoIngredientiOffDEPRECATO: [String:IngredientModel?] = [:] // deprecato in futuro(29.08 untill 31.08 ) - sostituire con String:String?
     
-    //var sostituzioneIngredientiTemporanea: [String:String] = [:] // key = idSostituito / value = idSostituto // deprecato - Sostituire con [String:IngredientModel]
+    var ingredientiPrincipali: [String] = [] // id IngredientModel
+    var ingredientiSecondari: [String] = [] // id IngredientModel
+    var elencoIngredientiOff: [String:String] = [:] // id Sostituito: idSOSTITUTO
+    var idIngredienteDaSostituire: String? // è una proprietà di servizio che ci serve a bypassare lo status di inPausa per tranciare un ingrediente che probabilmente andrà sostituito. Necessario perchè col cambio da Model a riferimento nella View delle sostituzioni la visualizzazione dell'ingrediente da sostituire richiederebbe il cambio di status e dunque un pò di macello. Vedi Nota Vocale 30.08
     
     var categoriaMenu: CategoriaMenu = .defaultValue
     var pricingPiatto:[DishFormat] = []//[DishFormat(type: .mandatory)]
@@ -102,7 +90,7 @@ struct DishModel:MyModelStatusConformity {
         "Piatto (\(self.status.simpleDescription().capitalized))"
     }
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String) {
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String) {
         
         return (\.allMyDish, "Lista Piatti", "Piatto")
     }
@@ -127,42 +115,50 @@ struct DishModel:MyModelStatusConformity {
         DishModel_RowView(item: self) // conforme al Protocollo
     }
 
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        VStack {
+            
+            Button {
+                
+                viewModel[keyPath: navigationPath].append(DestinationPathView.recensioni(self))
+                
+            } label: {
+                HStack{
+                    Text("Vedi Recensioni")
+                    Image(systemName: "eye")
+                }
+            }
+            
+        }
+
+    }
+    
     /// Controlla la presenza dell'idIngrediente sia fra gl iingredienti Principali e Secondari, sia fra i sostituti
     func checkIngredientsIn(idIngrediente:String) -> Bool {
         
-        var allSostituti:[IngredientModel] = []
-        
-        if !self.elencoIngredientiOff.isEmpty {
-            
-            for (_,ingredient) in self.elencoIngredientiOff {
-                
-                if ingredient != nil {
-                    allSostituti.append(ingredient!)
-                }
-               
-                
-            }
-        }
- 
-        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari + allSostituti
-        let condition = allTheIngredients.contains(where: {$0.id == idIngrediente })
+        let allIDSostituti = self.elencoIngredientiOff.values
+   
+        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari + allIDSostituti
+        let condition = allTheIngredients.contains(where: {$0 == idIngrediente })
         
         return condition
 
     }
     
+    /*
     /// ritorna solo gli ingredienti Attivi, dunque toglie gli eventuali ingredienti SOSTITUITI e li rimpiazza con i SOSTITUTI
     private func ritornaTuttiGliIngredientiAttivi() -> [IngredientModel] {
         
-        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari
+        let allTheIngredients = self.ingredientiPrincipaliDEPRECATO + self.ingredientiSecondariDEPRECATO
         
-        guard !self.elencoIngredientiOff.isEmpty else {
+        guard !self.elencoIngredientiOffDEPRECATO.isEmpty else {
             return allTheIngredients
         }
         
         var allFinalIngredients = allTheIngredients
     
-        for (key,value) in self.elencoIngredientiOff {
+        for (key,value) in self.elencoIngredientiOffDEPRECATO {
             
             if allTheIngredients.contains(where: {$0.id == key}) && value != nil {
                 
@@ -189,11 +185,93 @@ struct DishModel:MyModelStatusConformity {
         
         return allFinalIngredients
         
+    } */ // deprecata 26.08
+    
+    /// ritorna gli ingredienti meno le bozze e gli archiviati. Comprende i completi(.pubblici) e i completi(.inPausa)
+    func allMinusBozzeEArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
+        
+        let allIngredientsID = self.ingredientiPrincipali + self.ingredientiSecondari
+        let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.allMyIngredients)
+        let allMinusBozzeEArchiviati = allTheIngredients.filter({
+            $0.status != .completo(.archiviato) &&
+            $0.status != .bozza
+        })
+        
+        return allMinusBozzeEArchiviati
     }
     
-    func calcolaAllergeniNelPiatto() -> [AllergeniIngrediente] {
+    
+    /// ritorna gli ingredienti Attivi sostituendo gli ingredienti inPausa con gli eventuali sostituti
+    func allModelAttivi(viewModel:AccounterVM) -> [IngredientModel] {
+        
+        let allMinusBozzeEArchiviati = allMinusBozzeEArchiviati(viewModel: viewModel)
+
+        let allInPausa = allMinusBozzeEArchiviati.filter({$0.status == .completo(.inPausa)})
+        
+        guard !allInPausa.isEmpty else { return allMinusBozzeEArchiviati }
+        
+        let onlyAvaible = allMinusBozzeEArchiviati.filter({!allInPausa.contains($0)})
+        
+        guard !self.elencoIngredientiOff.isEmpty else {return onlyAvaible}
+                
+        var allActiveIDs = allMinusBozzeEArchiviati.map({$0.id})
+    
+        for (key,value) in self.elencoIngredientiOff {
+            
+            if allInPausa.contains(where: {$0.id == key}) {
+                
+                let(isActive,_,_) = viewModel.infoFromId(id: value, modelPath: \.allMyIngredients)
+                let position = allActiveIDs.firstIndex{$0 == key}
+                
+                if isActive {
+                    allActiveIDs[position!] = value
+                } else { allActiveIDs.remove(at: position!)}
+                
+            }
+            
+        }
+        
+        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.allMyIngredients)
+        
+        return allActiveModels
+        
+    }
+   
+    /*
+    /// ritorna solo gli ingredienti Attivi, dunque toglie gli eventuali ingredienti SOSTITUITI e li rimpiazza con i SOSTITUTI
+    private func allIDIngredientiAttivi() -> [String] {
+        
+        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari
+        
+        guard !self.elencoIngredientiOff.isEmpty else {
+            return allTheIngredients
+        }
+        
+        var allFinalIngredients = allTheIngredients
+    
+        for (key,value) in self.elencoIngredientiOff {
+            
+            if allTheIngredients.contains(where: {$0 == key}) && value != nil {
+                
+                let position = allFinalIngredients.firstIndex{$0 == key}
+                allFinalIngredients[position!] = value!
+            }
+            
+        }
+        
+        return allFinalIngredients
+        
+    }*/ // deprecata 30.08 -> Trasformata per ritornare un array di IngredientModel attivi
+     
+    func calcolaAllergeniNelPiatto(viewModel:AccounterVM) -> [AllergeniIngrediente] {
       
-        let allIngredients = ritornaTuttiGliIngredientiAttivi()
+        // modifica 30.08
+       // let allIDIngredient = allIDIngredientiAttivi()
+        
+       // let allIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIDIngredient, modelPath: \.allMyIngredients)
+        let allIngredients = self.allModelAttivi(viewModel: viewModel)
+        
+        // end 30.08
         var allergeniPiatto:[AllergeniIngrediente] = []
         
              for ingredient in allIngredients {
@@ -209,12 +287,59 @@ struct DishModel:MyModelStatusConformity {
     
      }
     
-   /* func filteredByIngrediet(idIngredient:String) -> Bool {
+    /// Controlla l'origine degli ingredienti e restituisce un array con le diete compatibili
+    func returnDietAvaible(viewModel:AccounterVM) -> (inDishTipologia:[TipoDieta],inStringa:[String]) {
+
+        // step 0
+        // Modifica 30.08
+      //  let allIDIngredient = self.allIDIngredientiAttivi()
         
-     self.ingredientiPrincipali.contains(where: { $0.id == idIngredient }) ||
-     self.ingredientiSecondari.contains(where: { $0.id == idIngredient })
-     
-    } */ // Deprecata - spostata nel viewModel
+       // let allModelIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIDIngredient, modelPath: \.allMyIngredients)
+        
+        let allModelIngredients = self.allModelAttivi(viewModel: viewModel)
+        // end 30.08
+        // step 1 ->
+        
+        var animalOrFish: [IngredientModel] = []
+        var milkIn: [IngredientModel] = []
+        var glutenIn: [IngredientModel] = []
+        
+        for ingredient in allModelIngredients {
+            
+            if ingredient.origine == .animale {
+                
+                if ingredient.allergeni.contains(.latte_e_derivati) { milkIn.append(ingredient) }
+                
+                else { animalOrFish.append(ingredient) }
+                        }
+
+            if ingredient.allergeni.contains(.glutine) { glutenIn.append(ingredient)}
+        }
+        
+        // step 2 -->
+        
+        var dieteOk:[TipoDieta] = []
+        
+        if glutenIn.isEmpty {dieteOk.append(.glutenFree)}
+        
+        if milkIn.isEmpty && animalOrFish.isEmpty {dieteOk.append(contentsOf: [.vegano,.vegariano,.vegetariano])}
+        else if milkIn.isEmpty { dieteOk.append(.vegariano)}
+        else if animalOrFish.isEmpty {dieteOk.append(.vegetariano)}
+        else {dieteOk.append(.standard) }
+ 
+        var dieteOkInStringa:[String] = []
+ 
+        for diet in dieteOk {
+            
+            let stringDiet = diet.simpleDescription()
+            dieteOkInStringa.append(stringDiet)
+       
+        }
+    
+        return (dieteOk,dieteOkInStringa)
+    }
+    
+
 }
 
 

@@ -16,18 +16,19 @@ struct FastImport_IngredientRow: View {
     let checkError: Bool
     let isIngredientOld: Bool
     
-    let isPrincipal:(_:Bool) -> Void
+    let isSecondary:(_:String) -> Bool
+    @State private var isSecondario: Bool = false
   //  private var isOrgineDefault: Bool = false
   //  private var isConservazioneDefault: Bool = false
 
-    init(ingredient:Binding<IngredientModel>,areAllergeniOk:Binding<Bool>,checkError:Bool,isIngredientOld:Bool,isPrincipal:@escaping (_:Bool) -> Void) {
+    init(ingredient:Binding<IngredientModel>,areAllergeniOk:Binding<Bool>,checkError:Bool,isIngredientOld:Bool,isSecondary:@escaping (_:String) -> Bool) {
         
         _ingredient = ingredient
         _areAllergeniOk = areAllergeniOk
         
         self.checkError = isIngredientOld ? false : checkError
         self.isIngredientOld = isIngredientOld
-        self.isPrincipal = isPrincipal
+        self.isSecondary = isSecondary
        // self.isIngredientOld = isIngredientOld
         
       /*  if checkError && !isIngredientOld {
@@ -59,11 +60,35 @@ struct FastImport_IngredientRow: View {
                         
                         HStack {
                             
-                            Text("Principale")
+                            CSInfoAlertView(
+                                title: "Info",
+                                message: .ingredienteSecondario)
+                           
+                        
+                            Text("Secondario")
+                                .bold(isSecondario)
+                                .underline(isSecondario)
+                                .foregroundColor(Color.black)
+                             
                             Button {
-                                isPrincipal(true)
+                                
+                                withAnimation {
+                                    isSecondario = isSecondary(ingredient.id)
+                                }
+                                
                             } label: {
                                 Image(systemName: "circle")
+                                    .imageScale(.medium)
+                                    .foregroundColor(.black)
+                                    .opacity(isSecondario ? 0.6 : 1.0)
+                                    .overlay {
+                                        if isSecondario {
+                                            Image(systemName: "checkmark")
+                                                .imageScale(.large)
+                                                .bold()
+                                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                        }
+                                    }
                             }
 
                         }

@@ -161,7 +161,7 @@ struct PriceRow:View {
             
             CSTextField_6(
                 textFieldItem: $label,
-                placeHolder: "labelNew",
+                placeHolder: "label - Ex: 1/2 Pinta",
                 image: "rectangle.dashed.and.paperclip",
                 keyboardType: .default,
                 conformeA: .stringa(minLenght: 3)) {

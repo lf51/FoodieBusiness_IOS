@@ -9,7 +9,18 @@ import Foundation
 import SwiftUI
 
 enum ModelList: Equatable, Hashable {
-       
+   
+    /*
+    ///Case Predefinito per la relazione Piatto/Ingredienti.
+    static var dishIngredientsList: [ModelList] = [
+    
+        .viewModelContainer("I Miei Ingredienti",\.allMyIngredients,.fonte),
+       /* .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),*/
+        .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipaliDEPRECATO,.destinazione(Color.mint, grado: .principale)),
+        .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondariDEPRECATO,.destinazione(Color.orange, grado: .secondario))
+    
+    ] */ // deprecatp 25.08 -> Cambio di keyPath
+ 
     ///Case Predefinito per la relazione Piatto/Ingredienti.
     static var dishIngredientsList: [ModelList] = [
     
@@ -19,7 +30,8 @@ enum ModelList: Equatable, Hashable {
         .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondari,.destinazione(Color.orange, grado: .secondario))
     
     ]
- 
+    
+    
     /// Case predefinito per la relazione Ingrediente/Allergene
     static var ingredientAllergeniList: [ModelList] = [
     

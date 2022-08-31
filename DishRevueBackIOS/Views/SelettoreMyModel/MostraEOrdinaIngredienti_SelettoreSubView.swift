@@ -7,24 +7,88 @@
 
 import SwiftUI
 
-struct MostraEOrdinaModel<M2:MyModelProtocol>: View {
+
+/// Add 25.08 - Invece di un arrray M2 prende un array di String. Probabilmente dovremmo ritornarla generica per poter usare l'id di modelli diversi. Attualmente tarato per l'ingredient Model.
+struct MostraEOrdinaModelIDGeneric<M2:MyModelProtocol>: View {
     
     @Environment(\.editMode) var mode
+    @EnvironmentObject var viewModel: AccounterVM
+    @Binding var listaId: [String]
     
-    @Binding var listaAttiva: [M2]
-   
-  /*  init(listaAttiva: Binding<[M2]>) {
-        
-        _listaAttiva = listaAttiva
-        
-      //  editActivation()
-        print("Init MostraEOrdina")
-        
-    } */
-    
-        var body: some View {
+    var body: some View {
+
+            VStack(alignment:.trailing) {
                 
-            //VStack -> non lo inseriamo perchè non fa funzionare onMove e onDelete
+                Text(self.mode?.wrappedValue != .active ? "Edit View" : "Indietro")
+                    .foregroundColor(Color.blue)
+                    .padding(.trailing)
+                    .onTapGesture {
+                        editActivation()
+                    }
+                
+                List {
+                    
+                    ForEach(listaId, id:\.self) { idModel in
+
+                        if let model = self.viewModel.modelFromId(id: idModel, modelPath: M2.viewModelContainerStatic()) {
+                            
+                            VStack {
+                                
+                                HStack {
+                                    
+                                    Text(model.intestazione)
+                                        .fontWeight(.semibold)
+                                        .lineLimit(1)
+                                    
+                                    Spacer()
+                                }
+                                ._tightPadding()
+                                
+                                Divider()
+                            }
+                            
+                        }
+                    }
+                    .onDelete(perform: removeFromList)
+                    .onMove(perform: makeOrder)
+                    .listRowSeparator(.hidden)
+                    
+                }
+                .listStyle(.plain)
+   
+            }
+        }
+        
+        private func removeFromList(indexSet: IndexSet){
+                
+                self.listaId.remove(atOffsets: indexSet)
+            
+        }
+        
+        private func makeOrder(from: IndexSet, to: Int) {
+
+                self.listaId.move(fromOffsets: from, toOffset: to)
+        }
+        
+        private func editActivation() {
+        
+        self.mode?.wrappedValue = self.mode?.wrappedValue == .active ? .inactive : .active
+         //   self.mode?.wrappedValue = .active
+      
+        }
+        
+    }
+
+
+
+
+
+struct MostraEOrdinaModelGeneric<M2:MyModelProtocol>: View {
+    
+    @Environment(\.editMode) var mode
+    @Binding var listaAttiva: [M2]
+    
+    var body: some View {
 
             VStack(alignment:.trailing) {
                 
@@ -62,14 +126,8 @@ struct MostraEOrdinaModel<M2:MyModelProtocol>: View {
                     
                 }
                 .listStyle(.plain)
-                
-                
-                
             }
-            
-                
-                
-                
+    
         }
         
         private func removeFromList(indexSet: IndexSet){

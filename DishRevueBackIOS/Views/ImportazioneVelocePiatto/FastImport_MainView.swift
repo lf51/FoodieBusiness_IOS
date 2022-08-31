@@ -10,8 +10,10 @@ import SwiftUI
 struct FastImport_MainView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    @State private var allFastDish: [DishModel] = []
-    
+    // Modifica 28.08
+    //@State private var allFastDish: [DishModel] = []
+    @State private var allFastDish: [TemporaryModel] = []
+    // End 28.08
     let backgroundColorView: Color
     @State private var text: String = "Spaghetti,pesto.Bucatini,pomodoro,basilico,menta"
     
@@ -77,7 +79,7 @@ struct FastImport_MainView: View {
                                     CSZStackVB_Framed(frameWidth:1200) {
                                         
                                         VStack {
-                                            FastImport_CorpoScheda(fastDish: $fastDish) { newDish in
+                                            FastImport_CorpoScheda(temporaryModel: $fastDish) { newDish in
                                                 withAnimation(.spring()) {
                                                     fastSave(item: newDish)
                                                 }
@@ -111,16 +113,16 @@ struct FastImport_MainView: View {
     
     // Method
  
-    private func fastSave(item: DishModel) {
+    private func fastSave(item: TemporaryModel) {
  
         do {
             
             try self.viewModel.dishAndIngredientsFastSave(item: item)
 
-            let localAllFastDish:[DishModel] = self.allFastDish.filter {$0.id != item.id}
+            let localAllFastDish:[TemporaryModel] = self.allFastDish.filter {$0.id != item.id}
  
             if !localAllFastDish.isEmpty {
-                self.reBuildIngredientContainer(localAllFastDish: localAllFastDish)
+                self.reBuildIngredientContainer(localTemporaryModel: localAllFastDish)
             }  else {self.allFastDish = localAllFastDish}
 
         } catch _ {
@@ -132,7 +134,33 @@ struct FastImport_MainView: View {
         }
  
     }
-    
+ 
+    /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
+    private func reBuildIngredientContainer(localTemporaryModel:[TemporaryModel]) {
+        
+        var newTemporaryContainer:[TemporaryModel] = []
+        var newTemporaryModel:TemporaryModel?
+        
+        for model in localTemporaryModel {
+            
+            newTemporaryModel = model
+            newTemporaryModel?.ingredients = []
+          //  newDish.ingredientiPrincipaliDEPRECATO = []
+            
+            for ingredient in model.ingredients {
+                
+                if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 { newTemporaryModel?.ingredients.append(oldIngredient) } else {newTemporaryModel?.ingredients.append(ingredient) }
+       
+            }
+            
+            newTemporaryContainer.append(newTemporaryModel!)
+            
+        }
+        
+        self.allFastDish = newTemporaryContainer
+   
+    }
+    /*
     /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
     private func reBuildIngredientContainer(localAllFastDish:[DishModel]) {
         
@@ -142,11 +170,11 @@ struct FastImport_MainView: View {
         for dish in localAllFastDish {
             
             newDish = dish
-            newDish.ingredientiPrincipali = []
+            newDish.ingredientiPrincipaliDEPRECATO = []
             
-            for ingredient in dish.ingredientiPrincipali {
+            for ingredient in dish.ingredientiPrincipaliDEPRECATO {
                 
-                if let oldIngredient = viewModel.checkExistingModel(model: ingredient).1 { newDish.ingredientiPrincipali.append(oldIngredient) } else {newDish.ingredientiPrincipali.append(ingredient) }
+                if let oldIngredient = viewModel.checkExistingUniqueModelID(model: ingredient).1 { newDish.ingredientiPrincipaliDEPRECATO.append(oldIngredient) } else {newDish.ingredientiPrincipaliDEPRECATO.append(ingredient) }
        
             }
             
@@ -156,7 +184,7 @@ struct FastImport_MainView: View {
         
         self.allFastDish = newDishContainer
    
-    }
+    } */ // Deprecata 28.08
     
     private func estrapolaStringhe() {
          
@@ -181,18 +209,27 @@ struct FastImport_MainView: View {
                 let sub = String(subString).lowercased()
                 let newSub = csStringCleaner(string: sub)
                 
-          //      let ingredient = IngredientModel(nome: newSub.capitalized)
                 let ingredient = {
                    var newIngredient = IngredientModel()
                     newIngredient.intestazione = newSub.capitalized
                     return newIngredient
                 }()
                 
-                if let oldIngredient = viewModel.checkExistingModel(model: ingredient).1 {
+                // Modifica 28.08
+                
+                if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 {
                     
                     step_5.append(oldIngredient)
    
                 } else {step_5.append(ingredient)}
+                
+              /*  if let oldIngredient = viewModel.checkExistingModel(model: ingredient).1 {
+                    
+                    step_5.append(oldIngredient)
+   
+                } else {step_5.append(ingredient)} */
+                
+                // End 28.08
          
              }
             
@@ -200,12 +237,15 @@ struct FastImport_MainView: View {
                 
                 var dish = DishModel()
                 dish.intestazione = cleanedDishTitle.capitalized
-                dish.ingredientiPrincipali = step_5
+              //  dish.ingredientiPrincipaliDEPRECATO = step_5
                 return dish
                 
             }()
+            
+            let temporaryDish: TemporaryModel = TemporaryModel(dish: fastDish, ingredients: step_5)
+            
 
-            self.allFastDish.append(fastDish)
+            self.allFastDish.append(temporaryDish)
             print("Dentro Estrapola/Fine Ciclo piatto: \(cleanedDishTitle)")
         }
      

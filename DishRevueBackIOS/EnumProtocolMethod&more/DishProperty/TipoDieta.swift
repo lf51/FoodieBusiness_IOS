@@ -97,6 +97,7 @@ enum TipoDieta: MyEnumProtocol,MyEnumProtocolMapConform {
         }
     }
     
+    /*
     /// Controlla l'origine degli ingredienti e restituisce un array con le diete compatibili
     static func returnDietAvaible(ingredients: [IngredientModel]...) -> (inDishTipologia:[TipoDieta],inStringa:[String]) {
 
@@ -140,6 +141,6 @@ enum TipoDieta: MyEnumProtocol,MyEnumProtocolMapConform {
         }
     
         return (dieteOk,dieteOkInStringa)
-    }
+    } */ // 26.08 -> Spostata all'interno del dishModel
     
 }

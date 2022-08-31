@@ -11,12 +11,12 @@ struct DishModel_RowView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     let item: DishModel
-    let listaAllergeni:[AllergeniIngrediente]
+  //  let listaAllergeni:[AllergeniIngrediente]
     
-    init(item: DishModel) {
+ /*   init(item: DishModel) {
         self.item = item
-        self.listaAllergeni = item.calcolaAllergeniNelPiatto()
-    }
+        self.listaAllergeni = item.calcolaAllergeniNelPiatto(viewModel: viewModel)
+    } */
   //  var idSelectedIngredient: String = ""
   //  var nomeIngredienteSostituto: String = ""
     
@@ -45,8 +45,8 @@ struct DishModel_RowView: View {
                     vbDieteCompatibili()
                     
                  //   vbIngredientScrollRow()
- 
-                    vbAllergeneScrollRowView(listaAllergeni: self.listaAllergeni)
+                    let listaAllergeni = self.item.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
+                    vbAllergeneScrollRowView(listaAllergeni: listaAllergeni)
                   //  vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
                        
                 }
@@ -181,6 +181,8 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbDieteCompatibili() -> some View {
         
+        let dietAvaible = self.item.returnDietAvaible(viewModel: self.viewModel).inStringa
+        
         HStack(spacing: 4.0) {
             
             Image(systemName: "person.fill.checkmark")
@@ -191,9 +193,9 @@ struct DishModel_RowView: View {
                 
                 HStack(spacing: 2.0) {
                     
-                    ForEach(self.item.dieteCompatibili) { diet in
+                    ForEach(dietAvaible,id:\.self) { diet in
                         
-                        Text(diet.simpleDescription())
+                        Text(diet)
                             .font(.callout)
                             .fontWeight(.black)
                             .foregroundColor(Color("SeaTurtlePalette_4"))
@@ -211,12 +213,18 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbIngredientScrollRow() -> some View {
         
-        let allTheIngredients = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
-      //  let allTemporaryOff = self.item.sostituzioneIngredientiTemporanea
-      //  let allTemporaryOff = self.item.elencoIngredientiOff
-        
-      //  VStack {
+        // Modifiche 26.08 - 30.08
 
+     /*   let allIngredientsID = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
+        let allTheIngredients = self.viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.allMyIngredients)
+        let allFilteredIngredients = allTheIngredients.filter({
+            $0.status != .completo(.archiviato) &&
+            $0.status != .bozza
+        }) */
+        
+        let allFilteredIngredients = self.item.allMinusBozzeEArchiviati(viewModel: self.viewModel)
+        
+        // end 26.08
             HStack(spacing: 4.0) {
                 
                 Image(systemName: "list.bullet.rectangle")
@@ -227,30 +235,9 @@ struct DishModel_RowView: View {
                     
                     HStack(alignment:.lastTextBaseline, spacing: 2.0) {
                         
-                        ForEach(allTheIngredients) { ingredient in
+                        ForEach(allFilteredIngredients) { ingredient in
                             
-                            let (isPrincipal,hasAllergene,isTemporaryOff,isThereSostituto,nameSostituto) = self.analizingIngredient(ingredient: ingredient)
-                            
-                            
-                     /*   let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
-                        let hasAllergene = !ingredient.allergeni.isEmpty
-                            
-                        let (isTemporaryOff,isThereSostituto,nameSostituto):(Bool,Bool,String) = {
-                                
-                            guard allTemporaryOff.keys.contains(ingredient.id) else {
-                               return (false,false,"")
-                            }
-                            
-                            if let modelSostituto = allTemporaryOff[ingredient.id] {
-                                let nomeSostituto = modelSostituto!.intestazione
-                                return (true,true,nomeSostituto)
-                           
-                            } else {
-                                return(true,false,"")
-                            }
-
-                            
-                            }() */
+                            let (isPrincipal,hasAllergene,isTemporaryOff,idSostituto) = self.analizingIngredient(ingredient: ingredient)
                             
                            HStack(spacing:5) {
                                 
@@ -266,13 +253,35 @@ struct DishModel_RowView: View {
                                         }
                                     }
                                 
-                                if isTemporaryOff && isThereSostituto {
+                               
+                               // Modifiche 30.08
+                               /* if isTemporaryOff && isThereSostituto {
                                     
                                     Text("(\(nameSostituto))")
                                         .font(isPrincipal ? .headline : .subheadline)
                                         .foregroundColor(Color("SeaTurtlePalette_3"))
+                                } */
+                               if idSostituto != nil {
+                                    
+                                   let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.allMyIngredients)
+                                   
+                                   if isActive {
+                                       
+                                       Text("(\(name))")
+                                           .font(isPrincipal ? .headline : .subheadline)
+                                           .foregroundColor(Color("SeaTurtlePalette_3"))
+                                           .overlay(alignment:.topTrailing) {
+                                               if allergeniIn {
+                                                   Text("*")
+                                                       .foregroundColor(Color.black)
+                                                       .offset(x: 5, y: -3)
+                                               }
+                                           }
+                                   }
+                                   
+                                    
                                 }
-    
+                               // end 30.08
                             }
                             
                             Text("•")
@@ -287,12 +296,55 @@ struct DishModel_RowView: View {
        // }
     }
     
-    private func analizingIngredient(ingredient:IngredientModel) -> (isPrincipal:Bool,hasAllergene:Bool,isTemporary:Bool,isThereSostituto:Bool,nomeSostituto:String) {
+    private func analizingIngredient(ingredient:IngredientModel) -> (isPrincipal:Bool,hasAllergene:Bool,isTemporary:Bool,idSostituto:String?) {
         
-      //  let allTheIngredients = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
         let allTemporaryOff = self.item.elencoIngredientiOff
         
-        let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient)
+        let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient.id)
+        let hasAllergene = !ingredient.allergeni.isEmpty
+            
+        // Modifiche 30.08
+        
+       // let isOff = allTemporaryOff.keys.contains(ingredient.id)
+        var isOff: Bool = false
+        
+        if self.item.idIngredienteDaSostituire == ingredient.id {isOff = true}
+        else { isOff = ingredient.status == .completo(.inPausa) }
+       // let isOff = ingredient.status == .completo(.inPausa)
+        var idSostituto: String? = nil
+        
+      //  var isThereSosti: Bool = false
+      //  var nomeSosti: String = ""
+        
+        if isOff {
+            
+            for (key,value) in allTemporaryOff {
+                
+                if ingredient.id == key {
+                    idSostituto = value
+                    break
+                }
+                
+               /* if ingredient.id == key && value != nil {
+                    isThereSosti = true
+                    nomeSosti = self.viewModel.nomeIngredienteFromId(id: value!) ?? ""
+                    break
+                } */
+                
+            }
+        }
+        
+        return (isPrincipal,hasAllergene,isOff,idSostituto)
+        // end 30.08
+
+    }
+    
+    /*
+    private func analizingIngredient(ingredient:IngredientModel) -> (isPrincipal:Bool,hasAllergene:Bool,isTemporary:Bool,isThereSostituto:Bool,nomeSostituto:String) {
+        
+        let allTemporaryOff = self.item.elencoIngredientiOffDEPRECATO
+        
+        let isPrincipal = self.item.ingredientiPrincipaliDEPRECATO.contains(ingredient)
         let hasAllergene = !ingredient.allergeni.isEmpty
             
         let isOff = allTemporaryOff.keys.contains(ingredient.id)
@@ -334,7 +386,7 @@ struct DishModel_RowView: View {
             }() */
         
         
-    }
+    } */ // Deprecata 26.08
     
     /*
     @ViewBuilder private func vbIngredientScrollRow() -> some View {
@@ -473,20 +525,21 @@ struct DishModel_RowView: View {
 
 struct DishModel_RowView_Previews: PreviewProvider {
     
-   
+    static var viewModel:AccounterVM = AccounterVM()
         
-    static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [.anidride_solforosa_e_solfiti,.arachidi_e_derivati], origine: .animale, status: .vuoto, idIngredienteDiRiserva: "")
+    static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [], origine: .animale, status: .completo(.disponibile), idIngredienteDiRiserva: "")
         
-    static let ing2 = IngredientModel(intestazione: "Prezzemolo", descrizione: "", conservazione: .congelato, produzione: .convenzionale, provenienza: .restoDelMondo, allergeni: [.sedano], origine: .vegetale, status: .vuoto, idIngredienteDiRiserva: "")
-    static let ing3 = IngredientModel(intestazione: "Latte Scremato", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [.glutine], origine: .animale, status: .vuoto, idIngredienteDiRiserva: "")
+    static let ing2 = IngredientModel(intestazione: "Prezzemolo", descrizione: "", conservazione: .congelato, produzione: .convenzionale, provenienza: .restoDelMondo, allergeni: [.sedano], origine: .vegetale, status: .completo(.inPausa), idIngredienteDiRiserva: "")
     
-    static let ing4 = IngredientModel(intestazione: "Basilico", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [], origine: .vegetale, status: .vuoto, idIngredienteDiRiserva: "")
+    static let ing3 = IngredientModel(intestazione: "Latte Scremato", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [.latte_e_derivati], origine: .animale, status: .bozza, idIngredienteDiRiserva: "")
+    
+    static let ing4 = IngredientModel(intestazione: "Basilico", descrizione: "", conservazione: .altro, produzione: .biologico, provenienza: .europa, allergeni: [.senape], origine: .vegetale, status: .completo(.disponibile), idIngredienteDiRiserva: "")
     
     static var dishSample = {
        
         var dish = DishModel()
         dish.intestazione = "Spaghetti alla Carbonara"
-        dish.status = .completo(.inPausa)
+        dish.status = .completo(.disponibile)
         dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ]
@@ -498,8 +551,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
         }()
         
         dish.pricingPiatto = [price]
-        dish.ingredientiPrincipali = [ing1,ing2]
-        dish.ingredientiSecondari = [ing3,ing4]
+        dish.ingredientiPrincipali = [ing1.id,ing2.id]
+        dish.ingredientiSecondari = [ing3.id]
+        dish.elencoIngredientiOff = [ing2.id:ing4.id]
         dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
         
         return dish
@@ -508,7 +562,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
        
         var dish = DishModel()
         dish.intestazione = "Bucatini alla Matriciana"
-        dish.status = .completo(.archiviato)
+        dish.status = .completo(.disponibile)
         dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ]
@@ -533,10 +587,10 @@ struct DishModel_RowView_Previews: PreviewProvider {
         }()
         
         dish.pricingPiatto = [price1,price2,price3]
-        dish.ingredientiPrincipali = [ing1,ing4]
-        dish.ingredientiSecondari = [ing2,ing3]
+        dish.ingredientiPrincipali = [ing1.id,ing4.id]
+        dish.ingredientiSecondari = [ing2.id,ing3.id]
         dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
-        dish.dieteCompatibili = TipoDieta.returnDietAvaible(ingredients: [ing1,ing2,ing3,ing4]).inDishTipologia
+      /*  dish.dieteCompatibili = TipoDieta.returnDietAvaible(ingredients: [ing1,ing2,ing3,ing4]).inDishTipologia */
         
         return dish
     }()
@@ -560,10 +614,10 @@ struct DishModel_RowView_Previews: PreviewProvider {
             priceFirst.price = "7.5"
             return priceFirst
         }()
-    
+        dish.status = .completo(.disponibile)
         dish.pricingPiatto = [price1,price2]
-        dish.ingredientiPrincipali = [ing3]
-        dish.ingredientiSecondari = [ing1,ing2,ing4]
+        dish.ingredientiPrincipali = [ing3.id]
+        dish.ingredientiSecondari = [ing1.id,ing2.id,ing4.id]
         dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
         
         return dish
@@ -590,8 +644,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
             return priceFirst
         }()
     
+        dish.status = .completo(.disponibile)
         dish.pricingPiatto = [price1,price2]
-        dish.ingredientiPrincipali = [ing4]
+        dish.ingredientiPrincipali = [ing4.id]
         dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing4])
         
         
@@ -620,6 +675,10 @@ struct DishModel_RowView_Previews: PreviewProvider {
             }
             
         }
+        .onAppear{
+            viewModel.allMyIngredients = [ing1,ing2,ing3,ing4]
+        }
+        .environmentObject(viewModel)
         
     }
 }

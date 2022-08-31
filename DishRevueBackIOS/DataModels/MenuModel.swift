@@ -10,56 +10,8 @@ import SwiftUI
 
 struct MenuModel:MyModelStatusConformity {
     
-    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-        
-        VStack {
-            
-            Button {
-                // myModel.wrappedValue.status = .completo(.inPausa)
-                
-            } label: {
-                HStack{
-                    Text("Vedi Recensioni")
-                    Image(systemName: "eye")
-                }
-            }
-            
-        }
-    }
-    
-    func returnNewModel() -> (tipo: MenuModel, nometipo: String) {
-        (MenuModel(), "Menu")
-    }
-    
-    func modelStringResearch(string: String) -> Bool {
-        self.intestazione.lowercased().contains(string)
-    }
-    
-    func returnModelRowView() -> some View {
-        MenuModel_RowView(menuItem: self)
-    }
-    
-    func creaID(fromValue: String) -> String {
-        fromValue.replacingOccurrences(of: " ", with: "").lowercased() 
-    }
-    
-    func modelStatusDescription() -> String {
-        "Menu (\(self.status.simpleDescription().capitalized))"
-    }
-    
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String, nomeOggetto:String) {
-        
-        return (\.allMyMenu, "Lista Menu", "Menu")
-    }
-
-    func pathDestination() -> DestinationPathView {
-        
-        DestinationPathView.menu(self)
-    }
-    
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [MenuModel]> {
+        return \.allMyMenu
     }
     
     static func == (lhs: MenuModel, rhs: MenuModel) -> Bool {
@@ -90,7 +42,7 @@ struct MenuModel:MyModelStatusConformity {
     var dishIn: [DishModel] = [] /*{willSet {status = newValue.isEmpty ? .vuoto : .completo(.archiviato)}} */
     
     var tipologia: TipologiaMenu = .noValue // Categoria di Filtraggio
-    var status: StatusModel = .vuoto
+    var status: StatusModel = .nuovo
     
     var isAvaibleWhen: AvailabilityMenu = .defaultValue { willSet {giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
     
@@ -100,6 +52,57 @@ struct MenuModel:MyModelStatusConformity {
     var oraInizio: Date = Date() {willSet {oraFine = newValue.advanced(by: 1800)}} // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
     var oraFine: Date = Date().advanced(by: 1800)
 
+    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        VStack {
+            
+            Button {
+                // myModel.wrappedValue.status = .completo(.inPausa)
+                
+            } label: {
+                HStack{
+                    Text("Vedi Recensioni")
+                    Image(systemName: "eye")
+                }
+            }
+            
+        }
+    }
+    
+    func returnNewModel() -> (tipo: MenuModel, nometipo: String) {
+        (MenuModel(), "Menu")
+    }
+    
+    func modelStringResearch(string: String) -> Bool {
+        self.intestazione.lowercased().contains(string)
+    }
+    
+    func returnModelRowView() -> some View {
+        MenuModel_RowView(menuItem: self)
+    }
+    
+    func creaID(fromValue: String) -> String {
+        fromValue.replacingOccurrences(of: " ", with: "").lowercased()
+    }
+    
+    func modelStatusDescription() -> String {
+        "Menu (\(self.status.simpleDescription().capitalized))"
+    }
+    
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String, nomeOggetto:String) {
+        
+        return (\.allMyMenu, "Lista Menu", "Menu")
+    }
+
+    func pathDestination() -> DestinationPathView {
+        
+        DestinationPathView.menu(self)
+    }
+    
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 

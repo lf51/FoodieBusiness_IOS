@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct AllergeniScrollView_NewDishSub: View {
-    
-    @EnvironmentObject var viewModel:AccounterVM
+    // Modifica 26.08
+   // @EnvironmentObject var viewModel:AccounterVM
+    @ObservedObject var viewModel:AccounterVM
+    // usiamo la observedObject perchè ci permette di passare il valore e inizializzare l'array degli allergeni nell'Init
+    // End 26.08
     
     @Binding var newDish: DishModel
     let generalErrorCheck: Bool
@@ -17,14 +20,14 @@ struct AllergeniScrollView_NewDishSub: View {
     let allergeniIn:[AllergeniIngrediente]
     @Binding var areAllergeniOk: Bool
     
-    init(newDish:Binding<DishModel>, generalErrorCheck:Bool, areAllergeniOk:Binding<Bool>) {
+    init(newDish:Binding<DishModel>, generalErrorCheck:Bool, areAllergeniOk:Binding<Bool>,viewModel:AccounterVM) {
        
         _newDish = newDish
         self.generalErrorCheck = generalErrorCheck
         _areAllergeniOk = areAllergeniOk
-    
-      /*  self.allergeniIn = AllergeniIngrediente.returnAllergeniIn(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari) */
-        self.allergeniIn = newDish.wrappedValue.calcolaAllergeniNelPiatto()
+        self.viewModel = viewModel
+   
+        self.allergeniIn = newDish.wrappedValue.calcolaAllergeniNelPiatto(viewModel: viewModel)
     }
 
     var body: some View {

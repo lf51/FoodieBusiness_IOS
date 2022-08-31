@@ -67,9 +67,9 @@ struct ContainerRowLabel_Plain:View {
                     .shadow(radius: modelListCorrente == listTitle ? 0.0 : 1.0)
                     .foregroundColor(Color.black)
                   
-                  Image(systemName: "arrow.up.forward.square")
+                Image(systemName: modelListCorrente == listTitle ? "eye" : "eye.slash")
                       .imageScale(.medium)
-                      .foregroundColor(Color.blue)
+                      .foregroundColor(modelListCorrente == listTitle ? Color.blue : Color.gray)
                 
             }
             

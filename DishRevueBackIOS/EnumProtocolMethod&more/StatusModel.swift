@@ -13,19 +13,19 @@ enum StatusTransition:Equatable {
   //  static var allCases: [StatusTransition] = [.pubblico,.inPausa,.archiviato]
  //   static var defaultValue: StatusTransition = .archiviato
     
-    case pubblico // Rimette in moto da una Pausa
+    case disponibile // Rimette in moto da una Pausa
     case inPausa // Stop temporaneo --> Solo per gli ingredienti, quando temporaneamente in pausa vorrei dare la possibilità all'utente di sostituirli.
     case archiviato  // Stop incondizionato
 
     func simpleDescription() -> String {
         
         switch self {
-        case .pubblico:
-            return "pubblico"
+        case .disponibile:
+            return "disponibile"
         case .inPausa:
             return "in Pausa"
         case .archiviato:
-            return "pubblicabile"
+            return "non disponibile"
         }
     }
     
@@ -33,7 +33,7 @@ enum StatusTransition:Equatable {
         
         switch self {
             
-        case .pubblico:
+        case .disponibile:
             return Color.green
         case .inPausa:
             return Color.yellow
@@ -45,14 +45,14 @@ enum StatusTransition:Equatable {
 
 enum StatusModel:Equatable { // vedi Nota Consegna 17.07
     
-    case vuoto
+    case nuovo
     case bozza
     case completo(StatusTransition)
     
     func imageAssociated() -> String {
         
         switch self {
-        case .vuoto:
+        case .nuovo:
             return "doc.badge.plus"
         case .bozza:
            return "doc.badge.gearshape"
@@ -64,7 +64,7 @@ enum StatusModel:Equatable { // vedi Nota Consegna 17.07
     func transitionStateColor() -> Color {
         
         switch self {
-        case .vuoto:
+        case .nuovo:
             return Color.black
         case .bozza:
             return Color.black
@@ -77,7 +77,7 @@ enum StatusModel:Equatable { // vedi Nota Consegna 17.07
     func simpleDescription() -> String {
         
         switch self {
-        case .vuoto:
+        case .nuovo:
             return "nuovo"
         case .bozza:
             return "bozza"

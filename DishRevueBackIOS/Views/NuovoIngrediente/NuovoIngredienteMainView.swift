@@ -9,7 +9,8 @@ import SwiftUI
 
 struct NuovoIngredienteMainView: View {
 
-    @EnvironmentObject var viewModel: AccounterVM
+   // @EnvironmentObject var viewModel: AccounterVM
+    @Environment(\.openURL) private var openURL
 
     @State private var nuovoIngrediente: IngredientModel
     let backgroundColorView: Color
@@ -19,12 +20,22 @@ struct NuovoIngredienteMainView: View {
     
     @State private var generalErrorCheck: Bool = false
     
-    @State private var isConservazioneOk: Bool = false
+  //  @State private var isConservazioneOk: Bool = false
     @State private var areAllergeniOk: Bool = false
     @State private var wannaAddAllergeni: Bool = false
     
+    // test
+    
+  //  @State private var idRiserva: String = "Niente"
+    //
+    
     init(nuovoIngrediente: IngredientModel,backgroundColorView: Color,destinationPath:DestinationPath) {
+      // test 18.08
         
+       // let new = IngredientModel()
+      //  _nuovoIngrediente = State(wrappedValue: new)
+        
+        // chiusa Test
         _nuovoIngrediente = State(wrappedValue: nuovoIngrediente)
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
@@ -37,7 +48,7 @@ struct NuovoIngredienteMainView: View {
         
         CSZStackVB(title:self.nuovoIngrediente.intestazione == "" ? "Nuovo Ingrediente" : self.nuovoIngrediente.intestazione, backgroundColorView: backgroundColorView) {
             
-                VStack {
+            VStack {
                     
                     CSDivider()
                     
@@ -67,39 +78,34 @@ struct NuovoIngredienteMainView: View {
                                 areAllergeniOk: $areAllergeniOk,
                                 wannaAddAllergene: $wannaAddAllergeni)
                             
-                           ConservazioneScrollView_NewIngredientSubView(
+                            ConservazioneScrollView_NewIngredientSubView(
                             nuovoIngrediente: $nuovoIngrediente,
-                            generalErrorCheck: generalErrorCheck,
-                            isConservazioneOk: $isConservazioneOk)
+                            generalErrorCheck: generalErrorCheck)
                             
-                            ProduzioneScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente)
+                            ProduzioneScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente, generalErrorCheck: generalErrorCheck)
                             
                             ProvenienzaScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente, generalErrorCheck: generalErrorCheck)
 
+                            // Sostituto
+                            
+                           /* SostituzioneIngredienteView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente) */ // Deprecato 06.08
+                            
+                            // end View Sostituto
+                            
                             BottomViewGeneric_NewModelSubView(
                                 itemModel: $nuovoIngrediente,
                                 generalErrorCheck: $generalErrorCheck,
                                 itemModelArchiviato: ingredienteArchiviato,
                                 destinationPath: destinationPath) {
-                                    infoIngrediente()
+                                    self.infoIngrediente()
+                                } resetAction: {
+                                    self.resetAction()
                                 } checkPreliminare: {
-                                    checkPreliminare()
+                                    self.checkPreliminare()
+                                } salvaECreaPostAction: {
+                                    self.salvaECreaPostAction()
                                 }
 
-                            
-                               /* BottomViewGeneric_NewModelSubView(
-                                    generalErrorCheck: $generalErrorCheck,
-                                    wannaDisableButtonBar: (nuovoIngrediente == ingredienteArchiviato)) {
-                                        infoIngrediente()
-                                    } resetAction: {
-                                        csResetModel(modelAttivo: &self.nuovoIngrediente, modelArchiviato: self.ingredienteArchiviato)
-                                    } checkPreliminare: {
-                                        checkPreliminare()
-                                    } saveButtonDialogView: {
-                                       vbScheduleANuovoIngrediente()
-                                    } */
-
-                            
                         }.padding(.horizontal)
                       
                     }
@@ -115,25 +121,53 @@ struct NuovoIngredienteMainView: View {
                             closeButton: $wannaAddAllergeni,
                             backgroundColorView: backgroundColorView,
                             actionTitle: "Normativa") {
-                                print("Inserire Link Normativa Allergeni")
+                                if let url = URL(string: "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2011:304:0018:0063:it:PDF") {
+                                                openURL(url)
+                                            }
                             }
                         
                     }
+                   
+            //   CSDivider()
                     
-                    
-               CSDivider()
-                    
-                    }
+                HStack {
+                    Spacer()
+                    Text(nuovoIngrediente.id)
+                        
+                    Image(systemName: nuovoIngrediente.id == ingredienteArchiviato.id ? "checkmark.circle" : "circle")
+                }
+                .font(.caption2)
+               // .fontWeight(.ultraLight)
+                .foregroundColor(Color.black)
+                .padding(.horizontal)
+                   
+            }
     
        }
       // .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
     }
     // Method
     
+    private func resetAction() {
+        
+        self.nuovoIngrediente = self.ingredienteArchiviato
+        self.generalErrorCheck = false
+        self.areAllergeniOk = false
+        
+    }
+    
+    private func salvaECreaPostAction() {
+        
+        self.generalErrorCheck = false
+        self.areAllergeniOk = false
+      // self.isConservazioneOk = false
+        self.nuovoIngrediente = IngredientModel()
+    }
+    
     private func infoIngrediente() -> Text {
         
         var stringaAlllergeni: String = "Presenza/assenza Allergeni non Confermata"
-        var stringaCongeSurge: String = "Metodo di Conservazione non confermato"
+        var stringaCongeSurge: String = "\nMetodo di Conservazione non indicato"
         var metodoProduzione: String = ""
         
         if areAllergeniOk {
@@ -147,17 +181,17 @@ struct NuovoIngredienteMainView: View {
             }
         }
         
-        if isConservazioneOk {
+        if self.nuovoIngrediente.conservazione != .defaultValue {
             
-             stringaCongeSurge = "Questo prodotto \( self.nuovoIngrediente.conservazione.extendedDescription() ?? "")."
+             stringaCongeSurge = "\nQuesto prodotto \( self.nuovoIngrediente.conservazione.extendedDescription())."
             
         }
         
         if self.nuovoIngrediente.produzione == .biologico {
-            metodoProduzione = "Prodotto BIO."
+            metodoProduzione = "\nProdotto BIO."
         }
         
-        return Text("\(stringaAlllergeni)\n\(stringaCongeSurge)\n\(metodoProduzione)")
+        return Text("\(stringaAlllergeni)\(stringaCongeSurge)\(metodoProduzione)")
     }
     
     private func checkPreliminare() -> Bool {
@@ -168,7 +202,10 @@ struct NuovoIngredienteMainView: View {
         
         guard self.areAllergeniOk else { return false }
         
-        guard self.isConservazioneOk else { return false }
+        guard checkConservazione() else { return false }
+       // guard self.isConservazioneOk else { return false }
+        
+        guard checkEtichettaProduzione() else { return false }
         
         guard checkLuogoProduzione() else { return false }
         
@@ -191,6 +228,16 @@ struct NuovoIngredienteMainView: View {
     
          self.nuovoIngrediente.intestazione != ""
    
+    }
+    
+    private func checkEtichettaProduzione() -> Bool {
+        
+        self.nuovoIngrediente.produzione != .defaultValue
+    }
+    
+    private func checkConservazione() -> Bool {
+        
+        self.nuovoIngrediente.conservazione != .defaultValue
     }
     
     /*
@@ -254,41 +301,27 @@ struct NuovoIngredienteMainView: View {
     
 }
 
-/*
+
 struct NuovoIngredienteView_Previews: PreviewProvider {
     static var previews: some View {
         
-        ZStack {
+        NavigationStack {
             
-            Color.cyan.ignoresSafeArea()
+          //  ZStack {
+                
+              //  Color.cyan.ignoresSafeArea()
+
+                NuovoIngredienteMainView(nuovoIngrediente: IngredientModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .ingredientList)
+                  // .cornerRadius(20.0)
+                    //.padding(.vertical)
+                    
+         //   }
             
-            VStack {
-                
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                Text("PROVA PROVA PROVA PROVA PROVA PROVA")
-                
-                
-                
-                
-            }
-            
-            
-            NuovoIngredienteMainView(backgroundColorView: Color.cyan)
-              // .cornerRadius(20.0)
-                //.padding(.vertical)
-                
         }
      
     }
 }
-*/
+
 
 
 

@@ -54,7 +54,7 @@ struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
                
                MostraESelezionaModel(listaAttiva: container) { model in
                
-                   discoverCaratteristicheModel(model: model).graficElement
+                   self.discoverCaratteristicheModel(model: model).graficElement
                    
                } action: { model in
                    
@@ -68,9 +68,19 @@ struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
 
            if let destinationKeypath = anyKeyPath as? WritableKeyPath<M1,[M2]> {
   
-              MostraEOrdinaModel(listaAttiva: $itemModel[dynamicMember: destinationKeypath])
+             /* MostraEOrdinaModelGeneric(listaAttiva: $itemModel[dynamicMember: destinationKeypath]) */
+               MostraEOrdinaModelGeneric(listaAttiva: self.$itemModel[dynamicMember: destinationKeypath])
               
-           } else {Text("Keypath errato")}
+           }
+           // add 25.08
+           else if let destinationKeyPath = anyKeyPath as? WritableKeyPath<M1,[String]> {
+               
+               MostraEOrdinaModelIDGeneric<M2>(listaId: self.$itemModel[dynamicMember:destinationKeyPath])
+             /*  MostraEOrdinaModelString(listaIdModel: $itemModel[dynamicMember: destinationKeyPath]) */
+               
+           }
+           // end 25.08
+           else {Text("Keypath errato")}
        
        }
         
@@ -78,7 +88,8 @@ struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
     
     private func discoverCaratteristicheModel(model: M2) -> (graficElement:(Color,String,Bool),temporaryData:(String,[String:Bool])) {
          
-        print("DiscoverCaratteristiche Active")
+        print("discoverCaratteristicheModel is Active")
+        
         var destinationContainer: [String: ([M2], Color)] = [:]
         var mirrorDestinationContainer: [String: Bool] = [:] // mirroring per la funzione addModelTemporary
                 
@@ -88,7 +99,26 @@ struct CurrentModelListView<M1:MyModelProtocol,M2:MyModelProtocol>: View {
             let(containerColor,grado) = containerType.returnAssociatedValue()
             let isPrincipal = grado == .principale
             
-            destinationContainer[title] = ((self.itemModel[keyPath: keypath] as? [M2]) ?? [], containerColor)
+            // modifica 26.08
+            
+            if let destinationCollection = self.itemModel[keyPath:keypath] as? [M2] {
+                
+                destinationContainer[title] = (destinationCollection,containerColor)
+            }
+            
+            else if let destinationCollection = self.itemModel[keyPath:keypath] as? [String] {
+                
+                let modelCollection = self.viewModel.modelCollectionFromCollectionID(collectionId: destinationCollection, modelPath: model.viewModelContainerInstance().pathContainer)
+                
+                destinationContainer[title] = (modelCollection,containerColor)
+              
+            }
+            
+            
+           /* destinationContainer[title] = ((self.itemModel[keyPath: keypath] as? [M2]) ?? [], containerColor) */
+            
+            // end 26.08
+            
             mirrorDestinationContainer[title] = isPrincipal
             
         }

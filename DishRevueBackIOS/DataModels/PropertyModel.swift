@@ -18,7 +18,11 @@ import SwiftUI
 */
 
 struct PropertyModel: MyModelProtocol, Hashable{
-
+    
+    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [PropertyModel]> {
+        return \.allMyProperties
+    }
+        
     func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         EmptyView()
     }
@@ -31,7 +35,7 @@ struct PropertyModel: MyModelProtocol, Hashable{
         PropertyModel_RowView(itemModel: self)
     }
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String) {
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String) {
         
         return (\.allMyProperties,"Lista Proprietà", "Proprietà")
     }

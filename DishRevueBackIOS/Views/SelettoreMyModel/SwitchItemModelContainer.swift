@@ -45,9 +45,14 @@ struct ContainerRowLabel<M1:MyModelProtocol, M2:MyModelProtocol>: View {
     @Binding var modelListCorrente: String
     
     let localListTitle:String
-    let localListKeyPath:WritableKeyPath<M1,[M2]>?
+    let listCount: Int
     let localListColor: Color
-    
+  
+    // add end remove 25.08
+    //  let localListKeyPath:WritableKeyPath<M1,[M2]>?
+   // let localListPathString: WritableKeyPath<M1,[String]>?
+    //
+
     init(itemModel:Binding<M1>,itemModelSingleList:ModelList,modelListCorrente:Binding<String>) {
         
         _itemModel = itemModel
@@ -58,7 +63,16 @@ struct ContainerRowLabel<M1:MyModelProtocol, M2:MyModelProtocol>: View {
         let containerType: ModelList.ContainerType
         (self.localListTitle, kp, containerType) = itemModelSingleList.returnAssociatedValue()
 
-        self.localListKeyPath = kp as? WritableKeyPath<M1,[M2]>
+        if let keyP = kp as? WritableKeyPath<M1,[M2]> {
+            let itemWrap = itemModel.wrappedValue
+            self.listCount = itemWrap[keyPath: keyP].count
+            
+        } else if let keyP = kp as? WritableKeyPath<M1,[String]> {
+            let itemWrap = itemModel.wrappedValue
+            self.listCount = itemWrap[keyPath: keyP].count
+        }
+        else { listCount = 0 }
+ 
         self.localListColor = containerType.returnAssociatedValue().0
         
     }
@@ -81,9 +95,9 @@ struct ContainerRowLabel<M1:MyModelProtocol, M2:MyModelProtocol>: View {
                           .foregroundColor(Color.black)
                           .lineLimit(1)
                          
-                      Image(systemName: "arrow.up.forward.square")
+                    Image(systemName: modelListCorrente == localListTitle ? "eye" : "eye.slash")
                           .imageScale(.medium)
-                          .foregroundColor(Color.blue)
+                          .foregroundColor(modelListCorrente == localListTitle ? Color.blue : Color.gray)
                     
                 }
                 
@@ -104,13 +118,29 @@ struct ContainerRowLabel<M1:MyModelProtocol, M2:MyModelProtocol>: View {
             
             Spacer()
             
-            if localListKeyPath != nil {
+            // Remove and Add 25.08
+            
+          /*  if localListKeyPath != nil {
                 
                 Text("(\(itemModel[keyPath: localListKeyPath!].count))")
                     .fontWeight(.light)
                     .padding(.horizontal)
                 
             } else {Text("Ø").bold().foregroundColor(.red).padding(.horizontal)}
+            
+            if localListPath != nil {
+                
+                Text("(\(itemModel[keyPath: localListPath!].count))")
+                    .fontWeight(.light)
+                    .padding(.horizontal)
+                
+            } else {Text("Ø").bold().foregroundColor(.red).padding(.horizontal)} */
+            
+            Text("(\(listCount))")
+                .fontWeight(.light)
+                .padding(.horizontal)
+            
+            // End 25.08
             
           /*  CSButton_image(
                 activationBool: modelListCorrente == localListTitle,

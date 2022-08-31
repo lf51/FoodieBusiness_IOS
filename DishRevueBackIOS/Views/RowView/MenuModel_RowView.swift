@@ -278,7 +278,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         menu.tipologia = .fisso(persone: .uno, costo: "12.5")
         menu.isAvaibleWhen = .intervalloAperto
         menu.giorniDelServizio = [ .lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato]
-        menu.status = .completo(.pubblico)
+        menu.status = .completo(.disponibile)
        
        return menu
        

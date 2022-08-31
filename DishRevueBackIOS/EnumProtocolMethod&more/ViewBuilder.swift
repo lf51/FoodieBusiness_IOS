@@ -314,7 +314,7 @@ struct CSZStackVB_Framed<Content:View>:View {
     
     let currentModel = myModel.wrappedValue
     
-    if currentModel.status == .completo(.pubblico) {
+    if currentModel.status == .completo(.disponibile) {
                 
         VStack {
             
@@ -347,7 +347,7 @@ struct CSZStackVB_Framed<Content:View>:View {
             VStack {
                 
                 Button {
-                    myModel.wrappedValue.status = .completo(.pubblico)
+                    myModel.wrappedValue.status = .completo(.disponibile)
                     
                 } label: {
                     HStack{
@@ -373,7 +373,7 @@ struct CSZStackVB_Framed<Content:View>:View {
             VStack {
                 
                 Button {
-                    myModel.wrappedValue.status = .completo(.pubblico)
+                    myModel.wrappedValue.status = .completo(.disponibile)
                     
                 } label: {
                     HStack{

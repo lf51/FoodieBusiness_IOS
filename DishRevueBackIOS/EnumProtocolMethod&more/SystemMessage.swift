@@ -11,6 +11,8 @@ import Foundation
 enum SystemMessage {
 
     case allergeni
+    case ingredienteSecondario
+    case sostituzioneIngrediente
     
     
     func simpleDescription() -> String {
@@ -18,6 +20,12 @@ enum SystemMessage {
         switch self {
         case .allergeni:
             return "Il Regolamento UE n.1169/2011, entrato in vigore il 13 dicembre 2014, ha introdotto l'obbligo per produttori ed esercizi commerciali di segnalare, nei cibi, la presenza di sostanze che possono provocare allergie o intolleranze.\n\nL'applicativo fornisce un elenco dei 14 allergeni obbligatori per legge, e l'utente ha l'obbligo di associare ad ogni ingrediente l'eventuale allergene contenuto.\n\nL'utente che conferma una lista allergeni incompleta se ne assume la piena responsabilità.\n\nIn nessun caso l'applicativo può essere ritenuto responsabile della mancata e/o incompleta segnalazione degli allergeni.\n\nQualora la lista allergeni dovesse risultare incompleta, l'utente è invitato a controllare la corretta indicazione degli allergeni negli ingredienti.\n\nQualora il problema persista per un errore imputabile all'applicativo, l'utente è tenuto a NON Pubblicare o a Rimuovere il piatto, ed a segnalare il disservizio all'indirizzo mail segnalaBug@foodies.com"
+            
+        case .ingredienteSecondario:
+            return "Indicare come secondario un ingrediente usato in piccole quantità nella preparazione del piatto."
+            
+        case .sostituzioneIngrediente:
+            return "Per ragioni di carenza temporanea, l'utente ha la facoltà qui di sostituire temporaneamente, ma senza limiti di tempo, un ingrediente con un altro.\n\nNella lista ingredienti di ciascun piatto saranno così visualizzati entrambi gli elementi, l'ingrediente sostituito e il sostituto, fino a quando l'utente, tornato nuovamente disponibile l'ingrediente carente, non provvederà manualmente ad annullare la sostituzione.\n\nIl cambio può essere unico, ossia un solo sostituto per tutti i piatti, oppure può essere scelto un sostituto differente per ogni piatto."
         }
         
     }

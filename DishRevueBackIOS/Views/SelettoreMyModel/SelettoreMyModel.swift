@@ -140,14 +140,47 @@ struct SelettoreMyModel<M1:MyModelProtocol,M2:MyModelProtocol>: View {
         for list in self.itemModelList {
             
             let (title,keyPath,_) = list.returnAssociatedValue()
-            let currentKeyPath = keyPath as? WritableKeyPath<M1,[M2]>
+            
+         /*
+          // Remove 25.08
+          let currentKeyPath = keyPath as? WritableKeyPath<M1,[M2]>
             
             if currentKeyPath != nil {
                 self.itemModel[keyPath: currentKeyPath!].append(contentsOf: self.temporaryDestinationModelContainer[title] ?? [])
                 /*qualora la chiave nel temporaryDestination non esiste passa un array vuoto */
                 print("AddModelToItemContainer() -> currentKeyPath is not Nil")
             }
-          /*  print("TemporaryContainer[\(title)] is empty: \(self.temporaryDestinationModelContainer[title]?.isEmpty.description)")*/
+        // End remove 25.08
+          */
+         
+            // Add 25.08
+            
+            if let currentKeyPath = keyPath as? WritableKeyPath<M1,[M2]> {
+                
+                self.itemModel[keyPath: currentKeyPath].append(contentsOf: self.temporaryDestinationModelContainer[title] ?? [])
+                /*qualora la chiave nel temporaryDestination non esiste passa un array vuoto */
+                print("addModelToItemContainer: currentKeyPath as <M1:[M2]> - count in the itemModel:\(self.itemModel[keyPath: currentKeyPath].count)")
+            }
+            
+            else if let currentKeyPath = keyPath as? WritableKeyPath<M1,[String]> {
+              
+             //   var idCollection: [String] = []
+                
+                for element in self.temporaryDestinationModelContainer[title] ?? [] {
+                    
+                    let idElement = element.id
+                   // idCollection.append(idElement)
+                    self.itemModel[keyPath: currentKeyPath].append(idElement)
+                }
+              
+            //    self.itemModel[keyPath: currentKeyPath].append(contentsOf: idCollection)
+                print("addModelToItemContainer: currentKeyPath as <M1:[String]> - count in the itemModel:\(self.itemModel[keyPath: currentKeyPath].count)")
+                
+            }
+
+            // end 25.08
+            
+            
             self.temporaryDestinationModelContainer[title] = []
             print("Dentro AggiungiAction - keycount: \(temporaryDestinationModelContainer.keys.count) - \(temporaryDestinationModelContainer.keys.description)")
         }

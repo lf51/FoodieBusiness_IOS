@@ -217,7 +217,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         provenienza: .restoDelMondo,
         allergeni: [],
         origine: .vegetale,
-        status: .completo(.pubblico))
+        status: .completo(.disponibile))
     
     @State static var ingredientSample4 =  IngredientModel(
         intestazione: "Mozzarella di Bufala",
@@ -227,7 +227,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         provenienza: .europa,
         allergeni: [.latte_e_derivati,.anidride_solforosa_e_solfiti,.arachidi_e_derivati,.crostacei],
         origine: .animale,
-        status: .vuoto,
+        status: .nuovo,
         idIngredienteDiRiserva: "basilico")
     
     static var dishItem3: DishModel = {
@@ -235,8 +235,8 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         var newDish = DishModel()
         newDish.intestazione = "Bucatini alla Matriciana"
         newDish.status = .completo(.inPausa)
-        newDish.ingredientiPrincipali = [ingredientSample4,ingredientSample]
-        newDish.ingredientiSecondari = [ingredientSample2]
+        newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample.id]
+        newDish.ingredientiSecondari = [ingredientSample2.id]
         let price:DishFormat = {
             var pr = DishFormat(type: .mandatory)
             pr.price = "22.5"
@@ -334,7 +334,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
             
             
             
-        }
+        }.environmentObject(AccounterVM())
     }
 }
 

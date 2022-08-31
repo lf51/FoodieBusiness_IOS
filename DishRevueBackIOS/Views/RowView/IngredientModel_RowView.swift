@@ -36,7 +36,7 @@ struct IngredientModel_RowView: View {
                     
                     CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_4"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_1")) {
                         HStack {
-                            csVbSwitchImageText(string: self.item.origine.imageAssociated())
+                            csVbSwitchImageText(string: self.item.associaImmagine())
                             Text(self.item.origine.simpleDescription())
                         }
                     }
@@ -68,6 +68,7 @@ struct IngredientModel_RowView: View {
     }
     
     // Method
+    
     
     /* private func vbSubIntestazioneIngrediente() -> some View {
         
@@ -198,7 +199,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .restoDelMondo,
         allergeni: [],
         origine: .vegetale,
-        status: .completo(.pubblico))
+        status: .completo(.disponibile))
     
     @State static var ingredientSample4 =  IngredientModel(
         intestazione: "Mozzarella di Bufala",
@@ -208,7 +209,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .europa,
         allergeni: [.latte_e_derivati],
         origine: .animale,
-        status: .vuoto,
+        status: .nuovo,
         idIngredienteDiRiserva: "basilico")
     
     static var previews: some View {

@@ -10,6 +10,10 @@ import SwiftUI
 
 struct PannelloIngredienti_NewDishSubView: View {
     
+    // Add 25.08
+    @EnvironmentObject var viewModel: AccounterVM
+    //
+    
     let newDish: DishModel
     let generalErrorCheck: Bool
     @Binding var wannaAddIngredient: Bool
@@ -72,9 +76,12 @@ struct PannelloIngredienti_NewDishSubView: View {
                     
                     HStack {
                         
-                        ForEach(self.newDish.ingredientiPrincipali) { ingredient in
+                        ForEach(self.newDish.ingredientiPrincipali, id:\.self) { idIngredient in
                             
-                            IngredientModel_RowView(item: ingredient)
+                            if let ingredient = viewModel.ingredientFromId(id: idIngredient) {
+                                IngredientModel_RowView(item: ingredient)
+                            }
+                        
                         }
                         
                     }
@@ -84,17 +91,22 @@ struct PannelloIngredienti_NewDishSubView: View {
             
             VStack(alignment:.leading) {
                 
-                CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black)
+                CSLabel_conVB(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) { CSInfoAlertView(
+                    imageScale: .large,
+                    title: "Info",
+                    message: .ingredienteSecondario) }
                 
-                if self.newDish.ingredientiSecondari.isEmpty {
+               /* CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) */
+                
+            //    if self.newDish.ingredientiSecondari.isEmpty {
                     
-                    Text("I secondari sono ingredienti usati anche in piccole quantità nella preparazione del piatto.")
+                /*    Text("I secondari sono ingredienti usati anche in piccole quantità nella preparazione del piatto.")
                         .italic()
                         .fontWeight(.light)
                         .font(.caption)
-                        .foregroundColor(Color.black)
+                        .foregroundColor(Color.black) */
 
-                } else {
+             //   } else {
                     
                   /*  SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiSecondari, fillColor: Color.yellow) */
                     // deprecata 17.08
@@ -103,14 +115,18 @@ struct PannelloIngredienti_NewDishSubView: View {
                         
                         HStack {
                             
-                            ForEach(self.newDish.ingredientiSecondari) { ingredient in
+                            ForEach(self.newDish.ingredientiSecondari, id:\.self) { idIngredient in
                                 
-                                IngredientModel_RowView(item: ingredient)
+                                if let ingredient = self.viewModel.ingredientFromId(id: idIngredient) {
+                                    IngredientModel_RowView(item: ingredient)
+                                }
+                                
+                                
                             }
                             
                         }
                     }
-                }
+               // }
       
             }
         }

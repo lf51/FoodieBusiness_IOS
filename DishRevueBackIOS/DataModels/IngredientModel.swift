@@ -12,6 +12,10 @@ import SwiftUI
 
 struct IngredientModel:MyModelStatusConformity {
     
+    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
+        return \.allMyIngredients
+    }
+    
   static func == (lhs: IngredientModel, rhs: IngredientModel) -> Bool {
        return
       lhs.id == rhs.id &&
@@ -39,7 +43,7 @@ struct IngredientModel:MyModelStatusConformity {
     var allergeni: [AllergeniIngrediente] = []
     var origine: OrigineIngrediente = .defaultValue
     
-    var status: StatusModel = .vuoto
+    var status: StatusModel = .nuovo
     
     var idIngredienteDiRiserva:String = "" // questo è il riferimento all'ingrediente con cui va sostituito nel caso venga messo in pausa // deprecata in futuro
     
@@ -63,7 +67,7 @@ struct IngredientModel:MyModelStatusConformity {
         "Ingrediente (\(self.status.simpleDescription().capitalized))"
     }
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String) {
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String) {
         
         return (\.allMyIngredients, "Lista Ingredienti", "Ingrediente")
     }
@@ -81,7 +85,7 @@ struct IngredientModel:MyModelStatusConformity {
         VStack {
             
             Button {
-               
+                
                 viewModel[keyPath: navigationPath].append(DestinationPathView.dishListByIngredient(self))
                 
             } label: {
@@ -93,6 +97,54 @@ struct IngredientModel:MyModelStatusConformity {
             }
             
         }
+    }
+    
+    /// Permette di sovrascrivere l'immagine associata all'origine con una immagine riferita agli allergeni che rispecchia meglio il prodotto - pensata e costruita per l'ingredientRow
+    func associaImmagine() -> String {
+        
+        var allergeneDiServizio:AllergeniIngrediente = .defaultValue
+        
+        if self.origine == .animale {
+            
+            if self.allergeni.contains(where: {
+                
+                $0 == .pesce || $0 == .crostacei || $0 == .molluschi
+                
+            }) { allergeneDiServizio = .pesce }
+            
+            else if self.allergeni.contains(where: {
+                
+                $0 == .latte_e_derivati
+                
+            }) { allergeneDiServizio = .latte_e_derivati }
+            
+            else if self.allergeni.contains(where: {
+                
+                $0 == .uova_e_derivati
+                
+            }) { allergeneDiServizio = .uova_e_derivati }
+            
+            else { return self.origine.imageAssociated() }
+            
+        } else {
+            
+            if self.allergeni.contains(where: {
+                
+                $0 == .glutine
+                
+            }) { allergeneDiServizio = .glutine }
+            
+            else if self.allergeni.contains(where: {
+                
+                $0 == .arachidi_e_derivati || $0 == .fruttaAguscio
+                
+            }) { allergeneDiServizio = .arachidi_e_derivati }
+            
+            else { return self.origine.imageAssociated()}
+    
+        }
+ 
+            return allergeneDiServizio.imageAssociated()
     }
     
 }

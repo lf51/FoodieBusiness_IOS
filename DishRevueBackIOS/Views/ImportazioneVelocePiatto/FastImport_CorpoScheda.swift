@@ -10,8 +10,14 @@ import SwiftUI
 struct FastImport_CorpoScheda:View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    @Binding var fastDish: DishModel
-    let saveAction: (_ :DishModel) -> Void
+    
+    // Modifiche 28.08
+  //  @Binding var fastDish: DishModel
+   // let saveAction: (_ :DishModel) -> Void
+    @Binding var temporaryModel: TemporaryModel
+    let saveAction: (_ :TemporaryModel) -> Void
+    // End 28.08
+    
 
     @State private var areAllergeniOk: Bool = false
     @State private var dishPrice: String = ""
@@ -41,23 +47,23 @@ struct FastImport_CorpoScheda:View {
   
                 VStack(alignment:.leading) {
                     
-                        Text(fastDish.intestazione)
+                    Text(temporaryModel.dish.intestazione)
                             .font(.title)
                             .foregroundColor(Color.white)
 
                     HStack {
 
                         CS_Picker(
-                            selection: $fastDish.categoriaMenu,
+                            selection: $temporaryModel.dish.categoriaMenu,
                             customLabel: "Categoria",
                             dataContainer: viewModel.categoriaMenuAllCases,//CategoriaMenu.allCases,
                             backgroundColor: Color.white.opacity(0.5))
                             .csWarningModifier(
                                 isPresented: checkError) {
-                                        self.fastDish.categoriaMenu == .defaultValue
+                                    self.temporaryModel.dish.categoriaMenu == .defaultValue
                                     }
 
-                        csVbSwitchImageText(string: fastDish.categoriaMenu.imageAssociated())
+                        csVbSwitchImageText(string: temporaryModel.dish.categoriaMenu.imageAssociated())
                         
                         Spacer()
   
@@ -74,7 +80,7 @@ struct FastImport_CorpoScheda:View {
                             .csWarningModifier(
                                 isPresented: checkError) {
                                   //  self.fastDish.formatiDelPiatto.isEmpty
-                                    self.fastDish.pricingPiatto.isEmpty
+                                    self.temporaryModel.dish.pricingPiatto.isEmpty
                                 }
 
              
@@ -106,12 +112,13 @@ struct FastImport_CorpoScheda:View {
             
             ScrollView(showsIndicators: false) {
                 
-                ForEach($fastDish.ingredientiPrincipali) { $ingredient in
+                ForEach($temporaryModel.ingredients) { $ingredient in
                     
-                    let isIngredientOld = viewModel.checkExistingModel(model: ingredient).0
+                    let isIngredientOld = viewModel.checkExistingUniqueModelID(model: ingredient).0
                     
-                    FastImport_IngredientRow(ingredient: $ingredient,areAllergeniOk: $areAllergeniOk, checkError: checkError, isIngredientOld: isIngredientOld){ value in
-                        // smistiamo l'ingrediente fra principale e secondario
+                    FastImport_IngredientRow(ingredient: $ingredient,areAllergeniOk: $areAllergeniOk, checkError: checkError, isIngredientOld: isIngredientOld){ idIngredient in
+                        self.addSecondary(id: idIngredient)
+                      
                     }
                     .disabled(isIngredientOld)
                     .blur(radius: isIngredientOld ? 0.8 : 0.0)
@@ -138,6 +145,21 @@ struct FastImport_CorpoScheda:View {
     
     // Method
 
+    private func addSecondary(id:String) -> Bool {
+        
+        if let index = self.temporaryModel.rifIngredientiSecondari.firstIndex(of: id) {
+            
+           self.temporaryModel.rifIngredientiSecondari.remove(at: index)
+           return false
+           
+        } else {
+            
+            self.temporaryModel.rifIngredientiSecondari.append(id)
+            return true 
+        }
+                
+    }
+    
     private func checkBeforeSave() {
         
         guard checkAreDishPropertyOk() else {
@@ -155,19 +177,21 @@ struct FastImport_CorpoScheda:View {
             self.checkError = true
             return }
                 
-        self.saveAction(fastDish)
+        temporaryModel.dish.status = .completo(.archiviato)
+        
+        self.saveAction(temporaryModel)
         
     }
     
     private func checkAreDishPropertyOk() -> Bool {
 
-        self.fastDish.categoriaMenu != .defaultValue && !self.fastDish.pricingPiatto.isEmpty
+        self.temporaryModel.dish.categoriaMenu != .defaultValue && !self.temporaryModel.dish.pricingPiatto.isEmpty
         
     }
     
     private func checkAreIngredientsOk() -> Bool {
         
-        for ingredient in fastDish.ingredientiPrincipali {
+        for ingredient in temporaryModel.ingredients {
             
             let origineOk = ingredient.origine != .defaultValue
             let conservazioneOk = ingredient.conservazione != .defaultValue
@@ -196,7 +220,7 @@ struct FastImport_CorpoScheda:View {
             
         }()
         
-        self.fastDish.pricingPiatto.append(formatoDish)
+        self.temporaryModel.dish.pricingPiatto.append(formatoDish)
         print("Update DishPrice")
         
     }

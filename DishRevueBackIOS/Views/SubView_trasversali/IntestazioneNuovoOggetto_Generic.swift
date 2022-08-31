@@ -106,7 +106,7 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
         // 2° Check Unicità del nome
         
         let temporaryID = self.itemModel.creaID(fromValue: newText)
-        let (containerPath, _, nomeOggetto) = self.itemModel.viewModelContainer()
+        let (containerPath, _, nomeOggetto) = self.itemModel.viewModelContainerInstance()
         let isAlreadyIN = viewModel[keyPath: containerPath].contains(where:{ $0.id == temporaryID })
         
         guard !isAlreadyIN else {

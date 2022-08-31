@@ -9,7 +9,11 @@ import SwiftUI
 
 struct DietScrollView_NewDishSub: View {
     
-    @EnvironmentObject var viewModel:AccounterVM
+    // Modifica 26.08
+   // @EnvironmentObject var viewModel:AccounterVM
+    @ObservedObject var viewModel:AccounterVM
+    // usiamo anche qui observedObject per utilizzarlo nell'init
+    // End 26.08
     
     @Binding var newDish: DishModel
     @Binding var confermaDiete: Bool
@@ -17,12 +21,15 @@ struct DietScrollView_NewDishSub: View {
     let dietAvaible:[TipoDieta]
     let dietAvaibleString:[String]
     
-    init(newDish:Binding<DishModel>,confermaDiete:Binding<Bool>) {
+    init(newDish:Binding<DishModel>,confermaDiete:Binding<Bool>,viewModel:AccounterVM) {
        
         _newDish = newDish
         _confermaDiete = confermaDiete
+        self.viewModel = viewModel
      
-        (self.dietAvaible,self.dietAvaibleString) = TipoDieta.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipali,newDish.wrappedValue.ingredientiSecondari)
+        (self.dietAvaible,self.dietAvaibleString) = newDish.wrappedValue.returnDietAvaible(viewModel: viewModel)
+        
+       /* (self.dietAvaible,self.dietAvaibleString) = TipoDieta.returnDietAvaible(ingredients: newDish.wrappedValue.ingredientiPrincipaliDEPRECATO,newDish.wrappedValue.ingredientiSecondariDEPRECATO) */
  
     }
     

@@ -11,6 +11,7 @@ struct PickerSostituzioneIngrediente_SubView: View {
     
     let mapArray:[IngredientModel]
     @Binding var modelSostitutoGlobale: IngredientModel?
+  //  @Binding var idSostitutoGlobale: String?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -29,7 +30,7 @@ struct PickerSostituzioneIngrediente_SubView: View {
                      //   }
                         
                         ForEach(mapArray,id:\.self) { ingredient in
-                                
+                            
                             Text(ingredient.intestazione)
                                 .tag(ingredient as IngredientModel?)
 

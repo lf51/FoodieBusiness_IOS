@@ -9,6 +9,11 @@ import Foundation
 import SwiftUI
 
 enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol{
+    
+    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]> {
+        \.allergeni
+    }
+    
 
     func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         EmptyView()
@@ -22,7 +27,7 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol{
         EmptyView()
     }
     
-    func viewModelContainer() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String, nomeOggetto:String) {
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String, nomeOggetto:String) {
         
         return (\.allergeni, "Elenco Allergeni", "Allergene")
     }
@@ -88,7 +93,21 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol{
     }
     
     func imageAssociated() -> String {
-        "square.and.arrow.up.trianglebadge.exclamationmark"
+        
+        switch self {
+        case .arachidi_e_derivati:
+            return "🥜"
+        case .latte_e_derivati:
+            return "🥛"
+        case .pesce:
+            return "🐟"
+        case .uova_e_derivati:
+            return "🐔"
+        case .glutine:
+            return "laurel.leading"
+        default:
+            return ""
+        }
     }
     
    static func returnAllergeniIn(ingredients: [IngredientModel]...) -> [AllergeniIngrediente] {
