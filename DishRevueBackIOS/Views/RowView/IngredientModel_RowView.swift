@@ -117,6 +117,7 @@ struct IngredientModel_RowView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
                 .lineLimit(1)
+                .allowsTightening(true)
                 .foregroundColor(Color.white)
                 .overlay(alignment:.topTrailing) {
                     

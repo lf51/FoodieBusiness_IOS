@@ -212,6 +212,7 @@ struct FastImport_MainView: View {
                 let ingredient = {
                    var newIngredient = IngredientModel()
                     newIngredient.intestazione = newSub.capitalized
+                    newIngredient.status = .completo(.disponibile)
                     return newIngredient
                 }()
                 

@@ -12,7 +12,7 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
     
     @EnvironmentObject var viewModel: AccounterVM
     let model: M
-    var pushImage: String = "square.and.pencil"
+    var pushImage: String = "gearshape"
     var navigationPath: ReferenceWritableKeyPath<AccounterVM,NavigationPath>? = nil
     @ViewBuilder var interactiveMenuContent: Content
    

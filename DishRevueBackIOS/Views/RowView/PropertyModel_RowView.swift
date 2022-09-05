@@ -26,6 +26,7 @@ struct PropertyModel_RowView: View {
                                     .font(.system(.title2,design:.rounded))
                                     .fontWeight(.heavy)
                                     .lineLimit(1)
+                                    .allowsTightening(true)
                                     .foregroundColor(Color.white)
                      
                             Spacer()

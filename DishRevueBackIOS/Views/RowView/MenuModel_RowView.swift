@@ -189,6 +189,7 @@ struct MenuModel_RowView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
                 .lineLimit(1)
+                .allowsTightening(true)
               //  .scaledToFit()
               //  .minimumScaleFactor(0.5)
                 .foregroundColor(Color.white)

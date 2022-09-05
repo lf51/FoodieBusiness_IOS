@@ -29,30 +29,35 @@ struct DishListByIngredientView: View {
         self.backgroundColorView = backgroundColorView
      
     }
-    
+ 
     var body: some View {
         
         CSZStackVB(title: "Cambio Temporaneo", backgroundColorView: backgroundColorView) {
-            
-            VStack(alignment:.leading) {
+ 
+                VStack(alignment:.leading) {
+
                 let mapArray = self.viewModel.ingredientsFilteredByIngredientAndStatus(idIngredient: idIngredienteCorrente)
                 
                 PickerSostituzioneIngrediente_SubView(mapArray: mapArray, modelSostitutoGlobale: $modelSostitutoGlobale)
-
+                   // .background(Color.red)
+                    .clipped() // altrimenti ha un background fino al notch
+        
                 ScrollView(showsIndicators: false) {
                     
                     ForEach($dishWithIngredient) { $dish in
-
+                        
                         let (idSostitutoGlobaleChecked,nomeSostitutoGlobale) = self.checkSostitutoGlobale(currentDish: dish)
                         
-                        DishChangingIngredient_RowSubView(
+                    DishChangingIngredient_RowSubView(
                             dish:$dish,
                             isDeactive: $isDeactive,
                             nomeIngredienteCorrente: self.nomeIngredienteCorrente,
                             idSostitutoGlobale: idSostitutoGlobaleChecked,
                             nomeSostitutoGlobale: nomeSostitutoGlobale,
                             idIngredienteCorrente: self.idIngredienteCorrente,
-                            mapArray: mapArray).id(self.modelSostitutoGlobale)
+                            mapArray: mapArray)
+                                .id(modelSostitutoGlobale)
+                    
                         // l'uso dell'id è una soluzione trovata grazie all'overradeStateTEST per permettere l'aggiornamento della view sottostante
                     }
                 }
@@ -68,9 +73,16 @@ struct DishListByIngredientView: View {
                 } saveAction: {
                     self.saveAction()
                 }
-                
+              //  .background(Color.red)
+                .clipped() // altrimenti ha un background fino alla base
             }
+           
             .padding(.horizontal)
+            
+            
+            
+              
+            
   
         }
         .onChange(of: self.dishWithIngredient, perform: { newArray in
@@ -88,6 +100,7 @@ struct DishListByIngredientView: View {
         })
         .onAppear {
             self.dishWithIngredient = self.viewModel.dishFilteredByIngrediet(idIngredient: idIngredienteCorrente)
+          //  self.count = CountView()
           
         }
         .toolbar {
@@ -166,8 +179,13 @@ struct DishListByIngredientView: View {
         
         guard self.modelSostitutoGlobale != nil else { return (nil,nil) }
         
+        // 01.09
         let idSostitutoGlobale = self.modelSostitutoGlobale!.id
         let nameSostitutoGlobale = self.modelSostitutoGlobale!.intestazione
+        
+       guard currentDish.elencoIngredientiOff[self.idIngredienteCorrente] != idSostitutoGlobale else {return (idSostitutoGlobale,nameSostitutoGlobale) }
+        // Vedi Nota 01.09
+        // end 01.09
         
         let checkIn = currentDish.checkIngredientsIn(idIngrediente: idSostitutoGlobale)
         
@@ -252,7 +270,7 @@ struct DishListByIngredientView_Previews: PreviewProvider {
         
         var newDish = DishModel()
         newDish.intestazione = "Trofie al Pesto"
-        newDish.status = .completo(.disponibile)
+        newDish.status = .bozza
         newDish.ingredientiPrincipali = [ingredientSample3.id]
         newDish.ingredientiSecondari = [ingredientSample.id,ingredientSample4.id]
         newDish.elencoIngredientiOff = [ingredientSample4.id:ingredientSample5.id]
@@ -267,7 +285,7 @@ struct DishListByIngredientView_Previews: PreviewProvider {
         newDish.intestazione = "Bucatini alla Matriciana"
         newDish.status = .completo(.inPausa)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample.id]
-        newDish.ingredientiSecondari = [ingredientSample2.id]
+        newDish.ingredientiSecondari = [ingredientSample2.id,ingredientSample3.id]
         
         return newDish
     }()
@@ -290,177 +308,3 @@ struct DishListByIngredientView_Previews: PreviewProvider {
     }
 }
 
-struct DishChangingIngredient_RowSubView: View {
-    
-    @EnvironmentObject var viewModel: AccounterVM
-    
-    @Binding var dish: DishModel
-    @Binding var isDeactive: Bool
-    
-    let nomeIngredienteCorrente: String
-    let idIngredienteCorrente: String
-    
-    let idSostitutoGlobale: String?
-    let nomeSostitutoGlobale: String?
-   
-    let mapArray: [IngredientModel]
-    @State private var nomeSostitutoLocale: String?
-    
-    init(dish: Binding<DishModel>,isDeactive:Binding<Bool>, nomeIngredienteCorrente: String, idSostitutoGlobale: String?,nomeSostitutoGlobale:String?, idIngredienteCorrente: String, mapArray:[IngredientModel]) {
-
-        _dish = dish
-        _isDeactive = isDeactive
-        self.nomeIngredienteCorrente = nomeIngredienteCorrente
-        self.idSostitutoGlobale = idSostitutoGlobale
-        self.nomeSostitutoGlobale = nomeSostitutoGlobale
-        self.idIngredienteCorrente = idIngredienteCorrente
-        self.mapArray = mapArray
-        
-    }
-    
-    var body: some View {
-        
-        VStack(alignment:.leading) {
-
-            HStack {
-                
-                GenericItemModel_RowViewMask(model: self.dish,pushImage: "arrow.left.arrow.right.circle") {
-                    ForEach(mapArray,id:\.self) { ingredient in
-
-                        let (isIngredientIn,isIngredientSelected) = isInAndSelected(idIngredient: ingredient.id)
-                        
-                        Button {
-                            self.action(isIngredientSelected: isIngredientSelected, idIngredient: ingredient.id, nomeIngrediente: ingredient.intestazione)
-                        } label: {
-                            HStack {
-                                Text(ingredient.intestazione)
-                                    .foregroundColor(Color.black)
-                                
-                                Image(systemName: isIngredientSelected ? "checkmark.circle" : "circle")
-                                
-                            }
-                        }.disabled(isIngredientIn && !isIngredientSelected)
-                    }
-                }
-
-       
-                Spacer()
-                
-                // spazio disponibile in orizzontale || lasciato per motivi di allineamento che saltava, può eventuale tornare utile per inserirci qualcosa che al momento non so.
-                
-            }.padding(.vertical,5)
-            
-            descriptionSostituzioneIngrediente()
-                .font(.caption)
-                .fontWeight(.light)
-                .foregroundColor(Color.black)
-                .multilineTextAlignment(.leading)
-
-        }
-        .onAppear {
-
-            self.dish.idIngredienteDaSostituire = self.idIngredienteCorrente
-            self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = self.idSostitutoGlobale
-// BUG 31.08 da risolvere. Vedi Nota Vocale 31.08
-        }
-        
-    }
-    
-    // Method
-    
-    private func action(isIngredientSelected:Bool,idIngredient:String,nomeIngrediente:String) {
-        
-        self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = isIngredientSelected ? nil : idIngredient
-        self.nomeSostitutoLocale = isIngredientSelected ? nil : nomeIngrediente
-
-    }
-    
-    private func isInAndSelected(idIngredient:String) -> (isIn:Bool,isSelect:Bool) {
-        
-        let isIngredientIn = self.dish.checkIngredientsIn(idIngrediente: idIngredient)
-        let isIngredientSelected = self.dish.elencoIngredientiOff[self.idIngredienteCorrente] == idIngredient
- 
-        return (isIngredientIn,isIngredientSelected)
-    }
-    
-    private func descriptionSostituzioneIngrediente() -> Text {
-        
-        if self.dish.elencoIngredientiOff[self.idIngredienteCorrente] == nil {
-            
-            if idSostitutoGlobale != nil {
-                
-                return Text("L'ingrediente \(nomeIngredienteCorrente) sarà mostrato in pausa senza un sostituto.")
-            }
-            
-           else if nomeSostitutoGlobale != nil {
-                
-                return Text("L'ingrediente \(nomeSostitutoGlobale!) è già presente nel piatto. Selezionare un altro elemento altrimenti l'ingrediente \(nomeIngredienteCorrente) sarà mostrato in pausa senza un sostituto.")
-                
-            } else {
-                
-                return Text("In sostituzione del \(nomeIngredienteCorrente) selezionare un ingrediente non già presente nel piatto.")
-            }
-  
-        } else {
-            
-            let nomeSostituto = nomeSostitutoLocale == nil ? nomeSostitutoGlobale : nomeSostitutoLocale
-            
-            return Text("L'ingrediente \(nomeIngredienteCorrente) sarà sostituito dall'ingrediente \(nomeSostituto ?? "ErroreNomeSostituto").")
-        }
-    }
-    
-}
-
-/// DLBIV == DishListByIngredientView
-struct BottomView_DLBIVSubView: View {
-    
-    @EnvironmentObject var viewModel: AccounterVM
-    
-    let destinationPath: DestinationPath
-    let isDeActive: Bool
-    let description: () -> Text
-    let resetAction: () -> Void
-    let saveAction: () -> Void
-
-    @State private var showDialog: Bool = false
-    
-    var body: some View {
-       
-        HStack {
-                
-            description()
-                .italic()
-                .fontWeight(.light)
-                .font(.caption)
-                .multilineTextAlignment(.leading)
-
-            Spacer()
-            
-            CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) { self.resetAction() }
-
-            CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
-                self.showDialog = true
-             
-            }
-        }
-        .opacity(isDeActive ? 0.6 : 1.0)
-        .disabled(isDeActive)
-        .padding(.vertical)
-        .confirmationDialog(
-            description(),
-                isPresented: $showDialog,
-                titleVisibility: .visible) { saveButtonDialogView() }
-        
-    }
-    
-    // Method
-    @ViewBuilder private func saveButtonDialogView() -> some View {
- 
-                Button("Salva ed Esci", role: .none) {
-                    
-                    self.saveAction()
-                }
-
-    }
-   
-}

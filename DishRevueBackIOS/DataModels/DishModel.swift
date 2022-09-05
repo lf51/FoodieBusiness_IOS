@@ -54,7 +54,6 @@ struct DishModel:MyModelStatusConformity {
     var ingredientiSecondari: [String] = [] // id IngredientModel
     var elencoIngredientiOff: [String:String] = [:] // id Sostituito: idSOSTITUTO
     var idIngredienteDaSostituire: String? // è una proprietà di servizio che ci serve a bypassare lo status di inPausa per tranciare un ingrediente che probabilmente andrà sostituito. Necessario perchè col cambio da Model a riferimento nella View delle sostituzioni la visualizzazione dell'ingrediente da sostituire richiederebbe il cambio di status e dunque un pò di macello. Vedi Nota Vocale 30.08
-    
     var categoriaMenu: CategoriaMenu = .defaultValue
     var pricingPiatto:[DishFormat] = []//[DishFormat(type: .mandatory)]
 
@@ -132,6 +131,13 @@ struct DishModel:MyModelStatusConformity {
             
         }
 
+    }
+    /// controlla la presenza di un ingrediente soltanto fra i principali e i secondari
+    func checkIngredientsInPlain(idIngrediente:String) -> Bool {
+        
+        let all = self.ingredientiPrincipali + self.ingredientiSecondari
+        let condition = all.contains(where: {$0 == idIngrediente})
+        return condition
     }
     
     /// Controlla la presenza dell'idIngrediente sia fra gl iingredienti Principali e Secondari, sia fra i sostituti

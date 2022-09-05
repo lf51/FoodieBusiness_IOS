@@ -69,6 +69,7 @@ struct DishModel_RowView: View {
                 .font(.title2)
                 .fontWeight(.semibold)
                 .lineLimit(1)
+                .allowsTightening(true)
                 .foregroundColor(Color.white)
             
             Spacer()
@@ -321,7 +322,10 @@ struct DishModel_RowView: View {
             for (key,value) in allTemporaryOff {
                 
                 if ingredient.id == key {
-                    idSostituto = value
+                    // Modifica 02.09
+                    let isAlreadyIn = self.item.checkIngredientsInPlain(idIngrediente: value)
+                    idSostituto = isAlreadyIn ? nil : value
+                    // end - Vedi Nota Vocale 02.09 - bug "Menta(Mango)" 
                     break
                 }
                 

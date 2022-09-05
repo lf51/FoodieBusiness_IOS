@@ -278,15 +278,20 @@ struct CSZStackVB_Framed<Content:View>:View {
 ///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 400/200).MaxWidth: larghezza Schermo - 20 punti
 struct CSZStackVB_Framed<Content:View>:View {
         
-        var frameWidth: CGFloat = 400//300
-       // var rateWH: CGFloat = 0.5
-        var backgroundOpacity: Double = 0.3
-       // var frameHeight: CGFloat { frameWidth * rateWH }
-      
-        @ViewBuilder var content: Content
-        
-        let screenWidth:CGFloat = UIScreen.main.bounds.width
+        var frameWidth: CGFloat
+        var backgroundOpacity: Double
     
+        @ViewBuilder var content: Content
+
+    // Modificato 01.09
+    init(frameWidth: CGFloat = 650, backgroundOpacity: Double = 0.3, content: () -> Content) {
+        let screenWidth: CGFloat = UIScreen.main.bounds.width - 20
+       // self.frameWidth = frameWidth > screenWidth ? screenWidth : frameWidth
+        self.frameWidth = .minimum(frameWidth, screenWidth)
+        self.backgroundOpacity = backgroundOpacity
+        self.content = content()
+    }
+    // Vedi Nota Vocale 01.09
         var body: some View {
             
             ZStack(alignment:.leading) {
@@ -302,7 +307,7 @@ struct CSZStackVB_Framed<Content:View>:View {
             }
            // .background(Color.red.opacity(0.4))
           //  .frame(maxHeight: (screenWidth - 20) * rateWH )
-            .frame(maxWidth: screenWidth - 30) // fisso un limite max che permetterà di scalare sugli schermi più stretti
+           // .frame(maxWidth: screenWidth - 20) // fisso un limite max che permetterà di scalare sugli schermi più stretti
             .frame(width:frameWidth)
           //  .frame(width: frameWidth, height: frameHeight)
           

@@ -55,7 +55,7 @@ enum StatusModel:Equatable { // vedi Nota Consegna 17.07
         case .nuovo:
             return "doc.badge.plus"
         case .bozza:
-           return "doc.badge.gearshape"
+           return "hammer.circle.fill"//"doc.badge.gearshape" //  // moon.fill
         case .completo:
             return "circle.fill"
         }
@@ -67,7 +67,7 @@ enum StatusModel:Equatable { // vedi Nota Consegna 17.07
         case .nuovo:
             return Color.black
         case .bozza:
-            return Color.black
+            return Color.red
         case .completo(let statusTransition):
             return statusTransition.colorAssociated()
         }
