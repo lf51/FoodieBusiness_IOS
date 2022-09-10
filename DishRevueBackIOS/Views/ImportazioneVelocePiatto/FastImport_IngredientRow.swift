@@ -18,8 +18,6 @@ struct FastImport_IngredientRow: View {
     
     let isSecondary:(_:String) -> Bool
     @State private var isSecondario: Bool = false
-  //  private var isOrgineDefault: Bool = false
-  //  private var isConservazioneDefault: Bool = false
 
     init(ingredient:Binding<IngredientModel>,areAllergeniOk:Binding<Bool>,checkError:Bool,isIngredientOld:Bool,isSecondary:@escaping (_:String) -> Bool) {
         
@@ -29,14 +27,7 @@ struct FastImport_IngredientRow: View {
         self.checkError = isIngredientOld ? false : checkError
         self.isIngredientOld = isIngredientOld
         self.isSecondary = isSecondary
-       // self.isIngredientOld = isIngredientOld
-        
-      /*  if checkError && !isIngredientOld {
-            
-            self.isOrgineDefault = ingredient.origine.id == OrigineIngrediente.defaultValue.id
-            self.isConservazioneDefault = ingredient.conservazione.id == ConservazioneIngrediente.defaultValue.id
-        } */
-        
+
         print("Init -> FastImport_IngredientRow")
     }
     
@@ -52,9 +43,7 @@ struct FastImport_IngredientRow: View {
              
                        vbOrigineIcon()
                        vbConservazioneIcon()
-                     //  vbAllergeneCheck()
                        vbProduzioneCheck()
-                        
                         
                         Spacer()
                         
@@ -96,7 +85,7 @@ struct FastImport_IngredientRow: View {
                     }
         
                     VStack(alignment:.leading) {
-                        
+
                         HStack {
                             
                             CS_Picker(selection: $ingredient.conservazione, customLabel: "Conservazione", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
@@ -104,10 +93,10 @@ struct FastImport_IngredientRow: View {
                                     self.ingredient.conservazione == .defaultValue
                                 }//.fixedSize()
                             
-                            CS_Picker(selection: $ingredient.produzione, customLabel: "Produzione", dataContainer: ProduzioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                                .csWarningModifier(isPresented: checkError) {
+                            CS_PickerWithDefault(selection: $ingredient.produzione, customLabel: "Produzione(?)", dataContainer: ProduzioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                              /*  .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.produzione == .defaultValue
-                                }//.fixedSize()
+                                }//.fixedSize()*/
                         }
                         
                         HStack {
@@ -118,11 +107,13 @@ struct FastImport_IngredientRow: View {
                                 }//.fixedSize()
 
 
-                            CS_Picker(selection: $ingredient.provenienza, customLabel: "Provenienza", dataContainer: ProvenienzaIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                                .csWarningModifier(isPresented: checkError) {
+                            CS_PickerWithDefault(selection: $ingredient.provenienza, customLabel: "Provenienza(?)", dataContainer: ProvenienzaIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                             
+                             /*   .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.provenienza == .defaultValue
-                                }//.fixedSize()
-                          
+                                }//.fixedSize() */
+                          Spacer()
+                            
                             CSMenuAllergeni_MultiSelection(ingredient: $ingredient)
                                 ._tightPadding()
                                 .background(

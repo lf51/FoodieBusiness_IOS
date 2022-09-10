@@ -25,8 +25,8 @@ struct DishSpecific_NewDishSubView: View {
         VStack(alignment: .leading) {
         
             CSLabel_conVB(
-                placeHolder: "Prezzatura",
-                imageNameOrEmojy: "doc.text.magnifyingglass",
+                placeHolder: "Pricing",
+                imageNameOrEmojy: "dollarsign"/*"doc.text.magnifyingglass"*/, 
                 backgroundColor: Color.black) {
                                  
                     HStack {

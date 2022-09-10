@@ -134,19 +134,15 @@ class AccounterVM: ObservableObject {
 
     } */ // Deprecata 29.08
     
-    /// dato un idIngrediente ritorna un array con tutti gli ingredienti nel viewModel meno quello, e quello singolarmente come IngredientModel
-    func ingredientsFilteredByIngredientAndStatus(idIngredient:String) ->[IngredientModel] {
-             // Modifiche 31.08
-      /*  guard let model = self.allMyIngredients.first(where: {$0.id == idIngredient}) else {
-            return ([],nil)
-        } */
+    /// filtra tutti gli ingredient Model presenti nel viewModel per status, escludendo quello con l'idIngredient passato.
+    func ingredientListFilteredBy(idIngredient:String,ingredientStatus:StatusTransition) ->[IngredientModel] {
+
         let filterArray = self.allMyIngredients.filter({
             $0.id != idIngredient &&
-            $0.status == .completo(.disponibile)
+            $0.status.checkStatusTransition(check: ingredientStatus)
             
         })
-        
-        // end 31.08
+
         return filterArray
     }
     
@@ -235,6 +231,7 @@ class AccounterVM: ObservableObject {
         for ingredient in ingredients {
             
             if !checkExistingUniqueModelID(model: ingredient).0 {
+            
                 modelIngredients.append(ingredient)
                 // copia il modello solo se già non esiste
             }

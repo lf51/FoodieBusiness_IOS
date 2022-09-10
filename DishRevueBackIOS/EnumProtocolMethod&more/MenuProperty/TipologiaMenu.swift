@@ -8,7 +8,8 @@
 import Foundation
 
 enum PaxMenuFisso:MyEnumProtocolMapConform  {
-
+    
+    static var defaultValue: PaxMenuFisso = .uno
     static var allCases: [PaxMenuFisso] = [.uno,.due]
     
     case uno

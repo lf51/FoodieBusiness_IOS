@@ -21,10 +21,11 @@ struct IngredientModel_RowView: View {
         
             VStack(alignment:.leading) {
     
-                VStack(alignment:.leading) {
+                VStack(alignment:.leading,spacing: 0) {
                     
                     vbIntestazioneIngrediente()
                 //    vbSubIntestazioneIngrediente()
+                    vbDishCountIn()
                     
                 }
              
@@ -36,23 +37,31 @@ struct IngredientModel_RowView: View {
                     
                     CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_4"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_1")) {
                         HStack {
-                            csVbSwitchImageText(string: self.item.associaImmagine())
+                            csVbSwitchImageText(string: self.item.associaImmagine(),size: .large)
                             Text(self.item.origine.simpleDescription())
                         }
                     }
                     
                     CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_1"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_4")) {
                         HStack {
-                            csVbSwitchImageText(string: self.item.provenienza.imageAssociated())
+                            let isDefaultValue = self.item.provenienza == .defaultValue
+                            csVbSwitchImageText(string: self.item.provenienza.imageAssociated(),size:.large, slash: isDefaultValue)
+                            
                             Text(self.item.provenienza.simpleDescription())
                         }
                     }
+                    
+                    Spacer()
+                    // 07.09
+                   // vbDishCountIn()
+                    // end 07.09
                 }
                 
                 Spacer()
                 
-                VStack(spacing:10) {
+                VStack(spacing:5) {
                     
+                    vbProduzioneIngrediente()
                     vbConservazioneIngrediente()
                     vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
                     
@@ -87,6 +96,103 @@ struct IngredientModel_RowView: View {
             .fontWeight(.semibold)
             .foregroundColor(Color("SeaTurtlePalette_3"))
     } */
+    
+    @ViewBuilder private func vbDishCountIn() -> some View {
+        
+        let (dishCount,substitution) = dishWhereIn()
+        let isInPausa = {
+            self.item.status == .completo(.inPausa) ||
+            self.item.status == .bozza(.inPausa)
+        }()
+        
+        HStack {
+            
+            HStack(spacing:3) {
+                
+                Text("\(dishCount)")
+                Image(systemName: "fork.knife.circle")
+                    .imageScale(.large)
+                
+            }
+                .fontWeight(.semibold)
+                .foregroundColor(Color("SeaTurtlePalette_4"))
+                .padding(.leading,5)
+                .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
+                .opacity(isInPausa ? 0.6 : 1.0)
+            
+            
+            if isInPausa {
+                
+                HStack(spacing:3) {
+                    
+                    Text("\(substitution)")
+                    
+                    Image(systemName: "arrow.left.arrow.right.circle")
+                        .imageScale(.large)
+                      /*  .overlay {
+                            
+                            if substitution == 0 {
+                                
+                                Image(systemName: "circle.slash")
+                                    .imageScale(.large)
+                                    .foregroundColor(Color("SeaTurtlePalette_1"))
+                                    .rotationEffect(Angle(degrees: 90.0))
+                                
+                            }
+          
+                        } */
+                    
+                }
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                    .padding(.leading,5)
+                    .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
+                
+            }
+            
+            
+        }
+        
+        
+        
+        
+    }
+    
+    private func dishWhereIn() -> (dishCount:Int,Substitution:Int) {
+        
+        var dishCount: Int = 0
+        var dishWhereHasSubstitute: Int = 0
+        
+        for dish in self.viewModel.allMyDish {
+            
+            if dish.checkIngredientsInPlain(idIngrediente: self.item.id) {
+                dishCount += 1
+                if dish.checkIngredientHasSubstitute(idIngrediente: self.item.id) { dishWhereHasSubstitute += 1}
+            }
+        }
+        return (dishCount,dishWhereHasSubstitute)
+    }
+    
+    @ViewBuilder private func vbProduzioneIngrediente() -> some View {
+        
+        HStack(spacing: 4.0) {
+            
+            csVbSwitchImageText(string: self.item.produzione.imageAssociated(), size: .large)
+                .foregroundColor(Color.white)
+  
+            ScrollView(.horizontal, showsIndicators: false) {
+                
+                Text(self.item.produzione.extendedDescription())
+                    .font(.caption)
+                    .fontWeight(.black)
+                    .foregroundColor(Color.white)
+                    .italic()
+            }
+            
+        }
+        
+        
+    }
     
     @ViewBuilder private func vbConservazioneIngrediente() -> some View {
         
@@ -129,24 +235,41 @@ struct IngredientModel_RowView: View {
                             .offset(x: 10, y: -4)
                     }
                 }
+            // 07.09
             
-            let isRiservaActive = self.item.idIngredienteDiRiserva != ""
+         /*   let isRiservaActive = {
+                self.item.status == .completo(.inPausa) ||
+                self.item.status == .bozza(.inPausa)
+            }()
             
-            Image(systemName: "arrow.left.arrow.right.circle")
-                .imageScale(.medium)
-                .foregroundColor(isRiservaActive ? Color("SeaTurtlePalette_3") : Color("SeaTurtlePalette_1") )
-                .overlay {
+            if isRiservaActive {
+                
+                HStack {
+                    let dishCount = dishWhereIn()
                     
-                    if !isRiservaActive {
-                        
-                        Image(systemName: "circle.slash")
-                            .imageScale(.medium)
-                            .foregroundColor(Color("SeaTurtlePalette_1"))
-                            .rotationEffect(Angle(degrees: 90.0))
-                        
-                    }
-  
+                    Text("\(dishCount)")
+                    Image(systemName: "arrow.left.arrow.right.circle")
+                        .imageScale(.medium)
+                        .foregroundColor(isRiservaActive ? Color("SeaTurtlePalette_3") : Color("SeaTurtlePalette_1") )
+                        .overlay {
+                            
+                            if !isRiservaActive {
+                                
+                                Image(systemName: "circle.slash")
+                                    .imageScale(.medium)
+                                    .foregroundColor(Color("SeaTurtlePalette_1"))
+                                    .rotationEffect(Angle(degrees: 90.0))
+                                
+                            }
+          
+                        }
+                    
                 }
+                   
+                
+            } */
+
+            // end 07.09
             
             Spacer()
             
@@ -155,6 +278,8 @@ struct IngredientModel_RowView: View {
         }
         
     }
+    
+    
     
 }
 
@@ -176,8 +301,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .restoDelMondo,
         allergeni: [.glutine],
         origine: .animale,
-        status: .completo(.archiviato),
-        idIngredienteDiRiserva: "merluzzo"
+        status: .completo(.inPausa)
     )
     
     @State static var ingredientSample2 =  IngredientModel(
@@ -188,8 +312,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .italia,
         allergeni: [.pesce],
         origine: .animale,
-        status: .completo(.inPausa),
-        idIngredienteDiRiserva: "guancialenero"
+        status: .bozza(.inPausa)
             )
     
     @State static var ingredientSample3 =  IngredientModel(
@@ -200,7 +323,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .restoDelMondo,
         allergeni: [],
         origine: .vegetale,
-        status: .completo(.disponibile))
+        status: .completo(.inPausa))
     
     @State static var ingredientSample4 =  IngredientModel(
         intestazione: "Mozzarella di Bufala",
@@ -210,8 +333,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .europa,
         allergeni: [.latte_e_derivati],
         origine: .animale,
-        status: .nuovo,
-        idIngredienteDiRiserva: "basilico")
+        status: .bozza())
     
     static var previews: some View {
         

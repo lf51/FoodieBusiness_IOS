@@ -45,29 +45,25 @@ enum StatusTransition:Equatable {
 
 enum StatusModel:Equatable { // vedi Nota Consegna 17.07
     
-    case nuovo
-    case bozza
+   // case nuovo // deprecato 07.09
+    case bozza(StatusTransition? = nil)
     case completo(StatusTransition)
     
     func imageAssociated() -> String {
         
         switch self {
-        case .nuovo:
-            return "doc.badge.plus"
         case .bozza:
            return "hammer.circle.fill"//"doc.badge.gearshape" //  // moon.fill
         case .completo:
-            return "circle.fill"
+            return "circle.dashed.inset.filled"//"circle.fill"
         }
     }
     
     func transitionStateColor() -> Color {
         
         switch self {
-        case .nuovo:
-            return Color.black
-        case .bozza:
-            return Color.red
+        case .bozza(let statusTransition):
+            return statusTransition?.colorAssociated() ?? Color.gray
         case .completo(let statusTransition):
             return statusTransition.colorAssociated()
         }
@@ -77,13 +73,44 @@ enum StatusModel:Equatable { // vedi Nota Consegna 17.07
     func simpleDescription() -> String {
         
         switch self {
-        case .nuovo:
-            return "nuovo"
-        case .bozza:
-            return "bozza"
+        case .bozza(let statusTransition):
+            return statusTransition?.simpleDescription() ?? "Nuovo"
         case .completo(let statusTransition):
             return statusTransition.simpleDescription()
         }
     }
+    
+    func checkStatusTransition(check:StatusTransition) -> Bool {
+        
+        switch self {
+        case .bozza(let statusTransition):
+            return statusTransition == check
+        case .completo(let statusTransition):
+            return statusTransition == check
+        }
+        
+    }
+    
+    func changeStatusTransition(changeIn: StatusTransition) -> Self {
+        
+        switch self {
+        case .bozza(_):
+            return .bozza(changeIn)
+        case .completo(_):
+            return .completo(changeIn)
+        }
+        
+    }
+    
+    func checkStatusBozza() -> Bool {
+        
+        switch self {
+        case .bozza(_):
+            return true
+        default: return false
+        }
+        
+    }
+    
 
 }

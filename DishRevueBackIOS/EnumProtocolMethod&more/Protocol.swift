@@ -19,6 +19,7 @@ protocol MyEnumProtocol: /*CaseIterable,*/ Identifiable, Equatable { // Protocol
 }
 
 protocol MyEnumProtocolMapConform : Hashable { // deve essere conforme ad HAshable per lavorare con i Set
+    static var defaultValue: Self { get }
     
     func simpleDescription() -> String
     func imageAssociated() -> String

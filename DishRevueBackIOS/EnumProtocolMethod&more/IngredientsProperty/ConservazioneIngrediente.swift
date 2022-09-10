@@ -25,7 +25,7 @@ enum ConservazioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
 
         case .surgelato: return "Surgelato"
         case .congelato: return "Congelato"
-        case .altro: return "Altro"
+        case .altro: return "Fresco o altro"
         case .noValue: return ""
             
         }

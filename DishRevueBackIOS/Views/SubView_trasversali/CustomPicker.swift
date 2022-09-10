@@ -50,6 +50,52 @@ struct CS_Picker<E:MyEnumProtocolMapConform>: View {
     
 }
 
+/// Mantiene una label per il ritorno allo stato di default
+struct CS_PickerWithDefault<E:MyEnumProtocolMapConform>: View {
+    
+    @Binding var selection: E
+    let customLabel:String
+    let dataContainer: [E]
+    var backgroundColor: Color? = Color.white
+    var opacity: CGFloat? = 0.8
+
+    @State private var showCustomLabel: Bool = false
+    
+    var body: some View {
+       
+                Picker(selection:$selection) {
+                             
+                    Text(showCustomLabel ? "Non Specificato" : customLabel)
+                        .tag(E.defaultValue)
+                    
+                        ForEach(dataContainer, id:\.self) {filter in
+
+                            Text(filter.simpleDescription())
+                                .lineLimit(1)
+                            
+                        }
+                              
+                } label: {Text("")}
+                          .pickerStyle(MenuPickerStyle())
+                          .accentColor(Color.black)
+                         // .padding(.horizontal)
+                          .background(
+                        
+                        RoundedRectangle(cornerRadius: 5.0)
+                            .fill(backgroundColor!.opacity(opacity!))
+                            .shadow(radius: 1.0)
+                    )
+                    
+                          .onChange(of: selection) { _ in
+                               
+                              self.showCustomLabel = selection != .defaultValue
+                              
+                                    }
+
+    }
+    
+}
+
 /// La variabile selezionata nel Picker è al livello State
 struct CS_PickerDoubleState<E:MyEnumProtocolMapConform>: View {
     

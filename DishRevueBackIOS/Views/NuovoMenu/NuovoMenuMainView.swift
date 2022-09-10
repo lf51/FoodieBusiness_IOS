@@ -254,7 +254,7 @@ struct NuovoMenuMainView: View {
        
         guard checkProgrammazione() else { return false }
        
-        if self.nuovoMenu.dishIn.isEmpty { self.nuovoMenu.status = .bozza}
+        if self.nuovoMenu.dishIn.isEmpty { self.nuovoMenu.status = .bozza()}
         else {  self.nuovoMenu.status = .completo(.archiviato) }
       
         return true

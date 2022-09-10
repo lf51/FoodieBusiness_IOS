@@ -14,7 +14,7 @@ struct BottomView_DLBIVSubView: View {
     
     let destinationPath: DestinationPath
     let isDeActive: Bool
-    let description: () -> Text
+    let description: () -> (breve:Text,estesa:Text)
     let resetAction: () -> Void
     let saveAction: () -> Void
 
@@ -24,7 +24,7 @@ struct BottomView_DLBIVSubView: View {
        
         HStack {
                 
-            description()
+            description().breve
                 .italic()
                 .fontWeight(.light)
                 .font(.caption)
@@ -43,7 +43,7 @@ struct BottomView_DLBIVSubView: View {
         .disabled(isDeActive)
         .padding(.vertical)
         .confirmationDialog(
-            description(),
+            description().estesa,
                 isPresented: $showDialog,
                 titleVisibility: .visible) { saveButtonDialogView() }
         

@@ -44,7 +44,7 @@ struct DishModel:MyModelStatusConformity {
   //  var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
     var rating: [DishRatingModel] = []
 
-    var status: StatusModel = .nuovo
+    var status: StatusModel = .bozza()
     
   //  var ingredientiPrincipaliDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
   //  var ingredientiSecondariDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
@@ -152,6 +152,47 @@ struct DishModel:MyModelStatusConformity {
 
     }
     
+    /// controlla se un ingrediente ha un sostituto, ovvero se esiste la chiave a suo nome nell'elencoIngredientiOff
+    func checkIngredientHasSubstitute(idIngrediente:String) -> Bool {
+        
+        let allSostituiti = self.elencoIngredientiOff.keys
+        let condition = allSostituiti.contains(where: {$0 == idIngrediente})
+        return condition
+    }
+    
+    /// ritorna il path dell'ingrediente, quindi o l'array di ingredienti principali, o quello dei secondari, o se assente in entrambi ritorna nil
+     func individuaPathIngrediente(idIngrediente:String) -> (path:WritableKeyPath<Self,[String]>?,index:Int?) {
+        
+        if let index = self.ingredientiPrincipali.firstIndex(of: idIngrediente) {
+            
+            return (\.ingredientiPrincipali,index)
+            
+        } else if let index = self.ingredientiSecondari.firstIndex(of: idIngrediente) {
+            
+            return(\.ingredientiSecondari,index)
+            
+        } else { return (nil,nil)}
+        
+    }
+    
+   /* func sostituzionePermanenteIngrediente(idDaSostituire:String) {
+        
+        guard let pathIngrediente = self.individuaPathIngrediente(idIngrediente: idDaSostituire) else { return }
+        
+        let index = self[keyPath: pathIngrediente].firstIndex(of: idDaSostituire)
+        
+        if let sostituto = self.elencoIngredientiOff[idDaSostituire] {
+            
+            
+            
+        } else {
+            
+            self[keyPath: pathIngrediente].remove(at: index!)
+            
+        }
+        
+        
+    } */
     /*
     /// ritorna solo gli ingredienti Attivi, dunque toglie gli eventuali ingredienti SOSTITUITI e li rimpiazza con i SOSTITUTI
     private func ritornaTuttiGliIngredientiAttivi() -> [IngredientModel] {
@@ -200,7 +241,7 @@ struct DishModel:MyModelStatusConformity {
         let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.allMyIngredients)
         let allMinusBozzeEArchiviati = allTheIngredients.filter({
             $0.status != .completo(.archiviato) &&
-            $0.status != .bozza
+            $0.status != .bozza()
         })
         
         return allMinusBozzeEArchiviati
@@ -241,6 +282,19 @@ struct DishModel:MyModelStatusConformity {
         
         return allActiveModels
         
+    }
+    
+    func areAllIngredientBio(viewModel:AccounterVM) -> Bool {
+        
+        let allIngredient = self.allModelAttivi(viewModel: viewModel)
+        
+        guard !allIngredient.isEmpty else { return false }
+        
+        for ingredient in allIngredient {
+            if ingredient.produzione == .biologico { continue }
+            else { return false }
+        }
+        return true
     }
    
     /*

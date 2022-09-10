@@ -10,19 +10,24 @@ import SwiftUI
 struct ProvenienzaScrollView_NewIngredientSubView: View {
     
     @Binding var nuovoIngrediente: IngredientModel
-    let generalErrorCheck: Bool
+  //  let generalErrorCheck: Bool
 
     var body: some View {
         
         VStack(alignment:.leading) {
             
-            CSLabel_conVB(
+            CSLabel_1Button(
+                placeHolder: "Luogo di Produzione (Optional)",
+                imageNameOrEmojy: "globe",
+                backgroundColor: Color.black)
+            
+          /*  CSLabel_conVB(
                 placeHolder: "Luogo di Produzione",
                 imageNameOrEmojy: "globe",
                 backgroundColor: Color.black) {
                     
                     CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoIngrediente.provenienza == .defaultValue)
-                }
+                } */
             
             PropertyScrollCases(cases: ProvenienzaIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.provenienza, colorSelection: Color.brown)
 

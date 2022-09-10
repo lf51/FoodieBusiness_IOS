@@ -29,7 +29,7 @@ enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         case .italia: return "Italia"
         case .europa: return "UE"
         case .restoDelMondo: return "Extra UE"
-        case .noValue: return "Luogo di Produzione non Indicato"
+        case .noValue: return "None"
             
             }
         }
@@ -58,7 +58,7 @@ enum ProvenienzaIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         case .restoDelMondo:
            return "🌍"//"globe.europe.africa"
         case .noValue:
-            return "square.and.arrow.up.trianglebadge.exclamationmark"
+            return "🌍"//"⁉️"
         }
     }
     

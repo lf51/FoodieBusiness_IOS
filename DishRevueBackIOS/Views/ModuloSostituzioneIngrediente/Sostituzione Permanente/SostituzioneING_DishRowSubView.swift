@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-
-struct DishChangingIngredient_RowSubView: View {
+/*
+struct SostituzioneING_DishRowSubView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
@@ -35,10 +35,14 @@ struct DishChangingIngredient_RowSubView: View {
         
     }
 
+    @State private var test: Int = 0 // da eliminare
     var body: some View {
         
         VStack(alignment:.leading) {
                 
+            Text("\(test)")
+            Text(nomeIngredienteCorrente)
+            
                 GenericItemModel_RowViewMask(model: self.dish,pushImage: "arrow.left.arrow.right.circle") {
                     ForEach(mapArray,id:\.self) { ingredient in
 
@@ -47,6 +51,7 @@ struct DishChangingIngredient_RowSubView: View {
                         Button {
                             self.action(isIngredientSelected: isIngredientSelected, idIngredient: ingredient.id, nomeIngrediente: ingredient.intestazione)
                         } label: {
+                            
                             HStack {
                                 Text(ingredient.intestazione)
                                     .foregroundColor(Color.black)
@@ -68,7 +73,7 @@ struct DishChangingIngredient_RowSubView: View {
                 Spacer()
                 
             }
-            .frame(width:.minimum((UIScreen.main.bounds.width - 20),650)) // 650 è il valore di default delle row. Al momento(02.09) non è un valore che cambia, per cui lo possiamo impostare statico. Qualora dovessimo cambiarlo nella CSZStack framed, dovremmo cambiarlo anche qui. Poco efficente, ma abbiamo provato a smanettare col geometry reader e non riusciamo. E per quello che vogliamo ottenere troppo smanettamento non vale la candela  
+            .frame(width:.minimum((UIScreen.main.bounds.width - 40),650)) // 650 è il valore di default delle row. Al momento(02.09) non è un valore che cambia, per cui lo possiamo impostare statico. Qualora dovessimo cambiarlo nella CSZStack framed, dovremmo cambiarlo anche qui. Poco efficente, ma abbiamo provato a smanettare col geometry reader e non riusciamo. E per quello che vogliamo ottenere troppo smanettamento non vale la candela
         }
         
        
@@ -78,7 +83,14 @@ struct DishChangingIngredient_RowSubView: View {
             self.dish.idIngredienteDaSostituire = self.idIngredienteCorrente
             self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = self.idSostitutoGlobale
                 
+           // self.test += 1
             // BUG 31.08 da risolvere. Vedi Nota Vocale 31.08 - Risolto: vedi nota vovale 01.09
+        }
+        .onChange(of: idIngredienteCorrente) { newValue in
+            
+            self.dish.idIngredienteDaSostituire = newValue
+            self.dish.elencoIngredientiOff[newValue] = self.idSostitutoGlobale
+            self.test += 1
         }
         
     }
@@ -126,4 +138,4 @@ struct DishChangingIngredient_RowSubView: View {
         }
     }
     
-}
+} */ // deprecata

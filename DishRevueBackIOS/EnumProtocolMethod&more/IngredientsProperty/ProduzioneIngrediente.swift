@@ -25,7 +25,7 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
             
         case .convenzionale: return "Metodo Convenzionale"
         case .biologico: return "Metodo Biologico"
-        case .noValue: return ""
+        case .noValue: return "noValue"
         
         }
         
@@ -40,7 +40,7 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         case .biologico:
             return "Prodotto con metodo Biologico: Esclude l'utilizzo di prodotti di sintesi, salvo deroghe limitate e regolate."
         case .noValue:
-            return ""
+            return "Metodo di Produzione non specificato."
         }
      
     }
@@ -58,7 +58,7 @@ enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
         case .biologico:
             return "♻️"
         case .noValue:
-            return "⚙️"
+            return "⁉️"
        
         }
     }

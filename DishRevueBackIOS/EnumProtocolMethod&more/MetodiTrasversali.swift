@@ -148,6 +148,12 @@ func csIterateDishRating(item: DishModel) -> (media:String,count:String) {
     
 }
 
+ func csSwitchSingolarePlurale(checkNumber:Int,wordSingolare:String,wordPlurale:String) -> String {
+    
+    if checkNumber == 1 { return wordSingolare}
+    else { return wordPlurale}
+}
+
 /*
 /// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
 func csResetModel<M:MyModelStatusConformity>(modelAttivo:inout M,modelArchiviato:M) {

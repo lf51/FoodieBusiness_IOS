@@ -82,9 +82,9 @@ struct NuovoIngredienteMainView: View {
                             nuovoIngrediente: $nuovoIngrediente,
                             generalErrorCheck: generalErrorCheck)
                             
-                            ProduzioneScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente, generalErrorCheck: generalErrorCheck)
+                            ProduzioneScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente)
                             
-                            ProvenienzaScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente, generalErrorCheck: generalErrorCheck)
+                            ProvenienzaScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente)
 
                             // Sostituto
                             
@@ -137,8 +137,8 @@ struct NuovoIngredienteMainView: View {
                     Image(systemName: nuovoIngrediente.id == ingredienteArchiviato.id ? "checkmark.circle" : "circle")
                 }
                 .font(.caption2)
-               // .fontWeight(.ultraLight)
                 .foregroundColor(Color.black)
+                .opacity(0.6)
                 .padding(.horizontal)
                    
             }
@@ -205,18 +205,25 @@ struct NuovoIngredienteMainView: View {
         guard checkConservazione() else { return false }
        // guard self.isConservazioneOk else { return false }
         
-        guard checkEtichettaProduzione() else { return false }
+      //  guard checkEtichettaProduzione() else { return false }
         
-        guard checkLuogoProduzione() else { return false }
+      //  guard checkLuogoProduzione() else { return false }
         
-        self.nuovoIngrediente.status = .completo(.archiviato)
+
+        if self.nuovoIngrediente.optionalComplete() {
+            self.nuovoIngrediente.status = .completo(.disponibile) }
+        else {
+            self.nuovoIngrediente.status = .bozza(.disponibile)
+        }
+        
+      //  self.nuovoIngrediente.status = .completo(.archiviato)
         return true 
     }
     
-    private func checkLuogoProduzione() -> Bool {
+   /* private func checkLuogoProduzione() -> Bool {
         
         self.nuovoIngrediente.provenienza != .defaultValue
-    }
+    } */
     
     private func checkOrigine() -> Bool {
         
@@ -230,10 +237,10 @@ struct NuovoIngredienteMainView: View {
    
     }
     
-    private func checkEtichettaProduzione() -> Bool {
+   /* private func checkEtichettaProduzione() -> Bool {
         
         self.nuovoIngrediente.produzione != .defaultValue
-    }
+    } */
     
     private func checkConservazione() -> Bool {
         

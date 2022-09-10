@@ -189,24 +189,22 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         intestazione: "Guanciale Nero",
         descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
         conservazione: .altro,
-        produzione: .convenzionale,
-        provenienza: .restoDelMondo,
+        produzione: .biologico,
+        provenienza: .defaultValue,
         allergeni: [.glutine],
         origine: .animale,
-        status: .completo(.archiviato),
-        idIngredienteDiRiserva: "merluzzo"
+        status: .completo(.archiviato)
     )
     
     @State static var ingredientSample2 =  IngredientModel(
         intestazione: "Merluzzo",
         descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
         conservazione: .surgelato,
-        produzione: .convenzionale,
+        produzione: .biologico,
         provenienza: .italia,
         allergeni: [.pesce],
         origine: .animale,
-        status: .completo(.inPausa),
-        idIngredienteDiRiserva: "guancialenero"
+        status: .bozza(.disponibile)
             )
     
     @State static var ingredientSample3 =  IngredientModel(
@@ -217,7 +215,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         provenienza: .restoDelMondo,
         allergeni: [],
         origine: .vegetale,
-        status: .completo(.disponibile))
+        status: .bozza())
     
     @State static var ingredientSample4 =  IngredientModel(
         intestazione: "Mozzarella di Bufala",
@@ -225,18 +223,35 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         conservazione: .congelato,
         produzione: .convenzionale,
         provenienza: .europa,
-        allergeni: [.latte_e_derivati,.anidride_solforosa_e_solfiti,.arachidi_e_derivati,.crostacei],
+        allergeni: [.latte_e_derivati],
         origine: .animale,
-        status: .nuovo,
-        idIngredienteDiRiserva: "basilico")
+        status: .bozza(.inPausa)
+    )
     
     static var dishItem3: DishModel = {
         
         var newDish = DishModel()
         newDish.intestazione = "Bucatini alla Matriciana"
         newDish.status = .completo(.inPausa)
-        newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample.id]
+        newDish.ingredientiPrincipali = [ingredientSample4.id]
         newDish.ingredientiSecondari = [ingredientSample2.id]
+        let price:DishFormat = {
+            var pr = DishFormat(type: .mandatory)
+            pr.price = "22.5"
+            return pr
+        }()
+        newDish.pricingPiatto = [price]
+        
+        return newDish
+    }()
+    
+    static var dishItem4: DishModel = {
+        
+        var newDish = DishModel()
+        newDish.intestazione = "Trofie al Pesto"
+        newDish.status = .completo(.inPausa)
+        newDish.ingredientiPrincipali = [ingredientSample.id]
+        newDish.ingredientiSecondari = [ingredientSample3.id]
         let price:DishFormat = {
             var pr = DishFormat(type: .mandatory)
             pr.price = "22.5"
@@ -286,6 +301,15 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         return menu
     }()
     
+    static var viewModel: AccounterVM = {
+        
+       var vm = AccounterVM()
+        vm.allMyMenu = [menuSample,menuSample2,menuSample3]
+        vm.allMyDish = [dishItem3,dishItem4]
+        vm.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+        return vm
+    }()
+    
     static var previews: some View {
        
         ZStack {
@@ -296,34 +320,42 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                 
                 VStack {
                     
-                   GenericItemModel_RowViewMask(model: menuSample) {
+                /*   GenericItemModel_RowViewMask(model: menuSample) {
                         
                         Text("Test")
                     }
                     
-                    GenericItemModel_RowViewMask(model: menuSample2) {
-                         
-                         Text("Test")
-                     }
-                    
-                    GenericItemModel_RowViewMask(model: menuSample3) {
-                         
-                         Text("Test")
-                     }
+                 
                     
                     GenericItemModel_RowViewMask(model: dishItem3) {
                         
                         Text("Test")
                     }
                     
+                    GenericItemModel_RowViewMask(model: dishItem4) {
+                        
+                        Text("Test")
+                    } */
+                    
                     GenericItemModel_RowViewMask(model: ingredientSample ) {
                         
                         Text("Test")
                     }
                    
-                    
+                    GenericItemModel_RowViewMask(model: ingredientSample2 ) {
+                        
+                        Text("Test")
+                    }
                  
-                  
+                    GenericItemModel_RowViewMask(model: ingredientSample3 ) {
+                        
+                        Text("Test")
+                    }
+                    
+                    GenericItemModel_RowViewMask(model: ingredientSample4 ) {
+                        
+                        Text("Test")
+                    }
                     
                 }
                 
@@ -334,7 +366,8 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
             
             
             
-        }.environmentObject(AccounterVM())
+        }//.environmentObject(AccounterVM())
+        .environmentObject(viewModel)
     }
 }
 

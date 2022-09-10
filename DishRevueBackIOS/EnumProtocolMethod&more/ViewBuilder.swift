@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-
+/*
 /// Deprecata in futuro -- usare csVbSwitchImageText(string: String?,size:Image.Scale)
 /// - Parameter string: <#string description#>
 /// - Returns: <#description#>
@@ -21,12 +21,12 @@ import SwiftUI
             
         } else { Image(systemName: "circle") }
 
-}
+} */ // deprecata 07.09
 
 /// ViewBuilder - Passare una emojy o il systenName di una Image. Il nil ritorna una circle Image
 /// - Parameter string: <#string description#>
 /// - Returns: <#description#>
-@ViewBuilder func csVbSwitchImageText(string: String?, size: Image.Scale) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emnojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.04
+@ViewBuilder func csVbSwitchImageText(string: String?, size: Image.Scale = .medium,slash:Bool = false) -> some View { // verifica che la stringa contiene un solo carattere, in tal caso diamo per "certo" si tratti una emnojy e la trattiamo come testo. Utilizzato per CsLabel1 in data 08.04
     
         if let imageName = string {
             
@@ -37,30 +37,65 @@ import SwiftUI
                 case .small:
                     Text(imageName)
                         .font(.caption2)
-                 
+                        .overlay {
+                            if slash {
+                                Image(systemName: "circle.slash")
+                                    .imageScale(.small)
+                                    .foregroundColor(Color.white)
+                            }
+                        }
                 case .medium:
                     Text(imageName)
                         .font(.caption)
-                    
+                        .overlay {
+                            if slash {
+                                Image(systemName: "circle.slash")
+                                    .imageScale(.medium)
+                                    .foregroundColor(Color.white)
+                            }
+                        }
                 case .large:
                     Text(imageName)
                         .font(.callout)
-                    
+                        .overlay {
+                            if slash {
+                                Image(systemName: "circle.slash")
+                                    .imageScale(.large)
+                                    .foregroundColor(Color.white)
+                            }
+                        }
                 @unknown default:
                     Text(imageName)
                         .font(.caption)
+                        .overlay {
+                            if slash {
+                                Image(systemName: "circle.slash")
+                                    .imageScale(.medium)
+                                    .foregroundColor(Color.white)
+                            }
+                        }
+
                 }
    
             }
             else {
                 Image(systemName: imageName)
                     .imageScale(size)
+                    .overlay {
+                        if slash {
+                            Image(systemName: "circle.slash")
+                                .imageScale(size)
+                                .foregroundColor(Color.white)
+                        }
+                    }
+
                 
             }
             
         } else {
-            Image(systemName: "circle")
+            Image(systemName: "circle.slash")
                 .imageScale(size)
+                .foregroundColor(Color.white)
             
         }
 
@@ -285,7 +320,7 @@ struct CSZStackVB_Framed<Content:View>:View {
 
     // Modificato 01.09
     init(frameWidth: CGFloat = 650, backgroundOpacity: Double = 0.3, content: () -> Content) {
-        let screenWidth: CGFloat = UIScreen.main.bounds.width - 20
+        let screenWidth: CGFloat = UIScreen.main.bounds.width - 40
        // self.frameWidth = frameWidth > screenWidth ? screenWidth : frameWidth
         self.frameWidth = .minimum(frameWidth, screenWidth)
         self.backgroundOpacity = backgroundOpacity
@@ -314,6 +349,7 @@ struct CSZStackVB_Framed<Content:View>:View {
         }
     }
 
+/*
 /// Gestisce il Menu della RowModel in base al cambio di Status. Generic conforme al MyModelStatusConformity
 @ViewBuilder func vbCambioStatusModelList<M:MyModelStatusConformity>(myModel: Binding<M>,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
     
@@ -390,7 +426,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                 vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
 
             }
-    } else if currentModel.status == .bozza {
+    } else if currentModel.status == .bozza() {
         
         VStack {
                 
@@ -399,6 +435,108 @@ struct CSZStackVB_Framed<Content:View>:View {
             }
         
     }
+           
+} */ // deprecata 07.09
+
+
+/// Add 07.09 - Gestisce il Menu della RowModel in base al cambio di Status. Generic conforme al MyModelStatusConformity
+@ViewBuilder func vbCambioStatusModelList<M:MyModelStatusConformity>(myModel: Binding<M>,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    
+    let currentModel = myModel.wrappedValue
+    
+   // if currentModel.status == .completo(.disponibile) {
+    if currentModel.status.checkStatusTransition(check: .disponibile) {
+                
+        VStack {
+            
+            Button {
+               // myModel.wrappedValue.status = .completo(.inPausa)
+                myModel.wrappedValue.status = currentModel.status.changeStatusTransition(changeIn: .inPausa)
+                
+            } label: {
+                HStack{
+                    Text("Metti in Pausa")
+                    Image(systemName: "pause.circle")
+                    
+                }
+            }
+            
+            Button {
+              //  myModel.wrappedValue.status = .completo(.archiviato)
+                myModel.wrappedValue.status = currentModel.status.changeStatusTransition(changeIn: .archiviato)
+                
+            } label: {
+                HStack{
+                    Text("Archivia")
+                    Image(systemName: "archivebox")
+                  
+                }
+            }
+            
+            vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+        }
+
+        
+  //  } else if currentModel.status == .completo(.inPausa) {
+    } else if currentModel.status.checkStatusTransition(check: .inPausa) {
+        
+            VStack {
+                
+                Button {
+                   // myModel.wrappedValue.status = .completo(.disponibile)
+                    myModel.wrappedValue.status = currentModel.status.changeStatusTransition(changeIn: .disponibile)
+                    
+                } label: {
+                    HStack{
+                        Text("Rendi Disponibile")
+                        Image(systemName: "play.circle")
+                       
+                    }
+                }
+                
+                Button {
+                  //  myModel.wrappedValue.status = .completo(.archiviato)
+                    myModel.wrappedValue.status = currentModel.status.changeStatusTransition(changeIn: .archiviato)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                       
+                    }
+                }
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+            }
+        
+   // } else if currentModel.status == .completo(.archiviato) {
+    } else if currentModel.status.checkStatusTransition(check: .archiviato) {
+        
+            VStack {
+                
+                Button {
+                  //  myModel.wrappedValue.status = .completo(.disponibile)
+                    myModel.wrappedValue.status = currentModel.status.changeStatusTransition(changeIn: .disponibile)
+                    
+                } label: {
+                    HStack{
+                        Text("Rendi Disponibile")
+                        Image(systemName: "play.circle")
+                       
+                    }
+                }
+                
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+
+            }
+    } /*else if currentModel.status == .bozza(nil) {
+        
+        VStack {
+                
+                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath, titleOne: "Completa Bozza")
+                
+            }
+        
+    } */
            
 }
 
@@ -494,7 +632,10 @@ struct CSZStackVB_Framed<Content:View>:View {
            
 } */ // Deprecato. Portato fuori la View Generic e creato un viewBulder che ritorna una lista di bottoni che valgono per tutti i myModel
 
-@ViewBuilder func vbScopoDestinazionePathButton<M:MyModelStatusConformity>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>,titleOne:String = "Modifica OLE") -> some View {
+@ViewBuilder func vbScopoDestinazionePathButton<M:MyModelStatusConformity>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    
+    let isBozza = currentModel.status.checkStatusBozza()
+    let title = isBozza ? "Completa" : "Modifica"
     
     VStack {
         
@@ -502,11 +643,11 @@ struct CSZStackVB_Framed<Content:View>:View {
           //  viewModel[keyPath: navPath].append(currentModel)
             let currentDestination:DestinationPathView = currentModel.pathDestination()
             viewModel[keyPath: navPath].append(currentDestination)
-              
+            
           } label: {
               HStack{
-                  Text(titleOne)
-                  Image(systemName: "gear")
+                  Text(title)
+                  Image(systemName: isBozza ? "hammer" : "square.and.pencil")
               }
           }
 

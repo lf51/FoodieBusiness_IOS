@@ -26,8 +26,8 @@ struct IngredientModel:MyModelStatusConformity {
       lhs.provenienza == rhs.provenienza &&
       lhs.allergeni == rhs.allergeni &&
       lhs.origine == rhs.origine &&
-      lhs.status == rhs.status &&
-      lhs.idIngredienteDiRiserva == rhs.idIngredienteDiRiserva
+      lhs.status == rhs.status 
+   
     }
     
    // var id: String { creaID(fromValue: self.intestazione) } // Deprecata 18.08
@@ -43,9 +43,7 @@ struct IngredientModel:MyModelStatusConformity {
     var allergeni: [AllergeniIngrediente] = []
     var origine: OrigineIngrediente = .defaultValue
     
-    var status: StatusModel = .nuovo
-    
-    var idIngredienteDiRiserva:String = "" // questo è il riferimento all'ingrediente con cui va sostituito nel caso venga messo in pausa // deprecata in futuro
+    var status: StatusModel = .bozza()
     
     func returnNewModel() -> (tipo: IngredientModel, nometipo: String) {
         (IngredientModel(),"Ingrediente")
@@ -61,11 +59,11 @@ struct IngredientModel:MyModelStatusConformity {
 
     func creaID(fromValue: String) -> String {
         fromValue.replacingOccurrences(of: " ", with: "").lowercased()
-    }
+    } // deprecata in futuro
     
     func modelStatusDescription() -> String {
         "Ingrediente (\(self.status.simpleDescription().capitalized))"
-    }
+    } // deprecata in futuro
     
     func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String) {
         
@@ -86,13 +84,23 @@ struct IngredientModel:MyModelStatusConformity {
             
             Button {
                 
-                viewModel[keyPath: navigationPath].append(DestinationPathView.dishListByIngredient(self))
+                viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
                 
             } label: {
                 HStack{
-                    Text("Sostituisci con..")
-                    Image(systemName: "eye")
-                    // In teoria l'ingrediente andrebbe anche messo in pausa
+                    Text("Sostituzione Temporanea")
+                    Image(systemName: "arrowshape.turn.up.backward.badge.clock")
+                }
+            }
+            
+            Button {
+                
+              //  viewModel[keyPath: navigationPath].append(DestinationPathView.dishListByIngredient(self))
+                
+            } label: {
+                HStack{
+                    Text("Sostituzione Permanente")
+                    Image(systemName: "arrow.left.arrow.right.circle")
                 }
             }
             
@@ -147,4 +155,11 @@ struct IngredientModel:MyModelStatusConformity {
             return allergeneDiServizio.imageAssociated()
     }
     
+    /// ritorna true se tutte le proprietà optional sono state compilate, e dunque il modello è completo.
+    func optionalComplete() -> Bool {
+        
+        self.descrizione != "" &&
+        self.produzione != .defaultValue &&
+        self.provenienza != .defaultValue
+    }
 }

@@ -11,15 +11,16 @@ struct PickerSostituzioneIngrediente_SubView: View {
     
     let mapArray:[IngredientModel]
     @Binding var modelSostitutoGlobale: IngredientModel?
-  //  @Binding var idSostitutoGlobale: String?
+    var placeHolder: String = "Ovunque con"
+    var imageOrEmoji: String = "arrow.left.arrow.right.circle"
     
     var body: some View {
         
-        VStack(alignment: .leading) {
+        VStack(alignment: .center) {
             
             CSLabel_conVB(
-                placeHolder: "Ovunque con:",
-                imageNameOrEmojy: "arrow.left.arrow.right.circle",
+                placeHolder: placeHolder,
+                imageNameOrEmojy: imageOrEmoji,
                 backgroundColor: Color.black) {
                     
                     Picker(selection: $modelSostitutoGlobale) {

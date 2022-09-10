@@ -291,7 +291,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         menu.tipologia = .fisso(persone: .due, costo: "23.5")
         menu.isAvaibleWhen = .intervalloChiuso
         menu.giorniDelServizio = [ .domenica]
-        menu.status = .bozza
+        menu.status = .bozza()
        
        return menu
        

@@ -122,13 +122,21 @@ struct FastImport_CorpoScheda:View {
                     }
                     .disabled(isIngredientOld)
                     .blur(radius: isIngredientOld ? 0.8 : 0.0)
-                    .overlay(alignment:.topTrailing) {
+                    .overlay(alignment:.center) {
                         if isIngredientOld{
                             
-                            Image(systemName: "lock")
-                                .imageScale(.large)
-                                .foregroundColor(Color.white)
-                                .blur(radius: 0.8)
+                            HStack {
+                                Image(systemName: "lock")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 35, height: 35,alignment: .bottom)
+                                   //.imageScale(.large)
+                                    .foregroundColor(Color.white)
+                                   // .blur(radius: 0.8)
+                                Text("Esistente")
+                                    .font(.largeTitle)
+                                    .foregroundColor(Color.white)
+                            }
                         }
                     }
                     
@@ -177,7 +185,7 @@ struct FastImport_CorpoScheda:View {
             self.checkError = true
             return }
                 
-        temporaryModel.dish.status = .completo(.archiviato)
+    //    temporaryModel.dish.status = .completo(.archiviato)
         
         self.saveAction(temporaryModel)
         
@@ -195,10 +203,12 @@ struct FastImport_CorpoScheda:View {
             
             let origineOk = ingredient.origine != .defaultValue
             let conservazioneOk = ingredient.conservazione != .defaultValue
-            let produzioneOk = ingredient.produzione != .defaultValue
-            let provenienzaOk = ingredient.provenienza != .defaultValue
+            // modifica 05.08
+          //  let produzioneOk = ingredient.produzione != .defaultValue
+          //  let provenienzaOk = ingredient.provenienza != .defaultValue
             
-            if !origineOk || !conservazioneOk || !produzioneOk || !provenienzaOk {
+         //   if !origineOk || !conservazioneOk || !produzioneOk || !provenienzaOk {
+                if !origineOk || !conservazioneOk  {
                 print("CheckAreIngredientsOk -> \(ingredient.intestazione) non completo")
                 return false}
         }

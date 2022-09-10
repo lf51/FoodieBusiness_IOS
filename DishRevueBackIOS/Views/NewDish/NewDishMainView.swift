@@ -125,9 +125,21 @@ struct NewDishMainView: View {
                     
                 }
             
-                CSDivider() // risolve il problema del cambio colore della tabView
+             //   CSDivider() // risolve il problema del cambio colore della tabView
             //    } // end ZStack Interno
 
+                HStack {
+                    Spacer()
+                    Text(newDish.id)
+                        
+                    Image(systemName: newDish.id == piattoArchiviato.id ? "checkmark.circle" : "circle")
+                }
+                .font(.caption2)
+                .foregroundColor(Color.black)
+                .opacity(0.6)
+                .padding(.horizontal)
+                
+                
             }
       
         } // end ZStack Esterno
@@ -230,13 +242,13 @@ struct NewDishMainView: View {
     private func checkPreliminare() -> Bool {
         
         guard checkIntestazione() else { return false }
+        
+        guard checkCategoria() else { return false }
       
         guard checkIngredienti() else { return false }
        
         guard checkAllergeni() else { return false }
         
-        guard checkCategoria() else { return false }
-       
         guard checkFormats() else { return false }
        
         self.newDish.status = .completo(.archiviato) // vedi Nota Consegna 17.07

@@ -42,7 +42,7 @@ struct MenuModel:MyModelStatusConformity {
     var dishIn: [DishModel] = [] /*{willSet {status = newValue.isEmpty ? .vuoto : .completo(.archiviato)}} */
     
     var tipologia: TipologiaMenu = .noValue // Categoria di Filtraggio
-    var status: StatusModel = .nuovo
+    var status: StatusModel = .bozza()
     
     var isAvaibleWhen: AvailabilityMenu = .defaultValue { willSet {giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
     

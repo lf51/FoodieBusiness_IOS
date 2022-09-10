@@ -10,19 +10,14 @@ import SwiftUI
 struct FastImport_MainView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    // Modifica 28.08
-    //@State private var allFastDish: [DishModel] = []
     @State private var allFastDish: [TemporaryModel] = []
-    // End 28.08
     let backgroundColorView: Color
-    @State private var text: String = "Spaghetti,pesto.Bucatini,pomodoro,basilico,menta"
+    @State private var text: String = "Spaghetti alla carbonara,pecorino dop,prezzemolo,tuorlo d'uovo,pepe nero, sale.Bucatini alla matriciana,guanciale,pepe nero,sale."
     
     @State private var isUpdateDisable: Bool = true
-   // @State private var showSubString: Bool = false
- 
     var body: some View {
         
-        CSZStackVB(title: "Piatto + Ingredienti", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: "Inserimento Veloce", backgroundColorView: backgroundColorView) {
             
             VStack {
                 
@@ -33,7 +28,7 @@ struct FastImport_MainView: View {
                     VStack(alignment:.leading) {
 
                         CSDivider() // senza il testo del texeditor va su e si disallinea
-                      
+
                         TextEditor(text: $text)
                             .font(.system(.body,design:.rounded))
                             .foregroundColor(Color.black)
@@ -48,7 +43,7 @@ struct FastImport_MainView: View {
                             .onChange(of: text) { _ in
                              self.isUpdateDisable = false
                             }
-                
+                        
                         HStack {
                             
                             CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color("SeaTurtlePalette_4"), fillColor: Color("SeaTurtlePalette_2")) {
@@ -60,6 +55,8 @@ struct FastImport_MainView: View {
                             .opacity(self.isUpdateDisable ? 0.6 : 1.0)
                             .disabled(self.isUpdateDisable)
  
+                            CSInfoAlertView(imageScale: .large, title: "Guida Formato", message: .formattazioneInserimentoVeloce)
+                            
                             Spacer()
 
                             Text("N°Piatti:\(allFastDish.count)")
@@ -212,7 +209,7 @@ struct FastImport_MainView: View {
                 let ingredient = {
                    var newIngredient = IngredientModel()
                     newIngredient.intestazione = newSub.capitalized
-                    newIngredient.status = .completo(.disponibile)
+                    newIngredient.status = .bozza(.disponibile) // 07.09 !!!!
                     return newIngredient
                 }()
                 
@@ -238,6 +235,7 @@ struct FastImport_MainView: View {
                 
                 var dish = DishModel()
                 dish.intestazione = cleanedDishTitle.capitalized
+                dish.status = .bozza(.disponibile) // 07.09 !!!
               //  dish.ingredientiPrincipaliDEPRECATO = step_5
                 return dish
                 
