@@ -102,12 +102,12 @@ struct AllergeniScrollView_NewDishSub: View {
                     title: "⚠️ Attenzione",
                     message: SystemMessage.allergeni.simpleDescription()
                 )
-                self.newDish.allergeni = self.allergeniIn
+              //  self.newDish.allergeni = self.allergeniIn
                 
-            } else {
+            } /* else {
                 
                 self.newDish.allergeni = []
-            }
+            } */
             
         })
         

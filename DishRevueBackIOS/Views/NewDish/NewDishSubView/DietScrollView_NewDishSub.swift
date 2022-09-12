@@ -9,6 +9,104 @@ import SwiftUI
 
 struct DietScrollView_NewDishSub: View {
     
+    @ObservedObject var viewModel:AccounterVM
+    // usiamo un observed per usare il viewModel nell'init
+    @Binding var newDish: DishModel
+  //  @Binding var confermaDiete: Bool
+    
+    let dietAvaible:[TipoDieta]
+    let dietAvaibleString:[String]
+    
+    init(newDish:Binding<DishModel>,viewModel:AccounterVM) {
+       
+        _newDish = newDish
+      //  _confermaDiete = confermaDiete
+        self.viewModel = viewModel
+     
+        (self.dietAvaible,self.dietAvaibleString) = newDish.wrappedValue.returnDietAvaible(viewModel: viewModel)
+    }
+    
+    var body: some View {
+        
+        VStack(alignment: .leading) {
+            
+            CSLabel_conVB(placeHolder: "Dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) {
+                
+                HStack {
+                    
+                    CSInfoAlertView(
+                        imageScale: .large,
+                        title: "Info Diete",
+                        message: .sostituzioneTemporaneaING)
+                    
+                    Toggle(isOn: self.$newDish.mostraDieteCompatibili) {
+                        
+                        HStack {
+                            Spacer()
+                            
+                            Text(self.newDish.mostraDieteCompatibili ? "Mostra" : "Nascondi")
+                                .font(.system(.callout, design: .monospaced))
+                         /*   Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
+                                .foregroundColor(confermaDiete ? Color.green : Color.gray)
+                                .imageScale(.medium) */
+                        }
+                        
+                    }
+                }
+            }
+            
+            DietScrollCasesCmpatibility(currentDish: self.newDish, instanceCases: self.dietAvaible) {
+                
+                VStack(alignment:.leading) {
+
+                    let string = self.newDish.mostraDieteCompatibili ? "Mostra diete compatibili" : "Non mostrare diete compatibili"
+                        
+                    Text("\(string): \(dietAvaibleString, format: .list(type: .and)).")
+                               .bold(self.newDish.mostraDieteCompatibili)
+                               .font(.caption)
+                               .foregroundColor(self.newDish.mostraDieteCompatibili ? .green : .black)
+                    
+                    if !self.newDish.mostraDieteCompatibili {
+  
+                        // mod. 11.09
+                     //   let diet = self.newDish.dieteCompatibili[0].simpleDescription()
+                        
+                        Text("Mostra compatibilità con una dieta Standard!")
+                              .underline()
+                              .fontWeight(.semibold)
+                              .font(.caption)
+                              .foregroundColor(Color.black)
+                        
+                        // end 11.09
+                    }
+                }
+            }
+
+        }
+        .onChange(of: self.dietAvaible, perform: { _ in
+            self.newDish.mostraDieteCompatibili = false
+        })
+        .onChange(of: self.newDish.mostraDieteCompatibili) { newValue in
+            
+          // self.newDish.mostraDieteCompatibili = newValue
+            
+            if newValue {
+ 
+                viewModel.alertItem = AlertModel(
+                    title: "Mostra Diete",
+                    message: "Sarà mostrata nel piatto la compatibilità con le diete: \(dietAvaibleString.formatted(.list(type: .and)))."
+                        )
+               // self.newDish.dieteCompatibili = self.dietAvaible
+               
+                 }
+        }
+    }
+}
+
+
+/*
+struct DietScrollView_NewDishSub: View {
+    
     // Modifica 26.08
    // @EnvironmentObject var viewModel:AccounterVM
     @ObservedObject var viewModel:AccounterVM
@@ -99,4 +197,4 @@ struct DietScrollView_NewDishSub: View {
 
         }
     }
-}
+} */ // Backup 11.09 per deprecazione array DieteCompatibili

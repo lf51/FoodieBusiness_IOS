@@ -66,7 +66,8 @@ class AccounterVM: ObservableObject {
         
         guard let model = modelFromId(id: id, modelPath: modelPath) else { return (false,"",false) }
         
-        let isActive = model.status == .completo(.disponibile)
+       // let isActive = model.status == .completo(.disponibile)
+        let isActive = model.status.checkStatusTransition(check: .disponibile)
         let name = model.intestazione
         var allergeniIn:Bool = false
         

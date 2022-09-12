@@ -17,6 +17,7 @@ struct PannelloIngredienti_NewDishSubView: View {
     let newDish: DishModel
     let generalErrorCheck: Bool
     @Binding var wannaAddIngredient: Bool
+    @Binding var noIngredientsNeeded: Bool
 
     var body: some View {
         
@@ -48,10 +49,13 @@ struct PannelloIngredienti_NewDishSubView: View {
                             frontColor: Color("SeaTurtlePalette_3")) {
                                 withAnimation(.default) {
                                     self.wannaAddIngredient.toggle()
+                                    self.noIngredientsNeeded = false
                                 }
                             }
                         
-                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty)
+                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: (newDish.ingredientiPrincipali.isEmpty && !noIngredientsNeeded))
+
+                        
                       /*  Button {
                             withAnimation(.default) {
                                 self.wannaAddIngredient?.toggle()
@@ -78,13 +82,33 @@ struct PannelloIngredienti_NewDishSubView: View {
                         
                         ForEach(self.newDish.ingredientiPrincipali, id:\.self) { idIngredient in
                             
-                            if let ingredient = viewModel.ingredientFromId(id: idIngredient) {
-                                IngredientModel_RowView(item: ingredient)
-                            }
+                         csIngredientSmallRow(id: idIngredient)
                         
                         }
                         
                     }
+                }
+                
+                if generalErrorCheck && self.newDish.ingredientiPrincipali.isEmpty {
+                                            
+                        if !self.newDish.ingredientiSecondari.isEmpty {
+                            
+                            Text("Il box degli ingredienti principali non può essere vuoto.")
+                                .italic()
+                                .font(.headline)
+                                .foregroundColor(Color.black)
+                                .multilineTextAlignment(.leading)
+                            
+                        } else {
+                            
+                            Toggle(isOn: $noIngredientsNeeded) {
+                                Text("Forza il salvataggio senza ingredienti {ø}")
+                                    .font(.headline)
+                                    .foregroundColor(Color.black)
+                                    .multilineTextAlignment(.leading)
+                            }
+                            
+                        }
                 }
                 
             }
@@ -117,9 +141,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                             
                             ForEach(self.newDish.ingredientiSecondari, id:\.self) { idIngredient in
                                 
-                                if let ingredient = self.viewModel.ingredientFromId(id: idIngredient) {
-                                    IngredientModel_RowView(item: ingredient)
-                                }
+                                csIngredientSmallRow(id: idIngredient)
                                 
                                 
                             }
@@ -130,6 +152,42 @@ struct PannelloIngredienti_NewDishSubView: View {
       
             }
         }
+    }
+    
+    // Method
+    
+    @ViewBuilder private func csIngredientSmallRow(id:String) -> some View {
+
+        let (model,sostituto) = checkPreliminareIngredientSmallRow(id: id)
+        
+        if model != nil {
+            IngredientModel_SmallRowView(model: model!, sostituto: sostituto)
+        }
+  
+    }
+    
+    private func checkPreliminareIngredientSmallRow(id:String) -> (model:IngredientModel?,sosituto:IngredientModel?) {
+
+        guard let ingredient = self.viewModel.ingredientFromId(id: id) else {
+            return (nil,nil)
+        }
+        
+        guard ingredient.status.checkStatusTransition(check: .inPausa) else {
+            return (ingredient,nil)
+        }
+        
+        let idSostituto = self.newDish.elencoIngredientiOff[id]
+                
+        guard idSostituto != nil else { return (ingredient,nil)}
+
+        guard let modelSostituto = self.viewModel.ingredientFromId(id: idSostituto!) else {
+            return (ingredient,nil)
+                }
+        
+        guard modelSostituto.status.checkStatusTransition(check: .disponibile) else { return (ingredient,nil)}
+                
+        return (ingredient,modelSostituto)
+        
     }
     
 }

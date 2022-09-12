@@ -26,7 +26,7 @@ struct DishSpecific_NewDishSubView: View {
         
             CSLabel_conVB(
                 placeHolder: "Pricing",
-                imageNameOrEmojy: "dollarsign"/*"doc.text.magnifyingglass"*/, 
+                imageNameOrEmojy: "dollarsign"/*"doc.text.magnifyingglass"*/,
                 backgroundColor: Color.black) {
                                  
                     HStack {
@@ -224,6 +224,7 @@ struct PriceRow:View {
                 
                 CSButton_image(frontImage: "trash", imageScale: .medium, frontColor: Color.white) {
                  //   self.delAction(formatoPiatto)
+                    // Abbiamo rimesso il buttonTrash per nasconderlo, di modo da riservare lo stesso spazio e non avere disallineamenti. Il visualizzato sarà l'overlay
                     }
                     ._tightPadding()
                     .background(
@@ -233,7 +234,8 @@ struct PriceRow:View {
                     )
                     .hidden()
                     .overlay {
-                        Image(systemName: "circle")
+                        Image(systemName: "exclamationmark.circle")
+                            .imageScale(.large)
                             .foregroundColor(Color.green)
                       
                     }

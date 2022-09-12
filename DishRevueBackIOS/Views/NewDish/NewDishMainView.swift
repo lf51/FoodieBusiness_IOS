@@ -18,23 +18,44 @@ struct NewDishMainView: View {
     let destinationPath: DestinationPath
     
     @State private var generalErrorCheck: Bool = false
+    
+    @State private var noIngredientsNeeded: Bool = false
     @State private var wannaAddIngredient: Bool = false
     
     @State private var areAllergeniOk: Bool = false
-    @State private var confermaDiete: Bool = false
+  //  @State private var confermaDiete: Bool
     
     init(newDish: DishModel,backgroundColorView: Color, destinationPath:DestinationPath) {
         
-        let newD: DishModel = {
+        // modifiche 11.09
+        let localDish: DishModel
+        
+        if newDish.pricingPiatto.isEmpty {
+            
+            let newD: DishModel = {
+                var new = newDish
+                new.pricingPiatto = [DishFormat(type: .mandatory)]
+                return new
+            }()
+            localDish = newD
+           // _newDish = State(wrappedValue: newD)
+           // self.piattoArchiviato = newD
+        } else { localDish = newDish }
+        
+        _newDish = State(wrappedValue: localDish)
+      //  _confermaDiete = State(wrappedValue: localDish.mostraDieteCompatibili)
+        self.piattoArchiviato = localDish
+       
+       /* let newD: DishModel = {
             var new = newDish
             if new.pricingPiatto.isEmpty {new.pricingPiatto = [DishFormat(type: .mandatory)]}
             return new
         }()
-        
         _newDish = State(wrappedValue: newD)
+        self.piattoArchiviato = newD
+        */
+        // end 11.09
         self.backgroundColorView = backgroundColorView
-        
-        self.piattoArchiviato = newDish
         self.destinationPath = destinationPath
     }
     
@@ -60,11 +81,15 @@ struct NewDishMainView: View {
                             
                             CategoriaScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
                             
-                            PannelloIngredienti_NewDishSubView(newDish: newDish, generalErrorCheck: generalErrorCheck, wannaAddIngredient: $wannaAddIngredient)
+                            PannelloIngredienti_NewDishSubView(
+                                newDish: newDish,
+                                generalErrorCheck: generalErrorCheck,
+                                wannaAddIngredient: $wannaAddIngredient,
+                                noIngredientsNeeded: $noIngredientsNeeded)
                                 
                             AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck, areAllergeniOk: $areAllergeniOk, viewModel: viewModel)
  
-                            DietScrollView_NewDishSub(newDish: $newDish, confermaDiete: $confermaDiete, viewModel: viewModel)
+                            DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
  
                             DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
  
@@ -149,21 +174,43 @@ struct NewDishMainView: View {
     
     private func resetAction() {
         
+        // mod 11.09
         self.newDish = self.piattoArchiviato
+       // self.confermaDiete = self.newDish.mostraDieteCompatibili // vedi nota vocale 11.09
+   
+        // end 11.09
         self.generalErrorCheck = false
         self.areAllergeniOk = false
-        self.confermaDiete = false
-
+        
     }
     
     private func salvaECreaPostAction() {
         
         self.generalErrorCheck = false
         self.areAllergeniOk = false
-        self.newDish = DishModel()
+        self.newDish = {
+           var newD = DishModel()
+            newD.pricingPiatto = [DishFormat(type: .mandatory)]
+            return newD
+        }()
     }
     
     private func infoPiatto() -> Text {
+                   
+        let allIngredients = self.newDish.allIngredientsAttivi(viewModel: viewModel).map({$0.intestazione})
+        let allAllergeni = self.newDish.calcolaAllergeniNelPiatto(viewModel: viewModel).map({$0.intestazione})
+        
+        let isBio = self.newDish.areAllIngredientBio(viewModel: viewModel) ? "💯Bio" : ""
+        let areProdottiCongelati = self.newDish.areAllIngredientFreshOr(viewModel: viewModel) ? "" : "\nPotrebbe contenere ingredienti surgelati/congelati"
+        
+        return Text("\(self.newDish.intestazione) \(isBio)\nIngredienti (\(allIngredients.count)): \(allIngredients,format: .list(type: .and))\nAllergeni (\(allAllergeni.count)): \(allAllergeni,format: .list(type: .and))\(areProdottiCongelati)")
+        
+           // !!! Vedi consegna 11.09
+        
+        // Inserire l'eventuale Contiene prodotti congelati/surgelati
+    }
+    
+   /* private func infoPiatto() -> Text {
            
         var stringIngredientiPrincipali:[String] = []
         var stringIngredientiSecondari:[String] = []
@@ -199,7 +246,7 @@ struct NewDishMainView: View {
         return Text("\(self.newDish.intestazione)\n\(stringIngredientiPrincipali,format: .list(type: .and))\n\(stringValueAllergeni) \(stringAllergeni,format: .list(type: .and))")
             
            
-    }
+    } */ // BackUp 11.09
     
  /*   private func infoPiatto() -> Text {
            
@@ -249,9 +296,13 @@ struct NewDishMainView: View {
        
         guard checkAllergeni() else { return false }
         
+        // Il check della dieta non serve, poichè se non confermato dall'utente, andrà di default sulla dieta standard
+        
         guard checkFormats() else { return false }
        
-        self.newDish.status = .completo(.archiviato) // vedi Nota Consegna 17.07
+        if self.newDish.optionalComplete() { self.newDish.status = .completo(.disponibile)}
+        else { self.newDish.status = .bozza(.disponibile) }
+       
         return true
         
     }
@@ -267,6 +318,8 @@ struct NewDishMainView: View {
     }
     
     private func checkIngredienti() -> Bool {
+        
+        guard !self.noIngredientsNeeded else { return false }
         
         return !self.newDish.ingredientiPrincipali.isEmpty
     }
@@ -362,13 +415,86 @@ struct NewDishMainView: View {
 
 struct NewDishMainView_Previews: PreviewProvider {
 
+    @State static var ingredientSample =  IngredientModel(
+        intestazione: "Guanciale Nero",
+        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
+        conservazione: .surgelato,
+        produzione: .convenzionale,
+        provenienza: .restoDelMondo,
+        allergeni: [.glutine],
+        origine: .animale,
+        status: .completo(.inPausa)
+        
+    )
+    
+    @State static var ingredientSample2 =  IngredientModel(
+        intestazione: "Tuorlo d'Uovo",
+        descrizione: "",
+        conservazione: .surgelato,
+        produzione: .biologico,
+        provenienza: .italia,
+        allergeni: [.uova_e_derivati],
+        origine: .animale,
+        status: .completo(.disponibile)
+       
+            )
+    
+    @State static var ingredientSample3 =  IngredientModel(
+        intestazione: "Basilico",
+        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
+        conservazione: .altro,
+        produzione: .biologico,
+        provenienza: .restoDelMondo,
+        allergeni: [],
+        origine: .vegetale,
+        status: .bozza(.inPausa))
+    
+    @State static var ingredientSample4 =  IngredientModel(
+        intestazione: "Pecorino D.O.P",
+        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
+        conservazione: .congelato,
+        produzione: .convenzionale,
+        provenienza: .europa,
+        allergeni: [.latte_e_derivati],
+        origine: .animale,
+        status: .bozza(.inPausa)
+       )
+    
+    static let dishSample:DishModel = {
+       var dish = DishModel()
+        dish.intestazione = "Trofie al Pesto"
+        let dishPrice:DishFormat = {
+            var price = DishFormat(type: .mandatory)
+            price.price = "12.5"
+            return price
+        }()
+        dish.pricingPiatto = [dishPrice]
+        dish.mostraDieteCompatibili = true
+        dish.categoriaMenu = CategoriaMenu(nome: "PortataTest")
+        dish.status = .bozza(.disponibile)
+     
+        dish.ingredientiPrincipali = [ingredientSample.id]
+        dish.ingredientiSecondari = [ingredientSample3.id,ingredientSample4.id]
+        dish.elencoIngredientiOff = [ingredientSample4.id:ingredientSample2.id]
+        return dish
+        
+    }()
+    
+    @StateObject static var viewModel:AccounterVM = {
+   
+      var viewM = AccounterVM()
+        viewM.allMyDish = [dishSample]
+        viewM.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+        return viewM
+    }()
+    
     static var previews: some View {
         
         NavigationStack {
             
-            NewDishMainView(newDish: DishModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList)
+            NewDishMainView(newDish: dishSample, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList)
             
-        }.environmentObject(AccounterVM())
+        }.environmentObject(viewModel)
     }
 }
 

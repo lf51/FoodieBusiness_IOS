@@ -28,8 +28,9 @@ struct DishModel:MyModelStatusConformity {
         lhs.elencoIngredientiOff == rhs.elencoIngredientiOff &&
         lhs.idIngredienteDaSostituire == rhs.idIngredienteDaSostituire &&
         lhs.categoriaMenu == rhs.categoriaMenu &&
-        lhs.allergeni == rhs.allergeni &&
+      //  lhs.allergeni == rhs.allergeni &&
         lhs.dieteCompatibili == rhs.dieteCompatibili &&
+        lhs.mostraDieteCompatibili == rhs.mostraDieteCompatibili &&
         lhs.pricingPiatto == rhs.pricingPiatto &&
        // lhs.sostituzioneIngredientiTemporanea == rhs.sostituzioneIngredientiTemporanea &&
         lhs.aBaseDi == rhs.aBaseDi
@@ -56,13 +57,17 @@ struct DishModel:MyModelStatusConformity {
     var idIngredienteDaSostituire: String? // è una proprietà di servizio che ci serve a bypassare lo status di inPausa per tranciare un ingrediente che probabilmente andrà sostituito. Necessario perchè col cambio da Model a riferimento nella View delle sostituzioni la visualizzazione dell'ingrediente da sostituire richiederebbe il cambio di status e dunque un pò di macello. Vedi Nota Vocale 30.08
     var categoriaMenu: CategoriaMenu = .defaultValue
     var pricingPiatto:[DishFormat] = []//[DishFormat(type: .mandatory)]
-
-    var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti // deprecata in futuro - sostituita da un metodo
+    var mostraDieteCompatibili: Bool = false
+    
+    // deprecate
+  //  var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti // deprecata in futuro - sostituita da un metodo // deprecata 12.09
 
     var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti // deprecata in futuro - sostituire con un metodo
    
 
     var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti // deprecata in futuro
+    // end deprecate
+    
     
    /* init() {
         
@@ -235,25 +240,70 @@ struct DishModel:MyModelStatusConformity {
     } */ // deprecata 26.08
     
     /// ritorna gli ingredienti meno le bozze e gli archiviati. Comprende i completi(.pubblici) e i completi(.inPausa)
-    func allMinusBozzeEArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
+    func allMinusArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
         
         let allIngredientsID = self.ingredientiPrincipali + self.ingredientiSecondari
         let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.allMyIngredients)
         let allMinusBozzeEArchiviati = allTheIngredients.filter({
-            $0.status != .completo(.archiviato) &&
-            $0.status != .bozza()
+          // !$0.status.checkStatusTransition(check: .archiviato)
+            !$0.status.checkStatusTransition(check: .archiviato)
+           /* $0.status != .completo(.archiviato) &&
+            $0.status != .bozza() */
         })
         
         return allMinusBozzeEArchiviati
     }
     
-    
     /// ritorna gli ingredienti Attivi sostituendo gli ingredienti inPausa con gli eventuali sostituti
-    func allModelAttivi(viewModel:AccounterVM) -> [IngredientModel] {
+    func allIngredientsAttivi(viewModel:AccounterVM) -> [IngredientModel] {
+        
+        let allMinusBozzeEArchiviati = allMinusArchiviati(viewModel: viewModel)
+
+        let allInPausa = allMinusBozzeEArchiviati.filter({
+            $0.status.checkStatusTransition(check: .inPausa)
+            })
+        
+        guard !allInPausa.isEmpty else { return allMinusBozzeEArchiviati }
+        
+        guard !self.elencoIngredientiOff.isEmpty else {
+            return allMinusBozzeEArchiviati.filter({
+                $0.status.checkStatusTransition(check: .disponibile)
+            })
+        }
+        
+        var allActiveIDs = allMinusBozzeEArchiviati.map({$0.id})
+        
+        for ingredient in allInPausa {
+            
+            let position = allActiveIDs.firstIndex{$0 == ingredient.id}
+            
+            if let sostituto = self.elencoIngredientiOff[ingredient.id] {
+                
+                let(isActive,_,_) = viewModel.infoFromId(id: sostituto, modelPath: \.allMyIngredients)
+                
+                if isActive {
+                    allActiveIDs[position!] = sostituto
+                } else { allActiveIDs.remove(at: position!)}
+                
+            } else { allActiveIDs.remove(at: position!)}
+            
+        }
+        
+        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.allMyIngredients)
+        
+        return allActiveModels
+    }
+    
+ /*
+    /// ritorna gli ingredienti Attivi sostituendo gli ingredienti inPausa con gli eventuali sostituti
+    func allIngredientsAttivi(viewModel:AccounterVM) -> [IngredientModel] {
         
         let allMinusBozzeEArchiviati = allMinusBozzeEArchiviati(viewModel: viewModel)
 
-        let allInPausa = allMinusBozzeEArchiviati.filter({$0.status == .completo(.inPausa)})
+        let allInPausa = allMinusBozzeEArchiviati.filter({
+            $0.status.checkStatusTransition(check: .inPausa)
+          //  $0.status == .completo(.inPausa)
+            })
         
         guard !allInPausa.isEmpty else { return allMinusBozzeEArchiviati }
         
@@ -282,11 +332,11 @@ struct DishModel:MyModelStatusConformity {
         
         return allActiveModels
         
-    }
-    
+    } */ //backUp 12.09 -> per semplificazione e migliorie
+    /// ritorna un booleano indicante la presenza o meno di tutti ingredienti Bio
     func areAllIngredientBio(viewModel:AccounterVM) -> Bool {
         
-        let allIngredient = self.allModelAttivi(viewModel: viewModel)
+        let allIngredient = self.allIngredientsAttivi(viewModel: viewModel)
         
         guard !allIngredient.isEmpty else { return false }
         
@@ -297,6 +347,20 @@ struct DishModel:MyModelStatusConformity {
         return true
     }
    
+    /// ritorna un booleano indicante la presenza o meno di ingredienti congelati/surgelati
+    func areAllIngredientFreshOr(viewModel:AccounterVM) -> Bool {
+        
+        let allIngredient = self.allIngredientsAttivi(viewModel: viewModel)
+        
+        guard !allIngredient.isEmpty else { return false }
+        
+        for ingredient in allIngredient {
+            if ingredient.conservazione == .altro { continue }
+            else { return false }
+        }
+        return true
+    }
+    
     /*
     /// ritorna solo gli ingredienti Attivi, dunque toglie gli eventuali ingredienti SOSTITUITI e li rimpiazza con i SOSTITUTI
     private func allIDIngredientiAttivi() -> [String] {
@@ -329,7 +393,7 @@ struct DishModel:MyModelStatusConformity {
        // let allIDIngredient = allIDIngredientiAttivi()
         
        // let allIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIDIngredient, modelPath: \.allMyIngredients)
-        let allIngredients = self.allModelAttivi(viewModel: viewModel)
+        let allIngredients = self.allIngredientsAttivi(viewModel: viewModel)
         
         // end 30.08
         var allergeniPiatto:[AllergeniIngrediente] = []
@@ -356,7 +420,7 @@ struct DishModel:MyModelStatusConformity {
         
        // let allModelIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIDIngredient, modelPath: \.allMyIngredients)
         
-        let allModelIngredients = self.allModelAttivi(viewModel: viewModel)
+        let allModelIngredients = self.allIngredientsAttivi(viewModel: viewModel)
         // end 30.08
         // step 1 ->
         
@@ -399,7 +463,15 @@ struct DishModel:MyModelStatusConformity {
         return (dieteOk,dieteOkInStringa)
     }
     
-
+    /// ritorna true se tutte le proprietà optional sono state compilate, e dunque il modello è completo.
+    func optionalComplete() -> Bool {
+        
+        self.descrizione != "" &&
+        self.mostraDieteCompatibili &&
+        !self.ingredientiPrincipali.isEmpty
+       
+    }
+    
 }
 
 

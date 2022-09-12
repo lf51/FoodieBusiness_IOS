@@ -223,7 +223,7 @@ struct DishModel_RowView: View {
             $0.status != .bozza
         }) */
         
-        let allFilteredIngredients = self.item.allMinusBozzeEArchiviati(viewModel: self.viewModel)
+        let allFilteredIngredients = self.item.allMinusArchiviati(viewModel: self.viewModel)
         let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
         // end 26.08
             HStack(spacing: 4.0) {
@@ -580,7 +580,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.ingredientiPrincipali = [ing1.id,ing2.id]
         dish.ingredientiSecondari = [ing3.id]
         dish.elencoIngredientiOff = [ing2.id:ing4.id]
-        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
+        
         
         return dish
     }()
@@ -615,7 +615,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.pricingPiatto = [price1,price2,price3]
         dish.ingredientiPrincipali = [ing1.id,ing4.id]
         dish.ingredientiSecondari = [ing2.id,ing3.id]
-        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
+
       /*  dish.dieteCompatibili = TipoDieta.returnDietAvaible(ingredients: [ing1,ing2,ing3,ing4]).inDishTipologia */
         
         return dish
@@ -649,7 +649,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.pricingPiatto = [price1,price2]
         dish.ingredientiPrincipali = [ing3.id]
         dish.ingredientiSecondari = [ing1.id,ing2.id,ing4.id]
-        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing1,ing2,ing3,ing4])
+    
         
         return dish
     }()
@@ -678,7 +678,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.status = .completo(.disponibile)
         dish.pricingPiatto = [price1,price2]
         dish.ingredientiPrincipali = [ing4.id]
-        dish.allergeni = AllergeniIngrediente.returnAllergeniIn(ingredients: [ing4])
+
         
         
         return dish
