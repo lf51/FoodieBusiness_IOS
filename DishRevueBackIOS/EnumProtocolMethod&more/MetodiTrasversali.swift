@@ -122,6 +122,7 @@ func csReturnEmojyCollection() -> [String] {
         
     }
 
+/*
 /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse sempre in Stringa
 func csIterateDishRating(item: DishModel) -> (media:String,count:String) {
     
@@ -146,7 +147,7 @@ func csIterateDishRating(item: DishModel) -> (media:String,count:String) {
     mediaRating = String(format:"%.1f", mediaAritmetica)
     return (mediaRating,stringCount)
     
-}
+} */ // Deprecata 13.09 per trasformazione in riferimenti. Spostata nel dishModel
 
  func csSwitchSingolarePlurale(checkNumber:Int,wordSingolare:String,wordPlurale:String) -> String {
     

@@ -42,7 +42,7 @@ struct ListaIngredientiView: View {
 
             }
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
-                destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .ingredientList)
+                destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .ingredientList, readOnlyViewModel: viewModel)
             })
           /*  .navigationDestination(for: IngredientModel.self, destination: { ingredient in
                 NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView)

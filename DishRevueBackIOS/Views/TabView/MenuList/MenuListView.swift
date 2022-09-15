@@ -24,7 +24,7 @@ struct MenuListView: View {
                 ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
             }
         .navigationDestination(for: DestinationPathView.self, destination: { destination in
-             destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .menuList)
+            destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .menuList, readOnlyViewModel: viewModel)
          })
             .toolbar {
                 

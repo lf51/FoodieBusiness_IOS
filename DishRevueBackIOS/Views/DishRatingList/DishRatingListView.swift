@@ -17,11 +17,13 @@ struct DishRatingListView: View {
     
     @State private var minMaxRange: (Double,Double) = (0.0,10.0)
     
-    init(dishItem:DishModel,backgroundColorView: Color) {
+    init(dishItem:DishModel, backgroundColorView: Color, readOnlyViewModel:AccounterVM) {
+        
         self.dishTitle = dishItem.intestazione
-        self.dishRating = dishItem.rating
+       // self.dishRating = dishItem.rating
        
-        (self.mediaRating,self.ratingsCount) = csIterateDishRating(item: dishItem)
+     //   (self.mediaRating,self.ratingsCount) = csIterateDishRating(item: dishItem)
+        (self.mediaRating,self.ratingsCount,self.dishRating) = dishItem.ratingInfo(readOnlyViewModel: readOnlyViewModel)
         self.backgroundColorView = backgroundColorView
     }
     
@@ -168,18 +170,33 @@ struct DishRatingListView: View {
 
 struct DishRatingListView_Previews: PreviewProvider {
     
+    static var viewModel: AccounterVM = {
+       var vm = AccounterVM()
+        vm.allMyReviews =  [
+            DishRatingModel( voto: "9.0", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino.", idPiatto: "Lailo05"),
+            DishRatingModel(voto: "5.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore", idPiatto: "Lailo05"),
+            DishRatingModel( voto: "9.0", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male.", idPiatto: "Lailo05"),
+            DishRatingModel(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!", idPiatto: "Lailo05"),
+            DishRatingModel(voto: "4.0", titolo: "Sapore di Niente", commento: "NoComment", idPiatto: "Lailo05")
+            
+            ]
+        return vm
+    }()
+    
     static var dishItem: DishModel = {
         
         var newDish = DishModel()
+        newDish.id = "Lailo05"
         newDish.intestazione = "Spaghetti alla Carbonara"
-        newDish.rating = [
+        newDish.rifReviews = ["001","002","003","004","005"]
+      /*  newDish.rating = [
             DishRatingModel(voto: "9.0", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino."),
             DishRatingModel(voto: "5.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore"),
             DishRatingModel(voto: "9.0", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male."),
             DishRatingModel(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!"),
             DishRatingModel(voto: "4.0", titolo: "Sapore di Niente", commento: "NoComment")
             
-            ]
+            ] */
         return newDish
     }()
 
@@ -189,7 +206,7 @@ struct DishRatingListView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            DishRatingListView(dishItem:dishItem, backgroundColorView: background)
+            DishRatingListView(dishItem:dishItem, backgroundColorView: background, readOnlyViewModel: viewModel)
             
         }
         

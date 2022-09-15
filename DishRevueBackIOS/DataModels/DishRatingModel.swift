@@ -8,7 +8,11 @@
 import Foundation
 import SwiftUI
 
-struct DishRatingModel:Hashable {
+struct DishRatingModel: MyProStarterPack_L0, Hashable {
+    
+   // let id:String
+    let id: String = UUID().uuidString
+    let rifPiatto: String // Lo mettiamo per avere un riferimento incrociato
     
     let voto: String // il voto deve essere un INT ma vine salvato come double : ex 8.0. Quindi nelle trasformazioni lo trattiamo come Double.
     let titolo: String // deve avere un limite di caratteri
@@ -35,11 +39,14 @@ struct DishRatingModel:Hashable {
     }
     
 
-    init(voto: String, titolo: String, commento: String) {
+    init(/*id:String,*/voto: String, titolo: String, commento: String, idPiatto: String) {
+        
         self.voto = voto
         self.titolo = titolo
         self.commento = commento
+        self.rifPiatto = idPiatto
         
         self.dataRilascio = Date() // viene inizializzata in automatico con la data di init che dovrebbe corrispondere alla data di rilascio della review
+       // self.id = id
     }
 }

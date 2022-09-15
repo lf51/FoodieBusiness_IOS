@@ -83,7 +83,8 @@ struct DishModel_RowView: View {
     @ViewBuilder private func vbSubIntestazioneDishRow() -> some View {
         
         let (price,count) = csIterateDishPricing()
-        let (mediaRating,ratingCount) = csIterateDishRating(item: self.item)
+      //  let (mediaRating,ratingCount) = csIterateDishRating(item: self.item)
+        let (mediaRating,ratingCount,_) = self.item.ratingInfo(readOnlyViewModel: viewModel)
         
         HStack(alignment:.bottom,spacing: 3) {
             
@@ -566,9 +567,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
         var dish = DishModel()
         dish.intestazione = "Spaghetti alla Carbonara"
         dish.status = .completo(.disponibile)
-        dish.rating = [
+      /*  dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
-        ]
+        ] */
         
         let price = {
            var priceFirst = DishFormat(type: .mandatory)
@@ -589,9 +590,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
         var dish = DishModel()
         dish.intestazione = "Bucatini alla Matriciana"
         dish.status = .completo(.disponibile)
-        dish.rating = [
+      /*  dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
-        ]
+        ] */
         
         let price1 = {
            var priceFirst = DishFormat(type: .opzionale)
@@ -624,14 +625,14 @@ struct DishModel_RowView_Previews: PreviewProvider {
        
         var dish = DishModel()
         dish.intestazione = "Trofie Pesto Noci e Gamberi"
-        dish.rating = [
+      /*  dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),
             DishRatingModel(voto: "6.7", titolo: "", commento: ""),
             DishRatingModel(voto: "8.7", titolo: "", commento: ""),
             DishRatingModel(voto: "9.7", titolo: "", commento: ""),
             DishRatingModel(voto: "9.7", titolo: "", commento: ""),
             DishRatingModel(voto: "9.7", titolo: "", commento: "")
-        ]
+        ] */
         
         let price1 = {
            var priceFirst = DishFormat(type: .mandatory)
@@ -658,9 +659,9 @@ struct DishModel_RowView_Previews: PreviewProvider {
        
         var dish = DishModel()
         dish.intestazione = "Birra bionda alla Spina"
-        dish.rating = [
+       /* dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
-        ]
+        ] */
         
         let price1 = {
            var priceFirst = DishFormat(type: .mandatory)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
+struct CategoriaMenu:MyProStarterPack_L1,MyEnumProtocol,MyEnumProtocolMapConform {
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -16,47 +16,35 @@ struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
     static func == (lhs:CategoriaMenu, rhs:CategoriaMenu) -> Bool {
         
         lhs.id == rhs.id &&
-        lhs.nome == rhs.nome &&
+        lhs.intestazione == rhs.intestazione &&
         lhs.image == rhs.image
     } // forse inutile
      
-    static var allCases: [CategoriaMenu] = [
-        CategoriaMenu(
-            nome: "Antipasti",
-            image: "🫒"),
-        CategoriaMenu(
-            nome: "Primi",
-            image: "🍝"),
-        CategoriaMenu(
-            nome: "Secondi",
-            image: "🍴"),
-        CategoriaMenu(
-            nome: "Contorni",
-            image: "🥗"),
-        CategoriaMenu(
-            nome: "Frutta",
-            image: "🍉"),
-        CategoriaMenu(
-            nome: "Dessert",
-            image: "🍰"),
-        CategoriaMenu(
-            nome: "Bevande",
-            image: "🍷")] // Deprecata 02.06 -> Passa i dati ad una published nel viewModel
+    static var allCases: [CategoriaMenu] = [] // Deprecata 02.06 -> Passa i dati ad una published nel viewModel // deprecata definitivamente 13.09
     
-    static var defaultValue: CategoriaMenu = CategoriaMenu(nome: "", image: "🍽")
+    static var defaultValue: CategoriaMenu = CategoriaMenu(intestazione: "", image: "🍽")
     
-    var id: String { self.createId() }
+  //  var id: String { self.createId() }
+    var id: String = UUID().uuidString
     
-    let nome: String
-    var image: String = "🍰"
+    var intestazione: String = ""
+    var image: String = "🍽"
   //  var listPositionOrder: Int
     
+    func returnModelTypeName() -> String {
+        "Categoria Menu"
+    }
+    
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String) {
+        return (\.categoriaMenuAllCases,"Elenco Categorie Menu", "Categoria Menu")
+    }
+    
     func createId() -> String { // Deprecata
-        self.nome.replacingOccurrences(of: " ", with: "").lowercased()
+        self.intestazione.replacingOccurrences(of: " ", with: "").lowercased()
     }
     
     func simpleDescription() -> String { // Deprecata
-        self.nome
+        self.intestazione
       //  "Dessert"
     }
     
@@ -72,13 +60,27 @@ struct CategoriaMenu:MyEnumProtocol,MyEnumProtocolMapConform {
     }
     
     func returnTypeCase() -> CategoriaMenu { // Deprecata
-        return CategoriaMenu(nome: "", image: "")
+        return CategoriaMenu(intestazione: "", image: "")
     }
     
     func orderValue() -> Int { // Deprecata
        // self.listPositionOrder
         return 0
     }
+    
+    // method added 13.09
+    
+    func dishPerCategory(viewModel:AccounterVM) -> (count:Int,array:[DishModel]) {
+        
+        let dish = viewModel.allMyDish.filter {$0.categoriaMenu == self.id}
+        return (dish.count,dish)
+    }
+    
+    
+    
+    
+    // end
+    
     
    /* func addNew() {
         

@@ -7,6 +7,138 @@
 
 import SwiftUI
 
+/// Differisce dalla ProprertyAllCases per passaggio di riferimenti e non più di oggetti
+struct PropertyScrollCases_Rif<T:MyEnumProtocol>: View {
+
+    @EnvironmentObject var viewModel: AccounterVM
+    
+    @Binding var newDishSingleProperty: String
+    @Binding var newDishCollectionProperty: [T]
+    var enumCases: [T]
+    let colorSelection: Color
+    
+    private var checkInit: String = "" // ci serve a riconoscere quale init abbiamo utilizzato per creare la view, e questa scelta è utile nel metodo checkSelectionOrContainer() per applicare i modifier e per la tapAction
+    
+    init(cases:[T], dishSingleProperty: Binding<String>, colorSelection: Color) {
+        
+        self.checkInit = "Single"
+        
+        self.enumCases = cases
+        _newDishSingleProperty = dishSingleProperty
+        _newDishCollectionProperty = .constant([]) // qui a differenza di giù, si è fatto presto passando un arrayVuoto
+        self.colorSelection = colorSelection
+       
+    }
+    
+    init(cases:[T], dishCollectionProperty: Binding<[T]>, colorSelection: Color) {
+        
+        self.checkInit = "Collection"
+        
+        self.enumCases = cases
+        _newDishSingleProperty = .constant("") // abbiamo creato un valore di default per chi adotta il nostroProtocollo
+        _newDishCollectionProperty = dishCollectionProperty
+        self.colorSelection = colorSelection
+
+    }
+  
+    var body: some View {
+        
+        VStack(alignment:.leading) {
+            
+            ScrollView(.horizontal,showsIndicators: false) {
+                
+                HStack {
+                    
+                    ForEach(enumCases) { type in
+                        
+                        let isSelected = self.checkSelectionOrContainer(type: type)
+                        
+                        CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: isSelected ? Color.white : Color("SeaTurtlePalette_3"), fillColor: isSelected ? colorSelection : Color.clear) {
+                            
+                            HStack {
+                                
+                                csVbSwitchImageText(string: type.imageAssociated(), size: .large)
+                                Text(type.simpleDescription())
+                                
+                            }
+                        }
+                        .opacity(isSelected ? 1.0 : 0.65)
+                        .onTapGesture {self.addingValueTo(newValue: type)}
+                    }
+                }
+            }
+
+         //   if let extendedDescription = newDishSingleProperty.extendedDescription() {
+            if let model = self.viewModel.myEnumFromId(id: newDishSingleProperty, modelPath: \.categoriaMenuAllCases) {
+                
+                Text(model.extendedDescription())
+                    .font(.caption)
+                    .fontWeight(.light)
+                    .italic()
+                    .foregroundColor(Color.black)
+            }
+            
+                      
+                        
+             //   }
+        }
+    }
+    
+    
+    private func checkSelectionOrContainer(type: T) -> Bool {
+        
+        if checkInit == "Single" {
+            
+            return self.newDishSingleProperty == type.id
+            
+        }
+
+        else {
+            
+            return self.newDishCollectionProperty.contains(type)
+        }
+   
+    }
+     
+    private func addingValueTo(newValue: T) {
+        
+        if self.checkInit == "Single" {
+            
+            withAnimation(.default) {
+                
+                self.newDishSingleProperty = self.newDishSingleProperty == newValue.id ? "" : newValue.id
+
+            }
+            
+        }
+        
+        else if self.checkInit == "Collection" {
+            
+            withAnimation(.default) {
+              
+                if !self.newDishCollectionProperty.contains(newValue) {
+                    
+                    self.newDishCollectionProperty.append(newValue)
+                    
+                } else {
+                    
+                    let indexValue = self.newDishCollectionProperty.firstIndex(of: newValue)
+                    self.newDishCollectionProperty.remove(at: indexValue!)
+                    
+                }
+                
+                print("Lista of generic T-Type: \(self.newDishCollectionProperty.description)")
+           
+            }
+        }
+      
+    }
+
+    
+    
+    
+}
+
 struct PropertyScrollCases<T:MyEnumProtocol>: View {
 
     @Binding var newDishSingleProperty: T
@@ -130,7 +262,7 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
     
     
     
-}
+} // deprecata in futuro per trasformazione da "passaggio di modello" a "passaggio di riferimento"
 
 /* struct EnumScrollCases_Previews: PreviewProvider {
     static var previews: some View {

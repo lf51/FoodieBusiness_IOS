@@ -27,10 +27,15 @@ struct PropertyModel: MyModelProtocol, Hashable{
         EmptyView()
     }
     
-    func returnNewModel() -> (tipo: PropertyModel, nometipo: String) {
+   /* func returnNewModel() -> (tipo: PropertyModel, nometipo: String) {
         (PropertyModel(),"Nuova Proprietà")
-    }
+    } */
 
+    func returnModelTypeName() -> String {
+        "Proprietà"
+    }
+    
+    
     func returnModelRowView() -> some View {
         PropertyModel_RowView(itemModel: self)
     }

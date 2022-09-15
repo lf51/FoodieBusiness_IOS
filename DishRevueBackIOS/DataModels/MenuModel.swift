@@ -69,8 +69,12 @@ struct MenuModel:MyModelStatusConformity {
         }
     }
     
-    func returnNewModel() -> (tipo: MenuModel, nometipo: String) {
+   /* func returnNewModel() -> (tipo: MenuModel, nometipo: String) {
         (MenuModel(), "Menu")
+    } */
+    
+    func returnModelTypeName() -> String {
+        "Menu"
     }
     
     func modelStringResearch(string: String) -> Bool {

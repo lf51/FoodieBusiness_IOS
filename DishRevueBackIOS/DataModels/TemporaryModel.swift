@@ -15,6 +15,7 @@ struct TemporaryModel:Identifiable {
     
     var dish: DishModel
     var ingredients: [IngredientModel]
+    var categoriaMenu: CategoriaMenu = .defaultValue
     var rifIngredientiSecondari: [String] = []
     
 }

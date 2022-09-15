@@ -66,7 +66,8 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
     @ViewBuilder private func saveButtonDialogView() -> some View {
         
       //  let (_,newModelName) = self.itemModel.returnNewModel()
-        let newModelName = self.itemModel.returnNewModel().nometipo
+      /*  let newModelName = self.itemModel.returnNewModel().nometipo */
+        let newModelName = self.itemModel.returnModelTypeName()
         
         if itemModelArchiviato.intestazione == "" {
             // crea un Nuovo Oggetto
@@ -104,6 +105,8 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
                 Button("Salva come Nuovo \(newModelName)", role: .none) {
                     // Add 18.08
                     self.itemModel.id = UUID().uuidString
+                    // vedi NotaVocale 13.09
+                    
                     // assegniamo un nuovo id e salviamo così un nuovo oggetto
                     // end
                     self.viewModel.createItemModel(itemModel: self.itemModel,destinationPath: self.destinationPath)

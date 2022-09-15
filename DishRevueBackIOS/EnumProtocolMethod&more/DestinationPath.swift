@@ -8,7 +8,7 @@
 import SwiftUI
 import UIKit
 
-enum DestinationPathView:Hashable {
+enum DestinationPathView: Hashable {
     
     case accountSetup(_ :AuthPasswordLess)
     case propertyList
@@ -23,7 +23,7 @@ enum DestinationPathView:Hashable {
     
     case moduloSostituzioneING(_ : IngredientModel)
     
-    @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath) -> some View {
+    @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath, readOnlyViewModel:AccounterVM) -> some View {
         
         switch self {
 
@@ -49,8 +49,8 @@ enum DestinationPathView:Hashable {
             NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
             
         case .recensioni(let dish):
-            DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView)
-            
+            DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)
+            // vedi Nota vocale 13.09
         case .moduloSostituzioneING(let ingredient):
             DishListByIngredientView(ingredientModelCorrente: ingredient,destinationPath: destinationPath, backgroundColorView: backgroundColorView) 
           /*  SostituzioneING_MainView(ingredientModelCorrente: ingredient,destinationPath: destinationPath, backgroundColorView: backgroundColorView) */

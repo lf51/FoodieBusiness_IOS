@@ -314,7 +314,8 @@ struct NewDishMainView: View {
     
     private func checkCategoria() -> Bool {
         
-       return self.newDish.categoriaMenu != .defaultValue
+      // return self.newDish.categoriaMenuDEPRECATA != .defaultValue
+        return self.newDish.categoriaMenu.isEmpty
     }
     
     private func checkIngredienti() -> Bool {
@@ -470,7 +471,7 @@ struct NewDishMainView_Previews: PreviewProvider {
         }()
         dish.pricingPiatto = [dishPrice]
         dish.mostraDieteCompatibili = true
-        dish.categoriaMenu = CategoriaMenu(nome: "PortataTest")
+       // dish.categoriaMenu = CategoriaMenu(nome: "PortataTest")
         dish.status = .bozza(.disponibile)
      
         dish.ingredientiPrincipali = [ingredientSample.id]

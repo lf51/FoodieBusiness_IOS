@@ -80,7 +80,7 @@ struct HomeView: View {
                 .padding(.horizontal)
             }// chiusa ZStack
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
-                destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .homeView)
+                destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .homeView, readOnlyViewModel: viewModel)
             })
          /*  .navigationDestination(for: PropertyModel.self, destination: { property in
                 EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)

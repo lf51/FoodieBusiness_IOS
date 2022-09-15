@@ -34,6 +34,7 @@
 /* Begin PBXBuildFile section */
 		3F180D7B28C1030E00AF67D7 /* DishChangingIngredient_RowSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F180D7A28C1030E00AF67D7 /* DishChangingIngredient_RowSubView.swift */; };
 		3F180D7D28C1032000AF67D7 /* BottomView_DLBIVSubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F180D7C28C1032000AF67D7 /* BottomView_DLBIVSubView.swift */; };
+		3F2026D728D0E72500DDB4FA /* EnumIDTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2026D628D0E72500DDB4FA /* EnumIDTest.swift */; };
 		3F250CCF28995DE800166E46 /* DishRating_RowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F250CCE28995DE800166E46 /* DishRating_RowView.swift */; };
 		3F250CD128996CD400166E46 /* DishRatingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F250CD028996CD400166E46 /* DishRatingListView.swift */; };
 		3F32079F289AA9BA000BB5A9 /* DishRatingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F32079E289AA9BA000BB5A9 /* DishRatingModel.swift */; };
@@ -214,6 +215,7 @@
 /* Begin PBXFileReference section */
 		3F180D7A28C1030E00AF67D7 /* DishChangingIngredient_RowSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishChangingIngredient_RowSubView.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		3F180D7C28C1032000AF67D7 /* BottomView_DLBIVSubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomView_DLBIVSubView.swift; sourceTree = "<group>"; };
+		3F2026D628D0E72500DDB4FA /* EnumIDTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnumIDTest.swift; sourceTree = "<group>"; };
 		3F250CCE28995DE800166E46 /* DishRating_RowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRating_RowView.swift; sourceTree = "<group>"; };
 		3F250CD028996CD400166E46 /* DishRatingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRatingListView.swift; sourceTree = "<group>"; };
 		3F32079E289AA9BA000BB5A9 /* DishRatingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRatingModel.swift; sourceTree = "<group>"; };
@@ -665,6 +667,7 @@
 				4D168C1D285251E7000B137E /* ColoreTabViewTest.swift */,
 				4D61A3CE28576E0500C0B810 /* NavStackTest.swift */,
 				3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */,
+				3F2026D628D0E72500DDB4FA /* EnumIDTest.swift */,
 			);
 			path = TEST;
 			sourceTree = "<group>";
@@ -1054,6 +1057,7 @@
 			files = (
 				4D4FE6E827FCA8B700AC0190 /* DataModelPickerView_SubView.swift in Sources */,
 				4D3C727D2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift in Sources */,
+				3F2026D728D0E72500DDB4FA /* EnumIDTest.swift in Sources */,
 				4DC3EBC927ABD02C00FFC50E /* NewPropertyMainView.swift in Sources */,
 				4D3C72792883037700BAFE0B /* AllergeniScrollView_NewDishSub.swift in Sources */,
 				4D3C727B2883038A00BAFE0B /* CategoriaScrollView_NewDishSub.swift in Sources */,
@@ -1351,7 +1355,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 64;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1382,7 +1386,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 63;
+				CURRENT_PROJECT_VERSION = 64;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

@@ -22,7 +22,7 @@ struct PICKERTEST: View {
                 
                 Spacer()
                 
-                CS_Picker(selection: $fastDish.categoriaMenu, customLabel: "Scegli..", dataContainer: CategoriaMenu.allCases)
+              /*  CS_Picker(selection: $fastDish.categoriaMenuDEPRECATA, customLabel: "Scegli..", dataContainer: CategoriaMenu.allCases) */
             
                 }
 

@@ -19,8 +19,12 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol{
         EmptyView()
     }
     
-    func returnNewModel() -> (tipo: AllergeniIngrediente, nometipo: String) {
+   /* func returnNewModel() -> (tipo: AllergeniIngrediente, nometipo: String) {
         (AllergeniIngrediente.noValue,"Nuovo Allergene")
+    } */
+    
+    func returnModelTypeName() -> String {
+       "Nuovo Allergene"
     }
     
     func returnModelRowView() -> some View {

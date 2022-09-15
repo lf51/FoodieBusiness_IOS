@@ -8,7 +8,31 @@
 import Foundation
 import SwiftUI
 
-protocol MyEnumProtocol: /*CaseIterable,*/ Identifiable, Equatable { // Protocollo utile per un Generic di modo da passare differenti oggetti(ENUM) alla stessa View
+// 14.09 Spazio protocolli MyPro - Nuova generazione
+protocol MyProStarterPack_L0:Equatable { // Primo passo per la riorganizzazione dei protocolli. Step by step e per funzioni. L'incipit sarà MyPro seguito dal Pack. ModelPack EnumPack StatusPack per raggruppare le varie funzioni e utilizzi
+    
+    var id: String { get }
+   
+}
+
+protocol MyProStarterPack_L1:MyProStarterPack_L0 {
+    
+    var intestazione: String { get set }
+    
+    func returnModelTypeName() -> String // deprecata in futuro. inglobata nella viewModelContainerInstance
+    
+    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
+}
+
+
+
+
+
+// fine spazio MyPro
+
+protocol MyEnumProtocol: MyProStarterPack_L0, /*CaseIterable,*/ Identifiable/*, Equatable*/ { // Protocollo utile per un Generic di modo da passare differenti oggetti(ENUM) alla stessa View
+    
+   // var id: String { get } // 13.09 deprecato per conformità al MyProStarterPAck
     
     func simpleDescription() -> String
     func createId() -> String
@@ -29,23 +53,27 @@ protocol MyEnumProtocolMapConform : Hashable { // deve essere conforme ad HAshab
     func orderValue() -> Int  // usiamo lo zero per i casi che eventualmente vogliamo escludere. In data 07.04 predisposto come possibilità.
 }
 
-protocol MyModelProtocol: Identifiable, Equatable {
+
+
+
+protocol MyModelProtocol: MyProStarterPack_L1, Identifiable/*, Equatable*/ {
     
     associatedtype RowView: View
     associatedtype InteractiveMenuContent: View
     
-    var intestazione: String {get set}
+   // var intestazione: String {get set} // derivata dallo starterPackL1
     var descrizione: String {get set}
 
-    var id: String { get set }
+    var id: String { get set } // 13.09 deprecato per conformità al MyProStarterPAck - Vedi NotaVocale 13.09 // Sovrascrive il protocollo, poichè il protocollo lo vuole solo get
+   
     
     /// Stessa funzione di viewModelContainer() Solo che abbiamo l'accesso dal type
     static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM,[Self]>
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
+   /* func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String) */ //14.09 derivata dallo StarterPAckL1
     
     func returnModelRowView() -> RowView
-    func returnNewModel() -> (tipo:Self,nometipo:String) // deprecata in futuro il ritorno del Self. al 22.07 usato soltanto il nomeTipo
+  //  func returnNewModel() -> (tipo:Self,nometipo:String) // deprecata in futuro il ritorno del Self. al 22.07 usato soltanto il nomeTipo --> derivata la nuova versione dallo starterPackL1
     
     /// Bottoni per il menu Interattivo specifici del modello
     func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> InteractiveMenuContent
@@ -53,7 +81,7 @@ protocol MyModelProtocol: Identifiable, Equatable {
 
 protocol MyModelStatusConformity: MyModelProtocol, Hashable {
 
-    var id: String { get set }
+   // var id: String { get set } // 13.09 deprecato per conformità al MyProStarterPAck indiretta da MyModelProtocol
     var status: StatusModel {get set}
     
     func pathDestination() -> DestinationPathView
@@ -67,3 +95,4 @@ protocol MyModelStatusConformity: MyModelProtocol, Hashable {
     
    
 }
+

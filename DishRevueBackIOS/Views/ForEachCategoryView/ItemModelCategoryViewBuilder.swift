@@ -102,7 +102,7 @@ struct ItemModelCategoryViewBuilder: View {
 
         case .categoria:
             
-            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.categoriaMenu, dataPath: \.allMyDish, navPath: \.dishListPath)
+            DataModelCategoryView_SubView(filterCategory: self.filterCategory, path: \DishModel.categoriaMenuDEPRECATA, dataPath: \.allMyDish, navPath: \.dishListPath)
             
         case .base:
 

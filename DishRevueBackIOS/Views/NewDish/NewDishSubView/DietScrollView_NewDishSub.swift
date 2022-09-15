@@ -37,7 +37,7 @@ struct DietScrollView_NewDishSub: View {
                     CSInfoAlertView(
                         imageScale: .large,
                         title: "Info Diete",
-                        message: .sostituzioneTemporaneaING)
+                        message: .dieteCompatibili)
                     
                     Toggle(isOn: self.$newDish.mostraDieteCompatibili) {
                         

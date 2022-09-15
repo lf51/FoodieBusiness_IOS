@@ -22,11 +22,13 @@ struct DishModel:MyModelStatusConformity {
         lhs.intestazione == rhs.intestazione &&
         lhs.descrizione == rhs.descrizione &&
         lhs.status == rhs.status &&
-        lhs.rating == rhs.rating &&
+        lhs.rifReviews == rhs.rifReviews &&
+       // lhs.rating == rhs.rating &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
         lhs.elencoIngredientiOff == rhs.elencoIngredientiOff &&
         lhs.idIngredienteDaSostituire == rhs.idIngredienteDaSostituire &&
+        lhs.categoriaMenuDEPRECATA == rhs.categoriaMenuDEPRECATA &&
         lhs.categoriaMenu == rhs.categoriaMenu &&
       //  lhs.allergeni == rhs.allergeni &&
         lhs.dieteCompatibili == rhs.dieteCompatibili &&
@@ -43,9 +45,10 @@ struct DishModel:MyModelStatusConformity {
     var intestazione: String = ""
     var descrizione: String = ""
   //  var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
-    var rating: [DishRatingModel] = []
+  //  var rating: [DishRatingModel] = [] // deprecata 13.09
+    var rifReviews: [String] = [] // sostituisce il [DishRatingModel] con dei riferimenti allo stesso - vedi nota vocale 13.09
 
-    var status: StatusModel = .bozza()
+   
     
   //  var ingredientiPrincipaliDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
   //  var ingredientiSecondariDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
@@ -55,17 +58,20 @@ struct DishModel:MyModelStatusConformity {
     var ingredientiSecondari: [String] = [] // id IngredientModel
     var elencoIngredientiOff: [String:String] = [:] // id Sostituito: idSOSTITUTO
     var idIngredienteDaSostituire: String? // è una proprietà di servizio che ci serve a bypassare lo status di inPausa per tranciare un ingrediente che probabilmente andrà sostituito. Necessario perchè col cambio da Model a riferimento nella View delle sostituzioni la visualizzazione dell'ingrediente da sostituire richiederebbe il cambio di status e dunque un pò di macello. Vedi Nota Vocale 30.08
-    var categoriaMenu: CategoriaMenu = .defaultValue
-    var pricingPiatto:[DishFormat] = []//[DishFormat(type: .mandatory)]
+    
+    var categoriaMenu: String = "" // riferimento della CategoriaMenu
+   
     var mostraDieteCompatibili: Bool = false
     
     // deprecate
+    
+    var status: StatusModel = .bozza() // deprecata in futuro per passaggio ai riferimenti
+    var pricingPiatto:[DishFormat] = []//[DishFormat(type: .mandatory)] // deprecata in futuro per passaggio ai riferimenti
   //  var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti // deprecata in futuro - sostituita da un metodo // deprecata 12.09
-
+    var categoriaMenuDEPRECATA: CategoriaMenu = .defaultValue // deprecata in futuro
     var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti // deprecata in futuro - sostituire con un metodo
-   
-
     var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti // deprecata in futuro
+    
     // end deprecate
     
     
@@ -107,8 +113,8 @@ struct DishModel:MyModelStatusConformity {
         hasher.combine(id)
     }
     
-    func returnNewModel() -> (tipo: DishModel, nometipo: String) {
-        (DishModel(),"Piatto")
+    func returnModelTypeName() -> String {
+        "Piatto"
     }
     
     func modelStringResearch(string: String) -> Bool {
@@ -470,6 +476,36 @@ struct DishModel:MyModelStatusConformity {
         self.mostraDieteCompatibili &&
         !self.ingredientiPrincipali.isEmpty
        
+    }
+    
+    /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse sempre in Stringa, e un array con i modelli delle recensioni
+    func ratingInfo(readOnlyViewModel:AccounterVM) -> (media:String,count:String,allModelReview:[DishRatingModel]) {
+        
+     //   let allLocalReviews:[DishRatingModel] = viewModel.allMyReviews.filter({$0.idPiatto == self.id}) // vedi nota vocale 13.09
+
+        let allLocalReviews:[DishRatingModel] = readOnlyViewModel.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.allMyReviews)
+        
+        var sommaVoti: Double = 0.0
+        var mediaRating: String = "0.00"
+        
+        let ratingCount: Int = allLocalReviews.count // item.rating.count
+        let stringCount = String(ratingCount)
+        
+        guard !allLocalReviews.isEmpty else {
+            
+            return (mediaRating,stringCount,allLocalReviews)
+        }
+        
+        for rating in allLocalReviews {
+            
+            if let voto = Double(rating.voto) { sommaVoti += voto }
+            
+        }
+        
+        let mediaAritmetica = sommaVoti / Double(ratingCount)
+        mediaRating = String(format:"%.1f", mediaAritmetica)
+        return (mediaRating,stringCount,allLocalReviews)
+        
     }
     
 }

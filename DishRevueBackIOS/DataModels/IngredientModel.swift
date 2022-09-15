@@ -11,8 +11,8 @@ import SwiftUI
 // Creare Oggetto Ingrediente
 
 struct IngredientModel:MyModelStatusConformity {
-    
-    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
+   
+  static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
         return \.allMyIngredients
     }
     
@@ -45,10 +45,14 @@ struct IngredientModel:MyModelStatusConformity {
     
     var status: StatusModel = .bozza()
     
-    func returnNewModel() -> (tipo: IngredientModel, nometipo: String) {
+  /*  func returnNewModel() -> (tipo: IngredientModel, nometipo: String) {
         (IngredientModel(),"Ingrediente")
-    }
+    } */
  
+    func returnModelTypeName() -> String {
+        "Ingrediente"
+    }
+    
     func modelStringResearch(string: String) -> Bool {
         self.intestazione.lowercased().contains(string)
     }

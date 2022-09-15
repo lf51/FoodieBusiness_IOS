@@ -14,10 +14,11 @@ struct NuovaCategoriaMenu: View {
     let backgroundColorView:Color
 
     @State private var creaNuovaCategoria:Bool? = false
+    @State private var nuovaCategoria: CategoriaMenu = CategoriaMenu()
     
-    @State private var nomeCategoria: String = ""
-    @State private var image: String = "🍽"
-    @State private var positionOrder: Int = 0
+   // @State private var nomeCategoria: String = ""
+  //  @State private var image: String = "🍽"
+  //  @State private var positionOrder: Int = 0
     
     init(backgroundColorView: Color) {
        
@@ -27,7 +28,7 @@ struct NuovaCategoriaMenu: View {
     
     var body: some View {
         
-        CSZStackVB(title: "Categorie Menu", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: "Categorie dei Menu", backgroundColorView: backgroundColorView) {
             
             VStack(alignment:.leading) {
                 
@@ -36,10 +37,15 @@ struct NuovaCategoriaMenu: View {
                 if creaNuovaCategoria! {
                     
                     CorpoNuovaCategoria(
+                        nuovaCategoria: $nuovaCategoria) {
+                            self.aggiungiButton()
+                        }
+                    
+                  /*  CorpoNuovaCategoria(
                         nomeCategoria: $nomeCategoria,
                         image: $image) {
                             self.creaCategoria()
-                        }
+                        } */
                
                 }
                 
@@ -59,12 +65,15 @@ struct NuovaCategoriaMenu: View {
                                 fontWeight: .semibold,
                                 titleColor: Color("SeaTurtlePalette_4"),
                                 fillColor: Color("SeaTurtlePalette_2")) {
-                                  if self.mode?.wrappedValue.isEditing == true {
-                                        
-                                      self.mode?.wrappedValue = .inactive
-                                      
-                                  } else { self.mode?.wrappedValue = .active}
-                            }
+                                    
+                                    withAnimation {
+                                        if self.mode?.wrappedValue.isEditing == true {
+                                            self.mode?.wrappedValue = .inactive
+                                            
+                                        } else { self.mode?.wrappedValue = .active}
+                                    }
+                                    
+                                }
                         }
                     }
 
@@ -72,13 +81,33 @@ struct NuovaCategoriaMenu: View {
       
                             ForEach(viewModel.categoriaMenuAllCases) { categoria in
                                 
+                                let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
+                                
                                 HStack {
                                     //  Text("\(categoria.listPositionOrder)")
+                                    
                                     csVbSwitchImageText(string: categoria.image)
-                                    Text(categoria.nome)
+                                    Text(categoria.intestazione)
                                         .fontWeight(.semibold)
                                         .font(.system(.body, design: .rounded))
                                         .foregroundColor(Color("SeaTurtlePalette_4"))
+                                    
+                                    if self.mode?.wrappedValue == .inactive {
+                                        Button {
+                                            
+                                          pencilButton(categoria: categoria)
+                                            
+                                        } label: {
+                                            Image(systemName: "pencil")
+                                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                        }
+
+                                    }
+                                    
+                                    Spacer()
+                                    Text("\(dishCount) 🍽️")
+                                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                                    
                                 }
                                 
                             }
@@ -111,20 +140,53 @@ struct NuovaCategoriaMenu: View {
         self.viewModel.categoriaMenuAllCases.move(fromOffsets: from, toOffset: to)
     }
     
-    private func creaCategoria() {
+    private func pencilButton(categoria:CategoriaMenu) {
+        self.nuovaCategoria = categoria
+        withAnimation {
+            self.creaNuovaCategoria = true
+        }
+    }
+    
+    private func aggiungiButton() {
+           
+        csHideKeyboard()
+        
+        let name = csStringCleaner(string: self.nuovaCategoria.intestazione.lowercased())
+        let finalName = name.capitalized
+        
+        let categoriaFinale = {
+            var cat = self.nuovaCategoria
+            cat.intestazione = finalName
+            return cat
+        }()
+        
+        if self.viewModel.isTheModelAlreadyExist(id: self.nuovaCategoria.id, keyPath: \.categoriaMenuAllCases) {  // Update
+            
+            self.viewModel.updateItemModel(itemModel:categoriaFinale)
+            
+        } else {  // Create
+          
+            self.viewModel.createItemModel(itemModel: categoriaFinale)
+            }
+        
+        self.nuovaCategoria = CategoriaMenu()
+      
+       }
+    
+ /*   private func creaCategoria() {
         
         csHideKeyboard()
         let name = csStringCleaner(string: self.nomeCategoria.lowercased())
         let finalName = name.capitalized
         
-        let new = CategoriaMenu(nome: finalName, image: self.image)
+        let new = CategoriaMenu(intestazione: finalName, image: self.image)
         
        // new.addNew()
         self.image = "🍽"
         self.nomeCategoria = ""
         self.viewModel.categoriaMenuAllCases.append(new)
         
-    }
+    } */ // Bavkup 14.09
     
     
 }
@@ -147,13 +209,19 @@ struct NuovaCategoriaMenu_Previews: PreviewProvider {
 
 struct CorpoNuovaCategoria:View {
     
-    @Binding var nomeCategoria: String
-    @Binding var image: String
+    @Binding var nuovaCategoria: CategoriaMenu
+
+   // @Binding var nomeCategoria: String
+   // @Binding var image: String
     
     let creAction: () -> Void
     
     var body: some View {
         
+        let value:(isDisabled:Bool,opacity:CGFloat) = {
+            if self.nuovaCategoria.intestazione == "" { return (true,0.6)}
+            else { return (false,1.0)}
+        }() // vedi NotaVocale 14.09
       /*  Picker(selection: $image) {
             ForEach(csReturnEmojyCollection(), id:\.self) { emojy in
                 
@@ -166,7 +234,7 @@ struct CorpoNuovaCategoria:View {
         }.pickerStyle(WheelPickerStyle()) */
         
         VStack {
-       
+            
             ScrollView(.horizontal,showsIndicators: false) {
                 
                 HStack(spacing:10) {
@@ -175,7 +243,8 @@ struct CorpoNuovaCategoria:View {
                         
                         Text(emojy)
                             .onTapGesture {
-                                self.image = emojy
+                               // self.image = emojy
+                                self.nuovaCategoria.image = emojy
                             }
     
                     }
@@ -202,11 +271,13 @@ struct CorpoNuovaCategoria:View {
             
             HStack {
                 
+               
+                
                 CSTextField_4b(
-                    textFieldItem: $nomeCategoria,
+                    textFieldItem: $nuovaCategoria.intestazione,
                     placeHolder: "Associa un Nome..",
                     showDelete: true) {
-                        csVbSwitchImageText(string: self.image, size: .large)
+                        csVbSwitchImageText(string: self.nuovaCategoria.image, size: .large)
                     }
                 
                 Spacer()
@@ -219,8 +290,10 @@ struct CorpoNuovaCategoria:View {
                         creAction()
 
                     }
-                    .opacity(self.nomeCategoria == "" ? 0.6 : 1.0)
-                    .disabled(self.nomeCategoria == "")
+                    .opacity(value.opacity)
+                    .disabled(value.isDisabled)
+                  //  .opacity(self.nuovaCategoria.intestazione == "" ? 0.6 : 1.0)
+                  //  .disabled(self.nuovaCategoria.intestazione == "")
                 
                 
             }

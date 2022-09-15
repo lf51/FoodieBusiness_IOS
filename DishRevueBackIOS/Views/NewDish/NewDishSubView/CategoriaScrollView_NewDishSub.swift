@@ -28,14 +28,21 @@ struct CategoriaScrollView_NewDishSub: View {
                             .foregroundColor(Color("SeaTurtlePalette_3"))
                     }
                     
-                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.categoriaMenu == .defaultValue)
+                   /* CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.categoriaMenuDEPRECATA == .defaultValue) */
+                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.categoriaMenu.isEmpty)
                 }
                 
             }
 
-                PropertyScrollCases(cases:viewModel.categoriaMenuAllCases, dishSingleProperty: self.$newDish.categoriaMenu, colorSelection: Color.green.opacity(0.8))
-                    .padding(.top,5)
+            // Mod 13.09
+            
+            PropertyScrollCases_Rif(cases:viewModel.categoriaMenuAllCases, dishSingleProperty: self.$newDish.categoriaMenu, colorSelection: Color.green.opacity(0.8))
+                .padding(.top,5)
+            
+               /* PropertyScrollCases(cases:viewModel.categoriaMenuAllCases, dishSingleProperty: self.$newDish.categoriaMenuDEPRECATA, colorSelection: Color.green.opacity(0.8))
+                    .padding(.top,5) */
 
+            // end 13.09
         }
         
     }

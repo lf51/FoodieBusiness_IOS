@@ -38,8 +38,30 @@ class AccounterVM: ObservableObject {
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // 19.05 --> Collocazione Temporanea
-    @Published var categoriaMenuAllCases: [CategoriaMenu] = CategoriaMenu.allCases // 02.06 -> Dovrà riempirsi di dati dal server
-
+    @Published var categoriaMenuAllCases: [CategoriaMenu] = [
+        CategoriaMenu(
+            intestazione: "Antipasti",
+            image: "🫒"),
+        CategoriaMenu(
+            intestazione: "Primi",
+            image: "🍝"),
+        CategoriaMenu(
+            intestazione: "Secondi",
+            image: "🍴"),
+        CategoriaMenu(
+            intestazione: "Contorni",
+            image: "🥗"),
+        CategoriaMenu(
+            intestazione: "Frutta",
+            image: "🍉"),
+        CategoriaMenu(
+            intestazione: "Dessert",
+            image: "🍰"),
+        CategoriaMenu(
+            intestazione: "Bevande",
+            image: "🍷")]
+    
+    @Published var allMyReviews:[DishRatingModel] = []
     
     // AREA TEST NAVIGATIONSTACK
     
@@ -84,14 +106,49 @@ class AccounterVM: ObservableObject {
         self.allMyIngredients.first(where: {$0.id == id})
     } // deprecata in futuro per genericizzazione in modelFromId()
     
-    func modelFromId<M:MyModelProtocol>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
+    func myEnumFromId<M:MyEnumProtocol>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
+        
+        let containerM = self[keyPath: modelPath]
+        return containerM.first(where: {$0.id == id})
+    }
+    
+    
+    func modelFromId<M:MyProStarterPack_L0>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
+        
+        let containerM = self[keyPath: modelPath]
+        return containerM.first(where: {$0.id == id})
+    }
+    
+    /// ritorna un array di modelli conformi allo StarterPack, da un array di riferimenti
+    func modelCollectionFromCollectionID<M:MyProStarterPack_L0>(collectionId:[String],modelPath:KeyPath<AccounterVM,[M]>) -> [M] {
+         
+        // mod 14.09
+         var modelCollection:[M] = []
+        
+         for id in collectionId {
+             
+             if let model = modelFromId(id: id, modelPath: modelPath) {modelCollection.append(model)}
+         }
+         
+       /* let containerM = self[keyPath: modelPath]
+        let modelCollection = containerM.filter({ model in
+            collectionId.contains(model.id)
+        }) */
+     
+        return modelCollection
+      //  return modelCollection
+        // end modifiche 14.09
+        
+     }
+    
+  /*  func modelFromId<M:MyModelProtocol>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
         
         let containerM = assegnaContainerFromPath(path: modelPath)
       
         return containerM.first(where: {$0.id == id})
-    }
+    }  */ // deprecata 13.09 per cambio Protocollo
     
-    func modelCollectionFromCollectionID<M:MyModelProtocol>(collectionId:[String],modelPath:KeyPath<AccounterVM,[M]>) -> [M] {
+  /*  func modelCollectionFromCollectionID<M:MyModelProtocol>(collectionId:[String],modelPath:KeyPath<AccounterVM,[M]>) -> [M] {
          
          var modelCollection:[M] = []
         
@@ -101,7 +158,7 @@ class AccounterVM: ObservableObject {
          }
          
          return modelCollection
-     }
+     } */ // deprecata 13.09 per cambio Protocollo
     
     func nomeIngredienteFromId(id:String) -> String? {
         
@@ -199,7 +256,15 @@ class AccounterVM: ObservableObject {
             
     } // deprecata in futuro. Usata per controllare l'unicità dell'intestazione quando l'id era l'intestazione messa minuscolo e senza spazi. Con l'id alfanumerico è diventata obsoleta per l'uso fattene finora.
     
-    func checkExistingUniqueModelName<M:MyModelProtocol>(model:M) -> (Bool,M?) {
+    func isTheModelAlreadyExist<M:MyProStarterPack_L0>(id:String,keyPath:KeyPath<AccounterVM,[M]>) -> Bool {
+        
+        let containerM = self[keyPath: keyPath]
+        
+        return containerM.contains(where: {$0.id == id})
+        
+    }
+    
+    func checkExistingUniqueModelName<M:MyProStarterPack_L1>(model:M) -> (Bool,M?) {
         
         print("NEW AccounterVM/checkModelExist - Item: \(model.intestazione)")
         
@@ -248,6 +313,7 @@ class AccounterVM: ObservableObject {
         
         let dish = {
             var new = item.dish
+            new.categoriaMenu = item.categoriaMenu.id
             new.ingredientiPrincipali = rifIngredientiPrincipali
             new.ingredientiSecondari = rifIngredientiSecondari
             return new
@@ -352,7 +418,7 @@ class AccounterVM: ObservableObject {
     } */ // Deprecta 11.07
 
     /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto. 
-    func createItemModel<T:MyModelProtocol>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) {
+    func createItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) {
         
         if !showAlert {
             
@@ -373,7 +439,7 @@ class AccounterVM: ObservableObject {
         }
     }
         
-    private func createItemModelExecutive<T:MyModelProtocol>(itemModel:T, destinationPath:DestinationPath? = nil) {
+    private func createItemModelExecutive<T:MyProStarterPack_L1>(itemModel:T, destinationPath:DestinationPath? = nil) {
         
         var containerT = assegnaContainer(itemModel: itemModel)
         
@@ -392,7 +458,7 @@ class AccounterVM: ObservableObject {
             
             return self.alertItem = AlertModel(
                     title: "Errore",
-                    message: "Nome \(itemModel.returnNewModel().nometipo) Esistente")
+                    message: "Nome \(itemModel.returnModelTypeName()) Esistente")
         }
         
         // End Adding 18.08
@@ -417,7 +483,7 @@ class AccounterVM: ObservableObject {
     }
     
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
-    func updateItemModel<T:MyModelProtocol>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil)  {
+    func updateItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil)  {
         print("UpdateItemModel()")
         if !showAlert {
             
@@ -440,7 +506,7 @@ class AccounterVM: ObservableObject {
         
     }
     
-    private func updateItemModelExecutive<T:MyModelProtocol>(itemModel: T, destinationPath: DestinationPath? = nil) {
+    private func updateItemModelExecutive<T:MyProStarterPack_L1>(itemModel: T, destinationPath: DestinationPath? = nil) {
         
         var containerT = assegnaContainer(itemModel: itemModel)
   
@@ -449,6 +515,7 @@ class AccounterVM: ObservableObject {
             return}
 
         print("elementi nel Container Pre-Update: \(containerT.count)")
+        
             containerT[oldItemIndex] = itemModel
             aggiornaContainer(containerT: containerT, modelT: itemModel)
         if let path = destinationPath {
@@ -463,7 +530,7 @@ class AccounterVM: ObservableObject {
     }
     
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
-    func deleteItemModel<T:MyModelProtocol>(itemModel: T) {
+    func deleteItemModel<T:MyProStarterPack_L1>(itemModel: T) {
         
         self.alertItem = AlertModel(
             title: "Conferma Eliminazione",
@@ -479,7 +546,7 @@ class AccounterVM: ObservableObject {
 
     }
     
-    private func deleteItemModelExecution<T:MyModelProtocol>(itemModel: T) {
+    private func deleteItemModelExecution<T:MyProStarterPack_L1>(itemModel: T) {
         
         var containerT = assegnaContainer(itemModel: itemModel)
         
@@ -536,7 +603,7 @@ class AccounterVM: ObservableObject {
            
            guard filter != nil else { return true}
            let dishModel = model as! DishModel
-           return dishModel.categoriaMenu == filter
+           return dishModel.categoriaMenuDEPRECATA == filter
            
        case .base(let filter):
            
@@ -598,7 +665,7 @@ class AccounterVM: ObservableObject {
     }
     
     /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container e un bool (indicante se il container è o non è editabile)
-    private func assegnaContainer<T:MyModelProtocol>(itemModel:T) -> [T] {
+    private func assegnaContainer<T:MyProStarterPack_L1>(itemModel:T) -> [T] {
        
         let pathContainer = itemModel.viewModelContainerInstance().pathContainer
         print("ViewModel/assegnaContainer() per itemModel: \(itemModel.intestazione)")
@@ -614,7 +681,7 @@ class AccounterVM: ObservableObject {
     }
     
     /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
-   private func aggiornaContainer<T:MyModelProtocol>(containerT: [T], modelT:T) {
+   private func aggiornaContainer<T:MyProStarterPack_L1>(containerT: [T], modelT:T) {
 
        let (pathContainer,nomeContainer,_) = modelT.viewModelContainerInstance()
        self[keyPath: pathContainer] = containerT

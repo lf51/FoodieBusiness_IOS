@@ -54,16 +54,18 @@ struct FastImport_CorpoScheda:View {
                     HStack {
 
                         CS_Picker(
-                            selection: $temporaryModel.dish.categoriaMenu,
+                            selection: $temporaryModel.categoriaMenu,
                             customLabel: "Categoria",
                             dataContainer: viewModel.categoriaMenuAllCases,//CategoriaMenu.allCases,
                             backgroundColor: Color.white.opacity(0.5))
                             .csWarningModifier(
                                 isPresented: checkError) {
-                                    self.temporaryModel.dish.categoriaMenu == .defaultValue
+                                    self.temporaryModel.categoriaMenu == .defaultValue
+                                   /* self.temporaryModel.dish.categoriaMenuDEPRECATA == .defaultValue */
                                     }
 
-                        csVbSwitchImageText(string: temporaryModel.dish.categoriaMenu.imageAssociated())
+                     /*   csVbSwitchImageText(string: temporaryModel.dish.categoriaMenuDEPRECATA.imageAssociated()) */
+                        csVbSwitchImageText(string: temporaryModel.categoriaMenu.imageAssociated())
                         
                         Spacer()
   
@@ -192,8 +194,9 @@ struct FastImport_CorpoScheda:View {
     }
     
     private func checkAreDishPropertyOk() -> Bool {
-
-        self.temporaryModel.dish.categoriaMenu != .defaultValue && !self.temporaryModel.dish.pricingPiatto.isEmpty
+// 13.09
+        self.temporaryModel.categoriaMenu != .defaultValue && !self.temporaryModel.dish.pricingPiatto.isEmpty
+       /* self.temporaryModel.dish.categoriaMenuDEPRECATA != .defaultValue && !self.temporaryModel.dish.pricingPiatto.isEmpty */
         
     }
     
