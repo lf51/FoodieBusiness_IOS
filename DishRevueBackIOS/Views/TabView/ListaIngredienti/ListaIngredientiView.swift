@@ -38,7 +38,30 @@ struct ListaIngredientiView: View {
             
             CSZStackVB(title: "I Miei Ingredienti", backgroundColorView: backgroundColorView) {
 
-                ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory)
+               /* ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allIngredientMapCategory) */ // STAND-BY 16.09
+                
+                // Temporaneo
+                
+                VStack {
+                    
+                    CSDivider()
+                    ScrollView {
+                        
+                        ForEach($viewModel.allMyIngredients) { $ing in
+                            
+                            GenericItemModel_RowViewMask(model: ing) {
+                              /*  vbMenuInterattivoModuloCambioStatus(myModel: $ing, viewModel: viewModel, navPath: \.ingredientListPath) */
+                            }
+                            
+                        }
+                    }
+                }
+                
+                
+                
+                // fine temporaneo
+                
+                
 
             }
             .navigationDestination(for: DestinationPathView.self, destination: { destination in

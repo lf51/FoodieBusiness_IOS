@@ -102,8 +102,9 @@ import SwiftUI
 }
 
 /// Ritorna l'immagine associata allo Status del Modello
-@ViewBuilder func vbEstrapolaStatusImage<M:MyModelStatusConformity>(itemModel:M) -> some View {
-    
+@ViewBuilder func vbEstrapolaStatusImage<M:MyProStatusPack_L0>(itemModel:M) -> some View {
+    // M passa da MyModelStatusConformity a MyProStatusPackL0
+   
     let image = itemModel.status.imageAssociated()
     let color = itemModel.status.transitionStateColor()
     
@@ -439,8 +440,10 @@ struct CSZStackVB_Framed<Content:View>:View {
 } */ // deprecata 07.09
 
 
-/// Add 07.09 - Gestisce il Menu della RowModel in base al cambio di Status. Generic conforme al MyModelStatusConformity
-@ViewBuilder func vbCambioStatusModelList<M:MyModelStatusConformity>(myModel: Binding<M>,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+/// Add 07.09 - Gestisce il Modulo di cambio Status del Menu interattivo delle RowView dei model conformi al protocollo MyProStatusPackL1
+@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: Binding<M>) -> some View {
+    
+    // M passa da MyModelProtocol a MyProStatusPackL1
     
     let currentModel = myModel.wrappedValue
     
@@ -473,7 +476,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                 }
             }
             
-            vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+          //  vbMenuInterattivoModuloTrashEdit(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
         }
 
         
@@ -505,12 +508,19 @@ struct CSZStackVB_Framed<Content:View>:View {
                        
                     }
                 }
-                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+             //   vbMenuInterattivoModuloTrashEdit(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
             }
         
    // } else if currentModel.status == .completo(.archiviato) {
     } else if currentModel.status.checkStatusTransition(check: .archiviato) {
         
+        let disabilita:Bool = {
+            if let model = currentModel as? MenuModel {
+                return model.rifDishIn.isEmpty // Sviluppare --> deve controllare se ci sono piatti attivi. Senza piatti, o senza piatti attivi, il menu sarebbe vuoto e dunque non avrebbe senso renderlo disponibile
+            } else { return false }
+            
+        }()
+
             VStack {
                 
                 Button {
@@ -523,9 +533,9 @@ struct CSZStackVB_Framed<Content:View>:View {
                         Image(systemName: "play.circle")
                        
                     }
-                }
+                }.disabled(disabilita)
                 
-                vbScopoDestinazionePathButton(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
+            //    vbMenuInterattivoModuloTrashEdit(currentModel: currentModel, viewModel: viewModel, navPath: navPath)
 
             }
     } /*else if currentModel.status == .bozza(nil) {
@@ -632,7 +642,9 @@ struct CSZStackVB_Framed<Content:View>:View {
            
 } */ // Deprecato. Portato fuori la View Generic e creato un viewBulder che ritorna una lista di bottoni che valgono per tutti i myModel
 
-@ViewBuilder func vbScopoDestinazionePathButton<M:MyModelStatusConformity>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloTrashEdit<M:MyProStatusPack_L1>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    
+    // M passa da MyModelStatusConformity a MyProStatusPackL1
     
     let isBozza = currentModel.status.checkStatusBozza()
     let title = isBozza ? "Completa" : "Modifica"
@@ -651,7 +663,7 @@ struct CSZStackVB_Framed<Content:View>:View {
               }
           }
 
-        Button {
+        Button(role:.destructive) {
             
               viewModel.deleteItemModel(itemModel: currentModel)
               

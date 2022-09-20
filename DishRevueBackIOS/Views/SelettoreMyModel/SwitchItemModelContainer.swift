@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-struct SwitchItemModelContainer<M1:MyModelProtocol,M2:MyModelProtocol>: View {
+struct SwitchItemModelContainer<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View {
+    
+    // M1 passa da MyModelProtocol a MyProStarterPackL0
+    // M2 passa da MyModelProtocol a MyProStarterPackL1
     
     @Binding var itemModel: M1
     let itemModelList: [ModelList]
@@ -38,10 +41,13 @@ struct SwitchItemModelContainer<M1:MyModelProtocol,M2:MyModelProtocol>: View {
 }
 
 ///Label di un Container composta da TextLabel + Count  Elementi Container + Button per vedere contenuto + ColorLabel
-struct ContainerRowLabel<M1:MyModelProtocol, M2:MyModelProtocol>: View {
+struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
     
-    @Binding var itemModel: M1
-    let itemModelSingleList: ModelList
+    // M1 passa da MyModelProtocol a MyProStarterPackL0
+    // M2 passa da MyModelProtocol a MyProStarterPackL1
+    
+   // @Binding var itemModel: M1 // inutile
+  //  let itemModelSingleList: ModelList // inutile
     @Binding var modelListCorrente: String
     
     let localListTitle:String
@@ -54,9 +60,10 @@ struct ContainerRowLabel<M1:MyModelProtocol, M2:MyModelProtocol>: View {
     //
 
     init(itemModel:Binding<M1>,itemModelSingleList:ModelList,modelListCorrente:Binding<String>) {
+        // NON DEVE NECESSARIAMENTE PASSARE UN BINDING
         
-        _itemModel = itemModel
-        self.itemModelSingleList = itemModelSingleList
+       // _itemModel = itemModel
+      //  self.itemModelSingleList = itemModelSingleList
         _modelListCorrente = modelListCorrente
         
         let kp:AnyKeyPath

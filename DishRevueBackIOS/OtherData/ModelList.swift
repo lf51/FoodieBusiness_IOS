@@ -47,7 +47,7 @@ enum ModelList: Equatable, Hashable {
     ///Case Predefinito per la relazione Menu/Piatti.
     static var menuDishList: [ModelList] = [
         .viewModelContainer("Lista dei Piatti",\.allMyDish,.fonte),
-        .itemModelContainer("Piatti in Menu",\MenuModel.dishIn, .destinazione(Color.brown, grado: .principale))
+        .itemModelContainer("Piatti in Menu",\MenuModel.rifDishIn, .destinazione(Color.brown, grado: .principale))
     ]
     ///Case Predefinito per la relazione Piatto/Proprietà
     static var menuPropertyList: [ModelList] = []

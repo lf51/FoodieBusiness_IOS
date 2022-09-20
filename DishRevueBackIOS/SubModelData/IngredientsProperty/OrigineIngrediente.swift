@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum OrigineIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
+enum OrigineIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
     
     static var allCases: [OrigineIngrediente] = [.vegetale,.animale]
     static var defaultValue: OrigineIngrediente = .noValue

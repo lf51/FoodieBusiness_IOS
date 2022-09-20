@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/*
 struct DataModelAlphabeticView_Sub<T:MyModelStatusConformity>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -83,7 +84,7 @@ struct DataModelAlphabeticView_Sub<T:MyModelStatusConformity>: View {
         
      }
  
-}
+} */ // STAND-BY 16.09
 
 
 /*

@@ -10,7 +10,7 @@
 import Foundation
 import SwiftUI
 
-struct DishModel:MyModelStatusConformity {
+struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,MyProStatusPack_L1   /*MyModelStatusConformity */ {
     
     static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
         return \.allMyDish
@@ -113,9 +113,9 @@ struct DishModel:MyModelStatusConformity {
         hasher.combine(id)
     }
     
-    func returnModelTypeName() -> String {
+   /* func returnModelTypeName() -> String {
         "Piatto"
-    }
+    } */ // deprecata
     
     func modelStringResearch(string: String) -> Bool {
         self.intestazione.lowercased().contains(string)
@@ -125,9 +125,12 @@ struct DishModel:MyModelStatusConformity {
         DishModel_RowView(item: self) // conforme al Protocollo
     }
 
-    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
-        VStack {
+        let disabilita = self.rifReviews.isEmpty
+        let priceCount = self.pricingPiatto.count
+        
+      return VStack {
             
             Button {
                 
@@ -138,7 +141,27 @@ struct DishModel:MyModelStatusConformity {
                     Text("Vedi Recensioni")
                     Image(systemName: "eye")
                 }
-            }
+            }.disabled(disabilita)
+          
+          if priceCount > 1 {
+              
+              Menu {
+             
+                 ForEach(self.pricingPiatto,id:\.self) { format in
+        
+                    // let price = Double(format.price) ?? 0
+                    // Text("\(format.label) : \(price,format: .currency(code: "EUR"))")
+                     Text("\(format.label) : € \(format.price)")
+                  }
+                  
+              } label: {
+
+                  Text("Prezzi (\(priceCount))")
+                
+              }// end label menu
+
+          } // end if
+          
             
         }
 

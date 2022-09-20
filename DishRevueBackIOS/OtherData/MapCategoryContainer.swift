@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MapCategoryContainer:MyEnumProtocolMapConform {
+enum MapCategoryContainer /*:MyEnumProtocolMapConform*/ {
 
     static var allMenuMapCategory: [MapCategoryContainer] = [.tipologiaMenu(),.giorniDelServizio(),.menuAz/*.statusMenu*/]
     static var allIngredientMapCategory: [MapCategoryContainer] = [.ingredientAz,.provenienza(),.conservazione(),.produzione()]

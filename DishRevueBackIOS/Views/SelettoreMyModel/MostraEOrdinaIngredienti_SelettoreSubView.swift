@@ -9,7 +9,9 @@ import SwiftUI
 
 
 /// Add 25.08 - Invece di un arrray M2 prende un array di String. Probabilmente dovremmo ritornarla generica per poter usare l'id di modelli diversi. Attualmente tarato per l'ingredient Model.
-struct MostraEOrdinaModelIDGeneric<M2:MyModelProtocol>: View {
+struct MostraEOrdinaModelIDGeneric<M2:MyProStarterPack_L1>: View {
+ 
+    // M2 passa da MyModelProtocol a MyProStarterPackL1
     
     @Environment(\.editMode) var mode
     @EnvironmentObject var viewModel: AccounterVM
@@ -83,7 +85,9 @@ struct MostraEOrdinaModelIDGeneric<M2:MyModelProtocol>: View {
 
 
 
-struct MostraEOrdinaModelGeneric<M2:MyModelProtocol>: View {
+struct MostraEOrdinaModelGeneric<M2:MyProStarterPack_L1>: View {
+    
+    // M2 passa da MyModelProtocol a MyProStarterPackL1
     
     @Environment(\.editMode) var mode
     @Binding var listaAttiva: [M2]

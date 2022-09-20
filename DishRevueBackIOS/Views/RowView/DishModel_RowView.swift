@@ -11,22 +11,24 @@ struct DishModel_RowView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     let item: DishModel
-  //  let listaAllergeni:[AllergeniIngrediente]
-    
- /*   init(item: DishModel) {
-        self.item = item
-        self.listaAllergeni = item.calcolaAllergeniNelPiatto(viewModel: viewModel)
-    } */
-  //  var idSelectedIngredient: String = ""
-  //  var nomeIngredienteSostituto: String = ""
+    var showSmallRow: Bool = false
     
     var body: some View {
+        
+        if showSmallRow { vbSmallRow() }
+        else { vbNormalRow() }
+    
+    }
+    
+    // View da Switchare
+    
+    @ViewBuilder private func vbNormalRow() -> some View {
         
         CSZStackVB_Framed {
             
             VStack(alignment:.leading) {
                 
-                VStack{
+                VStack {
 
                     vbIntestazioneDishRow()
                     vbSubIntestazioneDishRow()
@@ -56,10 +58,51 @@ struct DishModel_RowView: View {
             .padding(.horizontal)
                             
         } // chiusa Zstack Madre
+        
+    }
     
+    @ViewBuilder private func vbSmallRow() -> some View {
+        
+        CSZStackVB_Framed(frameWidth:300) {
+            
+            VStack(alignment:.leading) {
+                
+                VStack(alignment:.leading) {
+
+                    vbIntestazioneDishRow()
+                    vbSubIntestazioneDishRow()
+                
+                }
+                 .padding(.top,5)
+                
+                Spacer()
+                
+                vbNoticeAllergeni()
+                    .padding(.vertical,5)
+
+            } // chiuda VStack madre
+            .padding(.horizontal)
+                            
+        } // chiusa Zstack Madre
     }
     
     // Method
+    
+    @ViewBuilder private func vbNoticeAllergeni() -> some View {
+        
+        let listaAllergeni = self.item.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
+        let string = listaAllergeni.isEmpty ? "Non contiene Allergeni" : "Contiene Allergeni"
+    
+        HStack {
+            Image(systemName: "allergens")
+                .imageScale(.small)
+            Text(string)
+        }
+        .fontWeight(.semibold)
+        .font(.caption)
+        .underline(!listaAllergeni.isEmpty)
+        .foregroundColor(Color.black)
+    }
     
     @ViewBuilder private func vbIntestazioneDishRow() -> some View {
         
@@ -71,6 +114,7 @@ struct DishModel_RowView: View {
                 .lineLimit(1)
                 .allowsTightening(true)
                 .foregroundColor(Color.white)
+              //  .fixedSize()
             
             Spacer()
             
@@ -114,6 +158,7 @@ struct DishModel_RowView: View {
             
             HStack(alignment:.top,spacing:1) {
                 
+              //  Text("\(Double(price)!,format: .currency(code: "EUR"))")
                 Text("€ \(price)")
                     .fontWeight(.bold)
                     .font(.title3)
@@ -698,9 +743,12 @@ struct DishModel_RowView_Previews: PreviewProvider {
 
                     
                     DishModel_RowView(item: dishSample)
-                    DishModel_RowView(item: dishSample2)
-                    DishModel_RowView(item: dishSample3)
-                    DishModel_RowView(item: dishSample4)
+                        .frame(height:150)
+                    DishModel_RowView(item: dishSample,showSmallRow: true)
+                        .frame(height:100)
+             
+                  //  DishModel_RowView(item: dishSample3)
+                  //  DishModel_RowView(item: dishSample4)
                     
                 }
                 

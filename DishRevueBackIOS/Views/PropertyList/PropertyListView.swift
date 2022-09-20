@@ -53,27 +53,11 @@ struct PropertyListView: View {
 
                               
                               GenericItemModel_RowViewMask(
-                                model: property,navigationPath: \.homeViewPath) {
-                                  /*  NavigationLink {
-                                        EditingPropertyModel(itemModel: $property, backgroundColorView: Color("SeaTurtlePalette_1"))
-                                    } label: {
-                                        HStack {
-                                            Image(systemName:"arrow.up.forward.square")
-                                            Text("Edit")
-                                        }
-                                    } */
-                                       
-                                  /*  NavigationLink(value: property) {
-                                        HStack {
-                                            Image(systemName:"arrow.up.forward.square")
-                                            Text("Edit")
-                                        }
-                                    } */
-                            
-                                    
-                                    
-                                    
-                                    Button {
+                                model: property) {
+                                   // non usiamo il modulo TrashEDit perchè richiede una conformità che la propertyModel non ha
+                                
+                                    property.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.homeViewPath)
+                                  /*  Button {
                                     //   viewModel.homeViewPath.append(property)
                                        viewModel.homeViewPath.append(DestinationPathView.property(property))
                                     } label: {
@@ -81,12 +65,12 @@ struct PropertyListView: View {
                                             Image(systemName:"arrow.up.forward.square")
                                             Text("Edit")
                                         }
-                                    }
+                                    } */
 
                                     
                                     
                                     
-                                    Button {
+                                  /*  Button {
                                         viewModel.deleteItemModel(itemModel: property)
                                     } label: {
                                         HStack {
@@ -95,9 +79,9 @@ struct PropertyListView: View {
                                             Text("Elimina")
                                             
                                         }
-                                    }
+                                    } */
                                     
-                                    Text("Chiedi Verifica")
+                                   // Text("Chiedi Verifica")
                                     
                                 }
    

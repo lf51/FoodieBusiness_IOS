@@ -82,7 +82,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                         
                         ForEach(self.newDish.ingredientiPrincipali, id:\.self) { idIngredient in
                             
-                         csIngredientSmallRow(id: idIngredient)
+                         vbIngredientSmallRow(id: idIngredient)
                         
                         }
                         
@@ -141,7 +141,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                             
                             ForEach(self.newDish.ingredientiSecondari, id:\.self) { idIngredient in
                                 
-                                csIngredientSmallRow(id: idIngredient)
+                                vbIngredientSmallRow(id: idIngredient)
                                 
                                 
                             }
@@ -156,7 +156,7 @@ struct PannelloIngredienti_NewDishSubView: View {
     
     // Method
     
-    @ViewBuilder private func csIngredientSmallRow(id:String) -> some View {
+    @ViewBuilder private func vbIngredientSmallRow(id:String) -> some View {
 
         let (model,sostituto) = checkPreliminareIngredientSmallRow(id: id)
         
@@ -168,9 +168,10 @@ struct PannelloIngredienti_NewDishSubView: View {
     
     private func checkPreliminareIngredientSmallRow(id:String) -> (model:IngredientModel?,sosituto:IngredientModel?) {
 
-        guard let ingredient = self.viewModel.ingredientFromId(id: id) else {
+        guard let ingredient = self.viewModel.modelFromId(id: id, modelPath: \.allMyIngredients) else { return (nil,nil)}
+      /*  guard let ingredient = self.viewModel.ingredientFromId(id: id) else {
             return (nil,nil)
-        }
+        }*/
         
         guard ingredient.status.checkStatusTransition(check: .inPausa) else {
             return (ingredient,nil)
@@ -180,9 +181,10 @@ struct PannelloIngredienti_NewDishSubView: View {
                 
         guard idSostituto != nil else { return (ingredient,nil)}
 
-        guard let modelSostituto = self.viewModel.ingredientFromId(id: idSostituto!) else {
+       /* guard let modelSostituto = self.viewModel.ingredientFromId(id: idSostituto!) else {
             return (ingredient,nil)
-                }
+                } */
+        guard let modelSostituto = self.viewModel.modelFromId(id: idSostituto!, modelPath: \.allMyIngredients) else { return (ingredient,nil) }
         
         guard modelSostituto.status.checkStatusTransition(check: .disponibile) else { return (ingredient,nil)}
                 

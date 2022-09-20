@@ -231,7 +231,7 @@ struct EditingPropertyModel: View {
         if currentMenu.status == .completo(.disponibile) {
             
             GenericItemModel_RowViewMask(
-                model: currentMenu,navigationPath: \.homeViewPath) {
+                model: currentMenu) {
                     
                     Button {
                         myMenu.wrappedValue.status = .completo(.inPausa)
@@ -258,7 +258,7 @@ struct EditingPropertyModel: View {
         } else if currentMenu.status == .completo(.inPausa) {
             
             GenericItemModel_RowViewMask(
-                model: currentMenu,navigationPath: \.homeViewPath) {
+                model: currentMenu) {
                     
                     Button {
                         myMenu.wrappedValue.status = .completo(.disponibile)

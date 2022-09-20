@@ -9,6 +9,8 @@ import Foundation
 import MapKit
 import SwiftUI
 
+// !! Nota Vocale 19.09 !! Sulle info della Proprietà
+
 /* La registrazione di una proprietò avviene da Maps. Se l'attività non è ancora presente in Maps la registrazione non può avvenire. Potremmo predisporre una registrazione manuale ma non lo facciamo per i seguenti motivi:
  • Usando Maps ci affidiamo ad un servizio già collaudato e non ci dobbiamo preoccupare di verificare l'esistenza reale di quella proprietà, cosa che invece diventerebbe necessaria in caso di inserimento manuale.
  • Usando Maps inoltre non dobbiamo preoccuparci dei duplicati, ossia della possibilità che qualcuno registri un'attività esistente in modo manuale nella via di fianco creando confusione
@@ -17,23 +19,68 @@ import SwiftUI
 
 */
 
-struct PropertyModel: MyModelProtocol, Hashable{
-    
+struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack_L0 /*: MyProModelPack_L0, Hashable*/{
+
     static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [PropertyModel]> {
         return \.allMyProperties
     }
         
-    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-        EmptyView()
+    func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        VStack {
+            
+            Button {
+               // viewModel.deleteItemModel(itemModel: property)
+            } label: {
+                HStack {
+                    
+                    Image(systemName:"eye")
+                    Text("Vedi Info")
+                    
+                }
+            }
+            
+            Button {
+               viewModel[keyPath: navigationPath].append(DestinationPathView.property(self))
+            } label: {
+                HStack {
+                    Image(systemName:"arrow.up.forward.square")
+                    Text("Edit")
+                }
+            }
+            
+            Button {
+               // viewModel.deleteItemModel(itemModel: property)
+            } label: {
+                HStack {
+                    
+                    Image(systemName:"person.badge.shield.checkmark.fill")
+                    Text("Chiedi Verifica")
+                    
+                }
+            }.disabled(true)
+            
+            Button(role:.destructive) {
+                viewModel.deleteItemModel(itemModel: self)
+            } label: {
+                HStack {
+                    Image(systemName:"trash")
+                    Text("Elimina")
+                    
+                }
+            }
+            
+         
+        }
     }
     
    /* func returnNewModel() -> (tipo: PropertyModel, nometipo: String) {
         (PropertyModel(),"Nuova Proprietà")
     } */
 
-    func returnModelTypeName() -> String {
+  /*  func returnModelTypeName() -> String {
         "Proprietà"
-    }
+    } */ // deprecata
     
     
     func returnModelRowView() -> some View {

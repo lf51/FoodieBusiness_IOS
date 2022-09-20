@@ -48,6 +48,7 @@ struct CSLabel_conVB<Content:View>: View {
                 RoundedRectangle(cornerRadius: 5.0)
                     .fill(backgroundColor.opacity(backgroundOpacity ?? 0.2))
             )
+            .fixedSize() // introdotto il 16.09
             
           //  Spacer()
             

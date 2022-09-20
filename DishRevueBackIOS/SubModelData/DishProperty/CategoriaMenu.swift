@@ -7,7 +7,12 @@
 
 import Foundation
 
-struct CategoriaMenu:MyProStarterPack_L1,MyEnumProtocol,MyEnumProtocolMapConform {
+struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L0/*,MyEnumProtocol,MyEnumProtocolMapConform */{
+   
+    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]> {
+        \.categoriaMenuAllCases
+    }
+    
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -17,7 +22,8 @@ struct CategoriaMenu:MyProStarterPack_L1,MyEnumProtocol,MyEnumProtocolMapConform
         
         lhs.id == rhs.id &&
         lhs.intestazione == rhs.intestazione &&
-        lhs.image == rhs.image
+        lhs.image == rhs.image &&
+        lhs.descrizione == rhs.descrizione
     } // forse inutile
      
     static var allCases: [CategoriaMenu] = [] // Deprecata 02.06 -> Passa i dati ad una published nel viewModel // deprecata definitivamente 13.09
@@ -29,11 +35,12 @@ struct CategoriaMenu:MyProStarterPack_L1,MyEnumProtocol,MyEnumProtocolMapConform
     
     var intestazione: String = ""
     var image: String = "🍽"
+    var descrizione: String = ""
   //  var listPositionOrder: Int
     
-    func returnModelTypeName() -> String {
+   /* func returnModelTypeName() -> String {
         "Categoria Menu"
-    }
+    } */ // deprecata
     
     func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String) {
         return (\.categoriaMenuAllCases,"Elenco Categorie Menu", "Categoria Menu")

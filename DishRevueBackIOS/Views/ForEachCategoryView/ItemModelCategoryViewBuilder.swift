@@ -25,7 +25,7 @@ import SwiftUI
 
 
 
-
+/*
 
 struct ItemModelCategoryViewBuilder: View {
     
@@ -141,7 +141,7 @@ struct Conferma_Previews: PreviewProvider {
         }
         
     }
-}
+}  */ // STAND-BY 16.09
 
 
 

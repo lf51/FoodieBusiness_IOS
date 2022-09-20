@@ -100,10 +100,12 @@ struct IngredientModel_RowView: View {
     @ViewBuilder private func vbDishCountIn() -> some View {
         
         let (dishCount,substitution) = dishWhereIn()
-        let isInPausa = {
+      /* let isInPausa = {
             self.item.status == .completo(.inPausa) ||
             self.item.status == .bozza(.inPausa)
-        }()
+        }() */ // 16.09
+        let isInPausa = self.item.status.checkStatusTransition(check: .inPausa)
+        let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
         
         HStack {
             
@@ -118,7 +120,7 @@ struct IngredientModel_RowView: View {
                 .foregroundColor(Color("SeaTurtlePalette_4"))
                 .padding(.leading,5)
                 .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
-                .opacity(isInPausa ? 0.6 : 1.0)
+                .opacity(isDisponibile ? 1.0 : 0.6)
             
             
             if isInPausa {
@@ -301,7 +303,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .restoDelMondo,
         allergeni: [.glutine],
         origine: .animale,
-        status: .completo(.inPausa)
+        status: .completo(.disponibile)
     )
     
     @State static var ingredientSample2 =  IngredientModel(
@@ -312,7 +314,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         provenienza: .italia,
         allergeni: [.pesce],
         origine: .animale,
-        status: .bozza(.inPausa)
+        status: .bozza(.disponibile)
             )
     
     @State static var ingredientSample3 =  IngredientModel(
@@ -341,12 +343,14 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
             
             Color("SeaTurtlePalette_1").ignoresSafeArea()
             
-            VStack {
+            VStack(spacing:50) {
                 
-                IngredientModel_RowView(item: ingredientSample)
                 IngredientModel_RowView(item: ingredientSample2)
-                IngredientModel_RowView(item: ingredientSample3)
-                IngredientModel_RowView(item: ingredientSample4)
+                    .frame(height:150)
+                IngredientModel_SmallRowView(model: ingredientSample2, sostituto: nil)
+                    .frame(height:50)
+              //  IngredientModel_RowView(item: ingredientSample3)
+              //  IngredientModel_RowView(item: ingredientSample4)
                 
             }
         }.environmentObject(viewModel)

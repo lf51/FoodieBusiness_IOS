@@ -8,8 +8,10 @@
 import SwiftUI
 
 /// Differisce dalla ProprertyAllCases per passaggio di riferimenti e non più di oggetti
-struct PropertyScrollCases_Rif<T:MyEnumProtocol>: View {
+struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
 
+    // 15.09 Passa da T:MyEnumProtocol a T:MyProEnumPack_L1
+    
     @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var newDishSingleProperty: String
@@ -69,8 +71,9 @@ struct PropertyScrollCases_Rif<T:MyEnumProtocol>: View {
             }
 
          //   if let extendedDescription = newDishSingleProperty.extendedDescription() {
-            if let model = self.viewModel.myEnumFromId(id: newDishSingleProperty, modelPath: \.categoriaMenuAllCases) {
-                
+            
+           /* if let model = self.viewModel.myEnumFromId(id: newDishSingleProperty, modelPath: \.categoriaMenuAllCases){*/
+            if let model = self.viewModel.modelFromId(id: newDishSingleProperty, modelPath: \.categoriaMenuAllCases)  {
                 Text(model.extendedDescription())
                     .font(.caption)
                     .fontWeight(.light)
@@ -139,8 +142,10 @@ struct PropertyScrollCases_Rif<T:MyEnumProtocol>: View {
     
 }
 
-struct PropertyScrollCases<T:MyEnumProtocol>: View {
+struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
 
+    // 15.09 Passa da T:MyEnumProtocol a T:MyProEnumPack_L2
+    
     @Binding var newDishSingleProperty: T
     @Binding var newDishCollectionProperty: [T]
     var enumCases: [T]
@@ -188,6 +193,9 @@ struct PropertyScrollCases<T:MyEnumProtocol>: View {
                                 
                                 csVbSwitchImageText(string: type.imageAssociated(), size: .large)
                                 Text(type.simpleDescription())
+                              /*  if let ex = type as? ConservazioneIngrediente {
+                                    Text(ex.test)
+                                } */ // !! NOTA !! vedi nota 16.09 in - enum ConservazioneIngrediente -
                                 
                             }
                         }

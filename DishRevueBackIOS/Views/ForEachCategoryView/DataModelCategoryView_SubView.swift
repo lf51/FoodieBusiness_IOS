@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/*
 struct DataModelCategoryView_SubView<M:MyModelStatusConformity,G:MyEnumProtocolMapConform>:View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -136,7 +137,7 @@ struct DataModelCategoryView_Previews: PreviewProvider {
             }
         }
     }
-}
+}  */ // STAND-BY 16.09
 
 
 

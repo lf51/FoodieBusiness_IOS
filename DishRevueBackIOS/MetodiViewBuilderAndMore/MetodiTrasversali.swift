@@ -43,9 +43,18 @@ func csTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
     
     let time = DateFormatter()
     time.timeStyle = .short
-    
+    time.dateFormat = "HH:mm"
+   // time.timeZone = .current
+  //  time.timeZone = .gmt
+
     let date = DateFormatter()
+   /* date.weekdaySymbols = ["Lun","Mar","Mer","Gio","Ven","Sab","Dom"]*/
+   /* date.monthSymbols = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"] */
     date.dateStyle = .long
+    date.dateFormat = "dd MMMM yyyy"
+  
+ //   date.timeZone = .autoupdatingCurrent
+ //   date.weekdaySymbols = ["Lun","Mar"]
     
     return (time,date)
     
@@ -60,7 +69,9 @@ func csHideKeyboard(){
 /// Ritorna un array di case unici (ripuliti dai valori Associati, dai duplicati, e ordinati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
 /// - Parameter array: array description
 /// - Returns: description
-func csRipulisciArray<T:MyEnumProtocolMapConform>(array:[T]) -> [T] {
+func csRipulisciArray<T:MyProOrganizerPack_L0>(array:[T]) -> [T] {
+    
+    // T passa da MYEnumProtocolMapConform a MyProOrganizerPack
     
     var arrayCentrifugato:[T] = []
     

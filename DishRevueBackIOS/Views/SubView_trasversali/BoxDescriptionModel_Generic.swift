@@ -7,11 +7,14 @@
 
 import SwiftUI
 
-struct BoxDescriptionModel_Generic<M:MyModelProtocol>: View {
+struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
+    // 15.09 passa da MyProModelPack a MyProToolPack
+    
     
     @Binding var itemModel:M
     let labelString: String
     let disabledCondition: Bool
+    var backgroundColor: Color = Color.black
     @State private var wannaAddDescription: Bool? = false
     
     var body: some View {
@@ -21,7 +24,7 @@ struct BoxDescriptionModel_Generic<M:MyModelProtocol>: View {
             CSLabel_1Button(
                 placeHolder: labelString,
                 imageNameOrEmojy: "scribble",
-                backgroundColor: Color.black,
+                backgroundColor: backgroundColor,
                 toggleBottone: $wannaAddDescription,
                 disabledCondition: disabledCondition)
                                     

@@ -21,7 +21,33 @@ struct MenuListView: View {
             
             CSZStackVB(title: "I Miei Menu", backgroundColorView: backgroundColorView) {
                     
-                ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)
+              /*  ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)*/ // STAND-BY 16.09
+                
+                // Temporaneo
+                
+                VStack {
+                    
+                    CSDivider()
+                    
+                    ScrollView {
+                        ForEach($viewModel.allMyMenu) { $menu in
+                            
+                            
+                            GenericItemModel_RowViewMask(model: menu) {
+                              /*  vbMenuInterattivoModuloCambioStatus(myModel: $menu, viewModel: viewModel, navPath: \.menuListPath)
+                                
+                                vbMenuInterattivoModuloTrashEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
+                                
+                                menu.customInteractiveMenu(viewModel: viewModel, navigationPath: \.menuListPath) */
+                            }
+                            
+                        }
+                    }
+                    
+                }
+                
+                // fine temporaneo
+                
             }
         .navigationDestination(for: DestinationPathView.self, destination: { destination in
             destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .menuList, readOnlyViewModel: viewModel)

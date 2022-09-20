@@ -15,6 +15,7 @@ struct DishListByIngredientView: View {
     
     let nomeIngredienteCorrente: String
     let idIngredienteCorrente: String
+    let isPermamente: Bool
     let destinationPath: DestinationPath
     let backgroundColorView: Color
 
@@ -22,21 +23,34 @@ struct DishListByIngredientView: View {
     @State private var dishWithIngredient:[DishModel] = []
     @State private var isDeactive: Bool = true
     
-    init(ingredientModelCorrente: IngredientModel, destinationPath:DestinationPath, backgroundColorView: Color) {
+    init(ingredientModelCorrente: IngredientModel, isPermanente:Bool, destinationPath:DestinationPath, backgroundColorView: Color) {
         
         self.nomeIngredienteCorrente = ingredientModelCorrente.intestazione
         self.idIngredienteCorrente = ingredientModelCorrente.id
+        self.isPermamente = isPermanente
         
         self.destinationPath = destinationPath
         self.backgroundColorView = backgroundColorView
      
     }
  
-    @State private var isPermamente: Bool = false
+   // @State private var isPermamente: Bool = false
     
     var body: some View {
         
-        CSZStackVB(title: isPermamente ? "Cambio Permanente" : "Cambio Temporaneo", backgroundColorView: backgroundColorView) {
+        let value:(title:String,image:String,imageColor:Color,message:SystemMessage) = {
+            
+            if self.isPermamente {
+                
+                return ("Cambio Permanente","exclamationmark.circle",.red,.sostituzionePermanenteING)
+            } else {
+                return ("Cambio Temporaneo","clock",Color("SeaTurtlePalette_3"),.sostituzioneTemporaneaING)
+            }
+            
+        }()
+        
+        
+        CSZStackVB(title: value.title, backgroundColorView: backgroundColorView) {
  
                 VStack(alignment:.leading) {
                    
@@ -55,7 +69,7 @@ struct DishListByIngredientView: View {
                                         .fill(Color("SeaTurtlePalette_1"))
                                             ) */
                             
-                            Toggle(isOn: $isPermamente) {
+                           /* Toggle(isOn: $isPermamente) {
 
                                 HStack {
                                   
@@ -79,7 +93,32 @@ struct DishListByIngredientView: View {
                                     RoundedRectangle(cornerRadius: 5.0)
                                         .fill(Color("SeaTurtlePalette_1"))
                                             )
+                            } */ // Mod.16.09
+                           
+                            
+                            HStack {
+                              
+                                Text(nomeIngredienteCorrente)
+                                     .lineLimit(1)
+                                     .foregroundColor(Color("SeaTurtlePalette_4"))
+                                   //  ._tightPadding()
+                                   /*  .background(
+                                         RoundedRectangle(cornerRadius: 5.0)
+                                             .fill(Color("SeaTurtlePalette_1"))
+                                                 )*/
+                               // Spacer()
+                                Image(systemName: value.image)
+                                    .imageScale(.medium)
+                                    .foregroundColor(value.imageColor)
+                               
                             }
+                            ._tightPadding()
+                           // .padding(.horizontal)
+                            .background(
+                                RoundedRectangle(cornerRadius: 5.0)
+                                    .fill(Color("SeaTurtlePalette_1"))
+                                        )
+                            
                             
                     }
                       //  .padding(.horizontal,20)
@@ -155,14 +194,14 @@ struct DishListByIngredientView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 
                 HStack {
-                    Image(systemName: isPermamente ? "exclamationmark.circle" : "clock")
+                    Image(systemName: value.image)
                         .imageScale(.large)
-                        .foregroundColor(isPermamente ? Color.red : Color("SeaTurtlePalette_3"))
+                        .foregroundColor(value.imageColor)
                     
                     CSInfoAlertView(
                         imageScale: .large,
                         title: "Info",
-                        message: isPermamente ? .sostituzionePermanenteING : .sostituzioneTemporaneaING)
+                        message: value.message)
                 }//.padding(.horizontal)
 
             }
@@ -330,7 +369,7 @@ struct DishListByIngredientView: View {
     private func resetAction() {
  
         self.modelSostitutoGlobale = nil
-        self.isPermamente = false
+     //   self.isPermamente = false
         self.dishWithIngredient = self.viewModel.dishFilteredByIngrediet(idIngredient: idIngredienteCorrente)
         
         // Spiegato il funzionamento in Nota Vocale il 10.08
@@ -463,7 +502,7 @@ struct DishListByIngredientView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             
-            DishListByIngredientView(ingredientModelCorrente: ingredientSample3, destinationPath: DestinationPath.ingredientList, backgroundColorView: Color("SeaTurtlePalette_1"))
+            DishListByIngredientView(ingredientModelCorrente: ingredientSample3, isPermanente: true, destinationPath: DestinationPath.ingredientList, backgroundColorView: Color("SeaTurtlePalette_1"))
                 
         }.environmentObject(viewModel)
     }

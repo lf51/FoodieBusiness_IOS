@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
-    
+struct IntestazioneNuovoOggetto_Generic<T> : View where T:MyProToolPack_L0 {
+    // 15.09 passa da T:MyModelStatusConformity a T:MyProStarterPack_L2
+
     @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var itemModel: T
@@ -105,9 +106,19 @@ struct IntestazioneNuovoOggetto_Generic<T:MyModelStatusConformity>: View {
         
         // 2° Check Unicità del nome
         
-        let temporaryID = self.itemModel.creaID(fromValue: newText)
-        let (containerPath, _, nomeOggetto) = self.itemModel.viewModelContainerInstance()
-        let isAlreadyIN = viewModel[keyPath: containerPath].contains(where:{ $0.id == temporaryID })
+        // Mod.15.09
+        
+      //  let (containerPath, _, nomeOggetto) = self.itemModel.viewModelContainerInstance()
+        
+       // let temporaryID = self.itemModel.creaID(fromValue: newText)
+      //  let isAlreadyIN = viewModel[keyPath: containerPath].contains(where:{ $0.id == temporaryID })
+        let nomeOggetto = self.itemModel.viewModelContainerInstance().nomeOggetto
+        let isAlreadyIN = self.viewModel.checkExistingUniqueModelName(model: itemModel).0
+         
+         
+         // end 15.09
+        
+       
         
         guard !isAlreadyIN else {
             

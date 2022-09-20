@@ -8,12 +8,14 @@
 import SwiftUI
 
 /// Lasciando il valore di default (nil) nel navigationPath, il contenuto custom del modello non verrà visualizzato.
-struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
+struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
+    
+    // passa da MyModelProtocol a MyProVisualPackL0
     
     @EnvironmentObject var viewModel: AccounterVM
     let model: M
     var pushImage: String = "gearshape"
-    var navigationPath: ReferenceWritableKeyPath<AccounterVM,NavigationPath>? = nil
+   // var navigationPath: ReferenceWritableKeyPath<AccounterVM,NavigationPath>? = nil
     @ViewBuilder var interactiveMenuContent: Content
    
     var body: some View {
@@ -28,9 +30,9 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
                 Menu {
                     
                     interactiveMenuContent
-                    if navigationPath != nil {
-                        model.customInteractiveMenu(viewModel: viewModel, navigationPath: navigationPath!)
-                    }
+                  /*  if navigationPath != nil {
+                        model.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath!)
+                    } */
                     
                 } label: {
                     Image(systemName:pushImage)
@@ -185,6 +187,18 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
 
 struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     
+    static var property:PropertyModel = {
+      
+        var prp = PropertyModel()
+        prp.intestazione = "Osteria del Vicolo"
+        prp.cityName = "Sciacca"
+        prp.streetAdress = "vicolo San Martino"
+        prp.numeroCivico = "22"
+        prp.webSite = "https:\\osteriadelvicolo.it"
+        prp.phoneNumber = "340 67 13 777"
+        return prp
+    }()
+    
     @State static var ingredientSample =  IngredientModel(
         intestazione: "Guanciale Nero",
         descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
@@ -228,7 +242,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         status: .bozza(.inPausa)
     )
     
-    static var dishItem3: DishModel = {
+    @State static var dishItem3: DishModel = {
         
         var newDish = DishModel()
         newDish.intestazione = "Bucatini alla Matriciana"
@@ -237,10 +251,17 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         newDish.ingredientiSecondari = [ingredientSample2.id]
         let price:DishFormat = {
             var pr = DishFormat(type: .mandatory)
+            pr.label = "Porzione"
             pr.price = "22.5"
             return pr
         }()
-        newDish.pricingPiatto = [price]
+        let price1:DishFormat = {
+            var pr = DishFormat(type: .opzionale)
+            pr.label = "1/2 Porzione"
+            pr.price = "10.5"
+            return pr
+        }()
+        newDish.pricingPiatto = [price,price1]
         
         return newDish
     }()
@@ -262,15 +283,17 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         return newDish
     }()
     
-    static var menuSample: MenuModel = {
-       
+   @State static var menuSample: MenuModel = {
+
         var menu = MenuModel()
         menu.intestazione = "Pranzo della Domenica di Agosto"
         menu.tipologia = .fisso(persone: .due, costo: "18.5")
       //  menu.tipologia = .allaCarta
-        menu.giorniDelServizio = [.domenica]
-        menu.dishIn = [dishItem3]
-        menu.status = .completo(.inPausa)
+        menu.isAvaibleWhen = .dataEsatta
+        menu.giorniDelServizio = [.lunedi]
+      //  menu.dishInDEPRECATO = [dishItem3]
+        menu.rifDishIn = []
+        menu.status = .bozza(.archiviato)
         
         return menu
     }()
@@ -282,7 +305,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         menu.tipologia = .allaCarta
       //  menu.tipologia = .allaCarta
         menu.giorniDelServizio = [.domenica]
-        menu.dishIn = [dishItem3]
+      //  menu.dishInDEPRECATO = [dishItem3]
         menu.status = .completo(.inPausa)
         
         return menu
@@ -295,7 +318,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         menu.tipologia = .fisso(persone: .uno, costo: "18.5")
       //  menu.tipologia = .allaCarta
         menu.giorniDelServizio = [.domenica]
-        menu.dishIn = [dishItem3]
+       // menu.dishInDEPRECATO = [dishItem3]
         menu.status = .completo(.inPausa)
         
         return menu
@@ -336,27 +359,49 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                         Text("Test")
                     } */
+                  
+                    GenericItemModel_RowViewMask(model: property) {
+                        property.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.homeViewPath)
+                    }
                     
-                    GenericItemModel_RowViewMask(model: ingredientSample ) {
+                    GenericItemModel_RowViewMask(model: menuSample) {
                         
-                        Text("Test")
+                        menuSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
+                        
+                        vbMenuInterattivoModuloCambioStatus(myModel: $menuSample)
+                        
+                        vbMenuInterattivoModuloTrashEdit(currentModel: menuSample, viewModel: viewModel, navPath: \.menuListPath)
+                        
+                        
                     }
                    
-                    GenericItemModel_RowViewMask(model: ingredientSample2 ) {
+                    GenericItemModel_RowViewMask(model: dishItem3 ) {
+                        dishItem3.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
+                        vbMenuInterattivoModuloCambioStatus(myModel: $dishItem3)
                         
-                        Text("Test")
+                        
+                        
+                        vbMenuInterattivoModuloTrashEdit(currentModel: dishItem3, viewModel: viewModel, navPath: \.dishListPath)
+                        
+                       
+                        
                     }
                  
-                    GenericItemModel_RowViewMask(model: ingredientSample3 ) {
+                    GenericItemModel_RowViewMask(model: ingredientSample) {
                         
-                        Text("Test")
+                        ingredientSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
+                        
+                        vbMenuInterattivoModuloCambioStatus(myModel: $ingredientSample)
+                        
+                       
+                        
+                        vbMenuInterattivoModuloTrashEdit(currentModel: ingredientSample, viewModel: viewModel, navPath: \.ingredientListPath)
+                        
+                       
+                        
                     }
                     
-                    GenericItemModel_RowViewMask(model: ingredientSample4 ) {
-                        
-                        Text("Test")
-                    }
-                    
+                   
                 }
                 
                 

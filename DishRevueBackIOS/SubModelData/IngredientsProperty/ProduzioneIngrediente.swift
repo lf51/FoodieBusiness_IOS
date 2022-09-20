@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ProduzioneIngrediente: MyEnumProtocol, MyEnumProtocolMapConform {
+enum ProduzioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
 
     static var allCases: [ProduzioneIngrediente] = [.biologico,.convenzionale]
     

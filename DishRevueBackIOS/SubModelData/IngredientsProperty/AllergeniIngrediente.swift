@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol{
+enum AllergeniIngrediente:MyProStarterPack_L1 /*: MyEnumProtocol, MyProModelPack_L0*/{
     
     static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]> {
         \.allergeni
@@ -23,9 +23,9 @@ enum AllergeniIngrediente: MyEnumProtocol, MyModelProtocol{
         (AllergeniIngrediente.noValue,"Nuovo Allergene")
     } */
     
-    func returnModelTypeName() -> String {
+   /* func returnModelTypeName() -> String {
        "Nuovo Allergene"
-    }
+    } */ // deprecata
     
     func returnModelRowView() -> some View {
         EmptyView()

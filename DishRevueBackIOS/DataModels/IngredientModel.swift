@@ -10,7 +10,7 @@ import SwiftUI
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel:MyModelStatusConformity {
+struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,MyProStatusPack_L1 /*MyModelStatusConformity */ {
    
   static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
         return \.allMyIngredients
@@ -49,9 +49,9 @@ struct IngredientModel:MyModelStatusConformity {
         (IngredientModel(),"Ingrediente")
     } */
  
-    func returnModelTypeName() -> String {
+  /*  func returnModelTypeName() -> String {
         "Ingrediente"
-    }
+    } */ // deprecata
     
     func modelStringResearch(string: String) -> Bool {
         self.intestazione.lowercased().contains(string)
@@ -82,7 +82,7 @@ struct IngredientModel:MyModelStatusConformity {
         hasher.combine(id)
     }
     
-    func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         VStack {
             
@@ -92,19 +92,21 @@ struct IngredientModel:MyModelStatusConformity {
                 
             } label: {
                 HStack{
-                    Text("Sostituzione Temporanea")
-                    Image(systemName: "arrowshape.turn.up.backward.badge.clock")
+                    Text("Cambio Temporaneo")
+                    /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
+                    Image(systemName: "clock")
                 }
             }
             
             Button {
-                
-              //  viewModel[keyPath: navigationPath].append(DestinationPathView.dishListByIngredient(self))
+
+                viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
                 
             } label: {
                 HStack{
-                    Text("Sostituzione Permanente")
-                    Image(systemName: "arrow.left.arrow.right.circle")
+                    Text("Cambio Permanente")
+                    Image(systemName: "exclamationmark.circle")
+                  /*  Image(systemName: "arrow.left.arrow.right.circle") */
                 }
             }
             

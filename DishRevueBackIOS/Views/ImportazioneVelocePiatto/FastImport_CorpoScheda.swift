@@ -30,8 +30,9 @@ struct FastImport_CorpoScheda:View {
             
             CSLabel_conVB(placeHolder: "Crea Nuovo Piatto:", imageNameOrEmojy: "fork.knife.circle", backgroundColor: Color.black) {
 
-                Group {
-                    
+              //  Group { // 16.09
+                HStack {
+                
                     Spacer()
                     
                     CSButton_image(frontImage: "doc.badge.plus", imageScale: .large, frontColor: Color.white) { self.checkBeforeSave() }
@@ -116,7 +117,8 @@ struct FastImport_CorpoScheda:View {
                 
                 ForEach($temporaryModel.ingredients) { $ingredient in
                     
-                    let isIngredientOld = viewModel.checkExistingUniqueModelID(model: ingredient).0
+                  /*  let isIngredientOld = viewModel.checkExistingUniqueModelID(model: ingredient).0 */
+                    let isIngredientOld = viewModel.isTheModelAlreadyExist(model: ingredient)
                     
                     FastImport_IngredientRow(ingredient: $ingredient,areAllergeniOk: $areAllergeniOk, checkError: checkError, isIngredientOld: isIngredientOld){ idIngredient in
                         self.addSecondary(id: idIngredient)

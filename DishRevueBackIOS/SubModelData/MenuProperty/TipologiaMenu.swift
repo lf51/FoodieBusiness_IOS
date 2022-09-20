@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PaxMenuFisso:MyEnumProtocolMapConform  {
+enum PaxMenuFisso:MyProEnumPack_L0 /*:MyEnumProtocolMapConform */ {
     
     static var defaultValue: PaxMenuFisso = .uno
     static var allCases: [PaxMenuFisso] = [.uno,.due]
@@ -60,7 +60,7 @@ enum PaxMenuFisso:MyEnumProtocolMapConform  {
 }
 
 
-enum TipologiaMenu: MyEnumProtocol, MyEnumProtocolMapConform {
+enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
    
     static var allCases: [TipologiaMenu] = [.fisso(persone: .uno, costo: "n/d"),.allaCarta]
     static var defaultValue: TipologiaMenu = .noValue

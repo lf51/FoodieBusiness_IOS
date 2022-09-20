@@ -115,9 +115,10 @@ struct NuovoMenuMainView: View {
                                     
                                     HStack {
                                         
-                                        ForEach(nuovoMenu.dishIn) { dish in
+                                        ForEach(self.nuovoMenu.rifDishIn, id:\.self) { dishId in
                                             
-                                            DishModel_RowView(item: dish) // Rendere Cliccabile? non so
+                                            vbShowDishIn(id: dishId)
+                                          //  DishModel_RowView(item: dish) // Rendere Cliccabile? non so
                                         }
                                         
                                     }
@@ -202,6 +203,15 @@ struct NuovoMenuMainView: View {
     
     // Method
     
+    @ViewBuilder private func vbShowDishIn(id:String) -> some View {
+        
+        if let dishModel = self.viewModel.modelFromId(id: id, modelPath: \.allMyDish) {
+            
+            DishModel_RowView(item: dishModel,showSmallRow: true)
+        }
+        
+    }
+    
     private func resetAction() {
         
         self.nuovoMenu = self.menuArchiviato
@@ -234,7 +244,7 @@ struct NuovoMenuMainView: View {
           switch self.nuovoMenu.isAvaibleWhen {
               
           case .dataEsatta:
-              return Text("Il menu \(nome) sarà attivo il giorno \(dataInizio), dalle ore \(oraInizio) alle ore \(oraFine)")
+              return Text("Il menu \(nome) sarà attivo \(giorniServizio,format: .list(type: .and)) \(dataInizio), dalle ore \(oraInizio) alle ore \(oraFine)")
           case .intervalloAperto:
               return Text("Il menu \(nome) sarà attivo a partire dal giorno \(dataInizio), nei giorni di \(giorniServizio,format: .list(type: .and)), dalle ore \(oraInizio) alle ore \(oraFine)")
           case .intervalloChiuso:
@@ -254,9 +264,18 @@ struct NuovoMenuMainView: View {
        
         guard checkProgrammazione() else { return false }
        
-        if self.nuovoMenu.dishIn.isEmpty { self.nuovoMenu.status = .bozza()}
-        else {  self.nuovoMenu.status = .completo(.archiviato) }
+       /* if self.nuovoMenu.dishInDEPRECATO.isEmpty { self.nuovoMenu.status = .bozza()}
+        else {  self.nuovoMenu.status = .completo(.archiviato) } */ // 16.09
       
+        guard !self.nuovoMenu.rifDishIn.isEmpty else {
+            self.nuovoMenu.status = .bozza(.archiviato)
+            return true
+        }
+        
+        if self.nuovoMenu.optionalComplete() {
+            self.nuovoMenu.status = .completo(.disponibile)
+        } else { self.nuovoMenu.status = .bozza(.disponibile)}
+        
         return true
         
     }
@@ -357,11 +376,19 @@ struct NuovoMenuMainView: View {
 
 
 
-/*
+
 struct NuovoMenuMainView_Previews: PreviewProvider {
+    
+    static var menuItem:MenuModel = {
+       
+        var menu = MenuModel()
+        
+        return menu
+    }()
+    
     static var previews: some View {
-        NuovoMenuMainView(dismissView: .constant(true), backgroundColorView: Color.cyan)
+        NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .menuList )
     }
 }
 
-*/
+

@@ -34,6 +34,8 @@ struct MenuModel_RowView: View {
             
             VStack {
                 
+                let isOnAir = self.menuItem.isOnAir()
+                
                 HStack(alignment:.top) {
                     
                     VStack(alignment:.leading) {
@@ -58,7 +60,7 @@ struct MenuModel_RowView: View {
                 
                 Spacer()
                 
-                iteratingCalendarMenuInformation()
+                iteratingCalendarMenuInformation(isOnAir: isOnAir)
                 
                 Spacer()
                 
@@ -67,7 +69,7 @@ struct MenuModel_RowView: View {
                     ForEach(GiorniDelServizio.allCases) { day in
                         
                         iteratingGiorniDelServizio(day: day)
-                        
+                            .opacity(isOnAir ? 1.0 : 0.4)
                     }
                     
                     Spacer()
@@ -93,16 +95,23 @@ struct MenuModel_RowView: View {
     
     // Method
    
-    @ViewBuilder private func iteratingCalendarMenuInformation() -> some View {
+    @ViewBuilder private func iteratingCalendarMenuInformation(isOnAir:Bool) -> some View {
           
         let avaibility = self.menuItem.isAvaibleWhen
         let(incipit,postFix,showPost) = avaibility.iteratingAvaibilityMenu()
+        //
+        let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,isBold:Bool) = {
+           // let isOnAir = self.menuItem.isOnAir()
+            if isOnAir { return (1.0,"eye",.green,"online",true)}
+            else { return (0.4,"eye.slash",.gray,"offline",false)}
+            
+        }() // add 17.09
         
         let dataInizio = csTimeFormatter().data.string(from:self.menuItem.dataInizio)
         let dataFine = csTimeFormatter().data.string(from:self.menuItem.dataFine)
         let oraInizio = csTimeFormatter().ora.string(from:self.menuItem.oraInizio)
         let oraFine = csTimeFormatter().ora.string(from:self.menuItem.oraFine)
-        
+
         VStack(alignment:.leading) {
             
             HStack {
@@ -119,13 +128,19 @@ struct MenuModel_RowView: View {
                 
                 Spacer()
                 
-                Text(oraInizio)
-                    .fontWeight(.semibold)
-                    .font(.headline)
-                    .foregroundColor(Color.white)
+                HStack(alignment:.bottom,spacing:2) {
+                    Text("dalle")
+                        .italic()
+                        .font(.caption2)
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                    Text(oraInizio)
+                        .fontWeight(.semibold)
+                        .font(.headline)
+                        .foregroundColor(Color.white)
+                }
             
             }
-                
+
             HStack {
                 
                 Group {
@@ -140,14 +155,45 @@ struct MenuModel_RowView: View {
                
                 
                 Spacer()
-                Text(oraFine)
-                    .fontWeight(.semibold)
-                    .font(.subheadline)
-                    .foregroundColor(Color.white)
+                
+                HStack(alignment: .bottom, spacing: 2) {
+                    Text("alle")
+                        .italic()
+                        .font(.caption2)
+                        .foregroundColor(Color.red.opacity(0.8))
+                    Text(oraFine)
+                        .fontWeight(.semibold)
+                        .font(.subheadline)
+                        .foregroundColor(Color.white)
+                }
             }
     
         }
-        
+        .opacity(value.opacity)  // Start Modifiche 17.09
+        ._tightPadding()
+        .background {
+            RoundedRectangle(cornerRadius: 5.0)
+               // .strokeBorder(Color.red)
+                .fill(Color.black.opacity(0.1))
+        }
+        .overlay(alignment: .topLeading) {
+            
+            HStack(alignment: .center,spacing:2) {
+                Image(systemName: value.image)
+                    .imageScale(.small)
+                    .foregroundColor(value.imageColor)
+                Text(value.caption)
+                    .bold(value.isBold)
+                    .font(.caption)
+                    
+            }
+            .padding(2)
+            .background(content: {
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color("SeaTurtlePalette_1").opacity(0.4))
+            })
+                .offset(x: -5, y: -10)
+        } // end Modifche 17.09
         
     }
     
@@ -190,9 +236,8 @@ struct MenuModel_RowView: View {
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)
-              //  .scaledToFit()
-              //  .minimumScaleFactor(0.5)
                 .foregroundColor(Color.white)
+             //   .fixedSize()
                
             
       /*  switch self.menuItem.tipologia {
@@ -214,7 +259,8 @@ struct MenuModel_RowView: View {
         
         HStack(spacing:3) {
             
-            Text("\(self.menuItem.dishIn.count)")
+           // Text("\(self.menuItem.dishInDEPRECATO.count)") // 16.09
+            Text("\(self.menuItem.rifDishIn.count)")
             Image(systemName: "fork.knife.circle")
                 .imageScale(.large)
             
@@ -236,16 +282,17 @@ struct MenuModel_RowView: View {
                 
                 case .allaCarta:
                     Image(systemName: "cart")
+                        .imageScale(.medium)
                        
                 case .fisso(let pax, let price):
 
                         Text("€ \(price)")
                             .bold()
-                        HStack(spacing:0) {
+                    HStack(alignment:.top,spacing:0) {
                             Text("x")
                             Image(systemName: pax.imageAssociated())
-                                 .imageScale(.large)
-                                 .foregroundColor(Color("SeaTurtlePalette_2"))
+                                 .imageScale(.medium)
+                                 .foregroundColor(Color("SeaTurtlePalette_3"))
                         }
                     
                 default: EmptyView()
@@ -253,7 +300,7 @@ struct MenuModel_RowView: View {
                 }
             }
             .font(.callout)
-            .foregroundColor(Color("SeaTurtlePalette_2"))
+            .foregroundColor(Color("SeaTurtlePalette_3"))
     }
     
     
@@ -265,9 +312,12 @@ struct MenuModel_RowView_Previews: PreviewProvider {
          var menu = MenuModel()
         menu.intestazione = "SomeDay"
         menu.tipologia = .allaCarta
-         menu.isAvaibleWhen = .dataEsatta
+        menu.isAvaibleWhen = .dataEsatta
+        menu.dataInizio = Date(timeIntervalSinceNow: -72000)
+        menu.oraInizio = Date(timeIntervalSinceNow: -7200)
+        menu.oraFine =  Date(timeIntervalSinceNow: 1800)
       //   menu.giorniDelServizio = [ .lunedi,.martedi,.mercoledi]
-        menu.status = .completo(.archiviato)
+        menu.status = .completo(.disponibile)
        
         return menu
         
@@ -275,10 +325,13 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         
     static var menuItem2: MenuModel = {
         var menu = MenuModel()
-       menu.intestazione = "EveryDay"
+        menu.intestazione = "EveryDay"
         menu.tipologia = .fisso(persone: .uno, costo: "12.5")
         menu.isAvaibleWhen = .intervalloAperto
-        menu.giorniDelServizio = [ .lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato]
+        menu.dataInizio = Date(timeIntervalSinceNow: -172800)
+        menu.oraInizio = Date(timeIntervalSinceNow: 60)
+        menu.oraFine = Date(timeIntervalSinceNow: 6000)
+        menu.giorniDelServizio = [ .lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato,.domenica]
         menu.status = .completo(.disponibile)
        
        return menu
@@ -287,11 +340,15 @@ struct MenuModel_RowView_Previews: PreviewProvider {
     
     static var menuItem3: MenuModel = {
         var menu = MenuModel()
-       menu.intestazione = "SunDay"
+        menu.intestazione = "SunDay"
         menu.tipologia = .fisso(persone: .due, costo: "23.5")
         menu.isAvaibleWhen = .intervalloChiuso
         menu.giorniDelServizio = [ .domenica]
-        menu.status = .bozza()
+        menu.dataInizio = Date(timeIntervalSinceNow: -172800)
+        menu.dataFine = Date(timeIntervalSinceNow: 31536000)
+        menu.oraInizio = Date(timeIntervalSinceNow: 0)
+        menu.oraFine = Date(timeIntervalSinceNow: 600)
+        menu.status = .bozza(.disponibile)
        
        return menu
        
@@ -315,12 +372,16 @@ struct MenuModel_RowView_Previews: PreviewProvider {
             ZStack {
                 
                 Color("SeaTurtlePalette_1").ignoresSafeArea()
-                VStack {
+                VStack(spacing:80) {
                     
                     MenuModel_RowView(menuItem: menuItem)
+                        .frame(height:150)
                     MenuModel_RowView(menuItem: menuItem2)
+                        .frame(height:150)
                     MenuModel_RowView(menuItem: menuItem3)
-                    MenuModel_RowView(menuItem: menuItem4)
+                        .frame(height:150)
+                  //  MenuModel_RowView(menuItem: menuItem3)
+                 //   MenuModel_RowView(menuItem: menuItem4)
                 }
             }
         

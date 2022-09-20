@@ -14,7 +14,8 @@ struct NuovaCategoriaMenu: View {
     let backgroundColorView:Color
 
     @State private var creaNuovaCategoria:Bool? = false
-    @State private var nuovaCategoria: CategoriaMenu = CategoriaMenu()
+    @State private var nuovaCategoria: CategoriaMenu
+    @State private var categoriaArchiviata: CategoriaMenu
     
    // @State private var nomeCategoria: String = ""
   //  @State private var image: String = "🍽"
@@ -22,6 +23,10 @@ struct NuovaCategoriaMenu: View {
     
     init(backgroundColorView: Color) {
        
+        let categoriaVuota = CategoriaMenu()
+        _nuovaCategoria = State(wrappedValue: categoriaVuota)
+        _categoriaArchiviata = State(wrappedValue: categoriaVuota)
+        
         self.backgroundColorView = backgroundColorView
         UICollectionView.appearance().backgroundColor = .clear // Toglie lo sfondo alla list
     }
@@ -37,7 +42,8 @@ struct NuovaCategoriaMenu: View {
                 if creaNuovaCategoria! {
                     
                     CorpoNuovaCategoria(
-                        nuovaCategoria: $nuovaCategoria) {
+                        nuovaCategoria: $nuovaCategoria,
+                        categoriaArchiviata: categoriaArchiviata) {
                             self.aggiungiButton()
                         }
                     
@@ -49,16 +55,22 @@ struct NuovaCategoriaMenu: View {
                
                 }
                 
-                Text("Al pubblico saranno visibili solo le categorie che contengono dei piatti; qui è possibile eliminare quelle superflue e stabilire l'ordine di visualizzazione.")
+              /*  Text("Al pubblico saranno visibili solo le categorie che contengono dei piatti; qui è possibile eliminare quelle superflue e stabilire l'ordine di visualizzazione.")
                     .fontWeight(.light)
-                    .font(.system(.caption, design: .rounded))
+                    .font(.system(.caption, design: .rounded)) */ // mod.16.09
                 
                 CSLabel_conVB(
                     placeHolder: "Elenco Categorie (\(self.viewModel.categoriaMenuAllCases.count)):",
                     imageNameOrEmojy: "list.bullet.circle",
                     backgroundColor: Color("SeaTurtlePalette_3")) {
-                        
-                        Group {
+                       
+                       HStack {
+                           
+                           CSInfoAlertView(
+                            imageScale: .large,
+                            title: "Elenco Categorie",
+                            message: .elencoCategorieMenu)
+                           
                             Spacer()
                             CSButton_tight(
                                 title: self.mode?.wrappedValue.isEditing ?? false ? "Chiudi" : "Ordina",
@@ -141,7 +153,9 @@ struct NuovaCategoriaMenu: View {
     }
     
     private func pencilButton(categoria:CategoriaMenu) {
+        
         self.nuovaCategoria = categoria
+        self.categoriaArchiviata = categoria
         withAnimation {
             self.creaNuovaCategoria = true
         }
@@ -160,7 +174,7 @@ struct NuovaCategoriaMenu: View {
             return cat
         }()
         
-        if self.viewModel.isTheModelAlreadyExist(id: self.nuovaCategoria.id, keyPath: \.categoriaMenuAllCases) {  // Update
+        if self.viewModel.isTheModelAlreadyExist(model: self.nuovaCategoria) {  // Update
             
             self.viewModel.updateItemModel(itemModel:categoriaFinale)
             
@@ -210,6 +224,7 @@ struct NuovaCategoriaMenu_Previews: PreviewProvider {
 struct CorpoNuovaCategoria:View {
     
     @Binding var nuovaCategoria: CategoriaMenu
+    let categoriaArchiviata: CategoriaMenu
 
    // @Binding var nomeCategoria: String
    // @Binding var image: String
@@ -219,9 +234,12 @@ struct CorpoNuovaCategoria:View {
     var body: some View {
         
         let value:(isDisabled:Bool,opacity:CGFloat) = {
-            if self.nuovaCategoria.intestazione == "" { return (true,0.6)}
+         
+            guard self.nuovaCategoria.intestazione != "" else { return (true,0.6)}
+            if self.nuovaCategoria == categoriaArchiviata { return (true,0.6)} // 16.09
             else { return (false,1.0)}
         }() // vedi NotaVocale 14.09
+        
       /*  Picker(selection: $image) {
             ForEach(csReturnEmojyCollection(), id:\.self) { emojy in
                 
@@ -297,6 +315,12 @@ struct CorpoNuovaCategoria:View {
                 
                 
             }
+            
+            BoxDescriptionModel_Generic(
+                itemModel: $nuovaCategoria,
+                labelString: "Descrizione (Optional)",
+                disabledCondition: false,
+                backgroundColor: Color("SeaTurtlePalette_3"))
             
         }
     

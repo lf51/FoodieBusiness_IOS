@@ -45,10 +45,29 @@ struct CorpoProgrammazioneMenu_SubView: View {
                 
             }
              
-            PropertyScrollCases(cases: GiorniDelServizio.allCases, dishCollectionProperty: self.$nuovoMenu.giorniDelServizio, colorSelection: Color.mint)
-                    .opacity(self.valueFor.disableDays ? 0.6 : 1.0)
-                    .disabled(self.valueFor.disableDays)
-                    
+            if !self.valueFor.disableDays {
+                
+                PropertyScrollCases(cases: GiorniDelServizio.allCases, dishCollectionProperty: self.$nuovoMenu.giorniDelServizio, colorSelection: Color.mint)
+                      //  .opacity(self.valueFor.disableDays ? 0.6 : 1.0)
+                      //  .disabled(self.valueFor.disableDays)
+            } else {
+                
+                let singleDay = singleGiornoServizio()
+                
+                HStack {
+                    CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: Color.white, fillColor: Color.cyan) {
+                        
+                        HStack {
+                            
+                            csVbSwitchImageText(string: singleDay.imageAssociated(), size: .large)
+                            Text(singleDay.simpleDescription())
+                         //   Spacer()
+                        }
+                    }
+                    Spacer()
+                }
+            }
+            
             HStack {
                 
                 DatePicker("dalle:", selection: self.$nuovoMenu.oraInizio, displayedComponents: .hourAndMinute)
@@ -70,7 +89,21 @@ struct CorpoProgrammazioneMenu_SubView: View {
         
         
     }
+
+    // Method
     
+    private func singleGiornoServizio() -> GiorniDelServizio {
+        
+        let calendario = Calendar(identifier: .gregorian)
+        let weekDayComponent = calendario.dateComponents([.weekday], from: self.nuovoMenu.dataInizio)
+        let giornoDelServizio = GiorniDelServizio.fromOrderValue(orderValue: weekDayComponent.weekday!)
+       
+        self.nuovoMenu.giorniDelServizio = [giornoDelServizio]
+        
+        return giornoDelServizio
+        // Crea un doppio binario, ricava il giorno della data esatta, in quanto questo metodo viene eseguito solo in quel caso, lo copia nel nuovo menu, ma visivamente utilizza il valore di ritorno.
+    }
+
 }
 
 

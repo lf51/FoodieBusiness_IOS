@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-struct MostraESelezionaModel<M2:MyModelProtocol>: View {
-        
+struct MostraESelezionaModel<M2:MyProStarterPack_L1>: View {
+  
+    // M2 passa da MyModelProtocol a MyProStarterPackL1
+    
         let listaAttiva: [M2]
         let caratteristicheModel: (_ model: M2) -> (colore: Color, image: String, isUsed: Bool)
         let action: (_ model: M2) -> Void

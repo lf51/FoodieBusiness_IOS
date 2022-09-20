@@ -8,8 +8,8 @@
 import SwiftUI
 
 /// Questa View è la bottom Standard - Reset Salva - per i Nuovi Modelli. E' una generic non in senso stretto. Esegue un check Preliminare prima di aprire la confirmationDialog. Rende obsoleto i disabled dei singoli oggetti. Permette di mandare tramite il checkPrelimare il segnale per un warning.
-struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
-    
+struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View {
+    // 15.09 da M:MyModelProtocol a M:MyProStarterPack_L1
     @EnvironmentObject var viewModel: AccounterVM
     
     @Binding var itemModel: M
@@ -67,7 +67,8 @@ struct BottomViewGeneric_NewModelSubView<M:MyModelProtocol>: View {
         
       //  let (_,newModelName) = self.itemModel.returnNewModel()
       /*  let newModelName = self.itemModel.returnNewModel().nometipo */
-        let newModelName = self.itemModel.returnModelTypeName()
+       // let newModelName = self.itemModel.returnModelTypeName()
+        let newModelName = self.itemModel.viewModelContainerInstance().nomeOggetto
         
         if itemModelArchiviato.intestazione == "" {
             // crea un Nuovo Oggetto

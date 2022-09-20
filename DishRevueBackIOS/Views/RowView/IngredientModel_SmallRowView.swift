@@ -151,9 +151,33 @@ struct IngredientModel_SmallRowView: View {
     
 }
 
-/*
+
 struct IngredientModel_SmallRowView_Previews: PreviewProvider {
+   @State static var vm = {
+        var viewM = AccounterVM()
+        viewM.allMyIngredients = [ ing1]
+        return viewM
+    }()
+    static var ing1 = {
+        var ing = IngredientModel()
+        ing.intestazione = "Guanciale"
+        ing.status = .bozza(.disponibile)
+        ing.conservazione = .congelato
+        ing.allergeni = [ .arachidi_e_derivati ]
+        ing.origine = .animale
+        ing.produzione = .biologico
+        ing.provenienza = .italia
+        return ing
+        
+    }()
+    
     static var previews: some View {
-        IngredientModel_SmallRowView()
+        
+        CSZStackVB(title: "Test", backgroundColorView: Color("SeaTurtlePalette_1")) {
+            VStack {
+                IngredientModel_SmallRowView(model: ing1, sostituto: nil)
+             
+            }.frame(height:150)
+        }.environmentObject(vm)
     }
-} */
+}

@@ -38,7 +38,29 @@ struct DishListView: View {
             
             CSZStackVB(title: "I Miei Piatti", backgroundColorView: backgroundColorView) {
  
-                        ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allDishMapCategory)
+                       /* ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allDishMapCategory)*/ // STAND-BY 16.09
+                
+                // Temporaneo
+                
+                VStack {
+                    
+                    CSDivider()
+                    ScrollView {
+                        ForEach($viewModel.allMyDish) { $piatto in
+                            
+                            GenericItemModel_RowViewMask(model: piatto) {
+                             /*   vbMenuInterattivoModuloCambioStatus(myModel: $piatto, viewModel: viewModel, navPath: \.dishListPath) */
+                            }
+                            
+                        }
+
+                    }
+                }
+                
+                
+                // fine temporaneo
+                
+                
 
             }
             .navigationDestination(for: DestinationPathView.self, destination: { destination in

@@ -10,7 +10,9 @@ import SwiftUI
 
 
 /// La variabile selezionata nel Picker è al livello Binding. Background/Opacity di Default -> Color.white/opacity(0.8)
-struct CS_Picker<E:MyEnumProtocolMapConform>: View {
+struct CS_Picker<E:MyProEnumPack_L0>: View {
+    
+    // passa da MyEnumProtocolMapConform a MyProEnumPackL0
     
     @Binding var selection: E
     let customLabel:String
@@ -51,7 +53,9 @@ struct CS_Picker<E:MyEnumProtocolMapConform>: View {
 }
 
 /// Mantiene una label per il ritorno allo stato di default
-struct CS_PickerWithDefault<E:MyEnumProtocolMapConform>: View {
+struct CS_PickerWithDefault<E:MyProEnumPack_L1>: View {
+    
+    // passa da MyEnumProtocolMapConform a MyProEnumPackL1
     
     @Binding var selection: E
     let customLabel:String
@@ -97,7 +101,9 @@ struct CS_PickerWithDefault<E:MyEnumProtocolMapConform>: View {
 }
 
 /// La variabile selezionata nel Picker è al livello State
-struct CS_PickerDoubleState<E:MyEnumProtocolMapConform>: View {
+struct CS_PickerDoubleState<E:MyProEnumPack_L0>: View {
+    
+    // passa da MyEnumProtocolMapConform a MyProEnumPackL0
     
     @State var selection: E
     let customLabel:String

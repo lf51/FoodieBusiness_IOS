@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct SimpleModelScrollGeneric_SubView<M:MyModelProtocol>:View {
+struct SimpleModelScrollGeneric_SubView<M:MyProStarterPack_L1>:View {
+    
+    // passa da MyModelProtocol a MyProStarterPackL1
     
     let modelToShow: [M]
     var fontWeight: Font.Weight? = .bold

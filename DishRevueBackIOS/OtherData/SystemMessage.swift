@@ -16,6 +16,7 @@ enum SystemMessage {
     case sostituzionePermanenteING
     case formattazioneInserimentoVeloce
     case dieteCompatibili
+    case elencoCategorieMenu
     
     
     func simpleDescription() -> String {
@@ -38,6 +39,9 @@ enum SystemMessage {
             
         case .dieteCompatibili:
             return "Dati gli ingredienti del piatto, considerata la loro origine e le loro caratteristiche, il sistema ritorna una compatibilità con le diverse tipologie di dieta.\nL'utente ha la facoltà di scegliere se mostrare questa compatibilità, qualora la ritenesse corretta, o non mostrarla. In quest'ultimo caso il piatto sarà indicato come compatibile con una dieta standard, ovvero onnivora.\n\n"
+            
+        case .elencoCategorieMenu:
+            return "Al pubblico saranno visibili solo le categorie che contengono dei piatti.\nL'utente può eliminare quelle superflue, modificare le esistenti e stabilire l'ordine di visualizzazione nei menu."
         }
         
     }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-
+/*
 struct DataModelPickerView_SubView: View {
     
     let dataContainer:[MapCategoryContainer]
@@ -152,7 +152,7 @@ struct DataModelPickerView_SubView: View {
             EmptyView()
         }
     }
-}
+}  */ // STAND-BY 16.09
 
 /*struct DataModelPickerView_Previews: PreviewProvider {
     
