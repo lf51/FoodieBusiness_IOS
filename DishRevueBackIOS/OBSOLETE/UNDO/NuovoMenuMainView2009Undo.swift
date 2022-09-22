@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct NuovoMenuMainView: View {
+/*
+struct NuovoMenuMainViewl: View {
 
     @EnvironmentObject var viewModel: AccounterVM
     
@@ -27,21 +28,19 @@ struct NuovoMenuMainView: View {
         
         self.menuArchiviato = nuovoMenu
         self.destinationPath = destinationPath
-       
+
+        // 20.09
+        self.isDelGiorno = nuovoMenu.tipologia == .delGiorno
     }
     
-  /*  var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool, bottom: Bool) {
+    let isDelGiorno:Bool
 
-      let disableTipologia = self.nuovoMenu.intestazione == ""
-      let disableProgrammazione = self.nuovoMenu.tipologia == nil
-      let dissableBottom = self.nuovoMenu == self.menuArchiviato
-        
-      return (disableTipologia,disableProgrammazione,dissableBottom)
-    } */
  
     var body: some View {
         
         CSZStackVB(title: self.nuovoMenu.intestazione == "" ? "Nuovo Menu" : self.nuovoMenu.intestazione, backgroundColorView: backgroundColorView) {
+            
+            
             
             VStack {
                 
@@ -51,26 +50,32 @@ struct NuovoMenuMainView: View {
                         
                         VStack(alignment: .leading) {
 
-                            IntestazioneNuovoOggetto_Generic(
+                          /*  IntestazioneNuovoOggetto_Generic(
                                 itemModel: $nuovoMenu,
                                 generalErrorCheck: generalErrorCheck,
                                 minLenght: 3,
-                                coloreContainer: Color("SeaTurtlePalette_2"))
+                                coloreContainer: Color("SeaTurtlePalette_2")) */
                           
-                            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: openDishList)
-                                
-                             /*   CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black) */
+                           /* BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: openDishList) */
+                                vbIntestazione()
+                                vbDescrizione()
                             
                                CSLabel_conVB(
                                 placeHolder: "Tipologia Menu",
                                 imageNameOrEmojy: "dollarsign.circle",
                                 backgroundColor: Color.black) {
-                                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.tipologia == .defaultValue)
+                                    HStack {
+                                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.tipologia == .defaultValue)
+                                        
+                                        CSInfoAlertView(imageScale: .large, title: "Info Tipologia", message: .noValue)
+                                    }
                                 }
                                 
-                                SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
-
-                            CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen)
+                          //  SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
+                               
+                            vbTipologiaMenu()
+                            vbProgrammazione()
+                          /*  CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen)
 
                         //    if !isThereAReasonToDisable.programmazione {
                         
@@ -92,7 +97,8 @@ struct NuovoMenuMainView: View {
                             if self.nuovoMenu.isAvaibleWhen != .defaultValue {
                       
                                 CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
-                            }
+                            } */
+                             
                     //  Spacer()
                             
                           /*  CSLabel_2Button(placeHolder: "Piatti in Menu", imageName: "fork.knife.circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi", disabledCondition: self.nuovoMenu.isAvaibleWhen == nil) */
@@ -202,6 +208,125 @@ struct NuovoMenuMainView: View {
     }
     
     // Method
+    
+    // Inizio Modifiche 20.09
+    
+    @ViewBuilder private func vbProgrammazione() -> some View {
+        
+        if isDelGiorno {
+            
+            CSLabel_conVB(placeHolder: "Fasce Orarie", imageNameOrEmojy: "calendar.badge.clock", backgroundColor: Color.black) {
+                CSInfoAlertView(imageScale: .large,
+                                title: "Fasce Orarie",
+                                message: .noValue)
+            }
+            
+            Text("A partitre da oggi tutti i giorni")
+                .italic()
+                .font(.caption2)
+                .foregroundColor(Color.gray)
+            
+          ModuloFasceOrarie_SubView(
+            nuovoMenu: $nuovoMenu,
+            disableOrari: false)
+          //  vbFasceOrarie()
+            
+            
+        }
+        else {
+            
+            CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen)
+        
+            HStack {
+                
+                Text(self.nuovoMenu.isAvaibleWhen.extendedDescription())
+                    .font(.caption)
+                    .fontWeight(.light)
+                    .italic()
+                    .foregroundColor(Color.black)
+                
+                CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.isAvaibleWhen == .defaultValue)
+                
+            }
+
+            if self.nuovoMenu.isAvaibleWhen != .defaultValue {
+      
+                CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
+            }
+            
+        }
+        
+    }
+    
+    
+    @ViewBuilder private func vbIntestazione() -> some View {
+        if self.isDelGiorno {
+            
+            VStack(alignment:.leading) {
+                
+                CSLabel_1Button(placeHolder: self.nuovoMenu.intestazione, imageNameOrEmojy: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), backgroundColor: Color.black)
+                
+                CSText_tightRectangle(testo: self.nuovoMenu.intestazione, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color("SeaTurtlePalette_2") )
+                
+            }
+            
+        }
+        else {
+            IntestazioneNuovoOggetto_Generic(
+                itemModel: $nuovoMenu,
+                generalErrorCheck: generalErrorCheck,
+                minLenght: 3,
+                coloreContainer: Color("SeaTurtlePalette_2"))
+        }
+        
+    }
+    
+    @ViewBuilder private func vbDescrizione() -> some View {
+        
+        if self.isDelGiorno {
+            
+            VStack(alignment:.leading) {
+                CSLabel_1Button(
+                    placeHolder: "Descrizione",
+                    imageNameOrEmojy: "scribble",
+                    backgroundColor: Color.black)
+                
+                Text(nuovoMenu.descrizione)
+                    .italic()
+                    .fontWeight(.light)
+            }
+            
+        }
+        else {
+            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: openDishList)
+        }
+        
+    }
+    
+    
+    @ViewBuilder private func vbTipologiaMenu() -> some View {
+        
+        if self.isDelGiorno {
+            
+            HStack {
+                ForEach(TipologiaMenu.allCases) { tipologia in
+                    
+                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: tipologia != .delGiorno ? Color.gray : Color.blue, fillColor: tipologia == .delGiorno ? Color("SeaTurtlePalette_2") : Color.clear)
+                        .opacity(tipologia != .delGiorno ? 0.5 : 1.0)
+                    
+                }
+            }
+            
+        }
+        else { SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)}
+        
+        
+    }
+    
+    
+    
+    
+    // end modifiche 20.09
     
     @ViewBuilder private func vbShowDishIn(id:String) -> some View {
         
@@ -377,7 +502,7 @@ struct NuovoMenuMainView: View {
 
 
 
-struct NuovoMenuMainView_Previews: PreviewProvider {
+struct NuovoMenuMainViewl_Previews: PreviewProvider {
     
     static var menuItem:MenuModel = {
        
@@ -387,8 +512,9 @@ struct NuovoMenuMainView_Previews: PreviewProvider {
     }()
     
     static var previews: some View {
-        NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .menuList )
+        NuovoMenuMainViewl(nuovoMenu: menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .menuList )
     }
 }
 
 
+*/ // Creata il 20.09 - Ha subito un Undo, ossia siamo tornati alla versione dell'ultimo salvataggio Utile

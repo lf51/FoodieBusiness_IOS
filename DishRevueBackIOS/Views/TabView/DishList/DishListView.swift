@@ -49,7 +49,12 @@ struct DishListView: View {
                         ForEach($viewModel.allMyDish) { $piatto in
                             
                             GenericItemModel_RowViewMask(model: piatto) {
-                             /*   vbMenuInterattivoModuloCambioStatus(myModel: $piatto, viewModel: viewModel, navPath: \.dishListPath) */
+                                
+                                piatto.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
+                                
+                                vbMenuInterattivoModuloCambioStatus(myModel: $piatto)
+ 
+                                vbMenuInterattivoModuloTrashEdit(currentModel: piatto, viewModel: viewModel, navPath: \.dishListPath)
                             }
                             
                         }

@@ -184,7 +184,7 @@ struct CSTextField_4: View {
         self.keyboardType = keyboardType
      
     }
-    
+
     var body: some View {
         
         HStack {
@@ -194,6 +194,10 @@ struct CSTextField_4: View {
                 .foregroundColor(self.textFieldItem != "" ? Color.green : Color.black)
                 .padding(.leading)
             
+           // TextField("test", value: $test, format: .currency(code: "EUR"))
+      /*      TextField(text: $textFieldItem, label: {
+                Text("\(0,format: .currency(code: "EUR"))")
+            })*/
             TextField (self.placeHolder, text: $textFieldItem)
                 .keyboardType(keyboardType!)
                 ._tightPadding()

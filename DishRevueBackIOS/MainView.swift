@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/* // Sviluppi:
+ 1. Property Info -> Nota vocale 22.09
+ 
+ */
+
 struct MainView: View {
     
     @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
@@ -32,7 +37,6 @@ struct MainView: View {
                     Image (systemName: "menucard")//scroll.fill
                     Text("Menu")
                 }.tag(1)
-            
             
             DishListView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
                 .badge(0)

@@ -74,7 +74,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
     
     // end deprecate
     
-    
+   
    /* init() {
         
         self.intestazione = ""
@@ -129,6 +129,9 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
         
         let disabilita = self.rifReviews.isEmpty
         let priceCount = self.pricingPiatto.count
+        let currencyCode = Locale.current.currency?.identifier ?? "EUR"
+        let isDelGiorno = viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.id,menuDiSistema: .delGiorno)
+        let isDelloChef = viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.id, menuDiSistema: .delloChef)
         
       return VStack {
             
@@ -149,9 +152,9 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
              
                  ForEach(self.pricingPiatto,id:\.self) { format in
         
-                    // let price = Double(format.price) ?? 0
-                    // Text("\(format.label) : \(price,format: .currency(code: "EUR"))")
-                     Text("\(format.label) : € \(format.price)")
+                     let price = Double(format.price) ?? 0
+                     Text("\(format.label) : \(price,format: .currency(code: currencyCode))")
+                  //   Text("\(format.label) : € \(format.price)")
                   }
                   
               } label: {
@@ -162,7 +165,31 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
 
           } // end if
           
-            
+          // Test 21.09
+          
+          Button {
+              
+              viewModel.manageInOutMenuDiSistema(idPiatto: self.id, isAlreadyIn:isDelGiorno,menuDiSistema: .delGiorno)
+
+          } label: {
+              HStack{
+                  Text(isDelGiorno ? "Rimuovi 🍽️ del Giorno" : "Imposta 🍽️ del Giorno")
+                  Image(systemName:isDelGiorno ? "clock.badge.xmark" : "clock.badge.checkmark")
+              }
+          }
+          
+          Button {
+              
+              viewModel.manageInOutMenuDiSistema(idPiatto: self.id, isAlreadyIn:isDelloChef,menuDiSistema: .delloChef)
+
+          } label: {
+              HStack{
+                  Text(isDelloChef ? "Rimuovi dai consigliati" : "Consigliato dallo 👨🏻‍🍳")
+                  Image(systemName:isDelloChef ? "x.circle" : "clock.badge.checkmark")
+              }
+          }// 22.09
+          
+          
         }
 
     }

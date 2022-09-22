@@ -315,12 +315,12 @@ struct NewDishMainView: View {
     private func checkCategoria() -> Bool {
         
       // return self.newDish.categoriaMenuDEPRECATA != .defaultValue
-        return self.newDish.categoriaMenu.isEmpty
+        return !self.newDish.categoriaMenu.isEmpty
     }
     
     private func checkIngredienti() -> Bool {
         
-        guard !self.noIngredientsNeeded else { return false }
+        guard !self.noIngredientsNeeded else { return true }
         
         return !self.newDish.ingredientiPrincipali.isEmpty
     }

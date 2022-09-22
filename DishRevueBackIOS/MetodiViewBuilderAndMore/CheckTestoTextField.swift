@@ -51,7 +51,7 @@ func csCheckConformitaTextField(testo:String, conformeA: ConformitàTextField ) 
 
 func csCheckIntero(testo:String) -> Bool { Int(testo) != nil }
 func csCheckDouble(testo:String) -> Bool  {
-    // dovrebbe usare una keyboard di tipo decimalPad, che usa la virgola come separatore, e sempre la virgola è l'unico caratttere extra rispetto ai numeri
+    // In base alle impostazioni di sistema la tastiera decimale da un seperatore diverso, o il punto o la virgola. Il problema è che se si usa la virgola non mi riconosce il numero come double per cui la convertiamo in punto.
     let newText = testo.replacingOccurrences(of: ",", with: ".")
     return Double(newText) != nil
     

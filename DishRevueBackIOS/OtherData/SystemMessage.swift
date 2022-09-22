@@ -18,6 +18,7 @@ enum SystemMessage {
     case dieteCompatibili
     case elencoCategorieMenu
     
+    case noValue
     
     func simpleDescription() -> String {
         
@@ -42,6 +43,11 @@ enum SystemMessage {
             
         case .elencoCategorieMenu:
             return "Al pubblico saranno visibili solo le categorie che contengono dei piatti.\nL'utente può eliminare quelle superflue, modificare le esistenti e stabilire l'ordine di visualizzazione nei menu."
+            
+            
+            
+        case .noValue:
+            return "Da inserire"
         }
         
     }

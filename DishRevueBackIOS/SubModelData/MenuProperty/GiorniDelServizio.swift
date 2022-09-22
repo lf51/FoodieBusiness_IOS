@@ -146,5 +146,16 @@ enum GiorniDelServizio:MyProEnumPack_L2,Identifiable /*: MyEnumProtocol, MyEnumP
        }
         
     }
+    
+    /// Si Usa nel caso di DataEsatta per mostrare il giorno della settimana corrispondente
+   static func giornoServizioFromData(dataEsatta:Date) -> GiorniDelServizio {
+        
+        let calendario = Calendar(identifier: .gregorian)
+        let weekDayComponent = calendario.dateComponents([.weekday], from: dataEsatta)
+        let giornoDelServizio = fromOrderValue(orderValue: weekDayComponent.weekday!)
+       
+        return giornoDelServizio
+
+    }
 
 }

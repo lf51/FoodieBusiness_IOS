@@ -31,6 +31,21 @@ struct PropertyModel_RowView: View {
                      
                             Spacer()
                             
+                            if true {
+                                
+                                CSEtichetta(
+                                    text: "Verificata",
+                                    fontStyle: .caption,
+                                    fontWeight: .semibold,
+                                    textColor: Color.white,
+                                    image: "checkmark.seal.fill",
+                                    imageColor: Color.white,
+                                    imageSize: .medium,
+                                    backgroundColor: Color("SeaTurtlePalette_2"),
+                                    backgroundOpacity: 0.4)
+                            }
+                            
+                            
                           /*  NavigationLink {
                                 EditingPropertyModel(itemModel: $itemModel, backgroundColorView: Color("SeaTurtlePalette_1"))
                             } label: {

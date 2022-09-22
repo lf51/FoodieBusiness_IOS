@@ -189,7 +189,8 @@ struct PriceRow:View {
                 image: "eurosign.circle",
                 keyboardType: .decimalPad,
                 conformeA: .decimale) {
-                    self.formatoPiatto.price = self.price
+                    let newPrice = self.price.replacingOccurrences(of: ",", with: ".")
+                    self.formatoPiatto.price = newPrice
                 }
                 .fixedSize() // fixedSize significa che la view avrà una grandezza variabile che può eccedere quella in cui è contenuta. Viene impostato alla sua grandezza ideale. Per questo muterà se inseriamo, in questo caso, tante cifre. Dato che ipotizziamo che in un ristorante difficilmente supereremo le 5 cifre, lo impostiamo su questa linea. Dovesse comunque succedere non fa nulla :-)
                 .csWarningModifier(isPresented: checkError) {

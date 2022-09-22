@@ -47,10 +47,15 @@ struct ListaIngredientiView: View {
                     CSDivider()
                     ScrollView {
                         
-                        ForEach($viewModel.allMyIngredients) { $ing in
+                        ForEach($viewModel.allMyIngredients) { $ingredient in
                             
-                            GenericItemModel_RowViewMask(model: ing) {
-                              /*  vbMenuInterattivoModuloCambioStatus(myModel: $ing, viewModel: viewModel, navPath: \.ingredientListPath) */
+                            GenericItemModel_RowViewMask(model: ingredient) {
+                                
+                                ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
+                                
+                                vbMenuInterattivoModuloCambioStatus(myModel: $ingredient)
+                                
+                                vbMenuInterattivoModuloTrashEdit(currentModel: ingredient, viewModel: viewModel, navPath: \.ingredientListPath)
                             }
                             
                         }

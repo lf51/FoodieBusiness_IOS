@@ -34,11 +34,12 @@ struct MenuListView: View {
                             
                             
                             GenericItemModel_RowViewMask(model: menu) {
-                              /*  vbMenuInterattivoModuloCambioStatus(myModel: $menu, viewModel: viewModel, navPath: \.menuListPath)
+                                
+                                menu.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
+                                
+                                vbMenuInterattivoModuloCambioStatus(myModel: $menu)
                                 
                                 vbMenuInterattivoModuloTrashEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
-                                
-                                menu.customInteractiveMenu(viewModel: viewModel, navigationPath: \.menuListPath) */
                             }
                             
                         }
@@ -95,8 +96,8 @@ struct MenuListView: View {
 
     
 }
-
 /*
+
 struct DisheListView_Previews: PreviewProvider {
     static var previews: some View {
         DishListView(accounterVM: AccounterVM(), tabSelection: .constant(2), backgroundColorView: Color.cyan)

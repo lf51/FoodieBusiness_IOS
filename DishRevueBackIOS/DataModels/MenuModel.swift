@@ -29,6 +29,7 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         lhs.giorniDelServizio == rhs.giorniDelServizio &&
         lhs.oraInizio == rhs.oraInizio &&
         lhs.oraFine == rhs.oraFine
+      //  lhs.fasceOrarie == rhs.fasceOrarie
       
     }
     
@@ -54,9 +55,56 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
     }} /*{ willSet {dataFine = newValue.advanced(by: 604800)}}*/// 19.09 // data inizio del Menu, che contiene al suo interno anche l'ora (estrapolabile) in cui è stato creato
     var dataFine: Date = Date().advanced(by: 604800) // opzionale perchè possiamo non avere una fine in caso di data fissa
     var giorniDelServizio:[GiorniDelServizio] = [] // Categoria Filtraggio
-    var oraInizio: Date = Date() {willSet {oraFine = newValue.advanced(by: 1800)}} // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
-    var oraFine: Date = Date().advanced(by: 1800)
+    var oraInizio: Date = Date() {willSet {oraFine = newValue.advanced(by: 1800)}} // deprecata in futuro // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
+    var oraFine: Date = Date().advanced(by: 1800) // deprecata in futuro
 
+  //  var fasceOrarie:[FasciaOraria] = [FasciaOraria()]
+    
+    // init
+    
+    init(tipologia:TipologiaMenu = .defaultValue) { // init del menu del giorno
+      
+        if tipologia != .defaultValue {
+            
+            if tipologia == .delGiorno {
+                self.intestazione = "Menu del Giorno"
+                self.descrizione = "Rielaborato giornalmente, aggiunge ai menu online dei Piatti del giorno."
+            }
+            else if tipologia == .delloChef {
+                self.intestazione = "Menu dello Chef"
+                self.descrizione = "Fra i piatti già contenuti in menu online, segnala quelli giornalmente consigliati dalla chef."
+            }
+            
+            self.tipologia = tipologia
+            self.status = .bozza(.disponibile)
+            self.rifDishIn = []
+            self.isAvaibleWhen = .dataEsatta
+            self.dataInizio = Date()
+            
+            let giornoDataInizio = GiorniDelServizio.giornoServizioFromData(dataEsatta: Date())
+            self.giorniDelServizio = [giornoDataInizio]
+            self.oraInizio = Date.distantFuture.advanced(by: -3540)
+            self.oraFine = Date.distantFuture.advanced(by: 82740)
+        }
+        
+    }
+    
+    // Struct interne 20.09 --> Valutare Spostamento/Mantenimento qui
+   /* struct FasciaOraria:Hashable {
+        let title:String?
+        var oraInizio:Date = Date() {willSet {oraFine = newValue.advanced(by: 1800)}}
+        var oraFine:Date = Date().advanced(by: 1800)
+        
+        init(title: String? = nil) {
+            self.title = title
+          
+        }
+    } */
+    // Method
+    
+ 
+    
+    
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         let disabilita = self.rifDishIn.isEmpty

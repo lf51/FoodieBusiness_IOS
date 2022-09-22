@@ -27,7 +27,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             
                 ForEach(TipologiaMenu.allCases) { tipologia in
  
-                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia.id == tipologia.id ? Color.orange : Color.clear)
+                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia.id == tipologia.id ? Color("SeaTurtlePalette_3") : Color.clear)
                         .onTapGesture {
                             withAnimation(.default) {
                               
@@ -62,7 +62,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                         } else {
                     
                     VStack(alignment: .leading) {
-                        
+ 
                         HStack {
 
                             CS_Picker(
@@ -70,7 +70,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                                 customLabel: "Pax",
                                 dataContainer: PaxMenuFisso.allCases)
                             
-                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.0", image: "eurosign.circle", keyboardType: .decimalPad)
+                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.00", image: "dollarsign.circle", keyboardType: .decimalPad)
                             
                         }
                         
@@ -105,16 +105,19 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
     
     private func validateAndAddSpecificValue() {
                 
-        guard csValidateValue(value: self.prezzo, convalidaAsDouble: true) else {
+       // guard csValidateValue(value: self.prezzo, convalidaAsDouble: true) else { // 22.09
+        
+        guard csCheckDouble(testo: self.prezzo) else {
             
             self.viewModel.alertItem = AlertModel(
                 title: "Errore Inserimento Prezzo",
-                message: "Valore inserito non valido. Ex: 180 o 180.5" )
+                message: "Valore inserito non valido. Ex: 180 o 180,5 o 180.5" )
             
             self.prezzo = ""
             return}
     
-        self.newMenu.tipologia = .fisso(persone: self.pax, costo: self.prezzo)
+        let newPrice = self.prezzo.replacingOccurrences(of: ",", with: ".")
+        self.newMenu.tipologia = .fisso(persone: self.pax, costo: newPrice)
 
         self.prezzo = ""
         self.pax = .uno

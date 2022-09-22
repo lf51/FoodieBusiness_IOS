@@ -52,7 +52,7 @@ struct CorpoProgrammazioneMenu_SubView: View {
                       //  .disabled(self.valueFor.disableDays)
             } else {
                 
-                let singleDay = singleGiornoServizio()
+                let singleDay = setGiornoDataEsatta(data: self.nuovoMenu.dataInizio)
                 
                 HStack {
                     CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: Color.white, fillColor: Color.cyan) {
@@ -92,7 +92,15 @@ struct CorpoProgrammazioneMenu_SubView: View {
 
     // Method
     
-    private func singleGiornoServizio() -> GiorniDelServizio {
+    private func setGiornoDataEsatta(data:Date) -> GiorniDelServizio {
+        
+        let serviceDay = GiorniDelServizio.giornoServizioFromData(dataEsatta: data)
+        
+        self.nuovoMenu.giorniDelServizio = [serviceDay]
+        return serviceDay
+    }
+    
+  /*  private func singleGiornoServizio() -> GiorniDelServizio {
         
         let calendario = Calendar(identifier: .gregorian)
         let weekDayComponent = calendario.dateComponents([.weekday], from: self.nuovoMenu.dataInizio)
@@ -102,7 +110,7 @@ struct CorpoProgrammazioneMenu_SubView: View {
         
         return giornoDelServizio
         // Crea un doppio binario, ricava il giorno della data esatta, in quanto questo metodo viene eseguito solo in quel caso, lo copia nel nuovo menu, ma visivamente utilizza il valore di ritorno.
-    }
+    } */
 
 }
 

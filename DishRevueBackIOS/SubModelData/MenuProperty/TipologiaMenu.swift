@@ -69,6 +69,8 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
     
     case fisso(persone:PaxMenuFisso,costo: String)
     case allaCarta
+    case delGiorno
+    case delloChef
     
     case noValue
     
@@ -89,6 +91,10 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
             return "Fisso"
         case .allaCarta:
             return "Alla Carta"
+        case .delGiorno:
+           return "piatti del Giorno"
+        case .delloChef:
+            return "i consigliati"
         case .noValue:
             return "Selezionare tipologia menu"
 
@@ -96,18 +102,45 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
     }
     
     func extendedDescription() -> String {
-       
+        
         switch self {
             
         case .fisso(let persone, let costo):
-            return "Il costo del menu è di € \(costo) per \(persone.extendedDescription())."
+            return "Il costo del menu è di \(formattaPrezzo(price: costo)) per \(persone.extendedDescription())."
         case .allaCarta:
             return "Il costo del menu non è predeterminato."
+        case .delGiorno:
+            return "Vedi Info"
+        case .delloChef:
+            return "Vedi info"
         case .noValue:
             return "Selezionare tipologia menu"
            
         }
 
+    }
+    
+    // Valutiamo di Renderla Pubblica, anche se al momento 21.09 abbiamo potuto utilizzare il format con il currencyCode. Qui richiederebbe di modificare una funzione che viene dal protocollo ed è troppo SBATTI
+    private func formattaPrezzo(price:String) -> String {
+        
+        let currencyCode = Locale.current.currency?.identifier ?? "EUR"
+        let newPrice:String
+ 
+        if let point = price.firstIndex(of: ".") {
+            
+            let pre = price.prefix(upTo: point)
+            let post = price.suffix(from: point)
+          //  let post2 = post.replacingOccurrences(of: ",", with: ".")
+            
+            if post.count == 1 { newPrice = pre.appending("\(post)00")}
+            else if post.count == 2 { newPrice = pre.appending("\(post)0") }
+            else { newPrice = pre.appending("\(post)") }
+            
+        } else {
+            newPrice = price.appending(".00")
+        }
+           
+        return "\(currencyCode) \(newPrice)"
     }
     
     func createId() -> String {
@@ -120,9 +153,7 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
             
         case .fisso:
             return true
-        case .allaCarta:
-            return false
-        case .noValue:
+        default:
             return false
         }
         
@@ -149,6 +180,10 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
             return "dollarsign.circle"
         case .allaCarta:
             return "cart"
+        case .delGiorno:
+            return "clock.arrow.circlepath"
+        case .delloChef:
+            return "mustache" //"👨🏻‍🍳"
         case .noValue:
             return "gear.badge.xmark"
         }
@@ -162,8 +197,36 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
             return 1
         case .allaCarta:
             return 2
+        case .delGiorno:
+            return 3
+        case .delloChef:
+            return 4
         case .noValue:
            return 0
+        }
+    }
+    
+    enum DiSistema {
+        case delGiorno,delloChef
+        
+        func returnTipologiaMenu() -> TipologiaMenu {
+            switch self {
+            case .delGiorno:
+                return TipologiaMenu.delGiorno
+            case .delloChef:
+                return TipologiaMenu.delloChef
+            }
+        }
+        
+        func simpleDescription() -> String {
+            
+            switch self {
+            case .delGiorno:
+                return "Menu con i piatti del Giorno."
+            case .delloChef:
+                return "Menu con i piatti consigliati dallo Chef.👨🏻‍🍳"
+                
+            }
         }
     }
     

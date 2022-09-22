@@ -138,6 +138,23 @@ class AccounterVM: ObservableObject {
         
     }
     
+    /// Controlla se il nome del modello Passato esiste già, se si lo aggiorna, altrimenti lo crea.
+    func switchFraCreaEUpdateModel<T:MyProStarterPack_L1>(itemModel:T) {
+        
+        if let oldModel = checkExistingUniqueModelName(model: itemModel).1 {
+            
+            let newOldModel:T = {
+                var new = itemModel
+                new.id = oldModel.id
+                return new
+            }()
+            self.updateItemModel(itemModel: newOldModel)
+            
+        } else {
+            self.createItemModel(itemModel: itemModel)
+        }
+        
+    }
     
     
     /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto.
@@ -205,8 +222,6 @@ class AccounterVM: ObservableObject {
         
     }
     
-    
-    
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
     func updateItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil)  {
         print("UpdateItemModel()")
@@ -249,14 +264,10 @@ class AccounterVM: ObservableObject {
             
         }
         
-        
         print("elementi nel Container POST-Update: \(containerT.count)")
         print("updateItemModelExecutive executed")
     }
-    
-    
-    
-    
+ 
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
     func deleteItemModel<T:MyProStarterPack_L1>(itemModel: T) {
         
@@ -287,11 +298,6 @@ class AccounterVM: ObservableObject {
         self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!")
         
     }
-    
-    
-    
-    
-    
     
     /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container
     private func assegnaContainer<T:MyProStarterPack_L1>(itemModel:T) -> [T] {
@@ -354,11 +360,51 @@ class AccounterVM: ObservableObject {
         
     }
     
+    //
+    
+   
+    
     
     // ALTRO
     
+    /// Permette di inserire o rimuovere un piatto da un Menu di Sistema Online Online.
+    func manageInOutMenuDiSistema(idPiatto:String,isAlreadyIn:Bool,menuDiSistema:TipologiaMenu.DiSistema) {
+        
+        if let menuDD = trovaMenuDiSistemaOnline(menuDiSistema: menuDiSistema) {
+            let newMenu = {
+               var menu = menuDD
+                if isAlreadyIn { menu.rifDishIn.removeAll(where: {$0 == idPiatto}) }
+                else { menu.rifDishIn.append(idPiatto) }
+                return menu
+            }()
+            self.updateItemModel(itemModel: newMenu)
+        } else {
+            self.alertItem = AlertModel(title: "Errore", message: "Abilitare nella Home il \(menuDiSistema.simpleDescription())")
+        }
+    }
+        
+    /// Controlla se il piatto è contenuto all'interno di un Menu di Sistema ONLINE
+    func checkPiattoIsInMenuDiSistema(idPiatto:String, menuDiSistema:TipologiaMenu.DiSistema) -> Bool {
+        
+      if let menuDD = trovaMenuDiSistemaOnline(menuDiSistema: menuDiSistema) {
+          return menuDD.rifDishIn.contains(idPiatto)
+      } else {
+          return false
+      }
+    }
 
+    /// ritorna la tipoligia di Menu associata ad una sottoEnum DiSistema. Contiene quelle tipologie di menu create dal sistema senza possibilità per l'utente di modificarne le proprietà, salvo l'lenco dei piatti contenuti.
+    func trovaMenuDiSistemaOnline(menuDiSistema:TipologiaMenu.DiSistema) -> MenuModel? {
 
+        let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
+        
+       return self.allMyMenu.first(where:{
+              $0.tipologia.returnTypeCase() == tipologia &&
+              $0.isOnAir()
+        })
+        
+        
+    }
     
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti

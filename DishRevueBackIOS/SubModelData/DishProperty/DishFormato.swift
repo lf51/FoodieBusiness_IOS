@@ -26,3 +26,5 @@ enum DishFormatType {
     
     case mandatory,opzionale
 }
+
+

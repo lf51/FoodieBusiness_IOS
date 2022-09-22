@@ -38,21 +38,25 @@ struct DishModel_RowView: View {
                 
                 Spacer()
                 
-                vbIngredientScrollRow()
+                VStack(spacing:5) {
+                    
+                    vbBadgeRow()
+                    vbIngredientScrollRow()
+                    vbDieteCompatibili()
+                }
                 
                 Spacer()
                 
-                VStack(spacing:5){
+             //  VStack(spacing:5){
                     
-                    vbDieteCompatibili()
-                    
-                 //   vbIngredientScrollRow()
+                   // vbDieteCompatibili()
+
                     let listaAllergeni = self.item.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
                     vbAllergeneScrollRowView(listaAllergeni: listaAllergeni)
-                  //  vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                     .padding(.bottom,5)
                        
-                }
-                .padding(.vertical,5)
+             //   }
+               
                 
             } // chiuda VStack madre
             .padding(.horizontal)
@@ -76,26 +80,98 @@ struct DishModel_RowView: View {
                  .padding(.top,5)
                 
                 Spacer()
-                
+                vbBadgeRow()
                 vbNoticeAllergeni()
-                    .padding(.vertical,5)
+                    .padding(.bottom,5)
 
             } // chiuda VStack madre
             .padding(.horizontal)
-                            
+            
         } // chiusa Zstack Madre
+      /*  .overlay(alignment: .bottomTrailing) {
+       // !! NOTA VOCALE 20.09 BADGE !!
+            HStack(alignment: .center,spacing:2) {
+                
+                Image(systemName: "fork.knife.circle.fill")
+                    .imageScale(.small)
+                    .foregroundColor(Color.yellow)
+                Text("del Giorno")
+                    .bold()
+                    .font(.caption)
+                    .foregroundColor(Color.white)
+                    
+            }
+            .padding(2)
+            .background(content: {
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color.yellow.opacity(0.4))
+            })
+                .offset(x: -5, y: -5)
+            
+        } */
     }
     
     // Method
+    
+    @ViewBuilder private func vbBadgeRow() -> some View {
+        
+        let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
+        let isDelGiorno = self.viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.item.id, menuDiSistema: .delGiorno)
+        let isAdviceByTheChef = self.viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.item.id, menuDiSistema: .delloChef)
+        
+        ScrollView(.horizontal,showsIndicators: false){
+            
+            HStack {
+                
+                if areAllBio {
+                    
+                    CSEtichetta(
+                        text: "BIO",
+                        textColor: Color("SeaTurtlePalette_1"),
+                        image: "💯",
+                        imageColor: nil,
+                        imageSize: .large,
+                        backgroundColor: Color.green,
+                        backgroundOpacity: 1.0)
+                }
+            
+                if isDelGiorno {
+                    
+                    CSEtichetta(
+                        text: "del Giorno",
+                        textColor: Color.white,
+                        image: "fork.knife.circle.fill",
+                        imageColor: Color.yellow,
+                        imageSize: .medium,
+                        backgroundColor: Color.pink,
+                        backgroundOpacity: 0.5)
+                }
+
+                if isAdviceByTheChef {
+                    
+                    CSEtichetta(
+                        text: "dallo Chef",
+                        textColor: Color.white,
+                        image: "👨🏻‍🍳", //"🗣️", // person.wave.2
+                        imageColor: nil,
+                        imageSize: .large,
+                        backgroundColor: Color.purple,
+                        backgroundOpacity: 0.7)
+                }
+                
+            }
+            
+        }
+    }
     
     @ViewBuilder private func vbNoticeAllergeni() -> some View {
         
         let listaAllergeni = self.item.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
         let string = listaAllergeni.isEmpty ? "Non contiene Allergeni" : "Contiene Allergeni"
     
-        HStack {
+        HStack(spacing:4.0) {
             Image(systemName: "allergens")
-                .imageScale(.small)
+                .imageScale(.medium)
             Text(string)
         }
         .fontWeight(.semibold)
@@ -127,6 +203,10 @@ struct DishModel_RowView: View {
     @ViewBuilder private func vbSubIntestazioneDishRow() -> some View {
         
         let (price,count) = csIterateDishPricing()
+        // add 21.09
+        let moneyCode = Locale.current.currency?.identifier ?? "EUR"
+        let priceDouble = Double(price) ?? 0
+        // end 21.09
       //  let (mediaRating,ratingCount) = csIterateDishRating(item: self.item)
         let (mediaRating,ratingCount,_) = self.item.ratingInfo(readOnlyViewModel: viewModel)
         
@@ -158,8 +238,9 @@ struct DishModel_RowView: View {
             
             HStack(alignment:.top,spacing:1) {
                 
-              //  Text("\(Double(price)!,format: .currency(code: "EUR"))")
-                Text("€ \(price)")
+                
+              //  Text("€ \(price)") // 21.09
+                Text("\(priceDouble,format: .currency(code: moneyCode))")
                     .fontWeight(.bold)
                     .font(.title3)
                     .foregroundColor(Color("SeaTurtlePalette_4"))
@@ -175,31 +256,7 @@ struct DishModel_RowView: View {
        .font(.subheadline)
         
     }
-    /*
-    private func csIterateDishRating() -> (media:String,count:String) {
-        
-        var sommaVoti: Double = 0.0
-        var mediaRating: String = "0.00"
-        
-        let ratingCount: Int = self.item.rating.count
-        let stringCount = String(ratingCount)
-        
-        guard !self.item.rating.isEmpty else {
-            
-            return (mediaRating,stringCount)
-        }
-        
-        for rating in self.item.rating {
-            
-            let voto = Double(rating.voto)
-            sommaVoti += voto ?? 0.00
-        }
-        
-        let mediaAritmetica = sommaVoti / Double(ratingCount)
-        mediaRating = String(format:"%.1f", mediaAritmetica)
-        return (mediaRating,stringCount)
-        
-    } */ // deprecata come Private - resa Public per essere utilizzata nella DishRatingList
+
     
     private func csIterateDishPricing() -> (price:String,count:String) {
         
@@ -243,12 +300,12 @@ struct DishModel_RowView: View {
                     ForEach(dietAvaible,id:\.self) { diet in
                         
                         Text(diet)
-                            .font(.callout)
+                            .font(.subheadline)
                             .fontWeight(.black)
                             .foregroundColor(Color("SeaTurtlePalette_4"))
                         
                         Text("•")
-                            .font(.caption)
+                            .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundColor(Color("SeaTurtlePalette_4"))
 
@@ -260,37 +317,29 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbIngredientScrollRow() -> some View {
         
-        // Modifiche 26.08 - 30.08
-
-     /*   let allIngredientsID = self.item.ingredientiPrincipali + self.item.ingredientiSecondari
-        let allTheIngredients = self.viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.allMyIngredients)
-        let allFilteredIngredients = allTheIngredients.filter({
-            $0.status != .completo(.archiviato) &&
-            $0.status != .bozza
-        }) */
-        
+        // Modifiche 21.09
         let allFilteredIngredients = self.item.allMinusArchiviati(viewModel: self.viewModel)
-        let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
-        // end 26.08
+       // let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
+       
             HStack(spacing: 4.0) {
                
-                if areAllBio {
+              //  if areAllBio {
                     
-                    VStack(spacing:0) {
+                  /*  VStack(spacing:0) {
                         
                         Text("💯")
                         Text("BIO")
                             .font(.system(.caption2, design: .monospaced, weight: .black))
                             .foregroundColor(Color("SeaTurtlePalette_1"))
                         
-                    }.background(Color.green.cornerRadius(5.0))
-                } else {
+                    }.background(Color.green.cornerRadius(5.0)) */
+              //  } else {
                     
                     Image(systemName: "list.bullet.rectangle")
                         .imageScale(.medium)
                         .foregroundColor(Color("SeaTurtlePalette_4"))
-                }
-
+             //   }
+                // end 21.09
                 ScrollView(.horizontal,showsIndicators: false) {
                     
                     HStack(alignment:.lastTextBaseline, spacing: 2.0) {

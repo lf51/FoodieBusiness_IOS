@@ -287,12 +287,12 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
 
         var menu = MenuModel()
         menu.intestazione = "Pranzo della Domenica di Agosto"
-        menu.tipologia = .fisso(persone: .due, costo: "18.5")
-      //  menu.tipologia = .allaCarta
+        menu.tipologia = .fisso(persone: .due, costo: "18")
+       // menu.tipologia = .allaCarta
         menu.isAvaibleWhen = .dataEsatta
         menu.giorniDelServizio = [.lunedi]
       //  menu.dishInDEPRECATO = [dishItem3]
-        menu.rifDishIn = []
+       menu.rifDishIn = [dishItem3.id]
         menu.status = .bozza(.archiviato)
         
         return menu
@@ -324,10 +324,12 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         return menu
     }()
     
-    static var viewModel: AccounterVM = {
+    static var menuDelGiorno:MenuModel = MenuModel(tipologia: .delGiorno)
+    
+   @State static var viewModel: AccounterVM = {
         
        var vm = AccounterVM()
-        vm.allMyMenu = [menuSample,menuSample2,menuSample3]
+        vm.allMyMenu = [menuSample,menuSample2,menuSample3,menuDelGiorno]
         vm.allMyDish = [dishItem3,dishItem4]
         vm.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
         return vm
@@ -375,6 +377,17 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                     }
                    
+                    GenericItemModel_RowViewMask(model: menuDelGiorno) {
+                        
+                        menuSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
+                        
+                        vbMenuInterattivoModuloCambioStatus(myModel: $menuSample)
+                        
+                        vbMenuInterattivoModuloTrashEdit(currentModel: menuSample, viewModel: viewModel, navPath: \.menuListPath)
+                        
+                        
+                    }
+                    
                     GenericItemModel_RowViewMask(model: dishItem3 ) {
                         dishItem3.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
                         vbMenuInterattivoModuloCambioStatus(myModel: $dishItem3)
@@ -386,8 +399,10 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                        
                         
                     }
+                   
+                    DishModel_RowView(item: dishItem3, showSmallRow: true)
                  
-                    GenericItemModel_RowViewMask(model: ingredientSample) {
+                 /*   GenericItemModel_RowViewMask(model: ingredientSample) {
                         
                         ingredientSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
                         
@@ -399,7 +414,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                        
                         
-                    }
+                    } */
                     
                    
                 }

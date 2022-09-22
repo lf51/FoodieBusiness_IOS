@@ -37,12 +37,122 @@ struct HomeView: View {
                         Text("Box Vuoto")
                     }
           
-                    Button {
-                        viewModel.homeViewPath.append(DestinationPathView.propertyList)
-                        viewModel.homeViewPath.append(viewModel.allMyProperties[0])
-                    } label: {
-                        Text("Gestisci Menu")
-                    }.disabled(viewModel.allMyProperties.isEmpty)
+                  /*  HStack {
+                        
+                        Button {
+                            viewModel.homeViewPath.append(DestinationPathView.propertyList)
+                            viewModel.homeViewPath.append(viewModel.allMyProperties[0])
+                        } label: {
+                            Text("Gestisci Menu")
+                        }.disabled(viewModel.allMyProperties.isEmpty)
+   
+                    } */
+                    
+                    // Menu Del Giorno 22.09
+                    
+                    HStack {
+                        
+                        if let menuDD = self.viewModel.trovaMenuDiSistemaOnline(menuDiSistema: .delGiorno) {
+                            
+                            if menuDD.rifDishIn.isEmpty {
+                                
+                                Text("Menu Del Giorno Vuoto")
+                                
+                            } else {
+                                
+                                ScrollView(.horizontal,showsIndicators: false ) {
+                                    
+                                    HStack {
+                                        
+                                           ForEach(menuDD.rifDishIn,id:\.self) { idPiatto in
+                                               
+                                               if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.allMyDish) {
+                                                   
+                                                   DishModel_RowView(item: piatto, showSmallRow: true)
+                  
+                                               }
+             
+                                           }
+                                    }
+                                }
+                            }
+                            
+                        } else {
+                            
+                            Button {
+                                self.viewModel.switchFraCreaEUpdateModel(itemModel: MenuModel(tipologia: .delGiorno))
+                               /* viewModel.createItemModel(itemModel: MenuModel(tipologia: .delGiorno)) */
+                            } label: {
+                                Text("Abilita Menu Del Giorno")
+                                    .foregroundColor(Color.white)
+                            }
+                        }
+                        
+                       
+                        
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background {
+                        RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color("SeaTurtlePalette_3"))
+                    }
+                    
+
+                    // end Menu del giorno
+                    
+                    // Menu dello chef 22.09
+                    
+                    
+                    HStack {
+                        
+                        if let menuDD = self.viewModel.trovaMenuDiSistemaOnline(menuDiSistema: .delloChef) {
+                            
+                            if menuDD.rifDishIn.isEmpty {
+                                
+                                Text("Menu dello Chef Vuoto")
+                                
+                            } else {
+                                
+                                ScrollView(.horizontal,showsIndicators: false ) {
+                                    
+                                    HStack {
+                                        
+                                           ForEach(menuDD.rifDishIn,id:\.self) { idPiatto in
+                                               
+                                               if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.allMyDish) {
+                                                   
+                                                   DishModel_RowView(item: piatto, showSmallRow: true)
+                  
+                                               }
+             
+                                           }
+                                    }
+                                }
+                            }
+                            
+                        } else {
+                            
+                            Button {
+                                self.viewModel.switchFraCreaEUpdateModel(itemModel: MenuModel(tipologia: .delloChef))
+                              /*  viewModel.createItemModel(itemModel: MenuModel(tipologia: .delloChef)) */
+                            } label: {
+                                Text("Abilita i Consigliati dallo Chef")
+                                    .foregroundColor(Color.white)
+                            }
+                        }
+                        
+                       
+                        
+                    }
+                    .frame(maxWidth: 250)
+                    .padding()
+                    .background {
+                        RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color("SeaTurtlePalette_3"))
+                    }
+                    
+                    // end menu dello chef
                     
                     HStack {
                         
@@ -127,7 +237,7 @@ struct HomeView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            HomeView(authProcess: AuthPasswordLess(), backgroundColorView: Color("SeaTurtlePalette_1"))
+            HomeView(authProcess: AuthPasswordLess(), backgroundColorView: Color("SeaTurtlePalette_1")).environmentObject(AccounterVM())
         }
 
     }

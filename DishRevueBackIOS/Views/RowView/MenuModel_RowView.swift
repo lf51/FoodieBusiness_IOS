@@ -100,10 +100,10 @@ struct MenuModel_RowView: View {
         let avaibility = self.menuItem.isAvaibleWhen
         let(incipit,postFix,showPost) = avaibility.iteratingAvaibilityMenu()
         //
-        let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,isBold:Bool) = {
+        let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,fontWeight:Font.Weight) = {
            // let isOnAir = self.menuItem.isOnAir()
-            if isOnAir { return (1.0,"eye",.green,"online",true)}
-            else { return (0.4,"eye.slash",.gray,"offline",false)}
+            if isOnAir { return (1.0,"eye",.green,"online",.semibold)}
+            else { return (0.4,"eye.slash",.gray,"offline",.light)}
             
         }() // add 17.09
         
@@ -178,7 +178,7 @@ struct MenuModel_RowView: View {
         }
         .overlay(alignment: .topLeading) {
             
-            HStack(alignment: .center,spacing:2) {
+          /*  HStack(alignment: .center,spacing:2) {
                 Image(systemName: value.image)
                     .imageScale(.small)
                     .foregroundColor(value.imageColor)
@@ -191,7 +191,16 @@ struct MenuModel_RowView: View {
             .background(content: {
                 RoundedRectangle(cornerRadius: 5.0)
                     .fill(Color("SeaTurtlePalette_1").opacity(0.4))
-            })
+            }) */
+            CSEtichetta(
+                text: value.caption,
+                fontWeight: value.fontWeight,
+                textColor: Color.black,
+                image: value.image,
+                imageColor: value.imageColor,
+                imageSize: .small,
+                backgroundColor: Color("SeaTurtlePalette_1"),
+                backgroundOpacity: 0.4)
                 .offset(x: -5, y: -10)
         } // end Modifche 17.09
         
@@ -257,7 +266,7 @@ struct MenuModel_RowView: View {
 
     @ViewBuilder private func vbDishCountInMenu() -> some View {
         
-        HStack(spacing:3) {
+      /*  HStack(spacing:3) {
             
            // Text("\(self.menuItem.dishInDEPRECATO.count)") // 16.09
             Text("\(self.menuItem.rifDishIn.count)")
@@ -268,25 +277,35 @@ struct MenuModel_RowView: View {
             .fontWeight(.semibold)
             .foregroundColor(Color("SeaTurtlePalette_4"))
             .padding(.leading,5)
-            .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
+            .background(Color("SeaTurtlePalette_2").cornerRadius(5.0)) */
+        
+        CSEtichetta( // 21.09
+            text: "\(self.menuItem.rifDishIn.count)",
+            fontStyle: .title3,
+            fontWeight: .semibold,
+            textColor: Color("SeaTurtlePalette_4"),
+            image: "fork.knife.circle",
+            imageColor: Color("SeaTurtlePalette_4"),
+            imageSize: .large,
+            backgroundColor: Color("SeaTurtlePalette_2"),
+            backgroundOpacity: 1.0)
+   
     }
     
     @ViewBuilder private func iteratingTipologiaMenu() -> some View {
-        
+
         HStack {
                 
                 Text(self.menuItem.tipologia.simpleDescription().lowercased())
                     .italic()
                 
                 switch self.menuItem.tipologia {
-                
-                case .allaCarta:
-                    Image(systemName: "cart")
-                        .imageScale(.medium)
-                       
+     
                 case .fisso(let pax, let price):
-
-                        Text("€ \(price)")
+                    let currencyCode = Locale.current.currency?.identifier ?? "EUR"
+                    let priceDouble = Double(price) ?? 0
+                      //  Text("€ \(price)") // 21.09
+                    Text("\(priceDouble,format: .currency(code: currencyCode))")
                             .bold()
                     HStack(alignment:.top,spacing:0) {
                             Text("x")
@@ -295,7 +314,10 @@ struct MenuModel_RowView: View {
                                  .foregroundColor(Color("SeaTurtlePalette_3"))
                         }
                     
-                default: EmptyView()
+                case .noValue: EmptyView()
+                default:
+                    Image(systemName: self.menuItem.tipologia.imageAssociated())
+                        .imageScale(.medium)
                     
                 }
             }
@@ -356,13 +378,15 @@ struct MenuModel_RowView_Previews: PreviewProvider {
     
     static var menuItem4: MenuModel = {
         var menu = MenuModel()
-       menu.intestazione = "AlmostEveryDay"
+        menu.intestazione = "AlmostEveryDay"
         menu.tipologia = .fisso(persone: .uno, costo: "12.5")
         menu.giorniDelServizio = [ .lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato]
         menu.status = .completo(.inPausa)
        return menu
        
    }()
+    
+    static var menudelgiorno = MenuModel(tipologia: .delGiorno)
     
     static var previews: some View {
         
@@ -372,14 +396,15 @@ struct MenuModel_RowView_Previews: PreviewProvider {
             ZStack {
                 
                 Color("SeaTurtlePalette_1").ignoresSafeArea()
-                VStack(spacing:80) {
+                VStack(spacing:40) {
                     
                     MenuModel_RowView(menuItem: menuItem)
                         .frame(height:150)
                     MenuModel_RowView(menuItem: menuItem2)
                         .frame(height:150)
-                    MenuModel_RowView(menuItem: menuItem3)
+                    MenuModel_RowView(menuItem: menudelgiorno)
                         .frame(height:150)
+                    
                   //  MenuModel_RowView(menuItem: menuItem3)
                  //   MenuModel_RowView(menuItem: menuItem4)
                 }

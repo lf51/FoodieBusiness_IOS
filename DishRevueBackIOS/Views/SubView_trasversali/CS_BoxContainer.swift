@@ -32,13 +32,15 @@ struct CS_BoxContainer<Big,S1,S2,S3>: View where Big:View, S1:View, S2:View, S3:
                                     .shadow(radius: 1.0)
                                     .foregroundColor(Color("SeaTurtlePalette_2"))
                                     .padding()
-                                    .frame(width: 300, height: 225,alignment: .bottomTrailing)
+                                    .frame(width: 250, height: 225,alignment: .bottomTrailing)
                                     .background(Color("SeaTurtlePalette_4").blur(radius: 4.0))
                                     .cornerRadius(20.0)
                                     .shadow(radius: 5.0)
                           
                             }
               
+                            Spacer()
+                            
                             VStack {
                                 
                                 NavigationLink {
