@@ -37,9 +37,11 @@ struct MenuListView: View {
                                 
                                 menu.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
                                 
-                                vbMenuInterattivoModuloCambioStatus(myModel: $menu)
-                                
-                                vbMenuInterattivoModuloTrashEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
+                                if !menu.tipologia.isDiSistema() {
+                                    vbMenuInterattivoModuloCambioStatus(myModel: $menu)
+                                }
+    
+                                vbMenuInterattivoModuloEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
                             }
                             
                         }

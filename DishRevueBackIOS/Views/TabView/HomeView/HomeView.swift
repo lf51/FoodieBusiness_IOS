@@ -51,8 +51,8 @@ struct HomeView: View {
                     // Menu Del Giorno 22.09
                     
                     HStack {
-                        
-                        if let menuDD = self.viewModel.trovaMenuDiSistemaOnline(menuDiSistema: .delGiorno) {
+
+                        if let menuDD = self.viewModel.trovaMenuDiSistema(tipoMenu: .delGiorno)  {
                             
                             if menuDD.rifDishIn.isEmpty {
                                 
@@ -68,7 +68,7 @@ struct HomeView: View {
                                                
                                                if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.allMyDish) {
                                                    
-                                                   DishModel_RowView(item: piatto, showSmallRow: true)
+                                                   DishModel_RowView(item: piatto, rowSize: .sintetico)
                   
                                                }
              
@@ -105,10 +105,10 @@ struct HomeView: View {
                     
                     
                     HStack {
-                        
-                        if let menuDD = self.viewModel.trovaMenuDiSistemaOnline(menuDiSistema: .delloChef) {
+
+                        if let menuDC = self.viewModel.trovaMenuDiSistema(tipoMenu: .delloChef) {
                             
-                            if menuDD.rifDishIn.isEmpty {
+                            if menuDC.rifDishIn.isEmpty {
                                 
                                 Text("Menu dello Chef Vuoto")
                                 
@@ -118,11 +118,11 @@ struct HomeView: View {
                                     
                                     HStack {
                                         
-                                           ForEach(menuDD.rifDishIn,id:\.self) { idPiatto in
+                                           ForEach(menuDC.rifDishIn,id:\.self) { idPiatto in
                                                
                                                if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.allMyDish) {
                                                    
-                                                   DishModel_RowView(item: piatto, showSmallRow: true)
+                                                   DishModel_RowView(item: piatto, rowSize: .sintetico)
                   
                                                }
              

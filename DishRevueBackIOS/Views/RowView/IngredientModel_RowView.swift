@@ -19,7 +19,7 @@ struct IngredientModel_RowView: View {
                 
         CSZStackVB_Framed {
         
-            VStack(alignment:.leading) {
+            VStack(alignment:.leading,spacing: 5.0) {
     
                 VStack(alignment:.leading,spacing: 0) {
                     
@@ -31,7 +31,7 @@ struct IngredientModel_RowView: View {
              
                     .padding(.top,5)
                 
-               Spacer()
+             //  Spacer()
                 
                 HStack {
                     
@@ -42,14 +42,16 @@ struct IngredientModel_RowView: View {
                         }
                     }
                     
+                    let isDefaultValue = self.item.provenienza == .defaultValue
+                    
                     CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_1"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_4")) {
                         HStack {
-                            let isDefaultValue = self.item.provenienza == .defaultValue
+                            
                             csVbSwitchImageText(string: self.item.provenienza.imageAssociated(),size:.large, slash: isDefaultValue)
                             
                             Text(self.item.provenienza.simpleDescription())
                         }
-                    }
+                    }.opacity(isDefaultValue ? 0.4 : 1.0)
                     
                     Spacer()
                     // 07.09
@@ -57,16 +59,17 @@ struct IngredientModel_RowView: View {
                     // end 07.09
                 }
                 
-                Spacer()
+            //    Spacer()
                 
-                VStack(spacing:5) {
+                VStack(spacing:3) {
                     
                     vbProduzioneIngrediente()
                     vbConservazioneIngrediente()
                     vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
                     
                 }
-               .padding(.vertical,5)
+                .padding(.bottom,5)
+             //  .padding(.vertical,5)
      
             } // chiuda VStack madre
            // ._tightPadding()
@@ -109,7 +112,7 @@ struct IngredientModel_RowView: View {
         
         HStack {
             
-            HStack(spacing:3) {
+           /* HStack(spacing:3) {
                 
                 Text("\(dishCount)")
                 Image(systemName: "fork.knife.circle")
@@ -120,35 +123,43 @@ struct IngredientModel_RowView: View {
                 .foregroundColor(Color("SeaTurtlePalette_4"))
                 .padding(.leading,5)
                 .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
-                .opacity(isDisponibile ? 1.0 : 0.6)
+                .opacity(isDisponibile ? 1.0 : 0.6) */
+            
+            CSEtichetta(text: "\(dishCount)",
+                        fontStyle: .title3,
+                        fontWeight: .semibold,
+                        textColor: Color("SeaTurtlePalette_4"),
+                        image: "fork.knife.circle",
+                        imageColor: Color("SeaTurtlePalette_4"),
+                        imageSize: .large,
+                        backgroundColor: Color("SeaTurtlePalette_2"),
+                        backgroundOpacity: isDisponibile ? 1.0 : 0.4)
+            .blur(radius: isDisponibile ? 0.0 : 1.0)
             
             
             if isInPausa {
                 
-                HStack(spacing:3) {
+              /*  HStack(spacing:3) {
                     
                     Text("\(substitution)")
-                    
                     Image(systemName: "arrow.left.arrow.right.circle")
                         .imageScale(.large)
-                      /*  .overlay {
-                            
-                            if substitution == 0 {
-                                
-                                Image(systemName: "circle.slash")
-                                    .imageScale(.large)
-                                    .foregroundColor(Color("SeaTurtlePalette_1"))
-                                    .rotationEffect(Angle(degrees: 90.0))
-                                
-                            }
-          
-                        } */
                     
                 }
                     .fontWeight(.semibold)
                     .foregroundColor(Color("SeaTurtlePalette_4"))
                     .padding(.leading,5)
-                    .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
+                    .background(Color("SeaTurtlePalette_2").cornerRadius(5.0)) */
+                
+                CSEtichetta(text: "\(substitution)",
+                            fontStyle: .title3,
+                            fontWeight: .semibold,
+                            textColor: Color("SeaTurtlePalette_4"),
+                            image: "arrow.left.arrow.right.circle",
+                            imageColor: Color("SeaTurtlePalette_4"),
+                            imageSize: .large,
+                            backgroundColor: Color("SeaTurtlePalette_2"),
+                            backgroundOpacity: 1.0)
                 
             }
             

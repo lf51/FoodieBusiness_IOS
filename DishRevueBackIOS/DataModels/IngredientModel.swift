@@ -10,7 +10,7 @@ import SwiftUI
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,MyProStatusPack_L1 /*MyModelStatusConformity */ {
+struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1 /*MyModelStatusConformity */ {
    
   static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
         return \.allMyIngredients

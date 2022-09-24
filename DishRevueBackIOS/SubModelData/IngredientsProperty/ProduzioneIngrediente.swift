@@ -56,7 +56,7 @@ enum ProduzioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMa
         case .convenzionale:
             return "🚜"
         case .biologico:
-            return "♻️"
+            return "☘️"//"♻️"
         case .noValue:
             return "⁉️"
        

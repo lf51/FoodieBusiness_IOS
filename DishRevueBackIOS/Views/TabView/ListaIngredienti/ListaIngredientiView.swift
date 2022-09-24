@@ -55,7 +55,7 @@ struct ListaIngredientiView: View {
                                 
                                 vbMenuInterattivoModuloCambioStatus(myModel: $ingredient)
                                 
-                                vbMenuInterattivoModuloTrashEdit(currentModel: ingredient, viewModel: viewModel, navPath: \.ingredientListPath)
+                                vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: \.ingredientListPath)
                             }
                             
                         }

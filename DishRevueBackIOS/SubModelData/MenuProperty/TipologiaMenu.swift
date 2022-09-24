@@ -183,7 +183,7 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
         case .delGiorno:
             return "clock.arrow.circlepath"
         case .delloChef:
-            return "mustache" //"👨🏻‍🍳"
+            return "mustache.fill" //"👨🏻‍🍳"
         case .noValue:
             return "gear.badge.xmark"
         }
@@ -204,6 +204,11 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
         case .noValue:
            return 0
         }
+    }
+    
+    func isDiSistema() -> Bool {
+        self == .delGiorno ||
+        self == .delloChef
     }
     
     enum DiSistema {
@@ -228,6 +233,8 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
                 
             }
         }
+        
+       
     }
     
 }

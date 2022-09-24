@@ -20,6 +20,7 @@ enum DestinationPathView: Hashable {
     
     case categoriaMenu
     case recensioni(_ :DishModel)
+    case vistaIngredientiEspansa(_ :DishModel)
     
     case moduloSostituzioneING(_ : IngredientModel,isPermanente:Bool = false)
     
@@ -51,6 +52,9 @@ enum DestinationPathView: Hashable {
         case .recensioni(let dish):
             DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)
             // vedi Nota vocale 13.09
+        case .vistaIngredientiEspansa(let dish):
+            VistaIngredientiEspansa(currentDish: dish, backgroundColorView: backgroundColorView)
+            
         case .moduloSostituzioneING(let ingredient,let isPermanente):
             DishListByIngredientView(ingredientModelCorrente: ingredient,isPermanente: isPermanente, destinationPath: destinationPath, backgroundColorView: backgroundColorView)
           /*  SostituzioneING_MainView(ingredientModelCorrente: ingredient,destinationPath: destinationPath, backgroundColorView: backgroundColorView) */

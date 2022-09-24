@@ -61,6 +61,7 @@ protocol MyProVisualPack_L0 {
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> InteractiveMenuContent
 }
 
+protocol MyProVisualPack_L1: MyProVisualPack_L0,MyProStarterPack_L1 { }
 // NUOVA FASE DI RIORDINO - 15.09
 
 protocol MyProEnumPack_L0: Hashable {
@@ -91,7 +92,6 @@ protocol MyProOrganizerPack_L0: Hashable {
 // fine spazio MyPro
 
 protocol MyProToolPack_L0:MyProStarterPack_L1, MyProStatusPack_L0 { }
-
 
 
 

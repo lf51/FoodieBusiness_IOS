@@ -207,7 +207,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         provenienza: .defaultValue,
         allergeni: [.glutine],
         origine: .animale,
-        status: .completo(.archiviato)
+        status: .completo(.inPausa)
     )
     
     @State static var ingredientSample2 =  IngredientModel(
@@ -305,6 +305,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         menu.tipologia = .allaCarta
       //  menu.tipologia = .allaCarta
         menu.giorniDelServizio = [.domenica]
+        menu.rifDishIn = [dishItem3.id]
       //  menu.dishInDEPRECATO = [dishItem3]
         menu.status = .completo(.inPausa)
         
@@ -318,13 +319,14 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         menu.tipologia = .fisso(persone: .uno, costo: "18.5")
       //  menu.tipologia = .allaCarta
         menu.giorniDelServizio = [.domenica]
+        menu.rifDishIn = [dishItem3.id]
        // menu.dishInDEPRECATO = [dishItem3]
         menu.status = .completo(.inPausa)
         
         return menu
     }()
     
-    static var menuDelGiorno:MenuModel = MenuModel(tipologia: .delGiorno)
+    @State static var menuDelGiorno:MenuModel = MenuModel(tipologia: .delGiorno)
     
    @State static var viewModel: AccounterVM = {
         
@@ -345,22 +347,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                 
                 VStack {
                     
-                /*   GenericItemModel_RowViewMask(model: menuSample) {
-                        
-                        Text("Test")
-                    }
-                    
-                 
-                    
-                    GenericItemModel_RowViewMask(model: dishItem3) {
-                        
-                        Text("Test")
-                    }
-                    
-                    GenericItemModel_RowViewMask(model: dishItem4) {
-                        
-                        Text("Test")
-                    } */
+        
                   
                     GenericItemModel_RowViewMask(model: property) {
                         property.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.homeViewPath)
@@ -370,9 +357,14 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                         menuSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
                         
-                        vbMenuInterattivoModuloCambioStatus(myModel: $menuSample)
-                        
-                        vbMenuInterattivoModuloTrashEdit(currentModel: menuSample, viewModel: viewModel, navPath: \.menuListPath)
+                        if !menuSample.tipologia.isDiSistema() {
+                            vbMenuInterattivoModuloCambioStatus(myModel: $menuSample)
+                            
+                            vbMenuInterattivoModuloEdit(currentModel: menuSample, viewModel: viewModel, navPath: \.menuListPath)
+                        }
+                       
+                        vbMenuInterattivoModuloTrash(currentModel: menuSample, viewModel: viewModel)
+                       
                         
                         
                     }
@@ -381,40 +373,50 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                         menuSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
                         
-                        vbMenuInterattivoModuloCambioStatus(myModel: $menuSample)
+                        if !menuDelGiorno.tipologia.isDiSistema() {
+                            
+                            vbMenuInterattivoModuloCambioStatus(myModel: $menuDelGiorno)
+                            
+                            vbMenuInterattivoModuloEdit(currentModel: menuDelGiorno, viewModel: viewModel, navPath: \.menuListPath)
+                        }
+                      
+                       
+                        vbMenuInterattivoModuloTrash(currentModel: menuDelGiorno, viewModel: viewModel)
                         
-                        vbMenuInterattivoModuloTrashEdit(currentModel: menuSample, viewModel: viewModel, navPath: \.menuListPath)
                         
                         
                     }
                     
                     GenericItemModel_RowViewMask(model: dishItem3 ) {
-                        dishItem3.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
+                        
                         vbMenuInterattivoModuloCambioStatus(myModel: $dishItem3)
                         
-                        
-                        
-                        vbMenuInterattivoModuloTrashEdit(currentModel: dishItem3, viewModel: viewModel, navPath: \.dishListPath)
-                        
+                        dishItem3.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
                        
                         
+                        
+                        vbMenuInterattivoModuloEdit(currentModel: dishItem3, viewModel: viewModel, navPath: \.dishListPath)
+                        
+                        vbMenuInterattivoModuloTrash(currentModel: dishItem3, viewModel: viewModel)
                     }
-                   
-                    DishModel_RowView(item: dishItem3, showSmallRow: true)
+                /*
+                    DishModel_RowView(item: dishItem3, rowSize:.ridotto)
+                    DishModel_RowView(item: dishItem3, rowSize:.sintetico)*/
                  
-                 /*   GenericItemModel_RowViewMask(model: ingredientSample) {
+                   GenericItemModel_RowViewMask(model: ingredientSample) {
                         
                         ingredientSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
                         
                         vbMenuInterattivoModuloCambioStatus(myModel: $ingredientSample)
+
+                        vbMenuInterattivoModuloEdit(currentModel: ingredientSample, viewModel: viewModel, navPath: \.ingredientListPath)
                         
-                       
+                       vbMenuInterattivoModuloTrash(currentModel: ingredientSample, viewModel: viewModel)
                         
-                        vbMenuInterattivoModuloTrashEdit(currentModel: ingredientSample, viewModel: viewModel, navPath: \.ingredientListPath)
-                        
-                       
-                        
-                    } */
+                    }
+                    
+                    IngredientModel_SmallRowView(model: ingredientSample, sostituto: nil)
+                    
                     
                    
                 }

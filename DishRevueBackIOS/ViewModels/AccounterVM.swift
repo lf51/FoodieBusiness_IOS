@@ -367,44 +367,42 @@ class AccounterVM: ObservableObject {
     
     // ALTRO
     
-    /// Permette di inserire o rimuovere un piatto da un Menu di Sistema Online Online.
-    func manageInOutMenuDiSistema(idPiatto:String,isAlreadyIn:Bool,menuDiSistema:TipologiaMenu.DiSistema) {
+    
+    
+    
+    /// Permette di inserire o rimuovere un piatto da un MenuModel ed esegue l'update.
+    func manageInOutPiattoDaMenu(idPiatto:String,menuDaEditare:MenuModel) {
         
-        if let menuDD = trovaMenuDiSistemaOnline(menuDiSistema: menuDiSistema) {
-            let newMenu = {
-               var menu = menuDD
-                if isAlreadyIn { menu.rifDishIn.removeAll(where: {$0 == idPiatto}) }
-                else { menu.rifDishIn.append(idPiatto) }
-                return menu
-            }()
-            self.updateItemModel(itemModel: newMenu)
+        var currentMenu = menuDaEditare
+        
+        if menuDaEditare.rifDishIn.contains(idPiatto) {
+            currentMenu.rifDishIn.removeAll(where: {$0 == idPiatto})
         } else {
-            self.alertItem = AlertModel(title: "Errore", message: "Abilitare nella Home il \(menuDiSistema.simpleDescription())")
+            currentMenu.rifDishIn.append(idPiatto)
+        }
+        
+        self.updateItemModel(itemModel: currentMenu)
+        
+    }
+
+    /// Ritorna un menu di sistema Attivo. Se idPiatto != nil ritorna un menu di sistema attivo contenente il piatto.
+    func trovaMenuDiSistema(idPiatto:String? = nil,tipoMenu:TipologiaMenu.DiSistema) -> MenuModel? {
+        
+        if idPiatto == nil {
+            return self.allMyMenu.first(where:{
+                  $0.tipologia == tipoMenu.returnTipologiaMenu() &&
+                  $0.isOnAir()
+            })
+        } else {
+            return self.allMyMenu.first(where:{
+                  $0.tipologia == tipoMenu.returnTipologiaMenu() &&
+                  $0.isOnAir() &&
+                  $0.rifDishIn.contains(idPiatto!)
+            })
         }
     }
-        
-    /// Controlla se il piatto è contenuto all'interno di un Menu di Sistema ONLINE
-    func checkPiattoIsInMenuDiSistema(idPiatto:String, menuDiSistema:TipologiaMenu.DiSistema) -> Bool {
-        
-      if let menuDD = trovaMenuDiSistemaOnline(menuDiSistema: menuDiSistema) {
-          return menuDD.rifDishIn.contains(idPiatto)
-      } else {
-          return false
-      }
-    }
-
-    /// ritorna la tipoligia di Menu associata ad una sottoEnum DiSistema. Contiene quelle tipologie di menu create dal sistema senza possibilità per l'utente di modificarne le proprietà, salvo l'lenco dei piatti contenuti.
-    func trovaMenuDiSistemaOnline(menuDiSistema:TipologiaMenu.DiSistema) -> MenuModel? {
-
-        let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
-        
-       return self.allMyMenu.first(where:{
-              $0.tipologia.returnTypeCase() == tipologia &&
-              $0.isOnAir()
-        })
-        
-        
-    }
+    
+ 
     
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti
@@ -418,7 +416,6 @@ class AccounterVM: ObservableObject {
 
     }
 
-    
     /// filtra tutti gli ingredient Model presenti nel viewModel per status, escludendo quello con l'idIngredient passato.
     func ingredientListFilteredBy(idIngredient:String,ingredientStatus:StatusTransition) ->[IngredientModel] {
 

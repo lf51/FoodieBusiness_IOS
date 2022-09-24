@@ -26,7 +26,7 @@ enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtoco
 
         case .surgelato: return "Surgelato"
         case .congelato: return "Congelato"
-        case .altro: return "Fresco o altro"
+        case .altro: return "Altro"
         case .noValue: return ""
             
         }
@@ -80,7 +80,7 @@ enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtoco
         case .surgelato:
             return "❄️"
         case .altro:
-            return "🌀" //heart
+            return "☀️"//"🌞"//"🌀" //heart"
         case .noValue:
             return "⚙️"
    

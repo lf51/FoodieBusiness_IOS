@@ -56,6 +56,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
     
     var ingredientiPrincipali: [String] = [] // id IngredientModel
     var ingredientiSecondari: [String] = [] // id IngredientModel
+   
     var elencoIngredientiOff: [String:String] = [:] // id Sostituito: idSOSTITUTO
     var idIngredienteDaSostituire: String? // è una proprietà di servizio che ci serve a bypassare lo status di inPausa per tranciare un ingrediente che probabilmente andrà sostituito. Necessario perchè col cambio da Model a riferimento nella View delle sostituzioni la visualizzazione dell'ingrediente da sostituire richiederebbe il cambio di status e dunque un pò di macello. Vedi Nota Vocale 30.08
     
@@ -127,11 +128,24 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
 
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
-        let disabilita = self.rifReviews.isEmpty
+        let disabilitaReview = self.rifReviews.isEmpty
         let priceCount = self.pricingPiatto.count
         let currencyCode = Locale.current.currency?.identifier ?? "EUR"
-        let isDelGiorno = viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.id,menuDiSistema: .delGiorno)
-        let isDelloChef = viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.id, menuDiSistema: .delloChef)
+        let countIngredienti = countIngredients()
+        
+        let menuDelGiorno = viewModel.trovaMenuDiSistema(idPiatto: self.id, tipoMenu: .delGiorno)
+        let menuDelloChef = viewModel.trovaMenuDiSistema(idPiatto: self.id, tipoMenu: .delloChef)
+        let isDelGiorno = menuDelGiorno != nil
+        let isDelloChef = menuDelloChef != nil
+
+        let isDisponibile = self.status.checkStatusTransition(check: .disponibile)
+        
+        let allMenuWhereIsIn = viewModel.allMyMenu.filter({
+            $0.tipologia != .delGiorno &&
+            $0.tipologia != .delloChef &&
+            $0.rifDishIn.contains(self.id)
+        })
+        
         
       return VStack {
             
@@ -144,7 +158,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
                     Text("Vedi Recensioni")
                     Image(systemName: "eye")
                 }
-            }.disabled(disabilita)
+            }.disabled(disabilitaReview)
           
           if priceCount > 1 {
               
@@ -156,10 +170,11 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
                      Text("\(format.label) : \(price,format: .currency(code: currencyCode))")
                   //   Text("\(format.label) : € \(format.price)")
                   }
+
                   
               } label: {
 
-                  Text("Prezzi (\(priceCount))")
+                  Text("Prezziario (\(priceCount))")
                 
               }// end label menu
 
@@ -169,30 +184,66 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
           
           Button {
               
-              viewModel.manageInOutMenuDiSistema(idPiatto: self.id, isAlreadyIn:isDelGiorno,menuDiSistema: .delGiorno)
+              if isDelGiorno { viewModel.manageInOutPiattoDaMenu(idPiatto: self.id, menuDaEditare: menuDelGiorno!)
+              } else {
+                  viewModel.alertItem = AlertModel(title: "Errore", message: "Abilitare nella Home il Menu del Giorno")
+              }
 
           } label: {
               HStack{
                   Text(isDelGiorno ? "Rimuovi 🍽️ del Giorno" : "Imposta 🍽️ del Giorno")
                   Image(systemName:isDelGiorno ? "clock.badge.xmark" : "clock.badge.checkmark")
               }
-          }
+          }.disabled(!isDisponibile)
           
           Button {
               
-              viewModel.manageInOutMenuDiSistema(idPiatto: self.id, isAlreadyIn:isDelloChef,menuDiSistema: .delloChef)
+              if isDelloChef { viewModel.manageInOutPiattoDaMenu(idPiatto: self.id, menuDaEditare: menuDelloChef!)
+              } else {
+                  viewModel.alertItem = AlertModel(title: "Errore", message: "Abilitare nella Home il Menu dello Chef")
+              }
 
           } label: {
               HStack{
                   Text(isDelloChef ? "Rimuovi dai consigliati" : "Consigliato dallo 👨🏻‍🍳")
                   Image(systemName:isDelloChef ? "x.circle" : "clock.badge.checkmark")
               }
-          }// 22.09
+          }.disabled(!isDisponibile)
+          
+          Button {
+             
+            
+        
+
+          } label: {
+              HStack{
+                  Text("Espandi Menu (\(allMenuWhereIsIn.count))")
+                  Image (systemName: "menucard")
+              }
+          }.disabled(allMenuWhereIsIn.isEmpty)
+          
+          Button {
+              
+              viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
+        
+
+          } label: {
+              HStack{
+                  Text("Espandi Ingredienti (\(countIngredienti))")
+                  Image(systemName:"leaf")
+              }
+          }.disabled(countIngredienti == 0)
           
           
         }
 
     }
+    
+    /// conta gli ingredienti secondari e principali
+    func countIngredients() -> Int {
+        (self.ingredientiPrincipali + self.ingredientiSecondari).count
+    }
+  
     /// controlla la presenza di un ingrediente soltanto fra i principali e i secondari
     func checkIngredientsInPlain(idIngrediente:String) -> Bool {
         

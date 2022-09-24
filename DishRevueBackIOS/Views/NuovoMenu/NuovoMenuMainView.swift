@@ -207,7 +207,7 @@ struct NuovoMenuMainView: View {
         
         if let dishModel = self.viewModel.modelFromId(id: id, modelPath: \.allMyDish) {
             
-            DishModel_RowView(item: dishModel,showSmallRow: true)
+            DishModel_RowView(item: dishModel,rowSize: .ridotto)
         }
         
     }

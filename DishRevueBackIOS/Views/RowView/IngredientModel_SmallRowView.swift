@@ -47,7 +47,7 @@ struct IngredientModel_SmallRowView: View {
                             
                             if self.item.conservazione != .altro {
                                 csVbSwitchImageText(string: self.item.conservazione.imageAssociated(), size: .large)
-                                    .padding(2.0)
+                                   .padding(2.0)
                                     .background(
                                         Color("SeaTurtlePalette_2")
                                             .cornerRadius(5.0)
@@ -63,10 +63,10 @@ struct IngredientModel_SmallRowView: View {
                         }
                     }
                 
-               Spacer()
+            //   Spacer()
      
             } // chiuda VStack madre
-            .padding(.top,5)
+            .padding(.vertical,5)
             .padding(.horizontal)
             
         } // chiusa Zstack Madre

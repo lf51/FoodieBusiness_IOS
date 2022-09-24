@@ -321,7 +321,7 @@ struct CSZStackVB_Framed<Content:View>:View {
 
     // Modificato 01.09
     init(frameWidth: CGFloat = 650, backgroundOpacity: Double = 0.3, content: () -> Content) {
-        let screenWidth: CGFloat = UIScreen.main.bounds.width - 40
+        let screenWidth: CGFloat = UIScreen.main.bounds.width - 30
        // self.frameWidth = frameWidth > screenWidth ? screenWidth : frameWidth
         self.frameWidth = .minimum(frameWidth, screenWidth)
         self.backgroundOpacity = backgroundOpacity
@@ -642,14 +642,14 @@ struct CSZStackVB_Framed<Content:View>:View {
            
 } */ // Deprecato. Portato fuori la View Generic e creato un viewBulder che ritorna una lista di bottoni che valgono per tutti i myModel
 
-@ViewBuilder func vbMenuInterattivoModuloTrashEdit<M:MyProStatusPack_L1>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProStatusPack_L1>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
     
     // M passa da MyModelStatusConformity a MyProStatusPackL1
     
     let isBozza = currentModel.status.checkStatusBozza()
     let title = isBozza ? "Completa" : "Modifica"
     
-    VStack {
+ //   VStack {
         
         Button {
           //  viewModel[keyPath: navPath].append(currentModel)
@@ -663,6 +663,24 @@ struct CSZStackVB_Framed<Content:View>:View {
               }
           }
 
+     /*   Button(role:.destructive) {
+            
+              viewModel.deleteItemModel(itemModel: currentModel)
+              
+          } label: {
+              HStack{
+                  Text("Elimina")
+                  Image(systemName: "trash")
+              }
+          } */
+        
+   // }
+   
+}
+
+@ViewBuilder func vbMenuInterattivoModuloTrash<M:MyProStatusPack_L1>(currentModel:M,viewModel:AccounterVM) -> some View {
+    
+    // M passa da MyModelStatusConformity a MyProStatusPackL1
         Button(role:.destructive) {
             
               viewModel.deleteItemModel(itemModel: currentModel)
@@ -673,9 +691,6 @@ struct CSZStackVB_Framed<Content:View>:View {
                   Image(systemName: "trash")
               }
           }
-        
-    }
-   
 }
 
 /*

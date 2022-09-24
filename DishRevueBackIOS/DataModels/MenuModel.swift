@@ -116,10 +116,20 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
                 
             } label: {
                 HStack{
-                    Text("Vedi Anteprima")
+                    Text("Anteprima")
                     Image(systemName: "eye")
                 }
             }.disabled(disabilita)
+          
+          Button {
+           //   viewModel[keyPath: navigationPath].append(DestinationPathView.categoriaMenu)
+              
+          } label: {
+              HStack{
+                  Text("Edit 🍽️")
+                  Image(systemName: "arrow.up.arrow.down.square")
+              }
+          }
             
         }
     }

@@ -54,7 +54,7 @@ struct DishListView: View {
                                 
                                 vbMenuInterattivoModuloCambioStatus(myModel: $piatto)
  
-                                vbMenuInterattivoModuloTrashEdit(currentModel: piatto, viewModel: viewModel, navPath: \.dishListPath)
+                                vbMenuInterattivoModuloEdit(currentModel: piatto, viewModel: viewModel, navPath: \.dishListPath)
                             }
                             
                         }

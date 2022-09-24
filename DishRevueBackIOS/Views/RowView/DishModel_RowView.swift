@@ -7,20 +7,53 @@
 
 import SwiftUI
 
+enum RowSize {
+    case sintetico,ridotto,normale
+}
+
 struct DishModel_RowView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     let item: DishModel
-    var showSmallRow: Bool = false
+    let rowSize:RowSize
     
-    var body: some View {
-        
-        if showSmallRow { vbSmallRow() }
-        else { vbNormalRow() }
-    
+    init(item: DishModel, rowSize: RowSize = .normale) {
+        self.item = item
+        self.rowSize = rowSize
     }
     
+    var body: some View { vbSwitchRowSize() }
+    
     // View da Switchare
+    
+    @ViewBuilder private func vbSwitchRowSize() -> some View {
+        
+        switch rowSize {
+        case .sintetico:
+            vbSinteticRow()
+        case .ridotto:
+            vbSmallRow()
+        case .normale:
+            vbNormalRow()
+        }
+    }
+    
+    
+    @ViewBuilder private func vbSinteticRow() -> some View {
+        
+        CSZStackVB_Framed(frameWidth:300) {
+            
+            VStack(alignment:.leading) {
+
+                    vbIntestazioneDishRow()
+                    vbSubIntestazioneDishRow()
+
+            } // chiuda VStack madre
+            .padding(.vertical,5)
+            .padding(.horizontal)
+            
+        }
+    }
     
     @ViewBuilder private func vbNormalRow() -> some View {
         
@@ -116,8 +149,8 @@ struct DishModel_RowView: View {
     @ViewBuilder private func vbBadgeRow() -> some View {
         
         let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
-        let isDelGiorno = self.viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.item.id, menuDiSistema: .delGiorno)
-        let isAdviceByTheChef = self.viewModel.checkPiattoIsInMenuDiSistema(idPiatto: self.item.id, menuDiSistema: .delloChef)
+        let isDelGiorno = viewModel.trovaMenuDiSistema(idPiatto: self.item.id, tipoMenu: .delGiorno) != nil
+        let isAdviceByTheChef = self.viewModel.trovaMenuDiSistema(idPiatto: self.item.id, tipoMenu: .delloChef) != nil
         
         ScrollView(.horizontal,showsIndicators: false){
             
@@ -150,7 +183,7 @@ struct DishModel_RowView: View {
                 if isAdviceByTheChef {
                     
                     CSEtichetta(
-                        text: "dallo Chef",
+                        text: "dello Chef",
                         textColor: Color.white,
                         image: "👨🏻‍🍳", //"🗣️", // person.wave.2
                         imageColor: nil,
@@ -210,7 +243,7 @@ struct DishModel_RowView: View {
       //  let (mediaRating,ratingCount) = csIterateDishRating(item: self.item)
         let (mediaRating,ratingCount,_) = self.item.ratingInfo(readOnlyViewModel: viewModel)
         
-        HStack(alignment:.bottom,spacing: 3) {
+        HStack(alignment:.center,spacing: 3) {
             
             Text(mediaRating) // media
                 .fontWeight(.light)
@@ -237,8 +270,6 @@ struct DishModel_RowView: View {
             Spacer()
             
             HStack(alignment:.top,spacing:1) {
-                
-                
               //  Text("€ \(price)") // 21.09
                 Text("\(priceDouble,format: .currency(code: moneyCode))")
                     .fontWeight(.bold)
@@ -793,7 +824,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
                     
                     DishModel_RowView(item: dishSample)
                         .frame(height:150)
-                    DishModel_RowView(item: dishSample,showSmallRow: true)
+                    DishModel_RowView(item: dishSample,rowSize: .ridotto)
                         .frame(height:100)
              
                   //  DishModel_RowView(item: dishSample3)
