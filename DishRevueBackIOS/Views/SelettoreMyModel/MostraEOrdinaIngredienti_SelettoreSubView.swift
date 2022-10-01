@@ -32,7 +32,7 @@ struct MostraEOrdinaModelIDGeneric<M2:MyProStarterPack_L1>: View {
                     
                     ForEach(listaId, id:\.self) { idModel in
 
-                        if let model = self.viewModel.modelFromId(id: idModel, modelPath: M2.viewModelContainerStatic()) {
+                        if let model = self.viewModel.modelFromId(id: idModel, modelPath: M2.basicModelInfoTypeAccess()) {
                             
                             VStack {
                                 

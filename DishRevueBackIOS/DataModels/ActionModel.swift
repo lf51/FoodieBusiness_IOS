@@ -20,5 +20,6 @@ struct ActionModel {
         case prosegui
         case continua
         case salva
+        case nonMostrare = "Non Mostrare più"
     }
 }

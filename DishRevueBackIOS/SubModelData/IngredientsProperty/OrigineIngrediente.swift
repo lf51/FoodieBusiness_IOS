@@ -57,7 +57,7 @@ enum OrigineIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapCo
         case .vegetale:
             return "🌱"
         case .noValue:
-            return ""
+            return "circle.slash"
         }
     }
 
@@ -67,9 +67,9 @@ enum OrigineIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapCo
         switch self {
             
         case .animale:
-            return 2
-        case .vegetale:
             return 1
+        case .vegetale:
+            return 2
         case .noValue:
             return 0
         }

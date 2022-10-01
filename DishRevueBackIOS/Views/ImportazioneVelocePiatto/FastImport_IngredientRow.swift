@@ -40,24 +40,30 @@ struct FastImport_IngredientRow: View {
                     HStack(alignment:.center,spacing: 4) {
                         
                        vbMainRow()
-             
-                       vbOrigineIcon()
-                       vbConservazioneIcon()
-                       vbProduzioneCheck()
+                            .lineLimit(1)
+                          //  .fixedSize()
+            
+                        HStack(spacing: 2) {
+                            vbOrigineIcon()
+                            vbConservazioneIcon()
+                            vbProduzioneCheck()
+                        }
+                        //.lineLimit(1)
+                      //  .fixedSize()
                         
                         Spacer()
                         
-                        HStack {
+                        HStack(spacing: 2) {
                             
                             CSInfoAlertView(
                                 title: "Info",
                                 message: .ingredienteSecondario)
                            
-                        
-                            Text("Secondario")
-                                .bold(isSecondario)
+                            Text("Minore")
                                 .underline(isSecondario)
+                                .font(.callout)
                                 .foregroundColor(Color.black)
+                               // .fixedSize()
                              
                             Button {
                                 
@@ -178,18 +184,21 @@ struct FastImport_IngredientRow: View {
         
        let allergeni = self.ingredient.allergeni
     
-       if allergeni.isEmpty {
-           let image = self.ingredient.origine.imageAssociated()
-           csVbSwitchImageText(string: image, size: .large)
+       if self.ingredient.origine != .defaultValue {
            
-       } else {
-           let image = iterateAllergeni()
-           csVbSwitchImageText(string: image, size: .large)
-           Image(systemName: "allergens")
-               .imageScale(.small)
-               .foregroundColor(Color.black)
-       }
-         
+           if allergeni.isEmpty {
+               let image = self.ingredient.origine.imageAssociated()
+               csVbSwitchImageText(string: image, size: .large)
+               
+           } else {
+               let image = iterateAllergeni()
+               csVbSwitchImageText(string: image, size: .large)
+               Image(systemName: "allergens")
+                   .imageScale(.small)
+                   .foregroundColor(Color.black)
+           }
+           
+       } else { EmptyView() }
     }
     
     private func iterateAllergeni() -> String {

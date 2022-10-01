@@ -39,9 +39,11 @@ struct MenuListView: View {
                                 
                                 if !menu.tipologia.isDiSistema() {
                                     vbMenuInterattivoModuloCambioStatus(myModel: $menu)
+                                    
+                                    vbMenuInterattivoModuloEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
                                 }
     
-                                vbMenuInterattivoModuloEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
+                                vbMenuInterattivoModuloTrash(currentModel: menu, viewModel: viewModel)
                             }
                             
                         }

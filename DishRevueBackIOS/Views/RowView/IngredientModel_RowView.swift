@@ -103,27 +103,10 @@ struct IngredientModel_RowView: View {
     @ViewBuilder private func vbDishCountIn() -> some View {
         
         let (dishCount,substitution) = dishWhereIn()
-      /* let isInPausa = {
-            self.item.status == .completo(.inPausa) ||
-            self.item.status == .bozza(.inPausa)
-        }() */ // 16.09
         let isInPausa = self.item.status.checkStatusTransition(check: .inPausa)
         let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
         
         HStack {
-            
-           /* HStack(spacing:3) {
-                
-                Text("\(dishCount)")
-                Image(systemName: "fork.knife.circle")
-                    .imageScale(.large)
-                
-            }
-                .fontWeight(.semibold)
-                .foregroundColor(Color("SeaTurtlePalette_4"))
-                .padding(.leading,5)
-                .background(Color("SeaTurtlePalette_2").cornerRadius(5.0))
-                .opacity(isDisponibile ? 1.0 : 0.6) */
             
             CSEtichetta(text: "\(dishCount)",
                         fontStyle: .title3,
@@ -139,18 +122,6 @@ struct IngredientModel_RowView: View {
             
             if isInPausa {
                 
-              /*  HStack(spacing:3) {
-                    
-                    Text("\(substitution)")
-                    Image(systemName: "arrow.left.arrow.right.circle")
-                        .imageScale(.large)
-                    
-                }
-                    .fontWeight(.semibold)
-                    .foregroundColor(Color("SeaTurtlePalette_4"))
-                    .padding(.leading,5)
-                    .background(Color("SeaTurtlePalette_2").cornerRadius(5.0)) */
-                
                 CSEtichetta(text: "\(substitution)",
                             fontStyle: .title3,
                             fontWeight: .semibold,
@@ -163,6 +134,22 @@ struct IngredientModel_RowView: View {
                 
             }
             
+            Spacer()
+            
+            let statoScorte = self.viewModel.inventarioScorte.statoScorteIng(idIngredient: self.item.id)
+            
+            HStack(spacing:3) {
+                
+                Text(statoScorte.rawValue)
+                        .italic()
+                        .bold()
+                        .font(.subheadline)
+                       
+                Image(systemName: statoScorte.imageAssociata())
+                    .imageScale(.medium)
+                   
+            }
+            .foregroundColor(statoScorte.coloreAssociato())
             
         }
         

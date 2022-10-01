@@ -37,12 +37,13 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
                 } label: {
                     Image(systemName:pushImage)
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
-                        .padding(.all,5)
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .padding(5)
                         .background {
-                            Color("SeaTurtlePalette_1")
-                                .shadow(radius: 20.0)
-                                .cornerRadius(5.0)
+                            Color("SeaTurtlePalette_2").opacity(0.5)
+                                .clipShape(Circle())
+                                .shadow(radius: 5.0)
+                              //  .cornerRadius(5.0)
                         }
                        /* .background(content: {
                             Circle()
@@ -187,155 +188,19 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
 
 struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     
-    static var property:PropertyModel = {
-      
-        var prp = PropertyModel()
-        prp.intestazione = "Osteria del Vicolo"
-        prp.cityName = "Sciacca"
-        prp.streetAdress = "vicolo San Martino"
-        prp.numeroCivico = "22"
-        prp.webSite = "https:\\osteriadelvicolo.it"
-        prp.phoneNumber = "340 67 13 777"
-        return prp
-    }()
-    
-    @State static var ingredientSample =  IngredientModel(
-        intestazione: "Guanciale Nero",
-        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
-        conservazione: .altro,
-        produzione: .biologico,
-        provenienza: .defaultValue,
-        allergeni: [.glutine],
-        origine: .animale,
-        status: .completo(.inPausa)
-    )
-    
-    @State static var ingredientSample2 =  IngredientModel(
-        intestazione: "Merluzzo",
-        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
-        conservazione: .surgelato,
-        produzione: .biologico,
-        provenienza: .italia,
-        allergeni: [.pesce],
-        origine: .animale,
-        status: .bozza(.disponibile)
-            )
-    
-    @State static var ingredientSample3 =  IngredientModel(
-        intestazione: "Basilico",
-        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
-        conservazione: .altro,
-        produzione: .biologico,
-        provenienza: .restoDelMondo,
-        allergeni: [],
-        origine: .vegetale,
-        status: .bozza())
-    
-    @State static var ingredientSample4 =  IngredientModel(
-        intestazione: "Mozzarella di Bufala",
-        descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
-        conservazione: .congelato,
-        produzione: .convenzionale,
-        provenienza: .europa,
-        allergeni: [.latte_e_derivati],
-        origine: .animale,
-        status: .bozza(.inPausa)
-    )
-    
-    @State static var dishItem3: DishModel = {
-        
-        var newDish = DishModel()
-        newDish.intestazione = "Bucatini alla Matriciana"
-        newDish.status = .completo(.inPausa)
-        newDish.ingredientiPrincipali = [ingredientSample4.id]
-        newDish.ingredientiSecondari = [ingredientSample2.id]
-        let price:DishFormat = {
-            var pr = DishFormat(type: .mandatory)
-            pr.label = "Porzione"
-            pr.price = "22.5"
-            return pr
-        }()
-        let price1:DishFormat = {
-            var pr = DishFormat(type: .opzionale)
-            pr.label = "1/2 Porzione"
-            pr.price = "10.5"
-            return pr
-        }()
-        newDish.pricingPiatto = [price,price1]
-        
-        return newDish
-    }()
-    
-    static var dishItem4: DishModel = {
-        
-        var newDish = DishModel()
-        newDish.intestazione = "Trofie al Pesto"
-        newDish.status = .completo(.inPausa)
-        newDish.ingredientiPrincipali = [ingredientSample.id]
-        newDish.ingredientiSecondari = [ingredientSample3.id]
-        let price:DishFormat = {
-            var pr = DishFormat(type: .mandatory)
-            pr.price = "22.5"
-            return pr
-        }()
-        newDish.pricingPiatto = [price]
-        
-        return newDish
-    }()
-    
-   @State static var menuSample: MenuModel = {
-
-        var menu = MenuModel()
-        menu.intestazione = "Pranzo della Domenica di Agosto"
-        menu.tipologia = .fisso(persone: .due, costo: "18")
-       // menu.tipologia = .allaCarta
-        menu.isAvaibleWhen = .dataEsatta
-        menu.giorniDelServizio = [.lunedi]
-      //  menu.dishInDEPRECATO = [dishItem3]
-       menu.rifDishIn = [dishItem3.id]
-        menu.status = .bozza(.archiviato)
-        
-        return menu
-    }()
-    
-    static var menuSample2: MenuModel = {
-       
-        var menu = MenuModel()
-        menu.intestazione = "Pranzo della Domenica"
-        menu.tipologia = .allaCarta
-      //  menu.tipologia = .allaCarta
-        menu.giorniDelServizio = [.domenica]
-        menu.rifDishIn = [dishItem3.id]
-      //  menu.dishInDEPRECATO = [dishItem3]
-        menu.status = .completo(.inPausa)
-        
-        return menu
-    }()
-    
-    static var menuSample3: MenuModel = {
-       
-        var menu = MenuModel()
-        menu.intestazione = "Pranzo della"
-        menu.tipologia = .fisso(persone: .uno, costo: "18.5")
-      //  menu.tipologia = .allaCarta
-        menu.giorniDelServizio = [.domenica]
-        menu.rifDishIn = [dishItem3.id]
-       // menu.dishInDEPRECATO = [dishItem3]
-        menu.status = .completo(.inPausa)
-        
-        return menu
-    }()
-    
-    @State static var menuDelGiorno:MenuModel = MenuModel(tipologia: .delGiorno)
-    
-   @State static var viewModel: AccounterVM = {
-        
-       var vm = AccounterVM()
-        vm.allMyMenu = [menuSample,menuSample2,menuSample3,menuDelGiorno]
-        vm.allMyDish = [dishItem3,dishItem4]
-        vm.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
-        return vm
-    }()
+    static var property:PropertyModel = property_Test
+    @State static var ingredientSample =  ingredientSample_Test
+    @State static var ingredientSample2 =  ingredientSample2_Test
+    @State static var ingredientSample3 = ingredientSample3_Test
+    @State static var ingredientSample4 =  ingredientSample4_Test
+    @State static var ingredientSample6 =  ingredientSample6_Test
+    @State static var dishItem3: DishModel = dishItem3_Test
+    static var dishItem4: DishModel = dishItem4_Test
+   @State static var menuSample: MenuModel = menuSample_Test
+    static var menuSample2: MenuModel = menuSample2_Test
+    static var menuSample3: MenuModel = menuSample3_Test
+    @State static var menuDelGiorno:MenuModel = menuDelGiorno_Test
+    @State static var viewModel:AccounterVM = testAccount
     
     static var previews: some View {
        
@@ -343,17 +208,15 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
             
             Color("SeaTurtlePalette_1").ignoresSafeArea()
             
-            ScrollView {
+            ScrollView(showsIndicators:false) {
                 
                 VStack {
                     
-        
-                  
                     GenericItemModel_RowViewMask(model: property) {
                         property.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.homeViewPath)
                     }
                     
-                    GenericItemModel_RowViewMask(model: menuSample) {
+                 /*   GenericItemModel_RowViewMask(model: menuSample) {
                         
                         menuSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
                         
@@ -385,9 +248,9 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                         
                         
-                    }
+                    } */
                     
-                    GenericItemModel_RowViewMask(model: dishItem3 ) {
+                 /*   GenericItemModel_RowViewMask(model: dishItem3 ) {
                         
                         vbMenuInterattivoModuloCambioStatus(myModel: $dishItem3)
                         
@@ -398,17 +261,41 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         vbMenuInterattivoModuloEdit(currentModel: dishItem3, viewModel: viewModel, navPath: \.dishListPath)
                         
                         vbMenuInterattivoModuloTrash(currentModel: dishItem3, viewModel: viewModel)
-                    }
+                    } */
                 /*
                     DishModel_RowView(item: dishItem3, rowSize:.ridotto)
                     DishModel_RowView(item: dishItem3, rowSize:.sintetico)*/
+                    
+                    GenericItemModel_RowViewMask(model: ingredientSample6) {
+   
+                         vbMenuInterattivoModuloCambioStatus(myModel: $ingredientSample6)
+                        
+                        ingredientSample6.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
+                        
+                         vbMenuInterattivoModuloEdit(currentModel: ingredientSample6, viewModel: viewModel, navPath: \.ingredientListPath)
+                         
+                        vbMenuInterattivoModuloTrash(currentModel: ingredientSample6, viewModel: viewModel)
+                         
+                     }
                  
+                    GenericItemModel_RowViewMask(model: ingredientSample2) {
+   
+                         vbMenuInterattivoModuloCambioStatus(myModel: $ingredientSample2)
+                        
+                        ingredientSample2.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
+                        
+                         vbMenuInterattivoModuloEdit(currentModel: ingredientSample2, viewModel: viewModel, navPath: \.ingredientListPath)
+                         
+                        vbMenuInterattivoModuloTrash(currentModel: ingredientSample2, viewModel: viewModel)
+                         
+                     }
+                    
                    GenericItemModel_RowViewMask(model: ingredientSample) {
-                        
-                        ingredientSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
-                        
+  
                         vbMenuInterattivoModuloCambioStatus(myModel: $ingredientSample)
-
+                       
+                       ingredientSample.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
+                       
                         vbMenuInterattivoModuloEdit(currentModel: ingredientSample, viewModel: viewModel, navPath: \.ingredientListPath)
                         
                        vbMenuInterattivoModuloTrash(currentModel: ingredientSample, viewModel: viewModel)
@@ -429,7 +316,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
             
             
         }//.environmentObject(AccounterVM())
-        .environmentObject(viewModel)
+        .environmentObject(testAccount)
     }
 }
 

@@ -154,7 +154,6 @@ struct DishListByIngredientView: View {
              Spacer()
                 
             BottomView_DLBIVSubView(
-                destinationPath: self.destinationPath,
                 isDeActive: isDeactive) {
                    //self.description()
                     self.switchDescription()

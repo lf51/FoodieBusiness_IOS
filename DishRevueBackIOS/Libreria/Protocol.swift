@@ -23,9 +23,10 @@ protocol MyProStarterPack_L1:MyProStarterPack_L0 {
     
   //  func returnModelTypeName() -> String // deprecata in futuro. inglobata nella viewModelContainerInstance // deprecata 15.09
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String)
+    func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String)
+    
     /// Stessa funzione di viewModelContainer() Solo che abbiamo l'accesso dal type
-    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM,[Self]>
+    static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM,[Self]>
 }
 
 protocol MyProDescriptionPack_L0 {
@@ -50,6 +51,9 @@ protocol MyProStatusPack_L1: MyProStatusPack_L0,MyProStarterPack_L1 {
     func pathDestination() -> DestinationPathView
 }
 
+/*protocol MyProDestinationPack_L0 {
+    func pathDestination() -> DestinationPathView
+} */ // Nota 27.09
 
 protocol MyProVisualPack_L0 {
     
@@ -70,7 +74,7 @@ protocol MyProEnumPack_L0: Hashable {
     
 }
 
-protocol MyProEnumPack_L1:MyProEnumPack_L0 {
+protocol MyProEnumPack_L1:MyProEnumPack_L0,MyProOrganizerPack_L0 {
     
     static var defaultValue: Self { get }
 }

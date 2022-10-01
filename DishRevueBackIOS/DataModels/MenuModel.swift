@@ -10,7 +10,7 @@ import SwiftUI
 
 struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyProToolPack_L0,MyProDescriptionPack_L0/*MyModelStatusConformity */ {
     
-    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [MenuModel]> {
+    static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [MenuModel]> {
         return \.allMyMenu
     }
     
@@ -109,6 +109,9 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         
         let disabilita = self.rifDishIn.isEmpty
         
+        let dishCount = viewModel.allMyDish.count
+        let dishInMenu = self.rifDishIn.count
+        
       return VStack {
             
             Button {
@@ -122,14 +125,14 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
             }.disabled(disabilita)
           
           Button {
-           //   viewModel[keyPath: navigationPath].append(DestinationPathView.categoriaMenu)
+              viewModel[keyPath: navigationPath].append(DestinationPathView.vistaPiattiEspansa(self))
               
           } label: {
               HStack{
-                  Text("Edit 🍽️")
-                  Image(systemName: "arrow.up.arrow.down.square")
+                  Text("Espandi Piatti (\(dishInMenu)/\(dishCount))")
+                  Image(systemName: "fork.knife.circle")
               }
-          }
+          }.disabled(dishCount == 0)
             
         }
     }
@@ -158,9 +161,9 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         "Menu (\(self.status.simpleDescription().capitalized))"
     }
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String, nomeOggetto:String) {
+    func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
-        return (\.allMyMenu, "Lista Menu", "Menu")
+        return (\.allMyMenu, "Lista Menu", "Menu","menucard")
     }
 
     func pathDestination() -> DestinationPathView {

@@ -12,15 +12,17 @@ import SwiftUI
 struct CSLabel_conVB<Content:View>: View {
     
     var placeHolder: String
+    var placeHolderColor: Color?
     var imageName: String?
     var backgroundColor: Color
     var backgroundOpacity: Double?
     
     @ViewBuilder var content: Content
     
-    init(placeHolder: String, imageNameOrEmojy: String? = nil, backgroundColor: Color, backgroundOpacity:Double? = nil, content: () -> Content) {
+    init(placeHolder: String,placeHolderColor:Color? = nil, imageNameOrEmojy: String? = nil, backgroundColor: Color, backgroundOpacity:Double? = nil, content: () -> Content) {
         
         self.placeHolder = placeHolder
+        self.placeHolderColor = placeHolderColor
         self.imageName = imageNameOrEmojy
         self.backgroundColor = backgroundColor
         self.backgroundOpacity = backgroundOpacity
@@ -37,6 +39,7 @@ struct CSLabel_conVB<Content:View>: View {
                 Text(placeHolder)
                     .fontWeight(.medium)
                     .font(.system(.subheadline, design: .monospaced))
+                    .foregroundColor(placeHolderColor ?? .black)
                     .lineLimit(1)
             } icon: {
          

@@ -10,7 +10,7 @@ import SwiftUI
 
 enum AllergeniIngrediente:MyProStarterPack_L1 /*: MyEnumProtocol, MyProModelPack_L0*/{
     
-    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]> {
+    static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]> {
         \.allergeni
     }
     
@@ -31,9 +31,9 @@ enum AllergeniIngrediente:MyProStarterPack_L1 /*: MyEnumProtocol, MyProModelPack
         EmptyView()
     }
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String, nomeOggetto:String) {
+    func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
-        return (\.allergeni, "Elenco Allergeni", "Allergene")
+        return (\.allergeni, "Elenco Allergeni", "Allergene","allergens")
     }
 
     var intestazione: String {get { self.simpleDescription() } set{ } }

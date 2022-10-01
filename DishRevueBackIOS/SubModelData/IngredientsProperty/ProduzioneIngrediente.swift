@@ -79,4 +79,9 @@ enum ProduzioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMa
         }
     }
     
+    // Fuori dai Protocolli
+    
+  
+    
+    
 }

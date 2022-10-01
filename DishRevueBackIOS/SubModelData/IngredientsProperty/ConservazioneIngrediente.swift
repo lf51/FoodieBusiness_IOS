@@ -82,7 +82,7 @@ enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtoco
         case .altro:
             return "☀️"//"🌞"//"🌀" //heart"
         case .noValue:
-            return "⚙️"
+            return "circle.slash"
    
         }
      
@@ -93,11 +93,11 @@ enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtoco
         switch self {
         
         case .congelato:
-            return 3
-        case .surgelato:
             return 2
-        case .altro:
+        case .surgelato:
             return 1
+        case .altro:
+            return 3
         case .noValue:
             return 0
       

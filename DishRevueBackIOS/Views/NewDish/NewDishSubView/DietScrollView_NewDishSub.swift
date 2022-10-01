@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DietScrollView_NewDishSub: View {
     
+    static var mostraAlertDiete:Bool = true
+    
     @ObservedObject var viewModel:AccounterVM
     // usiamo un observed per usare il viewModel nell'init
     @Binding var newDish: DishModel
@@ -59,7 +61,7 @@ struct DietScrollView_NewDishSub: View {
                 
                 VStack(alignment:.leading) {
 
-                    let string = self.newDish.mostraDieteCompatibili ? "Mostra diete compatibili" : "Non mostrare diete compatibili"
+                    let string = self.newDish.mostraDieteCompatibili ? "Mostra nel piatto le diete compatibili" : "Non mostrare nel piatto le diete compatibili"
                         
                     Text("\(string): \(dietAvaibleString, format: .list(type: .and)).")
                                .bold(self.newDish.mostraDieteCompatibili)
@@ -71,7 +73,7 @@ struct DietScrollView_NewDishSub: View {
                         // mod. 11.09
                      //   let diet = self.newDish.dieteCompatibili[0].simpleDescription()
                         
-                        Text("Mostra compatibilità con una dieta Standard!")
+                        Text("Mostra nel piatto la compatibilità con una dieta Standard !!")
                               .underline()
                               .fontWeight(.semibold)
                               .font(.caption)
@@ -90,11 +92,19 @@ struct DietScrollView_NewDishSub: View {
             
           // self.newDish.mostraDieteCompatibili = newValue
             
-            if newValue {
+            if newValue && Self.mostraAlertDiete {
  
-                viewModel.alertItem = AlertModel(
+              /*  viewModel.alertItem = AlertModel(
                     title: "Mostra Diete",
                     message: "Sarà mostrata nel piatto la compatibilità con le diete: \(dietAvaibleString.formatted(.list(type: .and)))."
+                        ) */
+                
+                viewModel.alertItem = AlertModel(
+                    title: "Diete Compatibili",
+                    message: "Visibile nel piatto la compatibilitò con le diete: \(dietAvaibleString.formatted(.list(type: .and))).",
+                    actionPlus: ActionModel(title: .nonMostrare, action: {
+                        Self.mostraAlertDiete = false
+                    })
                         )
                // self.newDish.dieteCompatibili = self.dietAvaible
                

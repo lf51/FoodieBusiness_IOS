@@ -69,18 +69,22 @@ func csHideKeyboard(){
 /// Ritorna un array di case unici (ripuliti dai valori Associati, dai duplicati, e ordinati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
 /// - Parameter array: array description
 /// - Returns: description
-func csRipulisciArray<T:MyProOrganizerPack_L0>(array:[T]) -> [T] {
+func csCleanAndOrderArray<T:MyProOrganizerPack_L0>(array:[T]) -> [T] {
     
     // T passa da MYEnumProtocolMapConform a MyProOrganizerPack
     
-    var arrayCentrifugato:[T] = []
+    // Modifiche 27.09
+  //  var arrayCentrifugato:[T] = []
     
-    for eachCase in array {
+   /* for eachCase in array {
         
         let element:T = eachCase.returnTypeCase()
         arrayCentrifugato.append(element)
         
-    }
+    } */
+    let arrayCentrifugato:[T] = array.map({$0.returnTypeCase()})
+ 
+    // end Mod 27.09
     
     let secondStep = Array(Set(arrayCentrifugato))
     let lastStep = secondStep.sorted{$0.orderValue() < $1.orderValue()}

@@ -68,7 +68,7 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View {
       //  let (_,newModelName) = self.itemModel.returnNewModel()
       /*  let newModelName = self.itemModel.returnNewModel().nometipo */
        // let newModelName = self.itemModel.returnModelTypeName()
-        let newModelName = self.itemModel.viewModelContainerInstance().nomeOggetto
+        let newModelName = self.itemModel.basicModelInfoInstanceAccess().nomeOggetto
         
         if itemModelArchiviato.intestazione == "" {
             // crea un Nuovo Oggetto

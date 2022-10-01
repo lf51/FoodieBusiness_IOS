@@ -112,7 +112,7 @@ struct IntestazioneNuovoOggetto_Generic<T> : View where T:MyProToolPack_L0 {
         
        // let temporaryID = self.itemModel.creaID(fromValue: newText)
       //  let isAlreadyIN = viewModel[keyPath: containerPath].contains(where:{ $0.id == temporaryID })
-        let nomeOggetto = self.itemModel.viewModelContainerInstance().nomeOggetto
+        let nomeOggetto = self.itemModel.basicModelInfoInstanceAccess().nomeOggetto
         let isAlreadyIN = self.viewModel.checkExistingUniqueModelName(model: itemModel).0
          
          

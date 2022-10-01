@@ -149,51 +149,77 @@ struct DishModel_RowView: View {
     @ViewBuilder private func vbBadgeRow() -> some View {
         
         let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
-        let isDelGiorno = viewModel.trovaMenuDiSistema(idPiatto: self.item.id, tipoMenu: .delGiorno) != nil
-        let isAdviceByTheChef = self.viewModel.trovaMenuDiSistema(idPiatto: self.item.id, tipoMenu: .delloChef) != nil
-        
-        ScrollView(.horizontal,showsIndicators: false){
+        let isDelGiorno = self.viewModel.checkMenuDiSistemaContainDish(idPiatto: self.item.id, menuDiSistema: .delGiorno)
+        let isAdviceByTheChef = self.viewModel.checkMenuDiSistemaContainDish(idPiatto: self.item.id, menuDiSistema: .delloChef)
+  
+        let menuWhereIsIn = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.item.id).countWhereDishIsIn
+        HStack {
+         
+            CSEtichetta(
+                text: "\(menuWhereIsIn)",
+                fontStyle: .subheadline,
+                fontWeight: .semibold,
+                textColor: Color("SeaTurtlePalette_4"),
+                image: "menucard",
+                imageColor: Color("SeaTurtlePalette_4"),
+                imageSize: .medium,
+                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundOpacity: 1.0)
+            .onTapGesture {
+                self.viewModel.alertItem = AlertModel(
+                    title: "Lista Menu",
+                    message: "Indica il numero di menu stabili dove è inserito il piatto. Non considera il menu del giorno e il menu dei consigliati dallo chef.")
+            }
             
-            HStack {
+            ScrollView(.horizontal,showsIndicators: false){
                 
-                if areAllBio {
+                HStack {
                     
-                    CSEtichetta(
-                        text: "BIO",
-                        textColor: Color("SeaTurtlePalette_1"),
-                        image: "💯",
-                        imageColor: nil,
-                        imageSize: .large,
-                        backgroundColor: Color.green,
-                        backgroundOpacity: 1.0)
-                }
-            
-                if isDelGiorno {
-                    
-                    CSEtichetta(
-                        text: "del Giorno",
-                        textColor: Color.white,
-                        image: "fork.knife.circle.fill",
-                        imageColor: Color.yellow,
-                        imageSize: .medium,
-                        backgroundColor: Color.pink,
-                        backgroundOpacity: 0.5)
-                }
+                    if areAllBio {
+                        
+                        CSEtichetta(
+                            text: "BIO",
+                            textColor: Color("SeaTurtlePalette_1"),
+                            image: "💯",
+                            imageColor: nil,
+                            imageSize: .large,
+                            backgroundColor: Color.green,
+                            backgroundOpacity: 1.0)
+                        .onTapGesture {
+                            self.viewModel.alertItem = AlertModel(
+                                title: "100% Bio",
+                                message: "Indica che tutti gli ingredienti usati nella preparazione del piatto sono prodotti con Metodo Biologico")
+                        }
+                    }
+                
+                    if isDelGiorno {
+                        
+                        CSEtichetta(
+                            text: "del Giorno",
+                            textColor: Color.white,
+                            image: "fork.knife.circle.fill",
+                            imageColor: Color.yellow,
+                            imageSize: .medium,
+                            backgroundColor: Color.pink,
+                            backgroundOpacity: 0.5)
+                    }
 
-                if isAdviceByTheChef {
+                    if isAdviceByTheChef {
+                        
+                        CSEtichetta(
+                            text: "dello Chef",
+                            textColor: Color.white,
+                            image: "👨🏻‍🍳", //"🗣️", // person.wave.2
+                            imageColor: nil,
+                            imageSize: .large,
+                            backgroundColor: Color.purple,
+                            backgroundOpacity: 0.7)
+                    }
                     
-                    CSEtichetta(
-                        text: "dello Chef",
-                        textColor: Color.white,
-                        image: "👨🏻‍🍳", //"🗣️", // person.wave.2
-                        imageColor: nil,
-                        imageSize: .large,
-                        backgroundColor: Color.purple,
-                        backgroundOpacity: 0.7)
                 }
                 
             }
-            
+
         }
     }
     
@@ -371,75 +397,86 @@ struct DishModel_RowView: View {
                         .foregroundColor(Color("SeaTurtlePalette_4"))
              //   }
                 // end 21.09
-                ScrollView(.horizontal,showsIndicators: false) {
+                if !allFilteredIngredients.isEmpty {
                     
-                    HStack(alignment:.lastTextBaseline, spacing: 2.0) {
+                    ScrollView(.horizontal,showsIndicators: false) {
                         
-                        ForEach(allFilteredIngredients) { ingredient in
+                        HStack(alignment:.lastTextBaseline, spacing: 2.0) {
                             
-                            let (isPrincipal,hasAllergene,isTemporaryOff,idSostituto,isBio) = self.analizingIngredient(ingredient: ingredient)
-                            
-                           HStack(spacing:5) {
+                            ForEach(allFilteredIngredients) { ingredient in
                                 
-                               Text(ingredient.intestazione)
-                                    .font(isPrincipal ? .headline : .subheadline)
-                                    .foregroundColor(isTemporaryOff ? Color("SeaTurtlePalette_1") : Color("SeaTurtlePalette_4"))
-                                    .strikethrough(isTemporaryOff, color: Color.gray)
-                                    .underline(isBio, pattern: .solid, color: Color.green)
-                                    .overlay(alignment:.topTrailing) {
-                                        if hasAllergene {
-                                            Text("*")
-                                                .foregroundColor(Color.black)
-                                                .offset(x: 5, y: -3)
-                                        }
-                                    }
+                                let (isPrincipal,hasAllergene,isTemporaryOff,idSostituto,isBio) = self.analizingIngredient(ingredient: ingredient)
                                 
-                            /*   if isBio {
-                                   Text("✅")
-                                       .font(.caption2)
-                                  //     .font(.system(.caption2, design: .monospaced, weight: .black))
-                                      // .foregroundColor(Color.green)
-                                     //  .background(Color("SeaTurtlePalette_4").cornerRadius(5.0))
-                                   
-                               } */
-                               // Modifiche 30.08
-                               /* if isTemporaryOff && isThereSostituto {
+                               HStack(spacing:5) {
                                     
-                                    Text("(\(nameSostituto))")
+                                   Text(ingredient.intestazione)
                                         .font(isPrincipal ? .headline : .subheadline)
-                                        .foregroundColor(Color("SeaTurtlePalette_3"))
-                                } */
-                               if idSostituto != nil {
+                                        .foregroundColor(isTemporaryOff ? Color("SeaTurtlePalette_1") : Color("SeaTurtlePalette_4"))
+                                        .strikethrough(isTemporaryOff, color: Color.gray)
+                                        .underline(isBio, pattern: .solid, color: Color.green)
+                                        .overlay(alignment:.topTrailing) {
+                                            if hasAllergene {
+                                                Text("*")
+                                                    .foregroundColor(Color.black)
+                                                    .offset(x: 5, y: -3)
+                                            }
+                                        }
                                     
-                                   let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.allMyIngredients)
-                                   
-                                   if isActive {
+                                /*   if isBio {
+                                       Text("✅")
+                                           .font(.caption2)
+                                      //     .font(.system(.caption2, design: .monospaced, weight: .black))
+                                          // .foregroundColor(Color.green)
+                                         //  .background(Color("SeaTurtlePalette_4").cornerRadius(5.0))
                                        
-                                       Text("(\(name))")
-                                           .font(isPrincipal ? .headline : .subheadline)
-                                           .foregroundColor(Color("SeaTurtlePalette_3"))
-                                           .overlay(alignment:.topTrailing) {
-                                               if allergeniIn {
-                                                   Text("*")
-                                                       .foregroundColor(Color.black)
-                                                       .offset(x: 5, y: -3)
+                                   } */
+                                   // Modifiche 30.08
+                                   /* if isTemporaryOff && isThereSostituto {
+                                        
+                                        Text("(\(nameSostituto))")
+                                            .font(isPrincipal ? .headline : .subheadline)
+                                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                                    } */
+                                   if idSostituto != nil {
+                                        
+                                       let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.allMyIngredients)
+                                       
+                                       if isActive {
+                                           
+                                           Text("(\(name))")
+                                               .font(isPrincipal ? .headline : .subheadline)
+                                               .foregroundColor(Color("SeaTurtlePalette_3"))
+                                               .overlay(alignment:.topTrailing) {
+                                                   if allergeniIn {
+                                                       Text("*")
+                                                           .foregroundColor(Color.black)
+                                                           .offset(x: 5, y: -3)
+                                                   }
                                                }
-                                           }
-                                   }
-                                   
-                                    
+                                       }
+                                       
+                                        
+                                    }
+                                   // end 30.08
                                 }
-                               // end 30.08
+                                
+                                Text("•")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(Color("SeaTurtlePalette_4"))
+               
                             }
-                            
-                            Text("•")
-                                .font(.subheadline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(Color("SeaTurtlePalette_4"))
-           
                         }
                     }
+                } else {
+                    
+                    Text("Lista Ingredienti Vuota")
+                        .italic()
+                        .font(.headline)
+                        .foregroundColor(Color("SeaTurtlePalette_1"))
+                    Spacer()
                 }
+                
             }
        // }
     }
@@ -773,8 +810,8 @@ struct DishModel_RowView_Previews: PreviewProvider {
         }()
         dish.status = .completo(.disponibile)
         dish.pricingPiatto = [price1,price2]
-        dish.ingredientiPrincipali = [ing3.id]
-        dish.ingredientiSecondari = [ing1.id,ing2.id,ing4.id]
+       // dish.ingredientiPrincipali = [ing3.id]
+      //  dish.ingredientiSecondari = [ing1.id,ing2.id,ing4.id]
     
         
         return dish
@@ -819,17 +856,19 @@ struct DishModel_RowView_Previews: PreviewProvider {
                 
                 Color("SeaTurtlePalette_1").ignoresSafeArea()
                 
-                VStack(spacing:15) {
+                VStack(spacing:55) {
 
                     
                     DishModel_RowView(item: dishSample)
                         .frame(height:150)
+                  
+             
+                    DishModel_RowView(item: dishSample3)
+                        .frame(height:150)
+                    DishModel_RowView(item: dishSample4)
+                        .frame(height:150)
                     DishModel_RowView(item: dishSample,rowSize: .ridotto)
                         .frame(height:100)
-             
-                  //  DishModel_RowView(item: dishSample3)
-                  //  DishModel_RowView(item: dishSample4)
-                    
                 }
                 
             }

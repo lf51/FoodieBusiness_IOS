@@ -45,7 +45,7 @@ struct ListaIngredientiView: View {
                 VStack {
                     
                     CSDivider()
-                    ScrollView {
+                    ScrollView(showsIndicators:false) {
                         
                         ForEach($viewModel.allMyIngredients) { $ingredient in
                             
@@ -56,10 +56,13 @@ struct ListaIngredientiView: View {
                                 vbMenuInterattivoModuloCambioStatus(myModel: $ingredient)
                                 
                                 vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: \.ingredientListPath)
+                                
+                                vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
                             }
                             
                         }
                     }
+                    CSDivider()
                 }
                 
                 

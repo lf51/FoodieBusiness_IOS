@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AllergeniScrollView_NewDishSub: View {
+    
+    static var showAlertAllergene:Bool = true
     // Modifica 26.08
    // @EnvironmentObject var viewModel:AccounterVM
     @ObservedObject var viewModel:AccounterVM
@@ -90,18 +92,25 @@ struct AllergeniScrollView_NewDishSub: View {
             }
       
         }
-      /* .onChange(of: self.allergeniIn, perform: { _ in
+        .onChange(of: self.allergeniIn, perform: { _ in
             self.areAllergeniOk = false
-        }) */
+        })
         .onChange(of: self.areAllergeniOk, perform: { newValue in
             
-            if newValue {
+            if newValue && Self.showAlertAllergene {
              /*   let link = Link("Regolamento UE n.1169/2011", destination: URL(string: "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2011:304:0018:0063:it:PDF")!) */
               
-                viewModel.alertItem = AlertModel(
+             /*   viewModel.alertItem = AlertModel(
                     title: "⚠️ Attenzione",
                     message: SystemMessage.allergeni.simpleDescription()
-                )
+                ) */
+                
+                viewModel.alertItem = AlertModel(
+                    title: "⚠️ Attenzione",
+                    message: SystemMessage.allergeni.simpleDescription(),
+                    actionPlus: ActionModel(title: .nonMostrare, action: {
+                        Self.showAlertAllergene = false
+                    }))
               //  self.newDish.allergeni = self.allergeniIn
                 
             } /* else {

@@ -62,7 +62,7 @@ class AccounterVM: ObservableObject {
             image: "🍷")]
     
     @Published var allMyReviews:[DishRatingModel] = []
-    
+    @Published var inventarioScorte:Inventario = Inventario()
     // AREA TEST NAVIGATIONSTACK
     
     @Published var homeViewPath = NavigationPath()
@@ -70,7 +70,7 @@ class AccounterVM: ObservableObject {
     @Published var dishListPath = NavigationPath()
     @Published var ingredientListPath = NavigationPath()
 
-    var defaultProperty: PropertyModel? { allMyProperties[0] } // NON SO SE MI SERVE al 28.06
+   // var defaultProperty: PropertyModel? { allMyProperties[0] } // NON SO SE MI SERVE al 28.06
     
     // FINE AREA TEST
    
@@ -115,7 +115,7 @@ class AccounterVM: ObservableObject {
     /// Controlla se un modello esiste già nel viewModel controllando la presenza del sui ID
     func isTheModelAlreadyExist<M:MyProStarterPack_L1>(model:M) -> Bool {
         
-        let kp = model.viewModelContainerInstance().pathContainer
+        let kp = model.basicModelInfoInstanceAccess().vmPathContainer
         
         let containerM = self[keyPath: kp]
         
@@ -184,7 +184,7 @@ class AccounterVM: ObservableObject {
         // Mod 15.09
        // var containerT = assegnaContainer(itemModel: itemModel)
         
-        let(kpContainerT,_,nomeModelloT) = itemModel.viewModelContainerInstance()
+        let(kpContainerT,_,nomeModelloT,_) = itemModel.basicModelInfoInstanceAccess()
         var containerT = assegnaContainerFromPath(path: kpContainerT)
         //
         
@@ -268,6 +268,29 @@ class AccounterVM: ObservableObject {
         print("updateItemModelExecutive executed")
     }
  
+    ///  Permette di aggiornare un array di model. Modifica il viewModel solo dopo aver modificato localmente ogni elemento e manda il refresh del path a processo concluso. Non distingue fra item che hanno ricevuto modifiche e item modificati. Li riscrive tutti.
+    func updateItemModelCollection<T:MyProStarterPack_L1>(items:[T],destinationPath:DestinationPath? = nil) {
+        
+        let itemsVmPath = T.basicModelInfoTypeAccess()
+        var container = self[keyPath: itemsVmPath]
+        
+        for itemModel in items {
+            
+            if let index = container.firstIndex(where: {$0.id == itemModel.id}) {
+                container[index] = itemModel
+            }
+        }
+        
+       aggiornaContainer(containerT: container, path: itemsVmPath)
+        
+        if let destPath = destinationPath {
+            
+            self.refreshPath(destinationPath: destPath)
+            
+        }
+        
+    }
+    
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
     func deleteItemModel<T:MyProStarterPack_L1>(itemModel: T) {
         
@@ -302,7 +325,7 @@ class AccounterVM: ObservableObject {
     /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container
     private func assegnaContainer<T:MyProStarterPack_L1>(itemModel:T) -> [T] {
        
-        let pathContainer = itemModel.viewModelContainerInstance().pathContainer
+        let pathContainer = itemModel.basicModelInfoInstanceAccess().vmPathContainer
         print("ViewModel/assegnaContainer() per itemModel: \(itemModel.intestazione)")
         return self[keyPath: pathContainer]
 
@@ -318,7 +341,7 @@ class AccounterVM: ObservableObject {
     /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
    private func aggiornaContainer<T:MyProStarterPack_L1>(containerT: [T], modelT:T) {
 
-       let (pathContainer,nomeContainer,_) = modelT.viewModelContainerInstance()
+       let (pathContainer,nomeContainer,_,_) = modelT.basicModelInfoInstanceAccess()
        self[keyPath: pathContainer] = containerT
        
        self.alertItem = AlertModel(
@@ -327,6 +350,14 @@ class AccounterVM: ObservableObject {
 
     }
     
+    private func aggiornaContainer<T:MyProStarterPack_L1>(containerT:[T],path:ReferenceWritableKeyPath<AccounterVM,[T]>) {
+        
+        self[keyPath: path] = containerT
+        
+        self.alertItem = AlertModel(
+             title: "Update Process",
+             message: "Aggiornamento completato con Successo!")
+    }
     
     // MyProSearchPack_L0
     
@@ -367,11 +398,27 @@ class AccounterVM: ObservableObject {
     
     // ALTRO
     
-    
+    /// Ritorna una tupla contenente le seguenti Info: Un array con tutti i menuModel ad accezzione di quelli di Sistema, il count dell'array, e il count dei menu (meno quelli di Sistema) contenenti l'id del piatto
+    func allMenuMinusDiSistemaPlusContain(idPiatto:String) -> (allModelMinusDS:[MenuModel], allModelMinusDScount:Int,countWhereDishIsIn:Int) {
+        
+        let allMinusSistema = self.allMyMenu.filter({
+            $0.tipologia != .delGiorno &&
+            $0.tipologia != .delloChef
+        })
+        
+        let witchContain = allMinusSistema.filter({
+            $0.rifDishIn.contains(idPiatto)
+        })
+        
+        let allMinusCount = allMinusSistema.count
+        let witchContainCount = witchContain.count
+        
+        return (allMinusSistema,allMinusCount,witchContainCount)
+    }
     
     
     /// Permette di inserire o rimuovere un piatto da un MenuModel ed esegue l'update.
-    func manageInOutPiattoDaMenu(idPiatto:String,menuDaEditare:MenuModel) {
+    func manageInOutPiattoDaMenuModel(idPiatto:String,menuDaEditare:MenuModel) {
         
         var currentMenu = menuDaEditare
         
@@ -385,24 +432,41 @@ class AccounterVM: ObservableObject {
         
     }
 
-    /// Ritorna un menu di sistema Attivo. Se idPiatto != nil ritorna un menu di sistema attivo contenente il piatto.
-    func trovaMenuDiSistema(idPiatto:String? = nil,tipoMenu:TipologiaMenu.DiSistema) -> MenuModel? {
+    /// Permette di inserire o rimuovere un piatto da un MenuDiSistema
+    func manageInOutPiattoDaMenuDiSistema(idPiatto:String,menuDiSistema:TipologiaMenu.DiSistema) {
         
-        if idPiatto == nil {
-            return self.allMyMenu.first(where:{
-                  $0.tipologia == tipoMenu.returnTipologiaMenu() &&
-                  $0.isOnAir()
-            })
+        if let menuDS = trovaMenuDiSistema(menuDiSistema: menuDiSistema) {
+            
+            manageInOutPiattoDaMenuModel(idPiatto: idPiatto, menuDaEditare: menuDS)
+            
         } else {
-            return self.allMyMenu.first(where:{
-                  $0.tipologia == tipoMenu.returnTipologiaMenu() &&
-                  $0.isOnAir() &&
-                  $0.rifDishIn.contains(idPiatto!)
-            })
+            
+            self.alertItem = AlertModel(title: "Errore", message: "Abilita nella Home il \(menuDiSistema.simpleDescription())")
         }
     }
     
- 
+    
+    /// Controlla se un menuDiSistema contiene un dato piatto
+    func checkMenuDiSistemaContainDish(idPiatto:String,menuDiSistema:TipologiaMenu.DiSistema) -> Bool {
+        
+        if let menuDS = trovaMenuDiSistema(menuDiSistema: menuDiSistema) {
+            return menuDS.rifDishIn.contains(idPiatto)
+        } else {
+            return false
+        }
+
+    }
+    
+    /// Ritorna un menuDiSistema Attivo. Se non lo trova ritorna nil
+    func trovaMenuDiSistema(menuDiSistema:TipologiaMenu.DiSistema) -> MenuModel? {
+        
+        let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
+        
+        return  self.allMyMenu.first(where:{
+                 $0.tipologia.returnTypeCase() == tipologia &&
+                 $0.isOnAir()
+            })
+    }
     
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti

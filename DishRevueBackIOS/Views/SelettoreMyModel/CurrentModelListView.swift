@@ -111,7 +111,7 @@ struct CurrentModelListView<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View
             
             else if let destinationCollection = self.itemModel[keyPath:keypath] as? [String] {
                 
-                let modelCollection = self.viewModel.modelCollectionFromCollectionID(collectionId: destinationCollection, modelPath: model.viewModelContainerInstance().pathContainer)
+                let modelCollection = self.viewModel.modelCollectionFromCollectionID(collectionId: destinationCollection, modelPath: model.basicModelInfoInstanceAccess().vmPathContainer)
                 
                 destinationContainer[title] = (modelCollection,containerColor)
               

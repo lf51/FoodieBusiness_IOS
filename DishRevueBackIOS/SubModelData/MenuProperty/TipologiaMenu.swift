@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PaxMenuFisso:MyProEnumPack_L0 /*:MyEnumProtocolMapConform */ {
+enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
     
     static var defaultValue: PaxMenuFisso = .uno
     static var allCases: [PaxMenuFisso] = [.uno,.due]
@@ -229,11 +229,22 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
             case .delGiorno:
                 return "Menu con i piatti del Giorno."
             case .delloChef:
-                return "Menu con i piatti consigliati dallo Chef.👨🏻‍🍳"
+                return "Menu con i piatti consigliati dallo Chef 👨🏻‍🍳."
                 
             }
         }
         
+        func shortDescription() -> String {
+            
+            switch self {
+            case .delGiorno:
+                return "Menu del Giorno"
+            case .delloChef:
+                return "Menu dello Chef"
+                
+            }
+        }
+
        
     }
     

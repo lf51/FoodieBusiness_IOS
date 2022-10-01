@@ -9,7 +9,7 @@ import Foundation
 
 struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L0/*,MyEnumProtocol,MyEnumProtocolMapConform */{
    
-    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]> {
+    static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]> {
         \.categoriaMenuAllCases
     }
     
@@ -42,8 +42,8 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
         "Categoria Menu"
     } */ // deprecata
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String) {
-        return (\.categoriaMenuAllCases,"Elenco Categorie Menu", "Categoria Menu")
+    func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String,imageAssociated:String) {
+        return (\.categoriaMenuAllCases,"Elenco Categorie Menu", "Categoria Menu","list.bullet.clipboard")
     }
     
     func createId() -> String { // Deprecata

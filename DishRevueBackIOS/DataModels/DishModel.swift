@@ -12,7 +12,7 @@ import SwiftUI
 
 struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,MyProStatusPack_L1   /*MyModelStatusConformity */ {
     
-    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
+    static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
         return \.allMyDish
     }
     
@@ -101,9 +101,9 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
         "Piatto (\(self.status.simpleDescription().capitalized))"
     }
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String) {
+    func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
-        return (\.allMyDish, "Lista Piatti", "Piatto")
+        return (\.allMyDish, "Lista Piatti", "Piatto","fork.knife.circle")
     }
        
     func pathDestination() -> DestinationPathView {
@@ -133,19 +133,18 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
         let currencyCode = Locale.current.currency?.identifier ?? "EUR"
         let countIngredienti = countIngredients()
         
-        let menuDelGiorno = viewModel.trovaMenuDiSistema(idPiatto: self.id, tipoMenu: .delGiorno)
-        let menuDelloChef = viewModel.trovaMenuDiSistema(idPiatto: self.id, tipoMenu: .delloChef)
-        let isDelGiorno = menuDelGiorno != nil
-        let isDelloChef = menuDelloChef != nil
+        let isDelGiorno = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delGiorno)
+        let isDelloChef = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delloChef)
 
         let isDisponibile = self.status.checkStatusTransition(check: .disponibile)
         
-        let allMenuWhereIsIn = viewModel.allMyMenu.filter({
+       /* let allMenuWhereIsIn = viewModel.allMyMenu.filter({
             $0.tipologia != .delGiorno &&
             $0.tipologia != .delloChef &&
             $0.rifDishIn.contains(self.id)
-        })
+        }) */
         
+        let(_,allMenuMinusDS,allWhereDishIsIn) = viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.id)
         
       return VStack {
             
@@ -184,10 +183,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
           
           Button {
               
-              if isDelGiorno { viewModel.manageInOutPiattoDaMenu(idPiatto: self.id, menuDaEditare: menuDelGiorno!)
-              } else {
-                  viewModel.alertItem = AlertModel(title: "Errore", message: "Abilitare nella Home il Menu del Giorno")
-              }
+              viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: self.id, menuDiSistema: .delGiorno)
 
           } label: {
               HStack{
@@ -198,10 +194,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
           
           Button {
               
-              if isDelloChef { viewModel.manageInOutPiattoDaMenu(idPiatto: self.id, menuDaEditare: menuDelloChef!)
-              } else {
-                  viewModel.alertItem = AlertModel(title: "Errore", message: "Abilitare nella Home il Menu dello Chef")
-              }
+              viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: self.id, menuDiSistema: .delloChef)
 
           } label: {
               HStack{
@@ -212,21 +205,19 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
           
           Button {
              
-            
+              viewModel[keyPath: navigationPath].append(DestinationPathView.vistaMenuEspansa(self))
         
-
           } label: {
               HStack{
-                  Text("Espandi Menu (\(allMenuWhereIsIn.count))")
+                  Text("Espandi Menu (\(allWhereDishIsIn)/\(allMenuMinusDS))")
                   Image (systemName: "menucard")
               }
-          }.disabled(allMenuWhereIsIn.isEmpty)
+          }.disabled(allMenuMinusDS == 0)
           
           Button {
               
               viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
         
-
           } label: {
               HStack{
                   Text("Espandi Ingredienti (\(countIngredienti))")
@@ -459,7 +450,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
         
         let allIngredient = self.allIngredientsAttivi(viewModel: viewModel)
         
-        guard !allIngredient.isEmpty else { return false }
+        guard !allIngredient.isEmpty else { return true }
         
         for ingredient in allIngredient {
             if ingredient.conservazione == .altro { continue }

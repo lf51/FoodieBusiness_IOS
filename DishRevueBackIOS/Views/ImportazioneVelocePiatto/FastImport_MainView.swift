@@ -17,7 +17,7 @@ struct FastImport_MainView: View {
     @State private var isUpdateDisable: Bool = true
     var body: some View {
         
-        CSZStackVB(title: "Inserimento Veloce", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: "Importazione Veloce", backgroundColorView: backgroundColorView) {
             
             VStack {
                 

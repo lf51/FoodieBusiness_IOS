@@ -12,7 +12,7 @@ import SwiftUI
 
 struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1 /*MyModelStatusConformity */ {
    
-  static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
+  static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
         return \.allMyIngredients
     }
     
@@ -26,7 +26,8 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
       lhs.provenienza == rhs.provenienza &&
       lhs.allergeni == rhs.allergeni &&
       lhs.origine == rhs.origine &&
-      lhs.status == rhs.status 
+      lhs.status == rhs.status
+    //  lhs.inventario == rhs.inventario
    
     }
     
@@ -45,13 +46,9 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
     
     var status: StatusModel = .bozza()
     
-  /*  func returnNewModel() -> (tipo: IngredientModel, nometipo: String) {
-        (IngredientModel(),"Ingrediente")
-    } */
- 
-  /*  func returnModelTypeName() -> String {
-        "Ingrediente"
-    } */ // deprecata
+   // var inventario:Inventario = Inventario()
+
+    // Method
     
     func modelStringResearch(string: String) -> Bool {
         self.intestazione.lowercased().contains(string)
@@ -69,9 +66,9 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
         "Ingrediente (\(self.status.simpleDescription().capitalized))"
     } // deprecata in futuro
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String) {
+    func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String) {
         
-        return (\.allMyIngredients, "Lista Ingredienti", "Ingrediente")
+        return (\.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
     }
 
     func pathDestination() -> DestinationPathView {
@@ -86,6 +83,39 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
         
         VStack {
             
+            let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
+            let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
+            
+            Menu {
+                
+                Button("in Esaurimento") {
+                    viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
+                }.disabled(statoScorte != .inStock)
+                
+                Button("Esaurite") {
+                    viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
+                
+                if statoScorte == .esaurito || statoScorte == .inEsaurimento {
+                    
+                    Button("Rimetti in Stock") {
+                        viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                    }
+                }
+                
+                Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
+                
+                Button("Cronologia Acquisti") {
+                    viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCrologiaAcquisti(self))
+                }
+                
+            } label: {
+                HStack{
+                    Text("Scorte \(statoScorte.simpleDescription())")
+                    Image(systemName: statoScorte.imageAssociata())
+                }
+            }
+
             Button {
                 
                 viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
@@ -110,8 +140,10 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
                 }
             }
             
+            
         }
     }
+    
     
     /// Permette di sovrascrivere l'immagine associata all'origine con una immagine riferita agli allergeni che rispecchia meglio il prodotto - pensata e costruita per l'ingredientRow
     func associaImmagine() -> String {

@@ -21,7 +21,7 @@ import SwiftUI
 
 struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack_L0 /*: MyProModelPack_L0, Hashable*/{
 
-    static func viewModelContainerStatic() -> ReferenceWritableKeyPath<AccounterVM, [PropertyModel]> {
+    static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [PropertyModel]> {
         return \.allMyProperties
     }
         
@@ -87,9 +87,9 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
         PropertyModel_RowView(itemModel: self)
     }
     
-    func viewModelContainerInstance() -> (pathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String) {
+    func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
-        return (\.allMyProperties,"Lista Proprietà", "Proprietà")
+        return (\.allMyProperties,"Lista Proprietà", "Proprietà","house")
     }
 
     

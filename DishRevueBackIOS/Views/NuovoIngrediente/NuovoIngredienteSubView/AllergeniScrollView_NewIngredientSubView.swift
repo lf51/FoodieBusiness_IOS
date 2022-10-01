@@ -9,6 +9,9 @@ import SwiftUI
 
 struct AllergeniScrollView_NewIngredientSubView: View {
     
+    static var showAlertAllergene:Bool = true
+    
+    @EnvironmentObject var viewModel:AccounterVM
     @Binding var nuovoIngrediente: IngredientModel
     let generalErrorCheck: Bool
     
@@ -61,6 +64,18 @@ struct AllergeniScrollView_NewIngredientSubView: View {
         }.onChange(of: self.nuovoIngrediente.allergeni) { _ in
             self.areAllergeniOk = false 
         }
+        .onChange(of: self.areAllergeniOk, perform: { newValue in
+            
+            if newValue && Self.showAlertAllergene {
+  
+                viewModel.alertItem = AlertModel(
+                    title: "⚠️ Attenzione",
+                    message: SystemMessage.allergeni.simpleDescription(),
+                    actionPlus: ActionModel(title: .nonMostrare, action: {
+                        Self.showAlertAllergene = false
+                    }))
+            }
+        })
 
     }
 }
