@@ -28,7 +28,7 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
      
     static var allCases: [CategoriaMenu] = [] // Deprecata 02.06 -> Passa i dati ad una published nel viewModel // deprecata definitivamente 13.09
     
-    static var defaultValue: CategoriaMenu = CategoriaMenu(intestazione: "", image: "🍽")
+    static var defaultValue: CategoriaMenu = CategoriaMenu()
     
   //  var id: String { self.createId() }
     var id: String = UUID().uuidString
@@ -66,8 +66,8 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
         
     }
     
-    func returnTypeCase() -> CategoriaMenu { // Deprecata
-        return CategoriaMenu(intestazione: "", image: "")
+    func returnTypeCase() -> CategoriaMenu {
+        return self
     }
     
     func orderValue() -> Int { // Deprecata

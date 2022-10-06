@@ -46,7 +46,7 @@ struct DietScrollView_NewDishSub: View {
                         HStack {
                             Spacer()
                             
-                            Text(self.newDish.mostraDieteCompatibili ? "Mostra" : "Nascondi")
+                            Text(self.newDish.mostraDieteCompatibili ? "Visibile" : "Nascosto")
                                 .font(.system(.callout, design: .monospaced))
                          /*   Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
                                 .foregroundColor(confermaDiete ? Color.green : Color.gray)

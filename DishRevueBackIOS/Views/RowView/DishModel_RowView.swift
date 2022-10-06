@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum RowSize {
-    case sintetico,ridotto,normale
+    case sintetico,ridotto,normale,ibrido
 }
 
 struct DishModel_RowView: View {
@@ -19,7 +19,15 @@ struct DishModel_RowView: View {
     
     init(item: DishModel, rowSize: RowSize = .normale) {
         self.item = item
-        self.rowSize = rowSize
+        
+        let checkIsIbrido = item.ingredientiPrincipali.contains(item.id)
+        
+        if checkIsIbrido && rowSize == .normale {
+            self.rowSize = .ibrido
+        } else {
+            self.rowSize = rowSize
+        }
+        
     }
     
     var body: some View { vbSwitchRowSize() }
@@ -29,15 +37,62 @@ struct DishModel_RowView: View {
     @ViewBuilder private func vbSwitchRowSize() -> some View {
         
         switch rowSize {
+            
         case .sintetico:
             vbSinteticRow()
         case .ridotto:
             vbSmallRow()
         case .normale:
             vbNormalRow()
+        case .ibrido:
+           vbIbridoRow()
         }
     }
     
+    // RowSize Builder
+    @ViewBuilder private func vbIbridoRow() -> some View {
+        
+        CSZStackVB_Framed {
+            
+            VStack(alignment:.leading) {
+                
+                VStack {
+
+                    vbIntestazioneDishRow()
+                    vbSubIntestazioneDishRow()
+ 
+                }
+                 .padding(.top,5)
+                
+                Spacer()
+                
+                VStack(spacing:10) {
+                    
+                    vbBadgeRow()
+                    vbIngredientQuality()
+                   // vbIngredientScrollRow()
+                    vbDieteCompatibili()
+                }
+                
+                Spacer()
+                
+             //  VStack(spacing:5){
+                    
+                   // vbDieteCompatibili()
+
+                    let listaAllergeni = self.item.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
+                    vbAllergeneScrollRowView(listaAllergeni: listaAllergeni)
+                     .padding(.bottom,5)
+                       
+             //   }
+               
+                
+            } // chiuda VStack madre
+            .padding(.horizontal)
+                            
+        } // chiusa Zstack Madre
+        
+    }
     
     @ViewBuilder private func vbSinteticRow() -> some View {
         
@@ -71,7 +126,7 @@ struct DishModel_RowView: View {
                 
                 Spacer()
                 
-                VStack(spacing:5) {
+                VStack(spacing:10) {
                     
                     vbBadgeRow()
                     vbIngredientScrollRow()
@@ -146,6 +201,70 @@ struct DishModel_RowView: View {
     
     // Method
     
+    /// solo per viewRow ibride
+    @ViewBuilder private func vbIngredientQuality() -> some View {
+        
+        if let modelDS = self.viewModel.modelFromId(id: self.item.id, modelPath: \.allMyIngredients) {
+            
+            let conservazione = modelDS.conservazione
+            let origine = modelDS.origine
+            let provenienza = modelDS.provenienza
+            
+            HStack {
+                
+                ScrollView(.horizontal,showsIndicators: false) {
+                    
+                    HStack {
+                        
+                        CSEtichetta(
+                            text: "\(conservazione.simpleDescription())",
+                            fontStyle: .headline,
+                            fontWeight: .semibold,
+                            fontDesign: .default,
+                            textColor: Color("SeaTurtlePalette_4"),
+                            image: conservazione.imageAssociated(),
+                            imageColor: nil,
+                            imageSize: .large,
+                            backgroundColor: Color("SeaTurtlePalette_4"),
+                            backgroundOpacity: 0.2)
+                        
+                        
+                        CSEtichetta(
+                            text: "\(origine.simpleDescription())",
+                            fontStyle: .headline,
+                            fontWeight: .semibold,
+                            fontDesign: .default,
+                            textColor: Color("SeaTurtlePalette_4"),
+                            image: origine.imageAssociated(),
+                            imageColor: nil,
+                            imageSize: .large,
+                            backgroundColor: Color("SeaTurtlePalette_1"),
+                            backgroundOpacity: 1.0)
+                        
+                        CSEtichetta(
+                            text: "\(provenienza.simpleDescription())",
+                            fontStyle: .headline,
+                            fontWeight: .semibold,
+                            fontDesign: .default,
+                            textColor: Color("SeaTurtlePalette_1"),
+                            image: provenienza.imageAssociated(),
+                            imageColor: nil,
+                            imageSize: .large,
+                            backgroundColor: Color("SeaTurtlePalette_4"),
+                            backgroundOpacity: 0.8)
+                    }
+                    
+                }
+                
+                
+            }
+            
+            
+            
+        }
+        
+    }
+    
     @ViewBuilder private func vbBadgeRow() -> some View {
         
         let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
@@ -153,6 +272,9 @@ struct DishModel_RowView: View {
         let isAdviceByTheChef = self.viewModel.checkMenuDiSistemaContainDish(idPiatto: self.item.id, menuDiSistema: .delloChef)
   
         let menuWhereIsIn = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.item.id).countWhereDishIsIn
+        
+        let isIbrido = self.rowSize == .ibrido
+        
         HStack {
          
             CSEtichetta(
@@ -165,11 +287,45 @@ struct DishModel_RowView: View {
                 imageSize: .medium,
                 backgroundColor: Color("SeaTurtlePalette_2"),
                 backgroundOpacity: 1.0)
-            .onTapGesture {
+           /* .onTapGesture {
                 self.viewModel.alertItem = AlertModel(
                     title: "Lista Menu",
                     message: "Indica il numero di menu stabili dove è inserito il piatto. Non considera il menu del giorno e il menu dei consigliati dallo chef.")
+            } */ // Tolto 04.10
+            
+            if isIbrido {
+                
+                let statoScorte = self.viewModel.inventarioScorte.statoScorteIng(idIngredient: self.item.id)
+                
+                CSEtichetta(
+                    text: statoScorte.rawValue,
+                    fontStyle: .subheadline,
+                    fontWeight: .semibold,
+                    fontDesign: .default,
+                    textColor:Color("SeaTurtlePalette_1"),
+                    image: statoScorte.imageAssociata(),
+                    imageColor: Color("SeaTurtlePalette_1"),
+                    imageSize: .medium,
+                    backgroundColor: statoScorte.coloreAssociato(),
+                    backgroundOpacity: 1.0)
+                
+                
+              /*  HStack(spacing:3) {
+                    
+                    Text(statoScorte.rawValue)
+                            .italic()
+                            .bold()
+                            .font(.subheadline)
+                           
+                    Image(systemName: statoScorte.imageAssociata())
+                        .imageScale(.medium)
+                       
+                }
+                .foregroundColor(statoScorte.coloreAssociato()) */
             }
+            
+           
+            
             
             ScrollView(.horizontal,showsIndicators: false){
                 
@@ -185,11 +341,11 @@ struct DishModel_RowView: View {
                             imageSize: .large,
                             backgroundColor: Color.green,
                             backgroundOpacity: 1.0)
-                        .onTapGesture {
+                      /*  .onTapGesture {
                             self.viewModel.alertItem = AlertModel(
                                 title: "100% Bio",
                                 message: "Indica che tutti gli ingredienti usati nella preparazione del piatto sono prodotti con Metodo Biologico")
-                        }
+                        } */ // Tolto 04.10
                     }
                 
                     if isDelGiorno {

@@ -39,7 +39,7 @@ struct AllergeniScrollView_NewIngredientSubView: View {
                         
                         HStack {
                             Spacer()
-                            Text(self.areAllergeniOk ? "Confermato" : "Da Confermare")
+                            Text(self.areAllergeniOk ? "Confermato" : "Confermare")
                                 .font(.system(.callout, design: .monospaced))
                             
                             CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.areAllergeniOk)
@@ -50,15 +50,41 @@ struct AllergeniScrollView_NewIngredientSubView: View {
                 }
 
             }
-                    
-            if self.nuovoIngrediente.allergeni.isEmpty {
+            // Innesto 06.10
+            
+          /*  if self.nuovoIngrediente.allergeni.isEmpty {
                 Text("Non contiene Allergeni")
                     .font(.caption)
                     .fontWeight(.light)
                     .italic()
                     .foregroundColor(Color.black)
             }
-            else {SimpleModelScrollGeneric_SubView(modelToShow: self.nuovoIngrediente.allergeni, fontWeight: .semibold, strokeColor: Color.red)}
+            else {SimpleModelScrollGeneric_SubView(modelToShow: self.nuovoIngrediente.allergeni, fontWeight: .semibold, strokeColor: Color.red)} */
+            
+            VStack(alignment:.leading) {
+
+                SimpleModelScrollGeneric_SubView(
+                    modelToShow: self.nuovoIngrediente.allergeni,
+                    fontWeight: .semibold,
+                    strokeColor: Color.red)
+                
+                HStack(spacing:0) {
+                    
+                    let string_1 = self.areAllergeniOk ? "Confermata" : "Non Confermata"
+                    let string_2 = self.nuovoIngrediente.allergeni.isEmpty ? "l'assenza" : "la presenza"
+                    
+                    Text("\(string_1) \(string_2) ")
+                        .bold(self.areAllergeniOk)
+                        .underline(self.areAllergeniOk, color: Color.black)
+                            
+                         Text("di Allergeni negli Ingredienti.")
+                   }
+                    .italic()
+                    .fontWeight(.light)
+                    .font(.caption)
+                    .foregroundColor(Color.black)
+
+            }
             
             
         }.onChange(of: self.nuovoIngrediente.allergeni) { _ in

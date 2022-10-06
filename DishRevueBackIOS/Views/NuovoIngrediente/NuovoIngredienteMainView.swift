@@ -165,6 +165,11 @@ struct NuovoIngredienteMainView: View {
     }
     
     private func infoIngrediente() -> Text {
+       let string = csInfoIngrediente(areAllergeniOk: self.areAllergeniOk, nuovoIngrediente: self.nuovoIngrediente)
+        return Text(string)
+    }
+    
+  /*  private func infoIngrediente() -> Text {
         
         var stringaAlllergeni: String = "Presenza/assenza Allergeni non Confermata"
         var stringaCongeSurge: String = "\nMetodo di Conservazione non indicato"
@@ -192,7 +197,7 @@ struct NuovoIngredienteMainView: View {
         }
         
         return Text("\(stringaAlllergeni)\(stringaCongeSurge)\(metodoProduzione)")
-    }
+    } */ // Resa Pubblica - 04.10
     
     private func checkPreliminare() -> Bool {
         
@@ -328,21 +333,4 @@ struct NuovoIngredienteView_Previews: PreviewProvider {
      
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -10,11 +10,16 @@ import SwiftUI
 
 struct Inventario:Equatable {
     
+    // Nota 02.10
+    
     var ingInEsaurimento:[String] = []
     var ingEsauriti:[String] = []
     
     var cronologiaAcquisti:[String:[String]] = [:] // key = idIngrediente || Value = [date di acquisto]
     var lockedId:[String:[String]] = [:] // speculare a cronologiaAcquisti.Contiene per ogni chiava(data) un array degli id a cui è stato cambiato lo stato.
+    /// L'archivio ingredienti in esaurimento rende obsoleto l'uso di un archivio dell'inventario quando creiamo la lista della spesa. E' un dizionario che dovrà funzionare con una sola chiave, la data corrente. Funzionamento spiegato in nota vocale 01.10
+    var archivioIngInEsaurimento: [String:[String]] = [:] // key:DataCorrente || value = [id ingredienti Esauriti depennati]
+    
     
     func allInventario() -> [String] {
         
@@ -43,7 +48,49 @@ struct Inventario:Equatable {
         return inArrivo */
     }
     
-    func inventarioFiltrato(viewModel:AccounterVM) -> EnumeratedSequence<[IngredientModel]> {
+ /*   func inventarioFiltrato(viewModel:AccounterVM) -> EnumeratedSequence<[IngredientModel]> {
+        
+          let allIDing = self.allInventario()
+          let allING = viewModel.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
+          
+        let allVegetable = allING.filter({ $0.origine.returnTypeCase() == .vegetale })
+        let allMeat = allING.filter({
+              $0.origine.returnTypeCase() == .animale &&
+              !$0.allergeni.contains(.latte_e_derivati) &&
+              !$0.allergeni.contains(.molluschi) &&
+              !$0.allergeni.contains(.pesce) &&
+              !$0.allergeni.contains(.crostacei)
+          })
+        let allFish = allING.filter({
+              $0.allergeni.contains(.molluschi) ||
+              $0.allergeni.contains(.pesce) ||
+              $0.allergeni.contains(.crostacei)
+          })
+          
+        let allMilk = allING.filter({
+              $0.origine.returnTypeCase() == .animale &&
+              $0.allergeni.contains(.latte_e_derivati)
+          })
+        
+         /* allVegetable.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           })
+           allMilk.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           })
+           
+           allMeat.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           })
+       
+           allFish.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           }) */
+        
+        return (allVegetable + allMilk + allMeat + allFish).enumerated()
+    } */
+    
+  /*  func inventarioFiltrato(viewModel:AccounterVM) -> EnumeratedSequence<[IngredientModel]> {
         
           let allIDing = self.allInventario()
           let allING = viewModel.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
@@ -83,7 +130,7 @@ struct Inventario:Equatable {
            })
         
         return (allVegetable + allMilk + allMeat + allFish).enumerated()
-    }
+    } */
     
     func statoScorteIng(idIngredient:String) -> Inventario.TransitoScorte {
         
@@ -158,11 +205,22 @@ struct Inventario:Equatable {
     
     private mutating func convertiStatoInArrivo(id:String) {
         
-        self.ingInEsaurimento.removeAll(where: {$0 == id})
-        self.ingEsauriti.removeAll(where: {$0 == id})
-        
         let dataDiAcquisto = Date.now
         let dataInString = csTimeFormatter().data.string(from: dataDiAcquisto)
+        
+        if self.ingInEsaurimento.contains(id) {
+            
+            self.ingInEsaurimento.removeAll(where: {$0 == id})
+           
+            if self.archivioIngInEsaurimento[dataInString] != nil {
+                self.archivioIngInEsaurimento[dataInString]!.append(id)
+            } else {
+                self.archivioIngInEsaurimento = [dataInString:[id]]
+            }
+            
+        } else {
+            self.ingEsauriti.removeAll(where: {$0 == id})
+        }
 
        /* guard self.cronologiaAcquisti[dataInString] != nil else {
             return self.cronologiaAcquisti[dataInString] = [id]
@@ -246,7 +304,7 @@ struct Inventario:Equatable {
         case inEsaurimento = "in esaurimento"
         case esaurito = "esaurite"
         case inStock = "in stock"
-        case inArrivo = "acquistate"
+        case inArrivo = "in arrivo"
         
         func orderValue() -> Int {
             
@@ -275,7 +333,7 @@ struct Inventario:Equatable {
             case .esaurito:
                 return "terminate"
             case .inArrivo:
-                return "acquistate"
+                return "in arrivo"
             }
         }
         
@@ -286,7 +344,7 @@ struct Inventario:Equatable {
             case .inStock:
                 return "house"
             case .inEsaurimento:
-                return "cart.badge.plus"
+                return "clock.badge.exclamationmark"
             case .esaurito:
                 return "alarm.waves.left.and.right"
             case .inArrivo:

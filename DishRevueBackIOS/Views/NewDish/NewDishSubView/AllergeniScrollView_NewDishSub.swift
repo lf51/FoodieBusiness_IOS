@@ -11,26 +11,26 @@ struct AllergeniScrollView_NewDishSub: View {
     
     static var showAlertAllergene:Bool = true
     // Modifica 26.08
-   // @EnvironmentObject var viewModel:AccounterVM
-    @ObservedObject var viewModel:AccounterVM
+    @EnvironmentObject var viewModel:AccounterVM
+   // @ObservedObject var viewModel:AccounterVM
     // usiamo la observedObject perchè ci permette di passare il valore e inizializzare l'array degli allergeni nell'Init
     // End 26.08
     
     @Binding var newDish: DishModel
     let generalErrorCheck: Bool
     
-    let allergeniIn:[AllergeniIngrediente]
+ //   let allergeniInDEPRECATA:[AllergeniIngrediente]
     @Binding var areAllergeniOk: Bool
     
-    init(newDish:Binding<DishModel>, generalErrorCheck:Bool, areAllergeniOk:Binding<Bool>,viewModel:AccounterVM) {
+  /*  init(newDish:Binding<DishModel>, generalErrorCheck:Bool, areAllergeniOk:Binding<Bool>,viewModel:AccounterVM) {
        
         _newDish = newDish
         self.generalErrorCheck = generalErrorCheck
         _areAllergeniOk = areAllergeniOk
         self.viewModel = viewModel
    
-        self.allergeniIn = newDish.wrappedValue.calcolaAllergeniNelPiatto(viewModel: viewModel)
-    }
+    //    self.allergeniInDEPRECATA = newDish.wrappedValue.calcolaAllergeniNelPiatto(viewModel: viewModel)
+    } */
 
     var body: some View {
         
@@ -45,7 +45,7 @@ struct AllergeniScrollView_NewDishSub: View {
                         
                         HStack {
                             Spacer()
-                            Text(self.areAllergeniOk ? "Confermato" : "Da Confermare")
+                            Text(self.areAllergeniOk ? "Confermato" : "Confermare")
                                 .font(.system(.callout, design: .monospaced))
                             
                             CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.areAllergeniOk)
@@ -54,11 +54,12 @@ struct AllergeniScrollView_NewDishSub: View {
                     }
                 }
             
+          /*  let allergeniIn = self.newDish.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
             
             SimpleModelScrollGeneric_SubView(
-                modelToShow: self.allergeniIn,
+                modelToShow: allergeniIn,
                 fontWeight: .light,
-                strokeColor: Color.red)
+                strokeColor: Color.red) */
           /*  ScrollView(.horizontal, showsIndicators: false) {
 
                     HStack {
@@ -73,11 +74,18 @@ struct AllergeniScrollView_NewDishSub: View {
             
             VStack(alignment:.leading) {
 
-                let string_1 = self.areAllergeniOk ? "Confermata" : "Non Confermata"
-               
-                let string_2 = self.allergeniIn.isEmpty ? "l'assenza" : "la presenza"
-                    
+                let allergeniIn = self.newDish.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
+                
+                SimpleModelScrollGeneric_SubView(
+                    modelToShow: allergeniIn,
+                    fontWeight: .light,
+                    strokeColor: Color.red)
+                
                 HStack(spacing:0) {
+                    
+                    let string_1 = self.areAllergeniOk ? "Confermata" : "Non Confermata"
+                    let string_2 = allergeniIn.isEmpty ? "l'assenza" : "la presenza"
+                    
                     Text("\(string_1) \(string_2) ")
                         .bold(self.areAllergeniOk)
                         .underline(self.areAllergeniOk, color: Color.black)
@@ -92,7 +100,10 @@ struct AllergeniScrollView_NewDishSub: View {
             }
       
         }
-        .onChange(of: self.allergeniIn, perform: { _ in
+        .onChange(of: self.newDish.ingredientiPrincipali, perform: { _ in
+            self.areAllergeniOk = false
+        })
+        .onChange(of: self.newDish.ingredientiSecondari, perform: { _ in
             self.areAllergeniOk = false
         })
         .onChange(of: self.areAllergeniOk, perform: { newValue in

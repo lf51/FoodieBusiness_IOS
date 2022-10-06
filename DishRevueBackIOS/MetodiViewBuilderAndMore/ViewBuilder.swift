@@ -314,17 +314,19 @@ struct CSZStackVB_Framed<Content:View>:View {
 ///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 400/200).MaxWidth: larghezza Schermo - 20 punti
 struct CSZStackVB_Framed<Content:View>:View {
         
-        var frameWidth: CGFloat
-        var backgroundOpacity: Double
+        let frameWidth: CGFloat
+        let backgroundOpacity: Double
+        let shadowColor:Color
     
         @ViewBuilder var content: Content
 
     // Modificato 01.09
-    init(frameWidth: CGFloat = 650, backgroundOpacity: Double = 0.3, content: () -> Content) {
+    init(frameWidth: CGFloat = 650, backgroundOpacity: Double = 0.1,shadowColor:Color = Color.black, content: () -> Content) {
         let screenWidth: CGFloat = UIScreen.main.bounds.width - 30
        // self.frameWidth = frameWidth > screenWidth ? screenWidth : frameWidth
         self.frameWidth = .minimum(frameWidth, screenWidth)
         self.backgroundOpacity = backgroundOpacity
+        self.shadowColor = shadowColor
         self.content = content()
     }
     // Vedi Nota Vocale 01.09
@@ -334,7 +336,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                 
                 RoundedRectangle(cornerRadius: 5.0)
                     .fill(Color.white.gradient.opacity(backgroundOpacity))
-                    .shadow(color:Color.black,radius: 5.0)
+                    .shadow(color:shadowColor,radius: 5.0)
                     .zIndex(0)
                 
                 content
@@ -788,3 +790,5 @@ private func estrapolaListaAllergeni(listaAllergeni:[AllergeniIngrediente]) -> [
     
     return lista
 }
+
+

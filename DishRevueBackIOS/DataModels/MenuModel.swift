@@ -184,34 +184,35 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
     
     // Metodi riguardanti la programmazione - onLine vs offLine
     
-    func isOnAir() -> Bool {
+    /// Di default il check del timeRange viene effettuato. Se messo su false non viene eseguito e dunque viene controllato solo la compatibilità con i giorni. Utile per il monitor Servizio
+    func isOnAir(checkTimeRange:Bool = true) -> Bool {
         
-        // !! VEDI NOTA VOCALE 17.09 !!
+        // !! VEDI NOTA VOCALE 17.09 !! UPDATE 03.10 - Nota Vocale !!
         
         guard self.status.checkStatusTransition(check: .disponibile) else { return false }
         
         switch self.isAvaibleWhen {
             
         case .dataEsatta:
-            return isOnAirDataEsatta()
+            return isOnAirDataEsatta(checkTimeRange: checkTimeRange)
         case .intervalloChiuso:
-            return isOnAirClosedRange()
+            return isOnAirClosedRange(checkTimeRange: checkTimeRange)
         case .intervalloAperto:
-            return isOnAirOpenRange()
+            return isOnAirOpenRange(checkTimeRange: checkTimeRange)
         case .noValue:
             return false
             
         }
         
     }
-    
-    private func isOnAirClosedRange() -> Bool { // lf51 18.09.22
+ 
+    private func isOnAirClosedRange(checkTimeRange:Bool) -> Bool { // lf51 18.09.22
         
         let(_,endDay,currentDay) = dateCalendario()
         let giorniServizioIntegerMap = self.giorniDelServizio.map({$0.orderValue()})
         
         guard giorniServizioIntegerMap.contains(currentDay.weekday!) else { return false }
-        guard isOnTimeRange() else { return false }
+        guard isOnTimeRange(checkTimeRange: checkTimeRange) else { return false }
         
         guard isInsideFromTheStartDay() else { return false }
         
@@ -225,15 +226,16 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         
         return currentDay.day! <= endDay.day!
         
+        
     }
     
-    private func isOnAirOpenRange() -> Bool { // lf51 18.09.22
+    private func isOnAirOpenRange(checkTimeRange:Bool) -> Bool { // lf51 18.09.22
         
         let(_,_,currentDay) = dateCalendario()
         let giorniServizioIntegerMap = self.giorniDelServizio.map({$0.orderValue()})
         
         guard giorniServizioIntegerMap.contains(currentDay.weekday!) else { return false }
-        guard isOnTimeRange() else { return false }
+        guard isOnTimeRange(checkTimeRange: checkTimeRange) else { return false }
         
         return isInsideFromTheStartDay()
 
@@ -241,19 +243,29 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         // !! NOTA VOCALE 17.09 !!
     }
     
-    private func isOnAirDataEsatta() -> Bool { // lf51 18.09.22
+    private func isOnAirDataEsatta(checkTimeRange:Bool) -> Bool { // lf51 18.09.22
         
-        let(startDay,_,currentDay) = dateCalendario()
+       /* let(startDay,_,currentDay) = dateCalendario()
         let startDayPlain = [startDay.year!,startDay.month!,startDay.day!]
         let currentDayPlain = [currentDay.year!,currentDay.month!,currentDay.day!]
         
        // guard startDay == currentDay else { return false }
-        guard startDayPlain == currentDayPlain else { return false }
+        guard startDayPlain == currentDayPlain else { return false } */
         
-        return isOnTimeRange()
+        let calendario = Calendar(identifier: .gregorian)
+       // let currentDate = Date()
+       /* let sameYear = calendario.isDate(currentDate, equalTo: self.dataInizio, toGranularity: .year)
+        guard sameYear else { return false }
+        let sameMonth = calendario.isDate(currentDate, equalTo: self.dataInizio, toGranularity: .month)
+        guard sameMonth else { return false }
+        let sameDay = calendario.isDate(currentDate, equalTo: self.dataInizio, toGranularity: .day)
+        guard sameDay else { return false } */
+        let isSame = calendario.isDateInToday(self.dataInizio)
+        guard isSame else { return false }
+        return isOnTimeRange(checkTimeRange: checkTimeRange)
         
     }
-    
+
     private func isInsideFromTheStartDay() -> Bool { // lf51 18.09.22
         
         let(startDay,_,currentDay) = dateCalendario()
@@ -270,12 +282,18 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         return currentDay.day! >= startDay.day!
     }
     
-    
-    private func isOnTimeRange() -> Bool { // lf51 18.09.22
+    private func isOnTimeRange(checkTimeRange:Bool) -> Bool { // lf51 18.09.22 // deprecata 05.10
         
+        guard checkTimeRange else { return true } // !! Nota Vocale 03.10
+         
         let(startTime,endTime,currentTime) = timeCalendario()
         
-        if (currentTime.hour! > startTime.hour!) && (currentTime.hour! < endTime.hour!) { return true }
+      /* if (currentTime.hour! > startTime.hour!) && (currentTime.hour! < endTime.hour!) { return true }
+        
+        else if (currentTime.hour! == startTime.hour!) && (currentTime.hour! == endTime.hour!) {
+            if (currentTime.minute! >= startTime.minute!) && (currentTime.minute! < endTime.minute!) { return true }
+            else { return false }
+        }
         
         else if currentTime.hour! == startTime.hour! {
             if currentTime.minute! >= startTime.minute! { return true }
@@ -285,9 +303,17 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
             if currentTime.minute! < endTime.minute! { return true }
             else { return false }
         }
+        else { return false } */
+        
+        let absoluteStart = (startTime.hour! * 60) + startTime.minute!
+        let absoluteEnd = (endTime.hour! * 60) + endTime.minute!
+        let absoluteCurrent = (currentTime.hour! * 60) + currentTime.minute!
+        
+        if (absoluteCurrent >= absoluteStart) && (absoluteCurrent < absoluteEnd) { return true }
         else { return false }
         
     }
+  
     
     private func dateCalendario() -> (startDay:DateComponents,endDay:DateComponents,currentDay:DateComponents) { // lf51 18.09.22
         
@@ -300,8 +326,8 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         return(startDay,endDay,currentDay)
         
     }
-    
-    private func timeCalendario() -> (startTime:DateComponents,endTime:DateComponents,currentTime:DateComponents) { // lf51 18.09.22
+
+   private func timeCalendario() -> (startTime:DateComponents,endTime:DateComponents,currentTime:DateComponents) { // lf51 18.09.22
         
         let calendario = Calendar(identifier: .gregorian)
         
@@ -309,8 +335,31 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         let endTime = calendario.dateComponents([.hour,.minute], from: self.oraFine)
         let currentTime = calendario.dateComponents([.hour,.minute], from: Date.now)
         
+       
         return(startTime,endTime,currentTime)
     }
+    
+    // Test 05.10
+   
+    func timeScheduleInfo() -> (isOnAirNow:Bool,nextCheck:TimeInterval,invalidateForEver:Bool,countDown:Int) {
+        //Nota 06.10 - Da rielaborare. Occorre rielaborare tutte le funzioni che portano all'isOnAir per ottenere maggiorni informazioni, di modo da schedulare meglio il timer ed eventualmente invalidarlo
+        let isOn = self.isOnAir()
+        
+        guard isOn else { return (false,1.0,false,0)} // provvisorio }
+        
+        let(_,end,current) = timeCalendario()
+        
+        let currentHourInMinute = (current.hour! * 60) + current.minute!
+        let endHourInMinute = (end.hour! * 60) + end.minute!
+        let differenceToEnd = endHourInMinute - currentHourInMinute
+            
+       return (true,60.0,false,differenceToEnd)
+        
+    }
+    
+
+    // end Test 05.10
+    
     // Fine Metodi riguardanti la programmazione - onLine vs offLine
 }
 

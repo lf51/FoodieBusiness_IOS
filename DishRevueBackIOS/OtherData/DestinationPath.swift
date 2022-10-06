@@ -25,7 +25,7 @@ enum DestinationPathView: Hashable {
     case vistaIngredientiEspansa(_ :DishModel)
     case vistaMenuEspansa(_ :DishModel)
     case vistaPiattiEspansa(_ :MenuModel)
-    case vistaCrologiaAcquisti(_ :IngredientModel)
+    case vistaCronologiaAcquisti(_ :IngredientModel)
     
     case moduloSostituzioneING(_ : IngredientModel,isPermanente:Bool = false)
     
@@ -49,7 +49,8 @@ enum DestinationPathView: Hashable {
             NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
             
         case .piatto(let piatto):
-            NewDishMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+            NewProductMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+           /* NewDishMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */
             
         case .ingrediente(let ingredient):
             NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
@@ -72,15 +73,16 @@ enum DestinationPathView: Hashable {
         case .vistaPiattiEspansa(let menu):
             VistaPiattiEspansa(currentMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
             
-        case .vistaCrologiaAcquisti(let ingredient):
+        case .vistaCronologiaAcquisti(let ingredient):
             VistaCronologiaAcquisti(ingrediente: ingredient, backgroundColorView: backgroundColorView)
             
         case .moduloSostituzioneING(let ingredient,let isPermanente):
             DishListByIngredientView(ingredientModelCorrente: ingredient,isPermanente: isPermanente, destinationPath: destinationPath, backgroundColorView: backgroundColorView)
             
         case .listaDellaSpesa:
-            ListaDellaSpesa_MainView(onlyReaderVM: readOnlyViewModel, backgroundColorView: backgroundColorView)
-          /*  SostituzioneING_MainView(ingredientModelCorrente: ingredient,destinationPath: destinationPath, backgroundColorView: backgroundColorView) */
+            let inventario = readOnlyViewModel.inventarioIngredienti()
+            ListaDellaSpesa_MainView(inventarioIngredienti: inventario, backgroundColorView: backgroundColorView)
+
 
         }
         

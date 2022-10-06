@@ -12,7 +12,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
     
     // passa da MyModelProtocol a MyProVisualPackL0
     
-    @EnvironmentObject var viewModel: AccounterVM
+  //  @EnvironmentObject var viewModel: AccounterVM
     let model: M
     var pushImage: String = "gearshape"
    // var navigationPath: ReferenceWritableKeyPath<AccounterVM,NavigationPath>? = nil
@@ -194,8 +194,10 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     @State static var ingredientSample3 = ingredientSample3_Test
     @State static var ingredientSample4 =  ingredientSample4_Test
     @State static var ingredientSample6 =  ingredientSample6_Test
+    @State static var ingredientSample7 =  ingredienteFinito
     @State static var dishItem3: DishModel = dishItem3_Test
     static var dishItem4: DishModel = dishItem4_Test
+   @State static var dishItem5: DishModel = prodottoFinito
    @State static var menuSample: MenuModel = menuSample_Test
     static var menuSample2: MenuModel = menuSample2_Test
     static var menuSample3: MenuModel = menuSample3_Test
@@ -250,23 +252,45 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                     } */
                     
-                 /*   GenericItemModel_RowViewMask(model: dishItem3 ) {
+                   GenericItemModel_RowViewMask(model: dishItem5) {
                         
-                        vbMenuInterattivoModuloCambioStatus(myModel: $dishItem3)
+                        vbMenuInterattivoModuloCambioStatus(myModel: $dishItem5)
                         
-                        dishItem3.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
+                        dishItem5.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
                        
+                    
+                        vbMenuInterattivoModuloEdit(currentModel: dishItem5, viewModel: viewModel, navPath: \.dishListPath)
                         
-                        
-                        vbMenuInterattivoModuloEdit(currentModel: dishItem3, viewModel: viewModel, navPath: \.dishListPath)
-                        
-                        vbMenuInterattivoModuloTrash(currentModel: dishItem3, viewModel: viewModel)
-                    } */
+                        vbMenuInterattivoModuloTrash(currentModel: dishItem5, viewModel: viewModel)
+                    }
+                    
+                    DishModel_RowView(item: dishItem5, rowSize: .ridotto)
+                    DishModel_RowView(item: dishItem5, rowSize: .sintetico)
+                 
+                    
+                    GenericItemModel_RowViewMask(model: ingredientSample7) {
+      
+                        if ingredientSample7.status != .bozza() {
+                            
+                            vbMenuInterattivoModuloCambioStatus(myModel: $ingredientSample7)
+                           
+                           ingredientSample7.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
+                           
+                            vbMenuInterattivoModuloEdit(currentModel: ingredientSample7, viewModel: viewModel, navPath: \.ingredientListPath)
+                            
+                           vbMenuInterattivoModuloTrash(currentModel: ingredientSample7, viewModel: viewModel)
+                            }
+                        else {
+                            Text("Vai al Prodotto Finito")
+                        }
+                            
+                        }
+                    
                 /*
                     DishModel_RowView(item: dishItem3, rowSize:.ridotto)
                     DishModel_RowView(item: dishItem3, rowSize:.sintetico)*/
                     
-                    GenericItemModel_RowViewMask(model: ingredientSample6) {
+                 /*   GenericItemModel_RowViewMask(model: ingredientSample6) {
    
                          vbMenuInterattivoModuloCambioStatus(myModel: $ingredientSample6)
                         
@@ -303,7 +327,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                     }
                     
                     IngredientModel_SmallRowView(model: ingredientSample, sostituto: nil)
-                    
+                    */
                     
                    
                 }

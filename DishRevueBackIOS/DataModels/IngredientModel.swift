@@ -26,7 +26,7 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
       lhs.provenienza == rhs.provenienza &&
       lhs.allergeni == rhs.allergeni &&
       lhs.origine == rhs.origine &&
-      lhs.status == rhs.status
+      lhs.status == rhs.status 
     //  lhs.inventario == rhs.inventario
    
     }
@@ -45,7 +45,6 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
     var origine: OrigineIngrediente = .defaultValue
     
     var status: StatusModel = .bozza()
-    
    // var inventario:Inventario = Inventario()
 
     // Method
@@ -80,73 +79,72 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
     }
     
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-        
+                
         VStack {
-            
-            let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
-            let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
-            
-            Menu {
+                            
+                let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
+                let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
                 
-                Button("in Esaurimento") {
-                    viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
-                }.disabled(statoScorte != .inStock)
-                
-                Button("Esaurite") {
-                    viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
-                }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
-                
-                if statoScorte == .esaurito || statoScorte == .inEsaurimento {
+                Menu {
                     
-                    Button("Rimetti in Stock") {
-                        viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                    Button("in Esaurimento") {
+                        viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
+                    }.disabled(statoScorte != .inStock)
+                    
+                    Button("Esaurite") {
+                        viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                    }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
+                    
+                    if statoScorte == .esaurito || statoScorte == .inEsaurimento {
+                        
+                        Button("Rimetti in Stock") {
+                            viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                        }
+                    }
+                    
+                    Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
+                    
+                    Button("Cronologia Acquisti") {
+                        viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(self))
+                    }
+                    
+                } label: {
+                    HStack{
+                        Text("Scorte \(statoScorte.simpleDescription())")
+                        Image(systemName: statoScorte.imageAssociata())
+                    }
+                }
+
+                Button {
+                    
+                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
+                    
+                } label: {
+                    HStack{
+                        Text("Cambio Temporaneo")
+                        /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
+                        Image(systemName: "clock")
                     }
                 }
                 
-                Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
-                
-                Button("Cronologia Acquisti") {
-                    viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCrologiaAcquisti(self))
-                }
-                
-            } label: {
-                HStack{
-                    Text("Scorte \(statoScorte.simpleDescription())")
-                    Image(systemName: statoScorte.imageAssociata())
-                }
-            }
+                Button {
 
-            Button {
-                
-                viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
-                
-            } label: {
-                HStack{
-                    Text("Cambio Temporaneo")
-                    /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
-                    Image(systemName: "clock")
+                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
+                    
+                } label: {
+                    HStack{
+                        Text("Cambio Permanente")
+                        Image(systemName: "exclamationmark.circle")
+                      /*  Image(systemName: "arrow.left.arrow.right.circle") */
+                    }
                 }
-            }
-            
-            Button {
-
-                viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
-                
-            } label: {
-                HStack{
-                    Text("Cambio Permanente")
-                    Image(systemName: "exclamationmark.circle")
-                  /*  Image(systemName: "arrow.left.arrow.right.circle") */
-                }
-            }
-            
-            
+ 
         }
     }
     
     
     /// Permette di sovrascrivere l'immagine associata all'origine con una immagine riferita agli allergeni che rispecchia meglio il prodotto - pensata e costruita per l'ingredientRow
-    func associaImmagine() -> String {
+    func associaImmagine() -> (name:String,size:Image.Scale) {
         
         var allergeneDiServizio:AllergeniIngrediente = .defaultValue
         
@@ -170,7 +168,7 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
                 
             }) { allergeneDiServizio = .uova_e_derivati }
             
-            else { return self.origine.imageAssociated() }
+            else { return (self.origine.imageAssociated(),.large) }
             
         } else {
             
@@ -178,7 +176,9 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
                 
                 $0 == .glutine
                 
-            }) { allergeneDiServizio = .glutine }
+            }) { allergeneDiServizio = .glutine
+                return (allergeneDiServizio.imageAssociated(),.medium)
+            }// { allergeneDiServizio = .glutine }
             
             else if self.allergeni.contains(where: {
                 
@@ -186,11 +186,11 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
                 
             }) { allergeneDiServizio = .arachidi_e_derivati }
             
-            else { return self.origine.imageAssociated()}
+            else { return (self.origine.imageAssociated(),.large)}
     
         }
  
-            return allergeneDiServizio.imageAssociated()
+        return (allergeneDiServizio.imageAssociated(),.large)
     }
     
     /// ritorna true se tutte le proprietà optional sono state compilate, e dunque il modello è completo.

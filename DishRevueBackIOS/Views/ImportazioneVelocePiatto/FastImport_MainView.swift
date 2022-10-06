@@ -12,7 +12,7 @@ struct FastImport_MainView: View {
     @EnvironmentObject var viewModel: AccounterVM
     @State private var allFastDish: [TemporaryModel] = []
     let backgroundColorView: Color
-    @State private var text: String = "Spaghetti alla carbonara,pecorino dop,prezzemolo,tuorlo d'uovo,pepe nero, sale.Bucatini alla matriciana,guanciale,pepe nero,sale."
+    @State private var text: String = "CocaCola Classic.CocaCola Zero"
     
     @State private var isUpdateDisable: Bool = true
     var body: some View {
@@ -73,6 +73,8 @@ struct FastImport_MainView: View {
                                 ForEach($allFastDish) { $fastDish in
                                     
                                   //  CSZStackVB_Framed(frameWidth: 380, rateWH: 1.5) {
+                                    let checkExistence = self.viewModel.checkExistingUniqueModelName(model: fastDish.dish).0
+                                    
                                     CSZStackVB_Framed(frameWidth:1200) {
                                         
                                         VStack {
@@ -85,6 +87,28 @@ struct FastImport_MainView: View {
                                             Spacer()
                                         }
                                         .padding()
+                                        .opacity(checkExistence ? 0.6 : 1.0)
+                                        .disabled(checkExistence)
+                                        .overlay(alignment:.topLeading) {
+                                            if checkExistence {
+                                                
+                                                HStack {
+                                                  //  Spacer()
+                                                    Text("Esistente")
+                                                        .bold()
+                                                        .font(.largeTitle)
+                                                        .foregroundColor(Color("SeaTurtlePalette_1"))
+                                                        .lineLimit(1)
+                                                        .padding(.horizontal,100)
+                                                   // Spacer()
+                                                }
+                                                    .background(content: {
+                                                        Color.black.opacity(0.8)
+                                                    })
+                                                    .rotationEffect(Angle.degrees(-45))
+                                                    .offset(x: -70, y: 80)
+                                            }
+                                        }
                                         
                                        
                                     }
@@ -109,8 +133,20 @@ struct FastImport_MainView: View {
     }
     
     // Method
- 
     private func fastSave(item: TemporaryModel) {
+ 
+            self.viewModel.dishAndIngredientsFastSave(item: item)
+
+            let localAllFastDish:[TemporaryModel] = self.allFastDish.filter {$0.id != item.id}
+ 
+            if !localAllFastDish.isEmpty {
+                self.reBuildIngredientContainer(localTemporaryModel: localAllFastDish)
+            }  else {self.allFastDish = localAllFastDish}
+
+     
+    }
+    /*
+    private func fastSaveDEPRECATA(item: TemporaryModel) {
  
         do {
             
@@ -130,7 +166,7 @@ struct FastImport_MainView: View {
             
         }
  
-    }
+    }*/ // deprecata 06.10
  
     /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
     private func reBuildIngredientContainer(localTemporaryModel:[TemporaryModel]) {
@@ -189,6 +225,7 @@ struct FastImport_MainView: View {
      
      let containerDish = self.text.split(separator: ".")
         print("containerDish: \(containerDish.description)")
+        
         for dish in containerDish {
 
             let step_3b = dish.replacingOccurrences(of: "*", with: "")
@@ -201,39 +238,45 @@ struct FastImport_MainView: View {
             
             var step_5:[IngredientModel] = []
             
-            for subString in ingredientContainer {
-
-                let sub = String(subString).lowercased()
-                let newSub = csStringCleaner(string: sub)
-                
-                let ingredient = {
-                   var newIngredient = IngredientModel()
-                    newIngredient.intestazione = newSub.capitalized
-                    newIngredient.status = .bozza(.disponibile) // 07.09 !!!!
-                    return newIngredient
-                }()
-                
-                // Modifica 28.08
-                
-                if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 {
-                    
-                    step_5.append(oldIngredient)
-   
-                } else {step_5.append(ingredient)}
-                
-              /*  if let oldIngredient = viewModel.checkExistingModel(model: ingredient).1 {
-                    
-                    step_5.append(oldIngredient)
-   
-                } else {step_5.append(ingredient)} */
-                
-                // End 28.08
-         
-             }
+            // Innesto 06.10
+            let idUnico = UUID().uuidString
             
+            if !ingredientContainer.isEmpty {
+                
+                for subString in ingredientContainer {
+
+                    let sub = String(subString).lowercased()
+                    let newSub = csStringCleaner(string: sub)
+                    
+                    let ingredient = {
+                       var newIngredient = IngredientModel()
+                        newIngredient.intestazione = newSub.capitalized
+                        newIngredient.status = .bozza(.disponibile) // 07.09 !!!!
+                        return newIngredient
+                    }()
+
+                    if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 {
+                        
+                        step_5.append(oldIngredient)
+       
+                    } else {step_5.append(ingredient)}
+                             
+                 }
+            } else {
+                
+                let ingredientDS = {
+                    var newIng = IngredientModel(id:idUnico)
+                    newIng.intestazione = cleanedDishTitle.capitalized
+                    return newIng
+                }()
+                // lo lasciamo in status == .bozza()
+                step_5.append(ingredientDS)
+  
+            }
+
             let fastDish:DishModel = {
                 
-                var dish = DishModel()
+                var dish = DishModel(id:idUnico)
                 dish.intestazione = cleanedDishTitle.capitalized
                 dish.status = .bozza(.disponibile) // 07.09 !!!
               //  dish.ingredientiPrincipaliDEPRECATO = step_5

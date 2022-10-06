@@ -10,23 +10,23 @@ import SwiftUI
 struct IngredientModel_SmallRowView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-    @State private var item:IngredientModel
+    @State private var currentModel:IngredientModel
     
-    let model:IngredientModel
+    let titolare:IngredientModel
     let sostituto:IngredientModel?
     
-    init(model:IngredientModel, sostituto:IngredientModel?) {
+    init(titolare:IngredientModel, sostituto:IngredientModel?) {
         
-        self.model = model
+        self.titolare = titolare
         self.sostituto = sostituto
-        _item = State(wrappedValue: model)
+        _currentModel = State(wrappedValue: titolare)
         
     }
     
     var body: some View {
         
-        let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
-        let itemIsModel = self.item == self.model
+        let isDisponibile = self.currentModel.status.checkStatusTransition(check: .disponibile)
+        let itemIsModel = self.currentModel == self.titolare
         
         let value:(opacity:CGFloat,blur:CGFloat) = {
            
@@ -40,13 +40,13 @@ struct IngredientModel_SmallRowView: View {
             VStack(alignment:.leading,spacing:5) {
                 
                     vbIntestazioneIngrediente(itemIsModel: itemIsModel)
-                    vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                    vbAllergeneScrollRowView(listaAllergeni: self.currentModel.allergeni)
                     .overlay(alignment: .trailing) {
                         
                         HStack(spacing:4) {
                             
-                            if self.item.conservazione != .altro {
-                                csVbSwitchImageText(string: self.item.conservazione.imageAssociated(), size: .large)
+                            if self.currentModel.conservazione != .altro {
+                                csVbSwitchImageText(string: self.currentModel.conservazione.imageAssociated(), size: .large)
                                    .padding(2.0)
                                     .background(
                                         Color("SeaTurtlePalette_2")
@@ -54,7 +54,9 @@ struct IngredientModel_SmallRowView: View {
                                             )
                             }
 
-                            csVbSwitchImageText(string: self.item.associaImmagine(),size: .large)
+                            let(image,size) = self.currentModel.associaImmagine()
+                            
+                            csVbSwitchImageText(string: image,size: size)
                                 .padding(2.0)
                                 .background(
                                     Color("SeaTurtlePalette_1")
@@ -78,7 +80,7 @@ struct IngredientModel_SmallRowView: View {
                 
                 if !isDisponibile {
                     
-                    Text("_: \(self.item.status.simpleDescription())")
+                    Text("_: \(self.currentModel.status.simpleDescription())")
                         .textCase(.uppercase)
                         .bold()
                         .font(.title3)
@@ -99,7 +101,7 @@ struct IngredientModel_SmallRowView: View {
         .onTapGesture {
             if sostituto != nil {
                 withAnimation {
-                    self.item = itemIsModel ? sostituto! : model
+                    self.currentModel = itemIsModel ? sostituto! : titolare
                     }
                 }
             }
@@ -111,7 +113,7 @@ struct IngredientModel_SmallRowView: View {
         
         HStack(alignment:.lastTextBaseline) {
             
-            Text(self.item.intestazione)
+            Text(self.currentModel.intestazione)
                 .font(.title2)
                 .fontWeight(.semibold)
                 .lineLimit(1)
@@ -119,7 +121,7 @@ struct IngredientModel_SmallRowView: View {
                 .foregroundColor(Color.white)
                 .overlay(alignment:.topTrailing) {
                     
-                    if self.item.produzione == .biologico {
+                    if self.currentModel.produzione == .biologico {
                         
                         Text("Bio")
                             .font(.system(.caption2, design: .monospaced, weight: .black))
@@ -133,7 +135,7 @@ struct IngredientModel_SmallRowView: View {
             Spacer()
             
             if itemIsModel {
-                vbEstrapolaStatusImage(itemModel: self.item)
+                vbEstrapolaStatusImage(itemModel: self.currentModel)
             }
             
             else {
@@ -175,7 +177,7 @@ struct IngredientModel_SmallRowView_Previews: PreviewProvider {
         
         CSZStackVB(title: "Test", backgroundColorView: Color("SeaTurtlePalette_1")) {
             VStack {
-                IngredientModel_SmallRowView(model: ing1, sostituto: nil)
+                IngredientModel_SmallRowView(titolare: ing1, sostituto: nil)
              
             }.frame(height:150)
         }.environmentObject(vm)

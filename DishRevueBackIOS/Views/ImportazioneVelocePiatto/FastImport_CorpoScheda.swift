@@ -58,6 +58,7 @@ struct FastImport_CorpoScheda:View {
                             selection: $temporaryModel.categoriaMenu,
                             customLabel: "Categoria",
                             dataContainer: viewModel.categoriaMenuAllCases,//CategoriaMenu.allCases,
+                            cleanAndOrderContainer: false,
                             backgroundColor: Color.white.opacity(0.5))
                             .csWarningModifier(
                                 isPresented: checkError) {
@@ -66,7 +67,7 @@ struct FastImport_CorpoScheda:View {
                                     }
 
                      /*   csVbSwitchImageText(string: temporaryModel.dish.categoriaMenuDEPRECATA.imageAssociated()) */
-                        csVbSwitchImageText(string: temporaryModel.categoriaMenu.imageAssociated())
+                        csVbSwitchImageText(string: temporaryModel.categoriaMenu.imageAssociated(),size: .large)
                         
                         Spacer()
   

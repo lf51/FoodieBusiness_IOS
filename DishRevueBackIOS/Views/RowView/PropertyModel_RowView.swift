@@ -32,7 +32,7 @@ struct PropertyModel_RowView: View {
                             Spacer()
                             
                             if true {
-                                
+                                // Nota Vocale 02.10
                                 CSEtichetta(
                                     text: "Verificata",
                                     fontStyle: .caption,

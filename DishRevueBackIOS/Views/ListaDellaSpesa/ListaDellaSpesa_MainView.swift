@@ -12,17 +12,22 @@ struct ListaDellaSpesa_MainView: View {
     @EnvironmentObject var viewModel:AccounterVM
     
     let currentDate:String = csTimeFormatter().data.string(from: Date())
-    let allInventario:EnumeratedSequence<[IngredientModel]>
-    let inventarioArchiviato:Inventario
+    let inventarioEnumerato:EnumeratedSequence<[IngredientModel]>
+    let countInventario:Int
+  //  let inventarioArchiviato:Inventario
     let backgroundColorView:Color
     
-    init(onlyReaderVM: AccounterVM, backgroundColorView: Color) {
+    init(inventarioIngredienti:[IngredientModel], backgroundColorView: Color) {
         
-        let inventarioScorte = onlyReaderVM.inventarioScorte
+       // let inventarioScorte = onlyReaderVM.inventarioScorte
         
-        self.inventarioArchiviato = inventarioScorte
+       // self.inventarioArchiviato = copiaInventario
+        self.inventarioEnumerato = inventarioIngredienti.enumerated()
+        self.countInventario = inventarioIngredienti.count
         self.backgroundColorView = backgroundColorView
-        self.allInventario = inventarioScorte.inventarioFiltrato(viewModel: onlyReaderVM)
+        
+        print("Init Lista della Spesa")
+       // self.allInventario = inventarioScorte.inventarioFiltrato(viewModel: onlyReaderVM)
         
     }
     
@@ -46,7 +51,7 @@ struct ListaDellaSpesa_MainView: View {
                     
                     VStack(alignment:.leading,spacing:1) {
                         
-                        ForEach(Array(allInventario),id:\.element) { position, element in
+                        ForEach(Array(inventarioEnumerato),id:\.element) { position, element in
 
                                 rowIngredient(ing: element, position: position)
                                 .padding(.horizontal,5)
@@ -63,11 +68,57 @@ struct ListaDellaSpesa_MainView: View {
                 
             }
             .padding(.horizontal)
+
         }
         
     }
     
     // Method
+    
+    /*
+   private func inventarioFiltrato() -> EnumeratedSequence<[IngredientModel]> {
+        
+        let allIDing = self.viewModel.inventarioScorte.allInventario()
+        let allING = self.viewModel.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
+          
+        let allVegetable = allING.filter({ $0.origine.returnTypeCase() == .vegetale })
+        let allMeat = allING.filter({
+              $0.origine.returnTypeCase() == .animale &&
+              !$0.allergeni.contains(.latte_e_derivati) &&
+              !$0.allergeni.contains(.molluschi) &&
+              !$0.allergeni.contains(.pesce) &&
+              !$0.allergeni.contains(.crostacei)
+          })
+        let allFish = allING.filter({
+              $0.allergeni.contains(.molluschi) ||
+              $0.allergeni.contains(.pesce) ||
+              $0.allergeni.contains(.crostacei)
+          })
+          
+        let allMilk = allING.filter({
+              $0.origine.returnTypeCase() == .animale &&
+              $0.allergeni.contains(.latte_e_derivati)
+          })
+        
+         /* allVegetable.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           })
+           allMilk.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           })
+           
+           allMeat.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           })
+       
+           allFish.sort(by: {
+               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+           }) */
+        print("Dentro Inventario Filtrato")
+        return (allVegetable + allMilk + allMeat + allFish).enumerated()
+      
+       
+    }*/
     
     @ViewBuilder private func rowIngredient(ing:IngredientModel, position:Int) -> some View {
         
@@ -88,12 +139,12 @@ struct ListaDellaSpesa_MainView: View {
         
         // Nota Vocale 01.10
         
-        let statusChanged:Color? = {
+       /* let statusChanged:Color? = {
            
             let model = self.viewModel.modelFromId(id: ing.id, modelPath: \.allMyIngredients)
             return model?.status.transitionStateColor()
             
-        }()
+        }() */
         // end
         
         
@@ -111,17 +162,18 @@ struct ListaDellaSpesa_MainView: View {
                         
                         HStack(spacing:5) {
 
-                            HStack(spacing:3) {
+                         //   HStack(spacing:3) {
                                
+                                
                                 RoundedRectangle(cornerRadius: 2.0)
                                         .frame(width: 5)
-                                        .foregroundColor(statusChanged ?? Color.gray)
-                                
-                                RoundedRectangle(cornerRadius: 2.0)
-                                        .frame(width: 3)
                                         .foregroundColor(ing.status.transitionStateColor())
                                 
-                            }
+                              /*  RoundedRectangle(cornerRadius: 2.0)
+                                        .frame(width: 3)
+                                        .foregroundColor(ing.statusPrecedente?.transitionStateColor() ?? Color.gray) */
+                              
+                         //   }
      
                             Text(ing.intestazione)
                                 .italic()
@@ -145,9 +197,12 @@ struct ListaDellaSpesa_MainView: View {
                 
                 if !condition {
                     
-                    Text(statoInventario == .esaurito ? "!!!" : "!")
+                   /* Text(statoInventario == .esaurito ? "!!!" : "!")
                         .italic()
                         .font(.title3)
+                        .foregroundColor(statoInventario.coloreAssociato()) */
+                    Image(systemName: statoInventario.imageAssociata())
+                        .imageScale(.medium)
                         .foregroundColor(statoInventario.coloreAssociato())
                 }
 
@@ -191,30 +246,39 @@ struct ListaDellaSpesa_MainView: View {
             
         }()
         
-          return Image(systemName: "square")
-                .imageScale(.large)
-                .foregroundColor(Color.black)
-                .brightness(0.3)
-                .overlay {
-                    if stato == .inArrivo {
-                        Image(systemName: "checkmark")
-                            .bold()
-                            .imageScale(.large)
-                            .foregroundColor(value.checkColor)
-                    }
-                }
-                .onTapGesture {
-                    withAnimation {
-                        self.depennaAction(id: id, statoCorrente: stato)
-                    }
-                }
-                .onLongPressGesture {
-                    withAnimation {
-                        self.undoDepennaAction(id: id, statoCorrente: stato)
-                    }
-                }
-                .opacity(value.opacity)
-                .disabled(value.disable)
+        return HStack {
+            
+            if value.disable {
+                Image(systemName: "triangle")
+                    .imageScale(.medium)
+                    .foregroundColor(Color("SeaTurtlePalette_2"))
+            }
+
+            Image(systemName: "square")
+                  .imageScale(.large)
+                  .foregroundColor(Color.black)
+                  .brightness(0.3)
+                  .overlay {
+                      if stato == .inArrivo {
+                          Image(systemName: "checkmark")
+                              .bold()
+                              .imageScale(.large)
+                              .foregroundColor(value.checkColor)
+                      }
+                  }
+                  .onTapGesture {
+                      withAnimation {
+                          self.depennaAction(id: id, statoCorrente: stato)
+                      }
+                  }
+                  .onLongPressGesture {
+                      withAnimation {
+                          self.undoDepennaAction(id: id, statoCorrente: stato)
+                      }
+                  }
+                  .opacity(value.opacity)
+                  .disabled(value.disable)
+        }
        // }
     }
     
@@ -233,9 +297,16 @@ struct ListaDellaSpesa_MainView: View {
            /* self.viewModel.inventarioScorte.cronologiaAcquisti[self.currentDate]?.removeAll(where: {$0 == id}) */
             self.viewModel.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0 == self.currentDate})
         
-            if self.inventarioArchiviato.ingInEsaurimento.contains(id) {
+           /* if self.inventarioArchiviato.ingInEsaurimento.contains(id) {
                 self.viewModel.inventarioScorte.ingInEsaurimento.append(id)
                 
+            } */
+            
+            if let key = self.viewModel.inventarioScorte.archivioIngInEsaurimento[currentDate] {
+                
+                if key.contains(id) {  self.viewModel.inventarioScorte.ingInEsaurimento.append(id) }
+                else { self.viewModel.inventarioScorte.ingEsauriti.append(id) }
+ 
             } else {
                 self.viewModel.inventarioScorte.ingEsauriti.append(id)
             }
@@ -324,12 +395,11 @@ struct ListaDellaSpesa_MainView: View {
         //let today = csTimeFormatter().data.string(from: Date())
         let vmInventarioScorte:Inventario = self.viewModel.inventarioScorte
         
-        let allIng = inventarioArchiviato.allInventario().count
         let daAcquistare = vmInventarioScorte.ingEsauriti.count + vmInventarioScorte.ingInEsaurimento.count
-        let acquistati = allIng - daAcquistare
+        let acquistati = self.countInventario - daAcquistare
         let cambioStatus = vmInventarioScorte.lockedId[self.currentDate]?.count ?? 0
         
-        let breve = "\(self.currentDate)\nAcquistati: \(acquistati)/\(allIng) - ∆Status: \(cambioStatus)/\(allIng)"
+        let breve = "\(self.currentDate)\nAcquistati: \(acquistati)/\(self.countInventario) - ∆Status: \(cambioStatus)/\(self.countInventario)"
         let estesa = "Azione IRREVERSIBILE\nModifica lo Status degli ingredienti depennati da 'in pausa' e/o 'archiviato' a 'disponibile'.\n\nPer un'azione più selettiva clicca su cancel e modifica lo status manualmente dalla lista ingredienti."
         
         return (Text(breve),Text(estesa))
@@ -343,7 +413,7 @@ struct ListaDellaSpesa_MainView: View {
 struct ListaDellaSpesa_MainView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            ListaDellaSpesa_MainView(onlyReaderVM: testAccount, backgroundColorView: Color("SeaTurtlePalette_1"))
+            ListaDellaSpesa_MainView( inventarioIngredienti: testAccount.inventarioIngredienti(), backgroundColorView: Color("SeaTurtlePalette_1"))
                 .environmentObject(testAccount)
         }
         

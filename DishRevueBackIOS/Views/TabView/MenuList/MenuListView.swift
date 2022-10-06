@@ -29,7 +29,7 @@ struct MenuListView: View {
                     
                     CSDivider()
                     
-                    ScrollView {
+                    ScrollView(showsIndicators:false) {
                         ForEach($viewModel.allMyMenu) { $menu in
                             
                             
@@ -48,7 +48,7 @@ struct MenuListView: View {
                             
                         }
                     }
-                    
+                    CSDivider()
                 }
                 
                 // fine temporaneo

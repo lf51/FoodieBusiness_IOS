@@ -12,6 +12,7 @@ struct CSEtichetta: View { // 21.09 --> Rimpiazza parecchio codice simile qua e 
     let text:String
     var fontStyle:Font.TextStyle = .caption2
     var fontWeight:Font.Weight = .black
+    var fontDesign:Font.Design = .monospaced
     let textColor: Color
     let image:String
     let imageColor:Color?
@@ -26,7 +27,7 @@ struct CSEtichetta: View { // 21.09 --> Rimpiazza parecchio codice simile qua e 
             csVbSwitchImageText(string: image, size: imageSize)
                 .foregroundColor(imageColor)
             Text(text)
-                .font(.system(fontStyle, design: .monospaced, weight: fontWeight))
+                .font(.system(fontStyle, design: fontDesign, weight: fontWeight))
                 .foregroundColor(textColor)
                 
         }

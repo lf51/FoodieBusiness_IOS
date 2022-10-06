@@ -161,7 +161,7 @@ struct PannelloIngredienti_NewDishSubView: View {
         let (model,sostituto) = checkPreliminareIngredientSmallRow(id: id)
         
         if model != nil {
-            IngredientModel_SmallRowView(model: model!, sostituto: sostituto)
+            IngredientModel_SmallRowView(titolare: model!, sostituto: sostituto)
         }
   
     }

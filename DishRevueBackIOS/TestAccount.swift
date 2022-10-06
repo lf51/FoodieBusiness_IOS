@@ -25,14 +25,15 @@ var testAccount: AccounterVM = {
     
     var vm = AccounterVM()
      vm.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test]
-     vm.allMyDish = [dishItem3_Test,dishItem4_Test]
-     vm.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test]
+     vm.allMyDish = [dishItem3_Test,dishItem4_Test,prodottoFinito]
+     vm.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
     vm.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
     vm.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*/ingredientSample2_Test.id,ingredientSample3_Test.id,ingredientSample4_Test.id]
     vm.inventarioScorte.cronologiaAcquisti = [
         ingredientSample_Test.id:[otherDateString2,otherDateString1,otherDateString,oldDateString,todayString],ingredientSample5_Test.id:[oldDateString,todayString]
     
     ]
+    vm.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
     
      return vm
  }()
@@ -53,7 +54,7 @@ var testAccount: AccounterVM = {
     
     var newDish = DishModel()
     newDish.intestazione = "Bucatini alla Matriciana"
-    newDish.status = .completo(.inPausa)
+    newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [ingredientSample4_Test.id]
     newDish.ingredientiSecondari = [ingredientSample2_Test.id]
     let price:DishFormat = {
@@ -77,7 +78,7 @@ var dishItem4_Test: DishModel = {
     
     var newDish = DishModel()
     newDish.intestazione = "Trofie al Pesto"
-    newDish.status = .completo(.inPausa)
+    newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [ingredientSample_Test.id]
     newDish.ingredientiSecondari = [ingredientSample3_Test.id]
     let price:DishFormat = {
@@ -90,6 +91,35 @@ var dishItem4_Test: DishModel = {
     return newDish
 }()
 
+var prodottoFinito: DishModel = {
+    
+    var newDish = DishModel()
+    newDish.intestazione = "CocoCola"
+    newDish.status = .completo(.disponibile)
+    newDish.ingredientiPrincipali = [newDish.id]
+ 
+    let price:DishFormat = {
+        var pr = DishFormat(type: .mandatory)
+        pr.price = "22.5"
+        return pr
+    }()
+    newDish.pricingPiatto = [price]
+    
+    return newDish
+}()
+
+var ingredienteFinito:IngredientModel = {
+   
+    var new = IngredientModel(id:prodottoFinito.id)
+    new.intestazione = prodottoFinito.intestazione
+    new.origine = .vegetale
+    new.conservazione = .surgelato
+    new.produzione = .biologico
+    new.provenienza = .km0
+    new.allergeni = [.latte_e_derivati]
+    return new
+}()
+
  var menuSample_Test: MenuModel = {
 
      var menu = MenuModel()
@@ -97,10 +127,12 @@ var dishItem4_Test: DishModel = {
      menu.tipologia = .fisso(persone: .due, costo: "18")
     // menu.tipologia = .allaCarta
      menu.isAvaibleWhen = .dataEsatta
+     menu.dataInizio = Date.now
+     menu.oraInizio = Date.now.advanced(by: 3600)
      menu.giorniDelServizio = [.lunedi]
    //  menu.dishInDEPRECATO = [dishItem3]
-    menu.rifDishIn = [dishItem3_Test.id]
-     menu.status = .bozza(.archiviato)
+     menu.rifDishIn = [dishItem3_Test.id]
+     menu.status = .bozza(.disponibile)
      
      return menu
  }()
@@ -147,7 +179,7 @@ var ingredientSample_Test =  IngredientModel(
     conservazione: .altro,
     produzione: .biologico,
     provenienza: .defaultValue,
-    allergeni: [.glutine],
+    allergeni: [.crostacei],
     origine: .animale,
     status: .completo(.disponibile)
 )
@@ -158,9 +190,9 @@ var ingredientSample2_Test =  IngredientModel(
     conservazione: .surgelato,
     produzione: .biologico,
     provenienza: .italia,
-    allergeni: [.pesce],
+    allergeni: [.crostacei],
     origine: .animale,
-    status: .bozza(.archiviato)
+    status: .bozza(.disponibile)
         )
 
 var ingredientSample3_Test =  IngredientModel(
@@ -179,9 +211,9 @@ var ingredientSample3_Test =  IngredientModel(
     conservazione: .congelato,
     produzione: .convenzionale,
     provenienza: .europa,
-    allergeni: [.latte_e_derivati],
-    origine: .animale,
-    status: .bozza(.inPausa)
+    allergeni: [],
+    origine: .vegetale,
+    status: .bozza(.disponibile)
 )
 
 var ingredientSample5_Test =  IngredientModel(
@@ -191,7 +223,7 @@ var ingredientSample5_Test =  IngredientModel(
     produzione: .convenzionale,
     provenienza: .defaultValue,
     allergeni: [.glutine],
-    origine: .animale,
+    origine: .vegetale,
     status: .completo(.disponibile)
 )
 
@@ -201,7 +233,7 @@ var ingredientSample6_Test =  IngredientModel(
     conservazione: .surgelato,
     produzione: .convenzionale,
     provenienza: .italia,
-    allergeni: [.pesce],
+    allergeni: [],
     origine: .animale,
     status: .bozza(.disponibile)
         )
@@ -222,8 +254,8 @@ var ingredientSample7_Test =  IngredientModel(
     conservazione: .altro,
     produzione: .convenzionale,
     provenienza: .europa,
-    allergeni: [.latte_e_derivati],
-    origine: .animale,
+    allergeni: [],
+    origine: .vegetale,
     status: .bozza(.inPausa)
 )
 

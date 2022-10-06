@@ -37,6 +37,8 @@ struct FastImport_IngredientRow: View {
                 
                 VStack(alignment:.leading) {
                     
+                    let isDiSistema = self.ingredient.status == .bozza()
+                    
                     HStack(alignment:.center,spacing: 4) {
                         
                        vbMainRow()
@@ -53,39 +55,47 @@ struct FastImport_IngredientRow: View {
                         
                         Spacer()
                         
-                        HStack(spacing: 2) {
+                        if !isDiSistema {
                             
-                            CSInfoAlertView(
-                                title: "Info",
-                                message: .ingredienteSecondario)
-                           
-                            Text("Minore")
-                                .underline(isSecondario)
-                                .font(.callout)
-                                .foregroundColor(Color.black)
-                               // .fixedSize()
-                             
-                            Button {
+                            HStack(spacing: 2) {
                                 
-                                withAnimation {
-                                    isSecondario = isSecondary(ingredient.id)
-                                }
-                                
-                            } label: {
-                                Image(systemName: "circle")
-                                    .imageScale(.medium)
-                                    .foregroundColor(.black)
-                                    .opacity(isSecondario ? 0.6 : 1.0)
-                                    .overlay {
-                                        if isSecondario {
-                                            Image(systemName: "checkmark")
-                                                .imageScale(.large)
-                                                .bold()
-                                                .foregroundColor(Color("SeaTurtlePalette_3"))
-                                        }
+                                CSInfoAlertView(
+                                    title: "Info",
+                                    message: .ingredienteSecondario)
+                               
+                                Text("Minore")
+                                    .underline(isSecondario)
+                                    .font(.callout)
+                                    .foregroundColor(Color.black)
+                                   // .fixedSize()
+                                 
+                                Button {
+                                    
+                                    withAnimation {
+                                        isSecondario = isSecondary(ingredient.id)
                                     }
-                            }
+                                    
+                                } label: {
+                                    Image(systemName: "circle")
+                                        .imageScale(.medium)
+                                        .foregroundColor(.black)
+                                        .opacity(isSecondario ? 0.6 : 1.0)
+                                        .overlay {
+                                            if isSecondario {
+                                                Image(systemName: "checkmark")
+                                                    .imageScale(.large)
+                                                    .bold()
+                                                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                                            }
+                                        }
+                                }
 
+                            }
+                        } else {
+                            Text("Prodotto Finito")
+                                .italic()
+                                .font(.callout)
+                                .foregroundColor(Color("SeaTurtlePalette_3"))
                         }
                         
                     }

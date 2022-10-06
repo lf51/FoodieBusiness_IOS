@@ -35,9 +35,11 @@ struct IngredientModel_RowView: View {
                 
                 HStack {
                     
+                    let(image,size) = self.item.associaImmagine()
+                    
                     CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_4"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_1")) {
                         HStack {
-                            csVbSwitchImageText(string: self.item.associaImmagine(),size: .large)
+                            csVbSwitchImageText(string: image,size: size)
                             Text(self.item.origine.simpleDescription())
                         }
                     }
@@ -345,7 +347,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
                 
                 IngredientModel_RowView(item: ingredientSample2)
                     .frame(height:150)
-                IngredientModel_SmallRowView(model: ingredientSample2, sostituto: nil)
+                IngredientModel_SmallRowView(titolare: ingredientSample2, sostituto: nil)
                     .frame(height:50)
               //  IngredientModel_RowView(item: ingredientSample3)
               //  IngredientModel_RowView(item: ingredientSample4)

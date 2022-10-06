@@ -25,21 +25,29 @@ enum MenuModelOption {
 
 struct MenuModel_RowView: View {
     
-   // @Binding var menuItem: MenuModel
-    let menuItem: MenuModel
+    // Mod 05.10
+    @EnvironmentObject var viewModel:AccounterVM
     
+    @State private var isOnAir: Bool = false
+    @State private var countDown:Int = 0
+    @State private var nextCheck:TimeInterval = 1.0
+    @State private var invalidate:Bool = false
+    // Mod 05.10
+    
+    let menuItem: MenuModel
+        
     var body: some View {
         
         CSZStackVB_Framed { // ha uno sfondo bianco con opacità 0.3 - Questo conferisce un colore azzurro chiaro alle schedine
             
             VStack {
                 
-                let isOnAir = self.menuItem.isOnAir()
+             //   let isOnAir = self.menuItem.isOnAir()
                 
                 HStack(alignment:.top) {
                     
                     VStack(alignment:.leading) {
-                        
+       
                         iteratingIntestazioneMenu()
                         iteratingTipologiaMenu()
                         
@@ -89,6 +97,22 @@ struct MenuModel_RowView: View {
                 
             } // chiuda VStack madre
              .padding(.horizontal)
+             .onAppear{
+    
+                 (self.isOnAir,self.nextCheck,self.invalidate,self.countDown) = self.menuItem.timeScheduleInfo()
+                 
+                 Timer.scheduledTimer(withTimeInterval: nextCheck, repeats: true) { time in
+  
+                     (self.isOnAir,self.nextCheck,self.invalidate,self.countDown) = self.menuItem.timeScheduleInfo()
+                     if self.invalidate { time.invalidate()}
+                 }
+             }
+            /* .onReceive(self.menuItem.orologioInterno.timer) { time in
+                
+                 isOnAir = self.menuItem.isOnAir()
+                 count = time.description
+                 
+             } */
         } // chiusa Zstack Madre
         
     }
@@ -101,8 +125,10 @@ struct MenuModel_RowView: View {
         let(incipit,postFix,showPost) = avaibility.iteratingAvaibilityMenu()
         //
         let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,fontWeight:Font.Weight) = {
+        
+            let countString = self.countDown < 60 ? " (Chiude in \(countDown)m)" : ""
            // let isOnAir = self.menuItem.isOnAir()
-            if isOnAir { return (1.0,"eye",.green,"online",.semibold)}
+            if isOnAir { return (1.0,"eye",.green,"online\(countString)",.semibold)}
             else { return (0.4,"eye.slash",.gray,"offline",.light)}
             
         }() // add 17.09
@@ -335,7 +361,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         menu.intestazione = "SomeDay"
         menu.tipologia = .allaCarta
         menu.isAvaibleWhen = .dataEsatta
-        menu.dataInizio = Date(timeIntervalSinceNow: -72000)
+        menu.dataInizio = Date(timeIntervalSinceNow: 0)
         menu.oraInizio = Date(timeIntervalSinceNow: -7200)
         menu.oraFine =  Date(timeIntervalSinceNow: 1800)
       //   menu.giorniDelServizio = [ .lunedi,.martedi,.mercoledi]
@@ -350,7 +376,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         menu.intestazione = "EveryDay"
         menu.tipologia = .fisso(persone: .uno, costo: "12.5")
         menu.isAvaibleWhen = .intervalloAperto
-        menu.dataInizio = Date(timeIntervalSinceNow: -172800)
+        menu.dataInizio = Date(timeIntervalSinceNow: 0)
         menu.oraInizio = Date(timeIntervalSinceNow: 60)
         menu.oraFine = Date(timeIntervalSinceNow: 6000)
         menu.giorniDelServizio = [ .lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato,.domenica]
@@ -387,7 +413,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
    }()
     
     static var menudelgiorno = MenuModel(tipologia: .delGiorno)
-    
+
     static var previews: some View {
         
 

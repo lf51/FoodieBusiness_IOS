@@ -17,6 +17,7 @@ struct HomeView: View {
     let backgroundColorView: Color
 
     @State private var wannaAddNewProperty:Bool = false
+    
     var screenHeight: CGFloat = UIScreen.main.bounds.height
     
     var body: some View {
@@ -32,9 +33,31 @@ struct HomeView: View {
                     
                     HStack {
                         
-                        addNewMenu()
+                        addNewModel()
                         Spacer()
                         
+                        NavigationLink(value: DestinationPathView.categoriaMenu) {
+                        
+                            
+                            HStack {
+                                Image(systemName: "list.bullet.clipboard")
+                                    .imageScale(.small)
+                                Text("Categorie")
+                                    .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                                
+                            }
+                                .foregroundColor(Color("SeaTurtlePalette_2"))
+                                .padding(5)
+                                .background {
+                                    Color("SeaTurtlePalette_1")
+                                        .opacity(0.9)
+                                        .blur(radius: 10.0)
+                                        .cornerRadius(5.0)
+                                }
+                             
+                        }
+                        
+                        Spacer()
                         NavigationLink(value: DestinationPathView.moduloImportazioneVeloce) {
                             
                             HStack(spacing:2) {
@@ -90,13 +113,22 @@ struct HomeView: View {
                        
                         VStack(alignment: .leading) {
                             
-                            RoundedRectangle(cornerRadius: 5.0)
+                          /*  Image("TavolaIngredienti")
+                                .resizable()
+                                .scaledToFill()
                                 .frame(width:400,height: 200)
+                                .cornerRadius(5.0)
+                           /* RoundedRectangle(cornerRadius: 5.0)
+                                .frame(width:400,height: 200) */
                                 .overlay {
-                                    Text("Immagine")
+                                    Text("Scroll Foto + Commento ultime Recensioni")
+                                        .font(.largeTitle)
+                                        .fontWeight(.black)
                                         .foregroundColor(Color.white)
-                                }
+                                } */
 
+                           MonitorModelView()
+                            
                             
                             // Menu Del Giorno 22.09
                             
@@ -157,7 +189,7 @@ struct HomeView: View {
     }
     // Method
 
-    @ViewBuilder private func addNewMenu() -> some View {
+    @ViewBuilder private func addNewModel() -> some View {
         
         let newDish = DishModel()
         let newING = IngredientModel()
@@ -165,21 +197,21 @@ struct HomeView: View {
         
         Menu {
             
-            NavigationButtonGeneric(item: newDish)
             NavigationButtonGeneric(item: newING)
+            NavigationButtonGeneric(item: newDish)
             NavigationButtonGeneric(item: newMenu)
             
-            Button {
+           /* Button {
                 viewModel.addToThePath(
                     destinationPath: .homeView,
                     destinationView: DestinationPathView.categoriaMenu)
             } label: {
                 Text("Edit Categorie Menu")
                 Image(systemName: "list.bullet.clipboard")
-            }
+            } */
             
         } label: {
-            Text("[+]")
+            Text("[+] Crea")
                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                 .foregroundColor(Color("SeaTurtlePalette_2"))
         }

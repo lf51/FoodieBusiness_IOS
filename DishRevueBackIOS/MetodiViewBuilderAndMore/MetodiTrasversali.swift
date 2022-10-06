@@ -52,10 +52,8 @@ func csTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
    /* date.monthSymbols = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"] */
     date.dateStyle = .long
     date.dateFormat = "dd MMMM yyyy"
-  
  //   date.timeZone = .autoupdatingCurrent
  //   date.weekdaySymbols = ["Lun","Mar"]
-    
     return (time,date)
     
 }
@@ -176,3 +174,34 @@ func csResetModel<M:MyModelStatusConformity>(modelAttivo:inout M,modelArchiviato
   
     modelAttivo = modelArchiviato
 } */ // Deprecata
+
+/// Analizza le proprietà di un ingrediente e tira fuori una stringa. Trasfersale al modello nuovo Ingrediente e al modello Ibrido
+func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> String {
+    
+    var stringaAllergeni: String = "Presenza/assenza Allergeni non Confermata"
+    var stringaCongeSurge: String = "\nMetodo di Conservazione non indicato"
+    var metodoProduzione: String = ""
+    
+    if areAllergeniOk {
+        
+        if nuovoIngrediente.allergeni.isEmpty {
+            stringaAllergeni = "Questo prodotto è privo di Allergeni."
+        } else {
+
+            let count = nuovoIngrediente.allergeni.count
+            stringaAllergeni = "Questo prodotto contiene \(count > 1 ? "\(count) Allergeni" : "1 Allergene")."
+        }
+    }
+    
+    if nuovoIngrediente.conservazione != .defaultValue {
+        
+         stringaCongeSurge = "\nQuesto prodotto \( nuovoIngrediente.conservazione.extendedDescription())."
+        
+    }
+    
+    if nuovoIngrediente.produzione == .biologico {
+        metodoProduzione = "\nProdotto BIO."
+    }
+    
+    return ("\(stringaAllergeni)\(stringaCongeSurge)\(metodoProduzione)")
+}

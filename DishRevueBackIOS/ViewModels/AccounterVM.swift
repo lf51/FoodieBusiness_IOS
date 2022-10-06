@@ -10,8 +10,22 @@ import SwiftUI
 import MapKit // da togliere quando ripuliamo il codice dai Test
 //import SwiftProtobuf
 
+struct AccountSetup {
+    // mettiamo qui tutte le enum e i valori per il settaggio personalizzato da parte dell'utente
+    var startCountDownMenuAt:TimeValue = .sixty
+    
+    
+    enum TimeValue:Int {
+        case trenta = 30
+        case sixty = 60
+        case novanta = 90
+    }
+}
+
 
 class AccounterVM: ObservableObject {
+    
+    @Published var setup:AccountSetup = AccountSetup() // DA SVILUPPARE 06.10
     
     // questa classe punta ad essere l'unico ViewModel dell'app. Puntiamo a spostare qui dentro tutto ciò che deve funzionare trasversalmente fra le view, e a sostituire gli altri ViewModel col sistema Struct/@State con cui abbiamo creato un NuovoPiatto, un NuovoIngrediente, e un NuovoMenu.
     
@@ -530,13 +544,13 @@ class AccounterVM: ObservableObject {
     }
 
     ///Richiede un TemporaryModel, e oltre a salvare il piatto, salva anche gli ingredienti nel viewModel. Ideata per Modulo Importazione Veloce
-    func dishAndIngredientsFastSave(item: TemporaryModel) throws {
+    func dishAndIngredientsFastSave(item: TemporaryModel) /*throws*/ {
 
-        guard !checkExistingUniqueModelName(model: item.dish).0 else { // da spostare a monte, nell'estrapolazione delle Stringhe
+      /*  guard !checkExistingUniqueModelName(model: item.dish).0 else { // da spostare a monte, nell'estrapolazione delle Stringhe
             
             throw CancellationError()
             
-        }
+        } *///06.10 Spostata nel forEach che crea le tab con il piatto.
         
         let ingredients = item.ingredients
         let rifSecondari = item.rifIngredientiSecondari
@@ -573,6 +587,9 @@ class AccounterVM: ObservableObject {
             new.categoriaMenu = item.categoriaMenu.id
             new.ingredientiPrincipali = rifIngredientiPrincipali
             new.ingredientiSecondari = rifIngredientiSecondari
+            if rifIngredientiPrincipali.contains(item.dish.id) {
+                new.percorsoProdotto = .prodottoFinito
+            }
             return new
             
         }()
@@ -587,6 +604,87 @@ class AccounterVM: ObservableObject {
         fromIntestazione.replacingOccurrences(of: " ", with: "").lowercased()
     }
 
+    /// Crea Inventario Ingredienti per Lista della Spesa ordinato per aree tematiche (vegetali,latticini,carne,pesce)
+    func inventarioIngredienti() -> [IngredientModel] {
+         
+         let allIDing = self.inventarioScorte.allInventario()
+         let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
+           
+         let allVegetable = allING.filter({ $0.origine.returnTypeCase() == .vegetale })
+         let allMeat = allING.filter({
+               $0.origine.returnTypeCase() == .animale &&
+               !$0.allergeni.contains(.latte_e_derivati) &&
+               !$0.allergeni.contains(.molluschi) &&
+               !$0.allergeni.contains(.pesce) &&
+               !$0.allergeni.contains(.crostacei)
+           })
+         let allFish = allING.filter({
+               $0.allergeni.contains(.molluschi) ||
+               $0.allergeni.contains(.pesce) ||
+               $0.allergeni.contains(.crostacei)
+           })
+           
+         let allMilk = allING.filter({
+               $0.origine.returnTypeCase() == .animale &&
+               $0.allergeni.contains(.latte_e_derivati)
+           })
+         
+          /* allVegetable.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            })
+            allMilk.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            })
+            
+            allMeat.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            })
+        
+            allFish.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            }) */
+         print("Dentro Inventario Filtrato")
+         return (allVegetable + allMilk + allMeat + allFish)
+       
+     }
+    
+    func monitorServizio() -> (menuOnAir:[MenuModel],dishVisibili:Set<DishModel>,ingredientiNecessari:Set<IngredientModel>) {
+        
+        let allMenuOnAir = self.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)})
+        
+        var allDish:[DishModel] = []
+        
+        for cart in allMenuOnAir {
+            
+            let models = self.modelCollectionFromCollectionID(collectionId: cart.rifDishIn, modelPath: \.allMyDish)
+            allDish.append(contentsOf: models)
+            
+        }
+        
+        let cleanDish = Set(allDish)
+        
+        let allDishAvaible = cleanDish.filter({$0.status.checkStatusTransition(check: .disponibile)})
+        
+        let allMenuCount = allMenuOnAir.count
+        let allDishCount = cleanDish.count
+        let allAvaibleCount = allDishAvaible.count
+        
+        var allIngredients:[IngredientModel] = []
+        
+        for dish in allDishAvaible {
+            
+            let activeIngredient = dish.allIngredientsAttivi(viewModel: self)
+            allIngredients.append(contentsOf: activeIngredient)
+            
+        }
+        
+        let cleanAllIngredient = Set(allIngredients)
+      //  let ingredientCount = cleanAllIngredient.count
+        
+        return (allMenuOnAir,allDishAvaible,cleanAllIngredient)
+        
+    }
+    
     /*
     ///Deprecata in futuro. Da Ottimizzare attraverso l'uso del keypath.
     func deepFiltering<M:MyProStarterPack_L0>(model:M, filterCategory:MapCategoryContainer) -> Bool {

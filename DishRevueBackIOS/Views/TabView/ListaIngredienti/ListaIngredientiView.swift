@@ -51,13 +51,16 @@ struct ListaIngredientiView: View {
                             
                             GenericItemModel_RowViewMask(model: ingredient) {
                                 
-                                ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
-                                
-                                vbMenuInterattivoModuloCambioStatus(myModel: $ingredient)
-                                
-                                vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: \.ingredientListPath)
-                                
-                                vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                                if ingredient.status != .bozza() {
+                                    ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.ingredientListPath)
+                                    
+                                    vbMenuInterattivoModuloCambioStatus(myModel: $ingredient)
+                                    
+                                    vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: \.ingredientListPath)
+                                    
+                                    vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                                    
+                                } else { Text("Vai al Prodotto Finito") }
                             }
                             
                         }

@@ -11,9 +11,27 @@ import SwiftUI
 struct VistaMenuEspansa: View {
     
     @EnvironmentObject var viewModel:AccounterVM
+   // @ObservedObject var viewModel:AccounterVM
     
     let currentDish: DishModel
     let backgroundColorView: Color
+    
+    @State private var allMenu:[MenuModel]
+    let valoreArchiviato:[MenuModel]
+  //  let onlyDishInCount:Int
+    
+    init(currentDish:DishModel,backgroundColorView:Color,viewModel:AccounterVM) {
+        
+        self.currentDish = currentDish
+        self.backgroundColorView = backgroundColorView
+        
+        let allMenuMinus = viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: currentDish.id).0
+        _allMenu = State(wrappedValue: allMenuMinus)
+        
+        self.valoreArchiviato = allMenuMinus.filter({$0.rifDishIn.contains(currentDish.id)})
+    //    self.onlyDishInCount = onlyIn
+        
+    }
     
     var body: some View {
         
@@ -21,25 +39,17 @@ struct VistaMenuEspansa: View {
             
             VStack(alignment:.leading) {
                 
-                var container:(full:[MenuModel],onlyDishInCount:Int) = {
-                
-                    var step1 = self.viewModel.allMyMenu.filter({
-                        $0.tipologia != .delGiorno &&
-                        $0.tipologia != .delloChef
-                    })
+                let container:[MenuModel] = {
+
+                    var all:[MenuModel] = self.allMenu
                     
-                    let onlyDishIn = step1.filter({$0.rifDishIn.contains(currentDish.id)}).count
-                    
-                    step1.sort(by: {
+                    all.sort(by: {
                         ($0.rifDishIn.contains(currentDish.id).description,$1.intestazione) > ($1.rifDishIn.contains(currentDish.id).description,$0.intestazione)
                     })
                     
-                    return (step1,onlyDishIn)
+                    return all
                 }()
                 
-                
-                VStack(alignment:.leading) {
-                    
                     HStack(spacing:4) {
                         
                         Text("Status Piatto:")
@@ -47,10 +57,6 @@ struct VistaMenuEspansa: View {
                         CSEtichetta(text: currentDish.status.simpleDescription(), textColor: Color.white, image: currentDish.status.imageAssociated(), imageColor: currentDish.status.transitionStateColor(), imageSize: .large, backgroundColor: Color.white, backgroundOpacity: 0.2)
                     }
                     
-                    Text("Menu contenenti il Piatto: \(container.onlyDishInCount)")
-                    Text("Menu Totali: \(container.full.count)")
-            
-                }
                 .font(.system(.headline, design: .rounded, weight: .semibold))
                 .foregroundColor(Color("SeaTurtlePalette_2"))
                 
@@ -58,7 +64,7 @@ struct VistaMenuEspansa: View {
                     
                     VStack {
                         
-                        ForEach(container.full) { model in
+                        ForEach(container) { model in
     
                             let containTheDish = model.rifDishIn.contains(currentDish.id)
                             
@@ -74,7 +80,9 @@ struct VistaMenuEspansa: View {
                                        backColor: .red,
                                        frontColor: .blue) {
                                            withAnimation {
-                                               self.viewModel.manageInOutPiattoDaMenu(idPiatto: currentDish.id, menuDaEditare: model)
+                                               
+                                               addRemoveDishLocally(localMenu: model)
+                                             
                                            }
                                                        }
                                        .padding(5)
@@ -92,7 +100,15 @@ struct VistaMenuEspansa: View {
                 }
                 
                 
-                CSDivider()
+              BottomView_DLBIVSubView(
+                isDeActive: self.disableCondition() ) {
+                    self.description()
+                } resetAction: {
+                    self.resetAction()
+                } saveAction: {
+                    self.saveAction()
+                }
+
                 
             }
             .padding(.horizontal)
@@ -101,7 +117,51 @@ struct VistaMenuEspansa: View {
     }
     
     // Method
+    
+    private func saveAction() {
+        
+       // se vogliamo dobbiamo qui filtrare la collection e passare soltanto i menu modificati
+        self.viewModel.updateItemModelCollection(items: self.allMenu, destinationPath: .dishList)
+       
+    }
+    
+    private func resetAction() {
+        self.allMenu = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: currentDish.id).0
+    }
+    
+    private func disableCondition() -> Bool {
+       let current = self.allMenu.filter({$0.rifDishIn.contains(currentDish.id)})
+        return current == valoreArchiviato
+    }
+    
+    private func description() -> (breve:Text,estesa:Text) {
+        
+        let allMenuCount = self.allMenu.count
+        let menuContainingDish:[MenuModel] = self.allMenu.filter({$0.rifDishIn.contains(currentDish.id)})
+        
+        let plusMinus = menuContainingDish.count - valoreArchiviato.count
+        let plusMinusSymbol = plusMinus >= 0 ? "+" : ""
+        let plusMinusString = plusMinus >= 0 ? "Aggiunti" : "Rimossi"
+        
+        let stringaBreve = "Menu Totali: \(allMenuCount)\nMenu contenenti il piatto: \(menuContainingDish.count) (\(plusMinusSymbol)\(plusMinus))"
+        let stringaEstesa = "Updating -\(currentDish.intestazione)-\nIncluso in precendenza in: \(valoreArchiviato.count) menu\nAdesso incluso in: \(menuContainingDish.count) menu\n\(plusMinusString): \(plusMinus) menu"
+        return (Text(stringaBreve),Text(stringaEstesa))
+    }
+    
+    private func addRemoveDishLocally(localMenu: MenuModel) {
 
+        var currentMenu = localMenu
+        
+        if localMenu.rifDishIn.contains(currentDish.id) {
+            currentMenu.rifDishIn.removeAll(where: {$0 == currentDish.id})
+        } else {
+            currentMenu.rifDishIn.append(currentDish.id)
+        }
+        
+        if let index = self.allMenu.firstIndex(where: {$0.id == currentMenu.id}) {
+            self.allMenu[index] = currentMenu
+        }
+    }
 }
 
 struct VistaMenuEspansa_Previews: PreviewProvider {
@@ -241,8 +301,101 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationStack {
-            VistaMenuEspansa(currentDish: dishItem3, backgroundColorView: Color("SeaTurtlePalette_1"))
+            VistaMenuEspansa(currentDish: dishItem3, backgroundColorView: Color("SeaTurtlePalette_1"), viewModel: viewModel)
         }.environmentObject(viewModel)
             
     }
 }
+
+
+/*
+struct VistaMenuEspansa: View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    let currentDish: DishModel
+    let backgroundColorView: Color
+    
+    var body: some View {
+        
+        CSZStackVB(title: currentDish.intestazione, backgroundColorView: backgroundColorView) {
+            
+            VStack(alignment:.leading) {
+                
+                let container:(full:[MenuModel],onlyDishInCount:Int) = {
+                
+                    var(step1,_,onlyDishIn) = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: currentDish.id)
+                    
+                    step1.sort(by: {
+                        ($0.rifDishIn.contains(currentDish.id).description,$1.intestazione) > ($1.rifDishIn.contains(currentDish.id).description,$0.intestazione)
+                    })
+                    
+                    return (step1,onlyDishIn)
+                }()
+                
+                
+                VStack(alignment:.leading) {
+                    
+                    HStack(spacing:4) {
+                        
+                        Text("Status Piatto:")
+                        
+                        CSEtichetta(text: currentDish.status.simpleDescription(), textColor: Color.white, image: currentDish.status.imageAssociated(), imageColor: currentDish.status.transitionStateColor(), imageSize: .large, backgroundColor: Color.white, backgroundOpacity: 0.2)
+                    }
+                    
+                    Text("Menu contenenti il Piatto: \(container.onlyDishInCount)")
+                    Text("Menu Totali: \(container.full.count)")
+            
+                }
+                .font(.system(.headline, design: .rounded, weight: .semibold))
+                .foregroundColor(Color("SeaTurtlePalette_2"))
+                
+                ScrollView(showsIndicators:false) {
+                    
+                    VStack {
+                        
+                        ForEach(container.full) { model in
+    
+                            let containTheDish = model.rifDishIn.contains(currentDish.id)
+                            
+                            model.returnModelRowView()
+                                .opacity(containTheDish ? 1.0 : 0.6)
+                                .overlay(alignment: .bottomTrailing) {
+                                    
+                                    CSButton_image(
+                                       activationBool: containTheDish,
+                                       frontImage: "trash",
+                                       backImage: "plus",
+                                       imageScale: .medium,
+                                       backColor: .red,
+                                       frontColor: .blue) {
+                                           withAnimation {
+                                               self.viewModel.manageInOutPiattoDaMenuModel(idPiatto: currentDish.id, menuDaEditare: model)
+                                           }
+                                                       }
+                                       .padding(5)
+                                       .background {
+                                            Color.white.opacity(0.5)
+                                               .clipShape(Circle())
+                                               .shadow(radius: 5.0)
+                                               //.frame(width: 30, height: 30)
+                                       }
+                                       
+               
+                                }
+                        }
+                    }
+                }
+                
+                
+                CSDivider()
+                
+            }
+            .padding(.horizontal)
+
+        }
+    }
+    
+    // Method
+
+} */ // BackUp 26.09

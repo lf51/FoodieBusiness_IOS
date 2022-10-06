@@ -12,6 +12,41 @@ import SwiftUI
 
 struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,MyProStatusPack_L1   /*MyModelStatusConformity */ {
     
+    // 06.10 - In abbozzo
+    
+    enum PercorsoProdotto:String {
+        
+        case prodottoFinito = "Prodotto Finito"
+        case preparazioneFood = "Piatto" // case standard di default
+        case preparazioneBeverage = "Drink"
+        
+        func imageAssociated() -> String {
+            switch self {
+            case .prodottoFinito:
+                return "🧃"
+            case .preparazioneFood:
+                return "🍽️"
+            case .preparazioneBeverage:
+                return "🍸"
+                
+            }
+        }
+        
+        func simpleDescription() -> String {
+            
+            switch self {
+            case .prodottoFinito:
+                return "Trattasi di un prodotto pronto che non richiede altri ingredienti per essere servito"
+            default:
+                return "E' il frutto della combinazione e/o lavorazione di uno o più ingredienti"
+            }
+        }
+    }
+    
+    var percorsoProdotto:PercorsoProdotto = .preparazioneFood
+    
+    // fine abbozzo 06.10
+    
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
         return \.allMyDish
     }
@@ -34,6 +69,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
         lhs.dieteCompatibili == rhs.dieteCompatibili &&
         lhs.mostraDieteCompatibili == rhs.mostraDieteCompatibili &&
         lhs.pricingPiatto == rhs.pricingPiatto &&
+        lhs.percorsoProdotto == rhs.percorsoProdotto &&
        // lhs.sostituzioneIngredientiTemporanea == rhs.sostituzioneIngredientiTemporanea &&
         lhs.aBaseDi == rhs.aBaseDi
        // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
@@ -98,12 +134,14 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
     } // non mi piace
     
     func modelStatusDescription() -> String {
-        "Piatto (\(self.status.simpleDescription().capitalized))"
+      //  "Piatto (\(self.status.simpleDescription().capitalized))"
+        "\(self.percorsoProdotto.rawValue) (\(self.status.simpleDescription().capitalized))"
     }
     
     func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
-        return (\.allMyDish, "Lista Piatti", "Piatto","fork.knife.circle")
+       // return (\.allMyDish, "Lista Piatti", "Piatto","fork.knife.circle")
+        return (\.allMyDish, "Lista Piatti", self.percorsoProdotto.rawValue,self.percorsoProdotto.imageAssociated())
     }
        
     func pathDestination() -> DestinationPathView {
@@ -131,7 +169,7 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
         let disabilitaReview = self.rifReviews.isEmpty
         let priceCount = self.pricingPiatto.count
         let currencyCode = Locale.current.currency?.identifier ?? "EUR"
-        let countIngredienti = countIngredients()
+        let (ingredientsCount,ingredientsCantBeExpanded) = countIngredients()
         
         let isDelGiorno = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delGiorno)
         let isDelloChef = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delloChef)
@@ -187,7 +225,10 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
 
           } label: {
               HStack{
-                  Text(isDelGiorno ? "Rimuovi 🍽️ del Giorno" : "Imposta 🍽️ del Giorno")
+                  //Text(isDelGiorno ? "Rimuovi 🍽️ del Giorno" : "Imposta 🍽️ del Giorno")
+                  let productIcon = self.percorsoProdotto.imageAssociated()
+                  
+                  Text(isDelGiorno ? "Rimuovi \(productIcon) del Giorno" : "Imposta \(productIcon) del Giorno")
                   Image(systemName:isDelGiorno ? "clock.badge.xmark" : "clock.badge.checkmark")
               }
           }.disabled(!isDisponibile)
@@ -214,16 +255,62 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
               }
           }.disabled(allMenuMinusDS == 0)
           
-          Button {
+          if ingredientsCantBeExpanded {
+             
+              let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
+              let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
               
-              viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
-        
-          } label: {
-              HStack{
-                  Text("Espandi Ingredienti (\(countIngredienti))")
-                  Image(systemName:"leaf")
+              
+              Menu {
+                  
+                  Button("in Esaurimento") {
+                      viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
+                  }.disabled(statoScorte != .inStock)
+                  
+                  Button("Esaurite") {
+                      viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                  }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
+                  
+                  if statoScorte == .esaurito || statoScorte == .inEsaurimento {
+                      
+                      Button("Rimetti in Stock") {
+                          viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                      }
+                  }
+                  
+                  Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
+                  
+                  if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.allMyIngredients) {
+                      
+                      Button("Cronologia Acquisti") {
+                          viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(ingDS))
+                      }
+                  }
+                  
+                  
+                  
+              } label: {
+                  HStack{
+                      Text("Scorte \(statoScorte.simpleDescription())")
+                      Image(systemName: statoScorte.imageAssociata())
+                  }
               }
-          }.disabled(countIngredienti == 0)
+              
+          } else {
+              
+              Button {
+                  
+                  viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
+            
+              } label: {
+                  HStack{
+                      Text("Espandi Ingredienti (\(ingredientsCount))")
+                      Image(systemName:"leaf")
+                  }
+              }
+          }
+          
+       
           
           
         }
@@ -231,8 +318,13 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
     }
     
     /// conta gli ingredienti secondari e principali
-    func countIngredients() -> Int {
-        (self.ingredientiPrincipali + self.ingredientiSecondari).count
+    func countIngredients() -> (count:Int,canBeExpanded:Bool) { // Da sistemare (04.10) // gli ingredienti non posso essere == 0
+        let count = (self.ingredientiPrincipali + self.ingredientiSecondari).count
+        let cantBe:Bool = {
+            count == 0 ||
+            self.ingredientiPrincipali.contains(self.id)
+        }()
+       return (count,cantBe)
     }
   
     /// controlla la presenza di un ingrediente soltanto fra i principali e i secondari
@@ -355,6 +447,15 @@ struct DishModel: MyProToolPack_L0,MyProVisualPack_L0,MyProDescriptionPack_L0,My
     /// ritorna gli ingredienti Attivi sostituendo gli ingredienti inPausa con gli eventuali sostituti
     func allIngredientsAttivi(viewModel:AccounterVM) -> [IngredientModel] {
         
+        // Innesto 06.10
+        guard !self.ingredientiPrincipali.contains(self.id) else {
+           // Trattasi di ibrido
+            if let model = viewModel.modelFromId(id: self.id, modelPath: \.allMyIngredients) { return [model] }
+            else { return [] }
+        }
+        
+        //
+    
         let allMinusBozzeEArchiviati = allMinusArchiviati(viewModel: viewModel)
 
         let allInPausa = allMinusBozzeEArchiviati.filter({
