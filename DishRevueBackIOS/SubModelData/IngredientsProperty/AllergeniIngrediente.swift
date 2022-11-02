@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum AllergeniIngrediente:MyProStarterPack_L1 /*: MyEnumProtocol, MyProModelPack_L0*/{
+enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0 /*: MyEnumProtocol, MyProModelPack_L0*/{
     
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]> {
         \.allergeni

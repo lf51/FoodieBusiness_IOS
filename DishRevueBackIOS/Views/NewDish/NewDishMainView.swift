@@ -179,9 +179,14 @@ struct NewDishMainView: View {
                    
         let allIngredients = self.newDish.allIngredientsAttivi(viewModel: viewModel).map({$0.intestazione})
         let allAllergeni = self.newDish.calcolaAllergeniNelPiatto(viewModel: viewModel).map({$0.intestazione})
-        
+     /* // Mod 19.10
         let isBio = self.newDish.areAllIngredientBio(viewModel: viewModel) ? "💯Bio" : ""
         let areProdottiCongelati = self.newDish.areAllIngredientFreshOr(viewModel: viewModel) ? "" : "\nPotrebbe contenere ingredienti surgelati/congelati"
+        */
+        
+        let isBio = self.newDish.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.produzione, quality:.biologico) ? "💯Bio" : ""
+        let areProdottiCongelati = self.newDish.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.conservazione, quality: .altro) ? "" : "\nPotrebbe contenere ingredienti surgelati/congelati"
+        // end modifiche 19.10
         
         return Text("\(self.newDish.intestazione) \(isBio)\nIngredienti (\(allIngredients.count)): \(allIngredients,format: .list(type: .and))\nAllergeni (\(allAllergeni.count)): \(allAllergeni,format: .list(type: .and))\(areProdottiCongelati)")
         

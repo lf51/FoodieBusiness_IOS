@@ -59,7 +59,7 @@ struct SwitchProductType: View {
             } */
             
             if !nascondiTesto {
-                Text(type.simpleDescription())
+                Text(type.extendedDescription())
                     .italic()
                     .font(.caption)
                     .foregroundColor(.black)

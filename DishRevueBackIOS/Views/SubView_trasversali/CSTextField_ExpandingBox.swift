@@ -7,8 +7,131 @@
 
 import SwiftUI
 
+/// Abbiamo tolto il vincolo generic del Model e reso il textfield utilizzabile con qualsia binding String. Il salvataggio è gestito a monte tramite una escaping Closure
+struct CSTextField_ExpandingBoxPlain: View {
+
+    @EnvironmentObject var viewModel: AccounterVM
+    let value: String
+    @Binding var dismissButton: Bool
+    var maxDescriptionLenght: Int?
+    
+    @State private var description: String = ""
+    
+    @State private var isEditorActive: Bool = false
+    @State private var isTextChanged: Bool = false
+   
+    let saveActionPlus:(_ :String) -> Void
+    
+    init(value: String, dismissButton: Binding<Bool>, maxDescriptionLenght: Int? = nil, saveAction:@escaping (_:String) -> Void) {
+        
+        self.value = value
+        _dismissButton = dismissButton
+        let newDescription = value
+        _description = State(wrappedValue: newDescription)
+        self.maxDescriptionLenght = maxDescriptionLenght ?? 300
+        self.saveActionPlus = saveAction
+    }
+    
+    var body: some View {
+   
+            VStack {
+                         
+                TextField("[+] Inserire testo", text: $description, axis: .vertical)
+                    .font(.system(.body,design:.rounded))
+                    .foregroundColor(isEditorActive ? Color.white : Color.black)
+                    .autocapitalization(.sentences)
+                    .disableAutocorrection(true)
+                    .keyboardType(.default)
+                    .lineLimit(0...10)
+                    .padding()
+                    .background(Color.white.opacity(isEditorActive ? 0.2 : 0.05))
+                    .cornerRadius(5.0)
+                    .overlay(alignment: .trailing) {
+                        CSButton_image(frontImage: "x.circle.fill", imageScale: .medium, frontColor: Color.white) { cancelAction() }
+                        .opacity(description == "" ? 0.6 : 1.0)
+                        .disabled(description == "")
+                        .padding(.trailing)
+                    }
+                    .onTapGesture {
+                        
+                        withAnimation {
+                            isEditorActive = true
+                        }
+                        
+                    }
+                    .onChange(of: description) { newValue in
+                        
+                        if newValue != value {
+                            isTextChanged = true }
+                        else { isTextChanged = false}
+                        }
+                
+                if isEditorActive {
+                        
+                        HStack {
+                                CSButton_tight(
+                                    title: "Undo",
+                                    fontWeight: .heavy,
+                                    titleColor: .red,
+                                    fillColor: .clear) {
+                                        
+                                        withAnimation {
+                                            self.description = value
+                                        }
+                                    }
+                          
+                            Spacer()
+                            
+                            HStack(spacing:0) {
+                                
+                                Text("\(description.count)")
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(description.count <= maxDescriptionLenght! ? Color.blue : Color.red)
+                                Text("/\(maxDescriptionLenght!)")
+                                    .fontWeight(.light)
+                                
+                            }
+                            
+                            CSButton_tight(
+                                title: "Salva",
+                                fontWeight: .heavy,
+                                titleColor: .green,
+                                fillColor: .clear) {
+                                    self.saveAction()
+                                }
+                        }
+                        .opacity(isTextChanged ? 1.0 : 0.6)
+                        .disabled(!isTextChanged)
+                    
+                    }
+ 
+                }
+        }
+    
+    // Method
+    
+    private func saveAction() {
+        
+        self.isEditorActive = false
+        csHideKeyboard()
+       // let newDescription = csStringCleaner(string: description)
+        self.saveActionPlus(description)
+        self.dismissButton = false
+       
+    }
+    
+    private func cancelAction() {
+        withAnimation {
+            self.description = ""
+        }
+        
+    }
+    
+}
+
+
 ///BoxTextField Espandibile fino a 5 lineel. Lunghezza di default 300 caratteri
-struct CSTextField_ExpandingBox<M:MyProDescriptionPack_L0>: View {
+ struct CSTextField_ExpandingBox<M:MyProDescriptionPack_L0>: View {
     // 15.09 Passa da M:MyProModelPackL0 a M:MyProToolPackL0
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -156,6 +279,7 @@ struct CSTextField_ExpandingBox<M:MyProDescriptionPack_L0>: View {
     }
     
 }
+
 
 
 /*

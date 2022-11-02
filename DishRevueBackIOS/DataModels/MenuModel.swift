@@ -8,8 +8,8 @@
 import Foundation
 import SwiftUI
 
-struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyProToolPack_L0,MyProDescriptionPack_L0/*MyModelStatusConformity */ {
-    
+struct MenuModel:MyProStatusPack_L1,MyProToolPack_L0,MyProDescriptionPack_L0,MyProVisualPack_L1/*MyModelStatusConformity */ {
+     
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [MenuModel]> {
         return \.allMyMenu
     }
@@ -72,7 +72,7 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
             }
             else if tipologia == .delloChef {
                 self.intestazione = "Menu dello Chef"
-                self.descrizione = "Fra i piatti già contenuti in menu online, segnala quelli giornalmente consigliati dalla chef."
+                self.descrizione = "Fra i piatti già inseriti in altri menu, segnala quelli giornalmente consigliati dalla chef."
             }
             
             self.tipologia = tipologia
@@ -101,10 +101,7 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         }
     } */
     // Method
-    
- 
-    
-    
+
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         let disabilita = self.rifDishIn.isEmpty
@@ -149,8 +146,8 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         self.intestazione.lowercased().contains(string)
     }
     
-    func returnModelRowView() -> some View {
-        MenuModel_RowView(menuItem: self)
+    func returnModelRowView(rowSize:RowSize) -> some View {
+        MenuModel_RowView(menuItem: self,rowSize: rowSize)
     }
     
     func creaID(fromValue: String) -> String {
@@ -286,7 +283,7 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         
         guard checkTimeRange else { return true } // !! Nota Vocale 03.10
          
-        let(startTime,endTime,currentTime) = timeCalendario()
+      //  let(startTime,endTime,currentTime) = timeCalendario() // deprecata 29.10
         
       /* if (currentTime.hour! > startTime.hour!) && (currentTime.hour! < endTime.hour!) { return true }
         
@@ -304,10 +301,14 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
             else { return false }
         }
         else { return false } */
-        
+        /*
         let absoluteStart = (startTime.hour! * 60) + startTime.minute!
         let absoluteEnd = (endTime.hour! * 60) + endTime.minute!
         let absoluteCurrent = (currentTime.hour! * 60) + currentTime.minute!
+        */ // deprecata 29.10
+        let absoluteStart = csTimeConversione(data: self.oraInizio)
+        let absoluteEnd = csTimeConversione(data: self.oraFine)
+        let absoluteCurrent = csTimeConversione(data: Date.now)
         
         if (absoluteCurrent >= absoluteStart) && (absoluteCurrent < absoluteEnd) { return true }
         else { return false }
@@ -327,7 +328,7 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         
     }
 
-   private func timeCalendario() -> (startTime:DateComponents,endTime:DateComponents,currentTime:DateComponents) { // lf51 18.09.22
+  /* private func timeCalendario() -> (startTime:DateComponents,endTime:DateComponents,currentTime:DateComponents) { // lf51 18.09.22
         
         let calendario = Calendar(identifier: .gregorian)
         
@@ -337,7 +338,7 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         
        
         return(startTime,endTime,currentTime)
-    }
+    } */ // Deprecata 29.10 -> Sostituita da csTimeConversione
     
     // Test 05.10
    
@@ -347,10 +348,13 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
         
         guard isOn else { return (false,1.0,false,0)} // provvisorio }
         
-        let(_,end,current) = timeCalendario()
+       /* let(_,end,current) = timeCalendario()
         
         let currentHourInMinute = (current.hour! * 60) + current.minute!
-        let endHourInMinute = (end.hour! * 60) + end.minute!
+        let endHourInMinute = (end.hour! * 60) + end.minute! */ // deprecato 29.10
+        let currentHourInMinute = csTimeConversione(data: Date.now)
+        let endHourInMinute = csTimeConversione(data: self.oraFine)
+        
         let differenceToEnd = endHourInMinute - currentHourInMinute
             
        return (true,60.0,false,differenceToEnd)
@@ -359,8 +363,28 @@ struct MenuModel:MyProStarterPack_L0,MyProStatusPack_L1,MyProVisualPack_L0,MyPro
     
 
     // end Test 05.10
-    
     // Fine Metodi riguardanti la programmazione - onLine vs offLine
-}
+    
+    /// Ritorna la media dei voti dei piatti contenuti. La media è pesata, tiene conto del numero di recensioni.
+    func mediaValorePiattiInMenu(readOnlyVM:AccounterVM) -> Double {
+        
+        let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.allMyDish)
+        
+        let allAvaibleDish = allDish.filter({
+            $0.percorsoProdotto != .prodottoFinito &&
+            $0.status.checkStatusTransition(check: .disponibile) })
+        
+        let tuttiVotiPesati = allAvaibleDish.map({$0.topRatedValue(readOnlyVM: readOnlyVM)})
+        let tuttiPesi = allAvaibleDish.map({Double($0.rifReviews.count)})
+        
+        let sommaVotiPesati = csSommaValoriCollection(collectionValue: tuttiVotiPesati)
+        let sommaPesi = csSommaValoriCollection(collectionValue: tuttiPesi)
+        
+        let media = sommaVotiPesati / sommaPesi
+        return media
+    }
+} // end Model
+
+
 
 

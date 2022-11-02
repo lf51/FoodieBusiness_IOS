@@ -54,13 +54,13 @@ struct ListaDellaSpesa_MainView: View {
                         ForEach(Array(inventarioEnumerato),id:\.element) { position, element in
 
                                 rowIngredient(ing: element, position: position)
-                                .padding(.horizontal,5)
+                              /*  .padding(.horizontal,5)
                                 .padding(.vertical,14)
                                 .background {
                                  coloreAssociato(ingredient: element)
                                         .opacity(0.4)
                                     .cornerRadius(4)
-                                 }
+                                 } */
                         }
 
                     }
@@ -120,6 +120,9 @@ struct ListaDellaSpesa_MainView: View {
        
     }*/
     
+    
+    
+    
     @ViewBuilder private func rowIngredient(ing:IngredientModel, position:Int) -> some View {
         
         let moreInfo:String = {
@@ -137,6 +140,10 @@ struct ListaDellaSpesa_MainView: View {
         
         let statoInventario = self.viewModel.inventarioScorte.statoScorteIng(idIngredient: ing.id)
         
+        
+        SpesaRowIngredientView(element: ing, position: position, moreInfo: moreInfo, statoInventario: statoInventario, currentDate: self.currentDate)
+        
+      //  let condition = statoInventario == .inArrivo
         // Nota Vocale 01.10
         
        /* let statusChanged:Color? = {
@@ -150,7 +157,7 @@ struct ListaDellaSpesa_MainView: View {
         
     //    VStack(alignment:.leading,spacing: 5) {
             
-            HStack {
+         /*   HStack {
                 
                 let condition = statoInventario == .inArrivo
                 
@@ -211,7 +218,7 @@ struct ListaDellaSpesa_MainView: View {
                   //  .foregroundColor(ing.status.transitionStateColor())
               //  Spacer()
             }//.padding(.vertical,5)
-           
+           */
          //   Divider()
               
    //     }
@@ -219,7 +226,7 @@ struct ListaDellaSpesa_MainView: View {
         
     }
     
-    private func coloreAssociato(ingredient:IngredientModel) -> Color {
+   /* private func coloreAssociato(ingredient:IngredientModel) -> Color {
      
      if ingredient.origine == .vegetale { return .green}
      else if
@@ -229,10 +236,10 @@ struct ListaDellaSpesa_MainView: View {
      else if ingredient.allergeni.contains(.latte_e_derivati) { return .white }
      else { return .pink }
          
-     }
+     } */
        
     
-    private func depennaLogic(id:String,stato:Inventario.TransitoScorte) -> some View {
+   /* private func depennaLogic(id:String,stato:Inventario.TransitoScorte) -> some View {
         
       //  let today = csTimeFormatter().data.string(from: Date())
         let value:(disable:Bool,opacity:CGFloat,checkColor:Color) = {
@@ -280,7 +287,7 @@ struct ListaDellaSpesa_MainView: View {
                   .disabled(value.disable)
         }
        // }
-    }
+    }*/
     
    /* private func undoStatusInArrivo(id:String) {
         
@@ -290,7 +297,7 @@ struct ListaDellaSpesa_MainView: View {
         
     } */
     
-    private func undoDepennaAction(id:String,statoCorrente:Inventario.TransitoScorte) {
+  /*  private func undoDepennaAction(id:String,statoCorrente:Inventario.TransitoScorte) {
         
         if statoCorrente == .inArrivo {
             
@@ -318,7 +325,7 @@ struct ListaDellaSpesa_MainView: View {
         if statoCorrente != .inArrivo {
             self.viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: id, nuovoStato: .inArrivo)
         }
-    }
+    }*/
     
     @ViewBuilder private func dialogAction() -> some View {
         
@@ -417,5 +424,258 @@ struct ListaDellaSpesa_MainView_Previews: PreviewProvider {
                 .environmentObject(testAccount)
         }
         
+    }
+}
+
+struct SpesaRowIngredientView: View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    let element:IngredientModel
+    let position:Int
+    let moreInfo:String
+    let statoInventario:Inventario.TransitoScorte
+    let currentDate:String
+    
+    @State private var showNote:Bool = false
+    @State private var openNoteUpdate:Bool = false
+    
+    var body: some View {
+        
+        VStack(alignment:.leading) {
+            
+            let isStatoInArrivo = statoInventario == .inArrivo
+            
+            HStack {
+                
+               // let isStatoInArrivo = statoInventario == .inArrivo
+                
+                    HStack(alignment:.center,spacing:2) {
+                        
+                        Text("\(position + 1).")
+                            .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                            .foregroundColor(Color.white.opacity(0.8))
+                        
+                        HStack(spacing:5) {
+     
+                           RoundedRectangle(cornerRadius: 2.0)
+                                        .frame(width: 5)
+                                        .foregroundColor(element.status.transitionStateColor())
+        
+                            Text(element.intestazione)
+                                .italic()
+                                .font(.title3)
+                                .strikethrough(isStatoInArrivo, color: Color("SeaTurtlePalette_3"))
+                                .foregroundColor(Color.black)
+                                .lineLimit(1)
+                                .brightness(0.1)
+                                .opacity(isStatoInArrivo ? 0.5 : 1.0)
+                        }
+                    }
+                    
+                  //  Spacer()
+                    Text(moreInfo.isEmpty ? "--" : "\(moreInfo)")
+                        .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                        .foregroundColor(Color("SeaTurtlePalette_4"))
+           
+                Spacer()
+                
+              //  if !condition {
+
+                   /* Image(systemName: statoInventario.imageAssociata())
+                        .imageScale(.medium)
+                        .foregroundColor(statoInventario.coloreAssociato()) */
+            //    }
+
+                depennaLogic(id:element.id,isInArrivo: isStatoInArrivo)
+
+            }
+           //.padding(.horizontal,5)
+            .padding(.vertical,15)
+           /* .background {
+                coloreAssociato(ingredient: element)
+                    .opacity(0.4)
+                    .cornerRadius(4)
+            } */
+            .overlay(alignment: .bottom) {
+                
+                ZStack {
+                    Image(systemName:self.showNote ? "chevron.compact.up" : "chevron.compact.down")
+                        //.bold()
+                        .imageScale(.large)
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .onTapGesture {
+                            withAnimation {
+                                self.showNote.toggle()
+                            }
+                        }
+                    
+                    if showNote {
+                        
+                        Image(systemName: self.openNoteUpdate ? "pencil.slash" : "pencil.line")
+                            .imageScale(.medium)
+                            .foregroundColor(self.openNoteUpdate ? Color("SeaTurtlePalette_4") : Color("SeaTurtlePalette_2"))
+                            .opacity(isStatoInArrivo ? 0.4 : 1.0)
+                            .offset(x: 40)
+                            .onTapGesture {
+                                withAnimation {
+                                    self.openNoteUpdate.toggle()
+                                }
+                            }.disabled(isStatoInArrivo)
+                    }
+                    
+                }
+            }
+            
+            if showNote {
+                
+               notaAcquisto()
+                    .padding(.bottom,5)
+            }
+            
+        }
+        .padding(.horizontal,5)
+        .background {
+            coloreAssociato(ingredient: element)
+                .opacity(0.4)
+                .cornerRadius(4)
+        }
+        .onChange(of: self.statoInventario) { newValue in
+            if newValue == .inArrivo {
+                self.openNoteUpdate = false
+            }
+        }
+        
+    }
+    
+    // Method
+    
+    @ViewBuilder private func notaAcquisto() -> some View {
+        
+        let nota = self.viewModel.inventarioScorte.estrapolaNota(idIngrediente: self.element.id,currentDate: self.currentDate)
+        
+        if openNoteUpdate {
+            
+            CSTextField_ExpandingBoxPlain(value: nota, dismissButton:$openNoteUpdate,maxDescriptionLenght: 600) { value in
+                saveNota(value: value)
+            }
+            
+        } else {
+            
+            let localBool = nota == ""
+            
+            Text(localBool ? "Nessuna Nota" : nota)
+                .italic()
+                .font(.subheadline)
+                .foregroundColor(Color.black)
+                .opacity(localBool ? 0.65 : 1.0)
+                .multilineTextAlignment(.leading)
+            
+        }
+        
+        
+    
+        
+        
+    }
+    
+    private func saveNota(value:String) {
+        
+    let string = value == "" ? "" : "\(currentDate)|\(value)"
+
+    self.viewModel.inventarioScorte.archivioNotaAcquisto[self.element.id] = string
+        
+    }
+    
+    private func coloreAssociato(ingredient:IngredientModel) -> Color {
+     
+     if ingredient.origine == .vegetale { return .green}
+     else if
+             ingredient.allergeni.contains(.molluschi) ||
+             ingredient.allergeni.contains(.crostacei) ||
+             ingredient.allergeni.contains(.pesce) { return .indigo }
+     else if ingredient.allergeni.contains(.latte_e_derivati) { return .white }
+     else { return .pink }
+         
+     }
+    private func depennaLogic(id:String,isInArrivo:Bool) -> some View {
+        
+      //  let today = csTimeFormatter().data.string(from: Date())
+        let value:(disable:Bool,opacity:CGFloat,checkColor:Color) = {
+           
+            if let key = self.viewModel.inventarioScorte.lockedId[self.currentDate] {
+                if key.contains(id) {return (true,0.4,Color("SeaTurtlePalette_4")) }
+                else { return (false,1.0,Color("SeaTurtlePalette_3")) }
+            } else {
+                return (false,1.0,Color("SeaTurtlePalette_3"))
+            }
+            
+        }()
+        
+        return HStack {
+            
+            if !value.disable {
+                
+                Image(systemName: self.statoInventario.imageAssociata())
+                    .imageScale(.medium)
+                    .foregroundColor(self.statoInventario.coloreAssociato())
+                
+            } else {
+                
+                Image(systemName: "triangle")
+                    .imageScale(.medium)
+                    .foregroundColor(Color("SeaTurtlePalette_2"))
+            }
+
+            Image(systemName: "square")
+                  .imageScale(.large)
+                  .foregroundColor(Color.black)
+                  .brightness(0.3)
+                  .overlay {
+                      if isInArrivo {
+                          Image(systemName: "checkmark")
+                              .bold()
+                              .imageScale(.large)
+                              .foregroundColor(value.checkColor)
+                      }
+                  }
+                  .onTapGesture {
+                      withAnimation {
+                          self.depennaAction(id: id, isInArrivo:isInArrivo)
+                      }
+                  }
+                  .onLongPressGesture {
+                      withAnimation {
+                          self.undoDepennaAction(id: id, isInArrivo:isInArrivo)
+                      }
+                  }
+                  .opacity(value.opacity)
+                  .disabled(value.disable)
+        }
+       // }
+    }
+    private func undoDepennaAction(id:String,isInArrivo:Bool) {
+        
+        if isInArrivo {
+            
+          /*  self.viewModel.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0 == self.currentDate}) */
+            self.viewModel.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0.hasPrefix(self.currentDate)})
+        
+            if let key = self.viewModel.inventarioScorte.archivioIngInEsaurimento[self.currentDate] {
+                
+                if key.contains(id) {  self.viewModel.inventarioScorte.ingInEsaurimento.append(id) }
+                else { self.viewModel.inventarioScorte.ingEsauriti.append(id) }
+ 
+            } else {
+                self.viewModel.inventarioScorte.ingEsauriti.append(id)
+            }
+        }
+    }
+    
+    private func depennaAction(id:String,isInArrivo:Bool) {
+        
+        if !isInArrivo {
+            self.viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: id, nuovoStato: .inArrivo)
+        }
     }
 }

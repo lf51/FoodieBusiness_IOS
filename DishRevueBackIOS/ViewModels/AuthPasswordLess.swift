@@ -26,6 +26,13 @@ class AuthPasswordLess: ObservableObject, Hashable {
     @Published var alertItem: AlertModel? {didSet {showAlert = true}}
     @Published var openSignInView: Bool = true
 
+    // Innesto Beta del 31.10 per collaboratori - Da Sviluppare
+    
+    @Published var allMyCollabs:[CollaboratorModel] = []
+    
+    // end innesto beta 31.10
+    
+    
     init() {
         print("Init -> AuthPassWordLess")
       //  checkUserSignedIn()
@@ -81,7 +88,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
                     userProviderID: result?.user.providerID ?? "",
                     userDisplayName: result?.user.displayName ?? result?.user.email ?? "",
                     userEmailVerified: result?.user.isEmailVerified ?? false)
- 
+                
             }
           }
             

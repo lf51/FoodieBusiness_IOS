@@ -8,8 +8,9 @@
 import Foundation
 
 enum ProduzioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
-
-    static var allCases: [ProduzioneIngrediente] = [.biologico,.convenzionale]
+    
+    // Nota 18.10
+    static var allCases: [ProduzioneIngrediente] = [.biologico/*,.convenzionale*/]
     
     static var defaultValue: ProduzioneIngrediente = .noValue
     

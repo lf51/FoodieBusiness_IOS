@@ -14,7 +14,7 @@ struct IngredientModel_RowView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
     let item: IngredientModel
-    
+
     var body: some View {
                 
         CSZStackVB_Framed {
@@ -237,6 +237,7 @@ struct IngredientModel_RowView: View {
                             .offset(x: 10, y: -4)
                     }
                 }
+      
             // 07.09
             
          /*   let isRiservaActive = {

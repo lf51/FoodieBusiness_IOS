@@ -8,8 +8,6 @@
 import SwiftUI
 import UIKit
 
-
-
 struct HomeView: View {
     
     @ObservedObject var authProcess: AuthPasswordLess
@@ -31,85 +29,19 @@ struct HomeView: View {
                     
                 //    CSDivider()
                     
-                    HStack {
-                        
-                        addNewModel()
-                        Spacer()
-                        
-                        NavigationLink(value: DestinationPathView.categoriaMenu) {
-                        
-                            
-                            HStack {
-                                Image(systemName: "list.bullet.clipboard")
-                                    .imageScale(.small)
-                                Text("Categorie")
-                                    .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                                
-                            }
-                                .foregroundColor(Color("SeaTurtlePalette_2"))
-                                .padding(5)
-                                .background {
-                                    Color("SeaTurtlePalette_1")
-                                        .opacity(0.9)
-                                        .blur(radius: 10.0)
-                                        .cornerRadius(5.0)
-                                }
-                             
+               
+                    vbTopView()
+                        .padding(5)
+                        .background {
+                            Color.white
+                                .opacity(0.03)
+                                .cornerRadius(5.0)
                         }
-                        
-                        Spacer()
-                        NavigationLink(value: DestinationPathView.moduloImportazioneVeloce) {
-                            
-                            HStack(spacing:2) {
-                                
-                                Text("⚡️Importa")
-                                    .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                                Text("[🍽🧂]")
-                                    .font(.subheadline)
-                                
-                            }
-                            .foregroundColor(Color("SeaTurtlePalette_2"))
-                            .padding(5)
-                            .background {
-                                Color("SeaTurtlePalette_1")
-                                    .opacity(0.9)
-                                    .blur(radius: 10.0)
-                                    .cornerRadius(5.0)
-                            }
-                        }
-                        
-                    }
-                    .padding(.vertical,5)
-                    .padding(.horizontal,5)
-                    
-                    HStack {
-                        
-                        NavigationLink(value: DestinationPathView.listaDellaSpesa) {
-                        
-                            HStack {
-                                Image(systemName: "cart")
-                                    .imageScale(.medium)
-                                    .foregroundColor(Color("SeaTurtlePalette_3"))
-                                Text("Lista della Spesa")
-                                    .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                            }
-                            .foregroundColor(Color("SeaTurtlePalette_2"))
-                            .padding(5)
-                            .background {
-                                Color("SeaTurtlePalette_1")
-                                    .opacity(0.9)
-                                    .blur(radius: 10.0)
-                                    .cornerRadius(5.0)
-                            }
-                        }
-                        
-                    }
-                    
-                    
+                  
                     
                   //  NewItem_BarView()
                     
-                    ScrollView {
+                    ScrollView(showsIndicators:false) {
                        
                         VStack(alignment: .leading) {
                             
@@ -127,7 +59,10 @@ struct HomeView: View {
                                         .foregroundColor(Color.white)
                                 } */
 
-                           MonitorModelView()
+                           MonitorServizio()
+                                .padding(.bottom,1)
+                            
+                          
                             
                             
                             // Menu Del Giorno 22.09
@@ -142,12 +77,41 @@ struct HomeView: View {
                             }
                             
                             // end menu dello chef
+                           
+                            CSZStackVB_Framed(frameWidth:500,backgroundOpacity: 0.05,shadowColor: .clear) {
+                                
+                                    ScheduleServizio()
+                                        .padding(5)
+                            }
+                            .padding(.bottom,1)
                             
-
                             
+                            MonitorReview()
+                                 .padding(.bottom,1)
+                            
+                        let allPrepRated = compilaArrayPreparazioni()
+                            TopRated_SubView(
+                                allRated: allPrepRated,
+                                destinationPathView: .vistaRecensioniEspansa,
+                                label: "Preparazioni Top Rated",
+                                linkTitle: "Tutte")
+                                .padding(.bottom,5)
+                            
+                        let (allMenuRated,allRifMenu) = compilaArrayMenu()
+                            
+                           TopRated_SubView(
+                            allRated: allMenuRated,
+                            destinationPathView: .listaGenericaMenu(_containerRif: allRifMenu, _label: "Menu Rated(Prov)"),
+                            label: "Menu Top Rated",
+                            linkTitle: "Tutti")
+                                .padding(.bottom,5)
                         } // VStack End
                       
-                    }
+                       
+                    } // End Scroll
+                    
+                    CSDivider()
+                    
                 }  .padding(.horizontal)
             }// chiusa ZStack
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
@@ -171,11 +135,14 @@ struct HomeView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     
                     NavigationLink(value: DestinationPathView.propertyList) {
-                        HStack {
+                        
+                        HStack(alignment:.lastTextBaseline,spacing:2) {
+                            Image(systemName: "house")
+                                .imageScale(.medium)
                             Text("Proprietà")
                                 .fontWeight(.bold)
-                            Image(systemName: "rectangle.portrait.and.arrow.right")
-                                .imageScale(.medium)
+                          //  Image(systemName: "rectangle.portrait.and.arrow.right")
+                           
                         }
                         .foregroundColor(Color("SeaTurtlePalette_4"))
                     }
@@ -188,7 +155,164 @@ struct HomeView: View {
   
     }
     // Method
+    
+    private func compilaArrayPreparazioni() -> [DishModel] {
+        
+        let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
+        
+        let topRated = tutteLePreparazioni.sorted(by: {
+            $0.topRatedValue(readOnlyVM: self.viewModel) > $1.topRatedValue(readOnlyVM: self.viewModel)
+        })
+                
+        return topRated
+        
+    }
+    
+    private func compilaArrayMenu() -> (model:[MenuModel],rif:[String]) {
+        
+        let allMenu = self.viewModel.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
+        
+        let allSorted = allMenu.sorted(by: {
+            $0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > $1.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
+        })
+        
+        let allRif = allSorted.map({$0.id})
+        
+        return (allSorted,allRif)
+        
+    } // Le func di compilazione possono essere in futuro spostate nel viewModel e rese generiche. Attendiamo di fare le liste e i sistemi di filtraggio. Queste qui possono unirsi e conformarsi ai sistemi di filtraggio
 
+
+    @ViewBuilder private func vbTopView() -> some View {
+        
+        VStack(alignment:.leading) {
+            
+            HStack {
+                
+                addNewModel()
+                
+                Spacer()
+                
+                NavigationLink(value: DestinationPathView.categoriaMenu) {
+                
+                    
+                    HStack(alignment:.lastTextBaseline,spacing:3) {
+                        Image(systemName: "list.bullet.clipboard")
+                            .imageScale(.small)
+                        Text("Categorie")
+                            .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                        
+                    }
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                      //  .padding(5)
+                       /* .background {
+                            Color("SeaTurtlePalette_1")
+                                .opacity(0.9)
+                                .blur(radius: 10.0)
+                                .cornerRadius(5.0)
+                        } */
+                     
+                }
+                
+                Spacer()
+                NavigationLink(value: DestinationPathView.moduloImportazioneVeloce) {
+                    
+                //    HStack(spacing:2) {
+                        
+                        Text("⚡️Import⚡️")
+                            .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                      //  Text("[🍽🧂]")
+                        //    .font(.subheadline)
+                        
+                 //   }
+                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                   /* .padding(5)
+                    .background {
+                        Color("SeaTurtlePalette_1")
+                            .opacity(0.9)
+                            .blur(radius: 10.0)
+                            .cornerRadius(5.0)
+                    }*/
+                }
+                
+            }
+            .lineLimit(1)
+            .padding(.bottom,5)
+           // .padding(.vertical,5)
+           // .padding(.horizontal,5)
+            
+            HStack {
+                
+                NavigationLink(value: DestinationPathView.listaDellaSpesa) {
+                
+                    HStack(alignment:.lastTextBaseline,spacing:2) {
+                        Image(systemName: "cart")
+                            .imageScale(.medium)
+                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                        Text("Lista della Spesa")
+                            .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                    }
+                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                  /*  .padding(5)
+                    .background {
+                        Color("SeaTurtlePalette_1")
+                            .opacity(0.9)
+                            .blur(radius: 10.0)
+                            .cornerRadius(5.0)
+                    } */
+                }
+                
+                Spacer()
+                
+                let propertyDestination:DestinationPathView? = {
+                    
+                    let allProp = self.viewModel.allMyProperties
+                    
+                    guard !allProp.isEmpty else { return nil }
+                    
+                    let model = allProp[0]
+                    return DestinationPathView.property(model)
+
+                    }()
+                
+                NavigationLink(value: propertyDestination) {
+                    
+                        HStack(alignment:.lastTextBaseline,spacing:2) {
+                            Image(systemName: "house")
+                                .imageScale(.medium)
+                            Text("Edit")
+                                .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                        }
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                    }
+                    .opacity(propertyDestination == nil ? 0.5 : 1.0)
+              
+ 
+                
+                Spacer()
+            }
+            .lineLimit(1)
+        }
+    }
+    
+    private func nuovePreparazioni() -> (food:DishModel,drink:DishModel,pf:DishModel) {
+        
+        let newDish = DishModel()
+        
+        let newDrink = {
+           var new = DishModel()
+            new.percorsoProdotto = .preparazioneBeverage
+            return new
+        }()
+        let newPF = {
+           var new = DishModel()
+            new.percorsoProdotto = .prodottoFinito
+            return new
+        }()
+        
+        return (newDish,newDrink,newPF)
+    }
+    
     @ViewBuilder private func addNewModel() -> some View {
         
         let newDish = DishModel()
@@ -200,28 +324,19 @@ struct HomeView: View {
             NavigationButtonGeneric(item: newING)
             NavigationButtonGeneric(item: newDish)
             NavigationButtonGeneric(item: newMenu)
-            
-           /* Button {
-                viewModel.addToThePath(
-                    destinationPath: .homeView,
-                    destinationView: DestinationPathView.categoriaMenu)
-            } label: {
-                Text("Edit Categorie Menu")
-                Image(systemName: "list.bullet.clipboard")
-            } */
-            
+
         } label: {
-            Text("[+] Crea")
+            Text("[+] Aggiungi")
                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                .foregroundColor(Color("SeaTurtlePalette_2"))
+                .foregroundColor(Color("SeaTurtlePalette_3"))
         }
-        .padding(5)
+       /* .padding(5)
         .background {
             Color("SeaTurtlePalette_1")
                 .opacity(0.9)
                 .blur(radius: 10.0)
                 .cornerRadius(5.0)
-        }
+        } */
 
         
         
@@ -268,8 +383,11 @@ struct MenuDiSistema_BoxView:View {
                         if menuDS == nil {
                             
                             Button {
+                                
+                                let newDS = MenuModel(tipologia: tipologia)
+                                
                                 withAnimation {
-                                    self.viewModel.switchFraCreaEUpdateModel(itemModel: MenuModel(tipologia: menuDiSistema.returnTipologiaMenu()))
+                                    self.viewModel.switchFraCreaEUpdateModel(itemModel: newDS)
                                 }
                             } label: {
                                 Text("Abilita")
@@ -285,11 +403,17 @@ struct MenuDiSistema_BoxView:View {
                             
                             NavigationLink(value: DestinationPathView.vistaPiattiEspansa(menuDS!)) {
                                 
-                                Text("Espandi(\(dishIn)/\(allDish))")
-                                    .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                                    .foregroundColor(Color("SeaTurtlePalette_3"))
-                                    .shadow(radius: 5.0)
-                                    .opacity(allDish == 0 ? 0.4 : 1.0)
+                                HStack(spacing:0) {
+                                    Text("Espandi(\(dishIn)/\(allDish))")
+                                        .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                                        
+                                    Image(systemName: "arrow.up.right.square")
+                                        .imageScale(.medium)
+                                    
+                                }
+                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                .shadow(radius: 5.0)
+                                .opacity(allDish == 0 ? 0.4 : 1.0)
                                     
                                     
                             }.disabled(allDish == 0)
@@ -423,16 +547,249 @@ struct NavigationButtonGeneric<M:MyProStatusPack_L1>:View {
     
     var body: some View {
     
-        let(_,_,nome,image) = item.basicModelInfoInstanceAccess()
+       // let(_,_,nome,image) = item.basicModelInfoInstanceAccess()
+        let (incipit,nome,image) = self.infoItem()
         
         Button {
             viewModel.addToThePath(destinationPath: .homeView, destinationView: item.pathDestination())
         } label: {
             HStack {
-                Text("Crea \(nome)")
+                Text("\(incipit) \(nome)")
                 Image(systemName: image)
+             
             }
         }
 
     }
+    
+    // Method
+    
+    private func infoItem() -> (incipit:String,nome:String,image:String) {
+        
+        let incipit:String
+        let nome:String
+        let image:String
+        
+        if let localItem = item as? DishModel {
+            
+                incipit = "Nuova"
+                nome = "Preparazione"
+                image = localItem.basicModelInfoInstanceAccess().imageAssociated
+                
+  
+        } else {
+            
+            incipit = "Nuovo"
+            (_,_,nome,image) = item.basicModelInfoInstanceAccess()
+            
+        }
+        
+        return (incipit,nome,image)
+        
+    }
+    
 }
+
+struct TopRated_SubView<M:MyProVisualPack_L1>:View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    let allRated:[M]
+    let destinationPathView:DestinationPathView
+    let label:String
+    let linkTitle:String
+    
+    var body: some View {
+        
+        VStack(alignment:.leading,spacing:10) {
+
+            let topThree = self.allRated.prefix(3).enumerated()
+            let disabled = self.allRated.isEmpty
+            
+            CSLabel_conVB(
+                placeHolder: label,
+                imageNameOrEmojy: "medal",
+                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundOpacity: disabled ? 0.2 : 1.0) {
+                    
+                    NavigationLink(value:destinationPathView) {
+                        
+                        HStack(spacing:2) {
+                            Text(linkTitle)
+                                .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                                
+                            Image(systemName: "arrow.up.right.square")
+                                .imageScale(.medium)
+                            
+                        }
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .shadow(radius: 5.0)
+                        .opacity(disabled ? 0.4 : 1.0)
+                            
+                            
+                    }.disabled(disabled)
+                }
+            
+            VStack(spacing:10) {
+                
+                ForEach(Array(topThree),id:\.element) {position,element in
+
+                    HStack {
+                        element.returnModelRowView(rowSize: .sintetico)
+                        Text(csRatingMedalReward(position: position))
+                            .font(.largeTitle)
+
+                    }
+                    
+                }
+            }
+            
+        }
+        
+        
+    }
+}
+
+/*
+struct TopRatedMenu_SubView:View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    var body: some View {
+        
+        VStack(alignment:.leading,spacing: 10) {
+            
+            let allRated = compilaArrayPreparazioni()
+            let topThree = allRated.prefix(3).enumerated()
+            let disabled = allRated.isEmpty
+            
+            CSLabel_conVB(
+                placeHolder: "Menu Top Rated",
+                imageNameOrEmojy: "medal",
+                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundOpacity: disabled ? 0.2 : 1.0) {
+                    
+                    NavigationLink(value: DestinationPathView.vistaRecensioniEspansa) {
+                        
+                        HStack(spacing:2) {
+                            Text("Classifica")
+                                .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                                
+                            Image(systemName: "arrow.up.right.square")
+                                .imageScale(.medium)
+                            
+                        }
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .shadow(radius: 5.0)
+                        .opacity(disabled ? 0.4 : 1.0)
+                            
+                            
+                    }.disabled(disabled)
+                }
+            
+            VStack(spacing:10) {
+                
+                ForEach(Array(topThree),id:\.element) {position,element in
+                    
+                    HStack {
+                      
+                        MenuModel_RowView(menuItem: element,rowSize: .sintetico)
+                        Text(csRatingMedalReward(position:position))
+                            .font(.largeTitle)
+
+                    }
+                    
+                }
+            }
+            
+        }
+        
+        
+    }
+    
+    // Method
+    
+    private func compilaArrayPreparazioni() -> [MenuModel] {
+        
+        let allMenu = self.viewModel.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
+        
+        let allSorted = allMenu.sorted(by: {
+            $0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > $1.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
+        })
+        
+        return allSorted
+        
+    }
+} */ // 28.10 Deprecata per trasformazione in generico
+
+/*
+struct TopRated_SubView:View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    var body: some View {
+        
+        VStack(alignment:.leading,spacing:10) {
+            
+            let allRated = compilaArrayPreparazioni()
+            let topThree = allRated.prefix(3).enumerated()
+            let disabled = allRated.isEmpty
+            
+            CSLabel_conVB(
+                placeHolder: "Preparazioni Top Rated",
+                imageNameOrEmojy: "medal",
+                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundOpacity: disabled ? 0.2 : 1.0) {
+                    
+                    NavigationLink(value: DestinationPathView.vistaRecensioniEspansa) {
+                        
+                        HStack(spacing:2) {
+                            Text("Classifica")
+                                .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                                
+                            Image(systemName: "arrow.up.right.square")
+                                .imageScale(.medium)
+                            
+                        }
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .shadow(radius: 5.0)
+                        .opacity(disabled ? 0.4 : 1.0)
+                            
+                            
+                    }.disabled(disabled)
+                }
+            
+            VStack(spacing:10) {
+                
+                ForEach(Array(topThree),id:\.element) {position,element in
+                    
+                    HStack {
+                        
+                        DishModel_RowView(item: element,rowSize: .sintetico)
+                        Text(csRatingMedalReward(position: position))
+                            .font(.largeTitle)
+
+                    }
+                    
+                }
+            }
+            
+        }
+        
+        
+    }
+    
+    // Method
+    
+    private func compilaArrayPreparazioni() -> [DishModel] {
+        
+        let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
+        
+        let topRated = tutteLePreparazioni.sorted(by: {
+            $0.topRatedValue(readOnlyVM: self.viewModel) > $1.topRatedValue(readOnlyVM: self.viewModel)
+        })
+                
+        return topRated
+        
+    }
+}*/ // BackUp 28.10
+ 

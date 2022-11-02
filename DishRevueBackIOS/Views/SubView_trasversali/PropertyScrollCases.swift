@@ -19,11 +19,11 @@ struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
     var enumCases: [T]
     let colorSelection: Color
     
-    private var checkInit: String = "" // ci serve a riconoscere quale init abbiamo utilizzato per creare la view, e questa scelta è utile nel metodo checkSelectionOrContainer() per applicare i modifier e per la tapAction
+    private var checkInit: InitType // ci serve a riconoscere quale init abbiamo utilizzato per creare la view, e questa scelta è utile nel metodo checkSelectionOrContainer() per applicare i modifier e per la tapAction
     
     init(cases:[T], dishSingleProperty: Binding<String>, colorSelection: Color) {
         
-        self.checkInit = "Single"
+        self.checkInit = .single
         
         self.enumCases = cases
         _newDishSingleProperty = dishSingleProperty
@@ -34,7 +34,7 @@ struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
     
     init(cases:[T], dishCollectionProperty: Binding<[T]>, colorSelection: Color) {
         
-        self.checkInit = "Collection"
+        self.checkInit = .collection
         
         self.enumCases = cases
         _newDishSingleProperty = .constant("") // abbiamo creato un valore di default per chi adotta il nostroProtocollo
@@ -90,22 +90,19 @@ struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
     
     private func checkSelectionOrContainer(type: T) -> Bool {
         
-        if checkInit == "Single" {
+        switch checkInit {
             
+        case .single:
             return self.newDishSingleProperty == type.id
-            
-        }
-
-        else {
-            
+        case .collection:
             return self.newDishCollectionProperty.contains(type)
         }
-   
+           
     }
      
     private func addingValueTo(newValue: T) {
         
-        if self.checkInit == "Single" {
+        if self.checkInit == .single {
             
             withAnimation(.default) {
                 
@@ -115,7 +112,7 @@ struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
             
         }
         
-        else if self.checkInit == "Collection" {
+        else if self.checkInit == .collection {
             
             withAnimation(.default) {
               
@@ -151,11 +148,11 @@ struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
     var enumCases: [T]
     let colorSelection: Color
     
-    private var checkInit: String = "" // ci serve a riconoscere quale init abbiamo utilizzato per creare la view, e questa scelta è utile nel metodo checkSelectionOrContainer() per applicare i modifier e per la tapAction
+    private var checkInit: InitType  // ci serve a riconoscere quale init abbiamo utilizzato per creare la view, e questa scelta è utile nel metodo checkSelectionOrContainer() per applicare i modifier e per la tapAction
     
     init(cases:[T], dishSingleProperty: Binding<T>, colorSelection: Color) {
         
-        self.checkInit = "Single"
+        self.checkInit = .single
         
         self.enumCases = cases
         _newDishSingleProperty = dishSingleProperty
@@ -166,7 +163,7 @@ struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
     
     init(cases:[T], dishCollectionProperty: Binding<[T]>, colorSelection: Color) {
         
-        self.checkInit = "Collection"
+        self.checkInit = .collection
         
         self.enumCases = cases
         _newDishSingleProperty = .constant(T.defaultValue) // abbiamo creato un valore di default per chi adotta il nostroProtocollo
@@ -220,22 +217,20 @@ struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
     
     private func checkSelectionOrContainer(type: T) -> Bool {
         
-        if checkInit == "Single" {
+        
+        switch checkInit {
             
-        return self.newDishSingleProperty == type
-            
-        }
-
-        else {
-            
+        case .single:
+            return self.newDishSingleProperty == type
+        case .collection:
             return self.newDishCollectionProperty.contains(type)
         }
-   
+           
     }
      
     private func addingValueTo(newValue: T) {
         
-        if self.checkInit == "Single" {
+        if self.checkInit == .single {
             
             withAnimation(.default) {
                 
@@ -245,7 +240,7 @@ struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
             
         }
         
-        else if self.checkInit == "Collection" {
+        else if self.checkInit == .collection {
             
             withAnimation(.default) {
               

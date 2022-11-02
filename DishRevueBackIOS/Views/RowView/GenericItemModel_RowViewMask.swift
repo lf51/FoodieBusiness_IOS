@@ -7,6 +7,77 @@
 
 import SwiftUI
 
+struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
+
+    let model: M
+    var pushImage: String = "gearshape"
+    var rowSize: RowSize = .normale
+    
+    @ViewBuilder var interactiveMenuContent: Content
+   
+    var body: some View {
+        
+        vbSwitchRowSize()
+
+    }
+    
+    // Method
+    
+    @ViewBuilder private func vbSwitchRowSize() -> some View {
+        
+        switch self.rowSize {
+            
+        case .sintetico:
+            vbSizeRidotte(model: self.model)
+        default:
+            vbNormalSize(model: self.model)
+        }
+    }
+    
+    @ViewBuilder private func vbSizeRidotte(model:M) -> some View {
+        
+     //   model.returnModelRowView(rowSize: .sintetico)
+         //  .overlay(alignment: .bottomTrailing) {
+  
+                Menu {
+                    
+                    interactiveMenuContent
+
+                } label: {
+                    model.returnModelRowView(rowSize: .sintetico)
+
+                }
+         //   }
+    }
+    
+    @ViewBuilder private func vbNormalSize(model:M) -> some View {
+        
+        model.returnModelRowView(rowSize: .normale)
+           .overlay(alignment: .bottomTrailing) {
+  
+                Menu {
+                    
+                    interactiveMenuContent
+
+                    
+                } label: {
+                    Image(systemName:pushImage)
+                        .imageScale(.large)
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .padding(5)
+                        .background {
+                            Color("SeaTurtlePalette_2").opacity(0.5)
+                                .clipShape(Circle())
+                                .shadow(radius: 5.0)
+                              //  .cornerRadius(5.0)
+                        }
+
+                }
+            }
+    }
+}
+
+/*
 /// Lasciando il valore di default (nil) nel navigationPath, il contenuto custom del modello non verrà visualizzato.
 struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
     
@@ -20,7 +91,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
    
     var body: some View {
         
-        model.returnModelRowView()
+        model.returnModelRowView(rowSize: .normale)
            .overlay(alignment: .bottomTrailing) {
                 // l'overlay crea un zStack implicito
             /*   Circle()
@@ -57,7 +128,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
         /* Nota 22.08 - Vedere Note vocali 21.08 : Siamo tornati alla configurazione originale, che non ci piace perchè l'overlay non sta "fermo" al suo posto, ma può cambiare posizione e anche di tanto a seconda della grandezza dello schermo. Se lo schermo è difatti inferiore alla grandezza passata alla schedine (di default 400), la schedina sarà ridotta alla larghezza dello schermo minus 20, questo però non è recepito dall'overlay che andrà a posizionarsi sulla larghezza passata alla View. Per risolvere il problema apriamo una finestra nel CSZStackVB_Framed di tipo optional, e passiamo quando serve una view che andrà a posizionarsi in overlay nel bottomTrailing. In questo modo il posizionamente viene sempre rispettato e abbiamo anche il vantaggio di poter dare al "bottone" una grandezza dinamica. Lo svantaggio è che dobbiamo andare ad intervenire su diverse view, e allora, dato che dovremo intervenire in modo massiccio sulle liste (per altri motivi), attendiamo di tornare ad intervenire sulle liste e con la situazione chiara apportiamo anche queste eventuali modifiche, che fatte ora rischiano di dover essere sovrascritte, come tante volte già capitato in questi 8 mesi di lavoro.*/
         
     }
-}
+}*/ // Deprecata 29.10
 
 /*
 /// Lasciando il valore di default (nil) nel navigationPath, il contenuto custom del modello non verrà visualizzato.
@@ -251,10 +322,17 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                         
                     } */
-                    
-                   GenericItemModel_RowViewMask(model: dishItem5) {
+                    MenuModel_RowView(menuItem: menuSample, rowSize: .normale)
+                    GenericItemModel_RowViewMask(model: menuSample) {
+                        Text("Ciao")
+                    }
+                    MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .normale)
+                    MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .sintetico)
+                    MenuModel_RowView(menuItem: menuSample, rowSize: .sintetico)
+                    DishModel_RowView(item: dishItem3, rowSize:.sintetico)
+                 /*  GenericItemModel_RowViewMask(model: dishItem5) {
                         
-                        vbMenuInterattivoModuloCambioStatus(myModel: $dishItem5)
+                        vbMenuInterattivoModuloCambioStatus(myModel: dishItem5,viewModel: viewModel)
                         
                         dishItem5.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
                        
@@ -262,9 +340,9 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         vbMenuInterattivoModuloEdit(currentModel: dishItem5, viewModel: viewModel, navPath: \.dishListPath)
                         
                         vbMenuInterattivoModuloTrash(currentModel: dishItem5, viewModel: viewModel)
-                    }
+                    } */
                     
-                    DishModel_RowView(item: dishItem5, rowSize: .ridotto)
+                   /* DishModel_RowView(item: dishItem5, rowSize: .ridotto)
                     DishModel_RowView(item: dishItem5, rowSize: .sintetico)
                  
                     
@@ -284,11 +362,11 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                             Text("Vai al Prodotto Finito")
                         }
                             
-                        }
+                        }*/
                     
-                /*
+                    DishModel_RowView(item: dishItem3, rowSize:.normale)
                     DishModel_RowView(item: dishItem3, rowSize:.ridotto)
-                    DishModel_RowView(item: dishItem3, rowSize:.sintetico)*/
+                   
                     
                  /*   GenericItemModel_RowViewMask(model: ingredientSample6) {
    

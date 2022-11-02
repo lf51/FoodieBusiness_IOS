@@ -13,9 +13,20 @@ import MapKit // da togliere quando ripuliamo il codice dai Test
 struct AccountSetup {
     // mettiamo qui tutte le enum e i valori per il settaggio personalizzato da parte dell'utente
     var startCountDownMenuAt:TimeValue = .sixty
+    var mettiInPausaDishByIngredient: ActionValue = .mai
     
+    enum ActionValue:String {
+        static var allCases:[ActionValue] = [.sempre,.mai,.chiedi]
+        
+        case sempre
+        case mai
+        case chiedi
+    }
     
     enum TimeValue:Int {
+        
+        static var allCases:[TimeValue] = [.trenta,.sixty,.novanta]
+        
         case trenta = 30
         case sixty = 60
         case novanta = 90
@@ -154,7 +165,7 @@ class AccounterVM: ObservableObject {
     
     /// Controlla se il nome del modello Passato esiste già, se si lo aggiorna, altrimenti lo crea.
     func switchFraCreaEUpdateModel<T:MyProStarterPack_L1>(itemModel:T) {
-        
+        // Nota 20.10 -> Risolvere rimuovendo e ricreando, senza update
         if let oldModel = checkExistingUniqueModelName(model: itemModel).1 {
             
             let newOldModel:T = {
@@ -373,19 +384,7 @@ class AccounterVM: ObservableObject {
              message: "Aggiornamento completato con Successo!")
     }
     
-    // MyProSearchPack_L0
-    
-    func stringResearch<T:MyProSearchPack_L0>(item: T, stringaRicerca: String) -> Bool {
-        
-        guard stringaRicerca != "" else { return true }
-        
-        let ricerca = stringaRicerca.replacingOccurrences(of: " ", with: "").lowercased()
-        print("Dentro Stringa Ricerca")
-        
-        let result = item.modelStringResearch(string: ricerca)
-        return result
-
-    }
+  
     
     // MyProModelPack_L2 aka MyModelStatusConformity
     
@@ -407,8 +406,20 @@ class AccounterVM: ObservableObject {
     
     //
     
+    // 23.10 Gestione del Cambio Status dei Modelli (Al fine di eliminare il binding dalle liste per il funzionamento del cambio status nei menu interattivi )
    
+    func manageCambioStatusModel<M:MyProStatusPack_L1>(model:M,nuovoStatus:StatusTransition) {
+        
+        let newModel:M =  {
+            
+            var new = model
+            new.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
+            return new
+            
+        }()
     
+        self.updateItemModel(itemModel: newModel)
+    }
     
     // ALTRO
     
@@ -428,6 +439,19 @@ class AccounterVM: ObservableObject {
         let witchContainCount = witchContain.count
         
         return (allMinusSistema,allMinusCount,witchContainCount)
+    }
+    
+    /// Ritorna una Tupla gemella dell'AllMenuMinusDiSistemaPlusContain ma senza escludere i menu di sistema
+    func allMenuContaining(idPiatto:String) -> (allModelWithDish:[MenuModel], allMyMenuCount:Int,countWhereDishIsIn:Int) {
+                
+        let witchContain = self.allMyMenu.filter({
+            $0.rifDishIn.contains(idPiatto)
+        })
+        
+        let allMenuCount = self.allMyMenu.count
+        let witchContainCount = witchContain.count
+        
+        return (witchContain,allMenuCount,witchContainCount)
     }
     
     
@@ -610,24 +634,28 @@ class AccounterVM: ObservableObject {
          let allIDing = self.inventarioScorte.allInventario()
          let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
            
-         let allVegetable = allING.filter({ $0.origine.returnTypeCase() == .vegetale })
+         let allVegetable = allING.filter({
+             $0.origine.returnTypeCase() == .vegetale
+         }).sorted(by: {$0.intestazione < $1.intestazione})
+        
          let allMeat = allING.filter({
                $0.origine.returnTypeCase() == .animale &&
                !$0.allergeni.contains(.latte_e_derivati) &&
                !$0.allergeni.contains(.molluschi) &&
                !$0.allergeni.contains(.pesce) &&
                !$0.allergeni.contains(.crostacei)
-           })
+           }).sorted(by: {$0.intestazione < $1.intestazione})
+        
          let allFish = allING.filter({
                $0.allergeni.contains(.molluschi) ||
                $0.allergeni.contains(.pesce) ||
                $0.allergeni.contains(.crostacei)
-           })
+           }).sorted(by: {$0.intestazione < $1.intestazione})
            
          let allMilk = allING.filter({
                $0.origine.returnTypeCase() == .animale &&
                $0.allergeni.contains(.latte_e_derivati)
-           })
+           }).sorted(by: {$0.intestazione < $1.intestazione})
          
           /* allVegetable.sort(by: {
                 viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
@@ -644,46 +672,229 @@ class AccounterVM: ObservableObject {
                 viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
             }) */
          print("Dentro Inventario Filtrato")
+    
+      //  allVegetable.sorted(by: {$0.intestazione > $1.intestazione})
+        
          return (allVegetable + allMilk + allMeat + allFish)
        
      }
-    
-    func monitorServizio() -> (menuOnAir:[MenuModel],dishVisibili:Set<DishModel>,ingredientiNecessari:Set<IngredientModel>) {
+
+    /// Ritorna un quadro corrente del servizio, ossia il servizo del giorno. Le preparazione tornate sono quelle marcate come .disponibili, i menu sono quelli onAir, e gli ingredienti quelli attivi delle preparazioni disponibili.
+    func monitorServizio() -> (rifMenuOnAir:[String],rifFoodBeverage:[String],rifProdottiFiniti:[String], rifIngredients:[String],rifPreparazioniEseguibili:[String]) {
+        
+        // Menu
         
         let allMenuOnAir = self.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)})
         
-        var allDish:[DishModel] = []
+        // Dish
+        var allDishId:[String] = []
+      // var allDish:[DishModel] = []
         
         for cart in allMenuOnAir {
             
-            let models = self.modelCollectionFromCollectionID(collectionId: cart.rifDishIn, modelPath: \.allMyDish)
-            allDish.append(contentsOf: models)
+            allDishId.append(contentsOf: cart.rifDishIn)
             
         }
         
-        let cleanDish = Set(allDish)
+        let cleanDish = Set(allDishId)
+        let allDishIdCleaned = Array(cleanDish)
         
-        let allDishAvaible = cleanDish.filter({$0.status.checkStatusTransition(check: .disponibile)})
+        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.allMyDish)
         
-        let allMenuCount = allMenuOnAir.count
-        let allDishCount = cleanDish.count
-        let allAvaibleCount = allDishAvaible.count
-        
+        let allDishAvaible = allDishModel.filter({$0.status.checkStatusTransition(check: .disponibile)})
+       
+        let foodB = allDishAvaible.filter({
+            $0.percorsoProdotto == .preparazioneBeverage ||
+            $0.percorsoProdotto == .preparazioneFood
+        })
+        let prodottiFiniti = allDishAvaible.filter({
+            $0.percorsoProdotto == .prodottoFinito
+        })
+        // Ingredient && eseguibilità Piatto
         var allIngredients:[IngredientModel] = []
+        var dishEseguibili:[DishModel] = []
         
-        for dish in allDishAvaible {
+        for dish in foodB {
             
             let activeIngredient = dish.allIngredientsAttivi(viewModel: self)
             allIngredients.append(contentsOf: activeIngredient)
             
+            let isEseguibile = dish.controllaSeEseguibile(viewModel: self)
+            if isEseguibile { dishEseguibili.append(dish) }
+            
         }
         
         let cleanAllIngredient = Set(allIngredients)
-      //  let ingredientCount = cleanAllIngredient.count
+        let cleanAllIngreArray = Array(cleanAllIngredient)
+    
+        let menuOn = allMenuOnAir.map({$0.id})
+        let foodAndB = foodB.map({$0.id})
+        let readyProduct = prodottiFiniti.map({$0.id})
+        let ingredientsNeeded = cleanAllIngreArray.map({$0.id})
+        let preparazioniOk = dishEseguibili.map({$0.id})
         
-        return (allMenuOnAir,allDishAvaible,cleanAllIngredient)
+        return (menuOn,foodAndB,readyProduct,ingredientsNeeded,preparazioniOk)
         
     }
+    
+    /// ritorna il numero di recensioni totali, quelle delle ultime 24h, la media totale, la media delle ulteme 10
+    func monitorRecensioni(rifReview:[String]? = nil) -> (totali:Int,l24:Int,mediaGen:Double,ml10:Double) {
+        
+        let starter:[DishRatingModel]
+        
+        if rifReview == nil {
+            
+            starter = self.allMyReviews
+            
+        } else {
+            starter = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.allMyReviews)
+        }
+        
+        
+        let currentDate = Date()
+        let totalCount = starter.count //.0
+        
+        let last24Count = starter.filter({
+            $0.dataRilascio < currentDate &&
+            $0.dataRilascio > currentDate.addingTimeInterval(-86400)
+        }).count // .1
+        
+        let reviewByDate = starter.sorted(by: {$0.dataRilascio > $1.dataRilascio})
+        
+        let onlyLastTen = reviewByDate.prefix(10)
+        let onlyL10 = Array(onlyLastTen)
+        
+        let mediaGeneralePonderata = csCalcoloMediaRecensioni(elementi: starter) //.2
+        let mediaL10 = csCalcoloMediaRecensioni(elementi: onlyL10) //.3
+        
+        return (totalCount,last24Count,mediaGeneralePonderata,mediaL10)
+    }
+    
+    /// Analizza un array di recensioni, di default è nil e analizza l'intero comparto recensioni nel viewModel. Ritorna il numero di recensioni negative, positive, topRange, complete, il trend di voto (positivo, negativo, topRange), e il trend di completamento delle recensioni.
+    func monitorRecensioniPlus(rifReview:[String]? = nil) -> (negative:Int,positive:Int,top:Int,complete:Int,trendVoto:Int,trendComplete:Int) {
+        
+        let allRev:[DishRatingModel]
+        
+        if rifReview == nil {
+            
+            allRev = self.allMyReviews
+            
+        } else {
+            
+            allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.allMyReviews)
+        }
+    
+        let allVote = allRev.compactMap({Double($0.voto)})
+        
+        let negative = allVote.filter({$0 < 6.0}).count//.0
+        let positive = allVote.filter({
+            $0 >= 6.0 &&
+            $0 < 9.0
+        }).count//.1
+        let topRange = allVote.filter({$0 >= 9.0}).count //.2
+        
+        let complete = allRev.filter({
+            $0.image != "" &&
+            $0.titolo != "" &&
+            $0.commento != ""
+        }).count //.3
+        
+        // Analisi ultime 10
+        
+        let allByDate = allRev.sorted(by: {$0.dataRilascio > $1.dataRilascio})
+        let lastTen = allByDate.prefix(10)
+        let lastTenArray = Array(lastTen)
+        
+        let l10AllVote = lastTenArray.compactMap({Double($0.voto)})
+        
+        let l10negative = l10AllVote.filter({$0 < 6.0}).count//.0
+        let l10positive = l10AllVote.filter({
+            $0 >= 6.0 &&
+            $0 < 9.0
+        }).count//.1
+        let l10topRange = l10AllVote.filter({$0 >= 9.0}).count //.2
+        
+        var trendValue:Int = 0 // 1 is Negativo / 5 is Positivo / 10 is Top Range
+        if l10negative > l10positive { trendValue = 1 }
+        else if l10positive > l10negative {
+            
+            let value = Double(l10topRange) / Double(l10positive)
+            
+            if value >= 0.5 { trendValue = 10 }
+            else { trendValue = 5}
+        }
+        
+        let l10Complete = lastTenArray.filter({
+            $0.image != "" &&
+            $0.titolo != "" &&
+            $0.commento != ""
+        }).count
+        
+        let completeFraLast10 = Double(l10Complete) / Double(lastTenArray.count)
+        
+        var trendComplete = 1
+        if completeFraLast10 >= 0.5 { trendComplete = 2 }
+        // trend completezza 1 negativo 2 positivo
+        return (negative,positive,topRange,complete,trendValue,trendComplete)
+    }
+  
+    /// Ritorna il numero di preparazioni (esclude i prodotti finit) con recensioni, il totale delle preparazioni, il numero di preparazioni con media sotto il 6, sopra il 6, sopra il 9.
+    func monitorRecensioniMoreInfo() -> (preparazioniConRev:Int,totPrep:Int,negCount:Int,posCount:Int,topCount:Int) {
+        
+        let dishReviewed = self.allMyDish.filter({
+            !$0.rifReviews.isEmpty
+        })
+        let soloLePreparazioni = self.allMyDish.filter({
+            $0.percorsoProdotto != .prodottoFinito
+        })
+        
+        let dishReviewedCount = dishReviewed.count // .1
+        let totalePreparazioni = soloLePreparazioni.count  // .2
+        
+        
+        let rateMap = dishReviewed.compactMap({$0.ratingInfo(readOnlyViewModel:self).media})
+        
+        let negative = rateMap.filter({$0 < 6.0}).count
+        let positive = rateMap.filter({
+            $0 >= 6.0 &&
+            $0 < 9.0
+        }).count
+        let topRange = rateMap.filter({$0 >= 9.0}).count
+        
+        
+        
+        return (dishReviewedCount,totalePreparazioni,negative,positive,topRange)
+    }
+    
+    // MyProSearchPack_L0 // Metodi per filtro e Ricarca
+    
+  /*  private func stringResearch<T:MyProSearchPack_L0>(item: T, stringaRicerca: String) -> Bool {
+        
+        guard stringaRicerca != "" else { return true }
+        
+        let ricerca = stringaRicerca.replacingOccurrences(of: " ", with: "").lowercased()
+        print("Dentro Stringa Ricerca")
+        
+        let result = item.modelStringResearch(string: ricerca)
+        return result
+
+    } */
+    
+    func filtraERicerca<M:MyProToolPack_L1>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterProperty:FilterPropertyModel) -> [M] {
+        
+        let container = self[keyPath: containerPath]
+        
+        let conditionZero = container.filter({$0.status != .bozza()})
+ 
+        let conditionOne = conditionZero.filter({
+            $0.modelPropertyCompare(filterProperty: filterProperty, readOnlyVM: self) 
+        })
+        
+        let finalSorted = conditionOne.sorted{ $0.intestazione < $1.intestazione }
+        
+        return finalSorted
+    }
+    
     
     /*
     ///Deprecata in futuro. Da Ottimizzare attraverso l'uso del keypath.
@@ -783,4 +994,115 @@ class AccounterVM: ObservableObject {
  //   let menu6 = MenuModel.Filter.tipologia(.fisso(costo: "25"))
     
  
+}
+
+
+struct FilterPropertyModel {
+    
+    var countChange:Int = 0
+    // Comune a Tutti
+    var stringaRicerca:String = ""
+    var status:[StatusTransition] = [] { willSet { countManage(newValue: newValue, oldValue: status) }}
+    
+    // Proprietà di filtro Ingrediente
+    var provenienzaING:ProvenienzaIngrediente?
+    var produzioneING:ProduzioneIngrediente?
+    var conservazioneING:[ConservazioneIngrediente] = []
+    var origineING:OrigineIngrediente?
+   
+    
+    // In Comune fra Modelli
+    var inventario:[Inventario.TransitoScorte] = [] { willSet { countManage(newValue: newValue, oldValue: inventario) }}
+    var allergeniIn:[AllergeniIngrediente] = [] { willSet { countManage(newValue: newValue, oldValue: allergeniIn) }}
+
+    // Proprietà di filtro Preparazioni
+   /* var percorsoPRP:[DishModel.PercorsoProdotto] = [] { willSet { if !newValue.contains(.prodottoFinito) { self.inventario = [] } }}  */
+    var percorsoPRP:[DishModel.PercorsoProdotto] = [] { willSet { observingPercorso(newValue: newValue, oldValue: percorsoPRP) }}
+    
+    var dietePRP:[TipoDieta] = [] { willSet { countManage(newValue: newValue, oldValue: dietePRP) }}
+   // var rifIngredientiPRP:[String] = []
+   // var eseguibilePRP:Bool?
+    
+ 
+    // Proprietà di filtro Menu
+    
+    // Method
+    
+   /* func compareBoolProperty(local:Bool,filter:KeyPath<Self,Bool?>) -> Bool {
+        
+        let filterBool = self[keyPath: filter]
+        guard filterBool != nil else { return true }
+        return local == filterBool
+    } */
+    
+    mutating func countManage<P:MyProEnumPack_L0>(newValue:[P],oldValue:[P])  {
+        
+        let value = newValue.count - oldValue.count
+        self.countChange += value
+      
+    }
+    
+    mutating func observingPercorso(newValue:[DishModel.PercorsoProdotto],oldValue:[DishModel.PercorsoProdotto])  {
+        
+        self.countManage(newValue: newValue, oldValue: oldValue)
+        
+        if !newValue.contains(.prodottoFinito) { self.inventario = [] }
+      
+    }
+ 
+     func comparePropertyToProperty<P:MyProEnumPack_L0>(local:P,filter:KeyPath<Self,P?>) -> Bool {
+        
+        let filterProp = self[keyPath: filter]
+        
+        guard filterProp != nil else { return true }
+        return local == filterProp
+    }
+      
+    func comparePropertyToCollection<P:MyProEnumPack_L0>(localProperty:P,filterCollection:KeyPath<Self,[P]>) -> Bool {
+        
+        let filterCollect = self[keyPath: filterCollection]
+        
+        guard filterCollect != [] else { return true }
+        
+        return filterCollect.contains(localProperty)
+            
+    }
+    
+    func compareCollectionToCollection<P:MyProEnumPack_L0>(localCollection:[P],filterCollection:KeyPath<Self,[P]>) -> Bool {
+        
+        let filterCollect = self[keyPath: filterCollection]
+        
+        guard filterCollect != [] else { return true }
+        
+        for value in filterCollect {
+            if localCollection.contains(value) { return true }
+            else { continue }
+        }
+        
+        return false
+    }
+    
+    func compareStatusTransition(localStatus:StatusModel) -> Bool {
+        
+        guard self.status != [] else { return true}
+      
+        for value in self.status {
+            
+            if localStatus.checkStatusTransition(check: value) { return true }
+            else { continue }
+            
+        }
+        return false
+        
+    }
+    
+    func compareStatoScorte(modelId:String,readOnlyVM:AccounterVM) -> Bool {
+        
+        guard self.inventario != [] else { return true }
+        
+        let statoScorte = readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: modelId)
+        
+        return self.inventario.contains(statoScorte)
+    }
+    
 }

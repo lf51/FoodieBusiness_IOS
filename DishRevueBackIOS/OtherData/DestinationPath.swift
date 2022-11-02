@@ -26,11 +26,15 @@ enum DestinationPathView: Hashable {
     case vistaMenuEspansa(_ :DishModel)
     case vistaPiattiEspansa(_ :MenuModel)
     case vistaCronologiaAcquisti(_ :IngredientModel)
+    case vistaRecensioniEspansa
     
-    case moduloSostituzioneING(_ : IngredientModel,isPermanente:Bool = false)
+    case moduloSostituzioneING(_ :IngredientModel,isPermanente:Bool = false)
     
     case listaDellaSpesa
     
+    case listaGenericaMenu(_containerRif:[String], _label:String)
+    case listaGenericaIng(_containerRif:[String], _label:String)
+    case listaGenericaDish(_containerRif:[String], _label:String)
     
     @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath, readOnlyViewModel:AccounterVM) -> some View {
         
@@ -76,6 +80,9 @@ enum DestinationPathView: Hashable {
         case .vistaCronologiaAcquisti(let ingredient):
             VistaCronologiaAcquisti(ingrediente: ingredient, backgroundColorView: backgroundColorView)
             
+        case .vistaRecensioniEspansa:
+            VistaRecensioniEspansa(backgroundColorView: backgroundColorView)
+            
         case .moduloSostituzioneING(let ingredient,let isPermanente):
             DishListByIngredientView(ingredientModelCorrente: ingredient,isPermanente: isPermanente, destinationPath: destinationPath, backgroundColorView: backgroundColorView)
             
@@ -83,7 +90,12 @@ enum DestinationPathView: Hashable {
             let inventario = readOnlyViewModel.inventarioIngredienti()
             ListaDellaSpesa_MainView(inventarioIngredienti: inventario, backgroundColorView: backgroundColorView)
 
-
+        case .listaGenericaMenu(let container,let label):
+            VistaEspansaGenerica(container: container, containerPath: \.allMyMenu, label:label, backgroundColorView: backgroundColorView)
+        case .listaGenericaIng(let container,let label):
+            VistaEspansaGenerica(container:container,containerPath: \.allMyIngredients, label:label, backgroundColorView: backgroundColorView)
+        case .listaGenericaDish(let container,let label):
+            VistaEspansaGenerica(container: container,containerPath: \.allMyDish, label:label, backgroundColorView: backgroundColorView)
         }
         
     }

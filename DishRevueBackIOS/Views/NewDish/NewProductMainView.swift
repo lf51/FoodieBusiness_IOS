@@ -23,14 +23,15 @@ struct NewProductMainView: View {
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
       
-        if newDish.ingredientiPrincipali.contains(newDish.id) {
+       /* if newDish.ingredientiPrincipali.contains(newDish.id) {
             self.type = .prodottoFinito
-        } else { self.type = .preparazioneFood }
+        } else { self.type = .preparazioneFood } */ // Modifica 25.10
+        self.type = newDish.percorsoProdotto
     }
     
     var body: some View {
         
-        CSZStackVB(title: self.newDish.intestazione == "" ? "Nuovo \(self.type.rawValue)" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: self.newDish.intestazione == "" ? "Nuovo \(self.type.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
             
             VStack {
                 let disabilita = self.disabilitaSwitch()

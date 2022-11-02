@@ -114,7 +114,7 @@ struct IngredientModel_SmallRowView: View {
         HStack(alignment:.lastTextBaseline) {
             
             Text(self.currentModel.intestazione)
-                .font(.title2)
+                .font(.title3)
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)

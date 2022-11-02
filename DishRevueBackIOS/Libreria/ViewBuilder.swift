@@ -442,6 +442,110 @@ struct CSZStackVB_Framed<Content:View>:View {
 } */ // deprecata 07.09
 
 
+@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:AccounterVM) -> some View {
+
+    let disableCondition:Bool = {
+        
+        if let model = myModel as? MenuModel {
+            return model.tipologia.isDiSistema()
+        }
+        return false
+    }()
+    
+    let currentStatus = myModel.status
+
+    Group {
+        
+        if currentStatus.checkStatusTransition(check: .disponibile) {
+                    
+            VStack {
+                
+                Button {
+                    viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.inPausa)
+                    
+                } label: {
+                    HStack{
+                        Text("Metti in Pausa")
+                        Image(systemName: "pause.circle")
+                        
+                    }
+                }
+                
+                Button {
+                    viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.archiviato)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                      
+                    }
+                }
+
+            }
+
+        } else if currentStatus.checkStatusTransition(check: .inPausa) {
+            
+                VStack {
+                    
+                    Button {
+
+                        viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.disponibile)
+                        
+                    } label: {
+                        HStack{
+                            Text("Rendi Disponibile")
+                            Image(systemName: "play.circle")
+                           
+                        }
+                    }
+                    
+                    Button {
+
+                        viewModel.manageCambioStatusModel(model: myModel, nuovoStatus: .archiviato)
+                        
+                    } label: {
+                        HStack{
+                            Text("Archivia")
+                            Image(systemName: "archivebox")
+                           
+                        }
+                    }
+
+                }
+
+        } else if currentStatus.checkStatusTransition(check: .archiviato) {
+            
+            let disabilita:Bool = {
+                if let model = myModel as? MenuModel {
+                    return model.rifDishIn.isEmpty // Sviluppare --> deve controllare se ci sono piatti attivi. Senza piatti, o senza piatti attivi, il menu sarebbe vuoto e dunque non avrebbe senso renderlo disponibile
+                } else { return false }
+                
+            }()
+
+                VStack {
+                    
+                    Button {
+
+                        viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.disponibile)
+                        
+                    } label: {
+                        HStack{
+                            Text("Rendi Disponibile")
+                            Image(systemName: "play.circle")
+                           
+                        }
+                    }.disabled(disabilita)
+
+
+                }
+        }
+        
+    }.disabled(disableCondition)
+           
+}
+
+/*
 /// Add 07.09 - Gestisce il Modulo di cambio Status del Menu interattivo delle RowView dei model conformi al protocollo MyProStatusPackL1
 @ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: Binding<M>) -> some View {
     
@@ -550,7 +654,7 @@ struct CSZStackVB_Framed<Content:View>:View {
         
     } */
            
-}
+}*/ // deprecato 23.10 per eliminazione del binding a favore di un update del Model "manuale"
 
 
 /// Gestisce il Menu della RowModel in base al cambio di Status. Generic conforme al MyModelStatusConformity
@@ -651,6 +755,16 @@ struct CSZStackVB_Framed<Content:View>:View {
     let isBozza = currentModel.status.checkStatusBozza()
     let title = isBozza ? "Completa" : "Modifica"
     
+    let disableCondition:Bool = {
+       
+        if let model = currentModel as? MenuModel {
+            
+            return model.tipologia.isDiSistema()
+        }
+        
+        return false
+    }()
+    
  //   VStack {
         
         Button {
@@ -663,7 +777,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                   Text(title)
                   Image(systemName: isBozza ? "hammer" : "square.and.pencil")
               }
-          }
+          }.disabled(disableCondition)
 
      /*   Button(role:.destructive) {
             
@@ -791,4 +905,58 @@ private func estrapolaListaAllergeni(listaAllergeni:[AllergeniIngrediente]) -> [
     return lista
 }
 
+// 21.10 Comparto Recensioni
 
+@ViewBuilder func vbIndicatoreTrendVotoRecensioni(valoreAssociato:Int,trend:Int,coloreAssociato:Color) -> some View {
+
+    // 1 is Negativo / 5 is Positivo / 10 is Top Range / 0 is Neutro - Trend
+    
+    if valoreAssociato == trend {
+        Image(systemName: "arrowtriangle.up.fill")
+            .foregroundColor(coloreAssociato)
+        
+    }
+    else if trend == 0 {
+        Image(systemName: "minus")
+            .foregroundColor(Color.gray)
+    }
+    
+    // Special case
+    
+    else if trend == 10 && valoreAssociato == 5 {
+        Image(systemName: "arrowtriangle.up")
+            .foregroundColor(coloreAssociato)
+    }
+            
+}
+
+@ViewBuilder func vbTrendCompletezzaRecensioni(trendValue:Int) -> some View {
+
+    if trendValue == 1 {
+        Image(systemName: "arrowtriangle.down")
+            .foregroundColor(Color.red)
+    }
+    else {
+        Image(systemName: "arrowtriangle.up.fill")
+            .foregroundColor(Color.green)
+    }
+
+}
+
+@ViewBuilder func vbMediaL10(mediaGen:Double,mediaL10:Double) -> some View {
+
+    if mediaL10 == mediaGen {
+        Image(systemName: "minus")
+            .foregroundColor(Color.gray)
+    }
+    else if mediaL10 > mediaGen {
+        Image(systemName: "arrowtriangle.up.fill")
+            .foregroundColor(Color.green)
+    }
+    else {
+        Image(systemName: "arrowtriangle.down")
+            .foregroundColor(Color.red)
+    }
+    
+}
+// end comparto Recensioni

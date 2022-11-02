@@ -7,22 +7,23 @@
 
 import Foundation
 
+let today = Date()
+let todayString = csTimeFormatter().data.string(from: today)
+
+let oldDate = Date().addingTimeInterval(-172800)
+let oldDateString = csTimeFormatter().data.string(from: oldDate)
+let otherDate = Date().addingTimeInterval(-259200)
+let otherDateString = csTimeFormatter().data.string(from: otherDate)
+
+let otherDate1 = Date().addingTimeInterval(-388800)
+let otherDateString1 = csTimeFormatter().data.string(from: otherDate1)
+
+let otherDate2 = Date().addingTimeInterval(-583200)
+let otherDateString2 = csTimeFormatter().data.string(from: otherDate2)
+let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 26 € prezzo concordato con il titolare in data 11.09.2022"
+
 var testAccount: AccounterVM = {
-    
-    let today = Date()
-    let todayString = csTimeFormatter().data.string(from: today)
-    
-    let oldDate = Date().addingTimeInterval(-172800)
-    let oldDateString = csTimeFormatter().data.string(from: oldDate)
-    let otherDate = Date().addingTimeInterval(-259200)
-    let otherDateString = csTimeFormatter().data.string(from: otherDate)
-    
-    let otherDate1 = Date().addingTimeInterval(-388800)
-    let otherDateString1 = csTimeFormatter().data.string(from: otherDate1)
-    
-    let otherDate2 = Date().addingTimeInterval(-583200)
-    let otherDateString2 = csTimeFormatter().data.string(from: otherDate2)
-    
+
     var vm = AccounterVM()
      vm.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test]
      vm.allMyDish = [dishItem3_Test,dishItem4_Test,prodottoFinito]
@@ -30,11 +31,11 @@ var testAccount: AccounterVM = {
     vm.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
     vm.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*/ingredientSample2_Test.id,ingredientSample3_Test.id,ingredientSample4_Test.id]
     vm.inventarioScorte.cronologiaAcquisti = [
-        ingredientSample_Test.id:[otherDateString2,otherDateString1,otherDateString,oldDateString,todayString],ingredientSample5_Test.id:[oldDateString,todayString]
+        ingredientSample_Test.id:[otherDateString3,otherDateString1,otherDateString,oldDateString,todayString],ingredientSample5_Test.id:[oldDateString,todayString]
     
     ]
     vm.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
-    
+    vm.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
      return vm
  }()
 
@@ -57,6 +58,7 @@ var testAccount: AccounterVM = {
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [ingredientSample4_Test.id]
     newDish.ingredientiSecondari = [ingredientSample2_Test.id]
+     newDish.rifReviews = [rate8.id,rate9.id,rate10.id,rate11.id,rate12.id]
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
         pr.label = "Porzione"
@@ -71,6 +73,8 @@ var testAccount: AccounterVM = {
     }()
     newDish.pricingPiatto = [price,price1]
     
+     newDish.id = "lailo5" // per far funzionare il riferimento con le recensioni e avere un id corto
+     
     return newDish
 }()
 
@@ -81,12 +85,15 @@ var dishItem4_Test: DishModel = {
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [ingredientSample_Test.id]
     newDish.ingredientiSecondari = [ingredientSample3_Test.id]
+    newDish.rifReviews = [rate1.id,rate2.id,rate3.id,rate4.id,rate5.id,rate6.id,rate7.id]
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
         pr.price = "22.5"
         return pr
     }()
     newDish.pricingPiatto = [price]
+    
+    newDish.id = "lailo4"
     
     return newDish
 }()
@@ -97,6 +104,7 @@ var prodottoFinito: DishModel = {
     newDish.intestazione = "CocoCola"
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [newDish.id]
+    newDish.percorsoProdotto = .prodottoFinito
  
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
@@ -115,7 +123,7 @@ var ingredienteFinito:IngredientModel = {
     new.origine = .vegetale
     new.conservazione = .surgelato
     new.produzione = .biologico
-    new.provenienza = .km0
+    new.provenienza = .italia
     new.allergeni = [.latte_e_derivati]
     return new
 }()
@@ -123,15 +131,16 @@ var ingredienteFinito:IngredientModel = {
  var menuSample_Test: MenuModel = {
 
      var menu = MenuModel()
-     menu.intestazione = "Pranzo della Domenica di Agosto"
+     menu.intestazione = "Pranzo Abbunnato della domenica di pasqua"
+     menu.descrizione = "Pranzo tradizionale con portate dalla quantità sopra la media"
      menu.tipologia = .fisso(persone: .due, costo: "18")
     // menu.tipologia = .allaCarta
-     menu.isAvaibleWhen = .dataEsatta
+     menu.isAvaibleWhen = .intervalloAperto
      menu.dataInizio = Date.now
      menu.oraInizio = Date.now.advanced(by: 3600)
-     menu.giorniDelServizio = [.lunedi]
+    
    //  menu.dishInDEPRECATO = [dishItem3]
-     menu.rifDishIn = [dishItem3_Test.id]
+     menu.rifDishIn = [dishItem3_Test.id,prodottoFinito.id]
      menu.status = .bozza(.disponibile)
      
      return menu
@@ -141,10 +150,13 @@ var ingredienteFinito:IngredientModel = {
     
      var menu = MenuModel()
      menu.intestazione = "Pranzo della Domenica"
+      menu.descrizione = "Pranzo di gala per compleanno del Presidente. Sala riservata. 350 pax"
      menu.tipologia = .allaCarta
    //  menu.tipologia = .allaCarta
-     menu.giorniDelServizio = [.domenica]
-     menu.rifDishIn = [dishItem3_Test.id]
+     menu.isAvaibleWhen = .dataEsatta
+      menu.dataInizio = Date.now.addingTimeInterval(259200)
+   //  menu.giorniDelServizio = [.domenica]
+     menu.rifDishIn = [dishItem3_Test.id,dishItem4_Test.id]
    //  menu.dishInDEPRECATO = [dishItem3]
      menu.status = .completo(.inPausa)
      
@@ -154,13 +166,18 @@ var ingredienteFinito:IngredientModel = {
  var menuSample3_Test: MenuModel = {
     
      var menu = MenuModel()
-     menu.intestazione = "Pranzo della"
+     menu.intestazione = "Pranzo della MezzaDi"
+     menu.descrizione = "Pranzo di mezzogiorno con prodotti tipici della Campania, Puglia, Calabria e Sicilia."
      menu.tipologia = .fisso(persone: .uno, costo: "18.5")
    //  menu.tipologia = .allaCarta
-     menu.giorniDelServizio = [.domenica]
+     menu.isAvaibleWhen = .intervalloChiuso
+     menu.giorniDelServizio = [.domenica,.martedi,.giovedi]
+     menu.dataInizio = Date.now.addingTimeInterval(-259200)
+     menu.oraInizio = Date.now.addingTimeInterval(-10800)
+     menu.oraFine = Date.now.addingTimeInterval(10800)
      menu.rifDishIn = [dishItem3_Test.id]
     // menu.dishInDEPRECATO = [dishItem3]
-     menu.status = .completo(.inPausa)
+     menu.status = .completo(.archiviato)
      
      return menu
  }()
@@ -189,7 +206,7 @@ var ingredientSample2_Test =  IngredientModel(
     descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
     conservazione: .surgelato,
     produzione: .biologico,
-    provenienza: .italia,
+    provenienza: .km0,
     allergeni: [.crostacei],
     origine: .animale,
     status: .bozza(.disponibile)
@@ -209,8 +226,8 @@ var ingredientSample3_Test =  IngredientModel(
     intestazione: "Mozzarella di Bufala",
     descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",
     conservazione: .congelato,
-    produzione: .convenzionale,
-    provenienza: .europa,
+    produzione: .biologico,
+    provenienza: .km0,
     allergeni: [],
     origine: .vegetale,
     status: .bozza(.disponibile)
@@ -259,3 +276,47 @@ var ingredientSample7_Test =  IngredientModel(
     status: .bozza(.inPausa)
 )
 
+var rate1 = DishRatingModel( voto: "8.0", titolo: "bello", commento: "casacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasa", idPiatto: "lailo4")
+var rate2 = DishRatingModel(voto: "8.0", titolo: "bello", commento: "casacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasa", idPiatto: "lailo4")
+var rate3 = DishRatingModel( voto: "8.0", titolo: "bello", commento: "casacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasa", idPiatto: "lailo4")
+
+var rate4 = DishRatingModel(voto: "8.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!", idPiatto: "lailo4")
+
+var rate5 = DishRatingModel(voto: "8.0", titolo: "Sapore di Niente", commento: "NoComment", idPiatto: "lailo4")
+var rate6 = DishRatingModel(voto: "8.0",titolo: "", commento: "", idPiatto: "lailo4")
+var rate7 = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo4")
+
+
+
+var rate8 = {
+    
+    var rate = DishRatingModel(voto: "10.0", titolo: "", commento: "", idPiatto: "lailo5")
+    rate.dataRilascio = oldDate
+    return rate
+} ()
+
+var rate9 = {
+    
+    var rate = DishRatingModel(voto: "10.0", titolo: "", commento: "", idPiatto: "lailo5")
+    rate.dataRilascio = otherDate
+    return rate
+} ()
+
+var rate10 = {
+    
+    var rate = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo5")
+    rate.dataRilascio = otherDate1
+    return rate
+} ()
+
+var rate11 = {
+    
+    var rate = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo5")
+    rate.dataRilascio = otherDate2
+    return rate
+} ()
+
+var rate12 = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo5")
+
+let rifDish3 = dishItem3_Test.id
+let rifDish4 = dishItem4_Test.id

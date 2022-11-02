@@ -9,17 +9,22 @@ import Foundation
 import SwiftUI
 
 struct Inventario:Equatable {
-    
+
     // Nota 02.10
     
     var ingInEsaurimento:[String] = []
     var ingEsauriti:[String] = []
+    var archivioNotaAcquisto: [String:String] = [:] // key:IdIngrediente || Value: Nota per l'acquisto
     
-    var cronologiaAcquisti:[String:[String]] = [:] // key = idIngrediente || Value = [date di acquisto]
+    var cronologiaAcquisti:[String:[String]] = [:] // key = idIngrediente || Value = [date di acquisto + nota] -> Creiamo una stringa combinata invece che una tupla e la scomponiamo con un algoritmo che separa la data dalla nota
+
     var lockedId:[String:[String]] = [:] // speculare a cronologiaAcquisti.Contiene per ogni chiava(data) un array degli id a cui è stato cambiato lo stato.
-    /// L'archivio ingredienti in esaurimento rende obsoleto l'uso di un archivio dell'inventario quando creiamo la lista della spesa. E' un dizionario che dovrà funzionare con una sola chiave, la data corrente. Funzionamento spiegato in nota vocale 01.10
+    
+    /// L'archivio ingredienti in esaurimento rende obsoleto l'uso di un archivio dell'inventario quando creiamo la lista della spesa. E' un dizionario che dovrà funzionare con una sola chiave, la data corrente.
     var archivioIngInEsaurimento: [String:[String]] = [:] // key:DataCorrente || value = [id ingredienti Esauriti depennati]
     
+    
+    // Method
     
     func allInventario() -> [String] {
         
@@ -32,10 +37,14 @@ struct Inventario:Equatable {
         
         let today = csTimeFormatter().data.string(from: Date())
         
-      //  return cronologiaAcquisti[today] ?? []
-        let inArrivo = cronologiaAcquisti.filter({
+       /*let inArrivo = cronologiaAcquisti.filter({
             $0.value.contains(today)
+        }) */
+        let inArrivo = cronologiaAcquisti.filter({
+            $0.value.contains(where: {$0.hasPrefix(today)})
         })
+        
+        
         return inArrivo.map({$0.key})
         
        /* var inArrivo:[String] = []
@@ -156,8 +165,12 @@ struct Inventario:Equatable {
             
             let today = csTimeFormatter().data.string(from: Date())
             
-            if key.contains(today) { return .inArrivo }
-            else { return .inStock }
+           /* if key.contains(today) { return .inArrivo }
+            else { return .inStock } */ // 14.10 modifica
+            let filterKey = key.filter({$0.hasPrefix(today)})
+            if filterKey.isEmpty { return .inStock}
+            else { return .inArrivo }
+
             
         }
         
@@ -181,10 +194,8 @@ struct Inventario:Equatable {
             
         case .inEsaurimento:
             self.ingInEsaurimento.append(idIngrediente) // usata nel menuInterattivo
-            
         case .esaurito:
             convertiInEsaurito(idIngrediente: idIngrediente) // usata nel menuInterattivo
-            
         case .inArrivo:
             convertiStatoInArrivo(id: idIngrediente) // usata in lista della spesa
         case .inStock:
@@ -203,11 +214,11 @@ struct Inventario:Equatable {
         
     }
     
-    private mutating func convertiStatoInArrivo(id:String) {
+   /* private mutating func convertiStatoInArrivoDEPRECATA(id:String) {
         
         let dataDiAcquisto = Date.now
         let dataInString = csTimeFormatter().data.string(from: dataDiAcquisto)
-        
+      
         if self.ingInEsaurimento.contains(id) {
             
             self.ingInEsaurimento.removeAll(where: {$0 == id})
@@ -234,6 +245,47 @@ struct Inventario:Equatable {
         
         self.cronologiaAcquisti[id]!.append(dataInString)
  
+    } */ // deprecata 14.10
+    private mutating func convertiStatoInArrivo(id:String) {
+        
+        let dataDiAcquisto = Date.now
+        // 14.10
+        let dataInString = csTimeFormatter().data.string(from: dataDiAcquisto)
+     
+        var dataPlusNota:String
+        
+        if let theKey = self.archivioNotaAcquisto[id] {
+            
+            dataPlusNota = theKey.hasPrefix(dataInString) ? theKey : dataInString
+            
+        } else {
+            dataPlusNota = dataInString
+        }
+        // end 14.10
+        
+     //   let dataPlusNota = "\(dataInString)-\(nota)"
+        // end Test
+        
+        if self.ingInEsaurimento.contains(id) {
+            
+            self.ingInEsaurimento.removeAll(where: {$0 == id})
+           
+            if self.archivioIngInEsaurimento[dataInString] != nil {
+                self.archivioIngInEsaurimento[dataInString]!.append(id)
+            } else {
+                self.archivioIngInEsaurimento = [dataInString:[id]]
+            }
+            
+        } else {
+            self.ingEsauriti.removeAll(where: {$0 == id})
+        }
+
+        guard self.cronologiaAcquisti[id] != nil else {
+           return self.cronologiaAcquisti[id] = [dataPlusNota]
+        }
+        
+        self.cronologiaAcquisti[id]!.append(dataPlusNota)
+
     }
     
     private mutating func convertiInEsaurito(idIngrediente:String) {
@@ -248,7 +300,7 @@ struct Inventario:Equatable {
         
     }
     
-    
+    /// ritorna la data dell'ultimo acquisto associato ad un idIngrediente
     func dataUltimoAcquisto(idIngrediente:String) -> String { // torna data in forma di stringa
         
       /*  var allDate:[TimeInterval:Date] = [:]
@@ -275,7 +327,15 @@ struct Inventario:Equatable {
         
         let last = self.cronologiaAcquisti[idIngrediente]?.last
         
-        return last ?? "nessuno"
+        // innesto 18.10
+     /*   guard last?.contains("|") ?? false else { return last ?? "nessuno"}
+        
+        let split = last?.split(separator: "|")
+        return String(split?[0] ?? "nessuno") */
+      return splitDateFromNote(stringa: last ?? "nessuno").data
+        
+        //
+     //   return last ?? "nessuno"
         
       /* guard let key = self.cronologiaAcquisti[idIngrediente] else { return "nessuno"}
         
@@ -285,6 +345,19 @@ struct Inventario:Equatable {
         
     }
     
+    /// riceve la stringa di una nota e ne separa le due parti, la data dalla nota in se.
+    func splitDateFromNote(stringa: String) -> (data:String,nota:String) {
+        
+        guard stringa.contains("|") else { return (stringa,"Nessuna Nota")}
+        
+        let split = stringa.split(separator: "|")
+        let data = String(split[0])
+        let nota = String(split[1])
+        return (data,nota)
+        
+    }
+    
+    /// ritorna la cronologia degli acquisti associati ad un idingrediente, ossia un array di date-note
     func logAcquisti(idIngrediente:String) -> [String] {
         
        /* var logDate:[String] = []
@@ -299,7 +372,31 @@ struct Inventario:Equatable {
        return self.cronologiaAcquisti[idIngrediente] ?? []
     }
     
-    enum TransitoScorte:String {
+    /// ricava la nota associato ad un id ed una data
+    func estrapolaNota(idIngrediente:String,currentDate:String) -> String {
+        
+        if let nota = self.archivioNotaAcquisto[idIngrediente] {
+            
+            if nota.hasPrefix(currentDate) {
+                let prefixCount = currentDate.count
+                var cleanNote = nota
+                cleanNote.removeFirst(prefixCount + 1) // plus One per eliminare il | di demarcazione che mi viene utile per separare gli elementi nella cronologia acqisti
+                return cleanNote
+            } else { return "" }
+            
+        } else { return "" }
+            
+        
+     //   return self.archivioNotaAcquisto[idIngrediente] ?? ""
+        
+    }
+    
+
+    
+    
+    enum TransitoScorte:String,MyProEnumPack_L0 {
+        
+        static var allCases:[TransitoScorte] = [.inStock,.inArrivo,.inEsaurimento,.esaurito]
         
         case inEsaurimento = "in esaurimento"
         case esaurito = "esaurite"
@@ -359,11 +456,11 @@ struct Inventario:Equatable {
             case .inStock:
                 return Color("SeaTurtlePalette_3")
             case .inEsaurimento:
-                return .yellow
+                return .yellow.opacity(0.7)
             case .esaurito:
                 return .red.opacity(0.6)
             case .inArrivo:
-                return .green
+                return .green.opacity(0.7)
             }
             
         }

@@ -29,9 +29,9 @@ struct CSEtichetta: View { // 21.09 --> Rimpiazza parecchio codice simile qua e 
             Text(text)
                 .font(.system(fontStyle, design: fontDesign, weight: fontWeight))
                 .foregroundColor(textColor)
-                
+          
         }
-        .padding(1)
+      //  .padding(1) // mi crea una distanza dal testo al margine ma anche dal margine a fuori (quest'ultima cosa in tante circostanze non m piace) 
         .padding(.trailing,4)
         .background(content: {
             RoundedRectangle(cornerRadius: 5.0)

@@ -9,6 +9,7 @@ import SwiftUI
 
 enum RowSize {
     case sintetico,ridotto,normale,ibrido
+    
 }
 
 struct DishModel_RowView: View {
@@ -88,7 +89,7 @@ struct DishModel_RowView: View {
                
                 
             } // chiuda VStack madre
-            .padding(.horizontal)
+            .padding(.horizontal,10)
                             
         } // chiusa Zstack Madre
         
@@ -105,7 +106,7 @@ struct DishModel_RowView: View {
 
             } // chiuda VStack madre
             .padding(.vertical,5)
-            .padding(.horizontal)
+            .padding(.horizontal,10)
             
         }
     }
@@ -147,7 +148,7 @@ struct DishModel_RowView: View {
                
                 
             } // chiuda VStack madre
-            .padding(.horizontal)
+            .padding(.horizontal,10)
                             
         } // chiusa Zstack Madre
         
@@ -173,7 +174,7 @@ struct DishModel_RowView: View {
                     .padding(.bottom,5)
 
             } // chiuda VStack madre
-            .padding(.horizontal)
+            .padding(.horizontal,10)
             
         } // chiusa Zstack Madre
       /*  .overlay(alignment: .bottomTrailing) {
@@ -267,11 +268,19 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbBadgeRow() -> some View {
         
-        let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
+        // 19.10
+      //  let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
+        let areAllBio = self.item.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.produzione, quality: .biologico)
+        let areAllLocal = self.item.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: .km0)
+        let areAllItalian = self.item.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: .italia)
+        
+        // end 19.10
         let isDelGiorno = self.viewModel.checkMenuDiSistemaContainDish(idPiatto: self.item.id, menuDiSistema: .delGiorno)
         let isAdviceByTheChef = self.viewModel.checkMenuDiSistemaContainDish(idPiatto: self.item.id, menuDiSistema: .delloChef)
   
-        let menuWhereIsIn = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.item.id).countWhereDishIsIn
+      /*  let menuWhereIsIn = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.item.id).countWhereDishIsIn */ // deprecata 19.10 - Indichiamo tutti i menu, anche quelli di sistema
+        let menuWhereIsIn = self.viewModel.allMenuContaining(idPiatto: self.item.id).countWhereDishIsIn
+        // end 19.10
         
         let isIbrido = self.rowSize == .ibrido
         
@@ -348,6 +357,33 @@ struct DishModel_RowView: View {
                         } */ // Tolto 04.10
                     }
                 
+                    if !isIbrido {
+                        
+                        if areAllItalian {
+                            
+                            CSEtichetta(
+                                text: "Made",
+                                textColor: Color.white,
+                                image: "🇮🇹",
+                                imageColor: nil,
+                                imageSize: .large,
+                                backgroundColor: Color.white.opacity(0.5),
+                                backgroundOpacity: 1.0)
+                        }
+                        
+                        if areAllLocal {
+                            
+                            CSEtichetta(
+                                text: "locale",
+                                textColor: Color.white,
+                                image: "💯",
+                                imageColor: nil,
+                                imageSize: .large,
+                                backgroundColor: Color.yellow.opacity(0.5),
+                                backgroundOpacity: 1.0)
+                        }
+                    }
+                    
                     if isDelGiorno {
                         
                         CSEtichetta(
@@ -397,10 +433,16 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbIntestazioneDishRow() -> some View {
         
+        let value:Font = {
+           
+            if self.rowSize == .normale || self.rowSize == .ibrido { return .title2}
+            else { return .title3}
+        }()
+        
         HStack(alignment:.bottom) {
             
             Text(self.item.intestazione)
-                .font(.title2)
+                .font(value)
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)
@@ -427,7 +469,7 @@ struct DishModel_RowView: View {
         
         HStack(alignment:.center,spacing: 3) {
             
-            Text(mediaRating) // media
+            Text("\(mediaRating,specifier: "%.1f")") // media
                 .fontWeight(.light)
                 .foregroundColor(Color("SeaTurtlePalette_1"))
                 .padding(.horizontal,5)

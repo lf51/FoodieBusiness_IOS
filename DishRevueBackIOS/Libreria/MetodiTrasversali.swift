@@ -205,3 +205,65 @@ func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> 
     
     return ("\(stringaAllergeni)\(stringaCongeSurge)\(metodoProduzione)")
 }
+
+/// ritorna il valore della media Pesata di un array di Recensioni
+func csCalcoloMediaRecensioni(elementi:[DishRatingModel]) -> Double {
+    
+    let votiEPesi = elementi.map({$0.votoEPeso()})
+       
+        var sommaVoti: Double = 0.0
+        var sommaPesi: Double = 0.0
+        
+        for (v,p) in votiEPesi {
+            
+            let votoPesato = v * p
+            sommaVoti += votoPesato
+            sommaPesi += p
+        }
+        
+        return sommaVoti / sommaPesi
+
+}
+
+/// somma dei valori di una collection di valori Double
+func csSommaValoriCollection(collectionValue:[Double]) -> Double {
+    
+    var somma:Double = 0.0
+    
+    for value in collectionValue {
+        
+        somma += value
+    }
+    return somma
+}
+
+/// ritorna una medeglia per luna classifica generica, posizioni da 0, equivalente al primo posto, al 2, equivalente al terzo posto
+func csRatingMedalReward(position:Int) -> String {
+    
+    if position == 0 { return "🥇" }
+    else if position == 1 { return "🥈"}
+    else if position == 2 { return "🥉" }
+    else { return "" }
+}
+
+/// estrapola l'ora da una data e la trasforma in un numero Assoluto (è il numero di minuti totale) utile per un confronto fra orari
+func csTimeConversione(data:Date) -> Int {
+    
+    let calendario = Calendar(identifier: .gregorian)
+    
+    let componentiData = calendario.dateComponents([.hour,.minute], from: data)
+    let valoreAssoluto = (componentiData.hour! * 60) + componentiData.minute!
+    return valoreAssoluto
+}
+
+func csTimeReverse(value:Int) -> Date {
+    
+    let minute = value % 60
+    let hour = (value - minute) / 60
+    
+    let calendario = Calendar(identifier: .gregorian)
+    let timeComponent = DateComponents(hour: hour, minute: minute)
+    let reversingDate = calendario.date(from: timeComponent) ?? Date.now
+    
+    return reversingDate
+}

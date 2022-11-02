@@ -9,7 +9,9 @@ import Foundation
 
 enum ProvenienzaIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
  
-    static var allCases: [ProvenienzaIngrediente] = [.km0, .italia, .europa, .restoDelMondo]
+    // Nota Vocale 18.10
+    
+    static var allCases: [ProvenienzaIngrediente] = [.km0, .italia/*, .europa, .restoDelMondo*/]
     static var defaultValue: ProvenienzaIngrediente = .noValue
     
     var id: String { self.createId() }

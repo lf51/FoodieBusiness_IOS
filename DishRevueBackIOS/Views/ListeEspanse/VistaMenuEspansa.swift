@@ -68,7 +68,7 @@ struct VistaMenuEspansa: View {
     
                             let containTheDish = model.rifDishIn.contains(currentDish.id)
                             
-                            model.returnModelRowView()
+                            model.returnModelRowView(rowSize: .normale)
                                 .opacity(containTheDish ? 1.0 : 0.6)
                                 .overlay(alignment: .bottomTrailing) {
                                     

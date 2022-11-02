@@ -30,18 +30,18 @@ struct MenuListView: View {
                     CSDivider()
                     
                     ScrollView(showsIndicators:false) {
-                        ForEach($viewModel.allMyMenu) { $menu in
+                        ForEach(viewModel.allMyMenu) { menu in
                             
                             
                             GenericItemModel_RowViewMask(model: menu) {
                                 
                                 menu.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
                                 
-                                if !menu.tipologia.isDiSistema() {
-                                    vbMenuInterattivoModuloCambioStatus(myModel: $menu)
+                              //  if !menu.tipologia.isDiSistema() {
+                                    vbMenuInterattivoModuloCambioStatus(myModel: menu,viewModel: viewModel)
                                     
                                     vbMenuInterattivoModuloEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
-                                }
+                              //  }
     
                                 vbMenuInterattivoModuloTrash(currentModel: menu, viewModel: viewModel)
                             }

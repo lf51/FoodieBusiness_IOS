@@ -29,7 +29,7 @@ protocol MyProStarterPack_L1:MyProStarterPack_L0 {
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM,[Self]>
 }
 
-protocol MyProDescriptionPack_L0 {
+protocol MyProDescriptionPack_L0 { 
 
     var descrizione: String { get set }
 }
@@ -38,6 +38,7 @@ protocol MyProSearchPack_L0 {
     
     /// StringResearch per le liste
     func modelStringResearch(string: String) -> Bool
+    func modelPropertyCompare(filterProperty:FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool
 }
 
 protocol MyProStatusPack_L0 {
@@ -60,7 +61,7 @@ protocol MyProVisualPack_L0 {
     associatedtype RowView: View
     associatedtype InteractiveMenuContent: View
     
-    func returnModelRowView() -> RowView
+    func returnModelRowView(rowSize:RowSize) -> RowView
     /// Bottoni per il menu Interattivo specifici del modello
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> InteractiveMenuContent
 }
@@ -95,9 +96,9 @@ protocol MyProOrganizerPack_L0: Hashable {
 
 // fine spazio MyPro
 
-protocol MyProToolPack_L0:MyProStarterPack_L1, MyProStatusPack_L0 { }
+protocol MyProToolPack_L0:MyProStatusPack_L1,MyProVisualPack_L0 { }
 
-
+protocol MyProToolPack_L1:MyProToolPack_L0,MyProSearchPack_L0 { }
 
 
 

@@ -10,7 +10,7 @@ import SwiftUI
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1 /*MyModelStatusConformity */ {
+struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1 /*MyModelStatusConformity */ {
    
   static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
         return \.allMyIngredients
@@ -49,11 +49,37 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
 
     // Method
     
+    // Protocollo di ricerca
     func modelStringResearch(string: String) -> Bool {
-        self.intestazione.lowercased().contains(string)
+        
+        guard string != "" else { return true }
+        
+        let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+
+        return  self.intestazione.lowercased().contains(ricerca)
+
+    } // La teniamo nel modello per permettere una maggiore customizzazione nella ricerca
+    
+    
+    func modelPropertyCompare(filterProperty: FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool {
+        
+        // 02.11 Abbiamo spostato tutte le funzioni di compare direttamente nel filterPropertyModel per avere uniformità e non duplicare codice
+        
+        self.modelStringResearch(string: filterProperty.stringaRicerca) &&
+        filterProperty.comparePropertyToProperty(local: self.provenienza, filter: \.provenienzaING) &&
+        filterProperty.comparePropertyToProperty(local: self.produzione, filter: \.produzioneING) &&
+        filterProperty.comparePropertyToProperty(local: self.origine, filter: \.origineING) &&
+        filterProperty.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: \.conservazioneING) &&
+        filterProperty.compareStatusTransition(localStatus: self.status) &&
+        filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) &&
+        filterProperty.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: \.allergeniIn)
+       
+
     }
     
-    func returnModelRowView() -> some View {
+    //
+    func returnModelRowView(rowSize:RowSize) -> some View {
+        // rowSize da implementare
         IngredientModel_RowView(item: self)
     }
 
@@ -201,3 +227,7 @@ struct IngredientModel:MyProToolPack_L0,MyProVisualPack_L1,MyProDescriptionPack_
         self.provenienza != .defaultValue
     }
 }
+
+
+
+

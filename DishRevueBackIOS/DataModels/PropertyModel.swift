@@ -83,7 +83,8 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
     } */ // deprecata
     
     
-    func returnModelRowView() -> some View {
+    func returnModelRowView(rowSize:RowSize) -> some View {
+        // row size non implementata
         PropertyModel_RowView(itemModel: self)
     }
     

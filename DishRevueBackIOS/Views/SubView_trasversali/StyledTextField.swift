@@ -198,7 +198,8 @@ struct CSTextField_4: View {
       /*      TextField(text: $textFieldItem, label: {
                 Text("\(0,format: .currency(code: "EUR"))")
             })*/
-            TextField (self.placeHolder, text: $textFieldItem)
+          TextField (self.placeHolder, text: $textFieldItem)
+          
                 .keyboardType(keyboardType!)
                 ._tightPadding()
                 .accentColor(Color.white)

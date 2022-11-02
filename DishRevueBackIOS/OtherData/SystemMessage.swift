@@ -17,6 +17,10 @@ enum SystemMessage {
     case formattazioneInserimentoVeloce
     case dieteCompatibili
     case elencoCategorieMenu
+    case monitorRecensioni
+    case infoScheduleServizio
+    case cambioStatusPreparazioni
+    case timerMenu
     
     case noValue
     
@@ -44,6 +48,16 @@ enum SystemMessage {
         case .elencoCategorieMenu:
             return "Al pubblico saranno visibili solo le categorie che contengono dei piatti.\nL'utente può eliminare quelle superflue, modificare le esistenti e stabilire l'ordine di visualizzazione nei menu."
             
+        case .monitorRecensioni:
+            return "Totali -> Numero complessivo di recensioni rilasciate.\n\n24H -> Numero di recensioni rilasciate nelle ultime 24 ore.\n\nMedia -> Media globale\n\nMedia-L10 -> Media delle ultime dieci recensioni."
+            
+        case .infoScheduleServizio:
+            return "Gli orari di apertura e chiusura sono dedotti dai menu disponibili.\n\n I menu con data esatta, dunque anche il Menu del Giorno e dello Chef, non sono presi in cosiderazione per la Time Schedule, e sono indicati a parte."
+            
+        case .cambioStatusPreparazioni:
+            return "Quando un ingrediente è posto nello stato di in Pausa o Archiviato, le preparazioni che lo contengono possono essere passate in automatico allo stato di in Pausa (sempre, mai, o previa richiesta).\n\n Le preparazioni in Pausa sono invisibili al cliente. "
+        case .timerMenu:
+            return "L'utente può scegliere quanti minuti prima mostrare al cliente il count down della messa offline di un menu."
             
             
         case .noValue:

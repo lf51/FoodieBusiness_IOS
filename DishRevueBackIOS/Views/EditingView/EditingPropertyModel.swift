@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct EditingPropertyModel: View {
     
@@ -14,13 +15,14 @@ struct EditingPropertyModel: View {
     let backgroundColorView: Color
     
     @State private var itemModelChanged: Bool = false
+    @State private var modelSize: RowSize = .sintetico
   
     init(itemModel: PropertyModel, backgroundColorView: Color) {
         _itemModel = State(wrappedValue: itemModel)
         self.backgroundColorView = backgroundColorView
         
     }
-
+    
     var body: some View {
         
         CSZStackVB(title: itemModel.intestazione, backgroundColorView: backgroundColorView) {
@@ -33,62 +35,130 @@ struct EditingPropertyModel: View {
 
                     BoxDescriptionModel_Generic(itemModel: $itemModel, labelString: "Descrizione Attività", disabledCondition: false)
   
-                   VStack(alignment:.leading) {
+                  /* VStack(alignment:.leading) {
                         
+                       let allMenuActive = self.viewModel.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
+                       
                        CSLabel_1Button(
-                        placeHolder: "Menu Attivi",
+                        placeHolder: "Menu Disponibli(\(allMenuActive.count))",
                         imageNameOrEmojy: "scroll",
                         backgroundColor: Color.black)
-                       /* CSLabel_2Button(
-                          placeHolder: "Menu In",
-                          imageName: "scroll",
-                          backgroundColor: Color.black,
-                          toggleBottoneTEXT: $openMenuList,
-                          testoBottoneTEXT: "Edit")
-                            .disabled(wannaAddDescription!) */
-
+        
                             ScrollView(.horizontal, showsIndicators: false) {
                                 
                                 HStack {
-                                    
-                                    ForEach($viewModel.allMyMenu.sorted{$0.wrappedValue.intestazione < $1.wrappedValue.intestazione}) { $myMenu in
+
+                                    ForEach(allMenuActive) { myMenu in
                                         
-                                        vbCambioStatusMenuIn(myMenu: $myMenu)
-                                        
-                                      /*  GenericItemModel_RowViewMask(
-                                            model: $myMenu.wrappedValue,
-                                            backgroundColorView: backgroundColorView) {
-                                                vbStatusButton(model: $myMenu)
-                                            } */
-                                        
-                                        
-                                         
-                                       }
-                                    
-                                    
-                                 /*   ForEach(itemModel.menuIn) { myMenu in
-                                     
-                                        GenericItemModel_RowViewMask(
-                                            model: myMenu,
-                                            backgroundColorView: backgroundColorView) {
-                                               
-                                                Text("Archivia")
-                                                Text("In Pausa")
+                                        GenericItemModel_RowViewMask(model: myMenu) {
+                                            vbMenuInterattivoModuloCambioStatus(myModel: myMenu, viewModel: self.viewModel)
                                             }
-                                      
-                                    } */
+                                        
+                                       }
+         
                                 }
                             }
+                    } */
+                    
+                    VStack(spacing:10) {
+                        let allMenuActive = self.viewModel.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
+                        
+                        let allMenuDeActive = self.viewModel.allMyMenu.filter({
+                            $0.status.checkStatusTransition(check: .inPausa) ||
+                            $0.status.checkStatusTransition(check: .archiviato)
+                        })
+                        
+                        DynamicScrollSizeMM(
+                            label: "Menu Disponibli",
+                            menuCollection: allMenuActive)
+                        
+                        DynamicScrollSizeMM(
+                            label: "in-Pausa & Archiviati",
+                            menuCollection: allMenuDeActive)
                     }
+                    
+                  /*  VStack(alignment:.leading) {
+                         
+                        let allMenuDeActive = self.viewModel.allMyMenu.filter({
+                            $0.status.checkStatusTransition(check: .inPausa) ||
+                            $0.status.checkStatusTransition(check: .archiviato)
+                        })
+                        
+                      /*  CSLabel_1Button(
+                            placeHolder: "Menu in-Pausa & Archiviati(\(allMenuDeActive.count))",
+                         imageNameOrEmojy: "scroll",
+                         backgroundColor: Color.black) */
+                        
+                        CSLabel_conVB(
+                        placeHolder: "Menu in-Pausa & Archiviati(\(allMenuDeActive.count))",
+                        imageNameOrEmojy: "scroll",
+                        backgroundColor: Color.black) {
+                             
+                         //  let activation = self.modelSize == .normale
+                            CSButton_image(
+                                activationBool:self.modelSize == .normale ,
+                                frontImage:  "arrow.down.and.line.horizontal.and.arrow.up",
+                                backImage: "arrow.up.and.line.horizontal.and.arrow.down",
+                                imageScale: .medium,
+                                backColor: Color("SeaTurtlePalette_4"),
+                                frontColor: Color("SeaTurtlePalette_3")){
+                                    withAnimation {
+                                       // self.changeRowSizeAction()
+                                    }
+                                }
+ 
+                        }
+                        
+         
+                             ScrollView(.horizontal, showsIndicators: false) {
+                                 
+                                 HStack {
+
+                                     ForEach(allMenuDeActive) { myMenu in
+ 
+                                         GenericItemModel_RowViewMask(model: myMenu,rowSize: self.modelSize) {
+                                                 vbMenuInterattivoModuloCambioStatus(myModel: myMenu, viewModel: self.viewModel)
+                                                 }
+                                             
+                                         
+                                         
+                                        }
+          
+                                 }
+                             }
+                     } */
+                    
                     
                     VStack(alignment:.leading) {
                         
-                        CSLabel_1Button(
-                              placeHolder: "Servizio",
+                      /*  CSLabel_1Button(
+                              placeHolder: "Servizio Struttura",
                               imageNameOrEmojy: "info.circle",
-                              backgroundColor: Color.black )
+                              backgroundColor: Color.black ) */
                           
-                         estrapolaGiorniChiusura()
+                        CSLabel_conVB(
+                            placeHolder: "Schedule Servizio",
+                            imageNameOrEmojy: "info.circle",
+                            backgroundColor: Color.black) {
+                       
+                                HStack {
+                                    
+                                    let todayClose = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)}).isEmpty
+                                  
+                                    Text("Oggi")
+
+                                    Text(todayClose ? "Chiuso" : "Aperto")
+                                        .fontWeight(.semibold)
+                                        
+                                }
+                                .italic()
+                                .foregroundColor(Color("SeaTurtlePalette_2"))
+                            }
+                        
+                        
+                        ScheduleServizio()
+                        
+                       //  estrapolaGiorniChiusura()
               
                     }
                                        
@@ -98,15 +168,6 @@ struct EditingPropertyModel: View {
                 
             } // Chiusa VStack Madre
             .padding(.horizontal)
-            
-          /* if openMenuList! {
-                
-                SelettoreMyModel<_,MenuModel>(
-                    itemModel: $itemModel,
-                    allModelList: ModelList.propertyMenuList,
-                    closeButton: $openMenuList)
-                
-            } */
             
         } // Chiusa ZStack Madre
         .onChange(of: itemModel, perform: { _ in
@@ -149,7 +210,7 @@ struct EditingPropertyModel: View {
     
     // Method
     
-    
+  
     
     
     private func saveEdit() {
@@ -158,6 +219,10 @@ struct EditingPropertyModel: View {
         self.itemModelChanged = false
     }
  
+   
+    
+    
+    /*
     private func estrapolaGiorniChiusura() -> some View {
         
         var giorniServizio:[GiorniDelServizio] = []
@@ -221,8 +286,9 @@ struct EditingPropertyModel: View {
                 
             }
         }
-    }
+    } */ // Deprecata 28.10
     
+    /*
     /// Gestisce il cambio di Status delle rowMask dei Menu In EditingPropertyModel
     @ViewBuilder private func vbCambioStatusMenuIn(myMenu: Binding<MenuModel>) -> some View {
         
@@ -282,36 +348,95 @@ struct EditingPropertyModel: View {
                 }
         }
                 else {EmptyView()}
-    }
+    } */ // Deprecato 28.10
     
 }
 
 
 
-/*
+
 struct EditingPropertyModel_Previews: PreviewProvider {
     
-    @State static var testProperty: PropertyModel = PropertyModel(
+   /* @State static var testProperty: PropertyModel = PropertyModel(
         intestazione: "Osteria del Vicolo",
         cityName: "Sciacca",
         coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
         webSite: "https://osteriadelcorso.com",
         phoneNumber: "3337213895",
         streetAdress: "via roma",
-        numeroCivico: "21")
+        numeroCivico: "21") */
+    
+    static var testProperty = property_Test
     
     static var previews: some View {
 
-       NavigationView {
-            EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color("SeaTurtlePalette_1"))
-        }
+       NavigationStack {
+            EditingPropertyModel(itemModel: testProperty, backgroundColorView: Color("SeaTurtlePalette_1"))
+       }.environmentObject(testAccount)
       //  .navigationBarTitleDisplayMode(.large)
        // .navigationViewStyle(StackNavigationViewStyle())
         
     }
 }
-*/
 
+private struct DynamicScrollSizeMM:View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    let label:String
+    let menuCollection:[MenuModel]
+   
+    @State private var modelSize:RowSize = .sintetico
+    
+    var body: some View {
+                    
+            VStack(alignment:.leading) {
+                
+                let disableButton:Bool = menuCollection.isEmpty
+                
+                CSLabel_conVB(
+                placeHolder: "\(label)(\(menuCollection.count))",
+                imageNameOrEmojy: "scroll",
+                backgroundColor: Color.black) {
+                     
+                        CSButton_image(
+                            activationBool:self.modelSize == .normale ,
+                            frontImage:  "arrow.down.and.line.horizontal.and.arrow.up",
+                            backImage: "arrow.up.and.line.horizontal.and.arrow.down",
+                            imageScale: .medium,
+                            backColor: Color("SeaTurtlePalette_4"),
+                            frontColor: Color("SeaTurtlePalette_3")){
+                                withAnimation {
+                                    self.changeRowSizeAction()
+                                }
+                            }
+                            .opacity(disableButton ? 0.6 : 1.0)
+                            .disabled(disableButton)
 
+                }
+                
+                     ScrollView(.horizontal, showsIndicators: false) {
+                         
+                         HStack {
 
+                             ForEach(menuCollection) { myMenu in
 
+                                 GenericItemModel_RowViewMask(model: myMenu,rowSize: self.modelSize) {
+                                         vbMenuInterattivoModuloCambioStatus(myModel: myMenu, viewModel: self.viewModel)
+                                         }
+
+                                }
+
+                         }
+                     }
+             }
+    
+    }
+    
+    // Method
+    private func changeRowSizeAction() {
+        
+        self.modelSize = self.modelSize == .normale ? .sintetico : .normale
+    }
+    
+}

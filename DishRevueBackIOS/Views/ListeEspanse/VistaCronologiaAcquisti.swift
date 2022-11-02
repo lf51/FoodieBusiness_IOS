@@ -15,7 +15,7 @@ struct VistaCronologiaAcquisti: View {
     
     var body: some View {
         
-        CSZStackVB(title: "Log Acquisti", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: ingrediente.intestazione, backgroundColorView: backgroundColorView) {
             
             VStack(alignment:.leading) {
                 
@@ -24,11 +24,11 @@ struct VistaCronologiaAcquisti: View {
                 
                 HStack {
                     
-                    Text(ingrediente.intestazione)
+                    Text("Cronologia degli Acquisti")
                         .italic()
                         .fontWeight(.light)
                         .font(.title2)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color("SeaTurtlePalette_4"))
                   
                     Spacer()
                 }
@@ -37,14 +37,17 @@ struct VistaCronologiaAcquisti: View {
                     
                     ForEach(Array(logDateEnumerated),id:\.element) { position,stamp in
                         
+                        let(time,note) = self.viewModel.inventarioScorte.splitDateFromNote(stringa: stamp)
+                        
                         VStack(alignment:.leading,spacing:5) {
                             
                             HStack(alignment:.bottom) {
                                 Text("\(position + 1).")
                                     .font(.system(.headline, design: .monospaced, weight: .bold))
                                     .foregroundColor(Color.gray)
+                                   // .foregroundColor(Color("SeaTurtlePalette_4"))
                                 
-                                Text("\(stamp)")
+                                Text("\(time)")
                                     .italic()
                                     .font(.system(.headline, design: .monospaced, weight: .bold))
                                     .foregroundColor(Color.black.opacity(0.7))
@@ -57,7 +60,16 @@ struct VistaCronologiaAcquisti: View {
                                         .foregroundColor(Color("SeaTurtlePalette_3"))
                                     
                                 }
+                              
+                                
                             }
+                            
+                            Text(note)
+                                .italic()
+                                .font(.system(.subheadline, design: .default, weight: .light))
+                                .foregroundColor(Color.black.opacity(0.8))
+                            
+                            
                             Divider()
                         }
                        
@@ -73,6 +85,17 @@ struct VistaCronologiaAcquisti: View {
             .padding(.horizontal)
         }
     }
+    
+   /* private func splitDateFromNote(stringa: String) -> (data:String,nota:String) {
+        
+        guard stringa.contains("|") else { return (stringa,"Nessuna Nota")}
+        
+        let split = stringa.split(separator: "|")
+        let data = String(split[0])
+        let nota = String(split[1])
+        return (data,nota)
+        
+    } */
 }
 
 struct VistaCronologiaAcquisti_Previews: PreviewProvider {

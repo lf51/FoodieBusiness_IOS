@@ -8,9 +8,9 @@
 import Foundation
 import SwiftUI
 
-enum StatusTransition:Equatable {
+enum StatusTransition:MyProEnumPack_L0,Equatable {
     
-  //  static var allCases: [StatusTransition] = [.pubblico,.inPausa,.archiviato]
+    static var allCases: [StatusTransition] = [.disponibile,.inPausa,.archiviato]
  //   static var defaultValue: StatusTransition = .archiviato
     
     case disponibile // Rimette in moto da una Pausa
@@ -111,6 +111,16 @@ enum StatusModel:Equatable { // vedi Nota Consegna 17.07
         }
         
     }
+    
+  /*  func estrapolaStatusTransition() -> StatusTransition? {
+        
+        switch self {
+        case .bozza(let statusTransition):
+            return statusTransition
+        case .completo(let statusTransition):
+            return statusTransition
+        }
+    } */
     
 
 }

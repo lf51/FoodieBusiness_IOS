@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum TipoDieta:Identifiable /*: MyEnumProtocol,MyEnumProtocolMapConform*/ {
+enum TipoDieta:Identifiable,MyProEnumPack_L0 /*: MyEnumProtocol,MyEnumProtocolMapConform*/ {
 
   //  var intestazione: String {get{ self.simpleDescription() } set{ }}
   //  var descrizione: String { get {self.extendedDescription() ?? "noDescription"} set { } }

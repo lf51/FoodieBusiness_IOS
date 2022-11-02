@@ -11,8 +11,8 @@ struct DishRatingListView: View {
     
     let dishTitle: String
     let dishRating: [DishRatingModel]
-    let ratingsCount: String
-    let mediaRating: String
+    let ratingsCount: Int
+    let mediaRating: Double
     let backgroundColorView: Color
     
     @State private var minMaxRange: (Double,Double) = (0.0,10.0)
@@ -42,11 +42,11 @@ struct DishRatingListView: View {
                     
                     VStack {
                         
-                        Text(mediaRating)
+                        Text("\(mediaRating)")
                             .fontWeight(.black)
                             .font(.largeTitle)
                             .foregroundColor(Color("SeaTurtlePalette_3"))
-                        Text("\(self.ratingsCount) recensioni")
+                        Text("\(ratingsCount) recensioni")
                             .font(.subheadline)
                             .foregroundColor(Color("SeaTurtlePalette_3"))
                     }
