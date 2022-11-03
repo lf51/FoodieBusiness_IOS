@@ -179,17 +179,21 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
 
         return  self.intestazione.lowercased().contains(ricerca)
-        
+        // inserire la ricerca degli ingredienti
     }
     
     func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
         
-        modelStringResearch(string: filterProperty.stringaRicerca) &&
+        self.modelStringResearch(string: filterProperty.stringaRicerca) &&
         filterProperty.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: \.percorsoPRP) &&
         filterProperty.compareStatusTransition(localStatus: self.status) &&
         filterProperty.compareCollectionToCollection(localCollection: self.calcolaAllergeniNelPiatto(viewModel: readOnlyVM), filterCollection: \.allergeniIn) &&
         filterProperty.compareCollectionToCollection(localCollection: self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia, filterCollection: \.dietePRP)  &&
-        filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM)
+        filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) &&
+        filterProperty.compareCollectToCollectIntero(localCollection: self.allIngredientsRif(), filterCollection: \.rifIngredientiPRP) &&
+        self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.produzione, quality: filterProperty.produzioneING) &&
+        self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.provenienza, quality: filterProperty.provenienzaING) &&
+        filterProperty.comparePropertyToProperty(local: self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM), filter: \.basePRP)
         
     }
     
@@ -373,13 +377,24 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         return condition
     }
     
+    /// Ritorna tutti i rif degli ingredienti contenuti nel piatto, senza badare allo status, ritorna i principali, i secondari, e i sostituti
+    private func allIngredientsRif() -> [String] {
+        
+        let allIDSostituti = self.elencoIngredientiOff.values
+        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari + allIDSostituti
+        
+        return allTheIngredients
+    }
+    
     /// Controlla la presenza dell'idIngrediente sia fra gl iingredienti Principali e Secondari, sia fra i sostituti
     func checkIngredientsIn(idIngrediente:String) -> Bool {
         
-        let allIDSostituti = self.elencoIngredientiOff.values
+      /*  let allIDSostituti = self.elencoIngredientiOff.values
    
-        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari + allIDSostituti
-        let condition = allTheIngredients.contains(where: {$0 == idIngrediente })
+        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari + allIDSostituti */
+       // let condition = allTheIngredients.contains(where: {$0 == idIngrediente })
+        let allTheIngredients = self.allIngredientsRif()
+        let condition = allTheIngredients.contains(idIngrediente)
         
         return condition
 
@@ -613,6 +628,14 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         return true
     }*/ // 19.10 deprecata - sostituito da una generica
     
+    private func preCallHasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T?) -> Bool {
+        
+        guard quality != nil else { return true }
+        
+       return self.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: kpQuality, quality: quality!)
+        
+    }
+    
     func hasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T) -> Bool {
         
         let allIngredient = self.allIngredientsAttivi(viewModel: viewModel)
@@ -724,6 +747,30 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         }
     
         return (dieteOk,dieteOkInStringa)
+    }
+    
+    /// Calcola se la preparazione è a base di carne, pesce, o verdure
+    func calcolaBaseDellaPreparazione(readOnlyVM:AccounterVM) -> BasePreparazione {
+        
+        let allING = self.allIngredientsAttivi(viewModel: readOnlyVM)
+        let allInGMapped = allING.map({$0.origine})
+        
+        guard allInGMapped.contains(.animale) else { return .vegetale }
+        
+        let allergeneIn = allING.map({$0.allergeni})
+        
+        for arrAll in allergeneIn {
+            
+            if arrAll.contains(where: {
+                $0 == .pesce ||
+                $0 == .molluschi ||
+                $0 == .crostacei
+            }) { return .pesce }
+            else { continue }
+        }
+    
+        return .carne
+        
     }
     
     /// ritorna true se tutte le proprietà optional sono state compilate, e dunque il modello è completo.
@@ -859,6 +906,39 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         // trend completezza 1 negativo 2 positivo
         return (negative,positive,topRange,complete,trendValue,trendComplete)
     }*/ //deprecata 21.10 - messa nel viewModel. Un metodo unico per analizzare il singolo piatto e l'intero comparto recensioni
+    
+    
+    enum BasePreparazione:MyProEnumPack_L0 {
+        
+        static var allCase:[BasePreparazione] = [.vegetale,.carne,.pesce]
+        
+        case vegetale,carne,pesce
+        
+        func simpleDescription() -> String {
+            
+            switch self {
+            case .vegetale:
+                return "Verdure"
+            case .carne:
+                return "Carne"
+            case .pesce:
+                return "Pesce"
+            }
+        }
+        
+        func imageAssociate() -> String {
+            
+            switch self {
+            case .vegetale:
+                return "🥗"
+            case .carne:
+                return "🥩"
+            case .pesce:
+                return "🍤"
+            }
+
+        }
+    }
     
 }
 

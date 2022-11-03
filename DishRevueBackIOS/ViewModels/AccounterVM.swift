@@ -1005,10 +1005,10 @@ struct FilterPropertyModel {
     var status:[StatusTransition] = [] { willSet { countManage(newValue: newValue, oldValue: status) }}
     
     // Proprietà di filtro Ingrediente
-    var provenienzaING:ProvenienzaIngrediente?
-    var produzioneING:ProduzioneIngrediente?
-    var conservazioneING:[ConservazioneIngrediente] = []
-    var origineING:OrigineIngrediente?
+    var provenienzaING:ProvenienzaIngrediente? {willSet {countManageSingle(newValue: newValue, oldValue: provenienzaING)}}
+    var produzioneING:ProduzioneIngrediente? {willSet {countManageSingle(newValue: newValue, oldValue: produzioneING)}}
+    var conservazioneING:[ConservazioneIngrediente] = [] { willSet { countManage(newValue: newValue, oldValue: conservazioneING) }}
+    var origineING:OrigineIngrediente? {willSet {countManageSingle(newValue: newValue, oldValue: origineING)}}
    
     
     // In Comune fra Modelli
@@ -1020,12 +1020,12 @@ struct FilterPropertyModel {
     var percorsoPRP:[DishModel.PercorsoProdotto] = [] { willSet { observingPercorso(newValue: newValue, oldValue: percorsoPRP) }}
     
     var dietePRP:[TipoDieta] = [] { willSet { countManage(newValue: newValue, oldValue: dietePRP) }}
-   // var rifIngredientiPRP:[String] = []
+    var rifIngredientiPRP:[String] = [] { willSet { countManageStringCollection(newValue: newValue, oldValue: rifIngredientiPRP) }}
    // var eseguibilePRP:Bool?
-    
+    var basePRP:DishModel.BasePreparazione? {willSet {countManageSingle(newValue: newValue, oldValue: basePRP)}}
  
     // Proprietà di filtro Menu
-    
+    var giornoServizio:GiorniDelServizio? {willSet {countManageSingle(newValue: newValue, oldValue: giornoServizio)}}
     // Method
     
    /* func compareBoolProperty(local:Bool,filter:KeyPath<Self,Bool?>) -> Bool {
@@ -1034,6 +1034,24 @@ struct FilterPropertyModel {
         guard filterBool != nil else { return true }
         return local == filterBool
     } */
+    
+    mutating func countManageSingle<P:MyProEnumPack_L0>(newValue:P?,oldValue:P?)  {
+        var value:Int = 0
+        
+        if newValue == nil { value = -1 }
+        else if oldValue == nil { value = 1 }
+        else { value = 0 }
+        
+        self.countChange += value
+      
+    }
+    
+    mutating func countManageStringCollection(newValue:[String],oldValue:[String])  {
+        
+        let value = newValue.count - oldValue.count
+        self.countChange += value
+      
+    }
     
     mutating func countManage<P:MyProEnumPack_L0>(newValue:[P],oldValue:[P])  {
         
@@ -1050,6 +1068,25 @@ struct FilterPropertyModel {
       
     }
  
+    // Metodi comparazione Per filtraggio
+    
+    /// Verifica che tutti gli elementi di una collezione filtro siano all'interno di una collezione da filtrare
+    func compareCollectToCollectIntero(localCollection:[String],filterCollection:KeyPath<Self,[String]>) -> Bool {
+        
+        let filterCollect = self[keyPath: filterCollection]
+        
+        guard filterCollect != [] else { return true }
+        
+        for element in filterCollect {
+            
+            if localCollection.contains(element) { continue }
+            else { return false }
+        }
+        
+        return true
+
+    }
+    
      func comparePropertyToProperty<P:MyProEnumPack_L0>(local:P,filter:KeyPath<Self,P?>) -> Bool {
         
         let filterProp = self[keyPath: filter]
@@ -1068,6 +1105,16 @@ struct FilterPropertyModel {
             
     }
     
+    func compareCollectionToProperty<P:MyProEnumPack_L0>(localCollection:[P],filterProperty:KeyPath<Self,P?>) -> Bool {
+        
+        let filterProp = self[keyPath: filterProperty]
+        
+        guard filterProp != nil else { return true }
+        
+        return localCollection.contains(filterProp!)
+            
+    }
+    
     func compareCollectionToCollection<P:MyProEnumPack_L0>(localCollection:[P],filterCollection:KeyPath<Self,[P]>) -> Bool {
         
         let filterCollect = self[keyPath: filterCollection]
@@ -1080,6 +1127,7 @@ struct FilterPropertyModel {
         }
         
         return false
+      //  return localCollection.contains(filterCollect)
     }
     
     func compareStatusTransition(localStatus:StatusModel) -> Bool {

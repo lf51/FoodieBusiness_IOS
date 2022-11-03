@@ -14,6 +14,7 @@ struct BodyListe_Generic<M:MyProToolPack_L1>:View {
     @Binding var filterProperty:FilterPropertyModel
     let containerKP:WritableKeyPath<AccounterVM,[M]>
     let navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>
+    
     var body: some View {
         
         VStack {

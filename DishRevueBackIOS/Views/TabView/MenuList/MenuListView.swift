@@ -10,10 +10,12 @@ import SwiftUI
 struct MenuListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    @Binding var tabSelection: Int
+    
+    @Binding var tabSelection: Int // non usata
     let backgroundColorView: Color
     
-  //  @State private var openCreateNewMenu: Bool = false
+    @State private var openFilter: Bool = false
+    @State private var filterProperty:FilterPropertyModel = FilterPropertyModel()
     
     var body: some View {
         
@@ -25,7 +27,7 @@ struct MenuListView: View {
                 
                 // Temporaneo
                 
-                VStack {
+               /* VStack {
                     
                     CSDivider()
                     
@@ -49,9 +51,11 @@ struct MenuListView: View {
                         }
                     }
                     CSDivider()
-                }
+                } */
                 
                 // fine temporaneo
+                
+                BodyListe_Generic(filterProperty: $filterProperty, containerKP: \.allMyMenu, navigationPath: \.menuListPath)
                 
             }
         .navigationDestination(for: DestinationPathView.self, destination: { destination in
@@ -69,44 +73,57 @@ struct MenuListView: View {
                         //    self.viewModel.menuListPath.append(MenuModel())
                             self.viewModel.menuListPath.append(DestinationPathView.menu(MenuModel()))
                         }
-                    
 
                 }
                 
+                ToolbarItem(placement: .navigationBarLeading) {
+                    
+                    FilterButton(open: $openFilter, filterCount: filterProperty.countChange)
+                    
+                }
                 
             }
-           /* .navigationBarItems(
-                trailing:
-             
-                    NavigationLink(destination: {
-                        NuovoMenuMainView(backgroundColorView: backgroundColorView)
-                    }, label: {
-                        LargeBar_Text(title: "Nuovo Menu", font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white)
-                    })
-                    
-                    
-                   /* LargeBar_TextPlusButton(buttonTitle: "Nuovo Menu", font: .callout, imageBack: Color.mint, imageFore: Color.white) {
-                        self.openCreateNewMenu.toggle()
-                    } */
-                ) */
-          /*  .fullScreenCover(isPresented: self.$openCreateNewMenu, content: {
-                NuovoMenuMainView(backgroundColorView: backgroundColorView)
-            }) */
-        }//.navigationViewStyle(StackNavigationViewStyle())
+            .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
+                vbLocalFilterPop()
+                    .presentationDetents([.height(400)])
+          
+            }
+
+        }
     }
     
     // Method
+    @ViewBuilder private func vbLocalFilterPop() -> some View {
+     
+            FilterRowContainer(backgroundColorView: backgroundColorView) {
+             
+                    self.filterProperty = FilterPropertyModel()
+                
+            } content: {
 
+
+                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed")
+    
+                FilterRow_Generic(allCases: GiorniDelServizio.allCases, filterProperty: $filterProperty.giornoServizio, selectionColor: Color.blue,imageOrEmoji: "calendar")
+          
+                
+              
+                
+            }
+                
+            
+        }
 
     
 }
-/*
 
-struct DisheListView_Previews: PreviewProvider {
+
+struct MenuListView_Previews: PreviewProvider {
     static var previews: some View {
-        DishListView(accounterVM: AccounterVM(), tabSelection: .constant(2), backgroundColorView: Color.cyan)
+        MenuListView(tabSelection: .constant(3), backgroundColorView: Color("SeaTurtlePalette_1"))
+            .environmentObject(testAccount)
     }
 }
-*/
+
 
 

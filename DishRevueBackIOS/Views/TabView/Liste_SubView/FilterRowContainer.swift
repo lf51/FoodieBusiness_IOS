@@ -25,12 +25,12 @@ struct FilterRowContainer<Content:View>:View {
             
             VStack(alignment:.leading) {
                 
-                Text("Filter")
+                Text("Filtri")
                     .fontWeight(.semibold)
                     .font(.largeTitle)
                     .foregroundColor(Color.black)
 
-                VStack(alignment:.leading,spacing: 8.0) {
+                VStack(alignment:.leading,spacing: 10.0) {
  
              
                     content // le row dei filtri
@@ -39,7 +39,7 @@ struct FilterRowContainer<Content:View>:View {
                     Spacer()
                     
                     CSButton_tight(
-                        title: "Azzera Filtri",
+                        title: "Azzera",
                         fontWeight: .semibold,
                         titleColor: Color.red.opacity(0.8),
                         fillColor: Color.clear) {

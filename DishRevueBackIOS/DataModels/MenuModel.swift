@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct MenuModel:MyProStatusPack_L1,MyProToolPack_L0,MyProDescriptionPack_L0,MyProVisualPack_L1/*MyModelStatusConformity */ {
+struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyProVisualPack_L1/*MyModelStatusConformity */ {
      
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [MenuModel]> {
         return \.allMyMenu
@@ -142,9 +142,36 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L0,MyProDescriptionPack_L0,MyP
         "Menu"
     } */ // deprecata
     
+    // MyProSearchPack
+    
     func modelStringResearch(string: String) -> Bool {
-        self.intestazione.lowercased().contains(string)
+        
+        guard string != "" else { return true }
+        
+        let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+
+        return  self.intestazione.lowercased().contains(ricerca)
     }
+    
+    func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
+        
+        self.modelStringResearch(string: filterProperty.stringaRicerca) &&
+        filterProperty.compareStatusTransition(localStatus: self.status) &&
+        filterProperty.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: \.giornoServizio)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    }
+    
+    
+    // end SearchPack
     
     func returnModelRowView(rowSize:RowSize) -> some View {
         MenuModel_RowView(menuItem: self,rowSize: rowSize)

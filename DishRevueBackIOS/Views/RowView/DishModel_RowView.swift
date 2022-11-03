@@ -274,6 +274,8 @@ struct DishModel_RowView: View {
         let areAllLocal = self.item.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: .km0)
         let areAllItalian = self.item.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: .italia)
         
+        let basePreparazione = self.item.calcolaBaseDellaPreparazione(readOnlyVM: self.viewModel)
+        
         // end 19.10
         let isDelGiorno = self.viewModel.checkMenuDiSistemaContainDish(idPiatto: self.item.id, menuDiSistema: .delGiorno)
         let isAdviceByTheChef = self.viewModel.checkMenuDiSistemaContainDish(idPiatto: self.item.id, menuDiSistema: .delloChef)
@@ -317,25 +319,20 @@ struct DishModel_RowView: View {
                     imageSize: .medium,
                     backgroundColor: statoScorte.coloreAssociato(),
                     backgroundOpacity: 1.0)
+
+            } else {
+                                
+                CSEtichetta(
+                    text: "",
+                    textColor:Color("SeaTurtlePalette_2"),
+                    image: basePreparazione.imageAssociate(),
+                    imageColor: nil,
+                    imageSize: .large,
+                    backgroundColor:Color.white.opacity(0),
+                    backgroundOpacity: 1.0)
                 
-                
-              /*  HStack(spacing:3) {
-                    
-                    Text(statoScorte.rawValue)
-                            .italic()
-                            .bold()
-                            .font(.subheadline)
-                           
-                    Image(systemName: statoScorte.imageAssociata())
-                        .imageScale(.medium)
-                       
-                }
-                .foregroundColor(statoScorte.coloreAssociato()) */
             }
-            
-           
-            
-            
+
             ScrollView(.horizontal,showsIndicators: false){
                 
                 HStack {
@@ -362,9 +359,10 @@ struct DishModel_RowView: View {
                         if areAllItalian {
                             
                             CSEtichetta(
-                                text: "Made",
+                                text: "🇮🇹",
+                                fontStyle: .subheadline,
                                 textColor: Color.white,
-                                image: "🇮🇹",
+                                image: "💯",
                                 imageColor: nil,
                                 imageSize: .large,
                                 backgroundColor: Color.white.opacity(0.5),

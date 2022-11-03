@@ -21,7 +21,7 @@ struct DishListView: View {
         
         NavigationStack(path:$viewModel.dishListPath) {
             
-            CSZStackVB(title: "I Miei Piatti", backgroundColorView: backgroundColorView) {
+            CSZStackVB(title: "I Miei Prodotti", backgroundColorView: backgroundColorView) {
  
 
               /*  VStack {
@@ -60,7 +60,7 @@ struct DishListView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     
                     LargeBar_TextPlusButton(
-                        buttonTitle: "Nuovo Piatto",
+                        buttonTitle: "Nuovo Prodotto",
                         font: .callout,
                         imageBack: Color("SeaTurtlePalette_2"),
                         imageFore: Color.white) {
@@ -72,34 +72,13 @@ struct DishListView: View {
                 
                 ToolbarItem(placement: .navigationBarLeading) {
                     
-                    CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color("SeaTurtlePalette_3")) {
-                        self.openFilter.toggle()
-                    }
-                    .padding([.top,.trailing],5)
-                    .overlay(alignment: .topTrailing) {
-                        let count = filterProperty.countChange
-                        
-                        if count != 0 {
-                            
-                            Text("\(count)")
-                                .fontWeight(.bold)
-                                .font(.caption)
-                                .foregroundColor(Color.white)
-                                .padding(4)
-                                .background {
-                                   Color("SeaTurtlePalette_1")
-                                        //.clipShape(Circle())
-                                }
-                                .clipShape(Circle())
-                        }
-                            
-                    }
-
+                    FilterButton(open: $openFilter, filterCount: filterProperty.countChange)
+                    
                 }
             }
             .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                 vbLocalFilterPop()
-                    .presentationDetents([.height(350)])
+                    .presentationDetents([.height(400)])
           
             }
 
@@ -117,19 +96,31 @@ struct DishListView: View {
                 
             } content: {
 
-                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), image: "fork.knife")
+                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife")
             
                 let checkAvailability = checkStatoScorteAvailability()
                 
-                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor: Color.teal.opacity(0.6), image: "cart")
+                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor: Color.teal.opacity(0.6), imageOrEmoji: "cart")
                     .opacity(checkAvailability ? 1.0 : 0.3)
                     .disabled(!checkAvailability)
                 
-                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), image: "circle.dashed")
+                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed")
                 
-                FilterRow_Generic(allCases: TipoDieta.allCases, filterCollection: $filterProperty.dietePRP, selectionColor: Color.orange.opacity(0.6), image: "person.fill.checkmark")
+                FilterRow_Generic(allCases: DishModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf")
                 
-                FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), image: "allergens")
+                FilterRow_Generic(allCases: TipoDieta.allCases, filterCollection: $filterProperty.dietePRP, selectionColor: Color.orange.opacity(0.6), imageOrEmoji: "person.fill.checkmark")
+                
+                FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens")
+                
+                HStack {
+                    
+                    FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.blue, imageOrEmoji: "💯",disableScroll: true)
+                    
+                    FilterRow_Generic(allCases: ProvenienzaIngrediente.allCases, filterProperty: $filterProperty.provenienzaING, selectionColor: Color.blue,imageOrEmoji: nil)
+
+                }
+                
+                FilterRow_GenericForString(allCases: self.viewModel.allMyIngredients, filterCollection: $filterProperty.rifIngredientiPRP, selectionColor: Color.gray, imageOrEmoji: "list.bullet.rectangle")
                 
               
                 
@@ -159,4 +150,6 @@ struct DishListView_Previews: PreviewProvider {
             .environmentObject(testAccount)
     }
 }
+
+
 

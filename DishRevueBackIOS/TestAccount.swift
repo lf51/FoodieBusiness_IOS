@@ -26,7 +26,7 @@ var testAccount: AccounterVM = {
 
     var vm = AccounterVM()
      vm.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test]
-     vm.allMyDish = [dishItem3_Test,dishItem4_Test,prodottoFinito]
+     vm.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
      vm.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
     vm.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
     vm.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*/ingredientSample2_Test.id,ingredientSample3_Test.id,ingredientSample4_Test.id]
@@ -49,6 +49,34 @@ var testAccount: AccounterVM = {
     prp.webSite = "https:\\osteriadelvicolo.it"
     prp.phoneNumber = "340 67 13 777"
     return prp
+}()
+
+var dishItem2_Test: DishModel = {
+   
+   var newDish = DishModel()
+   newDish.intestazione = "Caserecce Gamberi e Zucca"
+   newDish.status = .completo(.disponibile)
+   newDish.ingredientiPrincipali = [ingredientSample6_Test.id]
+   newDish.ingredientiSecondari = []
+  // newDish.rifReviews = [rate8.id,rate9.id,rate10.id,rate11.id,rate12.id]
+    
+   let price:DishFormat = {
+       var pr = DishFormat(type: .mandatory)
+       pr.label = "Porzione"
+       pr.price = "29.5"
+       return pr
+   }()
+   let price1:DishFormat = {
+       var pr = DishFormat(type: .opzionale)
+       pr.label = "1/2 Porzione"
+       pr.price = "14.5"
+       return pr
+   }()
+   newDish.pricingPiatto = [price,price1]
+   
+    newDish.id = "lailo6" // per far funzionare il riferimento con le recensioni e avere un id corto
+    
+   return newDish
 }()
 
  var dishItem3_Test: DishModel = {
@@ -98,6 +126,25 @@ var dishItem4_Test: DishModel = {
     return newDish
 }()
 
+var dishItem5_Test: DishModel = {
+    
+    var newDish = DishModel()
+    newDish.intestazione = "Spaghetti Aglio e Oglio"
+    newDish.status = .completo(.disponibile)
+    newDish.ingredientiPrincipali = [ingredientSample7_Test.id]
+    newDish.ingredientiSecondari = []
+  //  newDish.rifReviews = [rate1.id,rate2.id,rate3.id,rate4.id,rate5.id,rate6.id,rate7.id]
+    let price:DishFormat = {
+        var pr = DishFormat(type: .mandatory)
+        pr.price = "8.5"
+        return pr
+    }()
+    newDish.pricingPiatto = [price]
+    
+    newDish.id = "lailo14"
+    
+    return newDish
+}()
 var prodottoFinito: DishModel = {
     
     var newDish = DishModel()
@@ -196,7 +243,7 @@ var ingredientSample_Test =  IngredientModel(
     conservazione: .altro,
     produzione: .biologico,
     provenienza: .defaultValue,
-    allergeni: [.crostacei],
+    allergeni: [],
     origine: .animale,
     status: .completo(.disponibile)
 )
@@ -207,7 +254,7 @@ var ingredientSample2_Test =  IngredientModel(
     conservazione: .surgelato,
     produzione: .biologico,
     provenienza: .km0,
-    allergeni: [.crostacei],
+    allergeni: [.pesce],
     origine: .animale,
     status: .bozza(.disponibile)
         )
@@ -228,8 +275,8 @@ var ingredientSample3_Test =  IngredientModel(
     conservazione: .congelato,
     produzione: .biologico,
     provenienza: .km0,
-    allergeni: [],
-    origine: .vegetale,
+    allergeni: [.latte_e_derivati],
+    origine: .animale,
     status: .bozza(.disponibile)
 )
 
@@ -250,7 +297,7 @@ var ingredientSample6_Test =  IngredientModel(
     conservazione: .surgelato,
     produzione: .convenzionale,
     provenienza: .italia,
-    allergeni: [],
+    allergeni: [.molluschi],
     origine: .animale,
     status: .bozza(.disponibile)
         )
