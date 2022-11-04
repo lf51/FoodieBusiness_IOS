@@ -37,7 +37,7 @@ protocol MyProDescriptionPack_L0 {
 protocol MyProSearchPack_L0 {
     
     /// StringResearch per le liste
-    func modelStringResearch(string: String) -> Bool
+    func modelStringResearch(string: String,readOnlyVM:AccounterVM?) -> Bool
     func modelPropertyCompare(filterProperty:FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool
 }
 

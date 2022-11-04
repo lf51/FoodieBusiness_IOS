@@ -50,7 +50,7 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
     // Method
     
     // Protocollo di ricerca
-    func modelStringResearch(string: String) -> Bool {
+    func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
         
         guard string != "" else { return true }
         

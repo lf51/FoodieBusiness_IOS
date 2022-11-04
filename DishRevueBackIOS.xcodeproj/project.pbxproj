@@ -44,6 +44,8 @@
 		3F250CD128996CD400166E46 /* DishRatingListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F250CD028996CD400166E46 /* DishRatingListView.swift */; };
 		3F29179928EB309A003D7BFF /* SwitchProductType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F29179828EB309A003D7BFF /* SwitchProductType.swift */; };
 		3F29179B28EB31C5003D7BFF /* NewProductMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F29179A28EB31C5003D7BFF /* NewProductMainView.swift */; };
+		3F2F7F79291560E2002A1CE6 /* FilterContainerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2F7F78291560E2002A1CE6 /* FilterContainerType.swift */; };
+		3F2F7F7C29156210002A1CE6 /* FilterPropertyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2F7F7B29156210002A1CE6 /* FilterPropertyModel.swift */; };
 		3F319B6F2908277E00C81E46 /* PuntoLampeggiante.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F319B6E2908277E00C81E46 /* PuntoLampeggiante.swift */; };
 		3F32079F289AA9BA000BB5A9 /* DishRatingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F32079E289AA9BA000BB5A9 /* DishRatingModel.swift */; };
 		3F3957FB28C9DCD6004937D2 /* DestinationPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3957FA28C9DCD6004937D2 /* DestinationPath.swift */; };
@@ -251,6 +253,8 @@
 		3F250CD028996CD400166E46 /* DishRatingListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRatingListView.swift; sourceTree = "<group>"; };
 		3F29179828EB309A003D7BFF /* SwitchProductType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchProductType.swift; sourceTree = "<group>"; };
 		3F29179A28EB31C5003D7BFF /* NewProductMainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewProductMainView.swift; sourceTree = "<group>"; };
+		3F2F7F78291560E2002A1CE6 /* FilterContainerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterContainerType.swift; sourceTree = "<group>"; };
+		3F2F7F7B29156210002A1CE6 /* FilterPropertyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPropertyModel.swift; sourceTree = "<group>"; };
 		3F319B6E2908277E00C81E46 /* PuntoLampeggiante.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PuntoLampeggiante.swift; sourceTree = "<group>"; };
 		3F32079E289AA9BA000BB5A9 /* DishRatingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishRatingModel.swift; sourceTree = "<group>"; };
 		3F3957FA28C9DCD6004937D2 /* DestinationPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationPath.swift; sourceTree = "<group>"; };
@@ -500,6 +504,15 @@
 			path = DishRatingList;
 			sourceTree = "<group>";
 		};
+		3F2F7F7A291561E0002A1CE6 /* FilterData */ = {
+			isa = PBXGroup;
+			children = (
+				3F2F7F78291560E2002A1CE6 /* FilterContainerType.swift */,
+				3F2F7F7B29156210002A1CE6 /* FilterPropertyModel.swift */,
+			);
+			path = FilterData;
+			sourceTree = "<group>";
+		};
 		3F319B702908278800C81E46 /* ViewAnimate */ = {
 			isa = PBXGroup;
 			children = (
@@ -637,6 +650,7 @@
 				4DB75EDC280EC73A008C1765 /* AccounterMainView.swift */,
 				4DF7D9D627A45097001DB949 /* Views */,
 				4DF7D9D727A450A2001DB949 /* ViewModels */,
+				3F2F7F7A291561E0002A1CE6 /* FilterData */,
 				4DF7D9D827A450B1001DB949 /* DataModels */,
 				4D7985D927D8B91D0012FE23 /* SubModelData */,
 				3F1A10DE28D4DCDD00462388 /* OtherData */,
@@ -1242,6 +1256,7 @@
 				4DC94A2027E8F94A0080264C /* NewPropertySheetViewBACKUP.swift in Sources */,
 				4D61A3CF28576E0500C0B810 /* NavStackTest.swift in Sources */,
 				4DAD4F94279EA7A800C0EAE8 /* PropertyVM.swift in Sources */,
+				3F2F7F7C29156210002A1CE6 /* FilterPropertyModel.swift in Sources */,
 				4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */,
 				4D168C1E285251E7000B137E /* ColoreTabViewTest.swift in Sources */,
 				4D83CEA128194EF600FA2EB5 /* Extension.swift in Sources */,
@@ -1296,6 +1311,7 @@
 				4DF0C4B327A04D7000315A73 /* DishModel.swift in Sources */,
 				3F29179928EB309A003D7BFF /* SwitchProductType.swift in Sources */,
 				4DF0C4AD27A009B800315A73 /* DishListView.swift in Sources */,
+				3F2F7F79291560E2002A1CE6 /* FilterContainerType.swift in Sources */,
 				3F3B2FF92906A2060058C8F1 /* MonitorGenerale.swift in Sources */,
 				3F29179B28EB31C5003D7BFF /* NewProductMainView.swift in Sources */,
 				4DA4616027AD8A2000BD648D /* EditDishView.swift in Sources */,
@@ -1515,7 +1531,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1546,7 +1562,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 71;
+				CURRENT_PROJECT_VERSION = 72;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

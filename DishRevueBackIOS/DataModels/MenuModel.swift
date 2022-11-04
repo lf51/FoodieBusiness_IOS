@@ -144,7 +144,7 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     
     // MyProSearchPack
     
-    func modelStringResearch(string: String) -> Bool {
+    func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
         
         guard string != "" else { return true }
         

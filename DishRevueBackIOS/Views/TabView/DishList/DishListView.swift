@@ -48,8 +48,15 @@ struct DishListView: View {
                 
                 
                 // fine temporaneo
+                let container = self.viewModel.filtraERicerca(containerPath: \.allMyDish, filterProperty: filterProperty)
                 
-                BodyListe_Generic(filterProperty: $filterProperty, containerKP: \.allMyDish, navigationPath: \.dishListPath)
+                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container, navigationPath: \.dishListPath, placeHolder: "Cerca per Prodotto e/o Ingrediente..")
+                    .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
+                          vbLocalFilterPop(containerFiltered: container)
+                             // .presentationDetents([.height(400)])
+                            .presentationDetents([.medium])
+                    
+                      }
 
             }
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
@@ -76,11 +83,11 @@ struct DishListView: View {
                     
                 }
             }
-            .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
+          /*  .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                 vbLocalFilterPop()
                     .presentationDetents([.height(400)])
           
-            }
+            } */
 
         
         }
@@ -88,7 +95,7 @@ struct DishListView: View {
     
     // Method
     
-    @ViewBuilder private func vbLocalFilterPop() -> some View {
+    @ViewBuilder private func vbLocalFilterPop(containerFiltered:[DishModel] = []) -> some View {
      
             FilterRowContainer(backgroundColorView: backgroundColorView) {
              
@@ -96,31 +103,65 @@ struct DishListView: View {
                 
             } content: {
 
-                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife")
+                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife") { value in
+                    
+                    containerFiltered.filter({$0.percorsoProdotto == value}).count
+                }
             
                 let checkAvailability = checkStatoScorteAvailability()
                 
-                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor: Color.teal.opacity(0.6), imageOrEmoji: "cart")
+                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor: Color.teal.opacity(0.6), imageOrEmoji: "cart") { value in
+                    
+                    if checkAvailability {
+                        
+                      return containerFiltered.filter({self.viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value }).count
+                    
+                    }
+                    else {return 0 }
+                    
+                }
                     .opacity(checkAvailability ? 1.0 : 0.3)
                     .disabled(!checkAvailability)
                 
                 FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed")
+                { value in
+                    
+                   containerFiltered.filter({$0.status.checkStatusTransition(check: value)}).count
+                  
+                }
                 
                 FilterRow_Generic(allCases: DishModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf")
+                { value in
+                    containerFiltered.filter({ $0.calcolaBaseDellaPreparazione(readOnlyVM: self.viewModel) == value}).count
+                   // return filterM.count
+                }
                 
                 FilterRow_Generic(allCases: TipoDieta.allCases, filterCollection: $filterProperty.dietePRP, selectionColor: Color.orange.opacity(0.6), imageOrEmoji: "person.fill.checkmark")
+                { value in
+                    containerFiltered.filter({$0.returnDietAvaible(viewModel: self.viewModel).inDishTipologia.contains(value)}).count
+                }
                 
                 FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens")
+                { value in
+                    containerFiltered.filter({$0.calcolaAllergeniNelPiatto(viewModel: self.viewModel).contains(value)}).count
+                }
                 
+
                 HStack {
                     
                     FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.blue, imageOrEmoji: "💯",disableScroll: true)
+                    { value in
+                        containerFiltered.filter({$0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.produzione, quality: value)}).count
+                    }
                     
                     FilterRow_Generic(allCases: ProvenienzaIngrediente.allCases, filterProperty: $filterProperty.provenienzaING, selectionColor: Color.blue,imageOrEmoji: nil)
+                    { value in
+                        containerFiltered.filter({$0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: value)}).count
+                    }
 
                 }
                 
-                FilterRow_GenericForString(allCases: self.viewModel.allMyIngredients, filterCollection: $filterProperty.rifIngredientiPRP, selectionColor: Color.gray, imageOrEmoji: "list.bullet.rectangle")
+            /*    FilterRow_GenericForString(allCases: self.viewModel.allMyIngredients, filterCollection: $filterProperty.rifIngredientiPRP, selectionColor: Color.gray, imageOrEmoji: "list.bullet.rectangle") */ // Deprecata 04.11
                 
               
                 
@@ -128,9 +169,7 @@ struct DishListView: View {
                 
             
         }
-    
-
-    
+        
     
     private func checkStatoScorteAvailability() -> Bool {
         

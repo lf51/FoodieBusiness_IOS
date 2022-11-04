@@ -125,6 +125,9 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti // deprecata in futuro - sostituire con un metodo
     var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti // deprecata in futuro
     
+    
+    let test = calcolaAllergeniNelPiatto
+    
     // end deprecate
        
    /* init() {
@@ -172,28 +175,49 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     } */ // deprecata
     
     // SearchPack
-    func modelStringResearch(string: String) -> Bool {
+    func modelStringResearch(string: String, readOnlyVM:AccounterVM?) -> Bool {
         
         guard string != "" else { return true }
         
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+        let conditionOne = self.intestazione.lowercased().contains(ricerca)
+        
+        guard readOnlyVM != nil else { return conditionOne } // è inutile percheè passeremo sempre un valore valido. Lo mettiamo per forma. Abbiamo messo il parametro optional per non passarlo negli altri modelli dove non ci serve
+        
+        let allIngredients = self.allMinusArchiviati(viewModel: readOnlyVM!)
 
-        return  self.intestazione.lowercased().contains(ricerca)
+        let allInGChecked = allIngredients.filter({$0.intestazione.lowercased().contains(ricerca)})
+        let conditionTwo = !allInGChecked.isEmpty
+        
+        return conditionOne || conditionTwo
         // inserire la ricerca degli ingredienti
     }
     
     func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
         
-        self.modelStringResearch(string: filterProperty.stringaRicerca) &&
+        let allAllergeniIn = self.calcolaAllergeniNelPiatto(viewModel: readOnlyVM)
+        let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
+        let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
+        
+        return self.modelStringResearch(string: filterProperty.stringaRicerca,readOnlyVM: readOnlyVM) &&
+        
         filterProperty.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: \.percorsoPRP) &&
+        
         filterProperty.compareStatusTransition(localStatus: self.status) &&
-        filterProperty.compareCollectionToCollection(localCollection: self.calcolaAllergeniNelPiatto(viewModel: readOnlyVM), filterCollection: \.allergeniIn) &&
-        filterProperty.compareCollectionToCollection(localCollection: self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia, filterCollection: \.dietePRP)  &&
+        
+        filterProperty.compareCollectionToCollection(localCollection: allAllergeniIn, filterCollection: \.allergeniIn) &&
+        
+        filterProperty.compareCollectionToCollection(localCollection:allDietAvaible, filterCollection: \.dietePRP)  &&
+        
         filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) &&
-        filterProperty.compareCollectToCollectIntero(localCollection: self.allIngredientsRif(), filterCollection: \.rifIngredientiPRP) &&
+        
+      /*  filterProperty.compareCollectToCollectIntero(localCollection: self.allIngredientsRif(), filterCollection: \.rifIngredientiPRP) && */ // deprecata 04.11
+        
         self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.produzione, quality: filterProperty.produzioneING) &&
+        
         self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.provenienza, quality: filterProperty.provenienzaING) &&
-        filterProperty.comparePropertyToProperty(local: self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM), filter: \.basePRP)
+        
+        filterProperty.comparePropertyToProperty(local: basePreparazione, filter: \.basePRP)
         
     }
     

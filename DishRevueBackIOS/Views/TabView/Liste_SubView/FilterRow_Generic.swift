@@ -16,9 +16,11 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     let image: String?
     let disableScroll:Bool
     
+    let count:(_:P) -> Int
+    
     private let initType:InitType
     
-    init(allCases:[P],filterProperty:Binding<P?>,selectionColor:Color,imageOrEmoji:String? = nil,disableScroll:Bool = false) {
+    init(allCases:[P],filterProperty:Binding<P?>,selectionColor:Color,imageOrEmoji:String? = nil,disableScroll:Bool = false,count:@escaping (_:P) -> Int ) {
         
         self.initType = .single
         
@@ -29,9 +31,10 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
         self.image = imageOrEmoji
         self.disableScroll = disableScroll
         
+        self.count = count
     }
     
-    init(allCases:[P],filterCollection:Binding<[P]>,selectionColor:Color,imageOrEmoji:String? = nil,disableScroll:Bool = false) {
+    init(allCases:[P],filterCollection:Binding<[P]>,selectionColor:Color,imageOrEmoji:String? = nil,disableScroll:Bool = false,count:@escaping (_:P) -> Int ) {
         
         self.initType = .collection
         
@@ -42,6 +45,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
         self.image = imageOrEmoji
         self.disableScroll = disableScroll
         
+        self.count = count
     }
     
     var body: some View {
@@ -63,8 +67,9 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
                     ForEach(allCases,id:\.self) { value in
                         
                         let (condition,action) = boolAndAct(value: value)
+                        let number = count(value)
                         
-                        Text(value.simpleDescription().capitalized)
+                        Text("\(value.simpleDescription().capitalized)(\(number))")
                             .bold(condition)
                             .font(.system(.subheadline, design: .monospaced, weight: .light))
                             .foregroundColor(Color.black)
@@ -96,6 +101,9 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     }
     
     // Method
+    
+  
+    
     private func boolAndAct(value:P) -> (condition:Bool,action:(_:P) -> Void) {
         
         switch initType {
@@ -107,9 +115,10 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
         case .collection:
             let condition = specificFilterCollection.contains(value)
             return (condition,collectionAct)
+            
         }
     }
-    
+        
     private func singleAction(value:P) {
         
         let condition = specificFilterProperty == value
@@ -132,7 +141,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
 }
 
 /// Richiede un Array di Model e riempie un array di Stringhe
-struct FilterRow_GenericForString<M:MyProToolPack_L0>:View {
+struct FilterRow_GenericForString<M:MyProToolPack_L0>:View { // 04.11 caduta in disuso
     
     let allCases:[M]
   //  @Binding var specificFilterProperty: P?
@@ -254,4 +263,4 @@ struct FilterRow_GenericForString<M:MyProToolPack_L0>:View {
     }
     
     
-}
+} // Deprecata 04.11 -> Caduta in disuso dopo l'abbandono del filtro per ingredienti

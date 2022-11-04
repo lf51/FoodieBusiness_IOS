@@ -54,8 +54,14 @@ struct MenuListView: View {
                 } */
                 
                 // fine temporaneo
+                let container = self.viewModel.filtraERicerca(containerPath: \.allMyMenu, filterProperty: filterProperty)
                 
-                BodyListe_Generic(filterProperty: $filterProperty, containerKP: \.allMyMenu, navigationPath: \.menuListPath)
+                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container: container, navigationPath: \.menuListPath)
+                    .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
+                        vbLocalFilterPop(container: container)
+                            .presentationDetents([.height(400)])
+                  
+                    }
                 
             }
         .navigationDestination(for: DestinationPathView.self, destination: { destination in
@@ -83,17 +89,17 @@ struct MenuListView: View {
                 }
                 
             }
-            .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
+          /*  .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                 vbLocalFilterPop()
                     .presentationDetents([.height(400)])
           
-            }
+            } */
 
         }
     }
     
     // Method
-    @ViewBuilder private func vbLocalFilterPop() -> some View {
+    @ViewBuilder private func vbLocalFilterPop(container:[MenuModel]) -> some View {
      
             FilterRowContainer(backgroundColorView: backgroundColorView) {
              
@@ -102,9 +108,13 @@ struct MenuListView: View {
             } content: {
 
 
-                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed")
+                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed"){ value in
+                    container.filter({$0.status.checkStatusTransition(check: value)}).count
+                }
     
-                FilterRow_Generic(allCases: GiorniDelServizio.allCases, filterProperty: $filterProperty.giornoServizio, selectionColor: Color.blue,imageOrEmoji: "calendar")
+                FilterRow_Generic(allCases: GiorniDelServizio.allCases, filterProperty: $filterProperty.giornoServizio, selectionColor: Color.blue,imageOrEmoji: "calendar"){ value in
+                    container.filter({$0.giorniDelServizio.contains(value)}).count
+                }
           
                 
               
