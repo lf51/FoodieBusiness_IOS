@@ -12,6 +12,134 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     let allCases:[P]
     @Binding var specificFilterProperty: P?
     @Binding var specificFilterCollection: [P]
+    
+    let color: Color
+    let image: String?
+    let label: String
+    
+    let count:(_:P) -> Int
+    
+    private let initType:InitType
+    
+    init(allCases:[P],filterProperty:Binding<P?>,selectionColor:Color,imageOrEmoji:String? = nil,label:String = "", count:@escaping (_:P) -> Int ) {
+        
+        self.initType = .single
+        
+        self.allCases = allCases
+        _specificFilterProperty = filterProperty
+        _specificFilterCollection = .constant([]) // valore di default
+        self.color = selectionColor
+        self.image = imageOrEmoji
+        self.label = label
+        
+        self.count = count
+    }
+    
+    init(allCases:[P],filterCollection:Binding<[P]>,selectionColor:Color,imageOrEmoji:String? = nil,label:String = "",count:@escaping (_:P) -> Int ) {
+        
+        self.initType = .collection
+        
+        self.allCases = allCases
+        _specificFilterProperty = .constant(nil) // valore di default
+        _specificFilterCollection = filterCollection
+        self.color = selectionColor
+        self.image = imageOrEmoji
+        self.label = label
+       // self.disableScroll = disableScroll
+        
+        self.count = count
+    }
+    
+    var body: some View {
+        
+        VStack(alignment:.leading) {
+            
+            if image != nil {
+                
+                CSLabel_1Button(placeHolder: label, imageNameOrEmojy: image, backgroundColor: Color.black,backgroundOpacity: 0.03)
+                
+            }
+          
+            let columns:[GridItem] = [GridItem(.adaptive(minimum: 180,maximum: 300),spacing: nil,alignment: .leading)]
+            
+            LazyVGrid(columns:columns,alignment: .leading, spacing: 5) {
+                
+                ForEach(allCases,id:\.self) { value in
+                    
+                    let (condition,action) = boolAndAct(value: value)
+                    let number = count(value)
+                    
+                    Text("\(value.simpleDescription().capitalized)(\(number))")
+                        .bold(condition)
+                        .font(.system(.subheadline, design: .monospaced, weight: .light))
+                        .foregroundColor(Color.black)
+                        .padding(.horizontal,2.0)
+                        .padding(.vertical,5.0)
+                        .frame(minWidth: 180)
+                        .background(content: {
+                            if condition {color.cornerRadius(5.0)}
+                            else {
+                                Color.white.cornerRadius(5.0)
+                                .opacity(0.05) }
+                           
+                        })
+                        .onTapGesture {
+        
+                            action(value)
+                        
+                        }
+
+                }
+            }
+
+        }
+
+    }
+    
+    // Method
+
+    private func boolAndAct(value:P) -> (condition:Bool,action:(_:P) -> Void) {
+        
+        switch initType {
+            
+        case .single:
+            let condition = specificFilterProperty == value
+            return (condition,singleAction)
+            
+        case .collection:
+            let condition = specificFilterCollection.contains(value)
+            return (condition,collectionAct)
+            
+        }
+    }
+        
+    private func singleAction(value:P) {
+        
+        let condition = specificFilterProperty == value
+        
+        self.specificFilterProperty = condition ? nil : value
+        
+    }
+    
+    private func collectionAct(value:P) {
+        
+        if let index = specificFilterCollection.firstIndex(of: value) {
+
+            specificFilterCollection.remove(at: index)
+            
+        } else { specificFilterCollection.append(value) }
+        
+    }
+    
+    
+}
+
+/*
+struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
+    
+    let allCases:[P]
+    @Binding var specificFilterProperty: P?
+    @Binding var specificFilterCollection: [P]
     let color: Color
     let image: String?
     let disableScroll:Bool
@@ -138,7 +266,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     }
     
     
-}
+} */ //Backup 05.11
 
 /// Richiede un Array di Model e riempie un array di Stringhe
 struct FilterRow_GenericForString<M:MyProToolPack_L0>:View { // 04.11 caduta in disuso

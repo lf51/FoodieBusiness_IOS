@@ -28,7 +28,7 @@ struct ListaIngredientiView: View {
                 BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container, navigationPath: \.ingredientListPath)
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                         vbLocalFilterPop(container: container)
-                            .presentationDetents([.height(350)])
+                            .presentationDetents([.height(600)])
                   
                     }
                             
@@ -78,31 +78,31 @@ struct ListaIngredientiView: View {
                 
             } content: {
 
-                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed"){ value in
+                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed",label: "Status"){ value in
                     container.filter({$0.status.checkStatusTransition(check: value)}).count
                 }
                 
-                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor:Color.teal.opacity(0.6), imageOrEmoji: "cart"){ value in
+                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor:Color.teal.opacity(0.6), imageOrEmoji: "cart",label: "Livello Scorte"){ value in
                     container.filter({self.viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value}).count
                 }
                     
-                FilterRow_Generic(allCases: ProvenienzaIngrediente.allCases, filterProperty: $filterProperty.provenienzaING, selectionColor: Color.gray,imageOrEmoji:"globe.americas"){ value in
+                FilterRow_Generic(allCases: ProvenienzaIngrediente.allCases, filterProperty: $filterProperty.provenienzaING, selectionColor: Color.gray,imageOrEmoji:"globe.americas",label: "Provenienza"){ value in
                     container.filter({$0.provenienza == value}).count
                 }
                 
-                FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.green,imageOrEmoji: "sun.min.fill"){ value in
+                FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.green,imageOrEmoji: "sun.min.fill",label: "Metodo di Produzione"){ value in
                     container.filter({$0.produzione == value}).count
                 }
 
-                FilterRow_Generic(allCases: ConservazioneIngrediente.allCases, filterCollection: $filterProperty.conservazioneING, selectionColor: Color.cyan,imageOrEmoji:"thermometer.snowflake"){ value in
+                FilterRow_Generic(allCases: ConservazioneIngrediente.allCases, filterCollection: $filterProperty.conservazioneING, selectionColor: Color.cyan,imageOrEmoji:"thermometer.snowflake",label: "Metodo di Conservazione"){ value in
                     container.filter({$0.conservazione == value}).count
                 }
                 
-                FilterRow_Generic(allCases: OrigineIngrediente.allCases, filterProperty: $filterProperty.origineING, selectionColor: Color.brown,imageOrEmoji:"leaf"){ value in
+                FilterRow_Generic(allCases: OrigineIngrediente.allCases, filterProperty: $filterProperty.origineING, selectionColor: Color.brown,imageOrEmoji:"leaf",label: "Origine"){ value in
                     container.filter({$0.origine == value}).count
                 }
                 
-                FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens"){ value in
+                FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens",label: "Allergeni Contenuti"){ value in
                     container.filter({$0.allergeni.contains(value)}).count
                 }
             }

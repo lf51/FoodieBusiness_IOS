@@ -53,8 +53,8 @@ struct DishListView: View {
                 BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container, navigationPath: \.dishListPath, placeHolder: "Cerca per Prodotto e/o Ingrediente..")
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                           vbLocalFilterPop(containerFiltered: container)
-                             // .presentationDetents([.height(400)])
-                            .presentationDetents([.medium])
+                              .presentationDetents([.height(600)])
+                          //  .presentationDetents([.medium])
                     
                       }
 
@@ -103,14 +103,14 @@ struct DishListView: View {
                 
             } content: {
 
-                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife") { value in
+                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife",label: "Percorso Prodotto") { value in
                     
                     containerFiltered.filter({$0.percorsoProdotto == value}).count
                 }
             
                 let checkAvailability = checkStatoScorteAvailability()
                 
-                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor: Color.teal.opacity(0.6), imageOrEmoji: "cart") { value in
+                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor: Color.teal.opacity(0.6), imageOrEmoji: "cart",label: "Livello Scorte (Solo PF)") { value in
                     
                     if checkAvailability {
                         
@@ -123,33 +123,30 @@ struct DishListView: View {
                     .opacity(checkAvailability ? 1.0 : 0.3)
                     .disabled(!checkAvailability)
                 
-                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed")
+                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed",label: "Status")
                 { value in
                     
                    containerFiltered.filter({$0.status.checkStatusTransition(check: value)}).count
                   
                 }
                 
-                FilterRow_Generic(allCases: DishModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf")
+                FilterRow_Generic(allCases: DishModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf",label: "Preparazione a base di")
                 { value in
                     containerFiltered.filter({ $0.calcolaBaseDellaPreparazione(readOnlyVM: self.viewModel) == value}).count
                    // return filterM.count
                 }
                 
-                FilterRow_Generic(allCases: TipoDieta.allCases, filterCollection: $filterProperty.dietePRP, selectionColor: Color.orange.opacity(0.6), imageOrEmoji: "person.fill.checkmark")
+                FilterRow_Generic(allCases: TipoDieta.allCases, filterCollection: $filterProperty.dietePRP, selectionColor: Color.orange.opacity(0.6), imageOrEmoji: "person.fill.checkmark",label: "Adatto alla dieta")
                 { value in
                     containerFiltered.filter({$0.returnDietAvaible(viewModel: self.viewModel).inDishTipologia.contains(value)}).count
                 }
                 
-                FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens")
-                { value in
-                    containerFiltered.filter({$0.calcolaAllergeniNelPiatto(viewModel: self.viewModel).contains(value)}).count
-                }
+                
                 
 
-                HStack {
+             //   HStack {
                     
-                    FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.blue, imageOrEmoji: "💯",disableScroll: true)
+                    FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.blue, imageOrEmoji: "checkmark.shield",label: "Ingredienti di Qualità")
                     { value in
                         containerFiltered.filter({$0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.produzione, quality: value)}).count
                     }
@@ -159,6 +156,11 @@ struct DishListView: View {
                         containerFiltered.filter({$0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: value)}).count
                     }
 
+               // }
+                
+                FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens",label: "Allergeni Contenuti")
+                { value in
+                    containerFiltered.filter({$0.calcolaAllergeniNelPiatto(viewModel: self.viewModel).contains(value)}).count
                 }
                 
             /*    FilterRow_GenericForString(allCases: self.viewModel.allMyIngredients, filterCollection: $filterProperty.rifIngredientiPRP, selectionColor: Color.gray, imageOrEmoji: "list.bullet.rectangle") */ // Deprecata 04.11

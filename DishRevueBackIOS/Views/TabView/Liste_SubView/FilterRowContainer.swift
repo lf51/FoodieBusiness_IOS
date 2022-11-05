@@ -33,7 +33,9 @@ struct FilterRowContainer<Content:View>:View {
                 VStack(alignment:.leading,spacing: 10.0) {
  
              
-                    content // le row dei filtri
+                    ScrollView(showsIndicators: false) {
+                        content // le row dei filtri
+                    }
                     
                 }
                     Spacer()

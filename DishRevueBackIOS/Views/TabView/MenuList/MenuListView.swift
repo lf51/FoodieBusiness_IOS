@@ -59,7 +59,7 @@ struct MenuListView: View {
                 BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container: container, navigationPath: \.menuListPath)
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                         vbLocalFilterPop(container: container)
-                            .presentationDetents([.height(400)])
+                            .presentationDetents([.height(600)])
                   
                     }
                 
@@ -108,11 +108,11 @@ struct MenuListView: View {
             } content: {
 
 
-                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed"){ value in
+                FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed",label:"Status"){ value in
                     container.filter({$0.status.checkStatusTransition(check: value)}).count
                 }
     
-                FilterRow_Generic(allCases: GiorniDelServizio.allCases, filterProperty: $filterProperty.giornoServizio, selectionColor: Color.blue,imageOrEmoji: "calendar"){ value in
+                FilterRow_Generic(allCases: GiorniDelServizio.allCases, filterProperty: $filterProperty.giornoServizio, selectionColor: Color.blue,imageOrEmoji: "calendar",label: "Giorno della Settimana"){ value in
                     container.filter({$0.giorniDelServizio.contains(value)}).count
                 }
           
