@@ -86,6 +86,14 @@ enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0 /*: MyEnumProtoco
         
     }
     
+    func orderValue() -> Int {
+        return 0
+    }
+    
+    func returnTypeCase() -> AllergeniIngrediente {
+        return self 
+    }
+    
     func extendedDescription() -> String {
         print("Dentro DishAllergeni. DescrizioneEstesa non sviluppata")
         return ""

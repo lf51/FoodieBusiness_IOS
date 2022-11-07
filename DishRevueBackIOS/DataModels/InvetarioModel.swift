@@ -434,6 +434,10 @@ struct Inventario:Equatable {
             }
         }
         
+        func returnTypeCase() -> Inventario.TransitoScorte {
+            self
+        }
+        
         func imageAssociata() -> String {
             
             switch self {

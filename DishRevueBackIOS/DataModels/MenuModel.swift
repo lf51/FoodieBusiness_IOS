@@ -144,6 +144,35 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     
     // MyProSearchPack
     
+    static func sortModelInstance(lhs: MenuModel, rhs: MenuModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
+        
+        switch condition {
+            
+        case .alfabeticoDecrescente:
+            return lhs.intestazione < rhs.intestazione
+            
+        case .dataInizio:
+           return lhs.dataInizio < rhs.dataInizio
+            
+        case .mostContaining:
+            return lhs.rifDishIn.count > rhs.rifDishIn.count
+            
+        case .topRated:
+           return lhs.mediaValorePiattiInMenu(readOnlyVM: readOnlyVM) >
+            rhs.mediaValorePiattiInMenu(readOnlyVM: readOnlyVM)
+            
+        case .dataFine:
+            return lhs.dataFine < rhs.dataFine
+            
+        case .topPriced:
+            return lhs.tipologia.returnMenuPriceValue().asDouble >
+            rhs.tipologia.returnMenuPriceValue().asDouble
+            
+        default:
+            return lhs.intestazione < rhs.intestazione
+        }
+    }
+    
     func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
         
         guard string != "" else { return true }
@@ -157,7 +186,9 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         
         self.modelStringResearch(string: filterProperty.stringaRicerca) &&
         filterProperty.compareStatusTransition(localStatus: self.status) &&
-        filterProperty.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: \.giornoServizio)
+        filterProperty.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: \.giornoServizio) &&
+        filterProperty.comparePropertyToProperty(local: self.tipologia, filter: \.tipologiaMenu) &&
+        filterProperty.comparePropertyToProperty(local: self.isAvaibleWhen, filter: \.rangeTemporaleMenu)
         
         
         

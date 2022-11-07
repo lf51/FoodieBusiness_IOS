@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct FilterRowContainer<Content:View>:View {
+struct FilterAndSort_RowContainer<Content:View>:View {
     
     let backgroundColorView:Color
+    let label: String
 
     let resetAction: () -> Void
     @ViewBuilder var content: Content
@@ -25,7 +26,7 @@ struct FilterRowContainer<Content:View>:View {
             
             VStack(alignment:.leading) {
                 
-                Text("Filtri")
+                Text(label)
                     .fontWeight(.semibold)
                     .font(.largeTitle)
                     .foregroundColor(Color.black)

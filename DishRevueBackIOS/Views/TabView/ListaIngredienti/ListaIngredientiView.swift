@@ -15,6 +15,8 @@ struct ListaIngredientiView: View {
     let backgroundColorView: Color
     
     @State private var openFilter:Bool = false
+    @State private var openSort: Bool = false
+    
     @State private var filterProperty:FilterPropertyModel = FilterPropertyModel()
     
     var body: some View {
@@ -24,11 +26,16 @@ struct ListaIngredientiView: View {
             CSZStackVB(title: "I Miei Ingredienti", backgroundColorView: backgroundColorView) {
 
                 let container = self.viewModel.filtraERicerca(containerPath: \.allMyIngredients, filterProperty: filterProperty)
-                
+            
                 BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container, navigationPath: \.ingredientListPath)
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                         vbLocalFilterPop(container: container)
                             .presentationDetents([.height(600)])
+                  
+                    }
+                    .popover(isPresented: $openSort, attachmentAnchor: .point(.top)) {
+                        vbLocalSorterPop()
+                            .presentationDetents([.height(300)])
                   
                     }
                             
@@ -51,7 +58,9 @@ struct ListaIngredientiView: View {
                 
                 ToolbarItem(placement: .navigationBarLeading) {
                     
-                    FilterButton(open: $openFilter, filterCount: filterProperty.countChange)
+                    let sortActive = self.filterProperty.sortCondition != nil
+                    
+                    FilterButton(open: $openFilter,openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive)
                     
                   /*  CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color("SeaTurtlePalette_3")) {
                         self.openFilter.toggle()
@@ -70,9 +79,32 @@ struct ListaIngredientiView: View {
     
     // Method
     
+  
+        
+    
+    @ViewBuilder private func vbLocalSorterPop() -> some View {
+     
+        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Sort") {
+             
+            self.filterProperty.sortCondition = nil
+                
+            } content: {
+
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .alfabeticoDecrescente)
+                    
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .livelloScorte)
+  
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .mostUsed)
+                
+
+            }
+                
+            
+        }
+    
     @ViewBuilder private func vbLocalFilterPop(container:[IngredientModel]) -> some View {
      
-            FilterRowContainer(backgroundColorView: backgroundColorView) {
+        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Filtri") {
              
                     self.filterProperty = FilterPropertyModel()
                 

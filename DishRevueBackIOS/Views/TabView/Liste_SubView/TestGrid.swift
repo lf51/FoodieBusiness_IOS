@@ -14,7 +14,7 @@ struct TestGrid: View {
     let backgroundColorView: Color
     var body: some View {
         
-        FilterRowContainer(backgroundColorView: backgroundColorView) {
+        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Filtri") {
          
                 self.filterProperty = FilterPropertyModel()
             

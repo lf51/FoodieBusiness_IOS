@@ -20,6 +20,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     let count:(_:P) -> Int
     
     private let initType:InitType
+    private let columns:[GridItem] = [GridItem(.adaptive(minimum: 180,maximum: 300),spacing: nil,alignment: .leading)]
     
     init(allCases:[P],filterProperty:Binding<P?>,selectionColor:Color,imageOrEmoji:String? = nil,label:String = "", count:@escaping (_:P) -> Int ) {
         
@@ -60,7 +61,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
                 
             }
           
-            let columns:[GridItem] = [GridItem(.adaptive(minimum: 180,maximum: 300),spacing: nil,alignment: .leading)]
+            
             
             LazyVGrid(columns:columns,alignment: .leading, spacing: 5) {
                 

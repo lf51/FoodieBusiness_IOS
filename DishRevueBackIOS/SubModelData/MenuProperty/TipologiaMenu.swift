@@ -60,7 +60,7 @@ enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
 }
 
 
-enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
+enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L1 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
    
     static var allCases: [TipologiaMenu] = [.fisso(persone: .uno, costo: "n/d"),.allaCarta]
     static var defaultValue: TipologiaMenu = .noValue
@@ -74,13 +74,14 @@ enum TipologiaMenu:Identifiable, Equatable /*: MyEnumProtocol, MyEnumProtocolMap
     
     case noValue
     
-    func returnMenuPriceValue() -> String {
+    func returnMenuPriceValue() -> (asString:String,asDouble:Double) {
         
         switch self {
         case .fisso(_, let costo):
-            return costo
+            let dCost = Double(costo) ?? 0.0
+            return (costo,dCost)
         default:
-            return "0.00"
+            return ("0.00",0.0)
         }
     }
     

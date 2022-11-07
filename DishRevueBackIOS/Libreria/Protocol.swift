@@ -39,6 +39,8 @@ protocol MyProSearchPack_L0 {
     /// StringResearch per le liste
     func modelStringResearch(string: String,readOnlyVM:AccounterVM?) -> Bool
     func modelPropertyCompare(filterProperty:FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool
+    
+    static func sortModelInstance(lhs:Self,rhs:Self,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool 
 }
 
 protocol MyProStatusPack_L0 {
@@ -69,13 +71,13 @@ protocol MyProVisualPack_L0 {
 protocol MyProVisualPack_L1: MyProVisualPack_L0,MyProStarterPack_L1 { }
 // NUOVA FASE DI RIORDINO - 15.09
 
-protocol MyProEnumPack_L0: Hashable {
+protocol MyProEnumPack_L0: MyProOrganizerPack_L0 {
     
     func simpleDescription() -> String
     
 }
 
-protocol MyProEnumPack_L1:MyProEnumPack_L0,MyProOrganizerPack_L0 {
+protocol MyProEnumPack_L1:MyProEnumPack_L0 {
     
     static var defaultValue: Self { get }
 }

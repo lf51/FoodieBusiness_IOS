@@ -104,7 +104,7 @@ struct IngredientModel_RowView: View {
     
     @ViewBuilder private func vbDishCountIn() -> some View {
         
-        let (dishCount,substitution) = dishWhereIn()
+        let (dishCount,substitution) = self.item.dishWhereIn(readOnlyVM: self.viewModel)
         let isInPausa = self.item.status.checkStatusTransition(check: .inPausa)
         let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
         
@@ -160,7 +160,7 @@ struct IngredientModel_RowView: View {
         
     }
     
-    private func dishWhereIn() -> (dishCount:Int,Substitution:Int) {
+   /* private func dishWhereIn() -> (dishCount:Int,Substitution:Int) {
         
         var dishCount: Int = 0
         var dishWhereHasSubstitute: Int = 0
@@ -173,7 +173,7 @@ struct IngredientModel_RowView: View {
             }
         }
         return (dishCount,dishWhereHasSubstitute)
-    }
+    } */
     
     @ViewBuilder private func vbProduzioneIngrediente() -> some View {
         

@@ -463,31 +463,37 @@ struct DishModel_RowView: View {
         let priceDouble = Double(price) ?? 0
         // end 21.09
       //  let (mediaRating,ratingCount) = csIterateDishRating(item: self.item)
-        let (mediaRating,ratingCount,_) = self.item.ratingInfo(readOnlyViewModel: viewModel)
+       // let (mediaRating,ratingCount,_) = self.item.ratingInfo(readOnlyViewModel: viewModel)
         
         HStack(alignment:.center,spacing: 3) {
             
-            Text("\(mediaRating,specifier: "%.1f")") // media
-                .fontWeight(.light)
-                .foregroundColor(Color("SeaTurtlePalette_1"))
-                .padding(.horizontal,5)
-                .background(
-                    RoundedRectangle(cornerRadius: 5.0)
-                        .fill(Color("SeaTurtlePalette_2"))
-                )
-               // ._tightPadding()
-              /*  .background(
-                    Circle()
-                        .fill(Color("SeaTurtlePalette_2"))
-                )*/
-            
-            Group {
-                Text("/")
-                Text("\(ratingCount) recensioni") // valore da importare
+          /*  Group {
+                Text("\(mediaRating,specifier: "%.1f")") // media
+                    .fontWeight(.light)
+                    .foregroundColor(Color("SeaTurtlePalette_1"))
+                    .padding(.horizontal,5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5.0)
+                            .fill(Color("SeaTurtlePalette_2"))
+                    )
+
+                Group {
+                    Text("/")
+                    Text("\(ratingCount) recensioni") // valore da importare
+                        .italic()
+                }
+                .fontWeight(.semibold)
+                .foregroundColor(Color("SeaTurtlePalette_2"))
+            } */
+            if self.rowSize != .ibrido {
+                vbReviewLine()
+            } else {
+                Text(self.item.percorsoProdotto.simpleDescription().lowercased())
                     .italic()
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color("SeaTurtlePalette_2"))
             }
-            .fontWeight(.semibold)
-            .foregroundColor(Color("SeaTurtlePalette_2"))
+           
             
             Spacer()
             
@@ -510,6 +516,30 @@ struct DishModel_RowView: View {
         
     }
 
+    @ViewBuilder private func vbReviewLine() -> some View {
+        
+        let (mediaRating,ratingCount,_) = self.item.ratingInfo(readOnlyViewModel: viewModel)
+        
+        Group {
+            Text("\(mediaRating,specifier: "%.1f")") // media
+                .fontWeight(.light)
+                .foregroundColor(Color("SeaTurtlePalette_1"))
+                .padding(.horizontal,5)
+                .background(
+                    RoundedRectangle(cornerRadius: 5.0)
+                        .fill(Color("SeaTurtlePalette_2"))
+                )
+
+            Group {
+                Text("/")
+                Text("\(ratingCount) recensioni") // valore da importare
+                    .italic()
+            }
+            .fontWeight(.semibold)
+            .foregroundColor(Color("SeaTurtlePalette_2"))
+        }
+        
+    }
     
     private func csIterateDishPricing() -> (price:String,count:String) {
         

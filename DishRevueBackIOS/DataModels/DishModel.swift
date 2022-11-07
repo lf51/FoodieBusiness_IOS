@@ -14,7 +14,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     
     // 06.10 - In abbozzo
     enum PercorsoProdotto:MyProEnumPack_L0 {
-        
+
         static var allCases:[PercorsoProdotto] = [.preparazioneFood,.preparazioneBeverage,.prodottoFinito]
         
         case prodottoFinito //= "Prodotto Finito"
@@ -47,6 +47,39 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             }
             
         }
+        
+        func returnTypeCase() -> DishModel.PercorsoProdotto {
+            self
+        }
+        
+        func orderValue() -> Int {
+            
+            switch self {
+                
+            case .prodottoFinito:
+                return 0
+            case .preparazioneFood:
+                return 1
+            case .preparazioneBeverage:
+                return 2
+                
+            }
+        }
+        
+      /*  func informalDescription() -> String {
+            
+            switch self {
+                
+            case .prodottoFinito:
+                return "Prodotto in rivendita"
+            case .preparazioneFood:
+                return "Preparazione food"
+            case .preparazioneBeverage:
+                return "Preparazione beverage"
+                
+            }
+            
+        }*/
         
         func extendedDescription() -> String {
             
@@ -175,6 +208,39 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     } */ // deprecata
     
     // SearchPack
+    
+    static func sortModelInstance(lhs: DishModel, rhs: DishModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
+        
+        switch condition {
+            
+  
+        case .alfabeticoDecrescente:
+            return lhs.intestazione > rhs.intestazione
+            
+        case .livelloScorte:
+            return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderValue() <
+                readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderValue()
+        case .mostUsed:
+            return readOnlyVM.allMenuContaining(idPiatto: lhs.id).countWhereDishIsIn >
+            readOnlyVM.allMenuContaining(idPiatto: rhs.id).countWhereDishIsIn
+            
+        case .mostRated:
+            return lhs.rifReviews.count > rhs.rifReviews.count
+            
+        case .topRated:
+            return lhs.topRatedValue(readOnlyVM: readOnlyVM) >
+            rhs.topRatedValue(readOnlyVM: readOnlyVM)
+            
+        case .topPriced:
+            return lhs.estrapolaPrezzoMandatoryMaggiore() >
+            rhs.estrapolaPrezzoMandatoryMaggiore()
+            
+        default:
+            return lhs.intestazione < rhs.intestazione
+        }
+    }
+    
+    
     func modelStringResearch(string: String, readOnlyVM:AccounterVM?) -> Bool {
         
         guard string != "" else { return true }
@@ -806,7 +872,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
        
     }
     
-    /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse sempre in Stringa, e un array con i modelli delle recensioni
+    /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse come Int, e un array con i modelli delle recensioni
     func ratingInfo(readOnlyViewModel:AccounterVM) -> (media:Double,count:Int,allModelReview:[DishRatingModel]) {
         
      //   let allLocalReviews:[DishRatingModel] = viewModel.allMyReviews.filter({$0.idPiatto == self.id}) // vedi nota vocale 13.09
@@ -853,6 +919,13 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     }
     
   
+    func estrapolaPrezzoMandatoryMaggiore() -> Double {
+        
+        guard let labelPrice = self.pricingPiatto.first(where: {$0.type == .mandatory}) else { return 0.0 }
+        let price = Double(labelPrice.price) ?? 0.0
+        return price
+        
+    }
     
     /// Torna il numero di recensioni, il numero rilasciato nelle 24h, la media generale, e la media delle ultime 10
     /*func ratingInfoPlus(readOnlyVM:AccounterVM) -> (totali:Int,l24:Int,mediaGen:Double,ml10:Double) {
@@ -933,7 +1006,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     
     
     enum BasePreparazione:MyProEnumPack_L0 {
-        
+
         static var allCase:[BasePreparazione] = [.vegetale,.carne,.pesce]
         
         case vegetale,carne,pesce
@@ -948,6 +1021,14 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             case .pesce:
                 return "Pesce"
             }
+        }
+        
+        func returnTypeCase() -> DishModel.BasePreparazione {
+           return self
+        }
+
+        func orderValue() -> Int {
+            return 0
         }
         
         func imageAssociate() -> String {

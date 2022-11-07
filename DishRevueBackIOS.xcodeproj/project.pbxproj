@@ -63,10 +63,11 @@
 		3F734A2729167935007F17AE /* TestGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F734A2629167935007F17AE /* TestGrid.swift */; };
 		3F7A10E8291285BB0071B647 /* InitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10E7291285BB0071B647 /* InitType.swift */; };
 		3F7A10EB291287DE0071B647 /* FilterRow_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10EA291287DE0071B647 /* FilterRow_Generic.swift */; };
-		3F7A10ED29128D3B0071B647 /* FilterRowContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10EC29128D3B0071B647 /* FilterRowContainer.swift */; };
+		3F7A10ED29128D3B0071B647 /* FilterAndSort_RowContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10EC29128D3B0071B647 /* FilterAndSort_RowContainer.swift */; };
 		3F7A10EF2912920A0071B647 /* BodyListe_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10EE2912920A0071B647 /* BodyListe_Generic.swift */; };
 		3F7A411428E33D290094B296 /* TestAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A411328E33D290094B296 /* TestAccount.swift */; };
 		3F7D3BD328B6384300177CA6 /* SystemMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7D3BD228B6384300177CA6 /* SystemMessage.swift */; };
+		3F7EBB0E2917C39400CF1F6F /* SortRow_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7EBB0D2917C39400CF1F6F /* SortRow_Generic.swift */; };
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
 		3FBA5BD528DDADD6009AA124 /* VistaIngredientiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */; };
 		3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */; };
@@ -273,10 +274,11 @@
 		3F734A2629167935007F17AE /* TestGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestGrid.swift; sourceTree = "<group>"; };
 		3F7A10E7291285BB0071B647 /* InitType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitType.swift; sourceTree = "<group>"; };
 		3F7A10EA291287DE0071B647 /* FilterRow_Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterRow_Generic.swift; sourceTree = "<group>"; };
-		3F7A10EC29128D3B0071B647 /* FilterRowContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterRowContainer.swift; sourceTree = "<group>"; };
+		3F7A10EC29128D3B0071B647 /* FilterAndSort_RowContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterAndSort_RowContainer.swift; sourceTree = "<group>"; };
 		3F7A10EE2912920A0071B647 /* BodyListe_Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyListe_Generic.swift; sourceTree = "<group>"; };
 		3F7A411328E33D290094B296 /* TestAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAccount.swift; sourceTree = "<group>"; };
 		3F7D3BD228B6384300177CA6 /* SystemMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMessage.swift; sourceTree = "<group>"; };
+		3F7EBB0D2917C39400CF1F6F /* SortRow_Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortRow_Generic.swift; sourceTree = "<group>"; };
 		3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel_SmallRowView.swift; sourceTree = "<group>"; };
 		3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaIngredientiEspansa.swift; sourceTree = "<group>"; };
 		3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverradeStateTEST.swift; sourceTree = "<group>"; };
@@ -563,10 +565,11 @@
 			isa = PBXGroup;
 			children = (
 				3F7A10EA291287DE0071B647 /* FilterRow_Generic.swift */,
-				3F7A10EC29128D3B0071B647 /* FilterRowContainer.swift */,
+				3F7A10EC29128D3B0071B647 /* FilterAndSort_RowContainer.swift */,
 				3F7A10EE2912920A0071B647 /* BodyListe_Generic.swift */,
 				3F7179902913D853002D14A4 /* FilterButton.swift */,
 				3F734A2629167935007F17AE /* TestGrid.swift */,
+				3F7EBB0D2917C39400CF1F6F /* SortRow_Generic.swift */,
 			);
 			path = Liste_SubView;
 			sourceTree = "<group>";
@@ -1208,7 +1211,7 @@
 			files = (
 				3F15F04428E1A5B00066FBEC /* VistaPiattiEspansa.swift in Sources */,
 				4D4FE6E827FCA8B700AC0190 /* DataModelPickerView_SubView.swift in Sources */,
-				3F7A10ED29128D3B0071B647 /* FilterRowContainer.swift in Sources */,
+				3F7A10ED29128D3B0071B647 /* FilterAndSort_RowContainer.swift in Sources */,
 				4D3C727D2886F68600BAFE0B /* ConservazioneScrollView_NewIngredientSubView.swift in Sources */,
 				3F2026D728D0E72500DDB4FA /* EnumIDTest.swift in Sources */,
 				4DC3EBC927ABD02C00FFC50E /* NewPropertyMainView.swift in Sources */,
@@ -1365,6 +1368,7 @@
 				4D3C7275287D798600BAFE0B /* DishFormatoDEPRECATED.swift in Sources */,
 				4D34D549283289B300A57747 /* MenuListView.swift in Sources */,
 				4D1BC749279C5C43000B463C /* LogoAppBackEndView.swift in Sources */,
+				3F7EBB0E2917C39400CF1F6F /* SortRow_Generic.swift in Sources */,
 				4DC94A2327E9EBB80080264C /* QueryRow_NewPropertySubView.swift in Sources */,
 				4D61321B27D64B1F0056B9F8 /* TestListMove.swift in Sources */,
 				4D7985E327D8B9CF0012FE23 /* DishCategoria.swift in Sources */,
@@ -1535,7 +1539,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 73;
+				CURRENT_PROJECT_VERSION = 74;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1566,7 +1570,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 73;
+				CURRENT_PROJECT_VERSION = 74;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

@@ -15,6 +15,7 @@ struct DishListView: View {
     let backgroundColorView: Color
     
     @State private var openFilter: Bool = false
+    @State private var openSort: Bool = false
     @State private var filterProperty:FilterPropertyModel = FilterPropertyModel()
     
     var body: some View {
@@ -54,8 +55,13 @@ struct DishListView: View {
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                           vbLocalFilterPop(containerFiltered: container)
                               .presentationDetents([.height(600)])
-                          //  .presentationDetents([.medium])
+
                     
+                      }
+                    .popover(isPresented: $openSort, attachmentAnchor: .point(.top)) {
+                          vbLocalSorterPop()
+                              .presentationDetents([.height(400)])
+ 
                       }
 
             }
@@ -79,7 +85,9 @@ struct DishListView: View {
                 
                 ToolbarItem(placement: .navigationBarLeading) {
                     
-                    FilterButton(open: $openFilter, filterCount: filterProperty.countChange)
+                    let sortActive = self.filterProperty.sortCondition != nil
+                    
+                    FilterButton(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive)
                     
                 }
             }
@@ -95,9 +103,43 @@ struct DishListView: View {
     
     // Method
     
+    @ViewBuilder private func vbLocalSorterPop() -> some View {
+     
+        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Sort") {
+             
+            self.filterProperty.sortCondition = nil
+                
+            } content: {
+
+                let isPF:Bool = {
+                    
+                    self.filterProperty.percorsoPRP.contains(.prodottoFinito) &&
+                    self.filterProperty.percorsoPRP.count == 1
+                }()
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .alfabeticoDecrescente)
+                    
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .livelloScorte)
+                    .opacity(isPF ? 1.0 : 0.5)
+                    .disabled(!isPF)
+  
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .mostUsed)
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .topRated)
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .mostRated)
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .topPriced)
+                
+
+            }
+                
+            
+        }
+
     @ViewBuilder private func vbLocalFilterPop(containerFiltered:[DishModel] = []) -> some View {
      
-            FilterRowContainer(backgroundColorView: backgroundColorView) {
+        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Filtri") {
              
                     self.filterProperty = FilterPropertyModel()
                 

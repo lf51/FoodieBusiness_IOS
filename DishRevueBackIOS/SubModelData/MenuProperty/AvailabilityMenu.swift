@@ -7,7 +7,9 @@
 
 import Foundation
 
-enum AvailabilityMenu:Hashable {
+enum AvailabilityMenu:Hashable,MyProEnumPack_L1 {
+  
+    
     
   //  static var defaultValue: AvailabilityMenu = .noValue
     static var allCases:[AvailabilityMenu] = [.dataEsatta,.intervalloAperto,.intervalloChiuso]
@@ -18,6 +20,38 @@ enum AvailabilityMenu:Hashable {
     case intervalloAperto
     
     case noValue
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+            
+        case .dataEsatta:
+            return "Data Esatta"
+        case .intervalloChiuso:
+            return "Intervallo Chiuso"
+        case .intervalloAperto:
+            return "Intervallo Aperto"
+        case .noValue:
+            return ""
+        }
+    }
+    
+    func returnTypeCase() -> AvailabilityMenu {
+        self
+    }
+    
+    func orderValue() -> Int {
+        switch self {
+        case .dataEsatta:
+            return 1
+        case .intervalloChiuso:
+            return 2
+        case .intervalloAperto:
+            return 3
+        case .noValue:
+            return 0
+        }
+    }
     
     func shortDescription() -> String {
         

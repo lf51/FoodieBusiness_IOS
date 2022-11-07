@@ -50,6 +50,26 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
     // Method
     
     // Protocollo di ricerca
+    
+    static func sortModelInstance(lhs: IngredientModel, rhs: IngredientModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
+        
+        switch condition {
+            
+        case .alfabeticoDecrescente:
+            return lhs.intestazione > rhs.intestazione
+            
+        case .livelloScorte:
+          return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderValue() < readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderValue()
+            
+        case .mostUsed:
+            return lhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount > rhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount
+            
+            
+        default:
+            return lhs.intestazione < rhs.intestazione // alfabetico crescente va di default quando il sort è nil
+        }
+    }
+    
     func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
         
         guard string != "" else { return true }
@@ -217,6 +237,21 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
         }
  
         return (allergeneDiServizio.imageAssociated(),.large)
+    }
+    
+    func dishWhereIn(readOnlyVM:AccounterVM) -> (dishCount:Int,Substitution:Int) {
+        
+        var dishCount: Int = 0
+        var dishWhereHasSubstitute: Int = 0
+        
+        for dish in readOnlyVM.allMyDish {
+            
+            if dish.checkIngredientsInPlain(idIngrediente: self.id) {
+                dishCount += 1
+                if dish.checkIngredientHasSubstitute(idIngrediente: self.id) { dishWhereHasSubstitute += 1}
+            }
+        }
+        return (dishCount,dishWhereHasSubstitute)
     }
     
     /// ritorna true se tutte le proprietà optional sono state compilate, e dunque il modello è completo.

@@ -29,6 +29,20 @@ enum StatusTransition:MyProEnumPack_L0,Equatable {
         }
     }
     
+    func returnTypeCase() -> StatusTransition {
+        self
+    }
+    
+    func orderValue() -> Int {
+        switch self {
+        case .disponibile:
+            return 0
+        case .inPausa:
+            return 1
+        case .archiviato:
+            return 2
+        }
+    }
     func colorAssociated() -> Color {
         
         switch self {

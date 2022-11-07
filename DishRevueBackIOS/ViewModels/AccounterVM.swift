@@ -884,15 +884,17 @@ class AccounterVM: ObservableObject {
         
         let container = self[keyPath: containerPath]
         
-        let conditionZero = container.filter({$0.status != .bozza()})
+        let filterZero = container.filter({$0.status != .bozza()})
  
-        let conditionOne = conditionZero.filter({
+        let filterInTheModel = filterZero.filter({
             $0.modelPropertyCompare(filterProperty: filterProperty, readOnlyVM: self) 
         })
         
-        let finalSorted = conditionOne.sorted{ $0.intestazione < $1.intestazione } // da trasferire nel Sort
+        let sortedInTheModel = filterInTheModel.sorted{
+            M.sortModelInstance(lhs: $0, rhs: $1, condition: filterProperty.sortCondition,readOnlyVM: self)
+        }
         
-        return finalSorted
+        return sortedInTheModel
     }
     
     

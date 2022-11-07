@@ -15,6 +15,7 @@ struct MenuListView: View {
     let backgroundColorView: Color
     
     @State private var openFilter: Bool = false
+    @State private var openSort: Bool = false
     @State private var filterProperty:FilterPropertyModel = FilterPropertyModel()
     
     var body: some View {
@@ -62,6 +63,10 @@ struct MenuListView: View {
                             .presentationDetents([.height(600)])
                   
                     }
+                    .popover(isPresented: $openSort, attachmentAnchor: .point(.top)) {
+                        vbLocalSorterPop()
+                            .presentationDetents([.height(400)])
+                    }
                 
             }
         .navigationDestination(for: DestinationPathView.self, destination: { destination in
@@ -84,8 +89,10 @@ struct MenuListView: View {
                 
                 ToolbarItem(placement: .navigationBarLeading) {
                     
-                    FilterButton(open: $openFilter, filterCount: filterProperty.countChange)
+                    let sortActive = self.filterProperty.sortCondition != nil
                     
+                    FilterButton(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive)
+                        
                 }
                 
             }
@@ -99,9 +106,49 @@ struct MenuListView: View {
     }
     
     // Method
+    
+    @ViewBuilder private func vbLocalSorterPop() -> some View {
+     
+        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Sort") {
+             
+            self.filterProperty.sortCondition = nil
+                
+            } content: {
+
+                let isCloseRange:Bool = {
+                    self.filterProperty.rangeTemporaleMenu == .intervalloChiuso                }()
+                
+                let isMenuFisso: Bool = {
+                    self.filterProperty.tipologiaMenu != nil &&
+                    self.filterProperty.tipologiaMenu != .allaCarta
+                }()
+            
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .alfabeticoDecrescente)
+                    
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .dataInizio)
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .dataFine)
+                    .opacity(isCloseRange ? 1.0 : 0.5)
+                    .disabled(!isCloseRange)
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .mostContaining)
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .topRated)
+                
+                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .topPriced)
+                    .opacity(isMenuFisso ? 1.0 : 0.5)
+                    .disabled(!isMenuFisso)
+                
+
+            }
+                
+            
+        }
+    
     @ViewBuilder private func vbLocalFilterPop(container:[MenuModel]) -> some View {
      
-            FilterRowContainer(backgroundColorView: backgroundColorView) {
+        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Filtri") {
              
                     self.filterProperty = FilterPropertyModel()
                 
@@ -111,7 +158,15 @@ struct MenuListView: View {
                 FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed",label:"Status"){ value in
                     container.filter({$0.status.checkStatusTransition(check: value)}).count
                 }
-    
+                
+                FilterRow_Generic(allCases: TipologiaMenu.allCases, filterProperty: $filterProperty.tipologiaMenu, selectionColor: Color.brown, imageOrEmoji: "circle", label: "Tipologia") { value in
+                    container.filter({$0.tipologia.returnTypeCase() == value}).count
+                }
+                
+                FilterRow_Generic(allCases: AvailabilityMenu.allCases, filterProperty: $filterProperty.rangeTemporaleMenu, selectionColor: Color.yellow.opacity(0.7), imageOrEmoji: "circle", label: "Arco Temporale") { value in
+                    container.filter({$0.isAvaibleWhen == value}).count
+                }
+
                 FilterRow_Generic(allCases: GiorniDelServizio.allCases, filterProperty: $filterProperty.giornoServizio, selectionColor: Color.blue,imageOrEmoji: "calendar",label: "Giorno della Settimana"){ value in
                     container.filter({$0.giorniDelServizio.contains(value)}).count
                 }

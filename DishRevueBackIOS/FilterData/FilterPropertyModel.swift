@@ -12,6 +12,8 @@ struct FilterPropertyModel {
     var countChange:Int = 0
     // Comune a Tutti
     var stringaRicerca:String = ""
+    var sortCondition:SortCondition?
+
     var status:[StatusTransition] = [] { willSet { countManage(newValue: newValue, oldValue: status) }}
     
     // Proprietà di filtro Ingrediente
@@ -30,12 +32,17 @@ struct FilterPropertyModel {
     var percorsoPRP:[DishModel.PercorsoProdotto] = [] { willSet { observingPercorso(newValue: newValue, oldValue: percorsoPRP) }}
     
     var dietePRP:[TipoDieta] = [] { willSet { countManage(newValue: newValue, oldValue: dietePRP) }}
-    var rifIngredientiPRP:[String] = [] { willSet { countManageStringCollection(newValue: newValue, oldValue: rifIngredientiPRP) }} // Deprecato 04.11 -> Spostiamo il filtro per ingredienti nella ricerca. Vedi Nota sui Filtri 03.11
+
    // var eseguibilePRP:Bool?
     var basePRP:DishModel.BasePreparazione? {willSet {countManageSingle(newValue: newValue, oldValue: basePRP)}}
  
     // Proprietà di filtro Menu
     var giornoServizio:GiorniDelServizio? {willSet {countManageSingle(newValue: newValue, oldValue: giornoServizio)}}
+
+    var tipologiaMenu:TipologiaMenu? {willSet {countManageSingle(newValue: newValue, oldValue: tipologiaMenu)}}
+    var rangeTemporaleMenu:AvailabilityMenu? {willSet {countManageSingle(newValue: newValue, oldValue: rangeTemporaleMenu)}}
+    
+    
     // Method
     
    /* func compareBoolProperty(local:Bool,filter:KeyPath<Self,Bool?>) -> Bool {
@@ -102,7 +109,7 @@ struct FilterPropertyModel {
         let filterProp = self[keyPath: filter]
         
         guard filterProp != nil else { return true }
-        return local == filterProp
+         return local.returnTypeCase() == filterProp?.returnTypeCase()
     }
       
     func comparePropertyToCollection<P:MyProEnumPack_L0>(localProperty:P,filterCollection:KeyPath<Self,[P]>) -> Bool {
@@ -162,5 +169,81 @@ struct FilterPropertyModel {
         
         return self.inventario.contains(statoScorte)
     }
+    
+    // Sort Space
+    
+
+    
+    enum SortCondition {
+    
+        case alfabeticoDecrescente
+        
+        case livelloScorte
+        case mostUsed
+        case mostContaining
+        
+        case mostRated
+        case topRated
+        case topPriced
+        
+        case dataInizio
+        case dataFine
+        
+        
+        func simpleDescription() -> String {
+            
+            switch self {
+                
+            case .alfabeticoDecrescente:
+                return "Ordine Alfabetico Decrescente"
+            case .livelloScorte:
+                return "Livello Scorte"
+            case .mostUsed:
+                return "Utilizzo"
+            case .mostContaining:
+                return "Prodotti Contenuti"
+            case .mostRated:
+                return "Recensioni"
+            case .topRated:
+                return "Media Voto Ponderata"
+            case .topPriced:
+                return "Prezzo"
+            case .dataInizio:
+                return "Data Inizio Servizio"
+            case .dataFine:
+                return "Data Fine Servizio"
+                
+            }
+            
+        }
+        
+        func imageAssociated() -> String {
+            
+            switch self {
+                
+            case .alfabeticoDecrescente:
+                return "textformat"
+            case .livelloScorte:
+                return "cart"
+            case .mostUsed,.mostContaining:
+                return "aqi.medium"
+            case .mostRated:
+                return "chart.line.uptrend.xyaxis"
+            case .topRated:
+                return "medal"
+            case .topPriced:
+                return "dollarsign"
+            case .dataInizio:
+                return "play.circle"
+            case .dataFine:
+                return "stop.circle"
+                
+            }
+
+        }
+        
+    }
+    
+    
     
 }
