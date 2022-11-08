@@ -9,14 +9,18 @@ import SwiftUI
 
 struct FilterButton:View {
     
-    @Binding var open:Bool
-    @Binding var openSort:Bool
+    @Binding var open: Bool
+    @Binding var openSort: Bool
+   // @Binding var mapActive: Bool
     let filterCount:Int
     let sortActive:Bool
     
+    let thirdButtonAction: () -> Void
+    @State private var isThirdButtonActive: Bool = false
+    
     var body: some View {
         
-        HStack(spacing:0) {
+        HStack(alignment:.bottom) {
 
             CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color("SeaTurtlePalette_3")) {
                 self.open.toggle()
@@ -63,6 +67,14 @@ struct FilterButton:View {
                 }
                     
             }
+         
+            CSButton_image(frontImage: self.isThirdButtonActive ? "rectangle.3.group.fill" : "rectangle.3.group", imageScale: .medium, frontColor: Color("SeaTurtlePalette_3")) {
+              
+                self.thirdButtonAction()
+                self.isThirdButtonActive.toggle()
+                
+            }
+            .padding([.top,.trailing],5)
             
         }
         

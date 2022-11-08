@@ -36,6 +36,7 @@ var testAccount: AccounterVM = {
     ]
     vm.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
     vm.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
+    vm.categoriaMenuAllCases = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
      return vm
  }()
 
@@ -58,6 +59,7 @@ var dishItem2_Test: DishModel = {
    newDish.status = .completo(.disponibile)
    newDish.ingredientiPrincipali = [ingredientSample6_Test.id]
    newDish.ingredientiSecondari = []
+    newDish.categoriaMenu = "cat2"
   // newDish.rifReviews = [rate8.id,rate9.id,rate10.id,rate11.id,rate12.id]
     
    let price:DishFormat = {
@@ -87,6 +89,8 @@ var dishItem2_Test: DishModel = {
     newDish.ingredientiPrincipali = [ingredientSample4_Test.id]
     newDish.ingredientiSecondari = [ingredientSample2_Test.id]
      newDish.rifReviews = [rate8.id,rate9.id,rate10.id,rate11.id,rate12.id]
+     newDish.categoriaMenu = "cat2"
+     
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
         pr.label = "Porzione"
@@ -114,6 +118,7 @@ var dishItem4_Test: DishModel = {
     newDish.ingredientiPrincipali = [ingredientSample_Test.id]
     newDish.ingredientiSecondari = [ingredientSample3_Test.id]
     newDish.rifReviews = [rate1.id,rate2.id,rate3.id,rate4.id,rate5.id,rate6.id,rate7.id]
+    newDish.categoriaMenu = "cat2"
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
         pr.price = "22.5"
@@ -133,6 +138,7 @@ var dishItem5_Test: DishModel = {
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [ingredientSample7_Test.id]
     newDish.ingredientiSecondari = []
+    newDish.categoriaMenu = "cat2"
   //  newDish.rifReviews = [rate1.id,rate2.id,rate3.id,rate4.id,rate5.id,rate6.id,rate7.id]
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
@@ -152,6 +158,7 @@ var prodottoFinito: DishModel = {
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [newDish.id]
     newDish.percorsoProdotto = .prodottoFinito
+    newDish.categoriaMenu = "cat7"
  
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
@@ -367,3 +374,27 @@ var rate12 = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "l
 
 let rifDish3 = dishItem3_Test.id
 let rifDish4 = dishItem4_Test.id
+
+
+let cat1:CategoriaMenu = CategoriaMenu(id:"cat1",
+    intestazione: "Antipasti",
+    image: "🫒")
+let cat2:CategoriaMenu = CategoriaMenu(id:"cat2",
+    intestazione: "Primi",
+    image: "🍝")
+let cat3:CategoriaMenu = CategoriaMenu(id:"cat3",
+    intestazione: "Secondi",
+    image: "🍴")
+let cat4:CategoriaMenu = CategoriaMenu(id:"cat4",
+    intestazione: "Contorni",
+    image: "🥗")
+let cat5:CategoriaMenu = CategoriaMenu(id:"cat5",
+    intestazione: "Frutta",
+    image: "🍉")
+let cat6:CategoriaMenu = CategoriaMenu(id:"cat6",
+    intestazione: "Dessert",
+    image: "🍰")
+let cat7:CategoriaMenu = CategoriaMenu(id:"cat7",
+    intestazione: "Bevande",
+    image: "🍷")
+

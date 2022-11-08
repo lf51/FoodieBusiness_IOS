@@ -16,6 +16,7 @@ struct DishListView: View {
     
     @State private var openFilter: Bool = false
     @State private var openSort: Bool = false
+    @State private var mapObject: MapObject<DishModel,CategoriaMenu>?
     @State private var filterProperty:FilterPropertyModel = FilterPropertyModel()
     
     var body: some View {
@@ -23,35 +24,12 @@ struct DishListView: View {
         NavigationStack(path:$viewModel.dishListPath) {
             
             CSZStackVB(title: "I Miei Prodotti", backgroundColorView: backgroundColorView) {
- 
 
-              /*  VStack {
-                    
-                    CSDivider()
-                    ScrollView {
-                        ForEach(viewModel.allMyDish) { piatto in
-                            
-                            GenericItemModel_RowViewMask(model: piatto) {
-                                
-                                piatto.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.dishListPath)
-                                
-                                vbMenuInterattivoModuloCambioStatus(myModel:piatto,viewModel: viewModel)
+                let container = self.viewModel.filtraERicerca(containerPath: \.allMyDish, filterProperty: filterProperty) // Vedi Nota 08.11
  
-                                vbMenuInterattivoModuloEdit(currentModel: piatto, viewModel: viewModel, navPath: \.dishListPath)
-                                
-                                vbMenuInterattivoModuloTrash(currentModel: piatto, viewModel: viewModel)
-                            }
-                            
-                        }
-
-                    }
-                } */
-                
-                
-                // fine temporaneo
-                let container = self.viewModel.filtraERicerca(containerPath: \.allMyDish, filterProperty: filterProperty)
-                
-                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container, navigationPath: \.dishListPath, placeHolder: "Cerca per Prodotto e/o Ingrediente..")
+                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container,
+                                  mapObject: mapObject,
+                                  navigationPath: \.dishListPath, placeHolder: "Cerca per Prodotto e/o Ingrediente..")
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                           vbLocalFilterPop(containerFiltered: container)
                               .presentationDetents([.height(600)])
@@ -87,7 +65,11 @@ struct DishListView: View {
                     
                     let sortActive = self.filterProperty.sortCondition != nil
                     
-                    FilterButton(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive)
+                    FilterButton(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
+                        
+                      thirdButtonAction()
+                        
+                    }
                     
                 }
             }
@@ -102,6 +84,20 @@ struct DishListView: View {
     }
     
     // Method
+    
+    private func thirdButtonAction() {
+        
+        if mapObject == nil {
+            
+            self.mapObject = MapObject(
+                mapCategory: self.viewModel.categoriaMenuAllCases,
+                kpMapCategory: \DishModel.categoriaMenu)
+            
+        } else {
+            
+            self.mapObject = nil
+        }
+    }
     
     @ViewBuilder private func vbLocalSorterPop() -> some View {
      
@@ -145,7 +141,7 @@ struct DishListView: View {
                 
             } content: {
 
-                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife",label: "Percorso Prodotto") { value in
+                FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife",label: "Prodotto") { value in
                     
                     containerFiltered.filter({$0.percorsoProdotto == value}).count
                 }
@@ -159,7 +155,7 @@ struct DishListView: View {
                       return containerFiltered.filter({self.viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value }).count
                     
                     }
-                    else {return 0 }
+                    else { return 0 }
                     
                 }
                     .opacity(checkAvailability ? 1.0 : 0.3)
@@ -171,6 +167,11 @@ struct DishListView: View {
                    containerFiltered.filter({$0.status.checkStatusTransition(check: value)}).count
                   
                 }
+                
+                FilterRow_Generic(allCases: self.viewModel.categoriaMenuAllCases, filterCollection: $filterProperty.categorieMenu, selectionColor: Color.yellow.opacity(0.7), imageOrEmoji: "list.bullet.indent", label: "Categoria") { value in
+                    containerFiltered.filter({$0.categoriaMenu == value.id }).count
+                }
+                
                 
                 FilterRow_Generic(allCases: DishModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf",label: "Preparazione a base di")
                 { value in
@@ -188,7 +189,7 @@ struct DishListView: View {
 
              //   HStack {
                     
-                    FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.blue, imageOrEmoji: "checkmark.shield",label: "Ingredienti di Qualità")
+                    FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.blue, imageOrEmoji: "checkmark.shield",label: "Qualità")
                     { value in
                         containerFiltered.filter({$0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.produzione, quality: value)}).count
                     }

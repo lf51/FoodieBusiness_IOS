@@ -16,6 +16,7 @@ struct ListaIngredientiView: View {
     
     @State private var openFilter:Bool = false
     @State private var openSort: Bool = false
+    @State private var mapObject: MapObject<IngredientModel,OrigineIngrediente>?
     
     @State private var filterProperty:FilterPropertyModel = FilterPropertyModel()
     
@@ -27,7 +28,7 @@ struct ListaIngredientiView: View {
 
                 let container = self.viewModel.filtraERicerca(containerPath: \.allMyIngredients, filterProperty: filterProperty)
             
-                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container, navigationPath: \.ingredientListPath)
+                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container,mapObject: mapObject, navigationPath: \.ingredientListPath)
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                         vbLocalFilterPop(container: container)
                             .presentationDetents([.height(600)])
@@ -60,7 +61,9 @@ struct ListaIngredientiView: View {
                     
                     let sortActive = self.filterProperty.sortCondition != nil
                     
-                    FilterButton(open: $openFilter,openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive)
+                    FilterButton(open: $openFilter,openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
+                        thirdButtonAction()
+                    }
                     
                   /*  CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color("SeaTurtlePalette_3")) {
                         self.openFilter.toggle()
@@ -79,7 +82,19 @@ struct ListaIngredientiView: View {
     
     // Method
     
-  
+    private func thirdButtonAction() {
+        
+        if mapObject == nil {
+            
+            self.mapObject = MapObject(
+                mapCategory: OrigineIngrediente.allCases,
+                kpMapCategory: \IngredientModel.origine.id)
+            
+        } else {
+            
+            self.mapObject = nil
+        }
+    }
         
     
     @ViewBuilder private func vbLocalSorterPop() -> some View {

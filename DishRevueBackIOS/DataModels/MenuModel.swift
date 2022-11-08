@@ -182,22 +182,29 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         return  self.intestazione.lowercased().contains(ricerca)
     }
     
+    private func preCallIsOnAir(filterValue:MenuModel.OnlineStatus?) -> Bool {
+    
+        switch filterValue {
+        case .online:
+            return isOnAir(checkTimeRange: false)
+        case .offline:
+            return !isOnAir(checkTimeRange: false)
+            
+        default:
+            return true
+        }
+        
+    }
+    
     func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
         
         self.modelStringResearch(string: filterProperty.stringaRicerca) &&
+        self.preCallIsOnAir(filterValue: filterProperty.onlineOfflineMenu) &&
         filterProperty.compareStatusTransition(localStatus: self.status) &&
         filterProperty.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: \.giornoServizio) &&
         filterProperty.comparePropertyToProperty(local: self.tipologia, filter: \.tipologiaMenu) &&
         filterProperty.comparePropertyToProperty(local: self.isAvaibleWhen, filter: \.rangeTemporaleMenu)
-        
-        
-        
-        
-        
-        
-        
-        
-        
+    
         
     }
     
@@ -440,6 +447,35 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         
         let media = sommaVotiPesati / sommaPesi
         return media
+    }
+    
+    enum OnlineStatus:MyProEnumPack_L0 {
+
+        static var allCases:[OnlineStatus] = [.online,.offline]
+        
+        case online,offline
+        
+        func simpleDescription() -> String {
+            switch self {
+            case .online:
+                return "Online"
+            case .offline:
+                return "Offline"
+            }
+        }
+        
+        func returnTypeCase() -> MenuModel.OnlineStatus {
+            self
+        }
+        
+        func orderValue() -> Int {
+            switch self {
+            case .online:
+                return 1
+            case .offline:
+                return 0
+            }
+        }
     }
 } // end Model
 

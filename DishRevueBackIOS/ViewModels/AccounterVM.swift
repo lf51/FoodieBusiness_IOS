@@ -63,28 +63,7 @@ class AccounterVM: ObservableObject {
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // 19.05 --> Collocazione Temporanea
-    @Published var categoriaMenuAllCases: [CategoriaMenu] = [
-        CategoriaMenu(
-            intestazione: "Antipasti",
-            image: "🫒"),
-        CategoriaMenu(
-            intestazione: "Primi",
-            image: "🍝"),
-        CategoriaMenu(
-            intestazione: "Secondi",
-            image: "🍴"),
-        CategoriaMenu(
-            intestazione: "Contorni",
-            image: "🥗"),
-        CategoriaMenu(
-            intestazione: "Frutta",
-            image: "🍉"),
-        CategoriaMenu(
-            intestazione: "Dessert",
-            image: "🍰"),
-        CategoriaMenu(
-            intestazione: "Bevande",
-            image: "🍷")]
+    @Published var categoriaMenuAllCases: [CategoriaMenu] = []
     
     @Published var allMyReviews:[DishRatingModel] = []
     @Published var inventarioScorte:Inventario = Inventario()

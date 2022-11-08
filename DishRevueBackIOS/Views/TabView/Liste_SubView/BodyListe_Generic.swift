@@ -7,6 +7,114 @@
 
 import SwiftUI
 
+struct MapObject<M:MyProToolPack_L1,C:MyProEnumPack_L2> {
+  
+    var mapCategory:[C]
+    var kpMapCategory:KeyPath<M,String>
+}
+
+
+struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    @Binding var filterString:String
+    let container:[M]
+  
+  //  var mapCategory:[C] = []
+  //  var kpMapCategory:KeyPath<M,String>
+    var mapObject:MapObject<M,C>? = nil
+    
+    let navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>
+    var placeHolder:String = "Ricerca.."
+    
+    var body: some View {
+        
+        VStack {
+            
+            CSDivider()
+            
+            ScrollView(showsIndicators:false) {
+                
+                ScrollViewReader { proxy in
+                    
+                CSTextField_4(textFieldItem: $filterString, placeHolder: placeHolder, image: "text.magnifyingglass", showDelete: true).id(0)
+    
+                CSDivider()
+                    
+                    if mapObject == nil {
+                        
+                        vbPlainContainer(container: self.container)
+                            .id(1)
+                            .onAppear {proxy.scrollTo(1, anchor: .top)}
+                        
+                    } else {
+                        
+                        vbMappedContainer()
+                            .id(1)
+                            .onAppear {proxy.scrollTo(1, anchor: .top)}
+                    }
+                    
+                }
+            }
+            
+            
+            CSDivider()
+        }
+        .padding(.horizontal)
+        
+    }
+    
+    // Method
+    
+    @ViewBuilder private func vbPlainContainer(container:[M]) -> some View {
+        
+        ForEach(container) { model in
+            
+            GenericItemModel_RowViewMask(model: model) {
+                
+                model.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
+                    
+                    vbMenuInterattivoModuloCambioStatus(myModel: model,viewModel: viewModel)
+                    
+                    vbMenuInterattivoModuloEdit(currentModel: model, viewModel: viewModel, navPath: navigationPath)
+                    
+                    vbMenuInterattivoModuloTrash(currentModel: model, viewModel: viewModel)
+                    
+               
+            }
+            
+        }
+        
+    }
+    
+    @ViewBuilder private func vbMappedContainer() -> some View {
+        
+        ForEach(self.mapObject!.mapCategory) { category in
+            
+            let mappedContainer = self.container.filter({$0[keyPath: self.mapObject!.kpMapCategory] == category.id })
+        
+        if !mappedContainer.isEmpty {
+            
+            Section {
+                
+                vbPlainContainer(container: mappedContainer)
+ 
+                
+            } header: {
+                
+                CSLabel_1Button(
+                    placeHolder: category.simpleDescription(),
+                    imageNameOrEmojy: category.imageAssociated(),
+                    backgroundColor: Color.black,
+                    backgroundOpacity: 0.05)
+            }
+            
+        }
+      }
+    }
+}
+/*
 struct BodyListe_Generic<M:MyProToolPack_L1>:View {
     
     @EnvironmentObject var viewModel:AccounterVM
@@ -60,4 +168,4 @@ struct BodyListe_Generic<M:MyProToolPack_L1>:View {
         
     }
     
-}
+}*/ // BackUp 08.11

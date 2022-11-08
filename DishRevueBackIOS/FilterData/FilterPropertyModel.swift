@@ -13,6 +13,8 @@ struct FilterPropertyModel {
     // Comune a Tutti
     var stringaRicerca:String = ""
     var sortCondition:SortCondition?
+    
+    var onlineOfflineMenu:MenuModel.OnlineStatus? {willSet {countManageSingle(newValue: newValue, oldValue: onlineOfflineMenu)}}
 
     var status:[StatusTransition] = [] { willSet { countManage(newValue: newValue, oldValue: status) }}
     
@@ -36,6 +38,8 @@ struct FilterPropertyModel {
    // var eseguibilePRP:Bool?
     var basePRP:DishModel.BasePreparazione? {willSet {countManageSingle(newValue: newValue, oldValue: basePRP)}}
  
+    var categorieMenu:[CategoriaMenu] = [] { willSet { countManage(newValue: newValue, oldValue: categorieMenu) }}
+
     // Proprietà di filtro Menu
     var giornoServizio:GiorniDelServizio? {willSet {countManageSingle(newValue: newValue, oldValue: giornoServizio)}}
 
@@ -171,9 +175,7 @@ struct FilterPropertyModel {
     }
     
     // Sort Space
-    
 
-    
     enum SortCondition {
     
         case alfabeticoDecrescente
@@ -195,7 +197,7 @@ struct FilterPropertyModel {
             switch self {
                 
             case .alfabeticoDecrescente:
-                return "Ordine Alfabetico Decrescente"
+                return "Alfabetico Decrescente"
             case .livelloScorte:
                 return "Livello Scorte"
             case .mostUsed:
@@ -203,7 +205,7 @@ struct FilterPropertyModel {
             case .mostContaining:
                 return "Prodotti Contenuti"
             case .mostRated:
-                return "Recensioni"
+                return "Numero di Recensioni"
             case .topRated:
                 return "Media Voto Ponderata"
             case .topPriced:

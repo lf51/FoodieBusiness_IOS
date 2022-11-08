@@ -16,6 +16,8 @@ struct MenuListView: View {
     
     @State private var openFilter: Bool = false
     @State private var openSort: Bool = false
+    @State private var mapObject: MapObject<MenuModel,TipologiaMenu>?
+                                                
     @State private var filterProperty:FilterPropertyModel = FilterPropertyModel()
     
     var body: some View {
@@ -24,40 +26,9 @@ struct MenuListView: View {
             
             CSZStackVB(title: "I Miei Menu", backgroundColorView: backgroundColorView) {
                     
-              /*  ItemModelCategoryViewBuilder(dataContainer: MapCategoryContainer.allMenuMapCategory)*/ // STAND-BY 16.09
-                
-                // Temporaneo
-                
-               /* VStack {
-                    
-                    CSDivider()
-                    
-                    ScrollView(showsIndicators:false) {
-                        ForEach(viewModel.allMyMenu) { menu in
-                            
-                            
-                            GenericItemModel_RowViewMask(model: menu) {
-                                
-                                menu.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: \.menuListPath)
-                                
-                              //  if !menu.tipologia.isDiSistema() {
-                                    vbMenuInterattivoModuloCambioStatus(myModel: menu,viewModel: viewModel)
-                                    
-                                    vbMenuInterattivoModuloEdit(currentModel: menu, viewModel: viewModel, navPath: \.menuListPath)
-                              //  }
-    
-                                vbMenuInterattivoModuloTrash(currentModel: menu, viewModel: viewModel)
-                            }
-                            
-                        }
-                    }
-                    CSDivider()
-                } */
-                
-                // fine temporaneo
                 let container = self.viewModel.filtraERicerca(containerPath: \.allMyMenu, filterProperty: filterProperty)
                 
-                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container: container, navigationPath: \.menuListPath)
+                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container: container,mapObject: mapObject, navigationPath: \.menuListPath)
                     .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
                         vbLocalFilterPop(container: container)
                             .presentationDetents([.height(600)])
@@ -90,8 +61,11 @@ struct MenuListView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     
                     let sortActive = self.filterProperty.sortCondition != nil
-                    
-                    FilterButton(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive)
+            
+                    FilterButton(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
+                        thirdButtonAction()
+                    }
+                        
                         
                 }
                 
@@ -106,6 +80,21 @@ struct MenuListView: View {
     }
     
     // Method
+    
+    private func thirdButtonAction() {
+        
+        if mapObject == nil {
+            
+            self.mapObject = MapObject(
+                mapCategory: TipologiaMenu.allCases,
+                kpMapCategory: \MenuModel.tipologia.id)
+            
+        } else {
+            
+            self.mapObject = nil
+        }
+    }
+    
     
     @ViewBuilder private func vbLocalSorterPop() -> some View {
      
@@ -153,17 +142,21 @@ struct MenuListView: View {
                     self.filterProperty = FilterPropertyModel()
                 
             } content: {
-
+                
+                FilterRow_Generic(allCases: MenuModel.OnlineStatus.allCases, filterProperty: $filterProperty.onlineOfflineMenu, selectionColor: Color.cyan, imageOrEmoji: "face.dashed", label: "Programmazione Odierna") { value in
+                    container.filter({$0.isOnAir(checkTimeRange: false)}).count
+                }
+                
 
                 FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed",label:"Status"){ value in
                     container.filter({$0.status.checkStatusTransition(check: value)}).count
                 }
                 
-                FilterRow_Generic(allCases: TipologiaMenu.allCases, filterProperty: $filterProperty.tipologiaMenu, selectionColor: Color.brown, imageOrEmoji: "circle", label: "Tipologia") { value in
+                FilterRow_Generic(allCases: TipologiaMenu.allCases, filterProperty: $filterProperty.tipologiaMenu, selectionColor: Color.brown, imageOrEmoji: "square.on.square.dashed", label: "Tipologia") { value in
                     container.filter({$0.tipologia.returnTypeCase() == value}).count
                 }
                 
-                FilterRow_Generic(allCases: AvailabilityMenu.allCases, filterProperty: $filterProperty.rangeTemporaleMenu, selectionColor: Color.yellow.opacity(0.7), imageOrEmoji: "circle", label: "Arco Temporale") { value in
+                FilterRow_Generic(allCases: AvailabilityMenu.allCases, filterProperty: $filterProperty.rangeTemporaleMenu, selectionColor: Color.yellow.opacity(0.7), imageOrEmoji: "calendar.day.timeline.trailing", label: "Arco Temporale") { value in
                     container.filter({$0.isAvaibleWhen == value}).count
                 }
 

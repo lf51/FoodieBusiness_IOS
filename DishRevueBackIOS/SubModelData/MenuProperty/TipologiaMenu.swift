@@ -60,9 +60,9 @@ enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
 }
 
 
-enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L1 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
+enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
    
-    static var allCases: [TipologiaMenu] = [.fisso(persone: .uno, costo: "n/d"),.allaCarta]
+    static var allCases: [TipologiaMenu] = [.allaCarta,.fisso(persone: .uno, costo: "n/d")]
     static var defaultValue: TipologiaMenu = .noValue
     
     var id:String {self.createId()}
