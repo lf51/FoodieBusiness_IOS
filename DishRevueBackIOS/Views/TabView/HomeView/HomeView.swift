@@ -372,14 +372,16 @@ struct MenuDiSistema_BoxView:View {
             let menuDS = self.viewModel.trovaMenuDiSistema(menuDiSistema: menuDiSistema)
             
             let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
+           
             
             CSLabel_conVB(
                 placeHolder: "\(menuDiSistema.shortDescription())",
-                imageNameOrEmojy: tipologia.imageAssociated(),
+                imageNameOrEmojy: menuDiSistema.imageAssociated(),
                 backgroundColor: Color("SeaTurtlePalette_2"),
                 backgroundOpacity: menuDS != nil ? 1.0 : 0.2) {
                    
                     HStack {
+                        
                         if menuDS == nil {
                             
                             Button {

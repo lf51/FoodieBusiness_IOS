@@ -253,7 +253,7 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
         
          var menu = MenuModel()
          menu.intestazione = "Luglio Menu"
-         menu.tipologia = .allaCarta
+         menu.tipologia = .allaCarta()
          menu.rifDishIn = [dishItem3.id]
        //  menu.tipologia = .allaCarta
          menu.giorniDelServizio = [.domenica]
@@ -277,8 +277,8 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
          return menu
      }()
      
-     static var menuDelGiorno:MenuModel = MenuModel(tipologia: .delGiorno)
-     static var menuDelloChef:MenuModel = MenuModel(tipologia: .delloChef)
+    static var menuDelGiorno:MenuModel = MenuModel(tipologia: .allaCarta(.delGiorno))
+    static var menuDelloChef:MenuModel = MenuModel(tipologia: .allaCarta(.delloChef))
     
     
     @State static var viewModel: AccounterVM = {
@@ -293,8 +293,8 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
     static var allMenu:[MenuModel] = {
        
         viewModel.allMyMenu.filter({
-            $0.tipologia != .delGiorno &&
-            $0.tipologia != .delloChef &&
+            $0.tipologia != .allaCarta(.delGiorno) &&
+            $0.tipologia != .allaCarta(.delloChef) &&
             $0.rifDishIn.contains(dishItem3.id)
         })
     }()

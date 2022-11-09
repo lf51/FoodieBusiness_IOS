@@ -340,7 +340,7 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
         
          var menu = MenuModel()
          menu.intestazione = "Luglio Menu"
-         menu.tipologia = .allaCarta
+         menu.tipologia = .allaCarta()
          menu.rifDishIn = [dishItem3.id]
        //  menu.tipologia = .allaCarta
          menu.giorniDelServizio = [.domenica]
@@ -364,8 +364,8 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
          return menu
      }()
      
-     static var menuDelGiorno:MenuModel = MenuModel(tipologia: .delGiorno)
-     static var menuDelloChef:MenuModel = MenuModel(tipologia: .delloChef)
+    static var menuDelGiorno:MenuModel = MenuModel(tipologia: .allaCarta(.delGiorno))
+    static var menuDelloChef:MenuModel = MenuModel(tipologia: .allaCarta(.delloChef))
     
     
     @State static var viewModel: AccounterVM = {

@@ -251,8 +251,9 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         guard readOnlyVM != nil else { return conditionOne } // è inutile percheè passeremo sempre un valore valido. Lo mettiamo per forma. Abbiamo messo il parametro optional per non passarlo negli altri modelli dove non ci serve
         
         let allIngredients = self.allMinusArchiviati(viewModel: readOnlyVM!)
-
-        let allInGChecked = allIngredients.filter({$0.intestazione.lowercased().contains(ricerca)})
+        let allINGMapped = allIngredients.map({$0.intestazione.lowercased()})
+        
+        let allInGChecked = allINGMapped.filter({$0.contains(ricerca)})
         let conditionTwo = !allInGChecked.isEmpty
         
         return conditionOne || conditionTwo

@@ -106,8 +106,8 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
                 CSLabel_1Button(
                     placeHolder: category.simpleDescription(),
                     imageNameOrEmojy: category.imageAssociated(),
-                    backgroundColor: Color.black,
-                    backgroundOpacity: 0.05)
+                    backgroundColor: Color("SeaTurtlePalette_3"),
+                    backgroundOpacity: 0.6)
             }
             
         }

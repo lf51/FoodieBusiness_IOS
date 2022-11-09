@@ -384,10 +384,14 @@ struct MenuModel_RowView: View {
                                  .foregroundColor(Color("SeaTurtlePalette_3"))
                         }
                     
-                case .noValue: EmptyView()
-                default:
+                case .allaCarta(_):
                     Image(systemName: self.menuItem.tipologia.imageAssociated())
                         .imageScale(.medium)
+                    
+                case .noValue: EmptyView()
+             /*   default:
+                    Image(systemName: self.menuItem.tipologia.imageAssociated())
+                        .imageScale(.medium)*/
                     
                 }
             }
@@ -403,7 +407,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
      static var menuItem: MenuModel = {
          var menu = MenuModel()
         menu.intestazione = "SomeDay"
-        menu.tipologia = .allaCarta
+        menu.tipologia = .allaCarta()
         menu.isAvaibleWhen = .dataEsatta
         menu.dataInizio = Date(timeIntervalSinceNow: 0)
         menu.oraInizio = Date(timeIntervalSinceNow: -7200)
@@ -456,7 +460,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
        
    }()
     
-    static var menudelgiorno = MenuModel(tipologia: .delGiorno)
+    static var menudelgiorno = MenuModel(tipologia: .allaCarta( .delGiorno))
 
     static var previews: some View {
         

@@ -66,11 +66,11 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
       
         if tipologia != .defaultValue {
             
-            if tipologia == .delGiorno {
+            if tipologia == .allaCarta(.delGiorno) {
                 self.intestazione = "Menu del Giorno"
                 self.descrizione = "Rielaborato giornalmente, aggiunge ai menu online dei Piatti del giorno."
             }
-            else if tipologia == .delloChef {
+            else if tipologia == .allaCarta(.delloChef) {
                 self.intestazione = "Menu dello Chef"
                 self.descrizione = "Fra i piatti già inseriti in altri menu, segnala quelli giornalmente consigliati dalla chef."
             }
@@ -173,13 +173,25 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         }
     }
     
-    func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
+    func modelStringResearch(string: String,readOnlyVM:AccounterVM?) -> Bool {
         
         guard string != "" else { return true }
         
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+        let conditionOne = self.intestazione.lowercased().contains(ricerca)
 
-        return  self.intestazione.lowercased().contains(ricerca)
+        guard readOnlyVM != nil else { return conditionOne }
+        
+        let allDish = readOnlyVM?.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.allMyDish)
+       
+        guard let allD = allDish else { return conditionOne }
+        
+        let mapped = allD.map({$0.intestazione.lowercased()})
+        let allChecked = mapped.filter({$0.contains(ricerca)})
+        
+        let conditionTwo = !allChecked.isEmpty
+        
+        return conditionOne || conditionTwo
     }
     
     private func preCallIsOnAir(filterValue:MenuModel.OnlineStatus?) -> Bool {
@@ -198,7 +210,7 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     
     func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
         
-        self.modelStringResearch(string: filterProperty.stringaRicerca) &&
+        self.modelStringResearch(string: filterProperty.stringaRicerca,readOnlyVM: readOnlyVM) &&
         self.preCallIsOnAir(filterValue: filterProperty.onlineOfflineMenu) &&
         filterProperty.compareStatusTransition(localStatus: self.status) &&
         filterProperty.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: \.giornoServizio) &&

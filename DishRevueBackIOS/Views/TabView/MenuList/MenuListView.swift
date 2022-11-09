@@ -103,7 +103,7 @@ struct MenuListView: View {
                 
                 let isMenuFisso: Bool = {
                     self.filterProperty.tipologiaMenu != nil &&
-                    self.filterProperty.tipologiaMenu != .allaCarta
+                    self.filterProperty.tipologiaMenu != .allaCarta()
                 }()
             
                 

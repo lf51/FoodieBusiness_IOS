@@ -62,15 +62,15 @@ enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
 
 enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
    
-    static var allCases: [TipologiaMenu] = [.allaCarta,.fisso(persone: .uno, costo: "n/d")]
+    static var allCases: [TipologiaMenu] = [.allaCarta(),.fisso(persone: .uno, costo: "n/d")]
     static var defaultValue: TipologiaMenu = .noValue
     
     var id:String {self.createId()}
     
     case fisso(persone:PaxMenuFisso,costo: String)
-    case allaCarta
-    case delGiorno
-    case delloChef
+    case allaCarta(TipologiaMenu.DiSistema? = nil)
+  //  case delGiorno
+   // case delloChef
     
     case noValue
     
@@ -90,12 +90,13 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
         switch self {
         case .fisso:
             return "Fisso"
-        case .allaCarta:
-            return "Alla Carta"
-        case .delGiorno:
-           return "piatti del Giorno"
-        case .delloChef:
-            return "i consigliati"
+        case .allaCarta(let value):
+            let string = value == nil ? "Alla Carta" : value!.simpleDescription()
+            return string
+      //  case .delGiorno:
+        //   return "piatti del Giorno"
+       // case .delloChef:
+        //    return "i consigliati"
         case .noValue:
             return "Selezionare tipologia menu"
 
@@ -110,10 +111,10 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
             return "Il costo del menu è di \(formattaPrezzo(price: costo)) per \(persone.extendedDescription())."
         case .allaCarta:
             return "Il costo del menu non è predeterminato."
-        case .delGiorno:
-            return "Vedi Info"
-        case .delloChef:
-            return "Vedi info"
+      //  case .delGiorno:
+        //    return "Vedi Info"
+       // case .delloChef:
+         //   return "Vedi info"
         case .noValue:
             return "Selezionare tipologia menu"
            
@@ -145,7 +146,8 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
     }
     
     func createId() -> String {
-        self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased()
+       // self.simpleDescription().replacingOccurrences(of: " ", with: "").lowercased()
+        self.returnTypeCase().simpleDescription().replacingOccurrences(of: " ", with: "").lowercased() // Vedi Nota 09.11
     }
     
     func editingAvaible() -> Bool {
@@ -164,10 +166,13 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
         
         switch self {
             
-        case .fisso(_, _):
+        case .fisso(_,_):
             return .fisso(persone: .uno, costo: "n/d")
         
-        default:
+        case .allaCarta(_):
+            return .allaCarta()
+            
+        case .noValue:
             return self
             
         }
@@ -179,12 +184,14 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
             
         case .fisso(_, _):
             return "dollarsign.circle"
-        case .allaCarta:
-            return "cart"
-        case .delGiorno:
-            return "clock.arrow.circlepath"
-        case .delloChef:
-            return "mustache.fill" //"👨🏻‍🍳"
+            
+        case .allaCarta(let value):
+            let image = value == nil ? "cart" : value!.imageAssociated()
+            return image
+      //  case .delGiorno:
+        //    return "clock.arrow.circlepath"
+     //   case .delloChef:
+       //     return "mustache.fill" //"👨🏻‍🍳"
         case .noValue:
             return "gear.badge.xmark"
         }
@@ -198,39 +205,56 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
             return 1
         case .allaCarta:
             return 2
-        case .delGiorno:
-            return 3
-        case .delloChef:
-            return 4
+      //  case .delGiorno:
+        //    return 3
+      //  case .delloChef:
+       //     return 4
         case .noValue:
            return 0
         }
     }
     
     func isDiSistema() -> Bool {
-        self == .delGiorno ||
-        self == .delloChef
+      //  self == .delGiorno ||
+      //  self == .delloChef
+        self == .allaCarta(.delGiorno) ||
+        self == .allaCarta(.delloChef)
     }
     
     enum DiSistema {
+        
         case delGiorno,delloChef
         
         func returnTipologiaMenu() -> TipologiaMenu {
+            
             switch self {
-            case .delGiorno:
-                return TipologiaMenu.delGiorno
-            case .delloChef:
-                return TipologiaMenu.delloChef
+                case .delGiorno:
+               // return TipologiaMenu.delGiorno
+                    return TipologiaMenu.allaCarta(.delGiorno)
+                case .delloChef:
+                    return TipologiaMenu.allaCarta(.delloChef)
             }
         }
         
         func simpleDescription() -> String {
             
             switch self {
-            case .delGiorno:
-                return "Menu con i piatti del Giorno."
-            case .delloChef:
-                return "Menu con i piatti consigliati dallo Chef 👨🏻‍🍳."
+                
+                case .delGiorno:
+                    return "piatti del Giorno"
+                case .delloChef:
+                    return "i consigliati"
+                
+            }
+        }
+        
+        func extendedDescription() -> String {
+            
+            switch self {
+                case .delGiorno:
+                    return "Menu con i piatti del Giorno."
+                case .delloChef:
+                    return "Menu con i piatti consigliati dallo Chef 👨🏻‍🍳."
                 
             }
         }
@@ -238,11 +262,23 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
         func shortDescription() -> String {
             
             switch self {
-            case .delGiorno:
-                return "Menu del Giorno"
-            case .delloChef:
-                return "Menu dello Chef"
+                case .delGiorno:
+                    return "Menu del Giorno"
+                case .delloChef:
+                    return "Menu dello Chef"
                 
+            }
+        }
+        
+        func imageAssociated() -> String {
+            
+            switch self {
+                
+                case .delGiorno:
+                    return "clock.arrow.circlepath"
+                case .delloChef:
+                    return "mustache.fill" //"👨🏻‍🍳"
+    
             }
         }
 

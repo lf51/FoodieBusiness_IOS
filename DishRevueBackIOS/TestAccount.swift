@@ -25,7 +25,7 @@ let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 2
 var testAccount: AccounterVM = {
 
     var vm = AccounterVM()
-     vm.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test]
+     vm.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
      vm.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
      vm.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
     vm.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
@@ -205,7 +205,7 @@ var ingredienteFinito:IngredientModel = {
      var menu = MenuModel()
      menu.intestazione = "Pranzo della Domenica"
       menu.descrizione = "Pranzo di gala per compleanno del Presidente. Sala riservata. 350 pax"
-     menu.tipologia = .allaCarta
+     menu.tipologia = .allaCarta()
    //  menu.tipologia = .allaCarta
      menu.isAvaibleWhen = .dataEsatta
       menu.dataInizio = Date.now.addingTimeInterval(259200)
@@ -238,12 +238,20 @@ var ingredienteFinito:IngredientModel = {
 
 var menuDelGiorno_Test:MenuModel = {
  
-    var mDD = MenuModel(tipologia: .delGiorno)
+    var mDD = MenuModel(tipologia: .allaCarta(.delGiorno))
     mDD.rifDishIn = [dishItem4_Test.id,dishItem3_Test.id]
     return mDD
     
 }()
+
+var menuDelloChef_Test:MenuModel = {
+ 
+    var mDD = MenuModel(tipologia: .allaCarta(.delloChef))
+    mDD.rifDishIn = [dishItem2_Test.id,dishItem5_Test.id]
+    return mDD
     
+}()
+
 var ingredientSample_Test =  IngredientModel(
     intestazione: "Guanciale Nero",
     descrizione: "Guanciale di Maialino nero dei Nebrodi (Sicilia).",

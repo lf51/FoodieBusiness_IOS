@@ -406,8 +406,8 @@ class AccounterVM: ObservableObject {
     func allMenuMinusDiSistemaPlusContain(idPiatto:String) -> (allModelMinusDS:[MenuModel], allModelMinusDScount:Int,countWhereDishIsIn:Int) {
         
         let allMinusSistema = self.allMyMenu.filter({
-            $0.tipologia != .delGiorno &&
-            $0.tipologia != .delloChef
+            $0.tipologia != .allaCarta(.delGiorno) &&
+            $0.tipologia != .allaCarta(.delloChef)
         })
         
         let witchContain = allMinusSistema.filter({
@@ -458,7 +458,7 @@ class AccounterVM: ObservableObject {
             
         } else {
             
-            self.alertItem = AlertModel(title: "Errore", message: "Abilita nella Home il \(menuDiSistema.simpleDescription())")
+            self.alertItem = AlertModel(title: "Errore", message: "Abilita nella Home il \(menuDiSistema.extendedDescription())")
         }
     }
     
@@ -479,8 +479,9 @@ class AccounterVM: ObservableObject {
         
         let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
         
-        return  self.allMyMenu.first(where:{
-                 $0.tipologia.returnTypeCase() == tipologia &&
+        return self.allMyMenu.first(where:{
+               //  $0.tipologia.returnTypeCase() == tipologia &&
+                 $0.tipologia == tipologia && // Vedi Nota 09.11
                  $0.isOnAir()
             })
     }

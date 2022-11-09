@@ -75,8 +75,14 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
         guard string != "" else { return true }
         
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+        let condtionOne = self.intestazione.lowercased().contains(ricerca)
 
-        return  self.intestazione.lowercased().contains(ricerca)
+        let allAllergens = self.allergeni.map({$0.intestazione.lowercased()})
+        let allAllergensChecked = allAllergens.filter({$0.contains(ricerca)})
+        
+        let conditionTwo = !allAllergensChecked.isEmpty
+        
+        return condtionOne || conditionTwo
 
     } // La teniamo nel modello per permettere una maggiore customizzazione nella ricerca
     
