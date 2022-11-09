@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct FilterButton:View {
+struct FilterSortMap_Bar:View {
     
     @Binding var open: Bool
     @Binding var openSort: Bool
-   // @Binding var mapActive: Bool
+
     let filterCount:Int
     let sortActive:Bool
     
@@ -20,14 +20,14 @@ struct FilterButton:View {
     
     var body: some View {
         
-        HStack(alignment:.bottom) {
+        HStack(spacing:20) {
 
             CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color("SeaTurtlePalette_3")) {
                 self.open.toggle()
             }
-            .padding([.top,.trailing],5)
+         //   .padding([.top,.trailing],5)
+            .padding(0)
             .overlay(alignment: .topTrailing) {
-             //   let count = filterProperty.countChange
                 
                 if filterCount != 0 {
                     
@@ -41,6 +41,7 @@ struct FilterButton:View {
                                 //.clipShape(Circle())
                         }
                         .clipShape(Circle())
+                        .offset(x: 2, y: -3)
                 }
                     
             }
@@ -48,9 +49,8 @@ struct FilterButton:View {
             CSButton_image(frontImage: "arrow.up.arrow.down", imageScale: .medium, frontColor: Color("SeaTurtlePalette_3")) {
                 self.openSort.toggle()
             }
-            .padding([.top,.trailing],5)
+          //  .padding([.top,.trailing],5)
             .overlay(alignment: .topTrailing) {
-             //   let count = filterProperty.countChange
                 
                 if sortActive {
                     
@@ -63,7 +63,9 @@ struct FilterButton:View {
                            Color("SeaTurtlePalette_1")
                                 //.clipShape(Circle())
                         }
+                        
                         .clipShape(Circle())
+                        .offset(x: 2, y: -2)
                 }
                     
             }
@@ -74,8 +76,14 @@ struct FilterButton:View {
                 self.isThirdButtonActive.toggle()
                 
             }
-            .padding([.top,.trailing],5)
+          // .padding([.top,.trailing],5)
             
+        }
+        .padding(.horizontal)
+        .background {
+            Color("SeaTurtlePalette_3")
+                .cornerRadius(5.0)
+                .opacity(0.1)
         }
         
     }

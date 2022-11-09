@@ -61,7 +61,7 @@ struct ListaIngredientiView: View {
                     
                     let sortActive = self.filterProperty.sortCondition != nil
                     
-                    FilterButton(open: $openFilter,openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
+                    FilterSortMap_Bar(open: $openFilter,openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
                         thirdButtonAction()
                     }
                     

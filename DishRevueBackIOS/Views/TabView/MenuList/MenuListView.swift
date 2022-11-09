@@ -52,7 +52,7 @@ struct MenuListView: View {
                         font: .callout,
                         imageBack: Color("SeaTurtlePalette_2"),
                         imageFore: Color.white) {
-                        //    self.viewModel.menuListPath.append(MenuModel())
+                   
                             self.viewModel.menuListPath.append(DestinationPathView.menu(MenuModel()))
                         }
 
@@ -62,7 +62,7 @@ struct MenuListView: View {
                     
                     let sortActive = self.filterProperty.sortCondition != nil
             
-                    FilterButton(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
+                    FilterSortMap_Bar(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
                         thirdButtonAction()
                     }
                         
@@ -70,12 +70,6 @@ struct MenuListView: View {
                 }
                 
             }
-          /*  .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
-                vbLocalFilterPop()
-                    .presentationDetents([.height(400)])
-          
-            } */
-
         }
     }
     
