@@ -80,7 +80,7 @@ enum TipoDieta:Identifiable,MyProEnumPack_L0 /*: MyEnumProtocol,MyEnumProtocolMa
         return self
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
         
         switch self {
             

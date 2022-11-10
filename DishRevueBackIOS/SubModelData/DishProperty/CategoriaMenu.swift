@@ -70,7 +70,7 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
         return self
     }
     
-    func orderValue() -> Int { // Deprecata
+    func orderAndStorageValue() -> Int { // Deprecata
        // self.listPositionOrder
         return 0
     }

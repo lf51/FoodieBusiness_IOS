@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ProduzioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
+enum ProduzioneIngrediente:MyProEnumPack_L2,MyProCloudPack_L0 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
     
     // Nota 18.10
     static var allCases: [ProduzioneIngrediente] = [.biologico/*,.convenzionale*/]
@@ -66,7 +66,7 @@ enum ProduzioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMa
     
     func returnTypeCase() -> ProduzioneIngrediente { self }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
         
         switch self {
             
@@ -77,6 +77,21 @@ enum ProduzioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMa
         case .noValue:
             return 0
    
+        }
+    }
+    
+    static func convertiInCase(fromNumber: Int) -> ProduzioneIngrediente {
+      
+        switch fromNumber {
+            
+        case 1:
+            return .biologico
+        case 2:
+            return .convenzionale
+            
+        default:
+            return .defaultValue
+            
         }
     }
     

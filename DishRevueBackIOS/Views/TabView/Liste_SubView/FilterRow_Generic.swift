@@ -26,7 +26,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
         
         self.initType = .single
         
-        self.allCases = allCases.sorted(by: {$0.orderValue() < $1.orderValue()})
+        self.allCases = allCases.sorted(by: {$0.orderAndStorageValue() < $1.orderAndStorageValue()})
         _specificFilterProperty = filterProperty
         _specificFilterCollection = .constant([]) // valore di default
         self.color = selectionColor
@@ -40,7 +40,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
         
         self.initType = .collection
         
-        self.allCases = allCases.sorted(by: {$0.orderValue() < $1.orderValue()})
+        self.allCases = allCases.sorted(by: {$0.orderAndStorageValue() < $1.orderAndStorageValue()})
         _specificFilterProperty = .constant(nil) // valore di default
         _specificFilterCollection = filterCollection
         self.color = selectionColor

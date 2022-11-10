@@ -7,8 +7,8 @@
 
 import Foundation
 
-enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
-
+enum ConservazioneIngrediente:MyProEnumPack_L2,MyProCloudPack_L0 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
+    
     static var allCases: [ConservazioneIngrediente] = [.altro,.congelato,.surgelato]
     static var defaultValue: ConservazioneIngrediente = .noValue // deprecato in futuro togliere dal protocollo
     
@@ -32,23 +32,7 @@ enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtoco
         }
         
     }
-    
-  /*  var test:String {
         
-        print("Dentro Conservazione Ingrediente .TEST di \(self.hashValue)")
-        
-        switch self {
-        case .congelato:
-            return "soca"
-        case .surgelato:
-            return "forti"
-        case .altro:
-            return "cu a pompa"
-        case .noValue:
-            return "kiù fotti"
-        }
-    } */ // !! NOTA 16.09 !! abbiamo ragionato sul consolidare l'intestazione delle struct con la simpleDescription delle Enum, e la descrizione delle struct con la extendedDescription delle Enum Il punto di raccordo sono le computed. Da un punto di vista di "fatica di calcolo" non sembra esserci grossa differenza per la macchina. Necessita il tutto un pò di chiarezza mentale e di codice e dunque la postPoniamo a quando il codice sarà più pulito e si potrà procedere con calma ai consolidamenti nei protocolli !!!
-    
     func extendedDescription() -> String {
         
         switch self {
@@ -88,7 +72,7 @@ enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtoco
      
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int { 
         
         switch self {
         
@@ -101,6 +85,24 @@ enum ConservazioneIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtoco
         case .noValue:
             return 0
       
+        }
+    }
+    
+   static func convertiInCase(fromNumber: Int) -> ConservazioneIngrediente {
+        
+        switch fromNumber {
+            
+            case 0:
+                return .noValue
+            case 1:
+              return .altro
+            case 2:
+                return .surgelato
+            case 3:
+                return .congelato
+            default:
+                return .noValue
+            
         }
     }
     

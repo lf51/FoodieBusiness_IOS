@@ -100,7 +100,7 @@ enum GiorniDelServizio:MyProEnumPack_L2,Identifiable /*: MyEnumProtocol, MyEnumP
       return self // ritorniamo il self perchè al momento (07.04.2022) non ci sono valori associati ai case
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
         // 17.09 abbiamo conformato l'ordine come lo intendevamo, ossia di apparizione da Lun a Dome, conformando all'ordine dato dal Calendario, ossia da Dom a Sabato
         switch self {
             

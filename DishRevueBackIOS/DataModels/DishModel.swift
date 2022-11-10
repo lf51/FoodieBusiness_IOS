@@ -52,7 +52,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             self
         }
         
-        func orderValue() -> Int {
+        func orderAndStorageValue() -> Int {
             
             switch self {
                 
@@ -218,8 +218,8 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             return lhs.intestazione > rhs.intestazione
             
         case .livelloScorte:
-            return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderValue() <
-                readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderValue()
+            return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() <
+                readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
         case .mostUsed:
             return readOnlyVM.allMenuContaining(idPiatto: lhs.id).countWhereDishIsIn >
             readOnlyVM.allMenuContaining(idPiatto: rhs.id).countWhereDishIsIn
@@ -1028,7 +1028,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
            return self
         }
 
-        func orderValue() -> Int {
+        func orderAndStorageValue() -> Int {
             return 0
         }
         

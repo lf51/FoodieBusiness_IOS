@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0 /*: MyEnumProtocol, MyProModelPack_L0*/{
+enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0,MyProCloudPack_L0 /*: MyEnumProtocol, MyProModelPack_L0*/{
     
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]> {
         \.allergeni
@@ -86,9 +86,7 @@ enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0 /*: MyEnumProtoco
         
     }
     
-    func orderValue() -> Int {
-        return 0
-    }
+  
     
     func returnTypeCase() -> AllergeniIngrediente {
         return self 
@@ -122,6 +120,54 @@ enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0 /*: MyEnumProtoco
         }
     }
     
+    func orderAndStorageValue() -> Int {
+        
+        switch self {
+            
+        case .arachidi_e_derivati: return 1
+        case .fruttaAguscio: return 2
+        case .latte_e_derivati: return 3
+        case .molluschi: return 4
+        case .crostacei: return 5
+        case .pesce: return 6
+        case .uova_e_derivati: return 7
+        case .sesamo: return 8
+        case .soia: return 9
+        case .glutine: return 10
+        case .lupini: return 11
+        case .senape: return 12
+        case .sedano: return 13
+        case .anidride_solforosa_e_solfiti: return 14
+        case .noValue: return 0
+          
+        }
+        
+    }
+    
+    static func convertiInCase(fromNumber: Int) -> AllergeniIngrediente {
+        
+        switch fromNumber {
+            
+        case 1: return .arachidi_e_derivati
+        case 2: return .fruttaAguscio
+        case 3: return .latte_e_derivati
+        case 4: return .molluschi
+        case 5: return .crostacei
+        case 6: return .pesce
+        case 7: return .uova_e_derivati
+        case 8: return .sesamo
+        case 9: return .soia
+        case 10: return .glutine
+        case 11: return .lupini
+        case 12: return .senape
+        case 13: return .sedano
+        case 14: return .anidride_solforosa_e_solfiti
+            
+        default: return .defaultValue
+            
+        }
+    }
+
    static func returnAllergeniIn(ingredients: [IngredientModel]...) -> [AllergeniIngrediente] {
      
            var allergeniPiatto:[AllergeniIngrediente] = []
@@ -141,6 +187,9 @@ enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0 /*: MyEnumProtoco
            return Array(setAllergeniPiatto)
    
     } // deprecata in futuro - Creata una chiamata nel piatto ad una funziona che calcola gli allergeni presenti negli ingredienti
+    
+    
+    
     
     
 }

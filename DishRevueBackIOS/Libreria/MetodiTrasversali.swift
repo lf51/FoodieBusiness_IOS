@@ -85,7 +85,7 @@ func csCleanAndOrderArray<T:MyProOrganizerPack_L0>(array:[T]) -> [T] {
     // end Mod 27.09
     
     let secondStep = Array(Set(arrayCentrifugato))
-    let lastStep = secondStep.sorted{$0.orderValue() < $1.orderValue()}
+    let lastStep = secondStep.sorted{$0.orderAndStorageValue() < $1.orderAndStorageValue()}
     
    return lastStep
 }

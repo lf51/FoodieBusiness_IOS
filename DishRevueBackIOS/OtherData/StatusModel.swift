@@ -33,7 +33,7 @@ enum StatusTransition:MyProEnumPack_L0,Equatable {
         self
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
         switch self {
         case .disponibile:
             return 0
@@ -43,6 +43,7 @@ enum StatusTransition:MyProEnumPack_L0,Equatable {
             return 2
         }
     }
+    
     func colorAssociated() -> Color {
         
         switch self {
@@ -57,7 +58,7 @@ enum StatusTransition:MyProEnumPack_L0,Equatable {
     }
 }
 
-enum StatusModel:Equatable { // vedi Nota Consegna 17.07
+enum StatusModel:Equatable,MyProCloudPack_L0 { // vedi Nota Consegna 17.07
     
    // case nuovo // deprecato 07.09
     case bozza(StatusTransition? = nil)
@@ -124,6 +125,41 @@ enum StatusModel:Equatable { // vedi Nota Consegna 17.07
         default: return false
         }
         
+    }
+    
+    func orderAndStorageValue() -> Int {
+        
+        switch self {
+        case .bozza(let statusTransition):
+            let number = statusTransition == nil ? 0 : (1 + statusTransition!.orderAndStorageValue())
+            return number
+        case .completo(let statusTransition):
+            let number = 4 + statusTransition.orderAndStorageValue()
+            return number
+        }
+    }
+    
+    static func convertiInCase(fromNumber: Int) -> StatusModel {
+        
+        switch fromNumber {
+            
+        case 0:
+            return .bozza()
+        case 1:
+            return .bozza(.disponibile)
+        case 2:
+            return .bozza(.inPausa)
+        case 3:
+            return .bozza(.archiviato)
+        case 4:
+            return .completo(.disponibile)
+        case 5:
+            return .completo(.inPausa)
+        case 6:
+            return .completo(.archiviato)
+        default:
+            return .bozza()
+        }
     }
     
   /*  func estrapolaStatusTransition() -> StatusTransition? {

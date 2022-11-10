@@ -283,7 +283,7 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     private func isOnAirClosedRange(checkTimeRange:Bool) -> Bool { // lf51 18.09.22
         
         let(_,endDay,currentDay) = dateCalendario()
-        let giorniServizioIntegerMap = self.giorniDelServizio.map({$0.orderValue()})
+        let giorniServizioIntegerMap = self.giorniDelServizio.map({$0.orderAndStorageValue()})
         
         guard giorniServizioIntegerMap.contains(currentDay.weekday!) else { return false }
         guard isOnTimeRange(checkTimeRange: checkTimeRange) else { return false }
@@ -306,7 +306,7 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     private func isOnAirOpenRange(checkTimeRange:Bool) -> Bool { // lf51 18.09.22
         
         let(_,_,currentDay) = dateCalendario()
-        let giorniServizioIntegerMap = self.giorniDelServizio.map({$0.orderValue()})
+        let giorniServizioIntegerMap = self.giorniDelServizio.map({$0.orderAndStorageValue()})
         
         guard giorniServizioIntegerMap.contains(currentDay.weekday!) else { return false }
         guard isOnTimeRange(checkTimeRange: checkTimeRange) else { return false }
@@ -480,7 +480,7 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
             self
         }
         
-        func orderValue() -> Int {
+        func orderAndStorageValue() -> Int {
             switch self {
             case .online:
                 return 1

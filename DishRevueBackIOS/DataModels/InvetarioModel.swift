@@ -403,7 +403,7 @@ struct Inventario:Equatable {
         case inStock = "in stock"
         case inArrivo = "in arrivo"
         
-        func orderValue() -> Int {
+        func orderAndStorageValue() -> Int {
             
             switch self {
                 

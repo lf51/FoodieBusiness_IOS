@@ -79,12 +79,12 @@ struct FilterSortMap_Bar:View {
           // .padding([.top,.trailing],5)
             
         }
-        .padding(.horizontal)
-        .background {
+       // .padding(.horizontal)
+      /*  .background {
             Color("SeaTurtlePalette_3")
                 .cornerRadius(5.0)
                 .opacity(0.1)
-        }
+        } */
         
     }
 }

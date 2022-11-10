@@ -32,19 +32,19 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
     }
     
    // var id: String { creaID(fromValue: self.intestazione) } // Deprecata 18.08
-    var id: String = UUID().uuidString
+    var id: String = UUID().uuidString //
 
-    var intestazione: String = ""
-    var descrizione: String = ""
+    var intestazione: String = "" //
+    var descrizione: String = "" //
     
-    var conservazione: ConservazioneIngrediente = .defaultValue
-    var produzione: ProduzioneIngrediente = .defaultValue
-    var provenienza: ProvenienzaIngrediente = .defaultValue
+    var conservazione: ConservazioneIngrediente = .defaultValue //
+    var produzione: ProduzioneIngrediente = .defaultValue //
+    var provenienza: ProvenienzaIngrediente = .defaultValue //
     
-    var allergeni: [AllergeniIngrediente] = []
-    var origine: OrigineIngrediente = .defaultValue
+    var allergeni: [AllergeniIngrediente] = [] //
+    var origine: OrigineIngrediente = .defaultValue //
     
-    var status: StatusModel = .bozza()
+    var status: StatusModel = .bozza() //
    // var inventario:Inventario = Inventario()
 
     // Method
@@ -59,7 +59,7 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
             return lhs.intestazione > rhs.intestazione
             
         case .livelloScorte:
-          return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderValue() < readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderValue()
+          return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
             
         case .mostUsed:
             return lhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount > rhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount

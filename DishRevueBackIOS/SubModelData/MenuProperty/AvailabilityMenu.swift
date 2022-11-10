@@ -40,7 +40,7 @@ enum AvailabilityMenu:Hashable,MyProEnumPack_L1 {
         self
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
         switch self {
         case .dataEsatta:
             return 1

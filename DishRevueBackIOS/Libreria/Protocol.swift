@@ -92,7 +92,7 @@ protocol MyProEnumPack_L2: MyProEnumPack_L1,MyProStarterPack_L0 {
 protocol MyProOrganizerPack_L0: Hashable {
     
     func returnTypeCase() -> Self
-    func orderValue() -> Int
+    func orderAndStorageValue() -> Int // Usiamo il numero oltre che a ordinare i case, anche come valore di storage in firebase
 }
 
 
@@ -101,6 +101,12 @@ protocol MyProOrganizerPack_L0: Hashable {
 protocol MyProToolPack_L0:MyProStatusPack_L1,MyProVisualPack_L0 { }
 
 protocol MyProToolPack_L1:MyProToolPack_L0,MyProSearchPack_L0 { }
+
+protocol MyProCloudPack_L0 {
+    
+          func orderAndStorageValue() -> Int
+   static func convertiInCase(fromNumber:Int) -> Self
+}
 
 
 

@@ -71,7 +71,7 @@ struct ScheduleServizio:View {
                // VStack(alignment:.leading,spacing:5) {
                 Grid(alignment: .leading, verticalSpacing: 5) {
                     
-                    let order = menuByDay.sorted { $0.key.orderValue() < $1.key.orderValue() }
+                    let order = menuByDay.sorted { $0.key.orderAndStorageValue() < $1.key.orderAndStorageValue() }
                     
                     ForEach(order, id: \.key) { key, value in
                     
@@ -175,9 +175,9 @@ private struct DayWeekTimeRow:View {
                             .foregroundColor(Color.gray)
                         Text("\(stringCloseTime)")
                             .foregroundColor(Color.red)
-                          //  .brightness(0.05)
+                            .brightness(0.05)
                             .fontWeight(.black)
-                            .opacity(0.85)
+                            .opacity(0.8)
                         Spacer()
                     }
                     .font(.system(.headline, design: .monospaced, weight: .semibold))

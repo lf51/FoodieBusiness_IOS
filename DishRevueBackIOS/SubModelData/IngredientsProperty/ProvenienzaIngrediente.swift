@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ProvenienzaIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
+enum ProvenienzaIngrediente:MyProEnumPack_L2,MyProCloudPack_L0 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
  
     // Nota Vocale 18.10
     
@@ -64,7 +64,7 @@ enum ProvenienzaIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolM
         }
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
     
         switch self {
         case .km0:
@@ -77,6 +77,23 @@ enum ProvenienzaIngrediente:MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolM
             return 4
         case .noValue:
             return 5
+        }
+    }
+    
+    static func convertiInCase(fromNumber: Int) -> ProvenienzaIngrediente {
+    
+        switch fromNumber {
+            
+        case 1:
+            return .km0
+        case 2:
+            return .italia
+        case 3:
+            return .europa
+        case 4:
+            return .restoDelMondo
+        default:
+            return .defaultValue
         }
     }
 

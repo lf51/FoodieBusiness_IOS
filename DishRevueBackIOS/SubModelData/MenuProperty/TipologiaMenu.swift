@@ -49,7 +49,7 @@ enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
         PaxMenuFisso.uno
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
         switch self {
         case .uno:
             return 1
@@ -197,7 +197,7 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
         }
     }
     
-    func orderValue() -> Int {
+    func orderAndStorageValue() -> Int {
         
         switch self {
             
