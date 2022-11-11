@@ -24,6 +24,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
     
     @Published var showAlert: Bool = false 
     @Published var alertItem: AlertModel? {didSet {showAlert = true}}
+    
     @Published var openSignInView: Bool = true
 
     // Innesto Beta del 31.10 per collaboratori - Da Sviluppare

@@ -75,7 +75,7 @@
 		3FC9613628BD05AC009FBCF8 /* InfoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC9613528BD05AB009FBCF8 /* InfoAlertView.swift */; };
 		3FCC71B828E9D1D600F105A2 /* MonitorServizio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */; };
 		3FD342632904079000C06441 /* ReviewStatMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD342622904079000C06441 /* ReviewStatMonitor.swift */; };
-		3FD5E99D28ED86EE007682E4 /* ClockSyncroVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD5E99C28ED86EE007682E4 /* ClockSyncroVM.swift */; };
+		3FD5E99D28ED86EE007682E4 /* GlobalObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD5E99C28ED86EE007682E4 /* GlobalObserver.swift */; };
 		3FEE2D8628E592E800AFA502 /* InvetarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FEE2D8528E592E800AFA502 /* InvetarioModel.swift */; };
 		4D04E28427C7A2BD002F0486 /* SelettoreMyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */; };
 		4D11D23228495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D11D23128495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift */; };
@@ -286,7 +286,7 @@
 		3FC9613528BD05AB009FBCF8 /* InfoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAlertView.swift; sourceTree = "<group>"; };
 		3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorServizio.swift; sourceTree = "<group>"; };
 		3FD342622904079000C06441 /* ReviewStatMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewStatMonitor.swift; sourceTree = "<group>"; };
-		3FD5E99C28ED86EE007682E4 /* ClockSyncroVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockSyncroVM.swift; sourceTree = "<group>"; };
+		3FD5E99C28ED86EE007682E4 /* GlobalObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalObserver.swift; sourceTree = "<group>"; };
 		3FEE2D8528E592E800AFA502 /* InvetarioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvetarioModel.swift; sourceTree = "<group>"; };
 		4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelettoreMyModel.swift; sourceTree = "<group>"; };
 		4D11D23128495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuovoIngredienteMainViewBACKUP0206.swift; sourceTree = "<group>"; };
@@ -1064,7 +1064,7 @@
 			children = (
 				4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */,
 				4DC94A1C27E4FB220080264C /* AccounterVM.swift */,
-				3FD5E99C28ED86EE007682E4 /* ClockSyncroVM.swift */,
+				3FD5E99C28ED86EE007682E4 /* GlobalObserver.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1339,7 +1339,7 @@
 				3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */,
 				4D4FE6FA28008EBC00AC0190 /* ViewBuilder.swift in Sources */,
 				4D168C18284E0E4E000B137E /* CS_Shape.swift in Sources */,
-				3FD5E99D28ED86EE007682E4 /* ClockSyncroVM.swift in Sources */,
+				3FD5E99D28ED86EE007682E4 /* GlobalObserver.swift in Sources */,
 				4D9257A627D7CA1E00D71B9C /* CurrentModelListView.swift in Sources */,
 				4D5840952865E29400B30D07 /* GenericItemModel_RowViewMask.swift in Sources */,
 				3F39580228C9F785004937D2 /* SostituzioneING_MainView.swift in Sources */,
