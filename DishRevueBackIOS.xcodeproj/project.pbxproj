@@ -69,13 +69,14 @@
 		3F7D3BD328B6384300177CA6 /* SystemMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7D3BD228B6384300177CA6 /* SystemMessage.swift */; };
 		3F7EBB0E2917C39400CF1F6F /* SortRow_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7EBB0D2917C39400CF1F6F /* SortRow_Generic.swift */; };
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
+		3FABBC1D292254CE0003D49E /* AccountSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FABBC1C292254CE0003D49E /* AccountSetup.swift */; };
 		3FBA5BD528DDADD6009AA124 /* VistaIngredientiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */; };
 		3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */; };
 		3FC9613428BD0422009FBCF8 /* TemporaryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC9613328BD0422009FBCF8 /* TemporaryModel.swift */; };
 		3FC9613628BD05AC009FBCF8 /* InfoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC9613528BD05AB009FBCF8 /* InfoAlertView.swift */; };
 		3FCC71B828E9D1D600F105A2 /* MonitorServizio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */; };
 		3FD342632904079000C06441 /* ReviewStatMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD342622904079000C06441 /* ReviewStatMonitor.swift */; };
-		3FD5E99D28ED86EE007682E4 /* GlobalObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD5E99C28ED86EE007682E4 /* GlobalObserver.swift */; };
+		3FD5E99D28ED86EE007682E4 /* CloudDataCompiler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD5E99C28ED86EE007682E4 /* CloudDataCompiler.swift */; };
 		3FEE2D8628E592E800AFA502 /* InvetarioModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FEE2D8528E592E800AFA502 /* InvetarioModel.swift */; };
 		4D04E28427C7A2BD002F0486 /* SelettoreMyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */; };
 		4D11D23228495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D11D23128495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift */; };
@@ -280,13 +281,14 @@
 		3F7D3BD228B6384300177CA6 /* SystemMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMessage.swift; sourceTree = "<group>"; };
 		3F7EBB0D2917C39400CF1F6F /* SortRow_Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortRow_Generic.swift; sourceTree = "<group>"; };
 		3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel_SmallRowView.swift; sourceTree = "<group>"; };
+		3FABBC1C292254CE0003D49E /* AccountSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSetup.swift; sourceTree = "<group>"; };
 		3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaIngredientiEspansa.swift; sourceTree = "<group>"; };
 		3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverradeStateTEST.swift; sourceTree = "<group>"; };
 		3FC9613328BD0422009FBCF8 /* TemporaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryModel.swift; sourceTree = "<group>"; };
 		3FC9613528BD05AB009FBCF8 /* InfoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAlertView.swift; sourceTree = "<group>"; };
 		3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorServizio.swift; sourceTree = "<group>"; };
 		3FD342622904079000C06441 /* ReviewStatMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewStatMonitor.swift; sourceTree = "<group>"; };
-		3FD5E99C28ED86EE007682E4 /* GlobalObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalObserver.swift; sourceTree = "<group>"; };
+		3FD5E99C28ED86EE007682E4 /* CloudDataCompiler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudDataCompiler.swift; sourceTree = "<group>"; };
 		3FEE2D8528E592E800AFA502 /* InvetarioModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvetarioModel.swift; sourceTree = "<group>"; };
 		4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelettoreMyModel.swift; sourceTree = "<group>"; };
 		4D11D23128495754006BFD79 /* NuovoIngredienteMainViewBACKUP0206.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuovoIngredienteMainViewBACKUP0206.swift; sourceTree = "<group>"; };
@@ -1064,7 +1066,7 @@
 			children = (
 				4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */,
 				4DC94A1C27E4FB220080264C /* AccounterVM.swift */,
-				3FD5E99C28ED86EE007682E4 /* GlobalObserver.swift */,
+				3FD5E99C28ED86EE007682E4 /* CloudDataCompiler.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1083,6 +1085,7 @@
 				4D7985F027D8BB9D0012FE23 /* CommunityIngredientModel.swift */,
 				3F32079E289AA9BA000BB5A9 /* DishRatingModel.swift */,
 				3FEE2D8528E592E800AFA502 /* InvetarioModel.swift */,
+				3FABBC1C292254CE0003D49E /* AccountSetup.swift */,
 			);
 			path = DataModels;
 			sourceTree = "<group>";
@@ -1338,8 +1341,9 @@
 				4D04E28427C7A2BD002F0486 /* SelettoreMyModel.swift in Sources */,
 				3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */,
 				4D4FE6FA28008EBC00AC0190 /* ViewBuilder.swift in Sources */,
+				3FABBC1D292254CE0003D49E /* AccountSetup.swift in Sources */,
 				4D168C18284E0E4E000B137E /* CS_Shape.swift in Sources */,
-				3FD5E99D28ED86EE007682E4 /* GlobalObserver.swift in Sources */,
+				3FD5E99D28ED86EE007682E4 /* CloudDataCompiler.swift in Sources */,
 				4D9257A627D7CA1E00D71B9C /* CurrentModelListView.swift in Sources */,
 				4D5840952865E29400B30D07 /* GenericItemModel_RowViewMask.swift in Sources */,
 				3F39580228C9F785004937D2 /* SostituzioneING_MainView.swift in Sources */,
@@ -1539,7 +1543,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 79;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1570,7 +1574,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 78;
+				CURRENT_PROJECT_VERSION = 79;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

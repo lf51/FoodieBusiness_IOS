@@ -10,7 +10,9 @@ import Firebase
 
 @main
 struct DishRevueBackIOSApp: App {
-        
+            
+   // @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
+    
     init() {
         
         FirebaseApp.configure()
@@ -19,18 +21,18 @@ struct DishRevueBackIOSApp: App {
     }
     
     var body: some Scene {
+
         WindowGroup {
-        
-         //   CS_Shape2(imageBehind: "trash.fill")
-         
-        MainView()
-      //  NavStackTest()
-         //   ImportazioneVeloceDishIngredient(backgroundColorView: Color.cyan)
-                
-          //  DishSpecificView(newDish:.constant(DishModel()))
+
+        //   MainView()
+        ContentView()
             
         }
+        
     }
+    
+    // Method
+    
 }
 
 

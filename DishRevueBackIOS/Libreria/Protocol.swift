@@ -103,11 +103,16 @@ protocol MyProToolPack_L0:MyProStatusPack_L1,MyProVisualPack_L0 { }
 protocol MyProToolPack_L1:MyProToolPack_L0,MyProSearchPack_L0 { }
 
 protocol MyProCloudPack_L0 {
-    
+    /// protocollo per le proprietà, in particolare per le enum, per essere convertite in un valore più facilmente stockabile
           func orderAndStorageValue() -> Int
    static func convertiInCase(fromNumber:Int) -> Self
 }
 
+protocol MyProCloudPack_L1 {
+    /// versione per i modelli che vanno salvati su firebase
+    var id: String { get }
+    func creaDocumentDataForFirebase() -> [String:Any]
+}
 
 
 /*

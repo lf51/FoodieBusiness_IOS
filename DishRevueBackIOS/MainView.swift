@@ -7,19 +7,32 @@
 
 import SwiftUI
 
-/* // Sviluppi:
- 1. Property Info -> Nota vocale 22.09
- 
- */
-
 struct MainView: View {
     
-    @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
-    @StateObject var viewModel: AccounterVM = AccounterVM()
- 
+  //  @StateObject var authProcess: AuthPasswordLess
+    @ObservedObject var authProcess: AuthPasswordLess
+    @StateObject var viewModel: AccounterVM
+        
+  /* init() {
+        
+        let auth = AuthPasswordLess()
+        let vm = AccounterVM(userUID: auth.currentUser?.userUID)
+        _authProcess = StateObject(wrappedValue: auth)
+        _viewModel = StateObject(wrappedValue: vm )
+        
+    } */
+    init(authProcess:AuthPasswordLess) {
+        
+        self.authProcess = authProcess
+        let vm = AccounterVM(userUID: authProcess.currentUser?.userUID)
+        _viewModel = StateObject(wrappedValue: vm)
+        
+        print("init MainView - userUID:\(authProcess.currentUser?.userUID ?? "nil")")
+    }
+
     let backgroundColorView: Color = Color("SeaTurtlePalette_1")
     @State var tabSelector: Int = 0
-        
+            
     var body: some View {
             
         TabView(selection:$tabSelector) { // Deprecata da Apple / Sostituire
@@ -52,11 +65,10 @@ struct MainView: View {
                     Text("Ingredienti")
                 }.tag(3)
             }
-        .fullScreenCover(isPresented: $authProcess.openSignInView, content: {
-            LinkSignInSheetView(authProcess: authProcess)
-        })
-       
-        .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
+           /* .fullScreenCover(isPresented: $authProcess.openSignInView, content: {
+                LinkSignInSheetView(authProcess: authProcess)
+        })*/
+       // .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
         .environmentObject(viewModel)
        // .accentColor(.cyan)
@@ -65,9 +77,9 @@ struct MainView: View {
     }
 }
 
-struct PrincipalTabView_Previews: PreviewProvider {
+struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        MainView()
+        MainView(authProcess: AuthPasswordLess())
     }
 }
 

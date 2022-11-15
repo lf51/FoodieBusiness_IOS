@@ -47,7 +47,7 @@ struct AccounterMainView: View {
 
                       if !wannaChangeDisplayName {
                           
-                          Text("\(authProcess.userInfo?.userDisplayName ?? "DVlillofree")")
+                          Text("\(authProcess.currentUser?.userDisplayName ?? "DVlillofree")")
                               .font(.system(.headline, design: .monospaced, weight: .semibold))
                               .foregroundColor(Color("SeaTurtlePalette_4"))
                              /* .onTapGesture {
@@ -83,7 +83,7 @@ struct AccounterMainView: View {
                           .foregroundColor(Color("SeaTurtlePalette_2"))
                           //.shadow(color: Color.white, radius: 10.0, x: 0, y:  0) */
                       
-                      Text(authProcess.userInfo?.userUID ?? "Amministratore")
+                      Text(authProcess.currentUser?.userUID ?? "Amministratore")
                           .italic()
                           .font(.system(.headline, design: .monospaced, weight: .light))
                           .foregroundColor(Color("SeaTurtlePalette_4"))
@@ -99,7 +99,7 @@ struct AccounterMainView: View {
                           .foregroundColor(Color("SeaTurtlePalette_2"))
                      
                       
-                      Text("\(authProcess.userInfo?.userEmail ?? "DVlillof@gmailc.om")")
+                      Text("\(authProcess.currentUser?.userEmail ?? "DVlillof@gmailc.om")")
                           .font(.system(.headline, design: .monospaced, weight: .semibold))
                           .foregroundColor(Color("SeaTurtlePalette_4"))
                       
@@ -259,6 +259,12 @@ struct AccounterMainView: View {
                       CSButton_tight(title: "Log Out", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
                           self.authProcess.logOutUser()
                             }
+                      
+                      Spacer()
+                      
+                      CSButton_tight(title: "Pubblica", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.green) {
+                          self.viewModel.saveOnFirebase()
+                      }
                       
                       Spacer()
                       

@@ -10,33 +10,13 @@ import SwiftUI
 import MapKit // da togliere quando ripuliamo il codice dai Test
 //import SwiftProtobuf
 
-struct AccountSetup {
-    // mettiamo qui tutte le enum e i valori per il settaggio personalizzato da parte dell'utente
-    var startCountDownMenuAt:TimeValue = .sixty
-    var mettiInPausaDishByIngredient: ActionValue = .mai
-    
-    enum ActionValue:String {
-        static var allCases:[ActionValue] = [.sempre,.mai,.chiedi]
-        
-        case sempre
-        case mai
-        case chiedi
-    }
-    
-    enum TimeValue:Int {
-        
-        static var allCases:[TimeValue] = [.trenta,.sixty,.novanta]
-        
-        case trenta = 30
-        case sixty = 60
-        case novanta = 90
-    }
-}
-
-
 class AccounterVM: ObservableObject {
     
-    @Published var setup:AccountSetup = AccountSetup() // DA SVILUPPARE 06.10
+    
+    let dbCompiler: CloudDataCompiler
+    
+    
+    @Published var setup:AccountSetup // DA SVILUPPARE 06.10
     
     // questa classe punta ad essere l'unico ViewModel dell'app. Puntiamo a spostare qui dentro tutto ciò che deve funzionare trasversalmente fra le view, e a sostituire gli altri ViewModel col sistema Struct/@State con cui abbiamo creato un NuovoPiatto, un NuovoIngrediente, e un NuovoMenu.
     
@@ -52,10 +32,10 @@ class AccounterVM: ObservableObject {
     
     // end creato dal sistema
     
-    @Published var allMyIngredients:[IngredientModel] = []
-    @Published var allMyDish:[DishModel] = [] // tutti i piatti creati dall'accounter
-    @Published var allMyMenu:[MenuModel] = [] // tutti i menu creati dall'accounter
-    @Published var allMyProperties:[PropertyModel] = [] /*{ willSet {
+    @Published var allMyIngredients:[IngredientModel]
+    @Published var allMyDish:[DishModel] // tutti i piatti creati dall'accounter
+    @Published var allMyMenu:[MenuModel] // tutti i menu creati dall'accounter
+    @Published var allMyProperties:[PropertyModel] /*{ willSet {
         print("cambio Valore allMyProperties")
         objectWillChange.send() } }*/ // Deprecato per Blocco ad una singola Proprietà per Account. Manteniamo la forma dell'array per motivi tecnici, per il momento ci limitiamo a bloccare l'eventuale incremento del contenuto oltre la singola unità.
     
@@ -63,9 +43,9 @@ class AccounterVM: ObservableObject {
     @Published var alertItem: AlertModel? {didSet {showAlert = true} }
     
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // 19.05 --> Collocazione Temporanea
-    @Published var categoriaMenuAllCases: [CategoriaMenu] = []
+    @Published var categoriaMenuAllCases: [CategoriaMenu]
     
-    @Published var allMyReviews:[DishRatingModel] = []
+    @Published var allMyReviews:[DishRatingModel]
     @Published var inventarioScorte:Inventario = Inventario()
     // AREA TEST NAVIGATIONSTACK
     
@@ -78,13 +58,36 @@ class AccounterVM: ObservableObject {
     
     // FINE AREA TEST
    
-    init() {
+    init(userUID:String? = nil) {
         
-      //  fillFromListaBaseModello()
-        print("Init -> AccounterVM")
+        let compilerInstance = CloudDataCompiler(UID: userUID)
+        let cloudData = compilerInstance.cloudDataInstance()
+        
+        self.allMyIngredients = cloudData.allMyIngredients
+        self.allMyDish = cloudData.allMyDish
+        self.allMyMenu = cloudData.allMyMenu
+        self.allMyProperties = cloudData.allMyProperties
+        self.setup = cloudData.accountSetup
+        self.allMyReviews = cloudData.allMyReviews
+        self.categoriaMenuAllCases = cloudData.allMyCategory
+        
+        self.dbCompiler = compilerInstance
+
     }
     
     // Method
+    
+    func saveOnFirebase() {
+        
+        var cloudData = CloudDataStore()
+        cloudData.allMyIngredients = self.allMyIngredients
+        cloudData.allMyMenu = self.allMyMenu
+        cloudData.allMyDish = self.allMyDish
+        cloudData.allMyProperties = self.allMyProperties
+        
+        self.dbCompiler.publishOnFirebase(dataCloud: cloudData)
+        
+    }
     
     // Modifiche 25.08 / 30.08 - Metodi di compilazione per trasformazione da Oggetto a riferimento degli ingredienti nei Dish
     

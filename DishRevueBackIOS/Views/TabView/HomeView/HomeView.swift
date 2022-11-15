@@ -22,7 +22,7 @@ struct HomeView: View {
         
         NavigationStack(path:$viewModel.homeViewPath) {
       
-            CSZStackVB(title:authProcess.userInfo?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {
+            CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {
 
               
                 VStack(alignment: .leading) {
@@ -125,11 +125,18 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
    
-                    NavigationLink(value: DestinationPathView.accountSetup(authProcess)) {
+    
+                   /* NavigationLink(value: DestinationPathView.accountSetup(authProcess)) {
                         Image(systemName: "person.fill")
                             .foregroundColor(Color("SeaTurtlePalette_2"))
+                    }*/
+                    
+                    CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: Color("SeaTurtlePalette_2")) {
+                        csSetupButton()
                     }
            
+                    
+                    
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -155,6 +162,18 @@ struct HomeView: View {
   
     }
     // Method
+    
+    
+    private func csSetupButton() {
+        
+        guard self.authProcess.currentUser != nil else {
+             return self.authProcess.openSignInView = true
+           
+        }
+        
+        self.viewModel.homeViewPath.append(DestinationPathView.accountSetup(self.authProcess))
+        
+    }
     
     private func compilaArrayPreparazioni() -> [DishModel] {
         

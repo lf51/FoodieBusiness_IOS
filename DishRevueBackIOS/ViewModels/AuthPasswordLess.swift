@@ -11,14 +11,14 @@ import Firebase
 class AuthPasswordLess: ObservableObject, Hashable {
     
     static func == (lhs: AuthPasswordLess, rhs: AuthPasswordLess) -> Bool {
-        lhs.userInfo == rhs.userInfo
+        lhs.currentUser == rhs.currentUser
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(userInfo?.userUID)
+        hasher.combine(currentUser?.userUID)
     }
 
-    @Published var userInfo: UserModel?
+    @Published var currentUser: UserModel?
     
     @Published var email: String = ""
     
@@ -36,9 +36,10 @@ class AuthPasswordLess: ObservableObject, Hashable {
     
     init() {
         print("Init -> AuthPassWordLess")
-      //  checkUserSignedIn()
-        self.openSignInView = false // -> Ripistinare in futuro il checkUserSignedIn() / l'impostazione su false qui ci serve a bypassare l'auth nel simulatore
+        checkUserSignedIn()
+     //   self.openSignInView = false // -> Ripistinare in futuro il checkUserSignedIn() / l'impostazione su false qui ci serve a bypassare l'auth nel simulatore
     }
+    
     
     func sendSignInLink() {
         
@@ -59,7 +60,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
           )
             return
         }
-            self.alertItem = AlertModel(title: "Authentication Link inviato a \(self.email).", message: "Nessuna password necessaria.\nApri da questo device la tua posta in arrivo (o la cartella spam) e clicca sul link per autenticarti.")
+            self.alertItem = AlertModel(title: "Authentication Link inviato a \(self.email).", message: "Nessuna password necessaria.\nApri da questo device la mail (se non la trovi cercala nello spam) e clicca sul link per autenticarti.")
             UserDefaults.standard.set(self.email, forKey: "Email")
             self.email = ""
             print("Link Succesfully sent")
@@ -83,7 +84,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
               print("✔ Authentication was successful.")
               completion(.success(result?.user))
 
-                self.userInfo = UserModel(
+                self.currentUser = UserModel(
                     userEmail: result?.user.email ?? "",
                     userUID: result?.user.uid ?? "",
                     userProviderID: result?.user.providerID ?? "",
@@ -108,7 +109,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
             print("UserName: \(user.displayName ?? "")") */
             self.openSignInView = false
             
-            self.userInfo = UserModel(
+            self.currentUser = UserModel(
                 userEmail: user.email ?? "",
                 userUID: user.uid,
                 userProviderID: user.providerID,
@@ -158,12 +159,12 @@ class AuthPasswordLess: ObservableObject, Hashable {
         
         guard newDisplayName != "" else {
             
-            self.userInfo?.userDisplayName = self.userInfo?.userEmail ?? ""
+            self.currentUser?.userDisplayName = self.currentUser?.userEmail ?? ""
             // non facciamo update sul server, poichè nel signIn sa che quando il displayName è vuoto deve visualizzare la mail
             return }
         let newUserName = "@" + newDisplayName.replacingOccurrences(of: " ", with: "").lowercased()
         
-        self.userInfo?.userDisplayName = newUserName
+        self.currentUser?.userDisplayName = newUserName
         
         self.updateCurrentUserProfile()
         
@@ -211,6 +212,8 @@ class AuthPasswordLess: ObservableObject, Hashable {
             
             try firebaseAuth.signOut()
             self.openSignInView = true
+            self.currentUser = nil
+            
                  
             print("Sign-Out Successfully")
             
@@ -228,7 +231,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
         
         let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
         
-        changeRequest?.displayName = self.userInfo?.userDisplayName
+        changeRequest?.displayName = self.currentUser?.userDisplayName
     //    changeRequest?.displayName = self.displayName
        // changeRequest?.photoURL // da implementare
         

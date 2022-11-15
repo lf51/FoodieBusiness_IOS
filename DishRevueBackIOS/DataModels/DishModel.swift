@@ -10,87 +10,10 @@
 import Foundation
 import SwiftUI
 
-struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1  /*MyModelStatusConformity */ {
+struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1,MyProCloudPack_L1  /*MyModelStatusConformity */ {
     
     // 06.10 - In abbozzo
-    enum PercorsoProdotto:MyProEnumPack_L0 {
-
-        static var allCases:[PercorsoProdotto] = [.preparazioneFood,.preparazioneBeverage,.prodottoFinito]
-        
-        case prodottoFinito //= "Prodotto Finito"
-        case preparazioneFood //= "Piatto" // case standard di default
-        case preparazioneBeverage //= "Drink"
-        
-        func imageAssociated() -> String {
-            switch self {
-            case .prodottoFinito:
-                return "🧃"
-            case .preparazioneFood:
-                return "fork.knife.circle"
-            case .preparazioneBeverage:
-                return "wineglass"
-                
-            }
-        }
-        
-        func simpleDescription() -> String {
-            
-            switch self {
-                
-            case .prodottoFinito:
-                return "Prodotto Finito"
-            case .preparazioneFood:
-                return "Piatto"
-            case .preparazioneBeverage:
-                return "Drink"
-                
-            }
-            
-        }
-        
-        func returnTypeCase() -> DishModel.PercorsoProdotto {
-            self
-        }
-        
-        func orderAndStorageValue() -> Int {
-            
-            switch self {
-                
-            case .prodottoFinito:
-                return 0
-            case .preparazioneFood:
-                return 1
-            case .preparazioneBeverage:
-                return 2
-                
-            }
-        }
-        
-      /*  func informalDescription() -> String {
-            
-            switch self {
-                
-            case .prodottoFinito:
-                return "Prodotto in rivendita"
-            case .preparazioneFood:
-                return "Preparazione food"
-            case .preparazioneBeverage:
-                return "Preparazione beverage"
-                
-            }
-            
-        }*/
-        
-        func extendedDescription() -> String {
-            
-            switch self {
-            case .prodottoFinito:
-                return "Trattasi di un prodotto pronto che non richiede altri ingredienti per essere servito"
-            default:
-                return "E' il frutto della combinazione e/o lavorazione di uno o più ingredienti"
-            }
-        }
-    }
+  
     
     var percorsoProdotto:PercorsoProdotto = .preparazioneFood
     
@@ -178,6 +101,26 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         self.pricingPiatto =  [DishFormat(type: .mandatory)]
  
     } */
+    
+    func creaDocumentDataForFirebase() -> [String : Any] {
+        
+        let documentData:[String:Any] = [
+            "intestazione" : self.intestazione,
+            "descrizione" : self.descrizione,
+            "rifReview" : self.rifReviews,
+            "ingredientiPrincipali" : self.ingredientiPrincipali,
+            "ingredientiSecondari" : self.ingredientiSecondari,
+            "elencoIngredientiOff" : self.elencoIngredientiOff,
+            "categoriaMenu" : self.categoriaMenu,
+            "mostraDieteCompatibili" : self.mostraDieteCompatibili,
+            "status" : self.status.orderAndStorageValue(),
+            "pricing" : self.pricingPiatto.map({$0.creaDocumentDataForFirebase()})
+      //  "pricing" =
+        
+        
+        ]
+        return documentData
+    }
     
     func creaID(fromValue: String) -> String {
         print("DishModel/creaID()")
@@ -1043,6 +986,85 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
                 return "🍤"
             }
 
+        }
+    }
+    
+    enum PercorsoProdotto:MyProEnumPack_L0 {
+
+        static var allCases:[PercorsoProdotto] = [.preparazioneFood,.preparazioneBeverage,.prodottoFinito]
+        
+        case prodottoFinito //= "Prodotto Finito"
+        case preparazioneFood //= "Piatto" // case standard di default
+        case preparazioneBeverage //= "Drink"
+        
+        func imageAssociated() -> String {
+            switch self {
+            case .prodottoFinito:
+                return "🧃"
+            case .preparazioneFood:
+                return "fork.knife.circle"
+            case .preparazioneBeverage:
+                return "wineglass"
+                
+            }
+        }
+        
+        func simpleDescription() -> String {
+            
+            switch self {
+                
+            case .prodottoFinito:
+                return "Prodotto Finito"
+            case .preparazioneFood:
+                return "Piatto"
+            case .preparazioneBeverage:
+                return "Drink"
+                
+            }
+            
+        }
+        
+        func returnTypeCase() -> DishModel.PercorsoProdotto {
+            self
+        }
+        
+        func orderAndStorageValue() -> Int {
+            
+            switch self {
+                
+            case .prodottoFinito:
+                return 0
+            case .preparazioneFood:
+                return 1
+            case .preparazioneBeverage:
+                return 2
+                
+            }
+        }
+        
+      /*  func informalDescription() -> String {
+            
+            switch self {
+                
+            case .prodottoFinito:
+                return "Prodotto in rivendita"
+            case .preparazioneFood:
+                return "Preparazione food"
+            case .preparazioneBeverage:
+                return "Preparazione beverage"
+                
+            }
+            
+        }*/
+        
+        func extendedDescription() -> String {
+            
+            switch self {
+            case .prodottoFinito:
+                return "Trattasi di un prodotto pronto che non richiede altri ingredienti per essere servito"
+            default:
+                return "E' il frutto della combinazione e/o lavorazione di uno o più ingredienti"
+            }
         }
     }
     

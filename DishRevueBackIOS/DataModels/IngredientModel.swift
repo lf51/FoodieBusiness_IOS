@@ -10,7 +10,7 @@ import SwiftUI
 
 // Creare Oggetto Ingrediente
 
-struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1 /*MyModelStatusConformity */ {
+struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1,MyProCloudPack_L1 /*MyModelStatusConformity */ {
    
   static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
         return \.allMyIngredients
@@ -49,6 +49,32 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
 
     // Method
     
+    func creaDocumentDataForFirebase() -> [String:Any] {
+        
+        let dictionary:[String:Any] = [
+        
+            "intestazione":self.intestazione,
+            "descrizione":self.descrizione,
+            "conservazione":self.conservazione.orderAndStorageValue(),
+            "produzione":self.produzione.orderAndStorageValue(),
+            "provenienza":self.provenienza.orderAndStorageValue(),
+            "origine":self.origine.orderAndStorageValue(),
+            "status":self.status.orderAndStorageValue(),
+            "allergeni":self.conversioneAllergeniInt()
+        
+        ]
+        
+        return dictionary
+        
+    }
+    
+    
+    func conversioneAllergeniInt() -> [Int] {
+        
+        let numAllergeni = self.allergeni.map({$0.orderAndStorageValue()})
+        return numAllergeni
+        
+    }
     // Protocollo di ricerca
     
     static func sortModelInstance(lhs: IngredientModel, rhs: IngredientModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
