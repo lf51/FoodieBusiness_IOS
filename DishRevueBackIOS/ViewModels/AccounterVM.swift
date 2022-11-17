@@ -84,6 +84,11 @@ class AccounterVM: ObservableObject {
         cloudData.allMyMenu = self.allMyMenu
         cloudData.allMyDish = self.allMyDish
         cloudData.allMyProperties = self.allMyProperties
+        cloudData.allMyCategory = self.categoriaMenuAllCases
+        cloudData.allMyReviews = self.allMyReviews
+        
+        cloudData.accountSetup = self.setup
+        cloudData.inventarioScorte = inventarioScorte
         
         self.dbCompiler.publishOnFirebase(dataCloud: cloudData)
         

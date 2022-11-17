@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct DishRatingModel: MyProStarterPack_L0, Hashable {
+struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
     
    // let id:String
     let id: String = UUID().uuidString
@@ -19,6 +19,22 @@ struct DishRatingModel: MyProStarterPack_L0, Hashable {
     let commento: String
     var dataRilascio: Date // Messo in Var per i test, riportare come let
     let image: String = "circle" // 19.10 Togliere le virgolette di default.
+    
+    func creaDocumentDataForFirebase() -> [String : Any] {
+        
+        let documentData:[String:Any] = [
+        
+            "rifPiatto":self.rifPiatto,
+            "voto":self.voto,
+            "titolo":self.titolo,
+            "commento":self.commento,
+            "rifImage":self.image,
+            "dataRilascio":self.dataRilascio
+        
+        ]
+        
+        return documentData
+    }
     
     func rateColor() -> Color {
         

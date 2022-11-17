@@ -19,8 +19,8 @@ import SwiftUI
 
 */
 
-struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack_L0 /*: MyProModelPack_L0, Hashable*/{
-
+struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack_L0,MyProCloudPack_L1 /*: MyProModelPack_L0, Hashable*/{
+   
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [PropertyModel]> {
         return \.allMyProperties
     }
@@ -98,8 +98,8 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
         hasher.combine(id)
     }
     
-    var intestazione: String = "" // deve sostituire il nome
-    var descrizione: String = ""
+    var intestazione: String // deve sostituire il nome
+    var descrizione: String
    /* var descrizione: String = "La registrazione di una proprietò avviene da Maps. Se l'attività non è ancora presente in Maps la registrazione non può avvenire. Potremmo predisporre una registrazione manuale ma non lo facciamo per i seguenti motivi: Usando Maps ci affidiamo ad un servizio già collaudato e non ci dobbiamo preoccupare di verificare l'esistenza reale di quella proprietà, cosa che invece diventerebbe necessaria in caso di inserimento manuale. Usando Maps inoltre non dobbiamo preoccuparci dei duplicati, ossia della possibilità che qualcuno registri un'attività esistente in modo manuale nella via di fianco creando confusione. Usando Maps risolviamo quindi delle grane fiduciarie e ci resta soltanto di autenticare il legame fra l'attività registrata e il registrante. Resta un problema per le nuove attività non ancora registrate su Maps. Per queste sarebbe necessario procedere in manuale, ma sacrifichiamo le nuovissime attività non ancora registrate per evitarci i problemi di cui sopra. Confidiamo nel fatto, poi, essendo la registrazione sulle mappe qualcosa da cui un'attività non può prescindere che questa avvenga al più presto abilitando così la registrazione sulla nostra App." */
   //  var alertItem: AlertModel?
     
@@ -107,8 +107,8 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
         
         lhs.id == rhs.id  &&
         lhs.intestazione == rhs.intestazione &&
-        lhs.descrizione == rhs.descrizione &&
-        lhs.menuIn == rhs.menuIn 
+        lhs.descrizione == rhs.descrizione
+      //  lhs.menuIn == rhs.menuIn
     }
     
     var id: String { get {
@@ -133,7 +133,7 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
   //  let name: String
     var cityName: String
     var coordinates: CLLocationCoordinate2D
-    var imageNames: [String] = []
+  //  var imageNames: [String] = []
     var webSite: String
     var phoneNumber: String
     var streetAdress: String
@@ -141,9 +141,28 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
     
   //  var scheduleServizio: [IntestazioneMenu] = [.colazione,.pranzo]
     
-    var menuIn: [MenuModel] = [] // riempito Automaticamente con i Menu marchiati come completo(.pubblico) // Forse Deprecata 28.06 Accediamo direttamente ai menu salvati nel viewModel filtrandoli per lo status. Evitiamo così di duplicare "inutilmente?" i dati
+  //  var menuIn: [MenuModel] = [] // Nota 16.11 // riempito Automaticamente con i Menu marchiati come completo(.pubblico) // Forse Deprecata 28.06 Accediamo direttamente ai menu salvati nel viewModel filtrandoli per lo status. Evitiamo così di duplicare "inutilmente?" i dati
     
-    lazy var serviceSchedule: [GiorniDelServizio:[(String,String)]] = { // Deprecata
+    func creaDocumentDataForFirebase() -> [String : Any] {
+        
+        let documentData:[String:Any] = [
+        
+            "intestazione":self.intestazione,
+            "descrizione":self.descrizione,
+            "cityName":self.cityName,
+            "webSite":self.webSite,
+            "phoneNumber":self.phoneNumber,
+            "streetAdress":self.streetAdress,
+            "numeroCivico":self.numeroCivico,
+            "latitudine":self.coordinates.latitude.description,
+            "longitudine":self.coordinates.longitude.description
+        ]
+        
+        return documentData
+    }
+    
+    
+  /*  lazy var serviceSchedule: [GiorniDelServizio:[(String,String)]] = { // Deprecata
         
         print("dentro serviceSchedule in PropertyModel")
         
@@ -168,13 +187,14 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
         
         return giorniServizio
    
-    }()
+    }() */ // deprecata 17.11
     
   //  var status: StatusModel = .bozza // Qui non so quanto serva. Da Inquadrare.
     
     init() { // utile quando creaiamo la @State NewProperty
         
         self.intestazione = ""
+        self.descrizione = ""
         self.cityName = ""
         self.coordinates = CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
         self.webSite = ""
@@ -187,6 +207,7 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
     init (intestazione: String, cityName: String, coordinates: CLLocationCoordinate2D, webSite: String, phoneNumber: String, streetAdress: String, numeroCivico: String) {
         
         self.intestazione = intestazione
+        self.descrizione = ""
         self.cityName = cityName
         self.coordinates = coordinates
         self.webSite = webSite
@@ -199,6 +220,7 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
     init(nome: String) { 
         
         self.intestazione = nome
+        self.descrizione = ""
         self.cityName = ""
         self.coordinates = CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
         self.webSite = ""
@@ -211,6 +233,7 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
     init(nome: String, coordinates: CLLocationCoordinate2D) {
         
         self.intestazione = nome
+        self.descrizione = ""
         self.cityName = ""
         self.coordinates = coordinates
         self.webSite = ""
@@ -222,7 +245,7 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
     
     // Method
     
-    private func creaSchedule() {
+   /* private func creaSchedule() {
         
         print("dentro creaSchedule in PropertyModel")
         
@@ -245,7 +268,7 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
            
         }
         
-    }
+    } */ // deprecata 17.11
     
     
     

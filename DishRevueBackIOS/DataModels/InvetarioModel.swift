@@ -8,9 +8,10 @@
 import Foundation
 import SwiftUI
 
-struct Inventario:Equatable {
+struct Inventario:Equatable,MyProCloudPack_L1 {
 
     // Nota 02.10
+    var id:String = "userInventario"
     
     var ingInEsaurimento:[String] = []
     var ingEsauriti:[String] = []
@@ -23,6 +24,22 @@ struct Inventario:Equatable {
     /// L'archivio ingredienti in esaurimento rende obsoleto l'uso di un archivio dell'inventario quando creiamo la lista della spesa. E' un dizionario che dovrà funzionare con una sola chiave, la data corrente.
     var archivioIngInEsaurimento: [String:[String]] = [:] // key:DataCorrente || value = [id ingredienti Esauriti depennati]
     
+    
+    func creaDocumentDataForFirebase() -> [String : Any] {
+        
+        let documentData:[String:Any] = [
+        
+            "ingInEsaurimento":self.ingInEsaurimento,
+            "ingEsauriti":self.ingEsauriti,
+            "archivioNotaAcquisto":self.archivioNotaAcquisto,
+            "cronologiaAcquisti":self.cronologiaAcquisti,
+            "lockedId":self.lockedId,
+            "archivioIngInEsaurimento":self.archivioIngInEsaurimento
+
+        ]
+        
+        return documentData
+    }
     
     // Method
     

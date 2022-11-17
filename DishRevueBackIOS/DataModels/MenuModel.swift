@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyProVisualPack_L1/*MyModelStatusConformity */ {
+struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyProVisualPack_L1,MyProCloudPack_L1/*MyModelStatusConformity */ {
      
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [MenuModel]> {
         return \.allMyMenu
@@ -48,14 +48,14 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     var tipologia: TipologiaMenu = .defaultValue // Categoria di Filtraggio
     var status: StatusModel = .bozza()
     
-    var isAvaibleWhen: AvailabilityMenu = .defaultValue { willSet {giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
+    var isAvaibleWhen: AvailabilityMenu = .defaultValue { willSet { giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
     
     var dataInizio: Date = Date() { willSet {
         dataFine = newValue.advanced(by: 604800)
     }} /*{ willSet {dataFine = newValue.advanced(by: 604800)}}*/// 19.09 // data inizio del Menu, che contiene al suo interno anche l'ora (estrapolabile) in cui è stato creato
     var dataFine: Date = Date().advanced(by: 604800) // opzionale perchè possiamo non avere una fine in caso di data fissa
     var giorniDelServizio:[GiorniDelServizio] = [] // Categoria Filtraggio
-    var oraInizio: Date = Date() {willSet {oraFine = newValue.advanced(by: 1800)}} // deprecata in futuro // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
+    var oraInizio: Date = Date() { willSet {oraFine = newValue.advanced(by: 1800)} } // deprecata in futuro // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
     var oraFine: Date = Date().advanced(by: 1800) // deprecata in futuro
 
   //  var fasceOrarie:[FasciaOraria] = [FasciaOraria()]
@@ -101,6 +101,26 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         }
     } */
     // Method
+    
+    func creaDocumentDataForFirebase() -> [String:Any] {
+        
+        let documentData:[String:Any] = [
+            
+            "intestazione":self.intestazione,
+            "descrizione":self.descrizione,
+            "rifDish":self.rifDishIn,
+            "tipologia":self.tipologia.orderAndStorageValuePlus(), // Nota 16.11
+            "status":self.status.orderAndStorageValue(),
+            "isAvaibleWhen":self.isAvaibleWhen.orderAndStorageValue(),
+            "giorniDelServizio":self.giorniDelServizio.map({$0.orderAndStorageValue()}),
+            "dataInizio":self.dataInizio,
+            "dataFine":self.dataFine,
+            "oraInizio":self.oraInizio,
+            "oraFine":self.oraFine
+        
+        ]
+        return documentData
+    }
 
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         

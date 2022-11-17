@@ -11,16 +11,16 @@ import Firebase
 
 struct CloudDataStore {
     
-    var accountSetup: AccountSetup
-    let inventarioScorte: Inventario
+    var accountSetup: AccountSetup // caricato
+    var inventarioScorte: Inventario // caricato
     
-    var allMyIngredients:[IngredientModel]
-    var allMyDish:[DishModel]
-    var allMyMenu:[MenuModel]
-    var allMyProperties:[PropertyModel]
+    var allMyIngredients:[IngredientModel] // caricato
+    var allMyDish:[DishModel] // caricato
+    var allMyMenu:[MenuModel] // caricato
+    var allMyProperties:[PropertyModel] // caricato
     
-    let allMyCategory: [CategoriaMenu]
-    let allMyReviews:[DishRatingModel]
+    var allMyCategory: [CategoriaMenu] // caricato
+    var allMyReviews:[DishRatingModel] // caricato
     
     enum CloudCollectionKey:String {
         
@@ -28,6 +28,10 @@ struct CloudDataStore {
         case dish = "userPreparazioniEprodotti"
         case menu = "userMenu"
         case properties =  "userProperties"
+        case categories = "userCategories"
+        case reviews = "userReviews"
+                
+        case anyDocument = "datiDiFunzionamento"
         
         
     }
@@ -136,30 +140,49 @@ struct CloudDataCompiler {
     
     func publishOnFirebase(dataCloud:CloudDataStore) {
         
-        saveSingleCollection(collection: dataCloud[keyPath: \.allMyIngredients], key: .ingredient)
-        saveSingleCollection(collection: dataCloud[keyPath: \.allMyDish], key: .dish)
-      //  saveSingleCollection(collection: dataCloud[keyPath: \.allMyMenu], key: .menu)
-      //  saveSingleCollection(collection: dataCloud[keyPath: \.allMyProperties], key: .properties)
-            
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyIngredients], collection: .ingredient)
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyDish], collection: .dish)
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyMenu], collection: .menu)
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyProperties], collection: .properties)
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyCategory], collection: .categories)
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyReviews], collection: .reviews)
+        
+        saveSingleDocument(doc: dataCloud[keyPath: \.accountSetup], collection: .anyDocument)
+        saveSingleDocument(doc: dataCloud[keyPath: \.inventarioScorte], collection: .anyDocument)
         
     }
     
-    private func saveSingleCollection<M:MyProCloudPack_L1>(collection:[M],key:CloudDataStore.CloudCollectionKey) {
+    /// La usiamo per salvare un singolo documento in una collezione che può essere eterogenea.
+    private func saveSingleDocument<M:MyProCloudPack_L1>(doc:M,collection:CloudDataStore.CloudCollectionKey) {
         
-        if let ref_ingredienti:CollectionReference = ref_userDocument?.collection(key.rawValue) {
-            
-            for element in collection {
-                
-                ref_ingredienti.document(element.id).setData(element.creaDocumentDataForFirebase(), merge: true) { error in
-                    
-                    if error != nil { print("OPS!! Qualcosa non ha funzionato nel salvataggio su Firebase")}
-                    else { print("Salvataggio su FireBase avvenuto con Successo - Mettere un Alert")}
-                }
-                
-                
-            }
-            
+        if let ref_ingredienti:CollectionReference = ref_userDocument?.collection(collection.rawValue) {
+                            
+            saveElement(document: ref_ingredienti.document(doc.id), element: doc)
+   
         }
+    }
+    
+    /// La usiamo per salvare un array di documenti omogenei (solo ingredienti, o solo piatti ecc) in una collezione MonoTono
+    private func saveMultipleDocuments<M:MyProCloudPack_L1>(docs:[M],collection:CloudDataStore.CloudCollectionKey) {
+        
+        if let ref_ingredienti:CollectionReference = ref_userDocument?.collection(collection.rawValue) {
+            
+            for element in docs {
+                
+                saveElement(document: ref_ingredienti.document(element.id), element: element)
+
+            }
+        }
+    }
+    
+    private func saveElement<M:MyProCloudPack_L1>(document:DocumentReference?,element:M) {
+        
+        document?.setData(element.creaDocumentDataForFirebase(), merge: true) { error in
+                
+                if error != nil { print("OPS!! Qualcosa non ha funzionato nel salvataggio su Firebase")}
+                else { print("Salvataggio su FireBase avvenuto con Successo - Mettere un Alert")}
+        }
+        
     }
     
     
@@ -188,7 +211,7 @@ struct CloudDataCompiler {
 
 
 let fakeCloudData = CloudDataStore(
-    accountSetup: AccountSetup(startCountDownMenuAt: .novanta, mettiInPausaDishByIngredient: .sempre),
+    accountSetup: AccountSetup(),
     inventarioScorte: Inventario(
         ingInEsaurimento: [ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id],
         ingEsauriti: [ingredientSample2_Test.id,ingredientSample3_Test.id,ingredientSample4_Test.id],

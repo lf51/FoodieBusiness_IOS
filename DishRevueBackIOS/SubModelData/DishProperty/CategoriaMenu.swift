@@ -7,12 +7,11 @@
 
 import Foundation
 
-struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L0/*,MyEnumProtocol,MyEnumProtocolMapConform */{
+struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L0,MyProCloudPack_L1/*,MyEnumProtocol,MyEnumProtocolMapConform */{
    
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]> {
         \.categoriaMenuAllCases
     }
-    
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -41,6 +40,20 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
    /* func returnModelTypeName() -> String {
         "Categoria Menu"
     } */ // deprecata
+    
+    func creaDocumentDataForFirebase() -> [String : Any] {
+        
+        let documentData:[String:Any] = [
+        
+            "intestazione":self.intestazione,
+            "descrizione":self.descrizione,
+            "image":self.image
+        
+        ]
+        
+        return documentData
+    }
+    
     
     func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String,imageAssociated:String) {
         return (\.categoriaMenuAllCases,"Elenco Categorie Menu", "Categoria Menu","list.bullet.clipboard")

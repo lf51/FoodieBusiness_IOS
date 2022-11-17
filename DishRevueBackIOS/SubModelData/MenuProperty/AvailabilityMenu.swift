@@ -8,10 +8,7 @@
 import Foundation
 
 enum AvailabilityMenu:Hashable,MyProEnumPack_L1 {
-  
-    
-    
-  //  static var defaultValue: AvailabilityMenu = .noValue
+
     static var allCases:[AvailabilityMenu] = [.dataEsatta,.intervalloAperto,.intervalloChiuso]
     static var defaultValue: AvailabilityMenu = .noValue
     

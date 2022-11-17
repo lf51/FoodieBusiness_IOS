@@ -53,10 +53,10 @@ enum ModelList: Equatable, Hashable {
     static var menuPropertyList: [ModelList] = []
     
     ///Case Predefinito per la relazione Proprietà/Menu.
-    static var propertyMenuList: [ModelList] = [
+  /* static var propertyMenuList: [ModelList] = [
         .viewModelContainer("Menu Completi",\.allMyMenu, .fonte),
         .itemModelContainer("Menu In",\PropertyModel.menuIn, .destinazione(Color.yellow, grado: .principale))
-    ]
+    ] */ // deprecata 17.11
     
     /// utilizzare come Fonte Dati
     case viewModelContainer(String,PartialKeyPath<AccounterVM>,ContainerType)

@@ -205,14 +205,26 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
             return 1
         case .allaCarta:
             return 2
-      //  case .delGiorno:
-        //    return 3
-      //  case .delloChef:
-       //     return 4
         case .noValue:
            return 0
         }
     }
+    
+    /// a differenza della funzione standard, questa Plus ritorna un Any, e quindi ci permette di ritornare valori diversi per ogni case.
+    func orderAndStorageValuePlus() -> Any {
+        
+        switch self {
+            
+        case .fisso(let pax, let price):
+            return [pax.orderAndStorageValue(),price]
+        case .allaCarta(let diSistema):
+            let value = diSistema == nil ? 2 : diSistema!.orderAndStorageValue()
+            return value
+        case .noValue:
+           return 0
+        }
+    }
+    
     
     func isDiSistema() -> Bool {
       //  self == .delGiorno ||
@@ -279,6 +291,15 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
                 case .delloChef:
                     return "mustache.fill" //"👨🏻‍🍳"
     
+            }
+        }
+        
+        func orderAndStorageValue() -> Int {
+            
+            switch self {
+                
+            case .delGiorno: return 3
+            case .delloChef: return 4
             }
         }
 
