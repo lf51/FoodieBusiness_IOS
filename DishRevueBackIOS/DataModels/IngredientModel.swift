@@ -7,11 +7,12 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 
 // Creare Oggetto Ingrediente
 
 struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1,MyProCloudPack_L1 /*MyModelStatusConformity */ {
-   
+ 
   static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
         return \.allMyIngredients
     }
@@ -49,24 +50,87 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
 
     // Method
     
-    func creaDocumentDataForFirebase() -> [String:Any] {
+    init(intestazione:String,descrizione:String,conservazione:ConservazioneIngrediente,produzione:ProduzioneIngrediente,provenienza:ProvenienzaIngrediente,allergeni:[AllergeniIngrediente],origine:OrigineIngrediente,status:StatusModel) {
+        
+        self.intestazione = intestazione
+        self.descrizione = descrizione
+        self.conservazione = conservazione
+        self.produzione = produzione
+        self.provenienza = provenienza
+        self.allergeni = allergeni
+        self.origine = origine
+        self.status = status
+        
+        // usato nei test. da abolire
+    }
+    
+    init() {
+        
+        // creare un init di default
+        
+    }
+    
+    init(id:String) {
+        self.id = id
+     
+    }
+    
+    init(frDoc:QueryDocumentSnapshot) {
+        // init da firebase Data
+        
+        let conservazioneInt = frDoc[DataBaseField.conservazione] as? Int ?? 0
+        let produzioneInt = frDoc[DataBaseField.produzione] as? Int ?? 0
+        let provenienzaInt = frDoc[DataBaseField.provenienza] as? Int ?? 0
+        let origineInt = frDoc[DataBaseField.origine] as? Int ?? 0
+        let statusInt = frDoc[DataBaseField.status] as? Int ?? 0
+        let allergeniInt = frDoc[DataBaseField.allergeni] as? [Int] ?? []
+        
+        self.id = frDoc.documentID
+        self.intestazione = frDoc[DataBaseField.intestazione] as? String ?? ""
+        self.descrizione = frDoc[DataBaseField.descrizione] as? String ?? ""
+        self.conservazione = ConservazioneIngrediente.convertiInCase(fromNumber: conservazioneInt)
+        self.produzione = ProduzioneIngrediente.convertiInCase(fromNumber: produzioneInt)
+        self.provenienza = ProvenienzaIngrediente.convertiInCase(fromNumber: provenienzaInt)
+        self.origine = OrigineIngrediente.convertiInCase(fromNumber: origineInt)
+        self.status = StatusModel.convertiInCase(fromNumber: statusInt)
+        self.allergeni = allergeniInt.map({AllergeniIngrediente.convertiInCase(fromNumber: $0)})
+  
+    }
+    
+    
+    func documentDataForFirebaseSavingAction() -> [String:Any] {
         
         let dictionary:[String:Any] = [
         
-            "intestazione":self.intestazione,
-            "descrizione":self.descrizione,
-            "conservazione":self.conservazione.orderAndStorageValue(),
-            "produzione":self.produzione.orderAndStorageValue(),
-            "provenienza":self.provenienza.orderAndStorageValue(),
-            "origine":self.origine.orderAndStorageValue(),
-            "status":self.status.orderAndStorageValue(),
-            "allergeni":self.conversioneAllergeniInt()
+            DataBaseField.intestazione : self.intestazione,
+            DataBaseField.descrizione : self.descrizione,
+            DataBaseField.conservazione : self.conservazione.orderAndStorageValue(),
+            DataBaseField.produzione : self.produzione.orderAndStorageValue(),
+            DataBaseField.provenienza : self.provenienza.orderAndStorageValue(),
+            DataBaseField.origine : self.origine.orderAndStorageValue(),
+            DataBaseField.status : self.status.orderAndStorageValue(),
+            DataBaseField.allergeni : self.conversioneAllergeniInt()
         
         ]
         
         return dictionary
         
     }
+
+    struct DataBaseField {
+        
+        static let intestazione = "intestazione"
+        static let descrizione = "descrizione"
+        static let conservazione = "conservazione"
+        static let produzione = "produzione"
+        static let provenienza = "provenienza"
+        static let allergeni = "allergeni"
+        static let origine = "origine"
+        static let status = "status"
+        
+        
+    }
+    
     
     
     func conversioneAllergeniInt() -> [Int] {

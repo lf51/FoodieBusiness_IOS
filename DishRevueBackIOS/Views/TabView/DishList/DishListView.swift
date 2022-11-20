@@ -90,7 +90,7 @@ struct DishListView: View {
         if mapObject == nil {
             
             self.mapObject = MapObject(
-                mapCategory: self.viewModel.categoriaMenuAllCases,
+                mapCategory: self.viewModel.allMyCategories,
                 kpMapCategory: \DishModel.categoriaMenu)
             
         } else {
@@ -168,7 +168,7 @@ struct DishListView: View {
                   
                 }
                 
-                FilterRow_Generic(allCases: self.viewModel.categoriaMenuAllCases, filterCollection: $filterProperty.categorieMenu, selectionColor: Color.yellow.opacity(0.7), imageOrEmoji: "list.bullet.indent", label: "Categoria") { value in
+                FilterRow_Generic(allCases: self.viewModel.allMyCategories, filterCollection: $filterProperty.categorieMenu, selectionColor: Color.yellow.opacity(0.7), imageOrEmoji: "list.bullet.indent", label: "Categoria") { value in
                     containerFiltered.filter({$0.categoriaMenu == value.id }).count
                 }
                 

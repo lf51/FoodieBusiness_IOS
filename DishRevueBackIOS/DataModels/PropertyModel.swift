@@ -143,24 +143,37 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
     
   //  var menuIn: [MenuModel] = [] // Nota 16.11 // riempito Automaticamente con i Menu marchiati come completo(.pubblico) // Forse Deprecata 28.06 Accediamo direttamente ai menu salvati nel viewModel filtrandoli per lo status. Evitiamo così di duplicare "inutilmente?" i dati
     
-    func creaDocumentDataForFirebase() -> [String : Any] {
+    func documentDataForFirebaseSavingAction() -> [String : Any] {
         
         let documentData:[String:Any] = [
         
-            "intestazione":self.intestazione,
-            "descrizione":self.descrizione,
-            "cityName":self.cityName,
-            "webSite":self.webSite,
-            "phoneNumber":self.phoneNumber,
-            "streetAdress":self.streetAdress,
-            "numeroCivico":self.numeroCivico,
-            "latitudine":self.coordinates.latitude.description,
-            "longitudine":self.coordinates.longitude.description
+            DataBaseField.intestazione : self.intestazione,
+            DataBaseField.descrizione : self.descrizione,
+            DataBaseField.cityName : self.cityName,
+            DataBaseField.webSite : self.webSite,
+            DataBaseField.phoneNumber : self.phoneNumber,
+            DataBaseField.streetAdress : self.streetAdress,
+            DataBaseField.numeroCivico : self.numeroCivico,
+            DataBaseField.latitude : self.coordinates.latitude.description,
+            DataBaseField.longitude : self.coordinates.longitude.description
         ]
         
         return documentData
     }
     
+    struct DataBaseField {
+        
+        static let intestazione = "intestazione"
+        static let descrizione = "descrizione"
+        static let cityName = "cityName"
+        static let webSite = "webSite"
+        static let phoneNumber = "phoneNumber"
+        static let streetAdress = "streetAdress"
+        static let numeroCivico = "numeroCivico"
+        static let latitude = "latitudine"
+        static let longitude = "longitudine"
+        
+    }
     
   /*  lazy var serviceSchedule: [GiorniDelServizio:[(String,String)]] = { // Deprecata
         

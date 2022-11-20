@@ -25,20 +25,31 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
     var archivioIngInEsaurimento: [String:[String]] = [:] // key:DataCorrente || value = [id ingredienti Esauriti depennati]
     
     
-    func creaDocumentDataForFirebase() -> [String : Any] {
+    func documentDataForFirebaseSavingAction() -> [String : Any] {
         
         let documentData:[String:Any] = [
         
-            "ingInEsaurimento":self.ingInEsaurimento,
-            "ingEsauriti":self.ingEsauriti,
-            "archivioNotaAcquisto":self.archivioNotaAcquisto,
-            "cronologiaAcquisti":self.cronologiaAcquisti,
-            "lockedId":self.lockedId,
-            "archivioIngInEsaurimento":self.archivioIngInEsaurimento
+            DataBaseField.ingInEsaurimento : self.ingInEsaurimento,
+            DataBaseField.ingEsauriti : self.ingEsauriti,
+            DataBaseField.archivioNotaAcquisto : self.archivioNotaAcquisto,
+            DataBaseField.cronologiaAcquisti : self.cronologiaAcquisti,
+            DataBaseField.lockedId : self.lockedId,
+            DataBaseField.archivioIngInEsaurimento : self.archivioIngInEsaurimento
 
         ]
         
         return documentData
+    }
+    
+    struct DataBaseField {
+        
+        static let ingInEsaurimento = "ingInEsaurimento"
+        static let ingEsauriti = "ingEsauriti"
+        static let archivioNotaAcquisto = "archivioNotaAcquisto"
+        static let cronologiaAcquisti = "cronologiaAcquisti"
+        static let lockedId = "lockedId"
+        static let archivioIngInEsaurimento = "archivioIngInEsaurimento"
+        
     }
     
     // Method

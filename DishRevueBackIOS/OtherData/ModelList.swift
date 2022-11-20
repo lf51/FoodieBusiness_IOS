@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum ModelList: Equatable, Hashable {
+enum ModelList: Equatable, Hashable  {
    
     /*
     ///Case Predefinito per la relazione Piatto/Ingredienti.
@@ -100,4 +100,4 @@ enum ModelList: Equatable, Hashable {
         }
         
     }
-}
+} 

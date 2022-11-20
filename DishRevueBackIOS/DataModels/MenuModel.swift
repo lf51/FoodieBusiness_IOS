@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 
 struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyProVisualPack_L1,MyProCloudPack_L1/*MyModelStatusConformity */ {
      
@@ -36,34 +37,56 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
  //   var id: String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() } // deprecated 15.07
     
  //   var id: String { creaID(fromValue: self.intestazione) } // Deprecata 18.08
-    var id: String = UUID().uuidString
+    var id: String
     
-    var intestazione: String = "" // Categoria Filtraggio
-    var descrizione: String = ""
+    var intestazione: String // Categoria Filtraggio
+    var descrizione: String
     
   //  var dishInDEPRECATO: [DishModel] = [] // deprecata in futuro - 17.09 /*{willSet {status = newValue.isEmpty ? .vuoto : .completo(.archiviato)}} */
     
-    var rifDishIn: [String] = [] // riferimenti del piatti
+    var rifDishIn: [String] // riferimenti del piatti
     
-    var tipologia: TipologiaMenu = .defaultValue // Categoria di Filtraggio
-    var status: StatusModel = .bozza()
+    var tipologia: TipologiaMenu // Categoria di Filtraggio
+    var status: StatusModel
     
-    var isAvaibleWhen: AvailabilityMenu = .defaultValue { willSet { giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
+    var isAvaibleWhen: AvailabilityMenu { willSet { giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
     
-    var dataInizio: Date = Date() { willSet {
+    var dataInizio: Date { willSet {
         dataFine = newValue.advanced(by: 604800)
     }} /*{ willSet {dataFine = newValue.advanced(by: 604800)}}*/// 19.09 // data inizio del Menu, che contiene al suo interno anche l'ora (estrapolabile) in cui è stato creato
-    var dataFine: Date = Date().advanced(by: 604800) // opzionale perchè possiamo non avere una fine in caso di data fissa
-    var giorniDelServizio:[GiorniDelServizio] = [] // Categoria Filtraggio
-    var oraInizio: Date = Date() { willSet {oraFine = newValue.advanced(by: 1800)} } // deprecata in futuro // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
-    var oraFine: Date = Date().advanced(by: 1800) // deprecata in futuro
+    var dataFine: Date // opzionale perchè possiamo non avere una fine in caso di data fissa
+    var giorniDelServizio:[GiorniDelServizio] // Categoria Filtraggio
+    var oraInizio: Date { willSet {oraFine = newValue.advanced(by: 1800)} } // deprecata in futuro // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
+    var oraFine: Date // deprecata in futuro
 
   //  var fasceOrarie:[FasciaOraria] = [FasciaOraria()]
     
     // init
     
+    init() {
+        
+        let currentDate = Date()
+        
+        self.id = UUID().uuidString
+        self.intestazione = ""
+        self.descrizione = ""
+        self.tipologia = .defaultValue
+        self.status = .bozza()
+        self.rifDishIn = []
+        self.isAvaibleWhen = .defaultValue
+        self.dataInizio = currentDate
+        self.dataFine = currentDate.advanced(by: 604800)
+        self.giorniDelServizio = []
+        self.oraInizio = currentDate
+        self.oraFine = currentDate.advanced(by: 1800)
+        
+    }
+    
+    
     init(tipologia:TipologiaMenu = .defaultValue) { // init del menu del giorno
       
+        let currentDate = Date()
+        
         if tipologia != .defaultValue {
             
             if tipologia == .allaCarta(.delGiorno) {
@@ -75,13 +98,15 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
                 self.descrizione = "Fra i piatti già inseriti in altri menu, segnala quelli giornalmente consigliati dalla chef."
             }
             
+            self.id = UUID().uuidString
             self.tipologia = tipologia
             self.status = .bozza(.disponibile)
             self.rifDishIn = []
             self.isAvaibleWhen = .dataEsatta
-            self.dataInizio = Date()
+            self.dataInizio = currentDate
+            self.dataFine = currentDate.advanced(by: 604800)
             
-            let giornoDataInizio = GiorniDelServizio.giornoServizioFromData(dataEsatta: Date())
+            let giornoDataInizio = GiorniDelServizio.giornoServizioFromData(dataEsatta: currentDate)
             self.giorniDelServizio = [giornoDataInizio]
             self.oraInizio = Date.distantFuture.advanced(by: -3540)
             self.oraFine = Date.distantFuture.advanced(by: 82740)
@@ -102,26 +127,72 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     } */
     // Method
     
-    func creaDocumentDataForFirebase() -> [String:Any] {
+    // MyProCloudPack_L1
+    
+    init(frDoc: QueryDocumentSnapshot) {
+        
+       // let tipologiaInt = frDoc[DataBaseField.tipologia] as? Int ?? 0
+        let statusInt = frDoc[DataBaseField.status] as? Int ?? 0
+        let availabilityInt = frDoc[DataBaseField.isAvaibleWhen] as? Int ?? 0
+        let giorniInt = frDoc[DataBaseField.giorniDelServizio] as? [Int] ?? []
+        
+        self.id = frDoc.documentID
+        self.intestazione = frDoc[DataBaseField.intestazione] as? String ?? ""
+        self.descrizione = frDoc[DataBaseField.descrizione] as? String ?? ""
+        self.rifDishIn = frDoc[DataBaseField.rifDishIn] as? [String] ?? []
+        
+      //  self.tipologia = TipologiaMenu // DA FARE -> Il Salvataggio è eterogeneo
+        self.tipologia = .defaultValue // SISTEMARE
+        
+        self.status = StatusModel.convertiInCase(fromNumber: statusInt)
+        self.isAvaibleWhen = AvailabilityMenu.convertiInCase(fromNumber: availabilityInt)
+        self.giorniDelServizio = giorniInt.map({GiorniDelServizio.fromOrderValue(orderValue: $0)})
+        
+        self.dataInizio = frDoc[DataBaseField.dataInizio] as? Date ?? .now
+        self.dataFine = frDoc[DataBaseField.dataFine] as? Date ?? .now
+        self.oraInizio = frDoc[DataBaseField.oraInizio] as? Date ?? .now
+        self.oraFine = frDoc[DataBaseField.oraFine] as? Date ?? .now
+    }
+    
+    func documentDataForFirebaseSavingAction() -> [String:Any] {
         
         let documentData:[String:Any] = [
             
-            "intestazione":self.intestazione,
-            "descrizione":self.descrizione,
-            "rifDish":self.rifDishIn,
-            "tipologia":self.tipologia.orderAndStorageValuePlus(), // Nota 16.11
-            "status":self.status.orderAndStorageValue(),
-            "isAvaibleWhen":self.isAvaibleWhen.orderAndStorageValue(),
-            "giorniDelServizio":self.giorniDelServizio.map({$0.orderAndStorageValue()}),
-            "dataInizio":self.dataInizio,
-            "dataFine":self.dataFine,
-            "oraInizio":self.oraInizio,
-            "oraFine":self.oraFine
+            DataBaseField.intestazione : self.intestazione,
+            DataBaseField.descrizione : self.descrizione,
+            DataBaseField.rifDishIn : self.rifDishIn,
+            DataBaseField.tipologia : self.tipologia.orderAndStorageValuePlus(), // Nota 16.11
+            DataBaseField.status : self.status.orderAndStorageValue(),
+            DataBaseField.isAvaibleWhen : self.isAvaibleWhen.orderAndStorageValue(),
+            DataBaseField.giorniDelServizio : self.giorniDelServizio.map({$0.orderAndStorageValue()}),
+            DataBaseField.dataInizio : self.dataInizio,
+            DataBaseField.dataFine : self.dataFine,
+            DataBaseField.oraInizio : self.oraInizio,
+            DataBaseField.oraFine : self.oraFine
         
         ]
         return documentData
     }
-
+    
+    struct DataBaseField {
+        
+        static let intestazione = "intestazione"
+        static let descrizione = "descrizione"
+        static let rifDishIn = "rifDish"
+        static let tipologia = "tipologia" // Nota 16.11
+        static let status = "status"
+        static let isAvaibleWhen = "isAvaibleWhen"
+        static let giorniDelServizio = "giorniDelServizio"
+        static let dataInizio = "dataInizio"
+        static let dataFine = "dataFine"
+        static let oraInizio = "oraInizio"
+        static let oraFine = "oraFine"
+        
+        
+    }
+    
+//
+    
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         let disabilita = self.rifDishIn.isEmpty

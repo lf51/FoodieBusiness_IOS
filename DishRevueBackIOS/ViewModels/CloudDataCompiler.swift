@@ -11,7 +11,7 @@ import Firebase
 
 struct CloudDataStore {
     
-    var accountSetup: AccountSetup // caricato
+    var setupAccount: AccountSetup // caricato
     var inventarioScorte: Inventario // caricato
     
     var allMyIngredients:[IngredientModel] // caricato
@@ -19,7 +19,7 @@ struct CloudDataStore {
     var allMyMenu:[MenuModel] // caricato
     var allMyProperties:[PropertyModel] // caricato
     
-    var allMyCategory: [CategoriaMenu] // caricato
+    var allMyCategories: [CategoriaMenu] // caricato
     var allMyReviews:[DishRatingModel] // caricato
     
     enum CloudCollectionKey:String {
@@ -33,31 +33,30 @@ struct CloudDataStore {
                 
         case anyDocument = "datiDiFunzionamento"
         
-        
     }
     
     
     init() {
         
-        self.accountSetup = AccountSetup()
+        self.setupAccount = AccountSetup()
         self.inventarioScorte = Inventario()
         self.allMyIngredients = [] // vanno inseriti gli ing,dish,menu,property fake
         self.allMyDish = []
         self.allMyMenu = []
         self.allMyProperties = []
-        self.allMyCategory = [] // vanno inserite le categorie di default
+        self.allMyCategories = [] // vanno inserite le categorie di default
         self.allMyReviews = [] // vanno inserite review fake
         
     }
     
     init(accountSetup: AccountSetup, inventarioScorte: Inventario, allMyIngredients: [IngredientModel], allMyDish: [DishModel], allMyMenu: [MenuModel], allMyProperties: [PropertyModel], allMyCategory: [CategoriaMenu], allMyReviews: [DishRatingModel]) {
-        self.accountSetup = accountSetup
+        self.setupAccount = accountSetup
         self.inventarioScorte = inventarioScorte
         self.allMyIngredients = allMyIngredients
         self.allMyDish = allMyDish
         self.allMyMenu = allMyMenu
         self.allMyProperties = allMyProperties
-        self.allMyCategory = allMyCategory
+        self.allMyCategories = allMyCategory
         self.allMyReviews = allMyReviews
     }
     
@@ -66,12 +65,12 @@ struct CloudDataStore {
 }
 
 
-struct CloudDataCompiler {
+class CloudDataCompiler {
     
     private let db_base = Firestore.firestore()
     private let ref_userDocument: DocumentReference?
     private let userUID: String? // quando nil passiamo un accounterVM fake
-
+    
     init(UID:String?) {
 
         self.userUID = UID
@@ -85,52 +84,6 @@ struct CloudDataCompiler {
         
     }
     
-    func cloudDataInstance() -> CloudDataStore {
-        
-        guard self.userUID != nil else {
-            
-            let cloudData = fakeCloudData
-            
-            return cloudData }
-
-      //  return downloadFromFireBase() // va compilato dal firebase
-        return fakeCloudData // rimettere il download dal firebase - Usato il fake per i test sul salvataggio
-    }
-    
-   func downloadFromFireBase() -> CloudDataStore {
-        
-       print("Download data from firebase")
-       print("ref_userDocument? = \(ref_userDocument != nil)")
-       
-       var cloudData = CloudDataStore()
-       
-           ref_userDocument?.getDocument { document, error in
-               
-               guard error == nil else { return } // mettere magari un aleert
-               print("no error")
-               
-               guard document?.exists == true else {
-                   print("documento non esiste")
-                   firstAuthenticationFuture()
-                   return }
-               
-               print("document Exist")
-               
-               if let time = document?.get("time") as? Int {
-                   cloudData.accountSetup.startCountDownMenuAt = AccountSetup.TimeValue.convertiInCase(fromNumber: time)
-                   print("time value -> \(time)")
-               }
-               if let frequenza = document?.get("frequenza") as? Int {
-                   cloudData.accountSetup.mettiInPausaDishByIngredient = AccountSetup.ActionValue.convertiInCase(fromNumber: frequenza)
-               }
- 
-           }
-           
-       
-      
-       print("cloudData.time = \(cloudData.accountSetup.startCountDownMenuAt.rawValue)")
-       return cloudData
-    }
 
     private func firstAuthenticationFuture() {
         self.ref_userDocument?.setData([:])
@@ -138,16 +91,92 @@ struct CloudDataCompiler {
         
     }
     
+    // Scarico Dati
+    
+    func downloadFromFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
+        
+       // print("Download data from firebase \(Thread.current)")
+        print("ref_userDocument? = \(ref_userDocument != nil)")
+        
+       let userSetup_doc = ref_userDocument?.collection(CloudDataStore.CloudCollectionKey.anyDocument.rawValue).document("userSetup")
+
+         userSetup_doc?.getDocument { docSnapshot, error in
+               
+               guard
+                error == nil,
+                docSnapshot?.exists == true else {
+                   handler(fakeCloudData)
+                   return } // mettere magari un aleert
+               print("no error: \(Thread.current)")
+               print("document Exist")
+     
+               handler(self.getDataFromSnapshot(docSnapshot: docSnapshot))
+                
+           }
+        
+    }
+    
+    
+   private func getDataFromSnapshot(docSnapshot:DocumentSnapshot?) -> CloudDataStore {
+
+      var cloudData = CloudDataStore()
+    
+       if let document = docSnapshot {
+           
+               if let value_1 = document.get("mettiInPausaDishByING") as? Int {
+                   
+                   cloudData.setupAccount.mettiInPausaDishByIngredient = AccountSetup.ActionValue.convertiInCase(fromNumber: value_1)
+                   
+               }
+               
+               if let value_2 = document.get("startCountDownValue") as? Int {
+                   
+                   cloudData.setupAccount.startCountDownMenuAt = AccountSetup.TimeValue.convertiInCase(fromNumber: value_2)
+               }
+               
+           
+       } else {
+           
+           cloudData = fakeCloudData
+       }
+       
+       print("cloudData.time = \(cloudData.setupAccount.startCountDownMenuAt.rawValue)")
+       return cloudData
+    }
+
+    func downloadIngredientFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
+        
+       var cloudData:CloudDataStore = CloudDataStore()
+        
+       let userSetup_doc = ref_userDocument?.collection(CloudDataStore.CloudCollectionKey.ingredient.rawValue)
+
+         userSetup_doc?.getDocuments { docsSnapshot, error in
+               
+             guard error == nil, docsSnapshot?.documents != nil else { return }
+             
+             for doc in docsSnapshot!.documents {
+                 let ing = IngredientModel(frDoc: doc)
+                 cloudData.allMyIngredients.append(ing)
+                 
+             }
+              handler(cloudData)
+           }
+        
+    }
+   
+    
+    // Salvataggio Dati
+    
     func publishOnFirebase(dataCloud:CloudDataStore) {
         
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyIngredients], collection: .ingredient)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyDish], collection: .dish)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyMenu], collection: .menu)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyProperties], collection: .properties)
-        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyCategory], collection: .categories)
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyCategories], collection: .categories)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyReviews], collection: .reviews)
         
-        saveSingleDocument(doc: dataCloud[keyPath: \.accountSetup], collection: .anyDocument)
+        saveSingleDocument(doc: dataCloud[keyPath: \.setupAccount], collection: .anyDocument)
         saveSingleDocument(doc: dataCloud[keyPath: \.inventarioScorte], collection: .anyDocument)
         
     }
@@ -160,6 +189,7 @@ struct CloudDataCompiler {
             saveElement(document: ref_ingredienti.document(doc.id), element: doc)
    
         }
+        
     }
     
     /// La usiamo per salvare un array di documenti omogenei (solo ingredienti, o solo piatti ecc) in una collezione MonoTono
@@ -177,35 +207,13 @@ struct CloudDataCompiler {
     
     private func saveElement<M:MyProCloudPack_L1>(document:DocumentReference?,element:M) {
         
-        document?.setData(element.creaDocumentDataForFirebase(), merge: true) { error in
+        document?.setData(element.documentDataForFirebaseSavingAction(), merge: true) { error in
                 
                 if error != nil { print("OPS!! Qualcosa non ha funzionato nel salvataggio su Firebase")}
                 else { print("Salvataggio su FireBase avvenuto con Successo - Mettere un Alert")}
         }
         
     }
-    
-    
- /*   func publishOnFirebase(dataCloud:CloudDataStore) {
-        
-        if let ref_ingredienti:CollectionReference = ref_userDocument?.collection("ingredienti") {
-            
-            for ingredient in dataCloud.allMyIngredients {
-                
-                ref_ingredienti.document(ingredient.id).setData(ingredient.creaDocumentDataForFirebase(), merge: true) { error in
-                    
-                    if error != nil { print("OPS!! Qualcosa non ha funzionato nel salvataggio su Firebase")}
-                    else { print("Salvataggio su FireBase avvenuto con Successo - Mettere un Alert")}
-                }
-                
-            }
-            
-            
-        }
-  
-    } */
-    
-    
     
 }
 

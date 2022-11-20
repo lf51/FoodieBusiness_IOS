@@ -9,9 +9,10 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 
 struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1,MyProCloudPack_L1  /*MyModelStatusConformity */ {
-    
+
     // 06.10 - In abbozzo
   
     
@@ -102,25 +103,118 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
  
     } */
     
-    func creaDocumentDataForFirebase() -> [String : Any] {
+    init(percorsoProdotto: PercorsoProdotto, id: String, intestazione: String, descrizione: String, rifReviews: [String], ingredientiPrincipali: [String], ingredientiSecondari: [String], elencoIngredientiOff: [String : String], idIngredienteDaSostituire: String? = nil, categoriaMenu: String, mostraDieteCompatibili: Bool, status: StatusModel, pricingPiatto: [DishFormat], categoriaMenuDEPRECATA: CategoriaMenu, dieteCompatibili: [TipoDieta], aBaseDi: OrigineIngrediente) {
+        
+        self.percorsoProdotto = percorsoProdotto
+        self.id = UUID().uuidString
+        self.intestazione = intestazione
+        self.descrizione = descrizione
+        self.rifReviews = rifReviews
+        self.ingredientiPrincipali = ingredientiPrincipali
+        self.ingredientiSecondari = ingredientiSecondari
+        self.elencoIngredientiOff = elencoIngredientiOff
+        self.idIngredienteDaSostituire = idIngredienteDaSostituire
+        self.categoriaMenu = categoriaMenu
+        self.mostraDieteCompatibili = mostraDieteCompatibili
+        self.status = status
+        self.pricingPiatto = pricingPiatto
+        
+        self.categoriaMenuDEPRECATA = categoriaMenuDEPRECATA
+        self.dieteCompatibili = dieteCompatibili
+        self.aBaseDi = aBaseDi
+    }
+    
+    init() {
+        self.percorsoProdotto = .preparazioneFood
+        self.id = UUID().uuidString
+        self.intestazione = ""
+        self.descrizione = ""
+        self.rifReviews = []
+        self.ingredientiPrincipali = []
+        self.ingredientiSecondari = []
+        self.elencoIngredientiOff = [:]
+        self.idIngredienteDaSostituire = nil
+        self.categoriaMenu = ""
+        self.mostraDieteCompatibili = false
+        self.status = .bozza()
+        self.pricingPiatto = []
+        
+        self.categoriaMenuDEPRECATA = .defaultValue
+        self.dieteCompatibili = [.standard]
+        self.aBaseDi = .defaultValue
+    }
+    
+    
+    // MyProCloudPack_L1
+    
+    init(frDoc: QueryDocumentSnapshot) {
+        
+        let percorsoInt = frDoc[DataBaseField.percorsoProdotto] as? Int ?? 0
+        let statusInt = frDoc[DataBaseField.status] as? Int ?? 0
+        
+        self.percorsoProdotto = DishModel.PercorsoProdotto.convertiInCase(fromNumber: percorsoInt)
+        self.id = frDoc.documentID
+        self.intestazione = frDoc[DataBaseField.intestazione] as? String ?? ""
+        self.descrizione = frDoc[DataBaseField.descrizione] as? String ?? ""
+        self.rifReviews = frDoc[DataBaseField.rifReviews] as? [String] ?? []
+        self.ingredientiPrincipali = frDoc[DataBaseField.ingredientiPrincipali] as? [String] ?? []
+        self.ingredientiSecondari = frDoc[DataBaseField.ingredientiSecondari] as? [String] ?? []
+        self.elencoIngredientiOff = frDoc[DataBaseField.elencoIngredientiOff] as? [String:String] ?? [:]
+        self.idIngredienteDaSostituire = nil
+        self.categoriaMenu = frDoc[DataBaseField.categoriaMenu] as? String ?? ""
+        self.mostraDieteCompatibili = frDoc[DataBaseField.mostraDieteCompatibili] as? Bool ?? false
+        self.status = StatusModel.convertiInCase(fromNumber: statusInt)
+        
+        self.pricingPiatto = [] /*[frDoc[DataBaseField.pricingPiatto].map({ docSnap in
+            if let snap = docSnap as? QueryDocumentSnapshot {
+                DishFormat(frDoc: snap)
+            }
+        }) as? [DishFormat] ?? []] */ // 20.11 -> capire come fare
+        
+        self.categoriaMenuDEPRECATA = .defaultValue
+        self.dieteCompatibili = [.standard]
+        self.aBaseDi = .defaultValue
+    }
+    
+    func documentDataForFirebaseSavingAction() -> [String : Any] {
         
         let documentData:[String:Any] = [
-            "intestazione" : self.intestazione,
-            "descrizione" : self.descrizione,
-            "rifReview" : self.rifReviews,
-            "ingredientiPrincipali" : self.ingredientiPrincipali,
-            "ingredientiSecondari" : self.ingredientiSecondari,
-            "elencoIngredientiOff" : self.elencoIngredientiOff,
-            "categoriaMenu" : self.categoriaMenu,
-            "mostraDieteCompatibili" : self.mostraDieteCompatibili,
-            "status" : self.status.orderAndStorageValue(),
-            "pricing" : self.pricingPiatto.map({$0.creaDocumentDataForFirebase()})
-      //  "pricing" =
-        
-        
+            
+            DataBaseField.percorsoProdotto : self.percorsoProdotto.orderAndStorageValue(),
+            DataBaseField.intestazione : self.intestazione,
+            DataBaseField.descrizione : self.descrizione,
+            DataBaseField.rifReviews : self.rifReviews,
+            DataBaseField.ingredientiPrincipali : self.ingredientiPrincipali,
+            DataBaseField.ingredientiSecondari : self.ingredientiSecondari,
+            DataBaseField.elencoIngredientiOff : self.elencoIngredientiOff,
+            DataBaseField.categoriaMenu : self.categoriaMenu,
+            DataBaseField.mostraDieteCompatibili : self.mostraDieteCompatibili,
+            DataBaseField.status : self.status.orderAndStorageValue(),
+            DataBaseField.pricingPiatto : self.pricingPiatto.map({$0.documentDataForFirebaseSavingAction()})
+ 
         ]
         return documentData
     }
+    
+    struct DataBaseField {
+        
+        static let percorsoProdotto = "percorsoProdotto"
+        static let intestazione = "intestazione"
+        static let descrizione = "descrizione"
+        static let rifReviews = "rifReview"
+        static let ingredientiPrincipali = "ingredientiPrincipali"
+        static let ingredientiSecondari = "ingredientiSecondari"
+        static let elencoIngredientiOff = "elencoIngredientiOff"
+        static let categoriaMenu = "categoriaMenu"
+        static let mostraDieteCompatibili = "mostraDieteCompatibili"
+        static let status = "status"
+        static let pricingPiatto = "pricing"
+        
+    }
+    
+    
+    //
+    
     
     func creaID(fromValue: String) -> String {
         print("DishModel/creaID()")
@@ -989,7 +1083,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         }
     }
     
-    enum PercorsoProdotto:MyProEnumPack_L0 {
+    enum PercorsoProdotto:MyProEnumPack_L0,MyProCloudPack_L0 {
 
         static var allCases:[PercorsoProdotto] = [.preparazioneFood,.preparazioneBeverage,.prodottoFinito]
         
@@ -1039,6 +1133,16 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             case .preparazioneBeverage:
                 return 2
                 
+            }
+        }
+        
+        static func convertiInCase(fromNumber: Int) -> DishModel.PercorsoProdotto {
+            
+            switch fromNumber {
+            case 0: return .prodottoFinito
+            case 1: return .preparazioneFood
+            case 2: return .preparazioneBeverage
+            default: return .preparazioneFood
             }
         }
         

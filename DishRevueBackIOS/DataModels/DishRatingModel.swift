@@ -7,34 +7,80 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 
 struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
     
    // let id:String
-    let id: String = UUID().uuidString
-    var rifPiatto: String // Lo mettiamo per avere un riferimento incrociato
+    let id: String
+    let rifPiatto: String // Lo mettiamo per avere un riferimento incrociato
     
     let voto: String // il voto deve essere un INT ma vine salvato come double : ex 8.0. Quindi nelle trasformazioni lo trattiamo come Double. Da Creare una ghera con i valori selezionabili prestabiliti
     let titolo: String // deve avere un limite di caratteri
     let commento: String
-    var dataRilascio: Date // Messo in Var per i test, riportare come let
-    let image: String = "circle" // 19.10 Togliere le virgolette di default.
+    let dataRilascio: Date // Messo in Var per i test, riportare come let
+    let image: String // 19.10 Togliere le virgolette di default.
     
-    func creaDocumentDataForFirebase() -> [String : Any] {
+    init(/*id:String,*/voto: String, titolo: String, commento: String, idPiatto: String) {
+        
+        // Utile solo per i test. Il cliente business non crea recensioni.
+        self.id = UUID().uuidString
+        
+        self.voto = voto
+        self.titolo = titolo
+        self.commento = commento
+        self.rifPiatto = idPiatto
+        self.image = "circle"
+        
+        self.dataRilascio = Date() // viene inizializzata in automatico con la data di init che dovrebbe corrispondere alla data di rilascio della review
+       // self.id = id
+    }
+    
+    
+    // MyProCloudPack_L1
+    
+    init(frDoc: QueryDocumentSnapshot) {
+        
+        self.id = frDoc.documentID
+        
+        self.voto = frDoc[DataBaseField.voto] as? String ?? ""
+        self.titolo = frDoc[DataBaseField.titolo] as? String ?? ""
+        self.commento = frDoc[DataBaseField.commento] as? String ?? ""
+        self.rifPiatto = frDoc[DataBaseField.rifPiatto] as? String ?? ""
+        self.image = frDoc[DataBaseField.image] as? String ?? ""
+    
+        self.dataRilascio = frDoc[DataBaseField.dataRilascio] as? Date ?? .now
+    }
+    
+    
+    func documentDataForFirebaseSavingAction() -> [String : Any] {
         
         let documentData:[String:Any] = [
         
-            "rifPiatto":self.rifPiatto,
-            "voto":self.voto,
-            "titolo":self.titolo,
-            "commento":self.commento,
-            "rifImage":self.image,
-            "dataRilascio":self.dataRilascio
+            DataBaseField.rifPiatto : self.rifPiatto,
+            DataBaseField.voto : self.voto,
+            DataBaseField.titolo : self.titolo,
+            DataBaseField.commento : self.commento,
+            DataBaseField.image : self.image,
+            DataBaseField.dataRilascio : self.dataRilascio
         
         ]
         
         return documentData
     }
+    
+    struct DataBaseField {
+        
+        static let rifPiatto = "rifPiatto"
+        static let voto = "voto"
+        static let titolo = "titolo"
+        static let commento = "commento"
+        static let image = "rifImage"
+        static let dataRilascio = "dataRilascio"
+        
+    }
+    
+    //
     
     func rateColor() -> Color {
         
@@ -56,16 +102,7 @@ struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
     }
     
 
-    init(/*id:String,*/voto: String, titolo: String, commento: String, idPiatto: String) {
-        
-        self.voto = voto
-        self.titolo = titolo
-        self.commento = commento
-        self.rifPiatto = idPiatto
-        
-        self.dataRilascio = Date() // viene inizializzata in automatico con la data di init che dovrebbe corrispondere alla data di rilascio della review
-       // self.id = id
-    }
+   
     
     // Method
     

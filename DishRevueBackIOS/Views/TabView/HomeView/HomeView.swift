@@ -28,8 +28,7 @@ struct HomeView: View {
                 VStack(alignment: .leading) {
                     
                 //    CSDivider()
-                    
-               
+       
                     vbTopView()
                         .padding(5)
                         .background {

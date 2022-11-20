@@ -8,20 +8,26 @@
 import Foundation
 
 struct AccountSetup:MyProCloudPack_L1 {
-    
+   
     var id: String = "userSetup"
     // mettiamo qui tutte le enum e i valori per il settaggio personalizzato da parte dell'utente
     var startCountDownMenuAt:TimeValue = .sixty
     var mettiInPausaDishByIngredient: ActionValue = .mai
     
-    func creaDocumentDataForFirebase() -> [String : Any] {
+    func documentDataForFirebaseSavingAction() -> [String : Any] {
         
         let documentData:[String:Any] = [
         
-            "startCountDownValue":self.startCountDownMenuAt.orderAndStorageValue(),
-            "mettiInPausaDishByING":self.mettiInPausaDishByIngredient.orderAndStorageValue()
+            DataBaseField.startCountDownMenuAt : self.startCountDownMenuAt.orderAndStorageValue(),
+            DataBaseField.mettiInPausaDishByIngredient : self.mettiInPausaDishByIngredient.orderAndStorageValue()
         ]
         return documentData
+    }
+    
+    struct DataBaseField:MyTest {
+        
+        static let startCountDownMenuAt = "startCountDownValue"
+        static let mettiInPausaDishByIngredient = "mettiInPausaDishByING"
     }
     
     

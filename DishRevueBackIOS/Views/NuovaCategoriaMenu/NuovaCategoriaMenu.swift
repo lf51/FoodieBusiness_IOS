@@ -60,7 +60,7 @@ struct NuovaCategoriaMenu: View {
                     .font(.system(.caption, design: .rounded)) */ // mod.16.09
                 
                 CSLabel_conVB(
-                    placeHolder: "Elenco Categorie (\(self.viewModel.categoriaMenuAllCases.count)):",
+                    placeHolder: "Elenco Categorie (\(self.viewModel.allMyCategories.count)):",
                     imageNameOrEmojy: "list.bullet.circle",
                     backgroundColor: Color("SeaTurtlePalette_3")) {
                        
@@ -91,7 +91,7 @@ struct NuovaCategoriaMenu: View {
 
                     List {
       
-                            ForEach(viewModel.categoriaMenuAllCases) { categoria in
+                            ForEach(viewModel.allMyCategories) { categoria in
                                 
                                 let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
                                 
@@ -144,12 +144,12 @@ struct NuovaCategoriaMenu: View {
     
     private func removeFromList(index:IndexSet) {
 
-        self.viewModel.categoriaMenuAllCases.remove(atOffsets: index)
+        self.viewModel.allMyCategories.remove(atOffsets: index)
     }
 
     private func makeOrder(from:IndexSet, to:Int) {
         
-        self.viewModel.categoriaMenuAllCases.move(fromOffsets: from, toOffset: to)
+        self.viewModel.allMyCategories.move(fromOffsets: from, toOffset: to)
     }
     
     private func pencilButton(categoria:CategoriaMenu) {

@@ -57,7 +57,7 @@ struct FastImport_CorpoScheda:View {
                         CS_Picker(
                             selection: $temporaryModel.categoriaMenu,
                             customLabel: "Categoria",
-                            dataContainer: viewModel.categoriaMenuAllCases,//CategoriaMenu.allCases,
+                            dataContainer: viewModel.allMyCategories,//CategoriaMenu.allCases,
                             cleanAndOrderContainer: false,
                             backgroundColor: Color.white.opacity(0.5))
                             .csWarningModifier(

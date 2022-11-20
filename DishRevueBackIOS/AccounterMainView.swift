@@ -123,7 +123,7 @@ struct AccounterMainView: View {
                               Text("Cambio Status Preparazioni")
                               CSInfoAlertView(title: "Info", message: .cambioStatusPreparazioni)
                               Spacer()
-                              Picker(selection: $viewModel.setup.mettiInPausaDishByIngredient) {
+                              Picker(selection: $viewModel.setupAccount.mettiInPausaDishByIngredient) {
                                   ForEach(AccountSetup.ActionValue.allCases,id:\.self) { value in
 
                                       Text("\(value.rawValue)")
@@ -141,7 +141,7 @@ struct AccounterMainView: View {
                               Text("Count Down Menu Off")
                               CSInfoAlertView(title: "Info", message: .timerMenu)
                               Spacer()
-                              Picker(selection: $viewModel.setup.startCountDownMenuAt) {
+                              Picker(selection: $viewModel.setupAccount.startCountDownMenuAt) {
                                   ForEach(AccountSetup.TimeValue.allCases,id:\.self) { value in
 
                                           Text("\(value.rawValue) minuti")
@@ -263,7 +263,7 @@ struct AccounterMainView: View {
                       Spacer()
                       
                       CSButton_tight(title: "Pubblica", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.green) {
-                          self.viewModel.saveOnFirebase()
+                          self.viewModel.saveDataOnFirebase()
                       }
                       
                       Spacer()

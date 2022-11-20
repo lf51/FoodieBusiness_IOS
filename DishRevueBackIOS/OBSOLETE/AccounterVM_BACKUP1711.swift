@@ -10,108 +10,88 @@ import SwiftUI
 import MapKit // da togliere quando ripuliamo il codice dai Test
 //import SwiftProtobuf
 
+/*
 class AccounterVM: ObservableObject {
     
-    private let instanceDBCompiler: CloudDataCompiler
-    @Published var isLoading: Bool
-  //  let instanceCloudData:CloudDataStore // Non sappiamo ancora cosa farne 18.11
     
-    @Published var setupAccount:AccountSetup
-    @Published var inventarioScorte:Inventario
+    let dbCompiler: CloudDataCompiler
+    
+    
+    @Published var setup:AccountSetup // DA SVILUPPARE 06.10
+    
+    // questa classe punta ad essere l'unico ViewModel dell'app. Puntiamo a spostare qui dentro tutto ciò che deve funzionare trasversalmente fra le view, e a sostituire gli altri ViewModel col sistema Struct/@State con cui abbiamo creato un NuovoPiatto, un NuovoIngrediente, e un NuovoMenu.
+    
+    // ATTUALMENTE NON USATA - IN FASE TEST
 
-    @Published var allMyIngredients:[IngredientModel]
-    @Published var allMyDish:[DishModel]
-    @Published var allMyMenu:[MenuModel]
-    @Published var allMyProperties:[PropertyModel]
+    // create dal sistema
+
+    // Deprecata in futuro (COmmunityIngredientModel)
+    var allTheCommunityIngredients:[CommunityIngredientModel] = [] // tutti gli ingredienti di sistema o della community. Unico elemento "Social" dell'app Business. Published perchè qualora diventasse una communityIngredients dinamica deve aggiornarsi. Nella prima versione, cioè come array di ingredienti caricati dal sistema, potrebbe non essere published, perchè verrebbe caricata in apertura e stop. // load(fileJson)
+    // la lista appIngredients sarà riempita da un json che creeremo con una lista di nomi di ingredienti. Dal nome verrà creato un Modello Ingrediente nel momento in cui sarà scelto dal ristoratore
     
-    @Published var allMyCategories: [CategoriaMenu]
-    @Published var allMyReviews:[DishRatingModel]
+    var listoneFromListaBaseModelloIngrediente: [IngredientModel] = [] // questo listone sarà creato contestualmente dalla listaBaseModelloIngrediente creata da un json
+    
+    // end creato dal sistema
+    
+    @Published var allMyIngredients:[IngredientModel]
+    @Published var allMyDish:[DishModel] // tutti i piatti creati dall'accounter
+    @Published var allMyMenu:[MenuModel] // tutti i menu creati dall'accounter
+    @Published var allMyProperties:[PropertyModel] /*{ willSet {
+        print("cambio Valore allMyProperties")
+        objectWillChange.send() } }*/ // Deprecato per Blocco ad una singola Proprietà per Account. Manteniamo la forma dell'array per motivi tecnici, per il momento ci limitiamo a bloccare l'eventuale incremento del contenuto oltre la singola unità.
     
     @Published var showAlert: Bool = false
-    @Published var alertItem: AlertModel? {didSet { showAlert = true} }
+    @Published var alertItem: AlertModel? {didSet {showAlert = true} }
+    
+    var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // 19.05 --> Collocazione Temporanea
+    @Published var categoriaMenuAllCases: [CategoriaMenu]
+    
+    @Published var allMyReviews:[DishRatingModel]
+    @Published var inventarioScorte:Inventario = Inventario()
+    // AREA TEST NAVIGATIONSTACK
     
     @Published var homeViewPath = NavigationPath()
     @Published var menuListPath = NavigationPath()
     @Published var dishListPath = NavigationPath()
     @Published var ingredientListPath = NavigationPath()
+
+   // var defaultProperty: PropertyModel? { allMyProperties[0] } // NON SO SE MI SERVE al 28.06
+    
+    // FINE AREA TEST
    
-    
-    var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // necessario al selettore Allergeni
-    
-    init(userUID:String? = nil) { // L'Init ufficiale del viewModel
-      
-            
-           // let compilerInstance = CloudDataCompiler(UID: userUID)
-            self.instanceDBCompiler = CloudDataCompiler(UID: userUID)
-            self.isLoading = true 
-           // self.instanceCloudData = compilerInstance.cloudDataInstance()
-            
-            // Quello che segue si potrebbe accorpare in una instanza cloud Data. Richiede un mare di modifiche :( - Attualmente 18.11 in standBy
-           // let cloudDataStore = compilerInstance.cloudDataInstance()
-         
-                self.allMyIngredients = []
-                self.allMyDish = []
-                self.allMyMenu = []
-                self.allMyProperties = []
-                
-                self.setupAccount = AccountSetup()
-                self.inventarioScorte = Inventario()
-                
-                self.allMyReviews = []
-                self.allMyCategories = []
+    init(userUID:String? = nil) {
         
+        let compilerInstance = CloudDataCompiler(UID: userUID)
+        let cloudData = compilerInstance.cloudDataInstance()
+        
+        self.allMyIngredients = cloudData.allMyIngredients
+        self.allMyDish = cloudData.allMyDish
+        self.allMyMenu = cloudData.allMyMenu
+        self.allMyProperties = cloudData.allMyProperties
+        self.setup = cloudData.accountSetup
+        self.allMyReviews = cloudData.allMyReviews
+        self.categoriaMenuAllCases = cloudData.allMyCategory
+        
+        self.dbCompiler = compilerInstance
 
-        // fine categorie accorpabili
-
-    }
-    
-    func fetchDataFromFirebase() {
-        
-      //  self.isLoading = true
-        
-      self.instanceDBCompiler.downloadFromFirebase { cloudData in
-
-          //  self.allMyIngredients = cloudData.allMyIngredients
-           // self.allMyDish = cloudData.allMyDish
-           // self.allMyMenu = cloudData.allMyMenu
-           // self.allMyProperties = cloudData.allMyProperties
-            
-            self.setupAccount = cloudData.setupAccount
-          //  self.inventarioScorte = cloudData.inventarioScorte
-            
-           // self.allMyReviews = cloudData.allMyReviews
-          //  self.allMyCategories = cloudData.allMyCategories
-            
-        print("2.end Fetch")
-            
-        }
-        
-        self.instanceDBCompiler.downloadIngredientFirebase { cloudData in
-            self.allMyIngredients = cloudData.allMyIngredients
-        }
-        
-        
-        print("3.end Fetch - Outside Closure")
     }
     
     // Method
     
-    func saveDataOnFirebase() {
+    func saveOnFirebase() {
         
         var cloudData = CloudDataStore()
-        
         cloudData.allMyIngredients = self.allMyIngredients
         cloudData.allMyMenu = self.allMyMenu
         cloudData.allMyDish = self.allMyDish
         cloudData.allMyProperties = self.allMyProperties
-        
-        cloudData.allMyCategories = self.allMyCategories
+        cloudData.allMyCategory = self.categoriaMenuAllCases
         cloudData.allMyReviews = self.allMyReviews
         
-        cloudData.setupAccount = self.setupAccount
+        cloudData.accountSetup = self.setup
         cloudData.inventarioScorte = self.inventarioScorte
         
-        self.instanceDBCompiler.publishOnFirebase(dataCloud: cloudData)
+        self.dbCompiler.publishOnFirebase(dataCloud: cloudData)
         
     }
     
@@ -666,8 +646,24 @@ class AccounterVM: ObservableObject {
                $0.allergeni.contains(.latte_e_derivati)
            }).sorted(by: {$0.intestazione < $1.intestazione})
          
+          /* allVegetable.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            })
+            allMilk.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            })
+            
+            allMeat.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            })
+        
+            allFish.sort(by: {
+                viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
+            }) */
          print("Dentro Inventario Filtrato")
-
+    
+      //  allVegetable.sorted(by: {$0.intestazione > $1.intestazione})
+        
          return (allVegetable + allMilk + allMeat + allFish)
        
      }
@@ -861,6 +857,18 @@ class AccounterVM: ObservableObject {
     
     // MyProSearchPack_L0 // Metodi per filtro e Ricarca
     
+  /*  private func stringResearch<T:MyProSearchPack_L0>(item: T, stringaRicerca: String) -> Bool {
+        
+        guard stringaRicerca != "" else { return true }
+        
+        let ricerca = stringaRicerca.replacingOccurrences(of: " ", with: "").lowercased()
+        print("Dentro Stringa Ricerca")
+        
+        let result = item.modelStringResearch(string: ricerca)
+        return result
+
+    } */
+    
     func filtraERicerca<M:MyProToolPack_L1>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterProperty:FilterPropertyModel) -> [M] {
         
         let container = self[keyPath: containerPath]
@@ -878,7 +886,106 @@ class AccounterVM: ObservableObject {
         return sortedInTheModel
     }
     
-}
+    
+    /*
+    ///Deprecata in futuro. Da Ottimizzare attraverso l'uso del keypath.
+    func deepFiltering<M:MyProStarterPack_L0>(model:M, filterCategory:MapCategoryContainer) -> Bool {
+       
+       switch filterCategory {
+           
+       case .tipologiaMenu(let internalFilter):
+           
+           guard internalFilter != nil else { return true}
+           let menuModel = model as! MenuModel
+           return menuModel.tipologia.returnTypeCase() == internalFilter
+           
+       case .giorniDelServizio(let filter):
+           
+           guard filter != nil else { return true}
+           let menuModel = model as! MenuModel
+           return menuModel.giorniDelServizio.contains(filter!)
+           
+       case .statusMenu:
+           print("Dentro statusMenu/deepFiltering - Da Settare")
+           return true
+           
+       case .conservazione(let filter):
+           
+           guard filter != nil else { return true}
+           let ingredientModel = model as! IngredientModel
+           return ingredientModel.conservazione == filter
+           
+       case .produzione(let filter):
+           
+           guard filter != nil else { return true}
+           let ingredientModel = model as! IngredientModel
+           return ingredientModel.produzione == filter
+           
+       case .provenienza(let filter):
+           
+           guard filter != nil else { return true}
+           let ingredientModel = model as! IngredientModel
+           return ingredientModel.provenienza == filter
+           
+       case .categoria(let filter):
+           
+           guard filter != nil else { return true}
+           let dishModel = model as! DishModel
+           return dishModel.categoriaMenuDEPRECATA == filter
+           
+       case .base(let filter):
+           
+           guard filter != nil else { return true}
+           let dishModel = model as! DishModel
+           return dishModel.aBaseDi == filter
+           
+       case .tipologiaPiatto(let filter):
+           
+           guard filter != nil else { return true}
+           let dishModel = model as! DishModel
+           return dishModel.dieteCompatibili.contains(filter!)
+           
+       case .statusPiatto:
+           print("Dentro statusPiatto/deepFiltering - Da Settare")
+           return true
+           
+       case .menuAz, .ingredientAz,.dishAz, .reset:
+           return true
+
+       }
+     
+   } */ // in STAND-BY 16.09
+    
+  
+    
+ 
+    
+  // AREA TEST -> DA ELIMINARE
+    
+     let ing1 = CommunityIngredientModel(nome: "basilico")
+     let ing2 = CommunityIngredientModel(nome: "aglio")
+     let ing3 = CommunityIngredientModel(nome: "olio")
+     let ing4 = CommunityIngredientModel(nome: "prezzemolo")
+     let ing5 = CommunityIngredientModel(nome: "origano")
+     let ing6 = CommunityIngredientModel(nome: "sale")
+     let ing7 = CommunityIngredientModel(nome: "pepe")
+     
+  //  let menu1 = MenuModel(nome: "Pranzo WeekEnd", tipologia: .allaCarta, giorniDelServizio: [.venerdi,.sabato])
+  //  let menu2 = MenuModel(nome: "Pranzo Feriale", tipologia: .fisso(persone: "1", costo: "15"), giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi])
+  //  let menu3 = MenuModel(nome: "ColazioneExpress", tipologia: .fisso(persone: "1", costo: "2.5"), giorniDelServizio: [.giovedi])
+  //  let menu4 = MenuModel(nome: "CenaAllDay", tipologia: .allaCarta, giorniDelServizio: [.lunedi,.martedi,.mercoledi,.giovedi,.venerdi,.sabato])
+    let prop1 = PropertyModel(nome: "Mia", coordinates:  CLLocationCoordinate2D(latitude: 37.510987, longitude: 13.041434))
+    let prop2 = PropertyModel(nome: "Tua", coordinates:  CLLocationCoordinate2D(latitude: 37.510997, longitude: 13.041434))
+    let prop3 = PropertyModel(nome: "Sua", coordinates:  CLLocationCoordinate2D(latitude: 37.510927, longitude: 13.041434))
+    let prop4 = PropertyModel(nome: "Essa", coordinates: CLLocationCoordinate2D(latitude: 37.510937, longitude: 13.041434))
+ 
+
+    
+  //  let menu5 = MenuModel.Filter.tipologia(.allaCarta)
+ //   let menu6 = MenuModel.Filter.tipologia(.fisso(costo: "25"))
+    
+ 
+}  */
 
 
 

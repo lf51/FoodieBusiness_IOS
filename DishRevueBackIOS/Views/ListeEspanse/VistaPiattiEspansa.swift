@@ -65,7 +65,7 @@ struct VistaPiattiEspansa: View {
                         CSEtichetta(text: currentMenu.status.simpleDescription(), textColor: Color.white, image: currentMenu.status.imageAssociated(), imageColor: currentMenu.status.transitionStateColor(), imageSize: .large, backgroundColor: Color.white, backgroundOpacity: 0.2).fixedSize()
                         Spacer()
                         
-                        CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.categoriaMenuAllCases)
+                        CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.allMyCategories)
                     }
  
             

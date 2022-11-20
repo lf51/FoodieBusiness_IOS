@@ -103,21 +103,13 @@ enum GiorniDelServizio:MyProEnumPack_L2,Identifiable /*: MyEnumProtocol, MyEnumP
     func orderAndStorageValue() -> Int {
         // 17.09 abbiamo conformato l'ordine come lo intendevamo, ossia di apparizione da Lun a Dome, conformando all'ordine dato dal Calendario, ossia da Dom a Sabato
         switch self {
-            
-        case .lunedi:
-            return 2//1
-        case .martedi:
-            return 3//2
-        case .mercoledi:
-            return 4//3
-        case .giovedi:
-            return 5//4
-        case .venerdi:
-            return 6//5
-        case .sabato:
-            return 7//6
-        case .domenica:
-            return 1//7
+        case .lunedi: return 2//1
+        case .martedi: return 3//2
+        case .mercoledi: return 4//3
+        case .giovedi: return 5//4
+        case .venerdi: return 6//5
+        case .sabato: return 7//6
+        case .domenica: return 1//7
         }
         
     }
@@ -126,22 +118,14 @@ enum GiorniDelServizio:MyProEnumPack_L2,Identifiable /*: MyEnumProtocol, MyEnumP
         
        switch orderValue {
            
-       case 1:
-           return .domenica
-       case 2:
-           return .lunedi
-       case 3:
-           return .martedi
-       case 4:
-           return .mercoledi
-       case 5:
-           return .giovedi
-       case 6:
-           return .venerdi
-       case 7:
-           return .sabato
-       default:
-           return .defaultValue
+       case 1: return .domenica
+       case 2: return .lunedi
+       case 3: return .martedi
+       case 4: return .mercoledi
+       case 5: return .giovedi
+       case 6: return .venerdi
+       case 7: return .sabato
+       default: return .defaultValue
            
        }
         

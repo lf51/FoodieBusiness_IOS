@@ -36,7 +36,7 @@ var testAccount: AccounterVM = {
     ]
     vm.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
     vm.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
-    vm.categoriaMenuAllCases = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
+    vm.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
      return vm
  }()
 

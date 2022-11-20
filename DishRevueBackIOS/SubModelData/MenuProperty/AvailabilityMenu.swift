@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AvailabilityMenu:Hashable,MyProEnumPack_L1 {
+enum AvailabilityMenu:Hashable,MyProEnumPack_L1,MyProCloudPack_L0 {
 
     static var allCases:[AvailabilityMenu] = [.dataEsatta,.intervalloAperto,.intervalloChiuso]
     static var defaultValue: AvailabilityMenu = .noValue
@@ -47,6 +47,16 @@ enum AvailabilityMenu:Hashable,MyProEnumPack_L1 {
             return 3
         case .noValue:
             return 0
+        }
+    }
+    
+    static func convertiInCase(fromNumber: Int) -> AvailabilityMenu {
+        switch fromNumber {
+            
+        case 1: return .dataEsatta
+        case 2: return .intervalloChiuso
+        case 3: return .intervalloAperto
+        default: return .noValue
         }
     }
     

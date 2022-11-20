@@ -11,8 +11,8 @@ struct MainView: View {
     
   //  @StateObject var authProcess: AuthPasswordLess
     @ObservedObject var authProcess: AuthPasswordLess
-    @StateObject var viewModel: AccounterVM
-        
+    @StateObject private var viewModel: AccounterVM
+    @State private var isLoading: Bool
   /* init() {
         
         let auth = AuthPasswordLess()
@@ -23,6 +23,7 @@ struct MainView: View {
     } */
     init(authProcess:AuthPasswordLess) {
         
+        self.isLoading = true
         self.authProcess = authProcess
         let vm = AccounterVM(userUID: authProcess.currentUser?.userUID)
         _viewModel = StateObject(wrappedValue: vm)
@@ -68,6 +69,23 @@ struct MainView: View {
            /* .fullScreenCover(isPresented: $authProcess.openSignInView, content: {
                 LinkSignInSheetView(authProcess: authProcess)
         })*/
+      /*  .fullScreenCover(isPresented: $viewModel.instanceDBCompiler.isDownloading, content: {
+            Text("OnLoading")
+     }) */
+        .fullScreenCover(isPresented: $isLoading, content: {
+            Text("OnLoading")
+        })
+        .onAppear {
+         
+                print("1.Task.beforeFetch")
+                self.viewModel.fetchDataFromFirebase()
+                print("4.Task.afeterFetch")
+                self.isLoading = false
+                print("5.Task.END")
+                
+            
+
+        }
        // .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
         .environmentObject(viewModel)
