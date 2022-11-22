@@ -124,9 +124,10 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         self.aBaseDi = aBaseDi
     }
     
-    init() {
+    init(id:String = UUID().uuidString) {
+        // Necessario quando creiamo l'ibrido, poichè l'id va creato fuori e dato uguale sia all'ingredienteDiSistema che al model
         self.percorsoProdotto = .preparazioneFood
-        self.id = UUID().uuidString
+        self.id = id
         self.intestazione = ""
         self.descrizione = ""
         self.rifReviews = []

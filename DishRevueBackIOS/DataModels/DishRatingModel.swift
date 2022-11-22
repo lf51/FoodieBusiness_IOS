@@ -18,7 +18,7 @@ struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
     let voto: String // il voto deve essere un INT ma vine salvato come double : ex 8.0. Quindi nelle trasformazioni lo trattiamo come Double. Da Creare una ghera con i valori selezionabili prestabiliti
     let titolo: String // deve avere un limite di caratteri
     let commento: String
-    let dataRilascio: Date // Messo in Var per i test, riportare come let
+    var dataRilascio: Date // Messo in Var per i test, riportare come let
     let image: String // 19.10 Togliere le virgolette di default.
     
     init(/*id:String,*/voto: String, titolo: String, commento: String, idPiatto: String) {

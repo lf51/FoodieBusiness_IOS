@@ -22,7 +22,16 @@ struct CloudDataStore {
     var allMyCategories: [CategoriaMenu] // caricato
     var allMyReviews:[DishRatingModel] // caricato
     
+  /*  let pathDictionary:[String:PartialKeyPath<CloudDataStore>] = [
+    
+        CloudCollectionKey.ingredient.rawValue:\CloudDataStore.allMyIngredients,
+        CloudCollectionKey.dish.rawValue:\CloudDataStore.allMyDish
+    
+    ] */
+    
     enum CloudCollectionKey:String {
+        
+      /*  static var allOmoCollection:[CloudCollectionKey] = [.ingredient,.dish,.menu,.properties,.categories,.reviews] */
         
         case ingredient = "userIngredients"
         case dish = "userPreparazioniEprodotti"
@@ -32,6 +41,39 @@ struct CloudDataStore {
         case reviews = "userReviews"
                 
         case anyDocument = "datiDiFunzionamento"
+    
+        
+      /*  func retrieveCloudDataKP(doc:QueryDocumentSnapshot,cloudDataInstance: inout CloudDataStore) {
+            
+            switch self {
+                
+            case .ingredient:
+                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyIngredients)
+            case .dish:
+                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyDish)
+            case .menu:
+                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyMenu)
+            case .properties:
+                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyProperties)
+            case .categories:
+                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyCategories)
+            case .reviews:
+                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyReviews)
+
+            default:
+                print("Retrieve cloudData default value - need to be setted")
+                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyIngredients)
+            }
+        }
+        
+        private func genericDocSnapRetrieve<M:MyProCloudPack_L1>(doc:QueryDocumentSnapshot,cloudDataInstance: inout CloudDataStore,cloudDataKP:WritableKeyPath<CloudDataStore,[M]>) {
+            
+            let element = M.init(frDoc: doc)
+            cloudDataInstance[keyPath: cloudDataKP].append(element)
+            print("retrieve generic element from id: \(element.id)")
+            
+        } */ // deprecato 22.11
+        
         
     }
     
@@ -65,7 +107,7 @@ struct CloudDataStore {
 }
 
 
-class CloudDataCompiler {
+struct CloudDataCompiler {
     
     private let db_base = Firestore.firestore()
     private let ref_userDocument: DocumentReference?
@@ -93,7 +135,48 @@ class CloudDataCompiler {
     
     // Scarico Dati
     
-    func downloadFromFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
+    /// esegue il download di una collezione di documenti contenuti in una collection Omogenea  (tutti gli ingredienti, i piatti ecc)
+    func downloadFromFirebase_allMyElement<M:MyProCloudPack_L1>(collectionKP:WritableKeyPath<CloudDataStore,[M]>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ allMyElements: [M],_ isDone:Int) -> ()) {
+        
+        var cloudData:CloudDataStore = CloudDataStore()
+
+        let ref = ref_userDocument?.collection(cloudCollectionKey.rawValue)
+            
+            ref?.getDocuments { queryDoc, error in
+                
+            guard error == nil, queryDoc?.documents != nil else { return }
+                
+            for doc in queryDoc!.documents {
+
+                let element = M.init(frDoc: doc)
+                cloudData[keyPath: collectionKP].append(element)
+                    }
+                handler(cloudData[keyPath: collectionKP],1)
+            }
+    }
+    
+    /// esegue il download dei  singoli documenti contenuti in una collection Eterogenea
+    func downloadFromFirebase_singleElement<M:MyProCloudPack_L1>(singleKP:WritableKeyPath<CloudDataStore,M>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ singleElement: M,_ isDone:Int) -> ()) {
+        
+        var cloudData:CloudDataStore = CloudDataStore()
+
+        let ref = ref_userDocument?.collection(cloudCollectionKey.rawValue)
+            
+            ref?.getDocuments { queryDoc, error in
+                
+            guard error == nil, queryDoc?.documents != nil else { return }
+                
+            for doc in queryDoc!.documents {
+
+                let element = M.init(frDoc: doc)
+                cloudData[keyPath: singleKP] = element
+                    }
+                handler(cloudData[keyPath: singleKP],1)
+            }
+    }
+    
+    
+  /*  func downloadFromFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
         
        // print("Download data from firebase \(Thread.current)")
         print("ref_userDocument? = \(ref_userDocument != nil)")
@@ -142,9 +225,10 @@ class CloudDataCompiler {
        
        print("cloudData.time = \(cloudData.setupAccount.startCountDownMenuAt.rawValue)")
        return cloudData
-    }
+    } */ // deprecato 22.11
 
-    func downloadIngredientFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
+    
+   /* func downloadIngredientFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
         
        var cloudData:CloudDataStore = CloudDataStore()
         
@@ -162,7 +246,68 @@ class CloudDataCompiler {
               handler(cloudData)
            }
         
-    }
+    } */
+    
+    /// esegue un download per documenti omogenei contenuti in una collection
+  /*  func downloadFromFirebase_allMyElement(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
+        
+        var cloudData:CloudDataStore = CloudDataStore()
+        
+        let allCollectionKey_omo = CloudDataStore.CloudCollectionKey.allOmoCollection
+        let allCollection_ref = allCollectionKey_omo.map({ref_userDocument?.collection($0.rawValue)})
+        
+        for ref in allCollection_ref {
+            
+            let refID = ref?.collectionID ?? ""
+            let collectionCase = CloudDataStore.CloudCollectionKey(rawValue: refID)
+            
+            ref?.getDocuments { queryDoc, error in
+                
+            guard error == nil, queryDoc?.documents != nil else { return }
+                
+            print("ref?.getDocuments space")
+            for doc in queryDoc!.documents {
+                print("single doc space")
+                if collectionCase != nil  {
+                    
+                    collectionCase!.retrieveCloudDataKP(doc: doc, cloudDataInstance: &cloudData)
+                    
+                    }
+                }
+            }
+        }
+        print("Handler CloudData Line")
+        handler(cloudData)
+        // update and handle cloudData
+    } */ // deprecata 22.11
+    
+    
+        
+   /* private func genericDocSnapRetrieve<M:MyProCloudPack_L1>(doc:QueryDocumentSnapshot,cloudDataInstance: inout CloudDataStore,cloudDataKP:WritableKeyPath<CloudDataStore,[M]>?) {
+        
+        let element = M.init(frDoc: doc)
+        cloudDataInstance[keyPath: cloudDataKP!].append(element)
+        print("retrieve generic element from id: \(element.id)")
+        
+    } */
+    
+    /*
+        
+       let userSetup_doc = ref_userDocument?.collection(CloudDataStore.CloudCollectionKey.ingredient.rawValue)
+
+         userSetup_doc?.getDocuments { docsSnapshot, error in
+               
+             guard error == nil, docsSnapshot?.documents != nil else { return }
+             
+             for doc in docsSnapshot!.documents {
+                 let ing = IngredientModel(frDoc: doc)
+                 cloudData.allMyIngredients.append(ing)
+                 
+             }
+              handler(cloudData)
+           }
+        
+    */
    
     
     // Salvataggio Dati
@@ -221,12 +366,15 @@ class CloudDataCompiler {
 let fakeCloudData = CloudDataStore(
     accountSetup: AccountSetup(),
     inventarioScorte: Inventario(
+        id:"userInventario",
         ingInEsaurimento: [ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id],
         ingEsauriti: [ingredientSample2_Test.id,ingredientSample3_Test.id,ingredientSample4_Test.id],
+        archivioNotaAcquisto: [:],
         cronologiaAcquisti: [
         ingredientSample_Test.id:[otherDateString3,otherDateString1,otherDateString,oldDateString,todayString],ingredientSample5_Test.id:[oldDateString,todayString]
     
     ],
+        lockedId: [:],
         archivioIngInEsaurimento: [todayString:[ingredientSample5_Test.id]]),
     allMyIngredients: [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito],
     allMyDish: [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito],

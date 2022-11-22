@@ -6,13 +6,43 @@
 //
 
 import Foundation
+import Firebase
 
 struct AccountSetup:MyProCloudPack_L1 {
    
-    var id: String = "userSetup"
+    var id: String
     // mettiamo qui tutte le enum e i valori per il settaggio personalizzato da parte dell'utente
-    var startCountDownMenuAt:TimeValue = .sixty
-    var mettiInPausaDishByIngredient: ActionValue = .mai
+    var startCountDownMenuAt:TimeValue
+    var mettiInPausaDishByIngredient: ActionValue
+    
+
+    init(id: String, startCountDownMenuAt: TimeValue, mettiInPausaDishByIngredient: ActionValue) {
+        // Non dovrebbe essere in uso
+        self.id = id
+        self.startCountDownMenuAt = startCountDownMenuAt
+        self.mettiInPausaDishByIngredient = mettiInPausaDishByIngredient
+    }
+    
+    init() {
+        
+        self.id = "userSetup"
+        self.startCountDownMenuAt = .sixty
+        self.mettiInPausaDishByIngredient = .mai
+    
+    }
+    
+    // MyProCloudPack_L1
+    
+    init(frDoc: QueryDocumentSnapshot) {
+        
+        let countDownInt = frDoc[DataBaseField.startCountDownMenuAt] as? Int ?? 0
+        let pausaInt = frDoc[DataBaseField.mettiInPausaDishByIngredient] as? Int ?? 0
+        
+        self.id = frDoc.documentID
+        self.startCountDownMenuAt = TimeValue.convertiInCase(fromNumber: countDownInt)
+        self.mettiInPausaDishByIngredient = ActionValue.convertiInCase(fromNumber: pausaInt)
+        
+    }
     
     func documentDataForFirebaseSavingAction() -> [String : Any] {
         
@@ -24,12 +54,13 @@ struct AccountSetup:MyProCloudPack_L1 {
         return documentData
     }
     
-    struct DataBaseField:MyTest {
+    struct DataBaseField {
         
         static let startCountDownMenuAt = "startCountDownValue"
         static let mettiInPausaDishByIngredient = "mettiInPausaDishByING"
     }
     
+    //
     
     enum ActionValue:String,MyProCloudPack_L0 {
         

@@ -363,9 +363,12 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
          
          return menu
      }()
-     
+   
+    /*
     static var menuDelGiorno:MenuModel = MenuModel(tipologia: .allaCarta(.delGiorno))
-    static var menuDelloChef:MenuModel = MenuModel(tipologia: .allaCarta(.delloChef))
+    static var menuDelloChef:MenuModel = MenuModel(tipologia: .allaCarta(.delloChef)) */
+    static var menuDelGiorno:MenuModel = MenuModel(tipologiaDiSistema: .delGiorno)
+    static var menuDelloChef:MenuModel = MenuModel(tipologiaDiSistema: .delloChef)
     
     
     @State static var viewModel: AccounterVM = {

@@ -82,8 +82,34 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         
     }
     
+    init(tipologiaDiSistema:TipologiaMenu.DiSistema) {
+        
+        let currentDate = Date()
+        
+        switch tipologiaDiSistema {
+        case .delGiorno:
+            self.tipologia = .allaCarta(.delGiorno)
+        case .delloChef:
+            self.tipologia = .allaCarta(.delloChef)
+        }
+        
+        self.id = UUID().uuidString
+        self.intestazione = tipologiaDiSistema.shortDescription()
+        self.descrizione = tipologiaDiSistema.modelDescription()
+        self.status = .bozza(.disponibile)
+        self.rifDishIn = []
+        self.isAvaibleWhen = .dataEsatta
+        self.dataInizio = currentDate
+        self.dataFine = currentDate.advanced(by: 604800)
+        let giornoDataInizio = GiorniDelServizio.giornoServizioFromData(dataEsatta: currentDate)
+        self.giorniDelServizio = [giornoDataInizio]
+        self.oraInizio = Date.distantFuture.advanced(by: -3540)
+        self.oraFine = Date.distantFuture.advanced(by: 82740)
+        
+    }
     
-    init(tipologia:TipologiaMenu = .defaultValue) { // init del menu del giorno
+    
+  /* init(tipologia:TipologiaMenu = .defaultValue) { // init del menu del giorno
       
         let currentDate = Date()
         
@@ -110,9 +136,26 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
             self.giorniDelServizio = [giornoDataInizio]
             self.oraInizio = Date.distantFuture.advanced(by: -3540)
             self.oraFine = Date.distantFuture.advanced(by: 82740)
+            
+        } else {
+            
+            self.id = UUID().uuidString
+            self.intestazione = ""
+            self.descrizione = ""
+            self.tipologia = .defaultValue
+            self.status = .bozza()
+            self.rifDishIn = []
+            self.isAvaibleWhen = .defaultValue
+            self.dataInizio = currentDate
+            self.dataFine = currentDate.advanced(by: 604800)
+            self.giorniDelServizio = []
+            self.oraInizio = currentDate
+            self.oraFine = currentDate.advanced(by: 1800)
+            
+            
         }
         
-    }
+    } */ // Deprecato 21.11
     
     // Struct interne 20.09 --> Valutare Spostamento/Mantenimento qui
    /* struct FasciaOraria:Hashable {

@@ -72,9 +72,10 @@ struct MainView: View {
       /*  .fullScreenCover(isPresented: $viewModel.instanceDBCompiler.isDownloading, content: {
             Text("OnLoading")
      }) */
-        .fullScreenCover(isPresented: $isLoading, content: {
-            Text("OnLoading")
+        .fullScreenCover(isPresented: $viewModel.isLoading, content: {
+           WaitLoadingView(backgroundColorView: backgroundColorView)
         })
+        
         .onAppear {
          
                 print("1.Task.beforeFetch")

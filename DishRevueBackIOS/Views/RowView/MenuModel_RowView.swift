@@ -460,8 +460,9 @@ struct MenuModel_RowView_Previews: PreviewProvider {
        
    }()
     
-    static var menudelgiorno = MenuModel(tipologia: .allaCarta( .delGiorno))
-
+    //static var menudelgiorno = MenuModel(tipologia: .allaCarta( .delGiorno))
+    static var menudelgiorno = MenuModel(tipologiaDiSistema: .delGiorno)
+    
     static var previews: some View {
         
 

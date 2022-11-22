@@ -7,23 +7,64 @@
 
 import Foundation
 import SwiftUI
+import Firebase
 
 struct Inventario:Equatable,MyProCloudPack_L1 {
 
     // Nota 02.10
-    var id:String = "userInventario"
+    // Nota 21.11 -> Modifiche da fare
+    var id:String
     
-    var ingInEsaurimento:[String] = []
-    var ingEsauriti:[String] = []
-    var archivioNotaAcquisto: [String:String] = [:] // key:IdIngrediente || Value: Nota per l'acquisto
+    var ingInEsaurimento:[String]
+    var ingEsauriti:[String]
+    var archivioNotaAcquisto: [String:String] // key:IdIngrediente || Value: Nota per l'acquisto
     
-    var cronologiaAcquisti:[String:[String]] = [:] // key = idIngrediente || Value = [date di acquisto + nota] -> Creiamo una stringa combinata invece che una tupla e la scomponiamo con un algoritmo che separa la data dalla nota
+    var cronologiaAcquisti:[String:[String]] // key = idIngrediente || Value = [date di acquisto + nota] -> Creiamo una stringa combinata invece che una tupla e la scomponiamo con un algoritmo che separa la data dalla nota
 
-    var lockedId:[String:[String]] = [:] // speculare a cronologiaAcquisti.Contiene per ogni chiava(data) un array degli id a cui è stato cambiato lo stato.
+    var lockedId:[String:[String]] // speculare a cronologiaAcquisti.Contiene per ogni chiava(data) un array degli id a cui è stato cambiato lo stato.
     
     /// L'archivio ingredienti in esaurimento rende obsoleto l'uso di un archivio dell'inventario quando creiamo la lista della spesa. E' un dizionario che dovrà funzionare con una sola chiave, la data corrente.
-    var archivioIngInEsaurimento: [String:[String]] = [:] // key:DataCorrente || value = [id ingredienti Esauriti depennati]
+    var archivioIngInEsaurimento: [String:[String]] // key:DataCorrente || value = [id ingredienti Esauriti depennati]
     
+    init(id: String, ingInEsaurimento: [String], ingEsauriti: [String], archivioNotaAcquisto: [String : String], cronologiaAcquisti: [String : [String]], lockedId: [String : [String]], archivioIngInEsaurimento: [String : [String]]) {
+        
+        // Non dovrebbe essere in uso. Deprecabile
+        
+        self.id = id
+        self.ingInEsaurimento = ingInEsaurimento
+        self.ingEsauriti = ingEsauriti
+        self.archivioNotaAcquisto = archivioNotaAcquisto
+        self.cronologiaAcquisti = cronologiaAcquisti
+        self.lockedId = lockedId
+        self.archivioIngInEsaurimento = archivioIngInEsaurimento
+    }
+    
+    init() {
+        
+        self.id = "userInventario"
+        self.ingInEsaurimento = []
+        self.ingEsauriti = []
+        self.archivioNotaAcquisto = [:]
+        self.cronologiaAcquisti = [:]
+        self.lockedId = [:]
+        self.archivioIngInEsaurimento = [:]
+        
+    }
+    
+    // MyProCloudPack_L1
+    
+    init(frDoc: QueryDocumentSnapshot) {
+        
+        self.id = frDoc.documentID
+        
+        self.ingInEsaurimento = frDoc[DataBaseField.ingInEsaurimento] as? [String] ?? []
+        self.ingEsauriti = frDoc[DataBaseField.ingEsauriti] as? [String] ?? []
+        self.archivioNotaAcquisto = frDoc[DataBaseField.archivioNotaAcquisto] as? [String:String] ?? [:]
+        self.cronologiaAcquisti = frDoc[DataBaseField.cronologiaAcquisti] as? [String:[String]] ?? [:]
+        self.lockedId = frDoc[DataBaseField.lockedId] as? [String:[String]] ?? [:]
+        self.archivioIngInEsaurimento = frDoc[DataBaseField.archivioIngInEsaurimento] as? [String:[String]] ?? [:]
+        
+    }
     
     func documentDataForFirebaseSavingAction() -> [String : Any] {
         
@@ -51,6 +92,8 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
         static let archivioIngInEsaurimento = "archivioIngInEsaurimento"
         
     }
+    
+    //
     
     // Method
     

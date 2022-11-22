@@ -26,7 +26,7 @@ struct LinkSignInSheetView: View {
           //  backgroundColorView
             //  .edgesIgnoringSafeArea(.all)
           
-          VStack(alignment: .leading) {
+          VStack(alignment: .center) {
               
               HStack(alignment:.top) {
                   
@@ -57,11 +57,16 @@ struct LinkSignInSheetView: View {
 
               VStack {
                   
+                  Spacer()
+                  
                   Image(systemName: "fork.knife.circle")
                       .resizable()
                       .scaledToFit()
                       .foregroundColor(Color("SeaTurtlePalette_2"))
+                      .frame(maxWidth:500)
                       .padding(.vertical,60)
+                  
+                  Spacer()
                   
                   CSTextField_1(
                       text: $authProcess.email,
@@ -87,7 +92,7 @@ struct LinkSignInSheetView: View {
                       .scaledToFit()
                       .frame(width: 50, height: 50)
               }
-   
+              .frame(maxWidth:700)
               
           }
           .padding(.horizontal)

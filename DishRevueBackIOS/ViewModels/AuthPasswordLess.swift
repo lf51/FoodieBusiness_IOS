@@ -60,7 +60,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
           )
             return
         }
-            self.alertItem = AlertModel(title: "Authentication Link inviato a \(self.email).", message: "Nessuna password necessaria.\nApri da questo device la mail (se non la trovi cercala nello spam) e clicca sul link per autenticarti.")
+            self.alertItem = AlertModel(title: "Authentication Link inviato a \(self.email)", message: "Nessuna password necessaria.\nApri da questo device la mail (se non la trovi cercala nello spam) e clicca sul link per autenticarti.")
             UserDefaults.standard.set(self.email, forKey: "Email")
             self.email = ""
             print("Link Succesfully sent")

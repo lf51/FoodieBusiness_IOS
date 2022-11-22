@@ -238,7 +238,8 @@ var ingredienteFinito:IngredientModel = {
 
 var menuDelGiorno_Test:MenuModel = {
  
-    var mDD = MenuModel(tipologia: .allaCarta(.delGiorno))
+    //var mDD = MenuModel(tipologia: .allaCarta(.delGiorno))
+    var mDD = MenuModel(tipologiaDiSistema: .delGiorno)
     mDD.rifDishIn = [dishItem4_Test.id,dishItem3_Test.id]
     return mDD
     
@@ -246,7 +247,8 @@ var menuDelGiorno_Test:MenuModel = {
 
 var menuDelloChef_Test:MenuModel = {
  
-    var mDD = MenuModel(tipologia: .allaCarta(.delloChef))
+   // var mDD = MenuModel(tipologia: .allaCarta(.delloChef))
+    var mDD = MenuModel(tipologiaDiSistema: .delloChef)
     mDD.rifDishIn = [dishItem2_Test.id,dishItem5_Test.id]
     return mDD
     
@@ -384,25 +386,39 @@ let rifDish3 = dishItem3_Test.id
 let rifDish4 = dishItem4_Test.id
 
 
-let cat1:CategoriaMenu = CategoriaMenu(id:"cat1",
+let cat1:CategoriaMenu = CategoriaMenu(
+    id:"cat1",
     intestazione: "Antipasti",
-    image: "🫒")
-let cat2:CategoriaMenu = CategoriaMenu(id:"cat2",
+    image: "🫒",
+    descrizione: "")
+let cat2:CategoriaMenu = CategoriaMenu(
+    id:"cat2",
     intestazione: "Primi",
-    image: "🍝")
-let cat3:CategoriaMenu = CategoriaMenu(id:"cat3",
+    image: "🍝",
+    descrizione: "")
+let cat3:CategoriaMenu = CategoriaMenu(
+    id:"cat3",
     intestazione: "Secondi",
-    image: "🍴")
-let cat4:CategoriaMenu = CategoriaMenu(id:"cat4",
+    image: "🍴",
+    descrizione: "")
+let cat4:CategoriaMenu = CategoriaMenu(
+    id:"cat4",
     intestazione: "Contorni",
-    image: "🥗")
-let cat5:CategoriaMenu = CategoriaMenu(id:"cat5",
+    image: "🥗",
+    descrizione: "")
+let cat5:CategoriaMenu = CategoriaMenu(
+    id:"cat5",
     intestazione: "Frutta",
-    image: "🍉")
-let cat6:CategoriaMenu = CategoriaMenu(id:"cat6",
+    image: "🍉",
+    descrizione: "")
+let cat6:CategoriaMenu = CategoriaMenu(
+    id:"cat6",
     intestazione: "Dessert",
-    image: "🍰")
-let cat7:CategoriaMenu = CategoriaMenu(id:"cat7",
+    image: "🍰",
+    descrizione: "")
+let cat7:CategoriaMenu = CategoriaMenu(
+    id:"cat7",
     intestazione: "Bevande",
-    image: "🍷")
+    image: "🍷",
+    descrizione: "")
 

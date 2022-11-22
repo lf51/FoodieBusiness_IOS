@@ -389,9 +389,8 @@ struct MenuDiSistema_BoxView:View {
             
             let menuDS = self.viewModel.trovaMenuDiSistema(menuDiSistema: menuDiSistema)
             
-            let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
+           // let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
            
-            
             CSLabel_conVB(
                 placeHolder: "\(menuDiSistema.shortDescription())",
                 imageNameOrEmojy: menuDiSistema.imageAssociated(),
@@ -404,8 +403,8 @@ struct MenuDiSistema_BoxView:View {
                             
                             Button {
                                 
-                                let newDS = MenuModel(tipologia: tipologia)
-                                
+                              //  let newDS = MenuModel(tipologia: tipologia)
+                                let newDS = MenuModel(tipologiaDiSistema: menuDiSistema)
                                 withAnimation {
                                     self.viewModel.switchFraCreaEUpdateModel(itemModel: newDS)
                                 }

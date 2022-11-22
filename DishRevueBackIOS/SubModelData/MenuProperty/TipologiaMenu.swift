@@ -60,7 +60,7 @@ enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
 }
 
 
-enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
+enum TipologiaMenu:Identifiable, Equatable, MyProEnumPack_L2 /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
    
     static var allCases: [TipologiaMenu] = [.allaCarta(),.fisso(persone: .uno, costo: "n/d")]
     static var defaultValue: TipologiaMenu = .noValue
@@ -278,6 +278,17 @@ enum TipologiaMenu:Identifiable, Equatable,MyProEnumPack_L2 /*: MyEnumProtocol, 
                     return "Menu del Giorno"
                 case .delloChef:
                     return "Menu dello Chef"
+                
+            }
+        }
+        
+        func modelDescription() -> String {
+            
+            switch self {
+                case .delGiorno:
+                    return "Rielaborato giornalmente, aggiunge ai menu online dei Piatti del giorno."
+                case .delloChef:
+                    return "Fra i piatti già inseriti in altri menu, segnala quelli giornalmente consigliati dalla chef."
                 
             }
         }

@@ -13,6 +13,7 @@ import MapKit // da togliere quando ripuliamo il codice dai Test
 class AccounterVM: ObservableObject {
     
     private let instanceDBCompiler: CloudDataCompiler
+    private var loadingCount:Int { willSet { isLoading = newValue != 8 } }
     @Published var isLoading: Bool
   //  let instanceCloudData:CloudDataStore // Non sappiamo ancora cosa farne 18.11
     
@@ -43,7 +44,8 @@ class AccounterVM: ObservableObject {
             
            // let compilerInstance = CloudDataCompiler(UID: userUID)
             self.instanceDBCompiler = CloudDataCompiler(UID: userUID)
-            self.isLoading = true 
+            self.loadingCount = 0
+            self.isLoading = userUID != nil 
            // self.instanceCloudData = compilerInstance.cloudDataInstance()
             
             // Quello che segue si potrebbe accorpare in una instanza cloud Data. Richiede un mare di modifiche :( - Attualmente 18.11 in standBy
@@ -69,29 +71,85 @@ class AccounterVM: ObservableObject {
         
       //  self.isLoading = true
         
-      self.instanceDBCompiler.downloadFromFirebase { cloudData in
-
-          //  self.allMyIngredients = cloudData.allMyIngredients
-           // self.allMyDish = cloudData.allMyDish
-           // self.allMyMenu = cloudData.allMyMenu
-           // self.allMyProperties = cloudData.allMyProperties
-            
+     /* self.instanceDBCompiler.downloadFromFirebase { cloudData in
             self.setupAccount = cloudData.setupAccount
-          //  self.inventarioScorte = cloudData.inventarioScorte
+            print("2. Fetch SetupAccpunt")
             
-           // self.allMyReviews = cloudData.allMyReviews
-          //  self.allMyCategories = cloudData.allMyCategories
-            
-        print("2.end Fetch")
-            
-        }
-        
-        self.instanceDBCompiler.downloadIngredientFirebase { cloudData in
+        }*/
+       /* self.instanceDBCompiler.downloadIngredientFirebase { cloudData in
             self.allMyIngredients = cloudData.allMyIngredients
+            print("3.end Fetch ingredients")
+        } */
+        
+        
+      /*  self.instanceDBCompiler.downloadFromFirebase_allMyElement { cloudData in
+            print("isCloudData allMyDishEmpty: \(cloudData.allMyDish.isEmpty.description)")
+            
+            self.allMyIngredients = cloudData.allMyIngredients
+            self.allMyDish = cloudData.allMyDish
+            self.allMyMenu = cloudData.allMyMenu
+            self.allMyProperties = cloudData.allMyProperties
+            self.allMyCategories = cloudData.allMyCategories
+            self.allMyReviews = cloudData.allMyReviews
+            
+            print("isCloudData at end allMyDishEmpty: \(cloudData.allMyDish.isEmpty.description)")
+        } */
+        print("1.fetchData.Start")
+        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyIngredients,cloudCollectionKey: .ingredient) { allMyElements,isDone in
+            
+            self.allMyIngredients = allMyElements
+            self.loadingCount += isDone
+            print("1.Closure.ING")
+        }
+        print("2.fetchData.InG")
+        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyDish,cloudCollectionKey: .dish) { allMyElements,isDone in
+            
+            self.allMyDish = allMyElements
+            self.loadingCount += isDone
+            print("2.Closure.Dish")
+        }
+        print("3.fetchData.Dish")
+        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyMenu,cloudCollectionKey: .menu) { allMyElements,isDone in
+            
+            self.allMyMenu = allMyElements
+            self.loadingCount += isDone
+            print("3.Closure.Menu")
+        }
+        print("4.fetchData.Menu")
+        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyProperties,cloudCollectionKey: .properties) { allMyElements,isDone in
+            
+            self.allMyProperties = allMyElements
+            self.loadingCount += isDone
+            print("4.Closure.Pro")
+        }
+        print("5.fetchData.Prop")
+        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyCategories,cloudCollectionKey: .categories) { allMyElements,isDone in
+            
+            self.allMyCategories = allMyElements
+            self.loadingCount += isDone
+            print("5.Closure.Cat")
+        }
+        print("6.fetchData.Cat")
+        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyReviews,cloudCollectionKey: .reviews) { allMyElements,isDone in
+            
+            self.allMyReviews = allMyElements
+            self.loadingCount += isDone
+            print("6.Closure.Rev")
+        }
+        print("7.fetchData.Rev")
+        
+        self.instanceDBCompiler.downloadFromFirebase_singleElement(singleKP: \.setupAccount, cloudCollectionKey: .anyDocument) { singleElement,isDone in
+            self.setupAccount = singleElement
+            self.loadingCount += isDone
+            print("7.Closure.Setup")
         }
         
+        self.instanceDBCompiler.downloadFromFirebase_singleElement(singleKP: \.inventarioScorte, cloudCollectionKey: .anyDocument) { singleElement,isDone in
+            self.inventarioScorte = singleElement
+            self.loadingCount += isDone
+            print("8.Closure.INV")
+        }
         
-        print("3.end Fetch - Outside Closure")
     }
     
     // Method

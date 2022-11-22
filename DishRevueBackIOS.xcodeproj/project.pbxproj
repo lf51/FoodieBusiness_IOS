@@ -73,6 +73,7 @@
 		3FABE5352926A3A500C2819B /* AccounterVM_BACKUP1711.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FABE5342926A3A500C2819B /* AccounterVM_BACKUP1711.swift */; };
 		3FBA5BD528DDADD6009AA124 /* VistaIngredientiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */; };
 		3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */; };
+		3FC5B0DB292D2A320000A1BB /* WaitLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC5B0DA292D2A320000A1BB /* WaitLoadingView.swift */; };
 		3FC9613428BD0422009FBCF8 /* TemporaryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC9613328BD0422009FBCF8 /* TemporaryModel.swift */; };
 		3FC9613628BD05AC009FBCF8 /* InfoAlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC9613528BD05AB009FBCF8 /* InfoAlertView.swift */; };
 		3FCC71B828E9D1D600F105A2 /* MonitorServizio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */; };
@@ -286,6 +287,7 @@
 		3FABE5342926A3A500C2819B /* AccounterVM_BACKUP1711.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccounterVM_BACKUP1711.swift; path = DishRevueBackIOS/OBSOLETE/AccounterVM_BACKUP1711.swift; sourceTree = SOURCE_ROOT; };
 		3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaIngredientiEspansa.swift; sourceTree = "<group>"; };
 		3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverradeStateTEST.swift; sourceTree = "<group>"; };
+		3FC5B0DA292D2A320000A1BB /* WaitLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitLoadingView.swift; sourceTree = "<group>"; };
 		3FC9613328BD0422009FBCF8 /* TemporaryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryModel.swift; sourceTree = "<group>"; };
 		3FC9613528BD05AB009FBCF8 /* InfoAlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAlertView.swift; sourceTree = "<group>"; };
 		3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorServizio.swift; sourceTree = "<group>"; };
@@ -590,6 +592,31 @@
 			path = ListeEspanse;
 			sourceTree = "<group>";
 		};
+		3FC5B0D7292D28F20000A1BB /* SetupAccount */ = {
+			isa = PBXGroup;
+			children = (
+				4DB75EDC280EC73A008C1765 /* AccounterMainView.swift */,
+			);
+			path = SetupAccount;
+			sourceTree = "<group>";
+		};
+		3FC5B0D8292D290C0000A1BB /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				4D1BC73F2799A746000B463C /* LinkSignInSheetView.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		3FC5B0D9292D29430000A1BB /* MainView */ = {
+			isa = PBXGroup;
+			children = (
+				4D403B9127981BC200EB4E1B /* ContentView.swift */,
+				4D1BC746279C1FED000B463C /* MainView.swift */,
+			);
+			path = MainView;
+			sourceTree = "<group>";
+		};
 		4D1BC745279C1FB6000B463C /* TemporaryVIEW */ = {
 			isa = PBXGroup;
 			children = (
@@ -653,10 +680,7 @@
 			isa = PBXGroup;
 			children = (
 				4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */,
-				4D403B9127981BC200EB4E1B /* ContentView.swift */,
-				4D1BC746279C1FED000B463C /* MainView.swift */,
-				4D1BC73F2799A746000B463C /* LinkSignInSheetView.swift */,
-				4DB75EDC280EC73A008C1765 /* AccounterMainView.swift */,
+				3FC5B0D9292D29430000A1BB /* MainView */,
 				4DF7D9D627A45097001DB949 /* Views */,
 				4DF7D9D727A450A2001DB949 /* ViewModels */,
 				3F2F7F7A291561E0002A1CE6 /* FilterData */,
@@ -1043,6 +1067,8 @@
 		4DF7D9D627A45097001DB949 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				3FC5B0D8292D290C0000A1BB /* Authentication */,
+				3FC5B0D7292D28F20000A1BB /* SetupAccount */,
 				4D34D54F2838DABD00A57747 /* ImportazioneVelocePiatto */,
 				4D4FE6E427FC88E800AC0190 /* ForEachCategoryView */,
 				4D4FE6ED27FEEC0100AC0190 /* RowView */,
@@ -1060,6 +1086,7 @@
 				4D92579E27D7A84B00D71B9C /* SelettoreMyModel */,
 				3FBA5BD628DDADE3009AA124 /* ListeEspanse */,
 				3F161D3B28E44751008CE0F9 /* ListaDellaSpesa */,
+				3FC5B0DA292D2A320000A1BB /* WaitLoadingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1269,6 +1296,7 @@
 				4D61A3CF28576E0500C0B810 /* NavStackTest.swift in Sources */,
 				4DAD4F94279EA7A800C0EAE8 /* PropertyVM.swift in Sources */,
 				3F2F7F7C29156210002A1CE6 /* FilterPropertyModel.swift in Sources */,
+				3FC5B0DB292D2A320000A1BB /* WaitLoadingView.swift in Sources */,
 				4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */,
 				4D168C1E285251E7000B137E /* ColoreTabViewTest.swift in Sources */,
 				4D83CEA128194EF600FA2EB5 /* Extension.swift in Sources */,
@@ -1547,7 +1575,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1578,7 +1606,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
