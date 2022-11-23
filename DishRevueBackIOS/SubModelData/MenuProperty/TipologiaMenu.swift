@@ -208,7 +208,7 @@ enum TipologiaMenu:Identifiable, Equatable, MyProEnumPack_L2 /*: MyEnumProtocol,
         case .noValue:
            return 0
         }
-    }
+    } // Deprecbile
     
     /// a differenza della funzione standard, questa Plus ritorna un Any, e quindi ci permette di ritornare valori diversi per ogni case.
     func orderAndStorageValuePlus() -> Any {
@@ -216,7 +216,7 @@ enum TipologiaMenu:Identifiable, Equatable, MyProEnumPack_L2 /*: MyEnumProtocol,
         switch self {
             
         case .fisso(let pax, let price):
-            return [pax.orderAndStorageValue(),price]
+            return ["pax":pax.orderAndStorageValue(),"price":price]
         case .allaCarta(let diSistema):
             let value = diSistema == nil ? 2 : diSistema!.orderAndStorageValue()
             return value
@@ -225,6 +225,30 @@ enum TipologiaMenu:Identifiable, Equatable, MyProEnumPack_L2 /*: MyEnumProtocol,
         }
     }
     
+    static func convertiFromAny(value:Any?) -> TipologiaMenu {
+        
+        if let int = value as? Int {
+            
+            switch int {
+            case 2: return TipologiaMenu.allaCarta()
+            case 3: return TipologiaMenu.allaCarta(.delGiorno)
+            case 4: return TipologiaMenu.allaCarta(.delloChef)
+            default: return TipologiaMenu.defaultValue
+                
+            }
+            
+        } else if let combo = value as? [String:Any] {
+            
+            let pax = combo["pax"] as? PaxMenuFisso ?? .uno
+            let price = combo["price"] as? String ?? ""
+            
+            return TipologiaMenu.fisso(persone: pax, costo: price)
+            
+        }
+        
+        else { return TipologiaMenu.noValue }
+        
+    }
     
     func isDiSistema() -> Bool {
       //  self == .delGiorno ||

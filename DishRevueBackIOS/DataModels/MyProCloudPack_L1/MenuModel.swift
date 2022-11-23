@@ -20,7 +20,6 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         lhs.id == rhs.id &&
         lhs.intestazione == rhs.intestazione &&
         lhs.descrizione == rhs.descrizione &&
-       // lhs.dishInDEPRECATO == rhs.dishInDEPRECATO &&
         lhs.rifDishIn == rhs.rifDishIn &&
         lhs.tipologia == rhs.tipologia &&
         lhs.status == rhs.status &&
@@ -30,38 +29,25 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         lhs.giorniDelServizio == rhs.giorniDelServizio &&
         lhs.oraInizio == rhs.oraInizio &&
         lhs.oraFine == rhs.oraFine
-      //  lhs.fasceOrarie == rhs.fasceOrarie
-      
     }
     
- //   var id: String {self.intestazione.replacingOccurrences(of: " ", with: "").lowercased() } // deprecated 15.07
-    
- //   var id: String { creaID(fromValue: self.intestazione) } // Deprecata 18.08
     var id: String
     
     var intestazione: String // Categoria Filtraggio
     var descrizione: String
-    
-  //  var dishInDEPRECATO: [DishModel] = [] // deprecata in futuro - 17.09 /*{willSet {status = newValue.isEmpty ? .vuoto : .completo(.archiviato)}} */
-    
     var rifDishIn: [String] // riferimenti del piatti
     
     var tipologia: TipologiaMenu // Categoria di Filtraggio
     var status: StatusModel
     
     var isAvaibleWhen: AvailabilityMenu { willSet { giorniDelServizio = newValue == .dataEsatta ? [] : GiorniDelServizio.allCases } }
-    
     var dataInizio: Date { willSet {
         dataFine = newValue.advanced(by: 604800)
-    }} /*{ willSet {dataFine = newValue.advanced(by: 604800)}}*/// 19.09 // data inizio del Menu, che contiene al suo interno anche l'ora (estrapolabile) in cui è stato creato
+    }}
     var dataFine: Date // opzionale perchè possiamo non avere una fine in caso di data fissa
     var giorniDelServizio:[GiorniDelServizio] // Categoria Filtraggio
-    var oraInizio: Date { willSet {oraFine = newValue.advanced(by: 1800)} } // deprecata in futuro // ora Inizio del Menu che contiene al suo interno la data (estrapolabile) in cui è stato creato
-    var oraFine: Date // deprecata in futuro
-
-  //  var fasceOrarie:[FasciaOraria] = [FasciaOraria()]
-    
-    // init
+    var oraInizio: Date { willSet {oraFine = newValue.advanced(by: 1800)} }
+    var oraFine: Date
     
     init() {
         
@@ -107,74 +93,12 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         self.oraFine = Date.distantFuture.advanced(by: 82740)
         
     }
-    
-    
-  /* init(tipologia:TipologiaMenu = .defaultValue) { // init del menu del giorno
-      
-        let currentDate = Date()
-        
-        if tipologia != .defaultValue {
-            
-            if tipologia == .allaCarta(.delGiorno) {
-                self.intestazione = "Menu del Giorno"
-                self.descrizione = "Rielaborato giornalmente, aggiunge ai menu online dei Piatti del giorno."
-            }
-            else if tipologia == .allaCarta(.delloChef) {
-                self.intestazione = "Menu dello Chef"
-                self.descrizione = "Fra i piatti già inseriti in altri menu, segnala quelli giornalmente consigliati dalla chef."
-            }
-            
-            self.id = UUID().uuidString
-            self.tipologia = tipologia
-            self.status = .bozza(.disponibile)
-            self.rifDishIn = []
-            self.isAvaibleWhen = .dataEsatta
-            self.dataInizio = currentDate
-            self.dataFine = currentDate.advanced(by: 604800)
-            
-            let giornoDataInizio = GiorniDelServizio.giornoServizioFromData(dataEsatta: currentDate)
-            self.giorniDelServizio = [giornoDataInizio]
-            self.oraInizio = Date.distantFuture.advanced(by: -3540)
-            self.oraFine = Date.distantFuture.advanced(by: 82740)
-            
-        } else {
-            
-            self.id = UUID().uuidString
-            self.intestazione = ""
-            self.descrizione = ""
-            self.tipologia = .defaultValue
-            self.status = .bozza()
-            self.rifDishIn = []
-            self.isAvaibleWhen = .defaultValue
-            self.dataInizio = currentDate
-            self.dataFine = currentDate.advanced(by: 604800)
-            self.giorniDelServizio = []
-            self.oraInizio = currentDate
-            self.oraFine = currentDate.advanced(by: 1800)
-            
-            
-        }
-        
-    } */ // Deprecato 21.11
-    
-    // Struct interne 20.09 --> Valutare Spostamento/Mantenimento qui
-   /* struct FasciaOraria:Hashable {
-        let title:String?
-        var oraInizio:Date = Date() {willSet {oraFine = newValue.advanced(by: 1800)}}
-        var oraFine:Date = Date().advanced(by: 1800)
-        
-        init(title: String? = nil) {
-            self.title = title
-          
-        }
-    } */
-    // Method
-    
+
     // MyProCloudPack_L1
     
     init(frDoc: QueryDocumentSnapshot) {
         
-       // let tipologiaInt = frDoc[DataBaseField.tipologia] as? Int ?? 0
+        let tipologiaAny = frDoc[DataBaseField.tipologia]
         let statusInt = frDoc[DataBaseField.status] as? Int ?? 0
         let availabilityInt = frDoc[DataBaseField.isAvaibleWhen] as? Int ?? 0
         let giorniInt = frDoc[DataBaseField.giorniDelServizio] as? [Int] ?? []
@@ -183,9 +107,8 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         self.intestazione = frDoc[DataBaseField.intestazione] as? String ?? ""
         self.descrizione = frDoc[DataBaseField.descrizione] as? String ?? ""
         self.rifDishIn = frDoc[DataBaseField.rifDishIn] as? [String] ?? []
-        
-      //  self.tipologia = TipologiaMenu // DA FARE -> Il Salvataggio è eterogeneo
-        self.tipologia = .defaultValue // SISTEMARE
+
+        self.tipologia = TipologiaMenu.convertiFromAny(value: tipologiaAny)
         
         self.status = StatusModel.convertiInCase(fromNumber: statusInt)
         self.isAvaibleWhen = AvailabilityMenu.convertiInCase(fromNumber: availabilityInt)

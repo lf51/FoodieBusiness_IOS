@@ -8,7 +8,7 @@
 import Foundation
 import Firebase
 
-struct DishFormat:Hashable,MyProCloudPack_L1 {
+struct DishFormat:Hashable {
     
     var id:String = "DishFormatPrice_NoneID" // Non serve. Non lo salviamo su firebase e quindi ne viene assegnato uno nuovo ogni volta
     
@@ -22,15 +22,13 @@ struct DishFormat:Hashable,MyProCloudPack_L1 {
         self.price = ""
         self.type = type
     }
-    
-    // MyProCloudPack_L1
-    
-    init(frDoc: QueryDocumentSnapshot) {
         
-        let typeInt = frDoc[DataBaseField.type] as? Int ?? 0
+    init(frMapData: [String:Any]) {
         
-        self.label = frDoc[DataBaseField.label] as? String ?? ""
-        self.price = frDoc[DataBaseField.price] as? String ?? ""
+        let typeInt = frMapData[DataBaseField.type] as? Int ?? 0
+        
+        self.label = frMapData[DataBaseField.label] as? String ?? ""
+        self.price = frMapData[DataBaseField.price] as? String ?? ""
         self.type = DishFormatType.convertiInCase(fromNumber: typeInt)
     }
     

@@ -5,21 +5,12 @@
 //  Created by Calogero Friscia on 25/01/22.
 //
 
-// Modifiche 14.02
-
 import Foundation
 import SwiftUI
 import Firebase
 
-struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1,MyProCloudPack_L1  /*MyModelStatusConformity */ {
+struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,MyProStatusPack_L1,MyProCloudPack_L1 {
 
-    // 06.10 - In abbozzo
-  
-    
-    var percorsoProdotto:PercorsoProdotto = .preparazioneFood
-    
-    // fine abbozzo 06.10
-    
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
         return \.allMyDish
     }
@@ -31,78 +22,54 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         lhs.descrizione == rhs.descrizione &&
         lhs.status == rhs.status &&
         lhs.rifReviews == rhs.rifReviews &&
-       // lhs.rating == rhs.rating &&
         lhs.ingredientiPrincipali == rhs.ingredientiPrincipali &&
         lhs.ingredientiSecondari == rhs.ingredientiSecondari &&
         lhs.elencoIngredientiOff == rhs.elencoIngredientiOff &&
         lhs.idIngredienteDaSostituire == rhs.idIngredienteDaSostituire &&
-        lhs.categoriaMenuDEPRECATA == rhs.categoriaMenuDEPRECATA &&
         lhs.categoriaMenu == rhs.categoriaMenu &&
-      //  lhs.allergeni == rhs.allergeni &&
-        lhs.dieteCompatibili == rhs.dieteCompatibili &&
         lhs.mostraDieteCompatibili == rhs.mostraDieteCompatibili &&
         lhs.pricingPiatto == rhs.pricingPiatto &&
-        lhs.percorsoProdotto == rhs.percorsoProdotto &&
-       // lhs.sostituzioneIngredientiTemporanea == rhs.sostituzioneIngredientiTemporanea &&
-        lhs.aBaseDi == rhs.aBaseDi
-       // dobbiamo specificare tutte le uguaglianze altrimenti gli enumScroll non mi funzionano perchè non riesce a confrontare i valori
-    }
-    
-  //  var id: String { creaID(fromValue: self.intestazione) } // deprecata 18.08
-    var id: String = UUID().uuidString
-    
-    var intestazione: String = ""
-    var descrizione: String = ""
-  //  var rating: String // deprecata in futuro - sostituire con array di tuple (Voto,Commento)
-  //  var rating: [DishRatingModel] = [] // deprecata 13.09
-    var rifReviews: [String] = [] // sostituisce il [DishRatingModel] con dei riferimenti allo stesso - vedi nota vocale 13.09
+        lhs.percorsoProdotto == rhs.percorsoProdotto
 
+    }
+
+    var id: String
+    var percorsoProdotto:PercorsoProdotto
+    
+    var intestazione: String
+    var descrizione: String
+    var rifReviews: [String] // Nota 13.09
+    
+    var ingredientiPrincipali: [String]
+    var ingredientiSecondari: [String]
    
+    var elencoIngredientiOff: [String:String] // id Sostituito: idSOSTITUTO
+    var idIngredienteDaSostituire: String? // Nota 30.08
     
-  //  var ingredientiPrincipaliDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
-  //  var ingredientiSecondariDEPRECATO: [IngredientModel] = [] // deprecato in futuro (conclusa deprecazione il 29.08) - Sostituito dal riferimento
-   // var elencoIngredientiOffDEPRECATO: [String:IngredientModel?] = [:] // deprecato in futuro(29.08 untill 31.08 ) - sostituire con String:String?
+    var categoriaMenu: String
+    var mostraDieteCompatibili: Bool
+
+    var status: StatusModel
+    var pricingPiatto:[DishFormat]
     
-    var ingredientiPrincipali: [String] = [] // id IngredientModel
-    var ingredientiSecondari: [String] = [] // id IngredientModel
-   
-    var elencoIngredientiOff: [String:String] = [:] // id Sostituito: idSOSTITUTO
-    var idIngredienteDaSostituire: String? // è una proprietà di servizio che ci serve a bypassare lo status di inPausa per tranciare un ingrediente che probabilmente andrà sostituito. Necessario perchè col cambio da Model a riferimento nella View delle sostituzioni la visualizzazione dell'ingrediente da sostituire richiederebbe il cambio di status e dunque un pò di macello. Vedi Nota Vocale 30.08
-    
-    var categoriaMenu: String = "" // riferimento della CategoriaMenu
-   
-    var mostraDieteCompatibili: Bool = false
-    
-    // deprecate
-    
-    var status: StatusModel = .bozza() // deprecata in futuro per passaggio ai riferimenti
-    var pricingPiatto:[DishFormat] = []//[DishFormat(type: .mandatory)] // deprecata in futuro per passaggio ai riferimenti
-  //  var allergeni: [AllergeniIngrediente] = [] // derivati dagli ingredienti // deprecata in futuro - sostituita da un metodo // deprecata 12.09
-    var categoriaMenuDEPRECATA: CategoriaMenu = .defaultValue // deprecata in futuro
-    var dieteCompatibili:[TipoDieta] = [.standard] // derivate dagli ingredienti // deprecata in futuro - sostituire con un metodo
-    var aBaseDi:OrigineIngrediente = .defaultValue // da implementare || derivata dagli ingredienti // deprecata in futuro
-    
-    
-    let test = calcolaAllergeniNelPiatto
-    
-    // end deprecate
-       
-   /* init() {
+    init() {
         
+        self.percorsoProdotto = .preparazioneFood
+        self.id = UUID().uuidString
         self.intestazione = ""
         self.descrizione = ""
-     //   self.rating = ""
-        self.status = .vuoto
+        self.rifReviews = []
         self.ingredientiPrincipali = []
         self.ingredientiSecondari = []
-        self.categoriaMenu = .defaultValue
-      //  self.areAllergeniOk = false
-        self.allergeni = []
-        self.dieteCompatibili = [.standard]
-        self.pricingPiatto =  [DishFormat(type: .mandatory)]
- 
-    } */
-    
+        self.elencoIngredientiOff = [:]
+        self.idIngredienteDaSostituire = nil
+        self.categoriaMenu = CategoriaMenu.defaultValue.id
+        self.mostraDieteCompatibili = false
+        self.status = .bozza()
+        self.pricingPiatto = []
+        
+    }
+
     init(percorsoProdotto: PercorsoProdotto, id: String, intestazione: String, descrizione: String, rifReviews: [String], ingredientiPrincipali: [String], ingredientiSecondari: [String], elencoIngredientiOff: [String : String], idIngredienteDaSostituire: String? = nil, categoriaMenu: String, mostraDieteCompatibili: Bool, status: StatusModel, pricingPiatto: [DishFormat], categoriaMenuDEPRECATA: CategoriaMenu, dieteCompatibili: [TipoDieta], aBaseDi: OrigineIngrediente) {
         
         self.percorsoProdotto = percorsoProdotto
@@ -118,10 +85,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         self.mostraDieteCompatibili = mostraDieteCompatibili
         self.status = status
         self.pricingPiatto = pricingPiatto
-        
-        self.categoriaMenuDEPRECATA = categoriaMenuDEPRECATA
-        self.dieteCompatibili = dieteCompatibili
-        self.aBaseDi = aBaseDi
+
     }
     
     init(id:String = UUID().uuidString) {
@@ -135,16 +99,13 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         self.ingredientiSecondari = []
         self.elencoIngredientiOff = [:]
         self.idIngredienteDaSostituire = nil
-        self.categoriaMenu = ""
+        self.categoriaMenu = CategoriaMenu.defaultValue.id
         self.mostraDieteCompatibili = false
         self.status = .bozza()
         self.pricingPiatto = []
         
-        self.categoriaMenuDEPRECATA = .defaultValue
-        self.dieteCompatibili = [.standard]
-        self.aBaseDi = .defaultValue
+
     }
-    
     
     // MyProCloudPack_L1
     
@@ -152,6 +113,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         
         let percorsoInt = frDoc[DataBaseField.percorsoProdotto] as? Int ?? 0
         let statusInt = frDoc[DataBaseField.status] as? Int ?? 0
+        let priceMap = frDoc[DataBaseField.pricingPiatto] as? [[String:Any]] ?? []
         
         self.percorsoProdotto = DishModel.PercorsoProdotto.convertiInCase(fromNumber: percorsoInt)
         self.id = frDoc.documentID
@@ -165,16 +127,8 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         self.categoriaMenu = frDoc[DataBaseField.categoriaMenu] as? String ?? ""
         self.mostraDieteCompatibili = frDoc[DataBaseField.mostraDieteCompatibili] as? Bool ?? false
         self.status = StatusModel.convertiInCase(fromNumber: statusInt)
-        
-        self.pricingPiatto = [] /*[frDoc[DataBaseField.pricingPiatto].map({ docSnap in
-            if let snap = docSnap as? QueryDocumentSnapshot {
-                DishFormat(frDoc: snap)
-            }
-        }) as? [DishFormat] ?? []] */ // 20.11 -> capire come fare
-        
-        self.categoriaMenuDEPRECATA = .defaultValue
-        self.dieteCompatibili = [.standard]
-        self.aBaseDi = .defaultValue
+        self.pricingPiatto = priceMap.map({DishFormat(frMapData: $0)})
+ 
     }
     
     func documentDataForFirebaseSavingAction() -> [String : Any] {
@@ -213,10 +167,8 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         
     }
     
-    
     //
-    
-    
+
     func creaID(fromValue: String) -> String {
         print("DishModel/creaID()")
       return fromValue.replacingOccurrences(of: " ", with: "").lowercased()
@@ -240,11 +192,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
-   /* func returnModelTypeName() -> String {
-        "Piatto"
-    } */ // deprecata
-    
+
     // SearchPack
     
     static func sortModelInstance(lhs: DishModel, rhs: DishModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
@@ -277,7 +225,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             return lhs.intestazione < rhs.intestazione
         }
     }
-    
     
     func modelStringResearch(string: String, readOnlyVM:AccounterVM?) -> Bool {
         
@@ -316,8 +263,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         
         filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) &&
         
-      /*  filterProperty.compareCollectToCollectIntero(localCollection: self.allIngredientsRif(), filterCollection: \.rifIngredientiPRP) && */ // deprecata 04.11
-        
         self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.produzione, quality: filterProperty.produzioneING) &&
         
         self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.provenienza, quality: filterProperty.provenienzaING) &&
@@ -325,7 +270,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         filterProperty.comparePropertyToProperty(local: basePreparazione, filter: \.basePRP)
         
     }
-    
     
     // end SearchPack
     
@@ -344,13 +288,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         let isDelloChef = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delloChef)
 
         let isDisponibile = self.status.checkStatusTransition(check: .disponibile)
-        
-       /* let allMenuWhereIsIn = viewModel.allMyMenu.filter({
-            $0.tipologia != .delGiorno &&
-            $0.tipologia != .delloChef &&
-            $0.rifDishIn.contains(self.id)
-        }) */
-        
+
         let(_,allMenuMinusDS,allWhereDishIsIn) = viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.id)
         
       return VStack {
@@ -385,21 +323,15 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
               }// end label menu
 
           } // end if
-          
-          // Test 21.09
-          
+
           Button {
               
               viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: self.id, menuDiSistema: .delGiorno)
 
           } label: {
               HStack{
-                  //Text(isDelGiorno ? "Rimuovi 🍽️ del Giorno" : "Imposta 🍽️ del Giorno")
-                /*  let productIcon = self.percorsoProdotto.imageAssociated()
                   
-                  Text(isDelGiorno ? "Rimuovi \(productIcon) del Giorno" : "Imposta \(productIcon) del Giorno")*/
                   Text(isDelGiorno ? "[-] dal Menu del Giorno" : "[+] nel Menu del Giorno")
-               
                   Image(systemName:isDelGiorno ? "clock.badge.xmark" : "clock.badge.checkmark")
               }
           }.disabled(!isDisponibile)
@@ -457,9 +389,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
                           viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(ingDS))
                       }
                   }
-                  
-                  
-                  
               } label: {
                   HStack{
                       Text("Scorte \(statoScorte.simpleDescription())")
@@ -480,12 +409,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
                   }
               }
           }
-          
-       
-          
-          
         }
-
     }
     
     /// conta gli ingredienti secondari e principali
@@ -517,11 +441,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     
     /// Controlla la presenza dell'idIngrediente sia fra gl iingredienti Principali e Secondari, sia fra i sostituti
     func checkIngredientsIn(idIngrediente:String) -> Bool {
-        
-      /*  let allIDSostituti = self.elencoIngredientiOff.values
-   
-        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari + allIDSostituti */
-       // let condition = allTheIngredients.contains(where: {$0 == idIngrediente })
+
         let allTheIngredients = self.allIngredientsRif()
         let condition = allTheIngredients.contains(idIngrediente)
         
@@ -552,65 +472,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         
     }
     
-   /* func sostituzionePermanenteIngrediente(idDaSostituire:String) {
-        
-        guard let pathIngrediente = self.individuaPathIngrediente(idIngrediente: idDaSostituire) else { return }
-        
-        let index = self[keyPath: pathIngrediente].firstIndex(of: idDaSostituire)
-        
-        if let sostituto = self.elencoIngredientiOff[idDaSostituire] {
-            
-            
-            
-        } else {
-            
-            self[keyPath: pathIngrediente].remove(at: index!)
-            
-        }
-        
-        
-    } */
-    /*
-    /// ritorna solo gli ingredienti Attivi, dunque toglie gli eventuali ingredienti SOSTITUITI e li rimpiazza con i SOSTITUTI
-    private func ritornaTuttiGliIngredientiAttivi() -> [IngredientModel] {
-        
-        let allTheIngredients = self.ingredientiPrincipaliDEPRECATO + self.ingredientiSecondariDEPRECATO
-        
-        guard !self.elencoIngredientiOffDEPRECATO.isEmpty else {
-            return allTheIngredients
-        }
-        
-        var allFinalIngredients = allTheIngredients
-    
-        for (key,value) in self.elencoIngredientiOffDEPRECATO {
-            
-            if allTheIngredients.contains(where: {$0.id == key}) && value != nil {
-                
-                let position = allFinalIngredients.firstIndex{$0.id == key}
-                allFinalIngredients[position!] = value!
-            }
-            
-        }
-        
-        
-        
-      /*  for ingredient in allTheIngredients {
-            
-            if allTheKeys.contains(ingredient.id) {
-
-                let position = allFinalIngredients.firstIndex{$0.id == ingredient.id}
-                self.elencoIngredientiOff[ingredient.id]
-                
-                if let newOne = self.elencoIngredientiOff[ingredient.id] {
-                    allFinalIngredients[position!] = newOne!
-                }
-            }
-        } */
-        
-        return allFinalIngredients
-        
-    } */ // deprecata 26.08
-    
     /// ritorna gli ingredienti meno le bozze e gli archiviati. Comprende i completi(.pubblici) e i completi(.inPausa)
     func allMinusArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
         
@@ -636,8 +497,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             else { return [] }
         }
         
-        //
-    
         let allMinusBozzeEArchiviati = allMinusArchiviati(viewModel: viewModel)
 
         let allInPausa = allMinusBozzeEArchiviati.filter({
@@ -690,73 +549,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         
     }
     
- /*
-    /// ritorna gli ingredienti Attivi sostituendo gli ingredienti inPausa con gli eventuali sostituti
-    func allIngredientsAttivi(viewModel:AccounterVM) -> [IngredientModel] {
-        
-        let allMinusBozzeEArchiviati = allMinusBozzeEArchiviati(viewModel: viewModel)
-
-        let allInPausa = allMinusBozzeEArchiviati.filter({
-            $0.status.checkStatusTransition(check: .inPausa)
-          //  $0.status == .completo(.inPausa)
-            })
-        
-        guard !allInPausa.isEmpty else { return allMinusBozzeEArchiviati }
-        
-        let onlyAvaible = allMinusBozzeEArchiviati.filter({!allInPausa.contains($0)})
-        
-        guard !self.elencoIngredientiOff.isEmpty else {return onlyAvaible}
-                
-        var allActiveIDs = allMinusBozzeEArchiviati.map({$0.id})
-    
-        for (key,value) in self.elencoIngredientiOff {
-            
-            if allInPausa.contains(where: {$0.id == key}) {
-                
-                let(isActive,_,_) = viewModel.infoFromId(id: value, modelPath: \.allMyIngredients)
-                let position = allActiveIDs.firstIndex{$0 == key}
-                
-                if isActive {
-                    allActiveIDs[position!] = value
-                } else { allActiveIDs.remove(at: position!)}
-                
-            }
-            
-        }
-        
-        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.allMyIngredients)
-        
-        return allActiveModels
-        
-    } */ //backUp 12.09 -> per semplificazione e migliorie
-    /// ritorna un booleano indicante la presenza o meno di tutti ingredienti Bio
-   /* func areAllIngredientBio(viewModel:AccounterVM) -> Bool {
-        
-        let allIngredient = self.allIngredientsAttivi(viewModel: viewModel)
-        
-        guard !allIngredient.isEmpty else { return false }
-        
-        for ingredient in allIngredient {
-            if ingredient.produzione == .biologico { continue }
-            else { return false }
-        }
-        return true
-    }*/ // 19.10 deprecata - sostituito da una generica
-   
-    /// ritorna un booleano indicante la presenza o meno di ingredienti congelati/surgelati
-   /* func areAllIngredientFreshOr(viewModel:AccounterVM) -> Bool {
-        
-        let allIngredient = self.allIngredientsAttivi(viewModel: viewModel)
-        
-        guard !allIngredient.isEmpty else { return true }
-        
-        for ingredient in allIngredient {
-            if ingredient.conservazione == .altro { continue }
-            else { return false }
-        }
-        return true
-    }*/ // 19.10 deprecata - sostituito da una generica
-    
     private func preCallHasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T?) -> Bool {
         
         guard quality != nil else { return true }
@@ -776,41 +568,10 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         }
         return true
     }
-    /*
-    /// ritorna solo gli ingredienti Attivi, dunque toglie gli eventuali ingredienti SOSTITUITI e li rimpiazza con i SOSTITUTI
-    private func allIDIngredientiAttivi() -> [String] {
-        
-        let allTheIngredients = self.ingredientiPrincipali + self.ingredientiSecondari
-        
-        guard !self.elencoIngredientiOff.isEmpty else {
-            return allTheIngredients
-        }
-        
-        var allFinalIngredients = allTheIngredients
-    
-        for (key,value) in self.elencoIngredientiOff {
-            
-            if allTheIngredients.contains(where: {$0 == key}) && value != nil {
-                
-                let position = allFinalIngredients.firstIndex{$0 == key}
-                allFinalIngredients[position!] = value!
-            }
-            
-        }
-        
-        return allFinalIngredients
-        
-    }*/ // deprecata 30.08 -> Trasformata per ritornare un array di IngredientModel attivi
      
     func calcolaAllergeniNelPiatto(viewModel:AccounterVM) -> [AllergeniIngrediente] {
       
-        // modifica 30.08
-       // let allIDIngredient = allIDIngredientiAttivi()
-        
-       // let allIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIDIngredient, modelPath: \.allMyIngredients)
         let allIngredients = self.allIngredientsAttivi(viewModel: viewModel)
-        
-        // end 30.08
         var allergeniPiatto:[AllergeniIngrediente] = []
         
              for ingredient in allIngredients {
@@ -828,17 +589,10 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     
     /// Controlla l'origine degli ingredienti e restituisce un array con le diete compatibili
     func returnDietAvaible(viewModel:AccounterVM) -> (inDishTipologia:[TipoDieta],inStringa:[String]) {
-
-        // step 0
-        // Modifica 30.08
-      //  let allIDIngredient = self.allIDIngredientiAttivi()
-        
-       // let allModelIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIDIngredient, modelPath: \.allMyIngredients)
         
         let allModelIngredients = self.allIngredientsAttivi(viewModel: viewModel)
-        // end 30.08
-        // step 1 ->
         
+        // step 1 ->
         var animalOrFish: [IngredientModel] = []
         var milkIn: [IngredientModel] = []
         var glutenIn: [IngredientModel] = []
@@ -914,7 +668,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse come Int, e un array con i modelli delle recensioni
     func ratingInfo(readOnlyViewModel:AccounterVM) -> (media:Double,count:Int,allModelReview:[DishRatingModel]) {
         
-     //   let allLocalReviews:[DishRatingModel] = viewModel.allMyReviews.filter({$0.idPiatto == self.id}) // vedi nota vocale 13.09
+        // Nota 13.09
 
         let allLocalReviews:[DishRatingModel] = readOnlyViewModel.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.allMyReviews)
         
@@ -924,26 +678,8 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         }
         
         let ratingCount: Int = allLocalReviews.count // item.rating.count
-        //let stringCount = String(ratingCount)
-        
-        // calcolo media Ponderata
-
-      /*  var sommaVoti: Double = 0.0
-        var sommaPesi: Double = 0.0
-        
-        for review in allLocalReviews {
-            
-         //   if let voto = Double(rating.voto) { sommaVoti += voto }
-            let(voto,peso) = review.votoEPeso()
-            sommaVoti += (voto * peso)
-            sommaPesi += peso
-        }
-        
-        let mediaPonderata = sommaVoti / sommaPesi
-        */
-       let mediaPonderata = csCalcoloMediaRecensioni(elementi: allLocalReviews)
-      //  mediaInString = String(format:"%.1f", mediaPonderata)
-        
+        let mediaPonderata = csCalcoloMediaRecensioni(elementi: allLocalReviews)
+ 
         return (mediaPonderata,ratingCount,allLocalReviews)
         
     }
@@ -957,7 +693,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
      
     }
     
-  
     func estrapolaPrezzoMandatoryMaggiore() -> Double {
         
         guard let labelPrice = self.pricingPiatto.first(where: {$0.type == .mandatory}) else { return 0.0 }
@@ -965,84 +700,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         return price
         
     }
-    
-    /// Torna il numero di recensioni, il numero rilasciato nelle 24h, la media generale, e la media delle ultime 10
-    /*func ratingInfoPlus(readOnlyVM:AccounterVM) -> (totali:Int,l24:Int,mediaGen:Double,ml10:Double) {
-        
-        let currentDate = Date()
-        let totalCount = self.rifReviews.count //.0
-        
-        let allRevModel = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.allMyReviews)
-        
-        let last24Count = allRevModel.filter({
-            $0.dataRilascio < currentDate &&
-            $0.dataRilascio > currentDate.addingTimeInterval(-86400)
-        }).count // .1
- 
-        let reviewByDate = allRevModel.sorted(by: {$0.dataRilascio > $1.dataRilascio})
-        
-        let onlyLastTen = reviewByDate.prefix(10)
-        let onlyL10 = Array(onlyLastTen)
-        
-        let mediaGeneralePonderata = csCalcoloMediaRecensioni(elementi: allRevModel) //.2
-        let mediaL10 = csCalcoloMediaRecensioni(elementi: onlyL10) //.3
-        
-        return (totalCount,last24Count,mediaGeneralePonderata,mediaL10)
-    } */// 21.10 deprecata perchè sostituita con una gemella nel viewModel
-    
-  /*  func ratingInfoRange(readOnlyVM:AccounterVM) -> (negative:Int,positive:Int,top:Int,complete:Int,trend:Int,trendComplete:Int){
-        
-        let allRev = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.allMyReviews)
-        
-        let allVote = allRev.compactMap({Double($0.voto)})
-        
-        let negative = allVote.filter({$0 < 6.0}).count//.0
-        let positive = allVote.filter({$0 >= 6.0}).count//.1
-        let topRange = allVote.filter({$0 >= 9.0}).count //.2
-        
-        let complete = allRev.filter({
-            $0.image != "" &&
-            $0.titolo != "" &&
-            $0.commento != ""
-        }).count //.3
-        
-        // Analisi ultime 10 per indicare il trend
-       
-        let allByDate = allRev.sorted(by: {$0.dataRilascio > $1.dataRilascio})
-        let lastTen = allByDate.prefix(10)
-        let lastTenArray = Array(lastTen)
-        
-        let l10AllVote = lastTenArray.compactMap({Double($0.voto)})
-        
-        let l10negative = l10AllVote.filter({$0 < 6.0}).count//.0
-        let l10positive = l10AllVote.filter({$0 >= 6.0}).count//.1
-        let l10topRange = l10AllVote.filter({$0 >= 9.0}).count //.2
-        
-        var trendValue:Int = 0 // 1 is Negativo / 5 is Positivo / 10 is Top Range
-        
-        if l10negative > l10positive { trendValue = 1 }
-        else if l10positive > l10negative {
-            
-            let value = Double(l10topRange) / Double(l10positive)
-            
-            if value >= 0.5 { trendValue = 10 }
-            else { trendValue = 5}
-        }
-        
-        let l10Complete = lastTenArray.filter({
-            $0.image != "" &&
-            $0.titolo != "" &&
-            $0.commento != ""
-        }).count
-        
-        let completeFraLast10 = Double(l10Complete) / Double(lastTenArray.count)
-        
-        var trendComplete = 1
-        if completeFraLast10 >= 0.5 { trendComplete = 2 }
-        // trend completezza 1 negativo 2 positivo
-        return (negative,positive,topRange,complete,trendValue,trendComplete)
-    }*/ //deprecata 21.10 - messa nel viewModel. Un metodo unico per analizzare il singolo piatto e l'intero comparto recensioni
-    
     
     enum BasePreparazione:MyProEnumPack_L0 {
 
@@ -1147,21 +804,6 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
             }
         }
         
-      /*  func informalDescription() -> String {
-            
-            switch self {
-                
-            case .prodottoFinito:
-                return "Prodotto in rivendita"
-            case .preparazioneFood:
-                return "Preparazione food"
-            case .preparazioneBeverage:
-                return "Preparazione beverage"
-                
-            }
-            
-        }*/
-        
         func extendedDescription() -> String {
             
             switch self {
@@ -1174,5 +816,3 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     }
     
 }
-
-
