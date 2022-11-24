@@ -8,16 +8,12 @@
 import Foundation
 import Firebase
 
-struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L0,MyProCloudPack_L1/*,MyEnumProtocol,MyEnumProtocolMapConform */{
+struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L0,MyProCloudPack_L1 {
    
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]> {
         \.allMyCategories
     }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    } // forse inutile
-    
+ 
     static func == (lhs:CategoriaMenu, rhs:CategoriaMenu) -> Bool {
         
         lhs.id == rhs.id &&
@@ -27,27 +23,22 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
     } // forse inutile
      
     static var allCases: [CategoriaMenu] = [] // Deprecata 02.06 -> Passa i dati ad una published nel viewModel // deprecata definitivamente 13.09
-    
     static var defaultValue: CategoriaMenu = CategoriaMenu()
     
-  //  var id: String { self.createId() }
     var id: String
     
     var intestazione: String
     var image: String
     var descrizione: String
-  //  var listPositionOrder: Int
-    
-   /* func returnModelTypeName() -> String {
-        "Categoria Menu"
-    } */ // deprecata
-    
+    var listIndex:Int?
+        
     init(id: String, intestazione: String, image: String, descrizione: String) {
-        // Probabilmente Inutile - Verificate
+        // Probabilmente Inutile - Verificare
         self.id = id
         self.intestazione = intestazione
         self.image = image
         self.descrizione = descrizione
+        
     }
     
     init() {
@@ -66,15 +57,18 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
         self.intestazione = frDoc[DataBaseField.intestazione] as? String ?? ""
         self.image = frDoc[DataBaseField.image] as? String ?? ""
         self.descrizione = frDoc[DataBaseField.descrizione] as? String ?? ""
+        self.listIndex = frDoc[DataBaseField.listIndex] as? Int ?? nil
     }
     
-    func documentDataForFirebaseSavingAction() -> [String : Any] {
+    func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
         
             DataBaseField.intestazione : self.intestazione,
             DataBaseField.descrizione : self.descrizione,
-            DataBaseField.image : self.image
+            DataBaseField.image : self.image,
+            /// nel caso di errore, se il valore passato non è valido, salviamo una stringa vuota, di modo che al ritorno non trovando un Int imposti l'index su Nil.
+            DataBaseField.listIndex: positionIndex ?? ""
         
         ]
         
@@ -86,10 +80,15 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
         static let intestazione = "intestazione"
         static let descrizione = "descrizione"
         static let image = "image"
+        static let listIndex = "listIndex"
         
     }
     
     //
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    } // forse inutile
     
     
     func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String,imageAssociated:String) {
@@ -133,21 +132,5 @@ struct CategoriaMenu:MyProStarterPack_L1,MyProEnumPack_L2,MyProDescriptionPack_L
         return (dish.count,dish)
     }
     
-    
-    
-    
-    // end
-    
-    
-   /* func addNew() {
-        
-        CategoriaMenu.allCases.insert(self, at: self.listPositionOrder)
-       
-    
-    } */
-    
-    
-    
-    
-    
+ 
 }

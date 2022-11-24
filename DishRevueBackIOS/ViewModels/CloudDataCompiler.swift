@@ -22,16 +22,7 @@ struct CloudDataStore {
     var allMyCategories: [CategoriaMenu] // caricato
     var allMyReviews:[DishRatingModel] // caricato
     
-  /*  let pathDictionary:[String:PartialKeyPath<CloudDataStore>] = [
-    
-        CloudCollectionKey.ingredient.rawValue:\CloudDataStore.allMyIngredients,
-        CloudCollectionKey.dish.rawValue:\CloudDataStore.allMyDish
-    
-    ] */
-    
     enum CloudCollectionKey:String {
-        
-      /*  static var allOmoCollection:[CloudCollectionKey] = [.ingredient,.dish,.menu,.properties,.categories,.reviews] */
         
         case ingredient = "userIngredients"
         case dish = "userPreparazioniEprodotti"
@@ -42,41 +33,8 @@ struct CloudDataStore {
                 
         case anyDocument = "datiDiFunzionamento"
     
-        
-      /*  func retrieveCloudDataKP(doc:QueryDocumentSnapshot,cloudDataInstance: inout CloudDataStore) {
-            
-            switch self {
-                
-            case .ingredient:
-                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyIngredients)
-            case .dish:
-                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyDish)
-            case .menu:
-                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyMenu)
-            case .properties:
-                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyProperties)
-            case .categories:
-                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyCategories)
-            case .reviews:
-                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyReviews)
 
-            default:
-                print("Retrieve cloudData default value - need to be setted")
-                genericDocSnapRetrieve(doc: doc, cloudDataInstance: &cloudDataInstance, cloudDataKP: \.allMyIngredients)
-            }
-        }
-        
-        private func genericDocSnapRetrieve<M:MyProCloudPack_L1>(doc:QueryDocumentSnapshot,cloudDataInstance: inout CloudDataStore,cloudDataKP:WritableKeyPath<CloudDataStore,[M]>) {
-            
-            let element = M.init(frDoc: doc)
-            cloudDataInstance[keyPath: cloudDataKP].append(element)
-            print("retrieve generic element from id: \(element.id)")
-            
-        } */ // deprecato 22.11
-        
-        
     }
-    
     
     init() {
         
@@ -105,7 +63,6 @@ struct CloudDataStore {
     
     
 }
-
 
 struct CloudDataCompiler {
     
@@ -174,141 +131,7 @@ struct CloudDataCompiler {
                 handler(cloudData[keyPath: singleKP],1)
             }
     }
-    
-    
-  /*  func downloadFromFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
-        
-       // print("Download data from firebase \(Thread.current)")
-        print("ref_userDocument? = \(ref_userDocument != nil)")
-        
-       let userSetup_doc = ref_userDocument?.collection(CloudDataStore.CloudCollectionKey.anyDocument.rawValue).document("userSetup")
-
-         userSetup_doc?.getDocument { docSnapshot, error in
-               
-               guard
-                error == nil,
-                docSnapshot?.exists == true else {
-                   handler(fakeCloudData)
-                   return } // mettere magari un aleert
-               print("no error: \(Thread.current)")
-               print("document Exist")
-     
-               handler(self.getDataFromSnapshot(docSnapshot: docSnapshot))
-                
-           }
-        
-    }
-    
-    
-   private func getDataFromSnapshot(docSnapshot:DocumentSnapshot?) -> CloudDataStore {
-
-      var cloudData = CloudDataStore()
-    
-       if let document = docSnapshot {
-           
-               if let value_1 = document.get("mettiInPausaDishByING") as? Int {
-                   
-                   cloudData.setupAccount.mettiInPausaDishByIngredient = AccountSetup.ActionValue.convertiInCase(fromNumber: value_1)
-                   
-               }
-               
-               if let value_2 = document.get("startCountDownValue") as? Int {
-                   
-                   cloudData.setupAccount.startCountDownMenuAt = AccountSetup.TimeValue.convertiInCase(fromNumber: value_2)
-               }
-               
-           
-       } else {
-           
-           cloudData = fakeCloudData
-       }
-       
-       print("cloudData.time = \(cloudData.setupAccount.startCountDownMenuAt.rawValue)")
-       return cloudData
-    } */ // deprecato 22.11
-
-    
-   /* func downloadIngredientFirebase(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
-        
-       var cloudData:CloudDataStore = CloudDataStore()
-        
-       let userSetup_doc = ref_userDocument?.collection(CloudDataStore.CloudCollectionKey.ingredient.rawValue)
-
-         userSetup_doc?.getDocuments { docsSnapshot, error in
-               
-             guard error == nil, docsSnapshot?.documents != nil else { return }
-             
-             for doc in docsSnapshot!.documents {
-                 let ing = IngredientModel(frDoc: doc)
-                 cloudData.allMyIngredients.append(ing)
-                 
-             }
-              handler(cloudData)
-           }
-        
-    } */
-    
-    /// esegue un download per documenti omogenei contenuti in una collection
-  /*  func downloadFromFirebase_allMyElement(handler: @escaping (_ cloudData: CloudDataStore) -> ()) {
-        
-        var cloudData:CloudDataStore = CloudDataStore()
-        
-        let allCollectionKey_omo = CloudDataStore.CloudCollectionKey.allOmoCollection
-        let allCollection_ref = allCollectionKey_omo.map({ref_userDocument?.collection($0.rawValue)})
-        
-        for ref in allCollection_ref {
-            
-            let refID = ref?.collectionID ?? ""
-            let collectionCase = CloudDataStore.CloudCollectionKey(rawValue: refID)
-            
-            ref?.getDocuments { queryDoc, error in
-                
-            guard error == nil, queryDoc?.documents != nil else { return }
-                
-            print("ref?.getDocuments space")
-            for doc in queryDoc!.documents {
-                print("single doc space")
-                if collectionCase != nil  {
-                    
-                    collectionCase!.retrieveCloudDataKP(doc: doc, cloudDataInstance: &cloudData)
-                    
-                    }
-                }
-            }
-        }
-        print("Handler CloudData Line")
-        handler(cloudData)
-        // update and handle cloudData
-    } */ // deprecata 22.11
-    
-    
-        
-   /* private func genericDocSnapRetrieve<M:MyProCloudPack_L1>(doc:QueryDocumentSnapshot,cloudDataInstance: inout CloudDataStore,cloudDataKP:WritableKeyPath<CloudDataStore,[M]>?) {
-        
-        let element = M.init(frDoc: doc)
-        cloudDataInstance[keyPath: cloudDataKP!].append(element)
-        print("retrieve generic element from id: \(element.id)")
-        
-    } */
-    
-    /*
-        
-       let userSetup_doc = ref_userDocument?.collection(CloudDataStore.CloudCollectionKey.ingredient.rawValue)
-
-         userSetup_doc?.getDocuments { docsSnapshot, error in
-               
-             guard error == nil, docsSnapshot?.documents != nil else { return }
-             
-             for doc in docsSnapshot!.documents {
-                 let ing = IngredientModel(frDoc: doc)
-                 cloudData.allMyIngredients.append(ing)
-                 
-             }
-              handler(cloudData)
-           }
-        
-    */
-   
+  
     
     // Salvataggio Dati
     
@@ -318,7 +141,7 @@ struct CloudDataCompiler {
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyDish], collection: .dish)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyMenu], collection: .menu)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyProperties], collection: .properties)
-        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyCategories], collection: .categories)
+        saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyCategories], collection: .categories, retrieveElementIndex: true)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyReviews], collection: .reviews)
         
         saveSingleDocument(doc: dataCloud[keyPath: \.setupAccount], collection: .anyDocument)
@@ -337,22 +160,26 @@ struct CloudDataCompiler {
         
     }
     
-    /// La usiamo per salvare un array di documenti omogenei (solo ingredienti, o solo piatti ecc) in una collezione MonoTono
-    private func saveMultipleDocuments<M:MyProCloudPack_L1>(docs:[M],collection:CloudDataStore.CloudCollectionKey) {
+    /// La usiamo per salvare un array di documenti omogenei (solo ingredienti, o solo piatti ecc) in una collezione MonoTono. Il retrieve serve a recuperare la posizione nell'array, per salvarla nel firebase. Creato appositamente le per le categorieMenu
+    private func saveMultipleDocuments<M:MyProCloudPack_L1>(docs:[M],collection:CloudDataStore.CloudCollectionKey,retrieveElementIndex:Bool = false) {
         
         if let ref_ingredienti:CollectionReference = ref_userDocument?.collection(collection.rawValue) {
             
             for element in docs {
                 
-                saveElement(document: ref_ingredienti.document(element.id), element: element)
+                let index:Int?
+                if retrieveElementIndex { index = docs.firstIndex(where:{ $0.id == element.id }) }
+                else { index = nil }
+                
+                saveElement(document: ref_ingredienti.document(element.id), element: element,elementIndex: index)
 
             }
         }
     }
     
-    private func saveElement<M:MyProCloudPack_L1>(document:DocumentReference?,element:M) {
+    private func saveElement<M:MyProCloudPack_L1>(document:DocumentReference?,element:M,elementIndex:Int? = nil) {
         
-        document?.setData(element.documentDataForFirebaseSavingAction(), merge: true) { error in
+        document?.setData(element.documentDataForFirebaseSavingAction(positionIndex: elementIndex), merge: true) { error in
                 
                 if error != nil { print("OPS!! Qualcosa non ha funzionato nel salvataggio su Firebase")}
                 else { print("Salvataggio su FireBase avvenuto con Successo - Mettere un Alert")}

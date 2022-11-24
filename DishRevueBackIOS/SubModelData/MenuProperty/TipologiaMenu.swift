@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
+enum PaxMenuFisso:MyProEnumPack_L1,MyProCloudPack_L0 /*:MyEnumProtocolMapConform */ {
     
     static var defaultValue: PaxMenuFisso = .uno
     static var allCases: [PaxMenuFisso] = [.uno,.due]
@@ -55,6 +55,14 @@ enum PaxMenuFisso:MyProEnumPack_L1 /*:MyEnumProtocolMapConform */ {
             return 1
         case .due:
             return 2
+        }
+    }
+    
+    static func convertiInCase(fromNumber: Int) -> PaxMenuFisso {
+        switch fromNumber {
+        case 1: return .uno
+        case 2: return .due
+        default: return .uno
         }
     }
 }
@@ -239,10 +247,11 @@ enum TipologiaMenu:Identifiable, Equatable, MyProEnumPack_L2 /*: MyEnumProtocol,
             
         } else if let combo = value as? [String:Any] {
             
-            let pax = combo["pax"] as? PaxMenuFisso ?? .uno
+            let paxInt = combo["pax"] as? Int ?? 1
+            let paxCase = PaxMenuFisso.convertiInCase(fromNumber: paxInt)
             let price = combo["price"] as? String ?? ""
             
-            return TipologiaMenu.fisso(persone: pax, costo: price)
+            return TipologiaMenu.fisso(persone: paxCase, costo: price)
             
         }
         

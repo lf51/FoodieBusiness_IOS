@@ -11,19 +11,15 @@ import Firebase
 
 struct Inventario:Equatable,MyProCloudPack_L1 {
 
-    // Nota 02.10
-    // Nota 21.11 -> Modifiche da fare
+    // Nota 02.10 // Nota 21.11
     var id:String
     
     var ingInEsaurimento:[String]
     var ingEsauriti:[String]
     var archivioNotaAcquisto: [String:String] // key:IdIngrediente || Value: Nota per l'acquisto
-    
-    var cronologiaAcquisti:[String:[String]] // key = idIngrediente || Value = [date di acquisto + nota] -> Creiamo una stringa combinata invece che una tupla e la scomponiamo con un algoritmo che separa la data dalla nota
-
-    var lockedId:[String:[String]] // speculare a cronologiaAcquisti.Contiene per ogni chiava(data) un array degli id a cui è stato cambiato lo stato.
-    
-    /// L'archivio ingredienti in esaurimento rende obsoleto l'uso di un archivio dell'inventario quando creiamo la lista della spesa. E' un dizionario che dovrà funzionare con una sola chiave, la data corrente.
+    /// Il value della cronologia è un array di stringge combo (data di acquisto + nota di acquisto)
+    var cronologiaAcquisti:[String:[String]] // key = idIngrediente || Value = [date di acquisto + nota]
+    var lockedId:[String:[String]] // Key: data || value:[id oggetti a cui è stato cambiato lo status]
     var archivioIngInEsaurimento: [String:[String]] // key:DataCorrente || value = [id ingredienti Esauriti depennati]
     
     init(id: String, ingInEsaurimento: [String], ingEsauriti: [String], archivioNotaAcquisto: [String : String], cronologiaAcquisti: [String : [String]], lockedId: [String : [String]], archivioIngInEsaurimento: [String : [String]]) {
@@ -66,7 +62,7 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
         
     }
     
-    func documentDataForFirebaseSavingAction() -> [String : Any] {
+    func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
         
@@ -93,8 +89,6 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
         
     }
     
-    //
-    
     // Method
     
     func allInventario() -> [String] {
@@ -107,114 +101,16 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
     func allInArrivo() -> [String] {
         
         let today = csTimeFormatter().data.string(from: Date())
-        
-       /*let inArrivo = cronologiaAcquisti.filter({
-            $0.value.contains(today)
-        }) */
+
         let inArrivo = cronologiaAcquisti.filter({
             $0.value.contains(where: {$0.hasPrefix(today)})
         })
-        
-        
+                
         return inArrivo.map({$0.key})
-        
-       /* var inArrivo:[String] = []
-        
-        for (k,v) in cronologiaAcquisti {
-            
-            if v.contains(today) { inArrivo.append(k) }
-            
-        }
-        return inArrivo */
+
     }
     
- /*   func inventarioFiltrato(viewModel:AccounterVM) -> EnumeratedSequence<[IngredientModel]> {
-        
-          let allIDing = self.allInventario()
-          let allING = viewModel.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
-          
-        let allVegetable = allING.filter({ $0.origine.returnTypeCase() == .vegetale })
-        let allMeat = allING.filter({
-              $0.origine.returnTypeCase() == .animale &&
-              !$0.allergeni.contains(.latte_e_derivati) &&
-              !$0.allergeni.contains(.molluschi) &&
-              !$0.allergeni.contains(.pesce) &&
-              !$0.allergeni.contains(.crostacei)
-          })
-        let allFish = allING.filter({
-              $0.allergeni.contains(.molluschi) ||
-              $0.allergeni.contains(.pesce) ||
-              $0.allergeni.contains(.crostacei)
-          })
-          
-        let allMilk = allING.filter({
-              $0.origine.returnTypeCase() == .animale &&
-              $0.allergeni.contains(.latte_e_derivati)
-          })
-        
-         /* allVegetable.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-           allMilk.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-           
-           allMeat.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-       
-           allFish.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           }) */
-        
-        return (allVegetable + allMilk + allMeat + allFish).enumerated()
-    } */
-    
-  /*  func inventarioFiltrato(viewModel:AccounterVM) -> EnumeratedSequence<[IngredientModel]> {
-        
-          let allIDing = self.allInventario()
-          let allING = viewModel.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
-          
-          var allVegetable = allING.filter({ $0.origine.returnTypeCase() == .vegetale })
-          var allMeat = allING.filter({
-              $0.origine.returnTypeCase() == .animale &&
-              !$0.allergeni.contains(.latte_e_derivati) &&
-              !$0.allergeni.contains(.molluschi) &&
-              !$0.allergeni.contains(.pesce) &&
-              !$0.allergeni.contains(.crostacei)
-          })
-          var allFish = allING.filter({
-              $0.allergeni.contains(.molluschi) ||
-              $0.allergeni.contains(.pesce) ||
-              $0.allergeni.contains(.crostacei)
-          })
-          
-          var allMilk = allING.filter({
-              $0.origine.returnTypeCase() == .animale &&
-              $0.allergeni.contains(.latte_e_derivati)
-          })
-        
-          allVegetable.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-           allMilk.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-           
-           allMeat.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-       
-           allFish.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-        
-        return (allVegetable + allMilk + allMeat + allFish).enumerated()
-    } */
-    
     func statoScorteIng(idIngredient:String) -> Inventario.TransitoScorte {
-        
-        //let today = csTimeFormatter().data.string(from: Date())
         
         if ingInEsaurimento.contains(idIngredient) {
             
@@ -226,32 +122,15 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
             return .esaurito
         }
         
-      /*  else if let key = cronologiaAcquisti[today] {
-            
-            if key.contains(idIngredient) { return .inArrivo }
-            else { return .inStock}
-        } */
-        
         else if let key = cronologiaAcquisti[idIngredient] {
             
             let today = csTimeFormatter().data.string(from: Date())
-            
-           /* if key.contains(today) { return .inArrivo }
-            else { return .inStock } */ // 14.10 modifica
             let filterKey = key.filter({$0.hasPrefix(today)})
+            
             if filterKey.isEmpty { return .inStock}
             else { return .inArrivo }
 
-            
         }
-        
-        
-      /*  else if cronologiaAcquisti[idIngredient] != nil {
-            
-            let today = csTimeFormatter().data.string(from: Date())
-            
-            if cronologiaAcquisti[idIngredient]!.contains(today) { return .inArrivo } else { return .inStock }
-        } */
         
         else {
             return .inStock
@@ -274,8 +153,9 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
         }
     }
     
+    /// riporta in stock nel caso di errore manuale di selezione nel menu interattivo. Funziona solo da ingredienti in esaurimento o esauriti.
     private mutating func reverseInStock(id:String) {
-        // riporta in stock in caso di errore nel menu interattivo. Funziona solo da ingredienti in esaurimento o esauriti
+     
         if self.ingInEsaurimento.contains(id) {
             self.ingInEsaurimento.removeAll(where: {$0 == id})
             
@@ -285,42 +165,9 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
         
     }
     
-   /* private mutating func convertiStatoInArrivoDEPRECATA(id:String) {
-        
-        let dataDiAcquisto = Date.now
-        let dataInString = csTimeFormatter().data.string(from: dataDiAcquisto)
-      
-        if self.ingInEsaurimento.contains(id) {
-            
-            self.ingInEsaurimento.removeAll(where: {$0 == id})
-           
-            if self.archivioIngInEsaurimento[dataInString] != nil {
-                self.archivioIngInEsaurimento[dataInString]!.append(id)
-            } else {
-                self.archivioIngInEsaurimento = [dataInString:[id]]
-            }
-            
-        } else {
-            self.ingEsauriti.removeAll(where: {$0 == id})
-        }
-
-       /* guard self.cronologiaAcquisti[dataInString] != nil else {
-            return self.cronologiaAcquisti[dataInString] = [id]
-        }
-        
-        self.cronologiaAcquisti[dataInString]!.append(id) */
-        
-        guard self.cronologiaAcquisti[id] != nil else {
-           return self.cronologiaAcquisti[id] = [dataInString]
-        }
-        
-        self.cronologiaAcquisti[id]!.append(dataInString)
- 
-    } */ // deprecata 14.10
     private mutating func convertiStatoInArrivo(id:String) {
         
         let dataDiAcquisto = Date.now
-        // 14.10
         let dataInString = csTimeFormatter().data.string(from: dataDiAcquisto)
      
         var dataPlusNota:String
@@ -332,10 +179,6 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
         } else {
             dataPlusNota = dataInString
         }
-        // end 14.10
-        
-     //   let dataPlusNota = "\(dataInString)-\(nota)"
-        // end Test
         
         if self.ingInEsaurimento.contains(id) {
             
@@ -373,50 +216,14 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
     
     /// ritorna la data dell'ultimo acquisto associato ad un idIngrediente
     func dataUltimoAcquisto(idIngrediente:String) -> String { // torna data in forma di stringa
-        
-      /*  var allDate:[TimeInterval:Date] = [:]
-        
-        let today = Date()
-        for (stringDate,idCollection) in self.cronologiaAcquisti {
-            
-            if idCollection.contains(idIngrediente) {
-                if let date:Date = csTimeFormatter().data.date(from: stringDate) {
-                    let distanceFromToday = date.distance(to: today)
-                    allDate[distanceFromToday] = date }
-            }
-        }
-        
-        if let smallerTimeInterval = allDate.keys.min() {
-            
-            let closerDate = allDate[smallerTimeInterval]!
-            let closerDateString = csTimeFormatter().data.string(from: closerDate)
-            
-            return closerDateString
-        } else {
-            return "nessuno"
-        } */
-        
+
         let last = self.cronologiaAcquisti[idIngrediente]?.last
-        
-        // innesto 18.10
-     /*   guard last?.contains("|") ?? false else { return last ?? "nessuno"}
-        
-        let split = last?.split(separator: "|")
-        return String(split?[0] ?? "nessuno") */
-      return splitDateFromNote(stringa: last ?? "nessuno").data
-        
-        //
-     //   return last ?? "nessuno"
-        
-      /* guard let key = self.cronologiaAcquisti[idIngrediente] else { return "nessuno"}
-        
-        let ultimoAcquisto = key.last
-        
-        return ultimoAcquisto ?? "nessuno" */
-        
+
+        return splitDateFromNote(stringa: last ?? "nessuno").data
+
     }
     
-    /// riceve la stringa di una nota e ne separa le due parti, la data dalla nota in se.
+    /// riceve la stringa di una nota e ne separa le due parti, la data dalla nota.
     func splitDateFromNote(stringa: String) -> (data:String,nota:String) {
         
         guard stringa.contains("|") else { return (stringa,"Nessuna Nota")}
@@ -430,16 +237,7 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
     
     /// ritorna la cronologia degli acquisti associati ad un idingrediente, ossia un array di date-note
     func logAcquisti(idIngrediente:String) -> [String] {
-        
-       /* var logDate:[String] = []
-        
-        for (stringDate,idCollection) in self.cronologiaAcquisti {
-         
-            if idCollection.contains(idIngrediente) { logDate.append(stringDate) }
-            
-        }
-        return logDate */
-        
+
        return self.cronologiaAcquisti[idIngrediente] ?? []
     }
     
@@ -451,20 +249,14 @@ struct Inventario:Equatable,MyProCloudPack_L1 {
             if nota.hasPrefix(currentDate) {
                 let prefixCount = currentDate.count
                 var cleanNote = nota
-                cleanNote.removeFirst(prefixCount + 1) // plus One per eliminare il | di demarcazione che mi viene utile per separare gli elementi nella cronologia acqisti
+                cleanNote.removeFirst(prefixCount + 1) // plus One per eliminare il | di demarcazione usato per separare gli elementi nella cronologia acquisti
                 return cleanNote
             } else { return "" }
             
         } else { return "" }
-            
-        
-     //   return self.archivioNotaAcquisto[idIngrediente] ?? ""
-        
-    }
-    
 
-    
-    
+    }
+
     enum TransitoScorte:String,MyProEnumPack_L0 {
         
         static var allCases:[TransitoScorte] = [.inStock,.inArrivo,.inEsaurimento,.esaurito]

@@ -19,7 +19,6 @@ class AuthPasswordLess: ObservableObject, Hashable {
     }
 
     @Published var currentUser: UserModel?
-    
     @Published var email: String = ""
     
     @Published var showAlert: Bool = false 
@@ -29,7 +28,7 @@ class AuthPasswordLess: ObservableObject, Hashable {
 
     // Innesto Beta del 31.10 per collaboratori - Da Sviluppare
     
-    @Published var allMyCollabs:[CollaboratorModel] = []
+  //  @Published var allMyCollabs:[CollaboratorModel] = []
     
     // end innesto beta 31.10
     

@@ -120,7 +120,7 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         self.oraFine = frDoc[DataBaseField.oraFine] as? Date ?? .now
     }
     
-    func documentDataForFirebaseSavingAction() -> [String:Any] {
+    func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
         
         let documentData:[String:Any] = [
             
@@ -154,11 +154,9 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
         static let oraInizio = "oraInizio"
         static let oraFine = "oraFine"
         
-        
     }
     
 //
-    
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         let disabilita = self.rifDishIn.isEmpty

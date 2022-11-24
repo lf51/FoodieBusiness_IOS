@@ -131,7 +131,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
  
     }
     
-    func documentDataForFirebaseSavingAction() -> [String : Any] {
+    func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
             

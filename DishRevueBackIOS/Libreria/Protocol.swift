@@ -112,7 +112,7 @@ protocol MyProCloudPack_L0 {
 protocol MyProCloudPack_L1 {
     /// versione per i modelli che vanno salvati su firebase
     var id: String { get }
-    func documentDataForFirebaseSavingAction() -> [String:Any]
+    func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] // Nota 24.11
     
     init(frDoc:QueryDocumentSnapshot)
     associatedtype DataBaseField

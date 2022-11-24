@@ -68,7 +68,8 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             CS_Picker(
                                 selection: $pax,
                                 customLabel: "Pax",
-                                dataContainer: PaxMenuFisso.allCases)
+                                dataContainer: PaxMenuFisso.allCases,
+                                cleanAndOrderContainer: false)
                             
                             CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.00", image: "dollarsign.circle", keyboardType: .decimalPad)
                             

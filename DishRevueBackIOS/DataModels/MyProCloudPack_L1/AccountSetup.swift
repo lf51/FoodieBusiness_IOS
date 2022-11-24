@@ -11,10 +11,8 @@ import Firebase
 struct AccountSetup:MyProCloudPack_L1 {
    
     var id: String
-    // mettiamo qui tutte le enum e i valori per il settaggio personalizzato da parte dell'utente
     var startCountDownMenuAt:TimeValue
     var mettiInPausaDishByIngredient: ActionValue
-    
 
     init(id: String, startCountDownMenuAt: TimeValue, mettiInPausaDishByIngredient: ActionValue) {
         // Non dovrebbe essere in uso
@@ -44,7 +42,7 @@ struct AccountSetup:MyProCloudPack_L1 {
         
     }
     
-    func documentDataForFirebaseSavingAction() -> [String : Any] {
+    func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
         
@@ -117,6 +115,7 @@ struct AccountSetup:MyProCloudPack_L1 {
             case 90: return .novanta
                 
             default: return .defaultValue
+                
             }
         }
     }

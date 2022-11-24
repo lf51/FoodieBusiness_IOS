@@ -27,7 +27,7 @@ class AccounterVM: ObservableObject {
     
     @Published var allMyCategories: [CategoriaMenu]
     @Published var allMyReviews:[DishRatingModel]
-    
+
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
     
@@ -36,7 +36,6 @@ class AccounterVM: ObservableObject {
     @Published var dishListPath = NavigationPath()
     @Published var ingredientListPath = NavigationPath()
    
-    
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // necessario al selettore Allergeni
     
     init(userUID:String? = nil) { // L'Init ufficiale del viewModel
@@ -125,7 +124,7 @@ class AccounterVM: ObservableObject {
         print("5.fetchData.Prop")
         self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyCategories,cloudCollectionKey: .categories) { allMyElements,isDone in
             
-            self.allMyCategories = allMyElements
+            self.allMyCategories = allMyElements.sorted(by: {$0.listIndex ?? 0 < $1.listIndex ?? 1}) // Nota 24.11
             self.loadingCount += isDone
             print("5.Closure.Cat")
         }

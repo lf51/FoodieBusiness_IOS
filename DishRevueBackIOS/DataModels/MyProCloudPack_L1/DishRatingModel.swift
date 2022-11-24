@@ -10,12 +10,11 @@ import SwiftUI
 import Firebase
 
 struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
-    
-   // let id:String
+  
     let id: String
-    let rifPiatto: String // Lo mettiamo per avere un riferimento incrociato
-    
-    let voto: String // il voto deve essere un INT ma vine salvato come double : ex 8.0. Quindi nelle trasformazioni lo trattiamo come Double. Da Creare una ghera con i valori selezionabili prestabiliti
+    let rifPiatto: String
+    /// il voto deve essere un INT ma vine salvato come double : ex 8.0. Quindi nelle trasformazioni lo trattiamo come Double. Da Creare una ghera con i valori selezionabili prestabiliti
+    let voto: String
     let titolo: String // deve avere un limite di caratteri
     let commento: String
     var dataRilascio: Date // Messo in Var per i test, riportare come let
@@ -32,10 +31,8 @@ struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
         self.rifPiatto = idPiatto
         self.image = "circle"
         
-        self.dataRilascio = Date() // viene inizializzata in automatico con la data di init che dovrebbe corrispondere alla data di rilascio della review
-       // self.id = id
+        self.dataRilascio = Date()
     }
-    
     
     // MyProCloudPack_L1
     
@@ -52,8 +49,7 @@ struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
         self.dataRilascio = frDoc[DataBaseField.dataRilascio] as? Date ?? .now
     }
     
-    
-    func documentDataForFirebaseSavingAction() -> [String : Any] {
+    func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
         
@@ -80,8 +76,6 @@ struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
         
     }
     
-    //
-    
     func rateColor() -> Color {
         
         guard let vote = Double(self.voto) else { return Color.gray }
@@ -100,12 +94,7 @@ struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
         return vote >= min && vote <= max
         
     }
-    
 
-   
-    
-    // Method
-    
     /// tiriamo fuori un voto e peso (il peso va da 0.1 a 1.05)
     func votoEPeso() -> (voto:Double,peso:Double) {
         
@@ -133,12 +122,7 @@ struct DishRatingModel: MyProStarterPack_L0,MyProCloudPack_L1,Hashable {
             else if countChar > 300 { completingRate += 0.25 }
             
         }
-        
-        // Special Case
-     /*   if theVote == 0.0 && completingRate < 0.71 {
-            completingRate = 0.1
-        } */
-        // end special case
+
         return (theVote,completingRate)
     }
     
