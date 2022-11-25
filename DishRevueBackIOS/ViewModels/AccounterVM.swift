@@ -474,8 +474,13 @@ class AccounterVM: ObservableObject {
     // 23.10 Gestione del Cambio Status dei Modelli (Al fine di eliminare il binding dalle liste per il funzionamento del cambio status nei menu interattivi )
    
     func manageCambioStatusModel<M:MyProStatusPack_L1>(model:M,nuovoStatus:StatusTransition) {
+        // Modificata 25.11
         
-        let newModel:M =  {
+        var newModel = model
+        newModel.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
+        self.updateItemModel(itemModel: newModel)
+        
+       /* let newModel:M =  {
             
             var new = model
             new.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
@@ -483,7 +488,15 @@ class AccounterVM: ObservableObject {
             
         }()
     
-        self.updateItemModel(itemModel: newModel)
+        self.updateItemModel(itemModel: newModel) */
+    }
+    
+    /// ritorna un array con i piatti contenenti l'ingrediente passato. La presenza dell'ing è controllata fra i principali, i secondari, e i sosituti.
+    func allDishContainingIngredient(idIng:String) -> [DishModel] {
+        
+        let allDishFiltered = self.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
+        return allDishFiltered
+        
     }
     
     // ALTRO

@@ -13,20 +13,20 @@ struct MapObject<M:MyProToolPack_L1,C:MyProEnumPack_L2> {
     var kpMapCategory:KeyPath<M,String>
 }
 
-
 struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
     @Binding var filterString:String
     let container:[M]
-  
-  //  var mapCategory:[C] = []
-  //  var kpMapCategory:KeyPath<M,String>
+
     var mapObject:MapObject<M,C>? = nil
     
     let navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>
     var placeHolder:String = "Ricerca.."
+    
+    // Beta
+    @State private var modelToAct:M?
     
     var body: some View {
         
@@ -62,6 +62,11 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
             CSDivider()
         }
         .padding(.horizontal)
+        .popover(item: $modelToAct) { model in
+             PopAction(backgroundColorView: Color("SeaTurtlePalette_1"),modelToAct: model)
+                 .presentationDetents([.height(250)])
+         }
+      
         
     }
     
@@ -71,18 +76,22 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
         
         ForEach(container) { model in
             
+            let modelStatusArchiviato = model.status.checkStatusTransition(check: .archiviato)
+            
             GenericItemModel_RowViewMask(model: model) {
                 
                 model.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
+                    .disabled(modelStatusArchiviato)
                     
-                    vbMenuInterattivoModuloCambioStatus(myModel: model,viewModel: viewModel)
-                    
+                    vbMenuInterattivoModuloCambioStatus(myModel: model,viewModel: viewModel) 
+                
                     vbMenuInterattivoModuloEdit(currentModel: model, viewModel: viewModel, navPath: navigationPath)
-                    
+                    .disabled(modelStatusArchiviato)
+                
                     vbMenuInterattivoModuloTrash(currentModel: model, viewModel: viewModel)
-                    
+                    .disabled(!modelStatusArchiviato)
                
-            }
+            }.opacity(modelStatusArchiviato ? 0.5 : 1.0)
             
         }
         
@@ -114,58 +123,32 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
       }
     }
 }
-/*
-struct BodyListe_Generic<M:MyProToolPack_L1>:View {
+
+struct PopAction<M:MyProToolPack_L1>: View {
     
-    @EnvironmentObject var viewModel:AccounterVM
-    
-    @Binding var filterString:String
-    let container:[M]
-   // let containerKP:WritableKeyPath<AccounterVM,[M]>
-    let navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>
-    var placeHolder:String = "Ricerca.."
+    let backgroundColorView:Color
+    let modelToAct:M
     
     var body: some View {
         
-        VStack {
-            
-            CSDivider()
-            
-            ScrollView(showsIndicators:false) {
+        ZStack {
+
+            Rectangle()
+                .fill(backgroundColorView.gradient)
+                .edgesIgnoringSafeArea(.top)
+                .zIndex(0)
+      
+            VStack {
                 
-                ScrollViewReader { proxy in
-                    
-                CSTextField_4(textFieldItem: $filterString, placeHolder: placeHolder, image: "text.magnifyingglass", showDelete: true).id(0)
-                        .padding(.horizontal)
-                
-                CSDivider()
-                    
-               /* let container = self.viewModel.filtraERicerca(containerPath: containerKP, filterProperty: filterProperty) */
-                    
-                    ForEach(self.container) { model in
-                        
-                        GenericItemModel_RowViewMask(model: model) {
-                            
-                            model.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
-                                
-                                vbMenuInterattivoModuloCambioStatus(myModel: model,viewModel: viewModel)
-                                
-                                vbMenuInterattivoModuloEdit(currentModel: model, viewModel: viewModel, navPath: navigationPath)
-                                
-                                vbMenuInterattivoModuloTrash(currentModel: model, viewModel: viewModel)
-                                
-                           
-                        }
-                        
-                    }
-                    .id(1)
-                    .onAppear {proxy.scrollTo(1, anchor: .top)}
-                }
+                Text("\(modelToAct.intestazione) option 1")
+                Text("option 2")
+                Text("option 3")
             }
-            CSDivider()
+            
+            
         }
-        
-        
+        .background(backgroundColorView.opacity(0.6))
+  
     }
     
-}*/ // BackUp 08.11
+}

@@ -112,11 +112,11 @@ struct AccounterMainView: View {
  
                           HStack {
                               
-                              Text("Cambio Status Preparazioni")
+                              Text("Auto-Pause Preparazione by pausing Ingredient")
                               CSInfoAlertView(title: "Info", message: .cambioStatusPreparazioni)
                               Spacer()
-                              Picker(selection: $viewModel.setupAccount.mettiInPausaDishByIngredient) {
-                                  ForEach(AccountSetup.ActionValue.allCases,id:\.self) { value in
+                              Picker(selection: $viewModel.setupAccount.autoPauseDish_byPauseING) {
+                                  ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
 
                                       Text("\(value.rawValue)")
                                       
@@ -127,6 +127,43 @@ struct AccounterMainView: View {
                           }
                           
                          Divider()
+                          
+                          HStack {
+                              
+                              Text("Auto-Pause Preparazioni by archive Ingredient")
+                              CSInfoAlertView(title: "Info", message: .cambioStatusPreparazioni)
+                              Spacer()
+                              Picker(selection: $viewModel.setupAccount.autoPauseDish_byArchiveING) {
+                                  ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
+
+                                      Text("\(value.rawValue)")
+                                      
+                                  }
+                              } label: {
+                                  Text("")
+                              }
+                          }
+                          
+                         Divider()
+                          
+                          HStack {
+                              
+                              Text("Auto-Pause Preparazioni by delete Ingredient")
+                              CSInfoAlertView(title: "Info", message: .cambioStatusPreparazioni)
+                              Spacer()
+                              Picker(selection: $viewModel.setupAccount.autoPauseDish_byDeleteING) {
+                                  ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
+
+                                      Text("\(value.rawValue)")
+                                      
+                                  }
+                              } label: {
+                                  Text("")
+                              }
+                          }
+                          
+                         Divider()
+                          
                           
                           HStack {
                               
@@ -149,7 +186,7 @@ struct AccounterMainView: View {
                   }
  
                   VStack(alignment:.leading) {
-                      
+                      //Nota 24.11 - Collaboratori
                       CSLabel_conVB(
                         placeHolder: "Autorizzazioni:",
                         imageNameOrEmojy: "person.crop.rectangle.stack",

@@ -131,7 +131,36 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
         
     }
     
+    func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM) {
     
+        viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
+        
+        guard nuovoStatus != .disponibile else { return }
+        
+        func privateStatusChange() {
+            
+            let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
+            var allDishChanged:[DishModel] = []
+            
+            for dish in allDishWhereIsIn {
+                
+                var new = dish
+                new.status = dish.status.changeStatusTransition(changeIn: .inPausa)
+                allDishChanged.append(new)
+            }
+            
+            viewModel.updateItemModelCollection(items: allDishChanged)
+        }
+        
+        if nuovoStatus == .inPausa, viewModel.setupAccount.autoPauseDish_byPauseING == .sempre {
+            
+            privateStatusChange()
+            
+        } else if nuovoStatus == .archiviato, viewModel.setupAccount.autoPauseDish_byArchiveING == .sempre {
+            privateStatusChange()
+        }
+
+    }
     
     func conversioneAllergeniInt() -> [Int] {
         

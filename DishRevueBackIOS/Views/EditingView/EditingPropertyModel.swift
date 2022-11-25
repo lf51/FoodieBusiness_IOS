@@ -422,8 +422,7 @@ private struct DynamicScrollSizeMM:View {
                              ForEach(menuCollection) { myMenu in
 
                                  GenericItemModel_RowViewMask(model: myMenu,rowSize: self.modelSize) {
-                                         vbMenuInterattivoModuloCambioStatus(myModel: myMenu, viewModel: self.viewModel)
-                                         }
+                                     vbMenuInterattivoModuloCambioStatus(myModel: myMenu, viewModel: self.viewModel)                                          }
 
                                 }
 

@@ -157,6 +157,12 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     }
     
 //
+    
+    func manageCambioStatus(nuovoStatus: StatusTransition, viewModel: AccounterVM) {
+        
+        viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
+    }
+    
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         let disabilita = self.rifDishIn.isEmpty

@@ -108,7 +108,8 @@ struct CloudDataCompiler {
                 let element = M.init(frDoc: doc)
                 cloudData[keyPath: collectionKP].append(element)
                     }
-                handler(cloudData[keyPath: collectionKP],1)
+               // handler(cloudData[keyPath: collectionKP],1) // Pausa per test
+                handler(fakeCloudData[keyPath: collectionKP],1)
             }
     }
     
@@ -128,7 +129,8 @@ struct CloudDataCompiler {
                 let element = M.init(frDoc: doc)
                 cloudData[keyPath: singleKP] = element
                     }
-                handler(cloudData[keyPath: singleKP],1)
+               // handler(cloudData[keyPath: singleKP],1) // pausa per test
+                handler(fakeCloudData[keyPath: singleKP],1)
             }
     }
   

@@ -130,8 +130,9 @@ struct MenuModel_RowView: View {
         //
         let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,fontWeight:Font.Weight) = {
         
-            let countString = self.countDown < 60 ? " (Chiude in \(countDown)m)" : ""
-           // let isOnAir = self.menuItem.isOnAir()
+            let isCountDownStarted = self.countDown < self.viewModel.setupAccount.startCountDownMenuAt.rawValue
+            let countString = isCountDownStarted ? " (Chiude in \(countDown)min)" : ""
+          
             if isOnAir { return (1.0,"eye",.green,"on\(countString)",.semibold)}
             else { return (0.4,"eye.slash",.gray,"off",.light)}
             
@@ -183,7 +184,6 @@ struct MenuModel_RowView: View {
                 .font(.subheadline)
                 .foregroundColor(Color("SeaTurtlePalette_3"))
                
-                
                 Spacer()
                 
                 HStack(alignment: .bottom, spacing: 2) {

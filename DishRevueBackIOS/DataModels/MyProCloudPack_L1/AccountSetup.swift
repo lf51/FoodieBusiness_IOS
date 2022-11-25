@@ -12,20 +12,27 @@ struct AccountSetup:MyProCloudPack_L1 {
    
     var id: String
     var startCountDownMenuAt:TimeValue
-    var mettiInPausaDishByIngredient: ActionValue
 
-    init(id: String, startCountDownMenuAt: TimeValue, mettiInPausaDishByIngredient: ActionValue) {
+    var autoPauseDish_byPauseING: ActionValue
+    var autoPauseDish_byArchiveING: ActionValue
+    var autoPauseDish_byDeleteING: ActionValue
+
+    static let autoPauseDish_allCases:[ActionValue] = [.sempre,.mai]
+    
+  /*  init(id: String, startCountDownMenuAt: TimeValue, autoPauseDish_byPauseING: ActionValue) {
         // Non dovrebbe essere in uso
         self.id = id
         self.startCountDownMenuAt = startCountDownMenuAt
-        self.mettiInPausaDishByIngredient = mettiInPausaDishByIngredient
-    }
+        self.autoPauseDish_byPauseING = mettiInPausaDishByIngredient
+    } */
     
     init() {
         
         self.id = "userSetup"
         self.startCountDownMenuAt = .sixty
-        self.mettiInPausaDishByIngredient = .mai
+        self.autoPauseDish_byPauseING = .sempre
+        self.autoPauseDish_byDeleteING = .sempre
+        self.autoPauseDish_byArchiveING = .sempre
     
     }
     
@@ -34,11 +41,15 @@ struct AccountSetup:MyProCloudPack_L1 {
     init(frDoc: QueryDocumentSnapshot) {
         
         let countDownInt = frDoc[DataBaseField.startCountDownMenuAt] as? Int ?? 0
-        let pausaInt = frDoc[DataBaseField.mettiInPausaDishByIngredient] as? Int ?? 0
+        let pausaInt = frDoc[DataBaseField.autoPauseDish_byPauseING] as? Int ?? 0
+        let byDeleteInt = frDoc[DataBaseField.autoPauseDish_byDeleteING] as? Int ?? 0
+        let byArchiveInt = frDoc[DataBaseField.autoPauseDish_byArchiveING] as? Int ?? 0
         
         self.id = frDoc.documentID
         self.startCountDownMenuAt = TimeValue.convertiInCase(fromNumber: countDownInt)
-        self.mettiInPausaDishByIngredient = ActionValue.convertiInCase(fromNumber: pausaInt)
+        self.autoPauseDish_byPauseING = ActionValue.convertiInCase(fromNumber: pausaInt)
+        self.autoPauseDish_byArchiveING = ActionValue.convertiInCase(fromNumber: byArchiveInt)
+        self.autoPauseDish_byDeleteING = ActionValue.convertiInCase(fromNumber: byDeleteInt)
         
     }
     
@@ -47,7 +58,10 @@ struct AccountSetup:MyProCloudPack_L1 {
         let documentData:[String:Any] = [
         
             DataBaseField.startCountDownMenuAt : self.startCountDownMenuAt.orderAndStorageValue(),
-            DataBaseField.mettiInPausaDishByIngredient : self.mettiInPausaDishByIngredient.orderAndStorageValue()
+            DataBaseField.autoPauseDish_byPauseING : self.autoPauseDish_byPauseING.orderAndStorageValue(),
+            DataBaseField.autoPauseDish_byArchiveING : self.autoPauseDish_byArchiveING.orderAndStorageValue(),
+            DataBaseField.autoPauseDish_byDeleteING : self.autoPauseDish_byDeleteING.orderAndStorageValue()
+            
         ]
         return documentData
     }
@@ -55,7 +69,9 @@ struct AccountSetup:MyProCloudPack_L1 {
     struct DataBaseField {
         
         static let startCountDownMenuAt = "startCountDownValue"
-        static let mettiInPausaDishByIngredient = "mettiInPausaDishByING"
+        static let autoPauseDish_byPauseING = "autoPauseDish_byPauseING"
+        static let autoPauseDish_byDeleteING = "autoPauseDish_byDeleteING"
+        static let autoPauseDish_byArchiveING = "autoPauseDish_byPauseING"
     }
     
     //
@@ -92,27 +108,39 @@ struct AccountSetup:MyProCloudPack_L1 {
     
     enum TimeValue:Int,MyProCloudPack_L0 {
         
-        static var allCases:[TimeValue] = [.trenta,.sixty,.novanta]
+        static var allCases:[TimeValue] = [.quarter,.trenta,.fortyfive,.sixty,.seventyFive,.novanta,.twoHour]
         static var defaultValue:TimeValue = .sixty
         
+        case quarter = 15
         case trenta = 30
+        case fortyfive = 45
         case sixty = 60
+        case seventyFive = 75
         case novanta = 90
+        case twoHour = 120
         
         func orderAndStorageValue() -> Int {
             switch self {
+            case .quarter: return 15
             case .trenta: return 30
+            case .fortyfive: return 45
             case .sixty: return 60
+            case .seventyFive: return 75
             case .novanta: return 90
+            case .twoHour: return 120
             }
         }
         
         static func convertiInCase(fromNumber: Int) -> AccountSetup.TimeValue {
             switch fromNumber {
                 
+            case 15: return .quarter
             case 30: return .trenta
+            case 45: return .fortyfive
             case 60: return .sixty
+            case 75: return .seventyFive
             case 90: return .novanta
+            case 120: return .twoHour
                 
             default: return .defaultValue
                 

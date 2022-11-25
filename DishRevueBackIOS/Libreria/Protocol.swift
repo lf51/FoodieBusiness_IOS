@@ -53,6 +53,7 @@ protocol MyProStatusPack_L0 {
 protocol MyProStatusPack_L1: MyProStatusPack_L0,MyProStarterPack_L1 {
     
     func pathDestination() -> DestinationPathView
+    func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM) -> Void 
 }
 
 /*protocol MyProDestinationPack_L0 {

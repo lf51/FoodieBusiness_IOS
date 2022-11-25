@@ -34,8 +34,7 @@ struct VistaEspansaGenerica<M:MyProToolPack_L0>: View {
                                 
                                 model.vbMenuInterattivoModuloCustom(viewModel: self.viewModel, navigationPath: \.homeViewPath)
                                 
-                                vbMenuInterattivoModuloCambioStatus(myModel: model, viewModel: self.viewModel)
-                                
+                                vbMenuInterattivoModuloCambioStatus(myModel: model, viewModel: self.viewModel)                                
                             }
                             
                         }

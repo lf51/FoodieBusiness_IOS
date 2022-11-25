@@ -441,7 +441,7 @@ struct CSZStackVB_Framed<Content:View>:View {
            
 } */ // deprecata 07.09
 
-
+/*
 @ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:AccounterVM) -> some View {
 
     let disableCondition:Bool = {
@@ -461,6 +461,7 @@ struct CSZStackVB_Framed<Content:View>:View {
             VStack {
                 
                 Button {
+
                     viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.inPausa)
                     
                 } label: {
@@ -471,7 +472,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                     }
                 }
                 
-                Button {
+                Button(role:.destructive) {
                     viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.archiviato)
                     
                 } label: {
@@ -500,7 +501,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                         }
                     }
                     
-                    Button {
+                    Button(role:.destructive) {
 
                         viewModel.manageCambioStatusModel(model: myModel, nuovoStatus: .archiviato)
                         
@@ -528,6 +529,114 @@ struct CSZStackVB_Framed<Content:View>:View {
                     Button {
 
                         viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.disponibile)
+                        
+                    } label: {
+                        HStack{
+                            Text("Rendi Disponibile")
+                            Image(systemName: "play.circle")
+                           
+                        }
+                    }.disabled(disabilita)
+
+
+                }
+        }
+        
+    }.disabled(disableCondition)
+           
+} */ // Backup 25.11
+
+@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:AccounterVM) -> some View {
+
+    let disableCondition:Bool = {
+        
+        if let model = myModel as? MenuModel {
+            return model.tipologia.isDiSistema()
+        }
+        return false
+    }()
+    
+    let currentStatus = myModel.status
+
+    Group {
+        
+        if currentStatus.checkStatusTransition(check: .disponibile) {
+                    
+            VStack {
+                
+                Button {
+                 
+                    myModel.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
+                    
+                } label: {
+                    HStack{
+                        Text("Metti in Pausa")
+                        Image(systemName: "pause.circle")
+                        
+                    }
+                }
+                
+                Button(role:.destructive) {
+                    
+                    myModel.manageCambioStatus(nuovoStatus: .archiviato, viewModel: viewModel)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                      
+                    }
+                }
+
+            }
+
+        } else if currentStatus.checkStatusTransition(check: .inPausa) {
+            
+                VStack {
+                    
+                    Button {
+
+                        myModel.manageCambioStatus(nuovoStatus: .disponibile, viewModel: viewModel)
+                       // viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.disponibile)
+                        
+                    } label: {
+                        HStack{
+                            Text("Rendi Disponibile")
+                            Image(systemName: "play.circle")
+                           
+                        }
+                    }
+                    
+                    Button(role:.destructive) {
+
+                        myModel.manageCambioStatus(nuovoStatus: .archiviato, viewModel: viewModel)
+                      //  viewModel.manageCambioStatusModel(model: myModel, nuovoStatus: .archiviato)
+                        
+                    } label: {
+                        HStack{
+                            Text("Archivia")
+                            Image(systemName: "archivebox")
+                           
+                        }
+                    }
+
+                }
+
+        } else if currentStatus.checkStatusTransition(check: .archiviato) {
+            
+            let disabilita:Bool = {
+                if let model = myModel as? MenuModel {
+                    return model.rifDishIn.isEmpty // Sviluppare --> deve controllare se ci sono piatti attivi. Senza piatti, o senza piatti attivi, il menu sarebbe vuoto e dunque non avrebbe senso renderlo disponibile
+                } else { return false }
+                
+            }()
+
+                VStack {
+                    
+                    Button {
+
+                        myModel.manageCambioStatus(nuovoStatus: .disponibile, viewModel: viewModel)
+                     //   viewModel.manageCambioStatusModel(model: myModel, nuovoStatus:.disponibile)
                         
                     } label: {
                         HStack{
@@ -767,7 +876,7 @@ struct CSZStackVB_Framed<Content:View>:View {
     
  //   VStack {
         
-        Button {
+    Button {
           //  viewModel[keyPath: navPath].append(currentModel)
             let currentDestination:DestinationPathView = currentModel.pathDestination()
             viewModel[keyPath: navPath].append(currentDestination)

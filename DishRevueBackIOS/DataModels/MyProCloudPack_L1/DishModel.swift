@@ -168,6 +168,11 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     }
     
     //
+    
+    func manageCambioStatus(nuovoStatus: StatusTransition, viewModel: AccounterVM) {
+   
+        viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
+    }
 
     func creaID(fromValue: String) -> String {
         print("DishModel/creaID()")
