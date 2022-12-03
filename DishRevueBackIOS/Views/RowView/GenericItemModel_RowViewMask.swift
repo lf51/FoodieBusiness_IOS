@@ -9,6 +9,8 @@ import SwiftUI
 
 struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
 
+    @EnvironmentObject var viewModel:AccounterVM
+    
     let model: M
     var pushImage: String = "gearshape"
     var rowSize: RowSize = .normale
@@ -17,8 +19,12 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
    
     var body: some View {
         
+        let opacity = model.conditionToManageMenuInterattivo().opacizzaAll
+        
         vbSwitchRowSize()
-
+            .csOverlayModelChange(rifModel: model.id)
+            .opacity(opacity)
+    
     }
     
     // Method
@@ -270,7 +276,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     static var dishItem4: DishModel = dishItem4_Test
    @State static var dishItem5: DishModel = prodottoFinito
    @State static var menuSample: MenuModel = menuSample_Test
-    static var menuSample2: MenuModel = menuSample2_Test
+   @State static var menuSample2: MenuModel = menuSample2_Test
     static var menuSample3: MenuModel = menuSample3_Test
     @State static var menuDelGiorno:MenuModel = menuDelGiorno_Test
     @State static var viewModel:AccounterVM = testAccount
@@ -322,10 +328,11 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         
                         
                     } */
-                    MenuModel_RowView(menuItem: menuSample, rowSize: .normale)
+                   /* MenuModel_RowView(menuItem: menuSample, rowSize: .normale) */
                     GenericItemModel_RowViewMask(model: menuSample) {
                         Text("Ciao")
                     }
+                    MenuModel_RowView(menuItem: menuSample2, rowSize: .normale)
                     MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .normale)
                     MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .sintetico)
                     MenuModel_RowView(menuItem: menuSample, rowSize: .sintetico)

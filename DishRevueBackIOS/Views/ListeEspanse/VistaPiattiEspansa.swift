@@ -17,11 +17,13 @@ struct VistaPiattiEspansa: View {
     let destinationPath:DestinationPath
     
     let valoreArchiviato:[String]
+    let statusArchiviato:StatusModel
     
     init(currentMenu: MenuModel, backgroundColorView: Color,destinationPath:DestinationPath) {
      
         _currentMenu = State(wrappedValue: currentMenu)
         self.valoreArchiviato = currentMenu.rifDishIn
+        self.statusArchiviato = currentMenu.status
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
     }
@@ -73,7 +75,7 @@ struct VistaPiattiEspansa: View {
                 let placeHolder:String = {
                   
                     if filterCategoria == .defaultValue {
-                        return "Tutti i Piatti"
+                        return "Preparazioni & Prodotti"
                     } else {
                         return filterCategoria.simpleDescription()
                     }
@@ -90,7 +92,7 @@ struct VistaPiattiEspansa: View {
                             let containTheDish = currentMenu.rifDishIn.contains(dishModel.id)
                             
                             dishModel.returnModelRowView(rowSize: .normale)
-                                .opacity(containTheDish ? 1.0 : 0.6)
+                                .opacity(containTheDish ? 1.0 : 0.4)
                                 .overlay(alignment: .bottomTrailing) {
                                     
                                     CSButton_image(
@@ -108,7 +110,7 @@ struct VistaPiattiEspansa: View {
                                                        }
                                        .padding(5)
                                        .background {
-                                            Color.white.opacity(0.5)
+                                           Color.white.opacity(containTheDish ? 0.5 : 1.0)
                                                .clipShape(Circle())
                                                .shadow(radius: 5.0)
                                                //.frame(width: 30, height: 30)
@@ -170,9 +172,25 @@ struct VistaPiattiEspansa: View {
         
         if self.currentMenu.rifDishIn.contains(idPiatto) {
             self.currentMenu.rifDishIn.removeAll(where: {$0 == idPiatto})
+            updateStatus()
         } else {
             self.currentMenu.rifDishIn.append(idPiatto)
+            updateStatus()
         }
+    
+        // Innesto 01.12.22
+        func updateStatus() {
+            
+            guard !currentMenu.tipologia.isDiSistema(),
+                  statusArchiviato.checkStatusTransition(check: .disponibile) else { return }
+            
+            if currentMenu.allDishActive(viewModel: self.viewModel).isEmpty {
+                currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .inPausa)
+            } else {
+                currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .disponibile)
+            }
+        }
+       
     }
 }
 

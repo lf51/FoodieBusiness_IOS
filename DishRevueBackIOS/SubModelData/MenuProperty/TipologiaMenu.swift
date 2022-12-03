@@ -286,7 +286,7 @@ enum TipologiaMenu:Identifiable, Equatable, MyProEnumPack_L2 /*: MyEnumProtocol,
             switch self {
                 
                 case .delGiorno:
-                    return "piatti del Giorno"
+                    return "i piatti del Giorno"
                 case .delloChef:
                     return "i consigliati"
                 

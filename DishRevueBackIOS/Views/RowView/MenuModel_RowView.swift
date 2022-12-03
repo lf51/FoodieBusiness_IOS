@@ -44,7 +44,7 @@ struct MenuModel_RowView: View {
                  Timer.scheduledTimer(withTimeInterval: nextCheck, repeats: true) { time in
   
                      (self.isOnAir,self.nextCheck,self.invalidate,self.countDown) = self.menuItem.timeScheduleInfo()
-                     if self.invalidate { time.invalidate()}
+                     if self.invalidate { time.invalidate() }
                  }
              }
  

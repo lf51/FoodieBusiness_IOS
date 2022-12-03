@@ -548,15 +548,18 @@ struct CSZStackVB_Framed<Content:View>:View {
 
 @ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:AccounterVM) -> some View {
 
-    let disableCondition:Bool = {
+   /* let disableCondition:Bool = {
         
         if let model = myModel as? MenuModel {
             return model.tipologia.isDiSistema()
         }
         return false
-    }()
-    
+    }() */
+   
+    let generalDisabled = myModel.conditionToManageMenuInterattivo().disableStatus
     let currentStatus = myModel.status
+   
+    let disableDispoUpdate = myModel.conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel: viewModel)
 
     Group {
         
@@ -605,7 +608,8 @@ struct CSZStackVB_Framed<Content:View>:View {
                             Image(systemName: "play.circle")
                            
                         }
-                    }
+                    }.disabled(disableDispoUpdate)
+                    
                     
                     Button(role:.destructive) {
 
@@ -624,12 +628,12 @@ struct CSZStackVB_Framed<Content:View>:View {
 
         } else if currentStatus.checkStatusTransition(check: .archiviato) {
             
-            let disabilita:Bool = {
+          /*  let disabilita:Bool = {
                 if let model = myModel as? MenuModel {
                     return model.rifDishIn.isEmpty // Sviluppare --> deve controllare se ci sono piatti attivi. Senza piatti, o senza piatti attivi, il menu sarebbe vuoto e dunque non avrebbe senso renderlo disponibile
                 } else { return false }
                 
-            }()
+            }() */
 
                 VStack {
                     
@@ -644,13 +648,15 @@ struct CSZStackVB_Framed<Content:View>:View {
                             Image(systemName: "play.circle")
                            
                         }
-                    }.disabled(disabilita)
+                    }//.disabled(disabilita)
+                    .disabled(disableDispoUpdate)
 
 
                 }
         }
         
-    }.disabled(disableCondition)
+    }//.disabled(disableCondition)
+    .disabled(generalDisabled)
            
 }
 
@@ -860,11 +866,11 @@ struct CSZStackVB_Framed<Content:View>:View {
 @ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProStatusPack_L1>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
     
     // M passa da MyModelStatusConformity a MyProStatusPackL1
-    
+    let generalDisabled = currentModel.conditionToManageMenuInterattivo().disableEdit
     let isBozza = currentModel.status.checkStatusBozza()
     let title = isBozza ? "Completa" : "Modifica"
     
-    let disableCondition:Bool = {
+   /* let disableCondition:Bool = {
        
         if let model = currentModel as? MenuModel {
             
@@ -872,7 +878,7 @@ struct CSZStackVB_Framed<Content:View>:View {
         }
         
         return false
-    }()
+    }() */
     
  //   VStack {
         
@@ -886,8 +892,8 @@ struct CSZStackVB_Framed<Content:View>:View {
                   Text(title)
                   Image(systemName: isBozza ? "hammer" : "square.and.pencil")
               }
-          }.disabled(disableCondition)
-
+          }//.disabled(disableCondition)
+          .disabled(generalDisabled)
      /*   Button(role:.destructive) {
             
               viewModel.deleteItemModel(itemModel: currentModel)
@@ -903,12 +909,15 @@ struct CSZStackVB_Framed<Content:View>:View {
    
 }
 
-@ViewBuilder func vbMenuInterattivoModuloTrash<M:MyProStatusPack_L1>(currentModel:M,viewModel:AccounterVM) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloTrash<M:MyProManagingPack_L0>(currentModel:M,viewModel:AccounterVM) -> some View {
     
+    // Nota 27.11
+    let generalDisabled = currentModel.conditionToManageMenuInterattivo().disableTrash
     // M passa da MyModelStatusConformity a MyProStatusPackL1
         Button(role:.destructive) {
-            
-              viewModel.deleteItemModel(itemModel: currentModel)
+             currentModel.manageModelDelete(viewModel: viewModel)
+            //  viewModel.deleteItemModel(itemModel: currentModel)
+            // currentModel.manageModelDelete
               
           } label: {
               HStack{
@@ -916,6 +925,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                   Image(systemName: "trash")
               }
           }
+          .disabled(generalDisabled)
 }
 
 /*

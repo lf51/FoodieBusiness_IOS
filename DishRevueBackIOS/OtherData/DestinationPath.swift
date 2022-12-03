@@ -36,6 +36,8 @@ enum DestinationPathView: Hashable {
     case listaGenericaIng(_containerRif:[String], _label:String)
     case listaGenericaDish(_containerRif:[String], _label:String)
     
+    case elencoModelDeleted
+    
     @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath, readOnlyViewModel:AccounterVM) -> some View {
         
         switch self {
@@ -96,6 +98,9 @@ enum DestinationPathView: Hashable {
             VistaEspansaGenerica(container:container,containerPath: \.allMyIngredients, label:label, backgroundColorView: backgroundColorView)
         case .listaGenericaDish(let container,let label):
             VistaEspansaGenerica(container: container,containerPath: \.allMyDish, label:label, backgroundColorView: backgroundColorView)
+            
+        case .elencoModelDeleted:
+            ElencoModelDeleted(backgroundColorView: backgroundColorView)
         }
         
     }

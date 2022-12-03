@@ -15,7 +15,7 @@ struct AccountSetup:MyProCloudPack_L1 {
 
     var autoPauseDish_byPauseING: ActionValue
     var autoPauseDish_byArchiveING: ActionValue
-    var autoPauseDish_byDeleteING: ActionValue
+    var autoPauseDish_byDeleteING: ActionValue // 27.11 Non serve -> Vedi Nota 27.11
 
     static let autoPauseDish_allCases:[ActionValue] = [.sempre,.mai]
     

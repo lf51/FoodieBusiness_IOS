@@ -38,6 +38,12 @@ class AccounterVM: ObservableObject {
    
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // necessario al selettore Allergeni
     
+    // Innesto 01.12.22
+   // @Published var dishStatusChanged:Int = 0
+   // @Published var menuStatusChanged:Int = 0
+    @Published var remoteStorage:RemoteChangeStorage = RemoteChangeStorage()
+    
+    
     init(userUID:String? = nil) { // L'Init ufficiale del viewModel
       
             
@@ -299,6 +305,9 @@ class AccounterVM: ObservableObject {
         // End Adding 18.08
         containerT.append(itemModel)
         aggiornaContainer(containerT: containerT, modelT: itemModel)
+        // Innesto 02.12.22
+        self.remoteStorage.modelRif_newOne.append(itemModel.id)
+        //
         if let path = destinationPath {
             
             self.refreshPath(destinationPath: path)
@@ -348,6 +357,9 @@ class AccounterVM: ObservableObject {
         
             containerT[oldItemIndex] = itemModel
             aggiornaContainer(containerT: containerT, modelT: itemModel)
+        // Innesto 02.12.22
+        self.remoteStorage.modelRif_modified.insert(itemModel.id)
+        
         if let path = destinationPath {
             
             self.refreshPath(destinationPath: path)
@@ -368,6 +380,8 @@ class AccounterVM: ObservableObject {
             
             if let index = container.firstIndex(where: {$0.id == itemModel.id}) {
                 container[index] = itemModel
+                // innesto 02.12.22
+                self.remoteStorage.modelRif_modified.insert(itemModel.id)
             }
         }
         
@@ -408,6 +422,9 @@ class AccounterVM: ObservableObject {
         
         containerT.remove(at: index)
         self.aggiornaContainer(containerT: containerT, modelT: itemModel)
+        // Innesto 02.12.22
+        self.remoteStorage.modelRif_deleted[itemModel.id] = itemModel.intestazione
+        //
         self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!")
         
     }
@@ -478,6 +495,7 @@ class AccounterVM: ObservableObject {
         
         var newModel = model
         newModel.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
+       // self.remoteStorage.modelRif_modified.insert(model.id)
         self.updateItemModel(itemModel: newModel)
         
        /* let newModel:M =  {

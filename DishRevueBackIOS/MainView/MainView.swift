@@ -31,41 +31,69 @@ struct MainView: View {
         print("init MainView - userUID:\(authProcess.currentUser?.userUID ?? "nil")")
     }
 
-    let backgroundColorView: Color = Color("SeaTurtlePalette_1")
-    @State var tabSelector: Int = 0
+    private let backgroundColorView: Color = Color("SeaTurtlePalette_1")
+    @State private var tabSelector: Int = 0
             
+    // innesto 01.12.22
+ 
+    @State private var ingChanged:Int = 0 // serve per il count dall'import veloce. Ancora 01.12 non settato
+    
+    
     var body: some View {
             
         TabView(selection:$tabSelector) { // Deprecata da Apple / Sostituire
                 
             HomeView(authProcess: authProcess, backgroundColorView: backgroundColorView)
+                   // .badge(dishChange)
                     .badge(0) // Il pallino rosso delle notifiche !!!
                     .tabItem {
                         Image(systemName: "house")
                         Text("Home")
-                    }.tag(0)
+                    }.tag(CS_TabSelector.home.rawValue)
 
             MenuListView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
-                .badge(0)
+                .badge(viewModel.remoteStorage.menu_countModificheIndirette)
                 .tabItem {
                     Image (systemName: "menucard")//scroll.fill
                     Text("Menu")
-                }.tag(1)
+                }.tag(CS_TabSelector.menu.rawValue)
             
             DishListView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
-                .badge(0)
+                .badge(viewModel.remoteStorage.dish_countModificheIndirette)
                     .tabItem {
                         Image (systemName: "fork.knife.circle")
                         Text("Piatti")
-                    }.tag(2)
+                    }.tag(CS_TabSelector.dish.rawValue)
     
             ListaIngredientiView(tabSelection: $tabSelector, backgroundColorView: backgroundColorView)
-                .badge(0)
+                .badge(self.ingChanged)
                 .tabItem {
                     Image (systemName: "leaf")
                     Text("Ingredienti")
-                }.tag(3)
+                }.tag(CS_TabSelector.ing.rawValue)
             }
+        .onChange(of: self.tabSelector) { newValue in
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+              
+                let tabCase = CS_TabSelector(rawValue: newValue)
+                
+                switch tabCase {
+                
+                case .menu: self.viewModel.remoteStorage.menu_countModificheIndirette = 0
+                case .dish: self.viewModel.remoteStorage.dish_countModificheIndirette = 0
+                    
+                default: return
+                }
+                
+            }
+        }
+     //   .csOnChangeModelStatus(modelArray: viewModel.changeStore.dishRif_modified, valueCount: $dishChanged)
+       // .csOnChangeModelStatus(modelArray: viewModel.allMyDish, valueCount: $dishChanged)
+      //  .csOnChangeModelStatus(modelArray: viewModel.allMyMenu, valueCount: $menuChanged)
+        
+        
+ 
            /* .fullScreenCover(isPresented: $authProcess.openSignInView, content: {
                 LinkSignInSheetView(authProcess: authProcess)
         })*/
@@ -93,6 +121,15 @@ struct MainView: View {
        // .accentColor(.cyan)
         .accentColor(Color("SeaTurtlePalette_3"))
   
+    }
+    
+    private enum CS_TabSelector:Int {
+        
+        case home = 0
+        case ing
+        case dish
+        case menu
+        
     }
 }
 

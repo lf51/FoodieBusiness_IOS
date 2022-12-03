@@ -35,9 +35,15 @@ extension View {
                 .background(content())
         }
     
-    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+    func csCornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
           clipShape( RoundedCorner(radius: radius, corners: corners) )
       }
+    
+    func csOverlayModelChange(rifModel:String) -> some View {
+        
+        self.modifier(CS_RemoteModelChange(rifModel: rifModel))
+    }
+
     
 }
 

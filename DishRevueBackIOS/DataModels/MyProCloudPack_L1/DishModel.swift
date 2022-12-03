@@ -169,11 +169,88 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
     
     //
     
-    func manageCambioStatus(nuovoStatus: StatusTransition, viewModel: AccounterVM) {
+    func manageModelDelete(viewModel: AccounterVM) {
+        
+        let allMenuWithDish = viewModel.allMenuContaining(idPiatto: self.id)
+        
+        guard allMenuWithDish.countWhereDishIsIn != 0 else {
+            
+            viewModel.deleteItemModel(itemModel: self)
+            return
+            
+        }
+        
+        var allCleanedMenu:[MenuModel] = []
+        for eachMenu in allMenuWithDish.allModelWithDish {
+            
+            var new = eachMenu
+            
+            if eachMenu.status.checkStatusTransition(check: .disponibile) {
+                new.autoManageCambioStatus(viewModel: viewModel, idPiattoEscluso: self.id)
+            }
+            new.rifDishIn.removeAll(where: {$0 == self.id})
+            
+           /* if new.rifDishIn.isEmpty { new.status = eachMenu.status.changeStatusTransition(changeIn: .inPausa)} */
+            allCleanedMenu.append(new)
+            
+        }
+        viewModel.updateItemModelCollection(items: allCleanedMenu)
+        viewModel.deleteItemModel(itemModel: self)
+    }
+    
+    /// Porta lo status automaticamente (previa verifica delle condizioni) nello status .inPausa
+   /* func autoManageCambioStatus(viewModel:AccounterVM) {
+        
+        guard self.status.checkStatusTransition(check: .disponibile) else { return }
+        
+        let allMenuWithDish = viewModel.allMenuContaining(idPiatto: self.id)
+        for eachMenu in allMenuWithDish.allModelWithDish {
+
+            eachMenu.autoManageCambioStatus(viewModel: viewModel,idPiattoEscluso: self.id)
    
+        }
+        viewModel.manageCambioStatusModel(model: self, nuovoStatus: .inPausa)
+    } */
+    
+    func manageCambioStatus(nuovoStatus: StatusTransition, viewModel: AccounterVM) {
+            //Nota 27.11 // Nota 28.11
+        let isCurrentlyDisponibile = self.status.checkStatusTransition(check: .disponibile)
         viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
+      //  viewModel.remoteStorage.modelRif_modified.insert(self.id)
+        
+        guard isCurrentlyDisponibile else { return }
+
+        let allMenuWithDish = viewModel.allMenuContaining(idPiatto: self.id)
+        
+        for eachMenu in allMenuWithDish.allModelWithDish {
+            if eachMenu.status.checkStatusTransition(check: .disponibile) {
+                eachMenu.autoManageCambioStatus(viewModel: viewModel,idPiattoEscluso: self.id)
+              //  eachMenu.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
+            }
+        }
     }
 
+    
+    func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
+        
+      if self.status.checkStatusTransition(check: .disponibile) {
+            
+            return (false,false,false,true,1.0)
+        }
+        
+        else if self.status.checkStatusTransition(check: .inPausa) {
+            
+            return (false,false,false,true,0.8)
+        }
+        
+        else {
+            return (true,false,true,false,0.5)
+        }
+        
+    }
+    
+    func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool { false }
+    
     func creaID(fromValue: String) -> String {
         print("DishModel/creaID()")
       return fromValue.replacingOccurrences(of: " ", with: "").lowercased()
@@ -284,6 +361,8 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
 
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
+        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
+        
         let disabilitaReview = self.rifReviews.isEmpty
         let priceCount = self.pricingPiatto.count
         let currencyCode = Locale.current.currency?.identifier ?? "EUR"
@@ -377,6 +456,20 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
                   
                   Button("Esaurite") {
                       viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                     // innsesto 01.12.22
+                      if self.status.checkStatusTransition(check: .disponibile) {
+                          
+                          viewModel.alertItem = AlertModel(
+                            title: "Update Status Prodotto",
+                            message: "Clicca su conferma se desideri porre il prodotto - \(self.intestazione) - nello status di - in Pausa -\nI Menu che contengono il prodotto potrebbero subire anch'essi modifiche di status.",
+                            actionPlus: ActionModel(
+                                title: .conferma,
+                                action: {
+                                    self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
+                                }))
+                      }
+                      
+                      
                   }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
                   
                   if statoScorte == .esaurito || statoScorte == .inEsaurimento {
@@ -415,6 +508,7 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
               }
           }
         }
+      .disabled(generalDisabled)
     }
     
     /// conta gli ingredienti secondari e principali
@@ -452,6 +546,19 @@ struct DishModel: MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_L0,My
         
         return condition
 
+    }
+    
+    /// cerca corrispondenza delle chiavi sostituite negli array ingredienti Principali e Secondari, e in caso di assenza cancella la key portandola su nil
+   mutating func autoCleanElencoIngredientiOff() {
+        
+        let allKey = self.elencoIngredientiOff.keys
+        
+        for key in allKey {
+            
+            if self.ingredientiPrincipali.contains(key) || self.ingredientiSecondari.contains(key) { continue }
+            else { self.elencoIngredientiOff[key] = nil }
+        }
+        
     }
     
     /// controlla se un ingrediente ha un sostituto, ovvero se esiste la chiave a suo nome nell'elencoIngredientiOff

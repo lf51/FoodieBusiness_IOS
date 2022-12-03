@@ -106,20 +106,16 @@ struct IntestazioneNuovoOggetto_Generic<T> : View where T:MyProToolPack_L0 {
         
         // 2° Check Unicità del nome
         
-        // Mod.15.09
+        let temporaryModel = {
+           
+            var temporary = self.itemModel
+            temporary.intestazione = newText
+            return temporary
+        }()
         
-      //  let (containerPath, _, nomeOggetto) = self.itemModel.viewModelContainerInstance()
-        
-       // let temporaryID = self.itemModel.creaID(fromValue: newText)
-      //  let isAlreadyIN = viewModel[keyPath: containerPath].contains(where:{ $0.id == temporaryID })
         let nomeOggetto = self.itemModel.basicModelInfoInstanceAccess().nomeOggetto
-        let isAlreadyIN = self.viewModel.checkExistingUniqueModelName(model: itemModel).0
+        let isAlreadyIN = self.viewModel.checkExistingUniqueModelName(model: temporaryModel).0
          
-         
-         // end 15.09
-        
-       
-        
         guard !isAlreadyIN else {
             
             self.viewModel.alertItem = AlertModel(title: "Errore", message: "Esiste già un \(nomeOggetto) con questo nome.")

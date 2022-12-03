@@ -76,22 +76,26 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
         
         ForEach(container) { model in
             
-            let modelStatusArchiviato = model.status.checkStatusTransition(check: .archiviato)
+          //  let modelStatusArchiviato = model.status.checkStatusTransition(check: .archiviato)
+          /*  let value:(disableCustom:Bool,disableStatus:Bool,disableEdit:Bool,disableTrash:Bool,opacizzaAll:CGFloat) = {
+                model.conditionToManageMenuInterattivo()
+            }() */
             
             GenericItemModel_RowViewMask(model: model) {
                 
                 model.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
-                    .disabled(modelStatusArchiviato)
+                  //  .disabled(value.disableCustom)
                     
-                    vbMenuInterattivoModuloCambioStatus(myModel: model,viewModel: viewModel) 
+                    vbMenuInterattivoModuloCambioStatus(myModel: model,viewModel: viewModel)
+                  //  .disabled(value.disableStatus)
                 
                     vbMenuInterattivoModuloEdit(currentModel: model, viewModel: viewModel, navPath: navigationPath)
-                    .disabled(modelStatusArchiviato)
+                   // .disabled(value.disableEdit)
                 
                     vbMenuInterattivoModuloTrash(currentModel: model, viewModel: viewModel)
-                    .disabled(!modelStatusArchiviato)
+                   // .disabled(value.disableTrash)
                
-            }.opacity(modelStatusArchiviato ? 0.5 : 1.0)
+            }//.opacity(value.opacizzaAll)
             
         }
         

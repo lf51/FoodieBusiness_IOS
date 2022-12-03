@@ -37,6 +37,11 @@ var testAccount: AccounterVM = {
     vm.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
     vm.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
     vm.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
+    
+    vm.remoteStorage.modelRif_deleted = [ingredientSample_Test.id:ingredientSample_Test.intestazione]
+    vm.remoteStorage.modelRif_newOne = [menuSample_Test.id,dishItem3_Test.id]
+    vm.remoteStorage.modelRif_modified = [menuSample2_Test.id,dishItem3_Test.id]
+    
      return vm
  }()
 

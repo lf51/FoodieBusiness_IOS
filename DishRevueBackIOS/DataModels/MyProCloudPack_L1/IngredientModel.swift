@@ -131,26 +131,56 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
         
     }
     
+    func manageModelDelete(viewModel:AccounterVM) {
+        
+        let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
+        
+        guard !allDishWhereIsIn.isEmpty else {
+            viewModel.deleteItemModel(itemModel: self)
+            return }
+        
+        var allDishChanged:[DishModel] = []
+        
+        for dish in allDishWhereIsIn {
+            
+            var new = dish
+            let (ingPath,index) = new.individuaPathIngrediente(idIngrediente: self.id)
+            
+            if ingPath != nil, index != nil {
+                new[keyPath: ingPath!].remove(at: index!)
+                new.autoCleanElencoIngredientiOff()
+            }
+            allDishChanged.append(new)
+        }
+        
+        viewModel.updateItemModelCollection(items: allDishChanged)
+        viewModel.deleteItemModel(itemModel: self)
+    }
+    
+    func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
+        
+        if self.status.checkStatusTransition(check: .disponibile) {
+            return(false,false,false,true,1.0)
+        }
+        else if self.status.checkStatusTransition(check: .inPausa) {
+            return(false,false,false,true,0.8)
+        }
+        else {
+            return (true,false,true,false,0.5)
+        }
+    }
+    
+    func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM   ) -> Bool { false }
+    
+    /// Mette in pausa tutti i piatti che contengono l'ingrediente il cui stato è passato da .disponibile a .inPausa o .archiviato
     func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM) {
     
+        let isCurrentlyDisponibile = self.status.checkStatusTransition(check: .disponibile)
+        
         viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
+       // viewModel.remoteStorage.modelRif_modified.insert(self.id)
         
-        guard nuovoStatus != .disponibile else { return }
-        
-        func privateStatusChange() {
-            
-            let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
-            var allDishChanged:[DishModel] = []
-            
-            for dish in allDishWhereIsIn {
-                
-                var new = dish
-                new.status = dish.status.changeStatusTransition(changeIn: .inPausa)
-                allDishChanged.append(new)
-            }
-            
-            viewModel.updateItemModelCollection(items: allDishChanged)
-        }
+        guard nuovoStatus != .disponibile, isCurrentlyDisponibile else { return }
         
         if nuovoStatus == .inPausa, viewModel.setupAccount.autoPauseDish_byPauseING == .sempre {
             
@@ -158,6 +188,26 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
             
         } else if nuovoStatus == .archiviato, viewModel.setupAccount.autoPauseDish_byArchiveING == .sempre {
             privateStatusChange()
+        }
+        
+        func privateStatusChange() {
+            
+            let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
+            
+            for dish in allDishWhereIsIn {
+              //  dish.autoManageCambioStatus(viewModel: viewModel)
+                if dish.status.checkStatusTransition(check: .disponibile) {
+                    dish.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
+                    viewModel.remoteStorage.dish_countModificheIndirette += 1
+                   //viewModel.dishStatusChanged += 1
+                   // viewModel.remoteStorage.dishRif_modified.append(dish.id)
+                   // viewModel.remoteStorage.dish_countModificheIndirette += 1
+                   // viewModel.remoteStorage.modelRif_modified.append(dish.id)
+                  //  viewModel.remoteStorage.applicaModificaIndiretta(id: dish.id, model: .dish)
+                }
+               
+            }
+
         }
 
     }
@@ -250,11 +300,13 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
     }
     
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-                
-        VStack {
-                            
-                let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
-                let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
+              
+        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
+        
+       return VStack {
+            
+            let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
+            let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
                 
                 Menu {
                     
@@ -264,6 +316,18 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
                     
                     Button("Esaurite") {
                         viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                        // innesto 01.12.22
+                        if self.status.checkStatusTransition(check: .disponibile) {
+                            viewModel.alertItem = AlertModel(
+                                title: "Update Status Ingrediente",
+                                message: "Clicca conferma se desideri porre l'ingrediente - \(self.intestazione) - nello status - in Pausa -\nIn Automatico, preparazioni e menu contenenti l'ingrediente potrebbero subire anch'essi modifiche di status.",
+                                actionPlus: ActionModel(
+                                    title: .conferma,
+                                    action: {
+                                        self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
+                                    }))
+                        }
+                        
                     }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
                     
                     if statoScorte == .esaurito || statoScorte == .inEsaurimento {
@@ -311,6 +375,7 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
                 }
  
         }
+        .disabled(generalDisabled)
     }
     
     

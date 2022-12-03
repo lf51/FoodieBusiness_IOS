@@ -52,7 +52,7 @@ struct CorpoProgrammazioneMenu_SubView: View {
                       //  .disabled(self.valueFor.disableDays)
             } else {
                 
-                let singleDay = setGiornoDataEsatta(data: self.nuovoMenu.dataInizio)
+                let singleDay = setGiornoDataEsatta()
                 
                 HStack {
                     CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: Color.white, fillColor: Color.cyan) {
@@ -92,11 +92,16 @@ struct CorpoProgrammazioneMenu_SubView: View {
 
     // Method
     
-    private func setGiornoDataEsatta(data:Date) -> GiorniDelServizio {
+    private func setGiornoDataEsatta() -> GiorniDelServizio {
         
-        let serviceDay = GiorniDelServizio.giornoServizioFromData(dataEsatta: data)
+        let dataEsatta = self.nuovoMenu.dataInizio
+        let serviceDay = GiorniDelServizio.giornoServizioFromData(dataEsatta: dataEsatta)
         
-        self.nuovoMenu.giorniDelServizio = [serviceDay]
+       // self.nuovoMenu.giorniDelServizio = [serviceDay]
+        DispatchQueue.main.async {
+            self.nuovoMenu.giorniDelServizio = [serviceDay]
+        }
+      //  handler(serviceDay)
         return serviceDay
     }
     

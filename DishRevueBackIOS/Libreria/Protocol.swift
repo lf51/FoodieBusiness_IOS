@@ -53,7 +53,10 @@ protocol MyProStatusPack_L0 {
 protocol MyProStatusPack_L1: MyProStatusPack_L0,MyProStarterPack_L1 {
     
     func pathDestination() -> DestinationPathView
-    func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM) -> Void 
+    func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM)
+    func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool
+   
+    func conditionToManageMenuInterattivo() -> (disableCustom:Bool,disableStatus:Bool,disableEdit:Bool,disableTrash:Bool,opacizzaAll:CGFloat)
 }
 
 /*protocol MyProDestinationPack_L0 {
@@ -65,12 +68,19 @@ protocol MyProVisualPack_L0 {
     associatedtype RowView: View
     associatedtype InteractiveMenuContent: View
     
+    var id:String { get }
+    
     func returnModelRowView(rowSize:RowSize) -> RowView
     /// Bottoni per il menu Interattivo specifici del modello
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> InteractiveMenuContent
+    
+    func conditionToManageMenuInterattivo() -> (disableCustom:Bool,disableStatus:Bool,disableEdit:Bool,disableTrash:Bool,opacizzaAll:CGFloat)
 }
 
-protocol MyProVisualPack_L1: MyProVisualPack_L0,MyProStarterPack_L1 { }
+protocol MyProVisualPack_L1: MyProVisualPack_L0,MyProStarterPack_L1 {
+    
+  
+}
 // NUOVA FASE DI RIORDINO - 15.09
 
 protocol MyProEnumPack_L0: MyProOrganizerPack_L0 {
@@ -97,12 +107,18 @@ protocol MyProOrganizerPack_L0: Hashable {
     func orderAndStorageValue() -> Int // Usiamo il numero oltre che a ordinare i case, anche come valore di storage in firebase
 }
 
+protocol MyProManagingPack_L0 {
+    /// gestisce il delete a livello Model, permettendo di compiere altre operazioni insieme.
+    func manageModelDelete(viewModel:AccounterVM)
+    func conditionToManageMenuInterattivo() -> (disableCustom:Bool,disableStatus:Bool,disableEdit:Bool,disableTrash:Bool,opacizzaAll:CGFloat)
+   
+}
 
 // fine spazio MyPro
 
 protocol MyProToolPack_L0:MyProStatusPack_L1,MyProVisualPack_L0 { }
 
-protocol MyProToolPack_L1:MyProToolPack_L0,MyProSearchPack_L0 { }
+protocol MyProToolPack_L1:MyProToolPack_L0,MyProSearchPack_L0,MyProManagingPack_L0 { }
 
 protocol MyProCloudPack_L0 {
     /// protocollo per le proprietà, in particolare per le enum, per essere convertite in un valore più facilmente stockabile
@@ -118,6 +134,8 @@ protocol MyProCloudPack_L1 {
     init(frDoc:QueryDocumentSnapshot)
     associatedtype DataBaseField
 }
+
+
 
 /*
 protocol MyEnumProtocol: MyProStarterPack_L0/*, /*CaseIterable,*/ Identifiable*//*, Equatable*/ { // Protocollo utile per un Generic di modo da passare differenti oggetti(ENUM) alla stessa View

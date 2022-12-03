@@ -207,7 +207,18 @@ struct NuovoMenuMainView: View {
         
         if let dishModel = self.viewModel.modelFromId(id: id, modelPath: \.allMyDish) {
             
-            DishModel_RowView(item: dishModel,rowSize: .sintetico)
+           // DishModel_RowView(item: dishModel,rowSize: .sintetico)
+            GenericItemModel_RowViewMask(
+                model: dishModel,
+                rowSize: .sintetico) {
+ 
+                    Button {
+                        self.nuovoMenu.rifDishIn.removeAll(where: {$0 == id})
+                    } label: {
+                        Text("Rimuovi")
+                    }
+
+                }
         }
         
     }
@@ -268,7 +279,7 @@ struct NuovoMenuMainView: View {
         else {  self.nuovoMenu.status = .completo(.archiviato) } */ // 16.09
       
         guard !self.nuovoMenu.rifDishIn.isEmpty else {
-            self.nuovoMenu.status = .bozza(.archiviato)
+            self.nuovoMenu.status = .bozza(.inPausa)
             return true
         }
         

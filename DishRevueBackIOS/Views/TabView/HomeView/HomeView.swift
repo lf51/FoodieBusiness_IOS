@@ -89,6 +89,7 @@ struct HomeView: View {
                                  .padding(.bottom,1)
                             
                         let allPrepRated = compilaArrayPreparazioni()
+                            
                             TopRated_SubView(
                                 allRated: allPrepRated,
                                 destinationPathView: .vistaRecensioniEspansa,
@@ -308,6 +309,26 @@ struct HomeView: View {
  
                 
                 Spacer()
+            
+                let trashDestination:DestinationPathView? = {
+                    
+                    let isTrashEmpty = self.viewModel.remoteStorage.modelRif_deleted.isEmpty
+                    
+                    guard !isTrashEmpty else { return nil }
+                    
+                    return DestinationPathView.elencoModelDeleted
+
+                    }()
+                
+                
+                NavigationLink(value: trashDestination) {
+                    Image(systemName: "trash")
+                          .imageScale(.medium)
+                          .foregroundColor(Color("SeaTurtlePalette_4"))
+                }
+                .opacity(trashDestination == nil ? 0.5 : 1.0)
+                
+            
             }
             .lineLimit(1)
         }
@@ -463,7 +484,25 @@ struct MenuDiSistema_BoxView:View {
                                            
                                            if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.allMyDish) {
                                                
-                                               DishModel_RowView(item: piatto, rowSize: .sintetico)
+                                             //  DishModel_RowView(item: piatto, rowSize: .sintetico)
+                                               GenericItemModel_RowViewMask(
+                                                model: piatto,
+                                                rowSize: .sintetico) {
+                                                   
+                                                    Button {
+                                                        
+                                                        viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: idPiatto, menuDiSistema: menuDiSistema)
+
+                                                    } label: {
+                                                        HStack{
+                                                            
+                                                            Text("Rimuovi da \(menuDiSistema.simpleDescription()) ")
+                                                           
+                                                        }
+                                                    }
+                                                    
+                                                    
+                                                }
               
                                            }
          
@@ -653,7 +692,13 @@ struct TopRated_SubView<M:MyProVisualPack_L1>:View {
                 ForEach(Array(topThree),id:\.element) {position,element in
 
                     HStack {
-                        element.returnModelRowView(rowSize: .sintetico)
+                     //   element.returnModelRowView(rowSize: .sintetico)
+                       GenericItemModel_RowViewMask(
+                        model: element,
+                        rowSize: .sintetico) {
+                            element.vbMenuInterattivoModuloCustom(viewModel: self.viewModel, navigationPath: \.homeViewPath)
+                        }
+                        
                         Text(csRatingMedalReward(position: position))
                             .font(.largeTitle)
 

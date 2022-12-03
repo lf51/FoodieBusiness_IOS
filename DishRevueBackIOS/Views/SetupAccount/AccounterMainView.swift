@@ -148,25 +148,6 @@ struct AccounterMainView: View {
                           
                           HStack {
                               
-                              Text("Auto-Pause Preparazioni by delete Ingredient")
-                              CSInfoAlertView(title: "Info", message: .cambioStatusPreparazioni)
-                              Spacer()
-                              Picker(selection: $viewModel.setupAccount.autoPauseDish_byDeleteING) {
-                                  ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
-
-                                      Text("\(value.rawValue)")
-                                      
-                                  }
-                              } label: {
-                                  Text("")
-                              }
-                          }
-                          
-                         Divider()
-                          
-                          
-                          HStack {
-                              
                               Text("Count Down Menu Off")
                               CSInfoAlertView(title: "Info", message: .timerMenu)
                               Spacer()

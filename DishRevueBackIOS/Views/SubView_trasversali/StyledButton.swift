@@ -122,7 +122,7 @@ struct CSButton_large: View {
       }
     }
     .background(backgroundColor)
-    .cornerRadius(cornerRadius, corners: corners!)
+    .csCornerRadius(cornerRadius, corners: corners!)
     
   }
 }

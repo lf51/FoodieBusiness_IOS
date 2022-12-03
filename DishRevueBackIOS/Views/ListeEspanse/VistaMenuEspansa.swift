@@ -69,7 +69,7 @@ struct VistaMenuEspansa: View {
                             let containTheDish = model.rifDishIn.contains(currentDish.id)
                             
                             model.returnModelRowView(rowSize: .normale)
-                                .opacity(containTheDish ? 1.0 : 0.6)
+                                .opacity(containTheDish ? 1.0 : 0.4)
                                 .overlay(alignment: .bottomTrailing) {
                                     
                                     CSButton_image(
@@ -87,7 +87,7 @@ struct VistaMenuEspansa: View {
                                                        }
                                        .padding(5)
                                        .background {
-                                            Color.white.opacity(0.5)
+                                           Color.white.opacity(containTheDish ? 0.5 : 1.0)
                                                .clipShape(Circle())
                                                .shadow(radius: 5.0)
                                                //.frame(width: 30, height: 30)
@@ -154,12 +154,34 @@ struct VistaMenuEspansa: View {
         
         if localMenu.rifDishIn.contains(currentDish.id) {
             currentMenu.rifDishIn.removeAll(where: {$0 == currentDish.id})
+            updateStatus()
         } else {
             currentMenu.rifDishIn.append(currentDish.id)
+            updateStatus()
         }
+        
+        // Innest0 0.12.22
+        
+        func updateStatus() {
+            
+            guard !localMenu.tipologia.isDiSistema() else { return }
+            
+            let localModelArchiviato = self.valoreArchiviato.first { $0.id == localMenu.id}
+            
+            guard localModelArchiviato != nil,
+                  localModelArchiviato!.status.checkStatusTransition(check: .disponibile) else { return }
+            
+            if currentMenu.allDishActive(viewModel: self.viewModel).isEmpty {
+                currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .inPausa)
+            } else {
+                currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .disponibile)
+            }
+        }
+        // fine Innesto
         
         if let index = self.allMenu.firstIndex(where: {$0.id == currentMenu.id}) {
             self.allMenu[index] = currentMenu
+            print("addRemoveDishLocally - ListaEspansaMenu")
         }
     }
 }

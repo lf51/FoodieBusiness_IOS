@@ -12,7 +12,7 @@ import Firebase
 
 // Nota 19.09
 struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack_L0,MyProCloudPack_L1{
-   
+  
     static func == (lhs: PropertyModel, rhs: PropertyModel) -> Bool {
         
         lhs.id == rhs.id  &&
@@ -212,6 +212,10 @@ struct PropertyModel:MyProStarterPack_L1,MyProVisualPack_L0,MyProDescriptionPack
             
          
         }
+    }
+    
+    func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
+        (false,false,false,false,1.0)
     }
     
     func returnModelRowView(rowSize:RowSize) -> some View {

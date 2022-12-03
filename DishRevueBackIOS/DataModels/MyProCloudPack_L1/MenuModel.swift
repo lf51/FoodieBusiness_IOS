@@ -157,16 +157,70 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
     }
     
 //
+    func manageModelDelete(viewModel: AccounterVM) {
+        viewModel.deleteItemModel(itemModel: self)
+    }
+     
+    /// Gestisce il cambio automatico dello status. Chiede un idDaEscludere perchè la chiamata per l'update arriva da un piatto non ancora passato di status
+    func autoManageCambioStatus(viewModel:AccounterVM,idPiattoEscluso:String) {
+
+        guard !self.tipologia.isDiSistema() else { return }
+        
+        let avaibleDish = allDishActive(idDishEscluso: idPiattoEscluso, viewModel: viewModel)
+        if avaibleDish.isEmpty {
+           // viewModel.menuStatusChanged += 1
+           // viewModel.remoteStorage.menu_countModificheIndirette += 1
+           // viewModel.remoteStorage.modelRif_modified.append(self.id)
+          //  viewModel.remoteStorage.applicaModificaIndiretta(id: self.id, model: .menu)
+            viewModel.manageCambioStatusModel(model: self, nuovoStatus: .inPausa)
+            viewModel.remoteStorage.menu_countModificheIndirette += 1
+        }
+        
+    }
     
     func manageCambioStatus(nuovoStatus: StatusTransition, viewModel: AccounterVM) {
         
         viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
+        viewModel.remoteStorage.modelRif_modified.insert(self.id)
+      
+    }
+    
+    func allDishActive(idDishEscluso:String? = nil,viewModel:AccounterVM) -> [DishModel] {
+        
+        let cleanRif = self.rifDishIn.filter({$0 != idDishEscluso})
+        let allDishIn = viewModel.modelCollectionFromCollectionID(collectionId: cleanRif, modelPath: \.allMyDish)
+        let avaibleDish = allDishIn.filter({$0.status.checkStatusTransition(check: .disponibile)})
+        return avaibleDish
+    }
+    
+    func conditionToManageMenuInterattivo() ->(disableCustom:Bool,disableStatus:Bool,disableEdit:Bool,disableTrash:Bool,opacizzaAll:CGFloat) {
+        
+        guard !self.tipologia.isDiSistema() else {
+            return (false,true,true,false,1.0)
+        }
+        
+        guard !self.status.checkStatusTransition(check: .disponibile) else {
+            return (false,false,false,true,1.0)
+        }
+        
+        if self.status.checkStatusTransition(check: .inPausa) {
+            
+            return (false,false,false,true,0.8)
+        }
+        else {
+            
+            return (false,false,true,false,0.5)
+        }
+        
+    }
+    /// gestisce in modo specifico quando un menu può essere riportato a .disponibile
+    func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool {
+       self.allDishActive(viewModel: viewModel).isEmpty
     }
     
     func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
         let disabilita = self.rifDishIn.isEmpty
-        
         let dishCount = viewModel.allMyDish.count
         let dishInMenu = self.rifDishIn.count
         
@@ -174,6 +228,7 @@ struct MenuModel:MyProStatusPack_L1,MyProToolPack_L1,MyProDescriptionPack_L0,MyP
             
             Button {
              //   viewModel[keyPath: navigationPath].append(DestinationPathView.categoriaMenu)
+             
                 
             } label: {
                 HStack{

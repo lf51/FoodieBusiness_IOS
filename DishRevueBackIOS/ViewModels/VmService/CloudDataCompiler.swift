@@ -33,7 +33,6 @@ struct CloudDataStore {
                 
         case anyDocument = "datiDiFunzionamento"
     
-
     }
     
     init() {

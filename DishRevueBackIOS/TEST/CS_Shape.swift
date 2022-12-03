@@ -122,12 +122,6 @@ struct CS_Exagon: Shape {
             path.addLine(to: CGPoint(x: rect.minX, y: rect.midY * 1.5))
             path.addLine(to: CGPoint(x: rect.minX, y: rect.midY / 2))
             
-            
-            
         }
-        
     }
-    
-    
-    
 }

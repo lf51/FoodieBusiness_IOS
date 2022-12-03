@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct VistaEspansaGenerica<M:MyProToolPack_L0>: View {
+struct VistaEspansaGenerica<M:MyProToolPack_L1>: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
@@ -42,7 +42,7 @@ struct VistaEspansaGenerica<M:MyProToolPack_L0>: View {
                     }
                     
                 }
-      
+                CSDivider()
             } // end vStack Madre
         
         }
