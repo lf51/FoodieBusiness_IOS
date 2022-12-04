@@ -75,6 +75,7 @@ struct CS_PickerWithDefault<E:MyProEnumPack_L1>: View {
                 Picker(selection:$selection) {
                              
                     Text(showCustomLabel ? "Non Specificato" : customLabel)
+                        
                         .tag(E.defaultValue)
                     
                         ForEach(dataContainer, id:\.self) {filter in
@@ -88,6 +89,7 @@ struct CS_PickerWithDefault<E:MyProEnumPack_L1>: View {
                 } label: {Text("")}
                           .pickerStyle(MenuPickerStyle())
                           .accentColor(Color.black)
+                          
                          // .padding(.horizontal)
                           .background(
                         

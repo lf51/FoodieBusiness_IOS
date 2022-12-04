@@ -318,14 +318,7 @@ struct IngredientModel:MyProToolPack_L1,MyProVisualPack_L1,MyProDescriptionPack_
                         viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
                         // innesto 01.12.22
                         if self.status.checkStatusTransition(check: .disponibile) {
-                            viewModel.alertItem = AlertModel(
-                                title: "Update Status Ingrediente",
-                                message: "Clicca conferma se desideri porre l'ingrediente - \(self.intestazione) - nello status - in Pausa -\nIn Automatico, preparazioni e menu contenenti l'ingrediente potrebbero subire anch'essi modifiche di status.",
-                                actionPlus: ActionModel(
-                                    title: .conferma,
-                                    action: {
-                                        self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
-                                    }))
+                            self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
                         }
                         
                     }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)

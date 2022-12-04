@@ -65,7 +65,7 @@ struct FastImport_CorpoScheda:View {
                                     self.temporaryModel.categoriaMenu == .defaultValue
                                    /* self.temporaryModel.dish.categoriaMenuDEPRECATA == .defaultValue */
                                     }
-
+                                .fixedSize()
                      /*   csVbSwitchImageText(string: temporaryModel.dish.categoriaMenuDEPRECATA.imageAssociated()) */
                         csVbSwitchImageText(string: temporaryModel.categoriaMenu.imageAssociated(),size: .large)
                         
@@ -73,7 +73,7 @@ struct FastImport_CorpoScheda:View {
   
                         CSTextField_6(
                             textFieldItem: $dishPrice,
-                            placeHolder: "0.00",
+                            placeHolder: "000.00",
                             image: "eurosign.circle",
                             showDelete: false,
                             keyboardType: .decimalPad,
@@ -226,12 +226,13 @@ struct FastImport_CorpoScheda:View {
         
         // creiamo un piatto in formato standard "Unico", per una persona e senza indicazione di peso.
      //   self.fastDish.pricingPiatto = [] // deprecata 24.08
-        guard self.dishPrice != "" else {return}
-        guard csCheckDouble(testo: self.dishPrice) else { return }
-
+        guard self.dishPrice != "" else { return }
+      //  guard csCheckDouble(testo: self.dishPrice) else { return }
+        let newPrice = self.dishPrice.replacingOccurrences(of: ",", with: ".")
+        
         let formatoDish: DishFormat = {
             var newFormat = DishFormat(type: .mandatory)
-            newFormat.price = self.dishPrice
+            newFormat.price = newPrice
             return newFormat
             
         }()

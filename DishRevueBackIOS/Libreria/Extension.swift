@@ -39,6 +39,7 @@ extension View {
           clipShape( RoundedCorner(radius: radius, corners: corners) )
       }
     
+    /// Mette una vela alla Model Row per notificare che è stato creato nella sessione o che è stato modificato
     func csOverlayModelChange(rifModel:String) -> some View {
         
         self.modifier(CS_RemoteModelChange(rifModel: rifModel))

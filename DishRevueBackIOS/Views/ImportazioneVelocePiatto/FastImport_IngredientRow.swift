@@ -124,7 +124,7 @@ struct FastImport_IngredientRow: View {
 
 
                             CS_PickerWithDefault(selection: $ingredient.provenienza, customLabel: "Provenienza(?)", dataContainer: ProvenienzaIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
-                             
+                                .fixedSize()
                              /*   .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.provenienza == .defaultValue
                                 }//.fixedSize() */
