@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 //import MapKit // necessario per la preview. Da eliminare
 
 struct PropertyModel_RowView: View {

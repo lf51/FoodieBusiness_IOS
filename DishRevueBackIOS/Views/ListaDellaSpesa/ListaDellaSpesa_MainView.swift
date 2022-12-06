@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 
 struct ListaDellaSpesa_MainView: View {
     

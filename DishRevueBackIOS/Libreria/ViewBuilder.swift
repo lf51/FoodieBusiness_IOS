@@ -170,7 +170,7 @@ import SwiftUI
 
 
 ///ZStack con Sfondo Colorato, NavigationTitle e backgroundOpacity a livello tabBar. Standard ListModelView
-struct CSZStackVB<Content:View>:View {
+/*struct CSZStackVB<Content:View>:View {
     
     let title: String
     let backgroundColorView:Color
@@ -193,7 +193,7 @@ struct CSZStackVB<Content:View>:View {
         
        
     }
-}
+} */ // Spostata in MyPackView_L0 in 06.12.22
 
 /* // Deprecated 21.05
 ///ZStack con RoundedRectangle di sfondo, framed. Standard RowView. MaxWidth/Height: 400/200. Default -> 300/150
@@ -312,7 +312,7 @@ struct CSZStackVB_Framed<Content:View>:View {
     } */ // BAckUp 21.08 - Prova modifica larghezza
 
 ///ZStack con RoundedRectangle di sfondo, rapporto base/altezza custom (rateWH -> default 2:1 | 400/200).MaxWidth: larghezza Schermo - 20 punti
-struct CSZStackVB_Framed<Content:View>:View {
+/*struct CSZStackVB_Framed<Content:View>:View {
         
         let frameWidth: CGFloat
         let backgroundOpacity: Double
@@ -350,7 +350,7 @@ struct CSZStackVB_Framed<Content:View>:View {
           //  .frame(width: frameWidth, height: frameHeight)
           
         }
-    }
+    }*/ // SPOSTATA in MyPackView_L0 in 06.12.22
 
 /*
 /// Gestisce il Menu della RowModel in base al cambio di Status. Generic conforme al MyModelStatusConformity

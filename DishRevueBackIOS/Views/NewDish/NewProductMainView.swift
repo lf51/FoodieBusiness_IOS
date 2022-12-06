@@ -6,6 +6,7 @@
 //  Last deeper Modifing terminate 16.07
 
 import SwiftUI
+import MyPackView_L0
 
 struct NewProductMainView: View {
     

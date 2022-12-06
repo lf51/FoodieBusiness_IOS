@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 
 enum RowSize {
     case sintetico,ridotto,normale,ibrido

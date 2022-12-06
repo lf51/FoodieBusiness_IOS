@@ -5,6 +5,7 @@
 //  Created by Calogero Friscia on 25/01/22.
 //
 import SwiftUI
+import MyPackView_L0
 
 struct NuovoIngredienteGeneralView: View {
 

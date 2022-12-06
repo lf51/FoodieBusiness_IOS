@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 
 /// Visualizza sul singolo piatto o sul comparto recensioni per intero, le statistiche, totali,24h,media,medial L10,recensioni complete, negative,positive,topRange. Se singleDishRif == nil analizza l'intero comparto
 struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
