@@ -59,7 +59,7 @@ enum DestinationPathView: Hashable {
            /* NewDishMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */
             
         case .ingrediente(let ingredient):
-            NuovoIngredienteMainView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+            NuovoIngredienteGeneralView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
             
         case .categoriaMenu:
             NuovaCategoriaMenu(backgroundColorView: backgroundColorView)

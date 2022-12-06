@@ -4,10 +4,9 @@
 //
 //  Created by Calogero Friscia on 25/01/22.
 //
-
 import SwiftUI
 
-struct NuovoIngredienteMainView: View {
+struct NuovoIngredienteGeneralView: View {
 
    // @EnvironmentObject var viewModel: AccounterVM
     @Environment(\.openURL) private var openURL
@@ -222,7 +221,7 @@ struct NuovoIngredienteMainView: View {
         }
         
       //  self.nuovoIngrediente.status = .completo(.archiviato)
-        return true 
+        return true
     }
     
    /* private func checkLuogoProduzione() -> Bool {
@@ -270,7 +269,6 @@ struct NuovoIngredienteMainView: View {
                     
                 self.viewModel.createItemModel(itemModel: self.nuovoIngrediente,destinationPath: destinationPath)
                 }
-
             }
         }
         
@@ -314,7 +312,7 @@ struct NuovoIngredienteMainView: View {
 }
 
 
-struct NuovoIngredienteView_Previews: PreviewProvider {
+struct NuovoIngredienteGeneralView_Previews: PreviewProvider {
     static var previews: some View {
         
         NavigationStack {
@@ -322,8 +320,7 @@ struct NuovoIngredienteView_Previews: PreviewProvider {
           //  ZStack {
                 
               //  Color.cyan.ignoresSafeArea()
-
-                NuovoIngredienteMainView(nuovoIngrediente: IngredientModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .ingredientList)
+                NuovoIngredienteGeneralView(nuovoIngrediente: IngredientModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .ingredientList)
                   // .cornerRadius(20.0)
                     //.padding(.vertical)
                     
@@ -333,4 +330,3 @@ struct NuovoIngredienteView_Previews: PreviewProvider {
      
     }
 }
-
