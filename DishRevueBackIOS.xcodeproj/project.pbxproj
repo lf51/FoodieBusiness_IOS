@@ -74,6 +74,7 @@
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
 		3FABBC1D292254CE0003D49E /* AccountSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FABBC1C292254CE0003D49E /* AccountSetup.swift */; };
 		3FABE5352926A3A500C2819B /* AccounterVM_BACKUP1711.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FABE5342926A3A500C2819B /* AccounterVM_BACKUP1711.swift */; };
+		3FB42F2C2940D6ED000DD169 /* MyPackFoodieElement_L0 in Frameworks */ = {isa = PBXBuildFile; productRef = 3FB42F2B2940D6ED000DD169 /* MyPackFoodieElement_L0 */; };
 		3FBA5BD528DDADD6009AA124 /* VistaIngredientiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */; };
 		3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */; };
 		3FBE221F292FCB150096F11B /* PopNewCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBE221E292FCB150096F11B /* PopNewCollab.swift */; };
@@ -292,6 +293,7 @@
 		3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel_SmallRowView.swift; sourceTree = "<group>"; };
 		3FABBC1C292254CE0003D49E /* AccountSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSetup.swift; sourceTree = "<group>"; };
 		3FABE5342926A3A500C2819B /* AccounterVM_BACKUP1711.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccounterVM_BACKUP1711.swift; path = DishRevueBackIOS/OBSOLETE/AccounterVM_BACKUP1711.swift; sourceTree = SOURCE_ROOT; };
+		3FB42F2A2940D694000DD169 /* MyPackFoodieElement_L0 */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MyPackFoodieElement_L0; path = ../MyPackFoodieElement_L0; sourceTree = "<group>"; };
 		3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaIngredientiEspansa.swift; sourceTree = "<group>"; };
 		3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverradeStateTEST.swift; sourceTree = "<group>"; };
 		3FBE221E292FCB150096F11B /* PopNewCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopNewCollab.swift; sourceTree = "<group>"; };
@@ -472,6 +474,7 @@
 			files = (
 				4D403BA42798212600EB4E1B /* FirebaseAuth in Frameworks */,
 				4D49470028213C880093AFD6 /* SwipeActions in Frameworks */,
+				3FB42F2C2940D6ED000DD169 /* MyPackFoodieElement_L0 in Frameworks */,
 				3F13D1DF293FA38800C599B2 /* MyPackView_L0 in Frameworks */,
 				4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */,
 				4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */,
@@ -706,6 +709,7 @@
 		4D403B8327981BC200EB4E1B = {
 			isa = PBXGroup;
 			children = (
+				3FB42F2A2940D694000DD169 /* MyPackFoodieElement_L0 */,
 				3F13D1DA293F9E3200C599B2 /* MyPackView_L0 */,
 				4D403B8E27981BC200EB4E1B /* DishRevueBackIOS */,
 				4D403B8D27981BC200EB4E1B /* Products */,
@@ -1171,6 +1175,7 @@
 				4D403BA72798212600EB4E1B /* FirebaseFirestore */,
 				4D4946FF28213C880093AFD6 /* SwipeActions */,
 				3F13D1DE293FA38800C599B2 /* MyPackView_L0 */,
+				3FB42F2B2940D6ED000DD169 /* MyPackFoodieElement_L0 */,
 			);
 			productName = DishRevueBackIOS;
 			productReference = 4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */;
@@ -1608,7 +1613,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 89;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1639,7 +1644,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 89;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1773,6 +1778,10 @@
 		3F13D1DE293FA38800C599B2 /* MyPackView_L0 */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MyPackView_L0;
+		};
+		3FB42F2B2940D6ED000DD169 /* MyPackFoodieElement_L0 */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MyPackFoodieElement_L0;
 		};
 		4D403BA32798212600EB4E1B /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
