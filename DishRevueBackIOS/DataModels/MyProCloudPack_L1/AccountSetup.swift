@@ -71,7 +71,7 @@ struct AccountSetup:MyProCloudPack_L1 {
         static let startCountDownMenuAt = "startCountDownValue"
         static let autoPauseDish_byPauseING = "autoPauseDish_byPauseING"
         static let autoPauseDish_byDeleteING = "autoPauseDish_byDeleteING"
-        static let autoPauseDish_byArchiveING = "autoPauseDish_byPauseING"
+        static let autoPauseDish_byArchiveING = "autoPauseDish_byArchiveING"
     }
     
     //

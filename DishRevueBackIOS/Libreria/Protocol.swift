@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-import Firebase
+//import Firebase
 
 // 14.09 Spazio protocolli MyPro - Nuova generazione
 protocol MyProStarterPack_L0:Identifiable,Equatable,Hashable { // Primo passo per la riorganizzazione dei protocolli. Step by step e per funzioni. L'incipit sarà MyPro seguito dal Pack. ModelPack EnumPack StatusPack per raggruppare le varie funzioni e utilizzi

@@ -1,67 +1,14 @@
 //
-//  ClockSyncroVM.swift
+//  Cloud.swift
 //  DishRevueBackIOS
 //
-//  Created by Calogero Friscia on 05/10/22.
+//  Created by Calogero Friscia on 08/12/22.
 //
 
 import Foundation
 import SwiftUI
 import Firebase
-
-struct CloudDataStore {
-    
-    var setupAccount: AccountSetup // caricato
-    var inventarioScorte: Inventario // caricato
-    
-    var allMyIngredients:[IngredientModel] // caricato
-    var allMyDish:[DishModel] // caricato
-    var allMyMenu:[MenuModel] // caricato
-    var allMyProperties:[PropertyModel] // caricato
-    
-    var allMyCategories: [CategoriaMenu] // caricato
-    var allMyReviews:[DishRatingModel] // caricato
-    
-    enum CloudCollectionKey:String {
-        
-        case ingredient = "userIngredients"
-        case dish = "userPreparazioniEprodotti"
-        case menu = "userMenu"
-        case properties =  "userProperties"
-        case categories = "userCategories"
-        case reviews = "userReviews"
-                
-        case anyDocument = "datiDiFunzionamento"
-    
-    }
-    
-    init() {
-        
-        self.setupAccount = AccountSetup()
-        self.inventarioScorte = Inventario()
-        self.allMyIngredients = [] // vanno inseriti gli ing,dish,menu,property fake
-        self.allMyDish = []
-        self.allMyMenu = []
-        self.allMyProperties = []
-        self.allMyCategories = [] // vanno inserite le categorie di default
-        self.allMyReviews = [] // vanno inserite review fake
-        
-    }
-    
-    init(accountSetup: AccountSetup, inventarioScorte: Inventario, allMyIngredients: [IngredientModel], allMyDish: [DishModel], allMyMenu: [MenuModel], allMyProperties: [PropertyModel], allMyCategory: [CategoriaMenu], allMyReviews: [DishRatingModel]) {
-        self.setupAccount = accountSetup
-        self.inventarioScorte = inventarioScorte
-        self.allMyIngredients = allMyIngredients
-        self.allMyDish = allMyDish
-        self.allMyMenu = allMyMenu
-        self.allMyProperties = allMyProperties
-        self.allMyCategories = allMyCategory
-        self.allMyReviews = allMyReviews
-    }
-    
-    
-    
-}
+import MyPackFoodieElement_L0
 
 struct CloudDataCompiler {
     
@@ -124,7 +71,7 @@ struct CloudDataCompiler {
             guard error == nil, queryDoc?.documents != nil else { return }
                 
             for doc in queryDoc!.documents {
-
+               
                 let element = M.init(frDoc: doc)
                 cloudData[keyPath: singleKP] = element
                     }
