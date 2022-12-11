@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 
 /// Un info Point al Tap. L'info è mostrata da un Alert classico, senza action. Il messaggio veicolato è di tipo SystemMessage
 struct CSInfoAlertView: View {

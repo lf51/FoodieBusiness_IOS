@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import MapKit // da togliere quando ripuliamo il codice dai Test
 import MyFoodiePackage
+import MyPackView_L0
 
 public class AccounterVM: MyProViewModelPack_L1 {
     

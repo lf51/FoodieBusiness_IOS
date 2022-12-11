@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 struct IntestazioneNuovoOggetto_Generic<T:MyProToolPack_L0> : View where T.VM == AccounterVM {
     // 15.09 passa da T:MyModelStatusConformity a T:MyProStarterPack_L2

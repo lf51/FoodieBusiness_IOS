@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 struct FastImport_CorpoScheda:View {
     

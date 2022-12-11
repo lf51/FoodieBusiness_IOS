@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import MyPackView_L0
 /// Nasconde una immagine all'interno di una piramide aprile e chiudibile al Tap
 struct CS_CircleSnakeView: View {
     

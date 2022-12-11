@@ -8,18 +8,4 @@
 import Foundation
 import SwiftUI
 
-struct ActionModel {
-    
-    let title: TitleAction
-    let action: () -> Void
-    
-    enum TitleAction:String {
-        
-        case elimina
-        case conferma
-        case prosegui
-        case continua
-        case salva
-        case nonMostrare = "Non Mostrare più"
-    }
-}
+

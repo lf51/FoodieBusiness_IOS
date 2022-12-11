@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 
 struct CSEtichetta: View { // 21.09 --> Rimpiazza parecchio codice simile qua e la uniformando i badge
     

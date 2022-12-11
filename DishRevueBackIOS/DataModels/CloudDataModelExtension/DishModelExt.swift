@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 extension DishModel:
     MyProToolPack_L1,

@@ -7,27 +7,7 @@
 
 import SwiftUI
 
-/// lf51 - Error Mark View alla base del modifier, da utilizzare come View in linea.
-struct CS_ErrorMarkView:View {
-    
-    let generalErrorCheck: Bool
-    let localErrorCondition:Bool
-    
-    var body: some View {
-        
-        if generalErrorCheck {
-            
-            if localErrorCondition {
-                
-                Image(systemName: "exclamationmark.triangle.fill")
-                    .imageScale(.medium)
-                    .foregroundColor(Color.yellow)
-                }
-        }
-   
-    }
-    
-}
+
 
 /*
 struct CS_ErrorMark_Previews: PreviewProvider {

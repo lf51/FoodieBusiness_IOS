@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 /// Differisce dalla ProprertyAllCases per passaggio di riferimenti e non più di oggetti
 struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {

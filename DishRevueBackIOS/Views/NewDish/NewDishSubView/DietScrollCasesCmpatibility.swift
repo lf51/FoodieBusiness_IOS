@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 /// Versione specifica della PropertyScrollCases per la DishTipologia.
 struct DietScrollCasesCmpatibility<Content:View>: View {
