@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import MyFoodiePackage
 
 enum ModelList: Equatable, Hashable  {
    

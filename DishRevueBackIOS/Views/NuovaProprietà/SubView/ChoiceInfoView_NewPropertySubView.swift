@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct ChoiceInfoView_NewPropertySubView: View {
     

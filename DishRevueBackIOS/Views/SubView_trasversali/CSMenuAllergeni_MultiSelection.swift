@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 
 /// Semplice Menu multiSelezione. Funziona Step by Step (Aggiunge ed Esce). Se si vuole la persistenza usare il SelettoreMyModel

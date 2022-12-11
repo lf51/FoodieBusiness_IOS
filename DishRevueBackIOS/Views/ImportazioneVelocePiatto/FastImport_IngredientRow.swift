@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct FastImport_IngredientRow: View {
     

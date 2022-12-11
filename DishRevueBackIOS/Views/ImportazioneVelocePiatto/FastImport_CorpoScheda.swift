@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct FastImport_CorpoScheda:View {
     
@@ -117,9 +118,9 @@ struct FastImport_CorpoScheda:View {
             ScrollView(showsIndicators: false) {
                 
                 ForEach($temporaryModel.ingredients) { $ingredient in
-                    
+                
                   /*  let isIngredientOld = viewModel.checkExistingUniqueModelID(model: ingredient).0 */
-                    let isIngredientOld = viewModel.isTheModelAlreadyExist(model: ingredient)
+                    let isIngredientOld = viewModel.isTheModelAlreadyExist(modelID: ingredient.id,path: \.allMyIngredients)
                     
                     FastImport_IngredientRow(ingredient: $ingredient,areAllergeniOk: $areAllergeniOk, checkError: checkError, isIngredientOld: isIngredientOld){ idIngredient in
                         self.addSecondary(id: idIngredient)

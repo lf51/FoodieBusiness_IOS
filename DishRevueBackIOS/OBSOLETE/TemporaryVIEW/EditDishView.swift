@@ -8,6 +8,7 @@
 /* Passiamo a questa View la posizione d'indice dell'elemento DishModel contenuto nell'array DishList in dishVM che vogliamo modificare. Passiamo anche ovviamente il dishVM su cui stiamo lavorando. Le modifiche effettuate qui vengono aggiornate instantaneamente anche alle altre View. Problema simile avuto in Fantabid ma risolto qui con Maggiore EFFICIENZA !!! */
 
 import SwiftUI
+import MyFoodiePackage
 
 struct EditDishView: View {
     

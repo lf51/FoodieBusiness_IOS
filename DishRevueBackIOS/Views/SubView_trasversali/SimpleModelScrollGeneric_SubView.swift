@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct SimpleModelScrollGeneric_SubView<M:MyProStarterPack_L1>:View {
     

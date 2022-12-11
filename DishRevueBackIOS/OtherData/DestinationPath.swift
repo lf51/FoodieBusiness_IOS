@@ -7,8 +7,9 @@
 
 import SwiftUI
 import UIKit
+import MyFoodiePackage
 
-enum DestinationPathView: Hashable {
+ public enum DestinationPathView: Hashable {
     
     case accountSetup(_ :AuthPasswordLess)
     case propertyList
@@ -107,7 +108,7 @@ enum DestinationPathView: Hashable {
     
 }
 
-enum DestinationPath {
+ enum DestinationPath {
     
     case homeView
     case menuList

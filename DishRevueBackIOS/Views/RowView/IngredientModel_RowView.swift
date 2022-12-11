@@ -10,6 +10,7 @@
  */
 import SwiftUI
 import MyPackView_L0
+import MyFoodiePackage
 
 struct IngredientModel_RowView: View {
 

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
 let today = Date()
 let todayString = csTimeFormatter().data.string(from: today)

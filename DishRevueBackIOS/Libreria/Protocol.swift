@@ -10,13 +10,13 @@ import SwiftUI
 //import Firebase
 
 // 14.09 Spazio protocolli MyPro - Nuova generazione
-protocol MyProStarterPack_L0:Identifiable,Equatable,Hashable { // Primo passo per la riorganizzazione dei protocolli. Step by step e per funzioni. L'incipit sarà MyPro seguito dal Pack. ModelPack EnumPack StatusPack per raggruppare le varie funzioni e utilizzi
+public protocol MyProStarterPack_L0:Identifiable,Equatable,Hashable { // Primo passo per la riorganizzazione dei protocolli. Step by step e per funzioni. L'incipit sarà MyPro seguito dal Pack. ModelPack EnumPack StatusPack per raggruppare le varie funzioni e utilizzi
     
     var id: String { get }
    
 }
 
-protocol MyProStarterPack_L1:MyProStarterPack_L0 {
+public protocol MyProStarterPack_L1:MyProStarterPack_L0 {
     
     var id: String { get set } // sovrascrive il livello zero per non crearci problemi con le enum. Dobbiamo chiarire se quei pochi casi in cui sovrasciviamo gli id possono essere risolti diversamente, o altrimenti facciamo un po' di ordine. Proprietà da considerarsi QUI TEMPORANEA
     
@@ -25,17 +25,18 @@ protocol MyProStarterPack_L1:MyProStarterPack_L0 {
   //  func returnModelTypeName() -> String // deprecata in futuro. inglobata nella viewModelContainerInstance // deprecata 15.09
     
     func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM,[Self]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String)
+   
     
     /// Stessa funzione di viewModelContainer() Solo che abbiamo l'accesso dal type
     static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM,[Self]>
 }
 
-protocol MyProDescriptionPack_L0 { 
+public protocol MyProDescriptionPack_L0 {
 
     var descrizione: String { get set }
 }
 
-protocol MyProSearchPack_L0 {
+public protocol MyProSearchPack_L0 {
     
     /// StringResearch per le liste
     func modelStringResearch(string: String,readOnlyVM:AccounterVM?) -> Bool
@@ -44,13 +45,13 @@ protocol MyProSearchPack_L0 {
     static func sortModelInstance(lhs:Self,rhs:Self,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool 
 }
 
-protocol MyProStatusPack_L0 {
+public protocol MyProStatusPack_L0 {
     
     var status: StatusModel { get set }
     func modelStatusDescription() -> String
 }
 
-protocol MyProStatusPack_L1: MyProStatusPack_L0,MyProStarterPack_L1 {
+public protocol MyProStatusPack_L1: MyProStatusPack_L0,MyProStarterPack_L1 {
     
     func pathDestination() -> DestinationPathView
     func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM)
@@ -63,7 +64,7 @@ protocol MyProStatusPack_L1: MyProStatusPack_L0,MyProStarterPack_L1 {
     func pathDestination() -> DestinationPathView
 } */ // Nota 27.09
 
-protocol MyProVisualPack_L0 {
+public protocol MyProVisualPack_L0 {
     
     associatedtype RowView: View
     associatedtype InteractiveMenuContent: View
@@ -77,37 +78,37 @@ protocol MyProVisualPack_L0 {
     func conditionToManageMenuInterattivo() -> (disableCustom:Bool,disableStatus:Bool,disableEdit:Bool,disableTrash:Bool,opacizzaAll:CGFloat)
 }
 
-protocol MyProVisualPack_L1: MyProVisualPack_L0,MyProStarterPack_L1 {
+public protocol MyProVisualPack_L1: MyProVisualPack_L0,MyProStarterPack_L1 {
     
   
 }
 // NUOVA FASE DI RIORDINO - 15.09
 
-protocol MyProEnumPack_L0: MyProOrganizerPack_L0 {
+public protocol MyProEnumPack_L0: MyProOrganizerPack_L0 {
     
     func simpleDescription() -> String
     
 }
 
-protocol MyProEnumPack_L1:MyProEnumPack_L0 {
+public protocol MyProEnumPack_L1:MyProEnumPack_L0 {
     
     static var defaultValue: Self { get }
 }
 
-protocol MyProEnumPack_L2: MyProEnumPack_L1,MyProStarterPack_L0 {
+public protocol MyProEnumPack_L2: MyProEnumPack_L1,MyProStarterPack_L0 {
     
     func imageAssociated() -> String
     
     func extendedDescription() -> String
 }
 
-protocol MyProOrganizerPack_L0: Hashable {
+public protocol MyProOrganizerPack_L0: Hashable {
     
     func returnTypeCase() -> Self
     func orderAndStorageValue() -> Int // Usiamo il numero oltre che a ordinare i case, anche come valore di storage in firebase
 }
 
-protocol MyProManagingPack_L0 {
+public protocol MyProManagingPack_L0 {
     /// gestisce il delete a livello Model, permettendo di compiere altre operazioni insieme.
     func manageModelDelete(viewModel:AccounterVM)
     func conditionToManageMenuInterattivo() -> (disableCustom:Bool,disableStatus:Bool,disableEdit:Bool,disableTrash:Bool,opacizzaAll:CGFloat)
@@ -116,17 +117,17 @@ protocol MyProManagingPack_L0 {
 
 // fine spazio MyPro
 
-protocol MyProToolPack_L0:MyProStatusPack_L1,MyProVisualPack_L0 { }
+public protocol MyProToolPack_L0:MyProStatusPack_L1,MyProVisualPack_L0 { }
 
-protocol MyProToolPack_L1:MyProToolPack_L0,MyProSearchPack_L0,MyProManagingPack_L0 { }
+public protocol MyProToolPack_L1:MyProToolPack_L0,MyProSearchPack_L0,MyProManagingPack_L0 { }
 
-protocol MyProCloudPack_L0 {
+public protocol MyProCloudPack_L0 {
     /// protocollo per le proprietà, in particolare per le enum, per essere convertite in un valore più facilmente stockabile
           func orderAndStorageValue() -> Int
    static func convertiInCase(fromNumber:Int) -> Self
 }
 
-protocol MyProCloudPack_L1 {
+public protocol MyProCloudPack_L1 {
     /// versione per i modelli che vanno salvati su firebase
     var id: String { get }
     func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] // Nota 24.11

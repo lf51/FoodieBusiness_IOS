@@ -7,24 +7,9 @@
 
 import Foundation
 import SwiftUI
+import MyFoodiePackage
 
-/// trasferisci i valori da un fileJson ad un Oggetto
-func csLoad<T:Decodable>(_ filename:String) -> T {
-    
-    let data:Data
-    
-    guard let file = Bundle.main.url(forResource: filename, withExtension: nil)
-    else {fatalError("Non è possibile trovare \(filename) in the main bundle") }
-    
-    do {
-        data = try Data(contentsOf: file)
-    } catch {fatalError("Non è possibile caricare il file \(filename)") }
-    
-    do { let decoder = JSONDecoder()
-        return try decoder.decode(T.self, from: data)
-    } catch {fatalError("Impossibile eseguire il PARSE sul file \(filename) as \(T.self):\n\(error)") }
-    
-}
+
 
 func csValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
    
@@ -39,79 +24,16 @@ func csValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
    }
 } // Deprecata in futuro // da sostituire // deprecata 22.09
 
-func csTimeFormatter() -> (ora:DateFormatter,data:DateFormatter) {
-    // !! Nota Vocale 20.09 AMPM !!
-    let time = DateFormatter()
-    time.timeStyle = .short
-   // time.dateFormat = "HH:mm"
-   // time.timeZone = .current
-  //  time.timeZone = .gmt
 
-    let date = DateFormatter()
-   /* date.weekdaySymbols = ["Lun","Mar","Mer","Gio","Ven","Sab","Dom"]*/
-   /* date.monthSymbols = ["Gen","Feb","Mar","Apr","Mag","Giu","Lug","Ago","Set","Ott","Nov","Dic"] */
-    date.dateStyle = .long
-    date.dateFormat = "dd MMMM yyyy"
- //   date.timeZone = .autoupdatingCurrent
- //   date.weekdaySymbols = ["Lun","Mar"]
-    return (time,date)
-    
-}
 
-/// Nasconde la Keyboard
-func csHideKeyboard(){
-        
-        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-    }
+
 
 /// Ritorna un array di case unici (ripuliti dai valori Associati, dai duplicati, e ordinati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
 /// - Parameter array: array description
 /// - Returns: description
-func csCleanAndOrderArray<T:MyProOrganizerPack_L0>(array:[T]) -> [T] {
-    
-    // T passa da MYEnumProtocolMapConform a MyProOrganizerPack
-    
-    // Modifiche 27.09
-  //  var arrayCentrifugato:[T] = []
-    
-   /* for eachCase in array {
-        
-        let element:T = eachCase.returnTypeCase()
-        arrayCentrifugato.append(element)
-        
-    } */
-    let arrayCentrifugato:[T] = array.map({$0.returnTypeCase()})
- 
-    // end Mod 27.09
-    
-    let secondStep = Array(Set(arrayCentrifugato))
-    let lastStep = secondStep.sorted{$0.orderAndStorageValue() < $1.orderAndStorageValue()}
-    
-   return lastStep
-}
 
-/// Pulisce la stringa da spazi duplici, e da puntiAcapo
-func csStringCleaner(string:String) -> String {
-    
-    let firstStep = string.replacingOccurrences(of: "\n", with: "")
-    
-    let subStringaTesto = firstStep.split(separator: " ")
-    let newStringaTesto: String = {
-        
-        var newString:String = ""
-        for sub in subStringaTesto {
-            
-            newString = newString == "" ? String(sub) : (newString + " " + sub)
-            
-        }
-        
-        return newString
-        
-    }()
 
-    return newStringaTesto
-    
-}
+
 
 /// ritorna un array di Emojy
 func csReturnEmojyCollection() -> [String] {
@@ -244,26 +166,4 @@ func csRatingMedalReward(position:Int) -> String {
     else if position == 1 { return "🥈"}
     else if position == 2 { return "🥉" }
     else { return "" }
-}
-
-/// estrapola l'ora da una data e la trasforma in un numero Assoluto (è il numero di minuti totale) utile per un confronto fra orari
-func csTimeConversione(data:Date) -> Int {
-    
-    let calendario = Calendar(identifier: .gregorian)
-    
-    let componentiData = calendario.dateComponents([.hour,.minute], from: data)
-    let valoreAssoluto = (componentiData.hour! * 60) + componentiData.minute!
-    return valoreAssoluto
-}
-
-func csTimeReverse(value:Int) -> Date {
-    
-    let minute = value % 60
-    let hour = (value - minute) / 60
-    
-    let calendario = Calendar(identifier: .gregorian)
-    let timeComponent = DateComponents(hour: hour, minute: minute)
-    let reversingDate = calendario.date(from: timeComponent) ?? Date.now
-    
-    return reversingDate
 }

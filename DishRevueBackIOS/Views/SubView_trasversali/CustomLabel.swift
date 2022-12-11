@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 
 /// Label (Testo+Image/Emojy) con  ViewBuilder

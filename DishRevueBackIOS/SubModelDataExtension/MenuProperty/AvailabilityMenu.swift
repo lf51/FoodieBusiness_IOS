@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
 enum AvailabilityMenu:Hashable,MyProEnumPack_L1,MyProCloudPack_L0 {
 

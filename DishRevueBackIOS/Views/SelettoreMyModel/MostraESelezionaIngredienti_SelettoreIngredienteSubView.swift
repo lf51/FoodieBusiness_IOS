@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct MostraESelezionaModel<M2:MyProStarterPack_L1>: View {
   

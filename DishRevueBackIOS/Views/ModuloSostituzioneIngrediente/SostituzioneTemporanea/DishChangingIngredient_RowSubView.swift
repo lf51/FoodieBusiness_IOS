@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import MyFoodiePackage
 
 // deprecato in futuro
 struct DishChangingIngredient_RowSubView: View {

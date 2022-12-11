@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 enum IDTest:String,MyProStarterPack_L0 {
 

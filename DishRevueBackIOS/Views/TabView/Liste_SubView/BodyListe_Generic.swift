@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct MapObject<M:MyProToolPack_L1,C:MyProEnumPack_L2> {
   
@@ -13,7 +14,7 @@ struct MapObject<M:MyProToolPack_L1,C:MyProEnumPack_L2> {
     var kpMapCategory:KeyPath<M,String>
 }
 
-struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View {
+struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View where M.VM == AccounterVM, M.RS == RowSize {
     
     @EnvironmentObject var viewModel:AccounterVM
     

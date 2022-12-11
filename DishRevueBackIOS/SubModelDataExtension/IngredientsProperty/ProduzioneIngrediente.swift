@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
 enum ProduzioneIngrediente:MyProEnumPack_L2,MyProCloudPack_L0 /*: MyEnumProtocol, MyEnumProtocolMapConform */{
     

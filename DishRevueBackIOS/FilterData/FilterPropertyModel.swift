@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
-struct FilterPropertyModel {
+public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
     
     var countChange:Int = 0
     // Comune a Tutti
@@ -176,7 +177,7 @@ struct FilterPropertyModel {
     
     // Sort Space
 
-    enum SortCondition {
+    public enum SortCondition {
     
         case alfabeticoDecrescente
         

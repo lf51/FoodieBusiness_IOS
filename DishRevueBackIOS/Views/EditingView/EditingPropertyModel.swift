@@ -8,6 +8,7 @@
 import SwiftUI
 import MapKit
 import MyPackView_L0
+import MyFoodiePackage
 
 struct EditingPropertyModel: View {
     

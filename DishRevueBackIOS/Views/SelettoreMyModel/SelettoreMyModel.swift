@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
-
+import MyFoodiePackage
 ///Selettore Generico di MyModelProtocol. I [ModelList] hanno un un limite max (teorico/grafico) di 4 liste, di cui almeno una per tipo (container destinazione o container fonte), e un limite min di 2 (una per tipo). Il value dei keypath deve portare ad un array.
 
-struct SelettoreMyModel<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View {
+struct SelettoreMyModel<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View where M2.VM == AccounterVM {
     // M1 passa da MyModelProtocol a MyProStarterPackL0
     // M2 passa da MyModelProtocol a MyProStarterPackL1
     

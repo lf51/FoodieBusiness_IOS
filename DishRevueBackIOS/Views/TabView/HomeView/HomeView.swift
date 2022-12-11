@@ -8,6 +8,7 @@
 import SwiftUI
 import UIKit
 import MyPackView_L0
+import MyFoodiePackage
 
 struct HomeView: View {
     
@@ -599,7 +600,7 @@ struct NewItem_BoxView<M:MyProStatusPack_L1>:View {
     }
 } */
 
-struct NavigationButtonGeneric<M:MyProStatusPack_L1>:View {
+struct NavigationButtonGeneric<M:MyProStatusPack_L1>:View where M.DPV == DestinationPathView {
     
     @EnvironmentObject var viewModel: AccounterVM
     let item: M
@@ -649,7 +650,7 @@ struct NavigationButtonGeneric<M:MyProStatusPack_L1>:View {
     
 }
 
-struct TopRated_SubView<M:MyProVisualPack_L1>:View {
+struct TopRated_SubView<M:MyProVisualPack_L1>:View where M.RS == RowSize, M.VM == AccounterVM {
     
     @EnvironmentObject var viewModel:AccounterVM
     let allRated:[M]

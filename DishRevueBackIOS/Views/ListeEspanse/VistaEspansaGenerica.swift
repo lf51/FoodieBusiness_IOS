@@ -7,8 +7,9 @@
 
 import SwiftUI
 import MyPackView_L0
+import MyFoodiePackage
 
-struct VistaEspansaGenerica<M:MyProToolPack_L1>: View {
+struct VistaEspansaGenerica<M:MyProToolPack_L1>: View where M.VM == AccounterVM, M.RS == RowSize {
     
     @EnvironmentObject var viewModel:AccounterVM
     

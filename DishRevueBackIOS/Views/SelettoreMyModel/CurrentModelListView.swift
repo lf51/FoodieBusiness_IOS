@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 /// M1 è il modello da Modificare. M2 è il modello da listare. Ex: M1 è la proprietà, M2 è il Model associato alla proprietà
-struct CurrentModelListView<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View {
+struct CurrentModelListView<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View where M2.VM == AccounterVM {
     
     // M1 passa da MyModelProtocol a MyProStarterPackL1
     // M2 passa da MyModelProtocol a MyProStarterPackL1

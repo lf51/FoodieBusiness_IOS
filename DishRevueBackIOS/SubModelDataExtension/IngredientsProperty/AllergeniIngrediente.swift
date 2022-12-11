@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import MyFoodiePackage
 
 enum AllergeniIngrediente:MyProStarterPack_L1,MyProEnumPack_L0,MyProCloudPack_L0 /*: MyEnumProtocol, MyProModelPack_L0*/{
     

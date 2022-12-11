@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyPackView_L0
+import MyFoodiePackage
 
 struct DishRating_RowView: View {
     

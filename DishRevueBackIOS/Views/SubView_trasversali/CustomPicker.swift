@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftUI
-
+import MyFoodiePackage
 
 /// La variabile selezionata nel Picker è al livello Binding. Background/Opacity di Default -> Color.white/opacity(0.8) Di default il container sarà centrifugato, utile per eliminare duplicati fra i case enum - Bool inserito per essere disabilitato con le CategorieMenu
 struct CS_Picker<E:MyProEnumPack_L1>: View {

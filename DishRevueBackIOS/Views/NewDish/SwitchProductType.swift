@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import MyFoodiePackage
 /*
 enum ProductType:String  {
     

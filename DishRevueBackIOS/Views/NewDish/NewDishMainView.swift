@@ -6,6 +6,7 @@
 //  Last deeper Modifing terminate 16.07
 
 import SwiftUI
+import MyFoodiePackage
 
 struct NewDishMainView: View {
 

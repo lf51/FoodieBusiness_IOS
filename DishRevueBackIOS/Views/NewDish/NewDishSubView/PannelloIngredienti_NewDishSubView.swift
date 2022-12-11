@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 // Ultima pulizia codice 01.03.2022
 
 struct PannelloIngredienti_NewDishSubView: View {

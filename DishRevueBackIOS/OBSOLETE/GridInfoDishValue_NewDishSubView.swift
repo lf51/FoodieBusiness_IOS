@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct GridInfoDishValue_NewDishSubView:View {
     

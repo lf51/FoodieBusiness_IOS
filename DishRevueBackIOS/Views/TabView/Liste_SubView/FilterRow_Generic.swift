@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     

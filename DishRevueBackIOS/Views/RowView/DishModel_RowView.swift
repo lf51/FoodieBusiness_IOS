@@ -7,8 +7,10 @@
 
 import SwiftUI
 import MyPackView_L0
+import MyFoodiePackage
 
-enum RowSize {
+public enum RowSize {
+    
     case sintetico,ridotto,normale,ibrido
     
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
 enum GiorniDelServizio:MyProEnumPack_L2,Identifiable /*: MyEnumProtocol, MyEnumProtocolMapConform*/ {
 

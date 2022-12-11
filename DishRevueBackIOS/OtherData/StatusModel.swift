@@ -7,8 +7,9 @@
 
 import Foundation
 import SwiftUI
+import MyFoodiePackage
 
-enum StatusTransition:MyProEnumPack_L0,Equatable {
+public enum StatusTransition:MyProEnumPack_L0,Equatable {
     
     static var allCases: [StatusTransition] = [.disponibile,.inPausa,.archiviato]
  //   static var defaultValue: StatusTransition = .archiviato
@@ -17,7 +18,7 @@ enum StatusTransition:MyProEnumPack_L0,Equatable {
     case inPausa // Stop temporaneo --> Solo per gli ingredienti, quando temporaneamente in pausa vorrei dare la possibilità all'utente di sostituirli.
     case archiviato  // Stop incondizionato
 
-    func simpleDescription() -> String {
+    public func simpleDescription() -> String {
         
         switch self {
         case .disponibile:
@@ -29,11 +30,11 @@ enum StatusTransition:MyProEnumPack_L0,Equatable {
         }
     }
     
-    func returnTypeCase() -> StatusTransition {
+    public func returnTypeCase() -> StatusTransition {
         self
     }
     
-    func orderAndStorageValue() -> Int {
+    public func orderAndStorageValue() -> Int {
         switch self {
         case .disponibile:
             return 0
@@ -58,7 +59,7 @@ enum StatusTransition:MyProEnumPack_L0,Equatable {
     }
 }
 
-enum StatusModel:Equatable,MyProCloudPack_L0 { // vedi Nota Consegna 17.07
+public enum StatusModel:Equatable,MyProCloudPack_L0 { // vedi Nota Consegna 17.07
     
    // case nuovo // deprecato 07.09
     case bozza(StatusTransition? = nil)
@@ -127,7 +128,7 @@ enum StatusModel:Equatable,MyProCloudPack_L0 { // vedi Nota Consegna 17.07
         
     }
     
-    func orderAndStorageValue() -> Int {
+    public func orderAndStorageValue() -> Int {
         
         switch self {
         case .bozza(let statusTransition):
@@ -139,7 +140,7 @@ enum StatusModel:Equatable,MyProCloudPack_L0 { // vedi Nota Consegna 17.07
         }
     }
     
-    static func convertiInCase(fromNumber: Int) -> StatusModel {
+    public static func convertiInCase(fromNumber: Int) -> StatusModel {
         
         switch fromNumber {
             

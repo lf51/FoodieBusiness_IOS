@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyPackView_L0
+import MyFoodiePackage
 
 struct NuovaCategoriaMenu: View {
     
@@ -175,7 +176,7 @@ struct NuovaCategoriaMenu: View {
             return cat
         }()
         
-        if self.viewModel.isTheModelAlreadyExist(model: self.nuovaCategoria) {  // Update
+        if self.viewModel.isTheModelAlreadyExist(modelID: self.nuovaCategoria.id,path: \.allMyCategories) {  // Update
             
             self.viewModel.updateItemModel(itemModel:categoriaFinale)
             

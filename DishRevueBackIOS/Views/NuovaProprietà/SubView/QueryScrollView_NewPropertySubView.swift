@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct QueryScrollView_NewPropertySubView: View {
     //  @ObservedObject var vm: PropertyVM

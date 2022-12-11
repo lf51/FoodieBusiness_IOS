@@ -9,6 +9,7 @@
 
 import SwiftUI
 import MapKit
+import MyFoodiePackage
 
 struct NewPropertyMainView: View {
     

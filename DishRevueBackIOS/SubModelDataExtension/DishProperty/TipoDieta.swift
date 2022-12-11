@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
 enum TipoDieta:Identifiable,MyProEnumPack_L0 /*: MyEnumProtocol,MyEnumProtocolMapConform*/ {
 

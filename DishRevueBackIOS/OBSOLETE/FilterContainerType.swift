@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
 // Creata e Deprecata 04.11
 struct FilterContainerType<M:MyProStarterPack_L0,P:MyProEnumPack_L0> {

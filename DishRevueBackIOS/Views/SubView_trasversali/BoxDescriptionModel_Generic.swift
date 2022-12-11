@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
     // 15.09 passa da MyProModelPack a MyProToolPack

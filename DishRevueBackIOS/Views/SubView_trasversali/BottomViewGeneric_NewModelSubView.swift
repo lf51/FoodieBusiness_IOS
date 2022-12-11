@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 /// Questa View è la bottom Standard - Reset Salva - per i Nuovi Modelli. E' una generic non in senso stretto. Esegue un check Preliminare prima di aprire la confirmationDialog. Rende obsoleto i disabled dei singoli oggetti. Permette di mandare tramite il checkPrelimare il segnale per un warning.
-struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View {
+struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM == AccounterVM {
     // 15.09 da M:MyModelProtocol a M:MyProStarterPack_L1
     @EnvironmentObject var viewModel: AccounterVM
     
@@ -69,6 +70,7 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View {
       /*  let newModelName = self.itemModel.returnNewModel().nometipo */
        // let newModelName = self.itemModel.returnModelTypeName()
         let newModelName = self.itemModel.basicModelInfoInstanceAccess().nomeOggetto
+     
         
         if itemModelArchiviato.intestazione == "" {
             // crea un Nuovo Oggetto
@@ -138,7 +140,7 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View {
 
 
 /// Questa View è la gemella della BottomViewGeneric, ma accetta due model. Ideata per il salvataggio del modello Ibrido
-struct BottomViewGenericPlus_NewModelSubView<M:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View {
+struct BottomViewGenericPlus_NewModelSubView<M:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View where M2.VM == AccounterVM, M.VM == AccounterVM {
     // 15.09 da M:MyModelProtocol a M:MyProStarterPack_L1
     @EnvironmentObject var viewModel: AccounterVM
     

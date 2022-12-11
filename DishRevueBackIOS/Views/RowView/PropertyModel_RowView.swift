@@ -8,6 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 //import MapKit // necessario per la preview. Da eliminare
+import MyFoodiePackage
 
 struct PropertyModel_RowView: View {
 

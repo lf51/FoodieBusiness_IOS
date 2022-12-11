@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct InfoIngrediente_NuovoIngredienteSubView: View { // deprecated 16.03.2022 sostituita da un generic
     

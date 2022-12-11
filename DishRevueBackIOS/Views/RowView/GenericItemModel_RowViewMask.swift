@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
-struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
+struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View where M.RS == RowSize {
 
     @EnvironmentObject var viewModel:AccounterVM
     

@@ -8,13 +8,13 @@
 import Foundation
 import Firebase
 
-class AuthPasswordLess: ObservableObject, Hashable {
+public class AuthPasswordLess: ObservableObject, Hashable {
     
-    static func == (lhs: AuthPasswordLess, rhs: AuthPasswordLess) -> Bool {
+   public static func == (lhs: AuthPasswordLess, rhs: AuthPasswordLess) -> Bool {
         lhs.currentUser == rhs.currentUser
     }
     
-    func hash(into hasher: inout Hasher) {
+    public func hash(into hasher: inout Hasher) {
         hasher.combine(currentUser?.userUID)
     }
 

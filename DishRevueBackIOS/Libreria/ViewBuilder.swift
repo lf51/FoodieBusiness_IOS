@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import MyFoodiePackage
 
 /*
 /// Deprecata in futuro -- usare csVbSwitchImageText(string: String?,size:Image.Scale)
@@ -545,8 +546,10 @@ struct CSZStackVB_Framed<Content:View>:View {
     }.disabled(disableCondition)
            
 } */ // Backup 25.11
+/*
+@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:AccounterVM) -> some View { */
 
-@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:AccounterVM) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:M.VM) -> some View {
 
    /* let disableCondition:Bool = {
         
@@ -863,7 +866,7 @@ struct CSZStackVB_Framed<Content:View>:View {
            
 } */ // Deprecato. Portato fuori la View Generic e creato un viewBulder che ritorna una lista di bottoni che valgono per tutti i myModel
 
-@ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProStatusPack_L1>(currentModel:M,viewModel:AccounterVM, navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProStatusPack_L1>(currentModel:M,viewModel:M.VM, navPath:ReferenceWritableKeyPath<M.VM,NavigationPath>) -> some View {
     
     // M passa da MyModelStatusConformity a MyProStatusPackL1
     let generalDisabled = currentModel.conditionToManageMenuInterattivo().disableEdit
@@ -884,8 +887,12 @@ struct CSZStackVB_Framed<Content:View>:View {
         
     Button {
           //  viewModel[keyPath: navPath].append(currentModel)
-            let currentDestination:DestinationPathView = currentModel.pathDestination()
-            viewModel[keyPath: navPath].append(currentDestination)
+          /*  let currentDestination:DestinationPathView = currentModel.pathDestination()
+            viewModel[keyPath: navPath].append(currentDestination) */
+        
+        let currentDestination:M.DPV = currentModel.pathDestination()
+        viewModel[keyPath: navPath].append(currentDestination)
+        
             
           } label: {
               HStack{
@@ -909,7 +916,7 @@ struct CSZStackVB_Framed<Content:View>:View {
    
 }
 
-@ViewBuilder func vbMenuInterattivoModuloTrash<M:MyProManagingPack_L0>(currentModel:M,viewModel:AccounterVM) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloTrash<M:MyProManagingPack_L0>(currentModel:M,viewModel:M.VM) -> some View {
     
     // Nota 27.11
     let generalDisabled = currentModel.conditionToManageMenuInterattivo().disableTrash

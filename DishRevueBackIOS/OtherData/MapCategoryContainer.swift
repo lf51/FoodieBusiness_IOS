@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import MyFoodiePackage
 
 enum MapCategoryContainer /*:MyEnumProtocolMapConform*/ {
 
