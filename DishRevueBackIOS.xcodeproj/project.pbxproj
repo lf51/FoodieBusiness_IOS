@@ -76,6 +76,7 @@
 		3F7D3BD328B6384300177CA6 /* SystemMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7D3BD228B6384300177CA6 /* SystemMessage.swift */; };
 		3F7EBB0E2917C39400CF1F6F /* SortRow_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7EBB0D2917C39400CF1F6F /* SortRow_Generic.swift */; };
 		3F8FC97D2943791D002F8208 /* DishModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8FC97C2943791D002F8208 /* DishModelExt.swift */; };
+		3FA11A9C294A5816002C3610 /* FirebaseFirestoreSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */; };
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
 		3FABE5352926A3A500C2819B /* AccounterVM_BACKUP1711.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FABE5342926A3A500C2819B /* AccounterVM_BACKUP1711.swift */; };
 		3FBA5BD528DDADD6009AA124 /* VistaIngredientiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */; };
@@ -446,6 +447,7 @@
 			files = (
 				4D403BA42798212600EB4E1B /* FirebaseAuth in Frameworks */,
 				4D49470028213C880093AFD6 /* SwipeActions in Frameworks */,
+				3FA11A9C294A5816002C3610 /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				3F13D1DF293FA38800C599B2 /* MyPackView_L0 in Frameworks */,
 				3FD85437294254D800F7CC98 /* MyFoodiePackage in Frameworks */,
 				4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */,
@@ -1134,6 +1136,7 @@
 				4D4946FF28213C880093AFD6 /* SwipeActions */,
 				3F13D1DE293FA38800C599B2 /* MyPackView_L0 */,
 				3FD85436294254D800F7CC98 /* MyFoodiePackage */,
+				3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */,
 			);
 			productName = DishRevueBackIOS;
 			productReference = 4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */;
@@ -1722,6 +1725,11 @@
 		3F13D1DE293FA38800C599B2 /* MyPackView_L0 */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MyPackView_L0;
+		};
+		3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseFirestoreSwift-Beta";
 		};
 		3FD85436294254D800F7CC98 /* MyFoodiePackage */ = {
 			isa = XCSwiftPackageProductDependency;

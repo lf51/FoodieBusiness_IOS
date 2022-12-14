@@ -8,7 +8,30 @@
 import Foundation
 import SwiftUI
 import Firebase
+import FirebaseFirestoreSwift
 import MyFoodiePackage
+
+
+extension CloudDataStore:Encodable {
+    
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(allMyIngredients, forKey: .allMyIngredients)
+        try container.encode(allMyDish, forKey: .allMyDish)
+        try container.encode(allMyMenu, forKey: .allMyMenu)
+        try container.encode(allMyProperties, forKey: .allMyProperties)
+        try container.encode(allMyCategories, forKey: .allMyCategories)
+        try container.encode(allMyReviews, forKey: .allMyReviews)
+        
+        var additionalInfo = container.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .anyDocument)
+        try additionalInfo.encode(setupAccount, forKey: .setupAccount)
+        try additionalInfo.encode(inventarioScorte, forKey: .inventarioScorte)
+    }
+}
+
+
 
 struct CloudDataCompiler {
     
@@ -84,6 +107,23 @@ struct CloudDataCompiler {
     // Salvataggio Dati
     
     func publishOnFirebase(dataCloud:CloudDataStore) {
+        
+        do {
+            
+            try ref_userDocument?.setData(from: dataCloud, merge: true)
+            
+        } catch let error {
+            
+            print("Errore nel salvataggio su Firebase")
+        }
+        
+        
+    }
+    
+    
+    
+    
+    func publishOnFirebaseDEPRECATA(dataCloud:CloudDataStore) {
         
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyIngredients], collection: .ingredient)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyDish], collection: .dish)

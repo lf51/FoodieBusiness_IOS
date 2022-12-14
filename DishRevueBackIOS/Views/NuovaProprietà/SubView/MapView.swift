@@ -23,7 +23,7 @@ struct MapView: View {
                 annotationItems: queryResults) { property in
                 
                 MapMarker(coordinate: property.coordinates , tint: .cyan)
-                
+            
             }
     }
 }

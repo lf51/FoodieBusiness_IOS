@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 /// Abbiamo tolto il vincolo generic del Model e reso il textfield utilizzabile con qualsia binding String. Il salvataggio è gestito a monte tramite una escaping Closure
 struct CSTextField_ExpandingBoxPlain: View {
