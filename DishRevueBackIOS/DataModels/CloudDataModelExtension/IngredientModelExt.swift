@@ -12,8 +12,7 @@ import MyFoodiePackage
 extension IngredientModel:
     MyProToolPack_L1,
     MyProVisualPack_L1,
-    MyProDescriptionPack_L0,
-    MyProCloudUploadPack_L1 {
+    MyProDescriptionPack_L0 {
     
     
     public typealias VM = AccounterVM
@@ -23,7 +22,7 @@ extension IngredientModel:
     public typealias RS = RowSize
    // public typealias SM = StatusModel
     
-    public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
+   /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
         
         let dictionary:[String:Any] = [
         
@@ -40,7 +39,7 @@ extension IngredientModel:
         
         return dictionary
         
-    }
+    } */
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
           return \.allMyIngredients

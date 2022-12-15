@@ -12,8 +12,7 @@ import SwiftUI
 extension PropertyModel:
     MyProStarterPack_L1,
     MyProVisualPack_L0,
-    MyProDescriptionPack_L0,
-    MyProCloudUploadPack_L1 {
+    MyProDescriptionPack_L0 {
     
     public typealias VM = AccounterVM
     public typealias RS = RowSize
@@ -22,7 +21,7 @@ extension PropertyModel:
         return \.allMyProperties
     }
     
-    public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
+   /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
         
@@ -38,7 +37,7 @@ extension PropertyModel:
         ]
         
         return documentData
-    }
+    } */
 
     public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         

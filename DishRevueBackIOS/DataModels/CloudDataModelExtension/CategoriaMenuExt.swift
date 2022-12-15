@@ -11,8 +11,7 @@ import MyFoodiePackage
 extension CategoriaMenu:
     MyProStarterPack_L1,
     MyProEnumPack_L2,
-    MyProDescriptionPack_L0,
-    MyProCloudUploadPack_L1 {
+    MyProDescriptionPack_L0 {
     
     public typealias VM = AccounterVM
     
@@ -21,7 +20,7 @@ extension CategoriaMenu:
         \.allMyCategories
     }
     
-    public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
+  /*  public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
         
@@ -34,7 +33,7 @@ extension CategoriaMenu:
         ]
         
         return documentData
-    }
+    } */
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String,imageAssociated:String) {
         return (\.allMyCategories,"Elenco Categorie Menu", "Categoria Menu","list.bullet.clipboard")

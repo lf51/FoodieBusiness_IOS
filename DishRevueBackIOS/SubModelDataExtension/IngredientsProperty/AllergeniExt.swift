@@ -11,8 +11,7 @@ import MyFoodiePackage
 
 extension AllergeniIngrediente:
     MyProStarterPack_L1,
-    MyProEnumPack_L0,
-    MyProCloudPack_L0 {
+    MyProEnumPack_L0 {
     
    public typealias VM = AccounterVM
     

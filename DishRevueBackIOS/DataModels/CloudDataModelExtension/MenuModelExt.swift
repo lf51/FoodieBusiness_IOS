@@ -12,8 +12,7 @@ import MyFoodiePackage
 extension MenuModel:
     MyProToolPack_L1,
     MyProVisualPack_L1,
-    MyProDescriptionPack_L0,
-    MyProCloudUploadPack_L1 {
+    MyProDescriptionPack_L0 {
     
     public typealias VM = AccounterVM
     public typealias FPM = FilterPropertyModel
@@ -27,7 +26,7 @@ extension MenuModel:
         return \.allMyMenu
     }
     
-    public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
+   /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
         
         let documentData:[String:Any] = [
             
@@ -45,7 +44,7 @@ extension MenuModel:
         
         ]
         return documentData
-    }
+    } */
     
     public func manageModelDelete(viewModel: AccounterVM) {
         viewModel.deleteItemModel(itemModel: self)

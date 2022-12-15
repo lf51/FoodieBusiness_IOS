@@ -62,7 +62,7 @@ struct CloudDataCompiler {
     // Scarico Dati
     
     /// esegue il download di una collezione di documenti contenuti in una collection Omogenea  (tutti gli ingredienti, i piatti ecc)
-    func downloadFromFirebase_allMyElement<M:MyProCloudDownloadPack_L1>(collectionKP:WritableKeyPath<CloudDataStore,[M]>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ allMyElements: [M],_ isDone:Int) -> ()) {
+  /*  func downloadFromFirebase_allMyElement<M:MyProCloudDownloadPack_L1>(collectionKP:WritableKeyPath<CloudDataStore,[M]>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ allMyElements: [M],_ isDone:Int) -> ()) {
         
         var cloudData:CloudDataStore = CloudDataStore()
 
@@ -80,10 +80,10 @@ struct CloudDataCompiler {
                // handler(cloudData[keyPath: collectionKP],1) // Chiudiamo per test (08.12.22)
                 handler(fakeCloudData[keyPath: collectionKP],1) // carichiamo dati fake per test
             }
-    }
+    } */
     
     /// esegue il download dei  singoli documenti contenuti in una collection Eterogenea
-    func downloadFromFirebase_singleElement<M:MyProCloudDownloadPack_L1>(singleKP:WritableKeyPath<CloudDataStore,M>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ singleElement: M,_ isDone:Int) -> ()) {
+  /*  func downloadFromFirebase_singleElement<M:MyProCloudDownloadPack_L1>(singleKP:WritableKeyPath<CloudDataStore,M>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ singleElement: M,_ isDone:Int) -> ()) {
         
         var cloudData:CloudDataStore = CloudDataStore()
 
@@ -101,7 +101,7 @@ struct CloudDataCompiler {
                // handler(cloudData[keyPath: singleKP],1) // pausa per test
                 handler(fakeCloudData[keyPath: singleKP],1)
             }
-    }
+    } */
   
     
     // Salvataggio Dati
@@ -123,7 +123,7 @@ struct CloudDataCompiler {
     
     
     
-    func publishOnFirebaseDEPRECATA(dataCloud:CloudDataStore) {
+  /*  func publishOnFirebaseDEPRECATA(dataCloud:CloudDataStore) {
         
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyIngredients], collection: .ingredient)
         saveMultipleDocuments(docs: dataCloud[keyPath: \.allMyDish], collection: .dish)
@@ -135,10 +135,10 @@ struct CloudDataCompiler {
         saveSingleDocument(doc: dataCloud[keyPath: \.setupAccount], collection: .anyDocument)
         saveSingleDocument(doc: dataCloud[keyPath: \.inventarioScorte], collection: .anyDocument)
         
-    }
+    } */
     
     /// La usiamo per salvare un singolo documento in una collezione che può essere eterogenea.
-    private func saveSingleDocument<M:MyProCloudPack_L1>(doc:M,collection:CloudDataStore.CloudCollectionKey) {
+  /*  private func saveSingleDocument<M:MyProCloudPack_L1>(doc:M,collection:CloudDataStore.CloudCollectionKey) {
         
         if let ref_ingredienti:CollectionReference = ref_userDocument?.collection(collection.rawValue) {
                             
@@ -146,10 +146,10 @@ struct CloudDataCompiler {
    
         }
         
-    }
+    } */
     
     /// La usiamo per salvare un array di documenti omogenei (solo ingredienti, o solo piatti ecc) in una collezione MonoTono. Il retrieve serve a recuperare la posizione nell'array, per salvarla nel firebase. Creato appositamente le per le categorieMenu
-    private func saveMultipleDocuments<M:MyProCloudUploadPack_L1>(docs:[M],collection:CloudDataStore.CloudCollectionKey,retrieveElementIndex:Bool = false) {
+   /* private func saveMultipleDocuments<M:MyProCloudUploadPack_L1>(docs:[M],collection:CloudDataStore.CloudCollectionKey,retrieveElementIndex:Bool = false) {
         
         if let ref_ingredienti:CollectionReference = ref_userDocument?.collection(collection.rawValue) {
             
@@ -163,9 +163,9 @@ struct CloudDataCompiler {
 
             }
         }
-    }
+    } */
     
-    private func saveElement<M:MyProCloudUploadPack_L1>(document:DocumentReference?,element:M,elementIndex:Int? = nil) {
+   /* private func saveElement<M:MyProCloudUploadPack_L1>(document:DocumentReference?,element:M,elementIndex:Int? = nil) {
         
         document?.setData(element.documentDataForFirebaseSavingAction(positionIndex: elementIndex), merge: true) { error in
                 
@@ -173,7 +173,7 @@ struct CloudDataCompiler {
                 else { print("Salvataggio su FireBase avvenuto con Successo - Mettere un Alert")}
         }
         
-    }
+    } */
     
 }
 

@@ -13,8 +13,7 @@ import MyPackView_L0
 extension DishModel:
     MyProToolPack_L1,
     MyProVisualPack_L1,
-    MyProDescriptionPack_L0,
-    MyProCloudUploadPack_L1 {
+    MyProDescriptionPack_L0 {
    
     public typealias VM = AccounterVM
     public typealias FPM = FilterPropertyModel
@@ -23,7 +22,7 @@ extension DishModel:
     public typealias RS = RowSize
    // public typealias SM = StatusModel
 
-    public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
+   /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
         
         let documentData:[String:Any] = [
             
@@ -47,7 +46,7 @@ extension DishModel:
         //
         
         return documentData
-    }
+    } */
 
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {

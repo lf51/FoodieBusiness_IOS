@@ -75,6 +75,23 @@ public class AccounterVM: MyProViewModelPack_L1 {
     
     func fetchDataFromFirebase() {
         
+        self.allMyIngredients = fakeCloudData.allMyIngredients
+        self.allMyDish = fakeCloudData.allMyDish
+        self.allMyMenu = fakeCloudData.allMyMenu
+        self.allMyProperties = fakeCloudData.allMyProperties
+        
+        self.setupAccount = fakeCloudData.setupAccount
+        self.inventarioScorte = fakeCloudData.inventarioScorte
+        
+        self.allMyReviews = fakeCloudData.allMyReviews
+        self.allMyCategories = fakeCloudData.allMyCategories
+        
+        self.loadingCount = 8
+        
+    }
+    
+  /*  func fetchDataFromFirebase() {
+        
       //  self.isLoading = true
         
      /* self.instanceDBCompiler.downloadFromFirebase { cloudData in
@@ -156,7 +173,7 @@ public class AccounterVM: MyProViewModelPack_L1 {
             print("8.Closure.INV")
         }
         
-    }
+    } */ // Deprecata 15.12.22
     
     // Method
     
