@@ -14,6 +14,49 @@ import MyFoodiePackage
 
 extension CloudDataStore:Encodable {
     
+    public enum CodingKeys:String,CodingKey {
+         
+         case allMyIngredients = "allUserIngredients"
+         case allMyDish = "allUserProducts"
+         case allMyMenu = "allUserMenu"
+         case allMyProperties =  "allUserProperties"
+         case allMyCategories = "allUserCategories"
+         case allMyReviews = "allUserReviews"
+                 
+         case anyDocument = "datiDiFunzionamento"
+         
+     }
+     
+    public enum AdditionalInfoKeys:String,CodingKey {
+         
+         case setupAccount = "userAccountSetup"
+         case inventarioScorte = "userInventarioScorte"
+     }
+     
+     
+     public init(from decoder: Decoder) throws {
+        
+         self.init()
+         
+         let values = try decoder.container(keyedBy: CodingKeys.self)
+         
+         self.allMyIngredients = try values.decode([IngredientModel].self, forKey: .allMyIngredients)
+         self.allMyDish = try values.decode([DishModel].self, forKey: .allMyDish)
+         self.allMyMenu = try values.decode([MenuModel].self, forKey: .allMyMenu)
+         self.allMyProperties = try values.decode([PropertyModel].self, forKey: .allMyProperties)
+         
+         self.allMyCategories = try values.decode([CategoriaMenu].self, forKey: .allMyCategories)
+         self.allMyReviews = try values.decode([DishRatingModel].self, forKey: .allMyReviews)
+         
+         let additionalInfo = try values.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .anyDocument)
+         self.setupAccount = try additionalInfo.decode(AccountSetup.self, forKey: .setupAccount)
+         self.inventarioScorte = try additionalInfo.decode(Inventario.self, forKey: .inventarioScorte)
+         
+         
+     }
+    
+    
+    
     public func encode(to encoder: Encoder) throws {
         
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -108,9 +151,12 @@ struct CloudDataCompiler {
     
     func publishOnFirebase(dataCloud:CloudDataStore) {
         
+        
+        
         do {
             
             try ref_userDocument?.setData(from: dataCloud, merge: true)
+           
             
         } catch let error {
             
