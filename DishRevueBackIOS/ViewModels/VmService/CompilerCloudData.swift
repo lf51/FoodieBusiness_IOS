@@ -14,7 +14,7 @@ import MyFoodiePackage
 
 extension CloudDataStore:Encodable {
     
-    public enum CodingKeys:String,CodingKey {
+   /* public enum CodingKeys:String,CodingKey {
          
          case allMyIngredients = "allUserIngredients"
          case allMyDish = "allUserProducts"
@@ -32,13 +32,13 @@ extension CloudDataStore:Encodable {
          case setupAccount = "userAccountSetup"
          case inventarioScorte = "userInventarioScorte"
      }
+     */
      
-     
-     public init(from decoder: Decoder) throws {
+    /* public init(from decoder: Decoder) throws {
         
          self.init()
          
-         let values = try decoder.container(keyedBy: CodingKeys.self)
+         let values = try decoder.container(keyedBy: Self.CodingKeys.self)
          
          self.allMyIngredients = try values.decode([IngredientModel].self, forKey: .allMyIngredients)
          self.allMyDish = try values.decode([DishModel].self, forKey: .allMyDish)
@@ -53,11 +53,11 @@ extension CloudDataStore:Encodable {
          self.inventarioScorte = try additionalInfo.decode(Inventario.self, forKey: .inventarioScorte)
          
          
-     }
+     } */
     
     
     
-    public func encode(to encoder: Encoder) throws {
+   /* public func encode(to encoder: Encoder) throws {
         
         var container = encoder.container(keyedBy: CodingKeys.self)
         
@@ -71,8 +71,32 @@ extension CloudDataStore:Encodable {
         var additionalInfo = container.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .anyDocument)
         try additionalInfo.encode(setupAccount, forKey: .setupAccount)
         try additionalInfo.encode(inventarioScorte, forKey: .inventarioScorte)
+    } */
+    
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        var publicLevel = container.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .publicData)
+        var deepPublicLevel = publicLevel.nestedContainer(keyedBy: DeepInfoKeys.self, forKey: .otherDocument)
+        try publicLevel.encode(allMyIngredients, forKey: .allMyIngredients)
+        try publicLevel.encode(allMyDish, forKey: .allMyDish)
+        try publicLevel.encode(allMyMenu, forKey: .allMyMenu)
+        try publicLevel.encode(allMyProperties, forKey: .allMyProperties)
+        try publicLevel.encode(allMyCategories, forKey: .allMyCategories)
+        try publicLevel.encode(allMyReviews, forKey: .allMyReviews)
+        
+        try deepPublicLevel.encode(setupAccount, forKey: .setupAccount) // Da sistemare 17.12
+        
+        var privateLevel = container.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .privateData)
+        var deepPrivateLevel = privateLevel.nestedContainer(keyedBy: DeepInfoKeys.self, forKey: .otherDocument)
+        try deepPrivateLevel.encode(setupAccount, forKey: .setupAccount)
+        try deepPrivateLevel.encode(inventarioScorte, forKey: .inventarioScorte)
+        
+
     }
-}
+    
+} // close extension
 
 
 
