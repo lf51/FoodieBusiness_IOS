@@ -12,7 +12,7 @@ import FirebaseFirestoreSwift
 import MyFoodiePackage
 
 
-extension CloudDataStore:Encodable {
+extension CloudDataStore:Codable {
     
    /* public enum CodingKeys:String,CodingKey {
          
@@ -72,6 +72,9 @@ extension CloudDataStore:Encodable {
         try additionalInfo.encode(setupAccount, forKey: .setupAccount)
         try additionalInfo.encode(inventarioScorte, forKey: .inventarioScorte)
     } */
+    public init(from decoder: Decoder) throws {
+         self.init()
+     }
     
     public func encode(to encoder: Encoder) throws {
         
