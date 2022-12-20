@@ -74,18 +74,7 @@ extension CloudDataStore:Codable {
     } */
     public init(from decoder: Decoder) throws {
          self.init() // 17.12.22 credo sia necessario perchè il cloudDataStore è optional
-        
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        self.allMyProperties = try values.decode([PropertyModel].self, forKey: .allMyProperties)
-        
-      //  let nestedValues = try decoder.container(keyedBy: AdditionalInfoKeys.self)
-        
-      //  self.setupAccount = try nestedValues.decode(AccountSetup.self, forKey: .setupAccount)
-        
-        let deepValues = try decoder.container(keyedBy: SetupKeys.self)
-        self.setupAccount.startCountDownMenuAt = try deepValues.decode(AccountSetup.TimeValue.self, forKey: .countDown)
-        
-        
+
         
      }
     

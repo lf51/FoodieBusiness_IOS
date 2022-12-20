@@ -82,6 +82,15 @@
       }
     },
     {
+      "identity" : "myfilterpackage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/lf51/MyFilterPackage.git",
+      "state" : {
+        "revision" : "b15270599306ec48cd62a424b1d53265ccde30a2",
+        "version" : "0.0.7"
+      }
+    },
+    {
       "identity" : "nanopb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/nanopb.git",

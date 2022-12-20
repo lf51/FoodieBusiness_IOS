@@ -167,6 +167,7 @@ struct CSTextField_3b<VisualContent:View>: View {
     }
 }
 
+/*
 /// Small Custom textfield con una immagine e TightPadding
 struct CSTextField_4: View {
     
@@ -227,7 +228,7 @@ struct CSTextField_4: View {
         )
         .animation(Animation.easeInOut, value: self.textFieldItem)
     }
-}
+}*/ // Spostato in MyPackView.20.12.22
 
 /// Identico al TextField4. Crea l'image attraverso un viewBuilder (Utile per il checkVisuale)
 struct CSTextField_4b<VisualContent:View>: View {

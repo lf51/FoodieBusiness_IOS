@@ -79,6 +79,7 @@
 		3FA11A9C294A5816002C3610 /* FirebaseFirestoreSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */; };
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
 		3FABE5352926A3A500C2819B /* AccounterVM_BACKUP1711.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FABE5342926A3A500C2819B /* AccounterVM_BACKUP1711.swift */; };
+		3FB98CF329509E6600B6DE1B /* MyFilterPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3FB98CF229509E6600B6DE1B /* MyFilterPackage */; };
 		3FBA5BD528DDADD6009AA124 /* VistaIngredientiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */; };
 		3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */; };
 		3FBE221F292FCB150096F11B /* PopNewCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBE221E292FCB150096F11B /* PopNewCollab.swift */; };
@@ -452,6 +453,7 @@
 				3FD85437294254D800F7CC98 /* MyFoodiePackage in Frameworks */,
 				4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */,
 				4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */,
+				3FB98CF329509E6600B6DE1B /* MyFilterPackage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1137,6 +1139,7 @@
 				3F13D1DE293FA38800C599B2 /* MyPackView_L0 */,
 				3FD85436294254D800F7CC98 /* MyFoodiePackage */,
 				3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */,
+				3FB98CF229509E6600B6DE1B /* MyFilterPackage */,
 			);
 			productName = DishRevueBackIOS;
 			productReference = 4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */;
@@ -1169,6 +1172,7 @@
 			packageReferences = (
 				4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				4D4946FE28213C870093AFD6 /* XCRemoteSwiftPackageReference "SwipeActions" */,
+				3FB98CF129509E6600B6DE1B /* XCRemoteSwiftPackageReference "MyFilterPackage" */,
 			);
 			productRefGroup = 4D403B8D27981BC200EB4E1B /* Products */;
 			projectDirPath = "";
@@ -1703,6 +1707,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3FB98CF129509E6600B6DE1B /* XCRemoteSwiftPackageReference "MyFilterPackage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lf51/MyFilterPackage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.1;
+			};
+		};
 		4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -1730,6 +1742,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseFirestoreSwift-Beta";
+		};
+		3FB98CF229509E6600B6DE1B /* MyFilterPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3FB98CF129509E6600B6DE1B /* XCRemoteSwiftPackageReference "MyFilterPackage" */;
+			productName = MyFilterPackage;
 		};
 		3FD85436294254D800F7CC98 /* MyFoodiePackage */ = {
 			isa = XCSwiftPackageProductDependency;

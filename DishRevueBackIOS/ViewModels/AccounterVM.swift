@@ -10,6 +10,7 @@ import SwiftUI
 import MapKit // da togliere quando ripuliamo il codice dai Test
 import MyFoodiePackage
 import MyPackView_L0
+import MyFilterPackage
 
 public class AccounterVM: MyProViewModelPack_L1 {
     
@@ -982,9 +983,32 @@ public class AccounterVM: MyProViewModelPack_L1 {
         }
         
         return sortedInTheModel
+    } // deprecata 19.12
+    
+    func filtraERicerca<M:MyProFilter_L0>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterCore:FilterPropertyCore<M>) -> [M] where M.VM == AccounterVM {
+        
+        let container = self[keyPath: containerPath]
+        
+        guard let filterProp = filterCore.properties else {
+            return container }
+ 
+        let filterInTheModel = container.filter({
+            $0.propertyCompare(filterProperty: filterProp, readOnlyVM: self)
+        })
+        
+        guard let sortCond = filterCore.conditions else {
+            return filterInTheModel }
+        
+        let sortedInTheModel = filterInTheModel.sorted{
+            M.sortModelInstance(lhs: $0, rhs: $1, condition: sortCond,readOnlyVM: self)
+        }
+        
+        return sortedInTheModel
     }
     
-}
+    
+} // chiusa Class
+
 
 
 /*public class AccounterVM: ObservableObject {

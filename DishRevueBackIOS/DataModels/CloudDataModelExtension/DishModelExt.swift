@@ -9,6 +9,9 @@ import Foundation
 import SwiftUI
 import MyFoodiePackage
 import MyPackView_L0
+import MyFilterPackage
+
+
 
 extension DishModel:
     MyProToolPack_L1,
@@ -580,4 +583,104 @@ extension DishModel:
      
     }
     
+}
+
+extension DishModel:MyProFilter_L0 {
+
+    
+    static public func sortModelInstance(lhs: DishModel, rhs: DishModel, condition: SortCondition?, readOnlyVM: AccounterVM) -> Bool {
+        return true
+    }
+    
+    public func stringResearch(string: String, readOnlyVM: AccounterVM?) -> Bool {
+       true
+    }
+    
+    public func propertyCompare(filterProperty: FilterProperty, readOnlyVM: AccounterVM) -> Bool {
+        true
+       // let filterZero = container.filter({$0.status != .bozza()})
+    }
+
+    
+    public struct FilterProperty {
+        
+       var percorsoPRP:[DishModel.PercorsoProdotto] = []
+       var dietePRP:[TipoDieta] = []
+       var basePRP:DishModel.BasePreparazione?
+       var categorieMenu:[CategoriaMenu] = []
+        
+    }
+    
+    public enum SortCondition:MySortConditionPack {
+        
+        case alfabeticoDecrescente
+        
+        case livelloScorte
+        case mostUsed
+        case mostContaining
+        
+        case mostRated
+        case topRated
+        case topPriced
+        
+        case dataInizio
+        case dataFine
+        
+        
+       public func simpleDescription() -> String {
+            
+            switch self {
+                
+            case .alfabeticoDecrescente:
+                return "Alfabetico Decrescente"
+            case .livelloScorte:
+                return "Livello Scorte"
+            case .mostUsed:
+                return "Utilizzo"
+            case .mostContaining:
+                return "Prodotti Contenuti"
+            case .mostRated:
+                return "Numero di Recensioni"
+            case .topRated:
+                return "Media Voto Ponderata"
+            case .topPriced:
+                return "Prezzo"
+            case .dataInizio:
+                return "Data Inizio Servizio"
+            case .dataFine:
+                return "Data Fine Servizio"
+                
+            }
+            
+        }
+        
+       public func imageAssociated() -> String {
+            
+            switch self {
+                
+            case .alfabeticoDecrescente:
+                return "textformat"
+            case .livelloScorte:
+                return "cart"
+            case .mostUsed,.mostContaining:
+                return "aqi.medium"
+            case .mostRated:
+                return "chart.line.uptrend.xyaxis"
+            case .topRated:
+                return "medal"
+            case .topPriced:
+                return "dollarsign"
+            case .dataInizio:
+                return "play.circle"
+            case .dataFine:
+                return "stop.circle"
+                
+            }
+
+        }
+        
+    }
+    
+    
+   
 }

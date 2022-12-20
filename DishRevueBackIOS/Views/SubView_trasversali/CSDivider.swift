@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/*
 struct CSDivider: View {
     
     var isVisible: Bool? = false
@@ -21,4 +22,4 @@ struct CSDivider: View {
         
     }
  
-}
+} */ // -> MyPackView in 20.12.22

@@ -107,7 +107,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         
         return true
 
-    }
+    } // passato
     
      func comparePropertyToProperty<P:MyProEnumPack_L0>(local:P,filter:KeyPath<Self,P?>) -> Bool {
         
@@ -115,7 +115,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         
         guard filterProp != nil else { return true }
          return local.returnTypeCase() == filterProp?.returnTypeCase()
-    }
+    } // passato con riserva
       
     func comparePropertyToCollection<P:MyProEnumPack_L0>(localProperty:P,filterCollection:KeyPath<Self,[P]>) -> Bool {
         
@@ -125,7 +125,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         
         return filterCollect.contains(localProperty)
             
-    }
+    } // passat0
     
     func compareCollectionToProperty<P:MyProEnumPack_L0>(localCollection:[P],filterProperty:KeyPath<Self,P?>) -> Bool {
         
@@ -135,7 +135,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         
         return localCollection.contains(filterProp!)
             
-    }
+    } // passato
     
     func compareCollectionToCollection<P:MyProEnumPack_L0>(localCollection:[P],filterCollection:KeyPath<Self,[P]>) -> Bool {
         
@@ -150,7 +150,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         
         return false
       //  return localCollection.contains(filterCollect)
-    }
+    } // passato
     
     func compareStatusTransition(localStatus:StatusModel) -> Bool {
         
