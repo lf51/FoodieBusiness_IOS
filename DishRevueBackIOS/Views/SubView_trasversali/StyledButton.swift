@@ -12,8 +12,8 @@ import SwiftUI
 // Usare il .buttomStyle per semplificare lo stile dei bottoni
 
 
-
-struct CSButton_tight: View {
+/*
+struct CSButton_tight: View { // Spostato MyPackView
     
   let title: String
   let fontWeight: Font.Weight
@@ -46,7 +46,7 @@ struct CSButton_tight: View {
                 }
             }
         }
-    }
+    } */
 
 
 

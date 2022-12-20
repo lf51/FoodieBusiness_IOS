@@ -62,7 +62,7 @@ struct CSLabel_conVB<Content:View>: View {
     }
 }
 
-
+/*
 /// Label (Testo+Image/Emojy) con Bottone Optional (Richiede un Binding Bool)
 struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2Action
     
@@ -128,7 +128,7 @@ struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
             Spacer()
         }
     }
-}
+} */ // 20.12.22 Migrata su MyPackView
 
 /// Label (Testo + Image) con due Bottoni Optional (Uno PlusImage e Uno testuale)
 struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2Action

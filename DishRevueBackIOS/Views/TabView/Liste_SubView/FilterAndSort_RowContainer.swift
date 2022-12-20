@@ -60,4 +60,4 @@ struct FilterAndSort_RowContainer<Content:View>:View {
             .background(backgroundColorView.opacity(0.6))
             
         }
-    }
+    } // 20.12.22 spostata in myFilterPackage
