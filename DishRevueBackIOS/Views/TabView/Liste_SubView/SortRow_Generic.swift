@@ -51,7 +51,7 @@ struct SortRow_Generic<M:MyProFilter_L0>: View {
         else { self.sortCondition = self.localSortCondition }
         
     }
-}
+} // 21.12.12 migrata su MyFilterPackage
 /*
 struct SortRow_Generic: View {
     

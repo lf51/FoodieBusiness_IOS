@@ -9,7 +9,7 @@ import SwiftUI
 import MyFoodiePackage
 import MyPackView_L0
 
-
+/*
 /// Label (Testo+Image/Emojy) con  ViewBuilder
 struct CSLabel_conVB<Content:View>: View {
     
@@ -60,7 +60,7 @@ struct CSLabel_conVB<Content:View>: View {
             content
         }
     }
-}
+} */ // 21.12.22 Migrata su MyPackView
 
 /*
 /// Label (Testo+Image/Emojy) con Bottone Optional (Richiede un Binding Bool)
