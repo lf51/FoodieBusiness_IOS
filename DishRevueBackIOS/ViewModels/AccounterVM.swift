@@ -983,9 +983,9 @@ public class AccounterVM: MyProViewModelPack_L1 {
         }
         
         return sortedInTheModel
-    } // deprecata 19.12
+    } // deprecata 19.12 // da cancellare 
     
-    func filtraERicerca<M:MyProFilter_L0>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterCore:FilterPropertyCore<M>) -> [M] where M.VM == AccounterVM {
+  /*  func filtraERicerca<M:MyProFilter_L0>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterCore:FilterPropertyCore<M>) -> [M] where M.VM == AccounterVM {
         
         let container = self[keyPath: containerPath]
         
@@ -1004,7 +1004,7 @@ public class AccounterVM: MyProViewModelPack_L1 {
         }
         
         return sortedInTheModel
-    }
+    } */ // da cancellare
     
     
 } // chiusa Class

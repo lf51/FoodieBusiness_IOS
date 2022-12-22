@@ -10,6 +10,7 @@ import MyPackView_L0
 import MyFoodiePackage
 import MyFilterPackage
 
+/*
 struct DishListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -251,10 +252,10 @@ struct DishListView: View {
         
     }
     
-}
+} */ // da cancellare
 
 
-/*struct DishListView: View {
+struct DishListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
@@ -470,7 +471,7 @@ struct DishListView: View {
         
     }
     
-}*/ // Deprecata 19.12.22 per creazione Modulo Filtro
+} // Deprecata 19.12.22 per creazione Modulo Filtro
 
 
 struct DishListView_Previews: PreviewProvider {

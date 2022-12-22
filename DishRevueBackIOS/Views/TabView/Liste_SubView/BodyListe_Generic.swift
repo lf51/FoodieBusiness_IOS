@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 struct MapObject<M:MyProToolPack_L1,C:MyProEnumPack_L2> {
   

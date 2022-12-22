@@ -115,7 +115,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         
         guard filterProp != nil else { return true }
          return local.returnTypeCase() == filterProp?.returnTypeCase()
-    } // passato con riserva
+    } // passato
       
     func comparePropertyToCollection<P:MyProEnumPack_L0>(localProperty:P,filterCollection:KeyPath<Self,[P]>) -> Bool {
         

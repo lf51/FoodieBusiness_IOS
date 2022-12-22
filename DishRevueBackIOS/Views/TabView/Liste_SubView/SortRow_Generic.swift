@@ -9,6 +9,7 @@ import SwiftUI
 import MyPackView_L0
 import MyFilterPackage
 
+/*
 struct SortRow_Generic<M:MyProFilter_L0>: View {
     
     @Binding var sortCondition:M.SortCondition?
@@ -51,8 +52,8 @@ struct SortRow_Generic<M:MyProFilter_L0>: View {
         else { self.sortCondition = self.localSortCondition }
         
     }
-} // 21.12.12 migrata su MyFilterPackage
-/*
+}*/ // 21.12.12 migrata su MyFilterPackage // da cancellare
+
 struct SortRow_Generic: View {
     
     @Binding var sortCondition:FilterPropertyModel.SortCondition?
@@ -95,7 +96,7 @@ struct SortRow_Generic: View {
         else { self.sortCondition = self.localSortCondition }
         
     }
-}*/ // Deprecata 19.12.22
+} // Deprecata 19.12.22
 
 /*
 struct SortRow_Generic_Previews: PreviewProvider {

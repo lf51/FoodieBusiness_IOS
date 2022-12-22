@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 
 /// DLBIV == DishListByIngredientView
 struct BottomView_DLBIVSubView: View {

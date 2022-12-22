@@ -7,7 +7,9 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
+/*
 struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     
     let allCases:[P]
@@ -140,9 +142,9 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     }
     
     
-}
+} */ // da cancellare
 
-/*
+
 struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     
     let allCases:[P]
@@ -267,7 +269,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     }
     
     
-}*/ // Deprecata 19.12.22
+} // Deprecata 19.12.22
 
 
 /// Richiede un Array di Model e riempie un array di Stringhe

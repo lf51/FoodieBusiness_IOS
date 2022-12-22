@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
     // 15.09 passa da MyProModelPack a MyProToolPack
@@ -25,8 +26,8 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
                 placeHolder: labelString,
                 imageNameOrEmojy: "scribble",
                 backgroundColor: backgroundColor,
-                toggleBottone: $wannaAddDescription,
-                disabledCondition: disabledCondition)
+                disabledCondition: disabledCondition,
+                toggleBottone: $wannaAddDescription)
                                     
             if wannaAddDescription ?? false {
 
