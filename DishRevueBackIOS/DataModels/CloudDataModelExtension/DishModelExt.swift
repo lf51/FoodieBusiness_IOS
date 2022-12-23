@@ -17,7 +17,7 @@ extension DishModel:
     MyProDescriptionPack_L0 {
    
     public typealias VM = AccounterVM
-    public typealias FPM = FilterPropertyModel
+  // public typealias FPM = FilterPropertyModel
    // public typealias ST = StatusTransition
     public typealias DPV = DestinationPathView
     public typealias RS = RowSize
@@ -265,7 +265,7 @@ extension DishModel:
     
     public func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool { false }
     
-    public func modelStringResearch(string: String, readOnlyVM:AccounterVM?) -> Bool {
+   /* public func modelStringResearch(string: String, readOnlyVM:AccounterVM?) -> Bool {
         
         guard string != "" else { return true }
         
@@ -282,7 +282,7 @@ extension DishModel:
         
         return conditionOne || conditionTwo
         // inserire la ricerca degli ingredienti
-    }
+    }  // deprecata 22.12 da cancellare
     
     public func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
         
@@ -290,25 +290,25 @@ extension DishModel:
         let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
         let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
         
-        return self.modelStringResearch(string: filterProperty.stringaRicerca,readOnlyVM: readOnlyVM) &&
+        return self.modelStringResearch(string: filterProperty.stringaRicerca,readOnlyVM: readOnlyVM) && //
         
-        filterProperty.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: \.percorsoPRP) &&
+        filterProperty.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: \.percorsoPRP) && //
         
-        filterProperty.compareStatusTransition(localStatus: self.status) &&
+        filterProperty.compareStatusTransition(localStatus: self.status) && //
         
-        filterProperty.compareCollectionToCollection(localCollection: allAllergeniIn, filterCollection: \.allergeniIn) &&
+        filterProperty.compareCollectionToCollection(localCollection: allAllergeniIn, filterCollection: \.allergeniIn) && //
         
-        filterProperty.compareCollectionToCollection(localCollection:allDietAvaible, filterCollection: \.dietePRP)  &&
+        filterProperty.compareCollectionToCollection(localCollection:allDietAvaible, filterCollection: \.dietePRP)  && //
         
-        filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) &&
+        filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) && //
         
         self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.produzione, quality: filterProperty.produzioneING) &&
         
         self.preCallHasAllIngredientSameQuality(viewModel: readOnlyVM, kpQuality: \.provenienza, quality: filterProperty.provenienzaING) &&
         
-        filterProperty.comparePropertyToProperty(local: basePreparazione, filter: \.basePRP)
+        filterProperty.comparePropertyToProperty(local: basePreparazione, filter: \.basePRP) //
         
-    }
+    } // deprecata 22.12 da cancellare
     
     public static func sortModelInstance(lhs: DishModel, rhs: DishModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
         
@@ -338,7 +338,7 @@ extension DishModel:
         default:
             return lhs.intestazione < rhs.intestazione
         }
-    }
+    }*/ // deprecata 22.12 da cancellare
     
     public func manageModelDelete(viewModel: AccounterVM) {
         
@@ -579,6 +579,186 @@ extension DishModel:
        
         return (media * Double(count))
      
+    }
+    
+}
+
+extension DishModel: Object_FPC {
+        
+  //  public typealias VM = AccounterVM
+    public static func sortModelInstance(lhs: DishModel, rhs: DishModel, condition: SortCondition?, readOnlyVM: VM) -> Bool {
+        
+        switch condition {
+            
+        case .alfabeticoDecrescente:
+            return lhs.intestazione > rhs.intestazione
+            
+        case .livelloScorte:
+            return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() <
+                readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
+        case .mostUsed:
+            return readOnlyVM.allMenuContaining(idPiatto: lhs.id).countWhereDishIsIn >
+            readOnlyVM.allMenuContaining(idPiatto: rhs.id).countWhereDishIsIn
+            
+        case .mostRated:
+            return lhs.rifReviews.count > rhs.rifReviews.count
+            
+        case .topRated:
+            return lhs.topRatedValue(readOnlyVM: readOnlyVM) >
+            rhs.topRatedValue(readOnlyVM: readOnlyVM)
+            
+        case .topPriced:
+            return lhs.estrapolaPrezzoMandatoryMaggiore() >
+            rhs.estrapolaPrezzoMandatoryMaggiore()
+            
+        default:
+            return lhs.intestazione < rhs.intestazione
+
+        }
+    }
+    
+    public func stringResearch(string: String, readOnlyVM: VM?) -> Bool {
+        
+        guard string != "" else { return true }
+        
+        let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+        let conditionOne = self.intestazione.lowercased().contains(ricerca)
+        
+        guard readOnlyVM != nil else { return conditionOne } // è inutile percheè passeremo sempre un valore valido. Lo mettiamo per forma. Abbiamo messo il parametro optional per non passarlo negli altri modelli dove non ci serve
+        
+        let allIngredients = self.allMinusArchiviati(viewModel: readOnlyVM!)
+        let allINGMapped = allIngredients.map({$0.intestazione.lowercased()})
+        
+        let allInGChecked = allINGMapped.filter({$0.contains(ricerca)})
+        let conditionTwo = !allInGChecked.isEmpty
+        
+        return conditionOne || conditionTwo
+        // inserire la ricerca degli ingredienti
+    }
+    
+    public func propertyCompare(filterProperties: FilterProperty, readOnlyVM: VM) -> Bool {
+        
+        let allAllergeniIn = self.calcolaAllergeniNelPiatto(viewModel: readOnlyVM)
+        let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
+        let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
+        
+        let core = filterProperties.coreFilter
+        
+      //  return
+        
+      //  !self.status.checkStatusBozza() && // pre Condizione
+        
+       return self.stringResearch(string: core.stringaRicerca, readOnlyVM: readOnlyVM) &&
+        
+        core.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: filterProperties.percorsoPRP) &&
+        
+        core.compareCollectionToCollection(localCollection: allAllergeniIn, filterCollection: filterProperties.allergeniIn) &&
+        
+        core.compareCollectionToCollection(localCollection: allDietAvaible, filterCollection: filterProperties.dietePRP) &&
+        
+        core.comparePropertyToProperty(localProperty: basePreparazione, filterProperty: filterProperties.basePRP) &&
+        
+        core.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
+        
+        core.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM) &&
+        
+        self.preCallHasAllIngredientSameQuality(
+            viewModel: readOnlyVM,
+            kpQuality: \.produzione,
+            quality: filterProperties.produzioneING) &&
+        
+        self.preCallHasAllIngredientSameQuality(
+            viewModel: readOnlyVM,
+            kpQuality: \.provenienza,
+            quality: filterProperties.provenienzaING)
+        
+        
+    }
+    
+    public struct FilterProperty:SubFilterObject_FPC {
+       
+        public typealias M = DishModel
+        
+        public var coreFilter: CoreFilter
+        public var sortCondition: SortCondition
+        
+        var status:[StatusTransition]?
+        
+        var percorsoPRP:[DishModel.PercorsoProdotto]?
+        var categorieMenu:[CategoriaMenu]?
+        var basePRP:DishModel.BasePreparazione?
+        var allergeniIn:[AllergeniIngrediente]?
+        var dietePRP:[TipoDieta]?
+        
+        var inventario:[Inventario.TransitoScorte]?
+        
+        var produzioneING:ProduzioneIngrediente?
+        var provenienzaING:ProvenienzaIngrediente?
+        
+        public init() {
+            self.coreFilter = CoreFilter()
+            self.sortCondition = .defaultValue
+
+        }
+        
+        var countChange:Int {
+            
+            var count = 0
+            
+            if self.status != nil {
+                count += self.status!.count
+            }
+            
+        }
+        
+    }
+    
+    public enum SortCondition:SubSortObject_FPC {
+        
+        public static var defaultValue: SortCondition = .alfabeticoCrescente
+        
+        case alfabeticoCrescente
+        case alfabeticoDecrescente
+        
+        case livelloScorte
+        case mostUsed
+        
+        case mostRated
+        case topRated
+        case topPriced
+
+        public func simpleDescription() -> String {
+            
+            switch self {
+                
+            case .alfabeticoCrescente: return "default"
+            case .alfabeticoDecrescente: return "Alfabetico Decrescente"
+            case .livelloScorte: return "Livello Scorte"
+            case .mostUsed: return "Utilizzo"
+  
+            case .mostRated: return "Numero di Recensioni"
+            case .topRated: return "Media Voto Ponderata"
+            case .topPriced: return "Prezzo"
+
+            }
+        }
+        
+        public func imageAssociated() -> String {
+            
+            switch self {
+                
+            case .alfabeticoCrescente: return "circle"
+            case .alfabeticoDecrescente: return "textformat"
+            case .livelloScorte: return "cart"
+            case .mostUsed: return "aqi.medium"
+            case .mostRated: return "chart.line.uptrend.xyaxis"
+            case .topRated: return "medal"
+            case .topPriced: return "dollarsign"
+          
+            }
+        }
+        
+        
     }
     
 }

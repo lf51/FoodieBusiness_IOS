@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import MyFoodiePackage
+import MyFilterPackage
 
 extension MenuModel:
     MyProToolPack_L1,
@@ -15,7 +16,7 @@ extension MenuModel:
     MyProDescriptionPack_L0 {
     
     public typealias VM = AccounterVM
-    public typealias FPM = FilterPropertyModel
+   // public typealias FPM = FilterPropertyModel
   //  public typealias ST = StatusTransition
     public typealias DPV = DestinationPathView
     public typealias RS = RowSize
@@ -140,7 +141,7 @@ extension MenuModel:
         }
     }
     
-    public static func sortModelInstance(lhs: MenuModel, rhs: MenuModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
+   /* public static func sortModelInstance(lhs: MenuModel, rhs: MenuModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
         
         switch condition {
             
@@ -167,9 +168,9 @@ extension MenuModel:
         default:
             return lhs.intestazione < rhs.intestazione
         }
-    }
+    }*/ // deprecate 22.12 da cancellare
     
-    public func modelStringResearch(string: String,readOnlyVM:AccounterVM?) -> Bool {
+   /* public func modelStringResearch(string: String,readOnlyVM:AccounterVM?) -> Bool {
         
         guard string != "" else { return true }
         
@@ -188,11 +189,12 @@ extension MenuModel:
         let conditionTwo = !allChecked.isEmpty
         
         return conditionOne || conditionTwo
-    }
+    }*/ // deprecata 22.12 cancellare
     
     public func preCallIsOnAir(filterValue:MenuModel.OnlineStatus?) -> Bool {
     
         switch filterValue {
+            
         case .online:
             return isOnAir(checkTimeRange: false)
         case .offline:
@@ -204,17 +206,21 @@ extension MenuModel:
         
     }
     
-    public func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
+   /* public func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
         
-        self.modelStringResearch(string: filterProperty.stringaRicerca,readOnlyVM: readOnlyVM) &&
+        self.modelStringResearch(string: filterProperty.stringaRicerca,readOnlyVM: readOnlyVM) && //
         self.preCallIsOnAir(filterValue: filterProperty.onlineOfflineMenu) &&
-        filterProperty.compareStatusTransition(localStatus: self.status) &&
-        filterProperty.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: \.giornoServizio) &&
-        filterProperty.comparePropertyToProperty(local: self.tipologia, filter: \.tipologiaMenu) &&
-        filterProperty.comparePropertyToProperty(local: self.isAvaibleWhen, filter: \.rangeTemporaleMenu)
+        
+        filterProperty.compareStatusTransition(localStatus: self.status) && //
+        
+        filterProperty.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: \.giornoServizio) && //
+        
+        filterProperty.comparePropertyToProperty(local: self.tipologia, filter: \.tipologiaMenu) &&//
+        
+        filterProperty.comparePropertyToProperty(local: self.isAvaibleWhen, filter: \.rangeTemporaleMenu) //
     
         
-    }
+    }*/ // deprecata 22.12 da cancellare
     
     public func returnModelRowView(rowSize:RowSize) -> some View {
         MenuModel_RowView(menuItem: self,rowSize: rowSize)
@@ -254,3 +260,146 @@ extension MenuModel:
     }
     
 }// end struct
+
+extension MenuModel:Object_FPC {
+    
+    public static func sortModelInstance(lhs: MenuModel, rhs: MenuModel, condition: SortCondition?, readOnlyVM: AccounterVM) -> Bool {
+        
+        switch condition {
+            
+        case .alfabeticoDecrescente:
+            return lhs.intestazione < rhs.intestazione
+            
+        case .dataInizio:
+           return lhs.dataInizio < rhs.dataInizio
+            
+        case .mostContaining:
+            return lhs.rifDishIn.count > rhs.rifDishIn.count
+            
+        case .topRated:
+           return lhs.mediaValorePiattiInMenu(readOnlyVM: readOnlyVM) >
+            rhs.mediaValorePiattiInMenu(readOnlyVM: readOnlyVM)
+            
+        case .dataFine:
+            return lhs.dataFine < rhs.dataFine
+            
+        case .topPriced:
+            return lhs.tipologia.returnMenuPriceValue().asDouble >
+            rhs.tipologia.returnMenuPriceValue().asDouble
+            
+        default:
+            return lhs.intestazione < rhs.intestazione
+        }
+        
+        
+    }
+    
+    public func stringResearch(string: String, readOnlyVM: AccounterVM?) -> Bool {
+        
+        guard string != "" else { return true }
+        
+        let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+        let conditionOne = self.intestazione.lowercased().contains(ricerca)
+
+        guard readOnlyVM != nil else { return conditionOne }
+        
+        let allDish = readOnlyVM?.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.allMyDish)
+       
+        guard let allD = allDish else { return conditionOne }
+        
+        let mapped = allD.map({$0.intestazione.lowercased()})
+        let allChecked = mapped.filter({$0.contains(ricerca)})
+        
+        let conditionTwo = !allChecked.isEmpty
+        
+        return conditionOne || conditionTwo
+    }
+    
+    public func propertyCompare(filterProperties: FilterProperty, readOnlyVM: AccounterVM) -> Bool {
+        
+        let core = filterProperties.coreFilter
+        
+        return self.stringResearch(string: core.stringaRicerca, readOnlyVM: readOnlyVM) &&
+        
+        self.preCallIsOnAir(filterValue: filterProperties.onlineOfflineMenu) &&
+        
+        core.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
+        
+        core.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: filterProperties.giornoServizio) &&
+        
+        core.comparePropertyToProperty(localProperty: self.tipologia, filterProperty: filterProperties.tipologiaMenu) &&
+        
+        core.comparePropertyToProperty(localProperty: self.isAvaibleWhen, filterProperty: filterProperties.rangeTemporaleMenu)
+        
+    }
+    
+    public struct FilterProperty:SubFilterObject_FPC {
+        
+        public typealias M = MenuModel
+        
+        public var coreFilter: CoreFilter
+        public var sortCondition: SortCondition
+        
+        var giornoServizio:GiorniDelServizio?
+        var status:[StatusTransition]?
+        var tipologiaMenu:TipologiaMenu?
+        var rangeTemporaleMenu:AvailabilityMenu?
+        var onlineOfflineMenu:MenuModel.OnlineStatus?
+        
+        public init() {
+            self.coreFilter = CoreFilter()
+            self.sortCondition = .defaultValue
+        }
+        
+        
+        
+    }
+    
+    public enum SortCondition:SubSortObject_FPC {
+        
+        public static var defaultValue: MenuModel.SortCondition = .alfabeticoCrescente
+        
+        case alfabeticoCrescente
+        case alfabeticoDecrescente
+    
+        case mostContaining
+        case topRated
+        case topPriced
+        
+        case dataInizio
+        case dataFine
+        
+        public func simpleDescription() -> String {
+            
+            switch self {
+                
+            case .alfabeticoCrescente: return "default"
+            case .alfabeticoDecrescente: return "Alfabetico Decrescente"
+            case .mostContaining: return "Prodotti Contenuti"
+            case .topRated: return "Media Voto Ponderata"
+            case .topPriced: return "Prezzo"
+            case .dataInizio: return "Data Inizio Servizio"
+            case .dataFine: return "Data Fine Servizio"
+                
+            }
+        }
+        
+        public func imageAssociated() -> String {
+            
+            switch self {
+                
+            case .alfabeticoCrescente: return "circle"
+            case .alfabeticoDecrescente: return "textformat"
+            case .mostContaining: return "aqi.medium"
+            case .topRated: return "medal"
+            case .topPriced: return "dollarsign"
+            case .dataInizio: return "play.circle"
+            case .dataFine: return "stop.circle"
+                
+            }
+            
+        }
+        
+    }
+    
+}

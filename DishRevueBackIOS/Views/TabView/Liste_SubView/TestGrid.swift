@@ -8,6 +8,7 @@
 import SwiftUI
 import MyFoodiePackage
 
+/*
 struct TestGrid: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -64,4 +65,4 @@ struct TestGrid_Previews: PreviewProvider {
         TestGrid(backgroundColorView: Color("SeaTurtlePalette_1"))
             .environmentObject(testAccount)
     }
-}
+} */

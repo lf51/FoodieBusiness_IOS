@@ -144,7 +144,7 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     
 } */ // da cancellare
 
-
+/*
 struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     
     let allCases:[P]
@@ -269,9 +269,9 @@ struct FilterRow_Generic<P:MyProEnumPack_L0>:View {
     }
     
     
-} // Deprecata 19.12.22
+}*/ // Deprecata 19.12.22
 
-
+/*
 /// Richiede un Array di Model e riempie un array di Stringhe
 struct FilterRow_GenericForString:View { // 04.11 caduta in disuso
     
@@ -356,4 +356,4 @@ struct FilterRow_GenericForString:View { // 04.11 caduta in disuso
     }
     
     
-} // Deprecata 04.11 -> Caduta in disuso dopo l'abbandono del filtro per ingredienti
+}*/ // Deprecata 04.11 -> Caduta in disuso dopo l'abbandono del filtro per ingredienti

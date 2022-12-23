@@ -12,7 +12,7 @@ import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
 
-public class AccounterVM: MyProViewModelPack_L1 {
+public final class AccounterVM: MyProViewModelPack_L1 {
     
     private let instanceDBCompiler: CloudDataCompiler
     private var loadingCount:Int { willSet { isLoading = newValue != 8 } }
@@ -968,7 +968,7 @@ public class AccounterVM: MyProViewModelPack_L1 {
     
     // MyProSearchPack_L0 // Metodi per filtro e Ricarca
     
-    func filtraERicerca<M:MyProToolPack_L1>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterProperty:FilterPropertyModel) -> [M] where M.VM == AccounterVM, M.FPM == FilterPropertyModel {
+   /* func filtraERicerca<M:MyProToolPack_L1>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterProperty:FilterPropertyModel) -> [M] where M.VM == AccounterVM, M.FPM == FilterPropertyModel {
         
         let container = self[keyPath: containerPath]
         
@@ -983,7 +983,7 @@ public class AccounterVM: MyProViewModelPack_L1 {
         }
         
         return sortedInTheModel
-    } // deprecata 19.12 // da cancellare 
+    }*/ // deprecata 19.12 // da cancellare
     
   /*  func filtraERicerca<M:MyProFilter_L0>(containerPath:WritableKeyPath<AccounterVM,[M]>,filterCore:FilterPropertyCore<M>) -> [M] where M.VM == AccounterVM {
         
@@ -1009,7 +1009,24 @@ public class AccounterVM: MyProViewModelPack_L1 {
     
 } // chiusa Class
 
-
+extension AccounterVM:VM_FPC {
+    
+    public func ricercaFiltra<M:Object_FPC>(containerPath: WritableKeyPath<AccounterVM, [M]>, filterProperties: M.FilterProperty) -> [M] where AccounterVM == M.VM, M.SortCondition == M.FilterProperty.M.SortCondition {
+        
+        let container = self[keyPath: containerPath]
+        print("isContainerEmpty:\(container.isEmpty)")
+      // let filterZero = container.filter({$0.status != .bozza()}) ???
+        let containerFiltrato = container.filter({
+            $0.propertyCompare(filterProperties: filterProperties, readOnlyVM: self)
+        })
+        print("isContainerFilteredEmpty:\(containerFiltrato.isEmpty)")
+        let containerOrdinato = containerFiltrato.sorted {
+            M.sortModelInstance(lhs: $0, rhs: $1, condition: filterProperties.sortCondition, readOnlyVM: self)
+        }
+        print("isContainerSortedEmpty:\(containerOrdinato.isEmpty)")
+        return containerOrdinato
+    }
+}
 
 /*public class AccounterVM: ObservableObject {
     

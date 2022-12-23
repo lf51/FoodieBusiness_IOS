@@ -8,6 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 
+/*
 struct FilterAndSort_RowContainer<Content:View>:View {
     
     let backgroundColorView:Color
@@ -61,4 +62,4 @@ struct FilterAndSort_RowContainer<Content:View>:View {
             .background(backgroundColorView.opacity(0.6))
             
         }
-    } // 20.12.22 spostata in myFilterPackage
+    }*/ // 20.12.22 spostata in myFilterPackage

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import MyFoodiePackage
+import MyFilterPackage
 
 extension AllergeniIngrediente:
     MyProStarterPack_L1,
@@ -18,7 +19,6 @@ extension AllergeniIngrediente:
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [AllergeniIngrediente]> {
         \.allergeni
     }
-    
 
     public func customInteractiveMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         EmptyView()
@@ -29,3 +29,20 @@ extension AllergeniIngrediente:
         return (\.allergeni, "Elenco Allergeni", "Allergene","allergens")
     }
 }
+
+extension AllergeniIngrediente:Property_FPC { }
+
+extension ProvenienzaIngrediente:Property_FPC { }
+
+extension ProduzioneIngrediente:Property_FPC { }
+
+extension OrigineIngrediente:Property_FPC { }
+
+extension ConservazioneIngrediente:Property_FPC { }
+
+extension Inventario.TransitoScorte:Property_FPC { }
+
+extension StatusTransition:Property_FPC { }
+
+extension CategoriaMenu:Property_FPC { }
+

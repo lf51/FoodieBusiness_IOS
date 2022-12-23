@@ -8,6 +8,7 @@
 import Foundation
 import MyFoodiePackage
 
+/*
 public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
     
     var countChange:Int = 0
@@ -164,7 +165,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         }
         return false
         
-    }
+    } // Passato in extension
     
     func compareStatoScorte(modelId:String,readOnlyVM:AccounterVM) -> Bool {
         
@@ -173,7 +174,7 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
         let statoScorte = readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: modelId)
         
         return self.inventario.contains(statoScorte)
-    }
+    } // passato in extension
     
     // Sort Space
 
@@ -249,4 +250,4 @@ public struct FilterPropertyModel: MyProSearchPack_Sub_0 {
     
     
     
-}
+} */

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import MyFoodiePackage
+import MyFilterPackage
 
 extension IngredientModel:
     MyProToolPack_L1,
@@ -16,7 +17,7 @@ extension IngredientModel:
     
     
     public typealias VM = AccounterVM
-    public typealias FPM = FilterPropertyModel
+  //  public typealias FPM = FilterPropertyModel
    // public typealias ST = StatusTransition
     public typealias DPV = DestinationPathView
     public typealias RS = RowSize
@@ -164,23 +165,25 @@ extension IngredientModel:
         IngredientModel_RowView(item: self)
     }
     
-    public func modelPropertyCompare(filterProperty: FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool {
+   /* public func modelPropertyCompare(filterProperty: FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool {
         
         // 02.11 Abbiamo spostato tutte le funzioni di compare direttamente nel filterPropertyModel per avere uniformità e non duplicare codice
         
-        self.modelStringResearch(string: filterProperty.stringaRicerca) &&
-        filterProperty.comparePropertyToProperty(local: self.provenienza, filter: \.provenienzaING) &&
-        filterProperty.comparePropertyToProperty(local: self.produzione, filter: \.produzioneING) &&
-        filterProperty.comparePropertyToProperty(local: self.origine, filter: \.origineING) &&
-        filterProperty.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: \.conservazioneING) &&
-        filterProperty.compareStatusTransition(localStatus: self.status) &&
+        self.modelStringResearch(string: filterProperty.stringaRicerca) &&//
+        
+        filterProperty.comparePropertyToProperty(local: self.provenienza, filter: \.provenienzaING) && //
+        filterProperty.comparePropertyToProperty(local: self.produzione, filter: \.produzioneING) && //
+        filterProperty.comparePropertyToProperty(local: self.origine, filter: \.origineING) &&//
+        filterProperty.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: \.conservazioneING) && //
+        
+        filterProperty.compareStatusTransition(localStatus: self.status) &&//
         filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) &&
-        filterProperty.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: \.allergeniIn)
+        filterProperty.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: \.allergeniIn) //
        
 
-    }
+    } */
     
-    public func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
+   /* public func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
         
         guard string != "" else { return true }
         
@@ -194,9 +197,11 @@ extension IngredientModel:
         
         return condtionOne || conditionTwo
 
-    } // La teniamo nel modello per permettere una maggiore customizzazione nella ricerca
+    }*/ // deprecata 22.12 da cancellare
     
-    public static func sortModelInstance(lhs: IngredientModel, rhs: IngredientModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
+    // La teniamo nel modello per permettere una maggiore customizzazione nella ricerca
+    
+   /* public static func sortModelInstance(lhs: IngredientModel, rhs: IngredientModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
         
         switch condition {
             
@@ -213,7 +218,7 @@ extension IngredientModel:
         default:
             return lhs.intestazione < rhs.intestazione // alfabetico crescente va di default quando il sort è nil
         }
-    }
+    }*/ // deprecata 22.12 da cancellare
     
     public func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM) {
     
@@ -282,5 +287,126 @@ extension IngredientModel:
         viewModel.deleteItemModel(itemModel: self)
     }
     
+    
+}
+
+extension IngredientModel:Object_FPC {
+    
+    public static func sortModelInstance(lhs: IngredientModel, rhs: IngredientModel, condition: SortCondition?, readOnlyVM: AccounterVM) -> Bool {
+        
+        switch condition {
+            
+        case .alfabeticoDecrescente:
+            return lhs.intestazione > rhs.intestazione
+            
+        case .livelloScorte:
+          return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
+            
+        case .mostUsed:
+            return lhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount > rhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount
+            
+        default:
+            return lhs.intestazione < rhs.intestazione
+        }
+    }
+    
+    public func stringResearch(string: String, readOnlyVM: AccounterVM?) -> Bool {
+        
+        guard string != "" else { return true }
+        
+        let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
+        let condtionOne = self.intestazione.lowercased().contains(ricerca)
+
+        let allAllergens = self.allergeni.map({$0.intestazione.lowercased()})
+        let allAllergensChecked = allAllergens.filter({$0.contains(ricerca)})
+        
+        let conditionTwo = !allAllergensChecked.isEmpty
+        
+        return condtionOne || conditionTwo
+        
+        
+    }
+    
+    public func propertyCompare(filterProperties: FilterProperty, readOnlyVM: AccounterVM) -> Bool {
+        
+        let core = filterProperties.coreFilter
+        
+        return self.status != .bozza() && // esclude gli ing per prodotti finiti
+        
+        self.stringResearch(string: core.stringaRicerca, readOnlyVM: nil) &&
+        
+        core.comparePropertyToProperty(localProperty: self.provenienza, filterProperty: filterProperties.provenienzaING) &&
+        
+        core.comparePropertyToProperty(localProperty: self.produzione, filterProperty: filterProperties.produzioneING) &&
+        
+        core.comparePropertyToProperty(localProperty: self.origine, filterProperty: filterProperties.origineING) &&
+        
+        core.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: filterProperties.conservazioneING) &&
+        
+        core.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: filterProperties.allergeniIn) &&
+        
+        core.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
+        
+        core.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM)
+        
+    }
+    
+    public struct FilterProperty:SubFilterObject_FPC {
+        
+        public typealias M = IngredientModel
+        
+        public var coreFilter: CoreFilter
+        public var sortCondition: SortCondition
+        
+        var status:[StatusTransition]?
+        var inventario:[Inventario.TransitoScorte]?
+        
+        var provenienzaING:ProvenienzaIngrediente?
+        var produzioneING:ProduzioneIngrediente?
+        var origineING:OrigineIngrediente?
+        var conservazioneING:[ConservazioneIngrediente]?
+        var allergeniIn:[AllergeniIngrediente]?
+        
+        public init() {
+            self.coreFilter = CoreFilter()
+            self.sortCondition = .defaultValue
+        }
+    }
+    
+    public enum SortCondition:SubSortObject_FPC {
+        
+        static public var defaultValue: IngredientModel.SortCondition = .alfabeticoCrescente
+        
+        case alfabeticoCrescente
+        case alfabeticoDecrescente
+        
+        case livelloScorte
+        case mostUsed
+
+        public func simpleDescription() -> String {
+            
+            switch self {
+                
+            case .alfabeticoCrescente: return "default"
+            case .alfabeticoDecrescente: return "Alfabetico Decrescente"
+            case .livelloScorte: return "Livello Scorte"
+            case .mostUsed: return "Utilizzo"
+    
+            }
+        }
+        
+        public func imageAssociated() -> String {
+            
+            switch self {
+                
+            case .alfabeticoCrescente: return "circle"
+            case .alfabeticoDecrescente: return "textformat"
+            case .livelloScorte: return "cart"
+            case .mostUsed: return "aqi.medium"
+     
+            }
+        }
+        
+    }
     
 }

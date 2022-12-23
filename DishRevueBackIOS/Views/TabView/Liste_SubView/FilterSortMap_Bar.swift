@@ -8,6 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 
+/*
 struct FilterSortMap_Bar:View {
     
     @Binding var open: Bool
@@ -88,4 +89,4 @@ struct FilterSortMap_Bar:View {
         } */
         
     }
-} // 20.12.22 Spostata in MyFilterPackage tag 0.0.8 up
+}*/ // 20.12.22 Spostata in MyFilterPackage tag 0.0.8 up
