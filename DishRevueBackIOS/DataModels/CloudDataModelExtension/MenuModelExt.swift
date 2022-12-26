@@ -315,30 +315,30 @@ extension MenuModel:Object_FPC {
         return conditionOne || conditionTwo
     }
     
-    public func propertyCompare(filterProperties: FilterProperty, readOnlyVM: AccounterVM) -> Bool {
+    public func propertyCompare(coreFilter:CoreFilter<Self>, readOnlyVM: AccounterVM) -> Bool {
         
-        let core = filterProperties.coreFilter
+        let filterProperties = coreFilter.filterProperties
         
-        return self.stringResearch(string: core.stringaRicerca, readOnlyVM: readOnlyVM) &&
+        return self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
         
         self.preCallIsOnAir(filterValue: filterProperties.onlineOfflineMenu) &&
         
-        core.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
+        coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
         
-        core.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: filterProperties.giornoServizio) &&
+        coreFilter.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: filterProperties.giornoServizio) &&
         
-        core.comparePropertyToProperty(localProperty: self.tipologia, filterProperty: filterProperties.tipologiaMenu) &&
+        coreFilter.comparePropertyToProperty(localProperty: self.tipologia, filterProperty: filterProperties.tipologiaMenu) &&
         
-        core.comparePropertyToProperty(localProperty: self.isAvaibleWhen, filterProperty: filterProperties.rangeTemporaleMenu)
+        coreFilter.comparePropertyToProperty(localProperty: self.isAvaibleWhen, filterProperty: filterProperties.rangeTemporaleMenu)
         
     }
     
     public struct FilterProperty:SubFilterObject_FPC {
         
-        public typealias M = MenuModel
+      //  public typealias M = MenuModel
         
-        public var coreFilter: CoreFilter
-        public var sortCondition: SortCondition
+      //  public var coreFilter: CoreFilter
+      //  public var sortCondition: SortCondition
         
         var giornoServizio:GiorniDelServizio?
         var status:[StatusTransition]?
@@ -347,11 +347,28 @@ extension MenuModel:Object_FPC {
         var onlineOfflineMenu:MenuModel.OnlineStatus?
         
         public init() {
-            self.coreFilter = CoreFilter()
-            self.sortCondition = .defaultValue
+           // self.coreFilter = CoreFilter()
+           // self.sortCondition = .defaultValue
         }
         
-        
+        static public func reportChange(old: FilterProperty, new: FilterProperty) -> Int {
+            
+            countManageSingle_FPC(
+                newValue: new.giornoServizio,
+                oldValue: old.giornoServizio) +
+            countManageSingle_FPC(
+                newValue: new.tipologiaMenu,
+                oldValue: old.tipologiaMenu) +
+            countManageSingle_FPC(
+                newValue: new.rangeTemporaleMenu,
+                oldValue: old.rangeTemporaleMenu) +
+            countManageSingle_FPC(
+                newValue: new.onlineOfflineMenu,
+                oldValue: old.onlineOfflineMenu) +
+            countManageCollection_FPC(
+                newValue: new.status,
+                oldValue: old.status)
+        }
         
     }
     

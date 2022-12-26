@@ -22,18 +22,20 @@ struct ListaIngredientiView: View {
    // @State private var mapObject: MapObject<IngredientModel,OrigineIngrediente>?
     @State private var mapTree:MapTree<IngredientModel,OrigineIngrediente>?
     
-    @State private var filterProperty:IngredientModel.FilterProperty = IngredientModel.FilterProperty()
+  //  @State private var filterProperty:IngredientModel.FilterProperty = IngredientModel.FilterProperty()
+    
+    @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
     
     var body: some View {
         
         NavigationStack(path:$viewModel.ingredientListPath) {
             
-            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, filterProperties: filterProperty)
+            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
            
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
                 title: "I Miei Ingredienti",
-                filterProperties: $filterProperty,
+                filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per nome e/o allergene",
                 altezzaPopOverSorter: 300,
                 buttonColor: CatalogoColori.seaTurtle_3.color()) {
@@ -144,7 +146,7 @@ struct ListaIngredientiView: View {
         
         MyFilterRow(
             allCases: StatusTransition.allCases,
-            filterCollection: $filterProperty.status,
+            filterCollection: $filterCore.filterProperties.status,
             selectionColor: Color.mint.opacity(0.8),
             imageOrEmoji: "circle.dashed",
             label: "Status") { value in
@@ -153,7 +155,7 @@ struct ListaIngredientiView: View {
         
         MyFilterRow(
             allCases: Inventario.TransitoScorte.allCases,
-            filterCollection: $filterProperty.inventario,
+            filterCollection: $filterCore.filterProperties.inventario,
             selectionColor: Color.teal.opacity(0.6),
             imageOrEmoji: "cart",
             label: "Livello Scorte") { value in
@@ -164,7 +166,7 @@ struct ListaIngredientiView: View {
         
         MyFilterRow(
             allCases: ProvenienzaIngrediente.allCases,
-            filterProperty: $filterProperty.provenienzaING,
+            filterProperty: $filterCore.filterProperties.provenienzaING,
             selectionColor: Color.gray,
             imageOrEmoji: "globe.americas",
             label: "Provenienza") { value in
@@ -173,7 +175,7 @@ struct ListaIngredientiView: View {
         
         MyFilterRow(
             allCases: ProduzioneIngrediente.allCases,
-            filterProperty: $filterProperty.produzioneING,
+            filterProperty: $filterCore.filterProperties.produzioneING,
             selectionColor: Color.green,
             imageOrEmoji: "sun.min.fill",
             label: "Metodo di Produzione") { value in
@@ -182,7 +184,7 @@ struct ListaIngredientiView: View {
         
         MyFilterRow(
             allCases: ConservazioneIngrediente.allCases,
-            filterCollection: $filterProperty.conservazioneING,
+            filterCollection: $filterCore.filterProperties.conservazioneING,
             selectionColor: Color.cyan,
             imageOrEmoji: "thermometer.snowflake",
             label: "Metodo di Conservazione") { value in
@@ -191,7 +193,7 @@ struct ListaIngredientiView: View {
         
         MyFilterRow(
             allCases: OrigineIngrediente.allCases,
-            filterProperty: $filterProperty.origineING,
+            filterProperty: $filterCore.filterProperties.origineING,
             selectionColor: Color.brown,
             imageOrEmoji: "leaf",
             label: "Origine") { value in
@@ -200,7 +202,7 @@ struct ListaIngredientiView: View {
         
         MyFilterRow(
             allCases: AllergeniIngrediente.allCases,
-            filterCollection: $filterProperty.allergeniIn,
+            filterCollection: $filterCore.filterProperties.allergeniIn,
             selectionColor: Color.red.opacity(0.7),
             imageOrEmoji: "allergens",
             label: "Allergeni Contenuti") { value in
@@ -214,17 +216,17 @@ struct ListaIngredientiView: View {
         let color = CatalogoColori.seaTurtle_3.color()
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .alfabeticoDecrescente,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .livelloScorte,
             coloreScelta: color)
        
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .mostUsed,
             coloreScelta: color)
     }

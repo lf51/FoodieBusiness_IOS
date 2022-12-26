@@ -1011,19 +1011,21 @@ public final class AccounterVM: MyProViewModelPack_L1 {
 
 extension AccounterVM:VM_FPC {
     
-    public func ricercaFiltra<M:Object_FPC>(containerPath: WritableKeyPath<AccounterVM, [M]>, filterProperties: M.FilterProperty) -> [M] where AccounterVM == M.VM, M.SortCondition == M.FilterProperty.M.SortCondition {
+    public func ricercaFiltra<M:Object_FPC>(
+        containerPath: WritableKeyPath<AccounterVM, [M]>,
+        coreFilter: CoreFilter<M>) -> [M] where AccounterVM == M.VM {
         
         let container = self[keyPath: containerPath]
-        print("isContainerEmpty:\(container.isEmpty)")
+       // print("isContainerEmpty:\(container.isEmpty)")
       // let filterZero = container.filter({$0.status != .bozza()}) ???
         let containerFiltrato = container.filter({
-            $0.propertyCompare(filterProperties: filterProperties, readOnlyVM: self)
+            $0.propertyCompare(coreFilter: coreFilter, readOnlyVM: self)
         })
-        print("isContainerFilteredEmpty:\(containerFiltrato.isEmpty)")
+       // print("isContainerFilteredEmpty:\(containerFiltrato.isEmpty)")
         let containerOrdinato = containerFiltrato.sorted {
-            M.sortModelInstance(lhs: $0, rhs: $1, condition: filterProperties.sortCondition, readOnlyVM: self)
+            M.sortModelInstance(lhs: $0, rhs: $1, condition: coreFilter.sortConditions, readOnlyVM: self)
         }
-        print("isContainerSortedEmpty:\(containerOrdinato.isEmpty)")
+      //  print("isContainerSortedEmpty:\(containerOrdinato.isEmpty)")
         return containerOrdinato
     }
 }

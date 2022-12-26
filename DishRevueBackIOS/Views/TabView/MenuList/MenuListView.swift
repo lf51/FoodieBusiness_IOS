@@ -22,18 +22,20 @@ struct MenuListView: View {
    // @State private var mapObject: MapObject<MenuModel,TipologiaMenu>?
     @State private var mapTree: MapTree<MenuModel,TipologiaMenu>?
                                                 
-    @State private var filterProperty:MenuModel.FilterProperty = MenuModel.FilterProperty()
+   // @State private var filterProperty:MenuModel.FilterProperty = MenuModel.FilterProperty()
+    @State private var filterCore:CoreFilter<MenuModel> = CoreFilter()
+    
     
     var body: some View {
         
         NavigationStack(path:$viewModel.menuListPath) {
             
-            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyMenu, filterProperties: filterProperty)
+            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyMenu, coreFilter: filterCore)
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
                 title: "I Miei Menu",
-                filterProperties: $filterProperty,
+                filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Nome e/o Piatto",
                 buttonColor: CatalogoColori.seaTurtle_3.color()) {
                     self.thirdButtonAction()
@@ -138,7 +140,7 @@ struct MenuListView: View {
         
         MyFilterRow(
             allCases: MenuModel.OnlineStatus.allCases,
-            filterProperty: $filterProperty.onlineOfflineMenu,
+            filterProperty: $filterCore.filterProperties.onlineOfflineMenu,
             selectionColor: Color.cyan,
             imageOrEmoji: "face.dashed",
             label: "Programmazione Odierna") { value in
@@ -147,7 +149,7 @@ struct MenuListView: View {
         
         MyFilterRow(
             allCases: StatusTransition.allCases,
-            filterCollection: $filterProperty.status,
+            filterCollection: $filterCore.filterProperties.status,
             selectionColor: Color.mint.opacity(0.8),
             imageOrEmoji: "circle.dashed",
             label: "Status") { value in
@@ -156,7 +158,7 @@ struct MenuListView: View {
         
         MyFilterRow(
             allCases: TipologiaMenu.allCases,
-            filterProperty: $filterProperty.tipologiaMenu,
+            filterProperty: $filterCore.filterProperties.tipologiaMenu,
             selectionColor: Color.brown,
             imageOrEmoji: "square.on.square.dashed",
             label: "Tipologia") { value in
@@ -165,7 +167,7 @@ struct MenuListView: View {
         
         MyFilterRow(
             allCases: AvailabilityMenu.allCases,
-            filterProperty: $filterProperty.rangeTemporaleMenu,
+            filterProperty: $filterCore.filterProperties.rangeTemporaleMenu,
             selectionColor: Color.yellow.opacity(0.7),
             imageOrEmoji: "calendar.day.timeline.trailing",
             label: "Arco Temporale") { value in
@@ -174,7 +176,7 @@ struct MenuListView: View {
         
         MyFilterRow(
             allCases: GiorniDelServizio.allCases,
-            filterProperty: $filterProperty.giornoServizio,
+            filterProperty: $filterCore.filterProperties.giornoServizio,
             selectionColor: Color.blue,
             imageOrEmoji: "calendar",
             label: "Giorno della Settimana") { value in
@@ -186,45 +188,51 @@ struct MenuListView: View {
     @ViewBuilder private func vbSorterView() -> some View {
         
         let isCloseRange:Bool = {
-            self.filterProperty.rangeTemporaleMenu == .intervalloChiuso
+            self.filterCore.filterProperties.rangeTemporaleMenu == .intervalloChiuso
+           // self.filterProperty.rangeTemporaleMenu == .intervalloChiuso
         }()
         
         let isMenuFisso: Bool = {
-            self.filterProperty.tipologiaMenu != nil &&
-            self.filterProperty.tipologiaMenu != .allaCarta()
+            
+            self.filterCore.filterProperties.tipologiaMenu != nil &&
+            self.filterCore.filterProperties.tipologiaMenu != .allaCarta()
+            
+          //  self.filterProperty.tipologiaMenu != nil &&
+           // self.filterProperty.tipologiaMenu != .allaCarta()
         }()
         
         let color = CatalogoColori.seaTurtle_3.color()
     
+
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .alfabeticoDecrescente,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .dataInizio,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .dataFine,
             coloreScelta: color)
             .opacity(isCloseRange ? 1.0 : 0.5)
             .disabled(!isCloseRange)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .mostContaining,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .topRated,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .topPriced,
             coloreScelta: color)
             .opacity(isMenuFisso ? 1.0 : 0.5)

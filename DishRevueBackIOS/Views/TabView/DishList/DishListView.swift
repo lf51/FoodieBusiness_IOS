@@ -21,7 +21,8 @@ struct DishListView: View {
     @State private var openSort: Bool = false
    // @State private var mapObject: MapObject<DishModel,CategoriaMenu>?
     @State private var mapTree:MapTree<DishModel,CategoriaMenu>?
-    @State private var filterProperty: DishModel.FilterProperty = DishModel.FilterProperty()
+    //@State private var filterProperty: DishModel.FilterProperty = DishModel.FilterProperty()
+    @State private var filterCore:CoreFilter<DishModel> = CoreFilter()
     
     var body: some View {
         
@@ -48,12 +49,12 @@ struct DishListView: View {
 
             }*/
             
-            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyDish, filterProperties: filterProperty)
+            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyDish, coreFilter: filterCore)
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
                 title: "I Miei Prodotti",
-                filterProperties: $filterProperty,
+                filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Prodotto e/o Ingrediente",
                 buttonColor: CatalogoColori.seaTurtle_3.color(),
                 thirdButtonAction: {
@@ -147,7 +148,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: DishModel.PercorsoProdotto.allCases,
-            filterCollection: $filterProperty.percorsoPRP,
+            filterCollection: $filterCore.filterProperties.percorsoPRP,
             selectionColor: Color.white.opacity(0.5),
             imageOrEmoji: "fork.knife",
             label: "Prodotto") { value in
@@ -158,7 +159,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: Inventario.TransitoScorte.allCases,
-            filterCollection: $filterProperty.inventario,
+            filterCollection: $filterCore.filterProperties.inventario,
             selectionColor: Color.teal.opacity(0.6),
             imageOrEmoji: "cart",
             label: "Livello Scorte") { value in
@@ -174,7 +175,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: StatusTransition.allCases,
-            filterCollection: $filterProperty.status,
+            filterCollection: $filterCore.filterProperties.status,
             selectionColor: Color.mint.opacity(0.8),
             imageOrEmoji: "circle.dashed",
             label: "Status") { value in
@@ -183,7 +184,7 @@ struct DishListView: View {
      
         MyFilterRow(
             allCases: self.viewModel.allMyCategories,
-            filterCollection: $filterProperty.categorieMenu,
+            filterCollection: $filterCore.filterProperties.categorieMenu,
             selectionColor: Color.yellow.opacity(0.7),
             imageOrEmoji: "list.bullet.indent",
             label: "Categoria") { value in
@@ -192,7 +193,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: DishModel.BasePreparazione.allCase,
-            filterProperty: $filterProperty.basePRP,
+            filterProperty: $filterCore.filterProperties.basePRP,
             selectionColor: Color.brown,
             imageOrEmoji: "leaf",
             label: "Preparazione a base di") { value in
@@ -204,7 +205,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: TipoDieta.allCases,
-            filterCollection: $filterProperty.dietePRP,
+            filterCollection: $filterCore.filterProperties.dietePRP,
             selectionColor: Color.orange.opacity(0.6),
             imageOrEmoji: "person.fill.checkmark",
             label: "Adatto alla dieta") { value in
@@ -215,7 +216,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: ProduzioneIngrediente.allCases,
-            filterProperty: $filterProperty.produzioneING,
+            filterProperty: $filterCore.filterProperties.produzioneING,
             selectionColor: Color.blue,
             imageOrEmoji: "checkmark.shield",
             label: "Qualità") { value in
@@ -226,7 +227,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: ProvenienzaIngrediente.allCases,
-            filterProperty: $filterProperty.provenienzaING,
+            filterProperty: $filterCore.filterProperties.provenienzaING,
             selectionColor: Color.blue,
             imageOrEmoji: nil) { value in
                 container.filter({
@@ -236,7 +237,7 @@ struct DishListView: View {
         
         MyFilterRow(
             allCases: AllergeniIngrediente.allCases,
-            filterCollection: $filterProperty.allergeniIn,
+            filterCollection: $filterCore.filterProperties.allergeniIn,
             selectionColor: Color.red.opacity(0.7),
             imageOrEmoji: "allergens",
             label: "Allergeni Contenuti") { value in
@@ -252,34 +253,34 @@ struct DishListView: View {
         let color = CatalogoColori.seaTurtle_3.color()
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .alfabeticoDecrescente,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .livelloScorte,
             coloreScelta: color)
             .opacity(isPF ? 1.0 : 0.5)
             .disabled(!isPF)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .mostUsed,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .topRated,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .mostRated,
             coloreScelta: color)
         
         MySortRow(
-            sortCondition: $filterProperty.sortCondition,
+            sortCondition: $filterCore.sortConditions,
             localSortCondition: .topPriced,
             coloreScelta: color)
      
@@ -405,7 +406,7 @@ struct DishListView: View {
     
     private func checkStatoScorteAvailability() -> Bool {
        
-        guard let percorso = self.filterProperty.percorsoPRP else { return false }
+        guard let percorso = self.filterCore.filterProperties.percorsoPRP else { return false }
         
        return percorso.contains(.prodottoFinito) &&
         percorso.count == 1

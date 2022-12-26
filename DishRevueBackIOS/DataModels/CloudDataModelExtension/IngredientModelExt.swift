@@ -327,36 +327,36 @@ extension IngredientModel:Object_FPC {
         
     }
     
-    public func propertyCompare(filterProperties: FilterProperty, readOnlyVM: AccounterVM) -> Bool {
+    public func propertyCompare(coreFilter: CoreFilter<Self>, readOnlyVM: AccounterVM) -> Bool {
         
-        let core = filterProperties.coreFilter
+        let filterProperties = coreFilter.filterProperties
         
         return self.status != .bozza() && // esclude gli ing per prodotti finiti
         
-        self.stringResearch(string: core.stringaRicerca, readOnlyVM: nil) &&
+        self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: nil) &&
         
-        core.comparePropertyToProperty(localProperty: self.provenienza, filterProperty: filterProperties.provenienzaING) &&
+        coreFilter.comparePropertyToProperty(localProperty: self.provenienza, filterProperty: filterProperties.provenienzaING) &&
         
-        core.comparePropertyToProperty(localProperty: self.produzione, filterProperty: filterProperties.produzioneING) &&
+        coreFilter.comparePropertyToProperty(localProperty: self.produzione, filterProperty: filterProperties.produzioneING) &&
         
-        core.comparePropertyToProperty(localProperty: self.origine, filterProperty: filterProperties.origineING) &&
+        coreFilter.comparePropertyToProperty(localProperty: self.origine, filterProperty: filterProperties.origineING) &&
         
-        core.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: filterProperties.conservazioneING) &&
+        coreFilter.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: filterProperties.conservazioneING) &&
         
-        core.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: filterProperties.allergeniIn) &&
+        coreFilter.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: filterProperties.allergeniIn) &&
         
-        core.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
+        coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
         
-        core.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM)
+        coreFilter.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM)
         
     }
     
     public struct FilterProperty:SubFilterObject_FPC {
         
-        public typealias M = IngredientModel
+      //  public typealias M = IngredientModel
         
-        public var coreFilter: CoreFilter
-        public var sortCondition: SortCondition
+      //  public var coreFilter: CoreFilter
+      //  public var sortCondition: SortCondition
         
         var status:[StatusTransition]?
         var inventario:[Inventario.TransitoScorte]?
@@ -368,8 +368,34 @@ extension IngredientModel:Object_FPC {
         var allergeniIn:[AllergeniIngrediente]?
         
         public init() {
-            self.coreFilter = CoreFilter()
-            self.sortCondition = .defaultValue
+           // self.coreFilter = CoreFilter()
+           // self.sortCondition = .defaultValue
+        }
+        
+        static public func reportChange(old: FilterProperty, new: FilterProperty) -> Int {
+            
+            countManageSingle_FPC(
+                newValue: new.provenienzaING,
+                oldValue: old.provenienzaING) +
+            countManageSingle_FPC(
+                newValue: new.produzioneING,
+                oldValue: old.produzioneING) +
+            countManageSingle_FPC(
+                newValue: new.origineING,
+                oldValue: old.origineING) +
+            countManageCollection_FPC(
+                newValue: new.status,
+                oldValue: old.status) +
+            countManageCollection_FPC(
+                newValue: new.inventario,
+                oldValue: old.inventario) +
+            countManageCollection_FPC(
+                newValue: new.conservazioneING,
+                oldValue: old.conservazioneING) +
+            countManageCollection_FPC(
+                newValue: new.allergeniIn,
+                oldValue: old.allergeniIn)
+            
         }
     }
     

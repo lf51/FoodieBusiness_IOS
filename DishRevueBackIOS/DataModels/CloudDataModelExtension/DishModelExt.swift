@@ -636,81 +636,120 @@ extension DishModel: Object_FPC {
         // inserire la ricerca degli ingredienti
     }
     
-    public func propertyCompare(filterProperties: FilterProperty, readOnlyVM: VM) -> Bool {
+    public func propertyCompare(coreFilter:CoreFilter<Self>, readOnlyVM: VM) -> Bool {
         
         let allAllergeniIn = self.calcolaAllergeniNelPiatto(viewModel: readOnlyVM)
         let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
         let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
         
-        let core = filterProperties.coreFilter
+       // let core = filterProperties.coreFilter
         
       //  return
         
       //  !self.status.checkStatusBozza() && // pre Condizione
+        let properties = coreFilter.filterProperties
         
-       return self.stringResearch(string: core.stringaRicerca, readOnlyVM: readOnlyVM) &&
+       return self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
         
-        core.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: filterProperties.percorsoPRP) &&
+        coreFilter.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: properties.percorsoPRP) &&
         
-        core.compareCollectionToCollection(localCollection: allAllergeniIn, filterCollection: filterProperties.allergeniIn) &&
+        coreFilter.compareCollectionToCollection(localCollection: allAllergeniIn, filterCollection: properties.allergeniIn) &&
         
-        core.compareCollectionToCollection(localCollection: allDietAvaible, filterCollection: filterProperties.dietePRP) &&
+        coreFilter.compareCollectionToCollection(localCollection: allDietAvaible, filterCollection: properties.dietePRP) &&
         
-        core.comparePropertyToProperty(localProperty: basePreparazione, filterProperty: filterProperties.basePRP) &&
+        coreFilter.comparePropertyToProperty(localProperty: basePreparazione, filterProperty: properties.basePRP) &&
         
-        core.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
+        coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: properties.status) &&
         
-        core.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM) &&
+        coreFilter.compareStatoScorte(modelId: self.id, filterInventario: properties.inventario, readOnlyVM: readOnlyVM) &&
         
         self.preCallHasAllIngredientSameQuality(
             viewModel: readOnlyVM,
             kpQuality: \.produzione,
-            quality: filterProperties.produzioneING) &&
+            quality: properties.produzioneING) &&
         
         self.preCallHasAllIngredientSameQuality(
             viewModel: readOnlyVM,
             kpQuality: \.provenienza,
-            quality: filterProperties.provenienzaING)
+            quality: properties.provenienzaING)
         
         
     }
     
     public struct FilterProperty:SubFilterObject_FPC {
        
-        public typealias M = DishModel
+       // public typealias M = DishModel 
         
-        public var coreFilter: CoreFilter
-        public var sortCondition: SortCondition
+      //  public var coreFilter: CoreFilter
+      //  public var sortCondition: SortCondition
         
         var status:[StatusTransition]?
         
-        var percorsoPRP:[DishModel.PercorsoProdotto]?
+        var percorsoPRP:[DishModel.PercorsoProdotto]? { willSet {
+            if let value = newValue,
+               !value.contains(.prodottoFinito) { self.inventario = nil }
+        }}
         var categorieMenu:[CategoriaMenu]?
-        var basePRP:DishModel.BasePreparazione?
+        var basePRP:DishModel.BasePreparazione? //
         var allergeniIn:[AllergeniIngrediente]?
         var dietePRP:[TipoDieta]?
         
         var inventario:[Inventario.TransitoScorte]?
         
-        var produzioneING:ProduzioneIngrediente?
-        var provenienzaING:ProvenienzaIngrediente?
+        var produzioneING:ProduzioneIngrediente? //
+        var provenienzaING:ProvenienzaIngrediente? //
         
         public init() {
-            self.coreFilter = CoreFilter()
-            self.sortCondition = .defaultValue
+          //  self.coreFilter = CoreFilter()
+         //   self.sortCondition = .defaultValue
 
         }
         
-        var countChange:Int {
+     /* public static func == (lhs:FilterProperty,rhs:FilterProperty) -> Bool {
             
-            var count = 0
-            
-            if self.status != nil {
-                count += self.status!.count
-            }
+            lhs.status == rhs.status &&
+            lhs.percorsoPRP == rhs.percorsoPRP &&
+            lhs.categorieMenu == rhs.categorieMenu &&
+            lhs.basePRP == rhs.basePRP &&
+            lhs.allergeniIn == rhs.allergeniIn &&
+            lhs.dietePRP == rhs.dietePRP &&
+            lhs.inventario == rhs.inventario &&
+            lhs.produzioneING == rhs.produzioneING &&
+            lhs.provenienzaING == rhs.provenienzaING
+        } */
+        
+        public static func reportChange(old:FilterProperty,new:FilterProperty) -> Int {
+     
+            countManageSingle_FPC(
+                newValue: new.produzioneING,
+                oldValue: old.produzioneING) +
+            countManageSingle_FPC(
+                newValue: new.provenienzaING,
+                oldValue: old.provenienzaING) +
+            countManageSingle_FPC(
+                newValue: new.basePRP,
+                oldValue: old.basePRP) +
+            countManageCollection_FPC(
+                newValue: new.status,
+                oldValue: old.status) +
+            countManageCollection_FPC(
+                newValue: new.percorsoPRP,
+                oldValue: old.percorsoPRP) +
+            countManageCollection_FPC(
+                newValue: new.categorieMenu,
+                oldValue: old.categorieMenu) +
+            countManageCollection_FPC(
+                newValue: new.allergeniIn,
+                oldValue: old.allergeniIn) +
+            countManageCollection_FPC(
+                newValue: new.dietePRP,
+                oldValue: old.dietePRP) +
+            countManageCollection_FPC(
+                newValue: new.inventario,
+                oldValue: old.inventario)
             
         }
-        
+
     }
     
     public enum SortCondition:SubSortObject_FPC {
