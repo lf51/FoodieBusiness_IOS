@@ -57,15 +57,10 @@ struct DishListView: View {
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Prodotto e/o Ingrediente",
                 buttonColor: CatalogoColori.seaTurtle_3.color(),
+                elementContainer: container,
+                mapTree: mapTree,
                 thirdButtonAction: {
                     self.thirdButtonAction()
-                },
-                content: {
-                    
-                    BodyListe_Generic(
-                        container: container,
-                        mapTree: mapTree,
-                        navigationPath: \.dishListPath)
                 },
                 trailingView: {
                     self.vbTrailing()
@@ -75,6 +70,30 @@ struct DishListView: View {
                 },
                 sorterView: {
                     self.vbSorterView()
+                },
+                elementView: { dish in
+                    
+                    let navigationPath = \AccounterVM.dishListPath
+                    
+                    GenericItemModel_RowViewMask(model: dish) {
+                        
+                        dish.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
+                            
+                            vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
+                        
+                            vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
+                        
+                            vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
+                       
+                    }
+                    
+                    
+                    
+                   /* BodyListe_Generic(
+                        container: container,
+                        mapTree: mapTree,
+                        navigationPath: \.dishListPath) */
+                    
                 })
             
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
@@ -125,7 +144,8 @@ struct DishListView: View {
             
             self.mapTree = MapTree(
                 mapProperties: self.viewModel.allMyCategories,
-                kpPropertyInObject: \DishModel.categoriaMenu)
+                kpPropertyInObject: \DishModel.categoriaMenu,
+                labelColor: CatalogoColori.seaTurtle_3.color())
             
         } else {
             

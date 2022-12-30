@@ -11,7 +11,7 @@ import MyFilterPackage
 
 extension GiorniDelServizio:Property_FPC { }
 
-extension TipologiaMenu:Property_FPC { }
+extension TipologiaMenu:Property_FPC_Mappable { }
 
 extension AvailabilityMenu:Property_FPC { }
 

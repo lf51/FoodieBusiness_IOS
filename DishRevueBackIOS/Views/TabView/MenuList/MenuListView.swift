@@ -37,21 +37,39 @@ struct MenuListView: View {
                 title: "I Miei Menu",
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Nome e/o Piatto",
-                buttonColor: CatalogoColori.seaTurtle_3.color()) {
+                buttonColor: CatalogoColori.seaTurtle_3.color(),
+                elementContainer: container,
+                mapTree: mapTree) {
                     self.thirdButtonAction()
-                } content: {
-                   
-                    BodyListe_Generic(
-                        container: container,
-                        mapTree: mapTree,
-                        navigationPath: \.menuListPath)
-                    
                 } trailingView: {
                     self.vbTrailing()
                 } filterView: {
                     self.vbFilterView(container: container)
                 } sorterView: {
                     self.vbSorterView()
+                } elementView: { menu in
+                    
+                    let navigationPath = \AccounterVM.menuListPath
+                    
+                    GenericItemModel_RowViewMask(model: menu) {
+                        
+                        menu.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath)
+                            
+                            vbMenuInterattivoModuloCambioStatus(myModel: menu,viewModel: viewModel)
+                        
+                            vbMenuInterattivoModuloEdit(currentModel: menu, viewModel: viewModel, navPath: navigationPath )
+                        
+                            vbMenuInterattivoModuloTrash(currentModel: menu, viewModel: viewModel)
+                       
+                    }
+                    
+                    
+                    
+                   /* BodyListe_Generic(
+                        container: container,
+                        mapTree: mapTree,
+                        navigationPath: \.menuListPath) */
+                    
                 }
 
             
@@ -117,7 +135,8 @@ struct MenuListView: View {
             
             self.mapTree = MapTree(
                 mapProperties: TipologiaMenu.allCases,
-                kpPropertyInObject: \MenuModel.tipologia.id)
+                kpPropertyInObject: \MenuModel.tipologia.id,
+                labelColor: CatalogoColori.seaTurtle_3.color())
             
         } else {
             
@@ -320,6 +339,24 @@ struct MenuListView: View {
 */
     
 }
+
+/*
+@ViewBuilder func vbGenericModelRow<M:MyProToolPack_L1>(element:M,viewModel:AccounterVM,navPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+    
+    GenericItemModel_RowViewMask(model: element) {
+        
+        element.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navPath)
+            
+            vbMenuInterattivoModuloCambioStatus(myModel: element,viewModel: viewModel)
+        
+            vbMenuInterattivoModuloEdit(currentModel: element, viewModel: viewModel, navPath: navPath)
+        
+            vbMenuInterattivoModuloTrash(currentModel: element, viewModel: viewModel)
+       
+    }
+    
+} */
+
 
 /*
 struct MenuListView: View {

@@ -36,7 +36,7 @@ extension ProvenienzaIngrediente:Property_FPC { }
 
 extension ProduzioneIngrediente:Property_FPC { }
 
-extension OrigineIngrediente:Property_FPC { }
+extension OrigineIngrediente:Property_FPC_Mappable { }
 
 extension ConservazioneIngrediente:Property_FPC { }
 
@@ -44,5 +44,5 @@ extension Inventario.TransitoScorte:Property_FPC { }
 
 extension StatusTransition:Property_FPC { }
 
-extension CategoriaMenu:Property_FPC { }
+extension CategoriaMenu:Property_FPC_Mappable { }
 

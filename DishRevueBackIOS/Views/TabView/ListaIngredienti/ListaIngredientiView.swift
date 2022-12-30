@@ -38,21 +38,39 @@ struct ListaIngredientiView: View {
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per nome e/o allergene",
                 altezzaPopOverSorter: 300,
-                buttonColor: CatalogoColori.seaTurtle_3.color()) {
+                buttonColor: CatalogoColori.seaTurtle_3.color(),
+                elementContainer: container,
+                mapTree: mapTree) {
                     self.thirdButtonAction()
-                } content: {
-                  
-                    BodyListe_Generic(
-                        container: container,
-                        mapTree: mapTree,
-                        navigationPath: \.ingredientListPath)
-                    
                 } trailingView: {
                     vbTrailing()
                 } filterView: {
                     vbFilterView(container: container)
                 } sorterView: {
                     vbSorterView()
+                } elementView: { ingredient in
+                    
+                    let navigationPath = \AccounterVM.ingredientListPath
+                    
+                    GenericItemModel_RowViewMask(model: ingredient) {
+                        
+                        ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath)
+                            
+                            vbMenuInterattivoModuloCambioStatus(myModel: ingredient,viewModel: viewModel)
+                        
+                            vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: navigationPath)
+                        
+                            vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                       
+                    }
+                    
+                    
+                    
+                   /* BodyListe_Generic(
+                        container: container,
+                        mapTree: mapTree,
+                        navigationPath: \.ingredientListPath) */
+                    
                 }
 
             
@@ -123,7 +141,8 @@ struct ListaIngredientiView: View {
             
             self.mapTree = MapTree(
                 mapProperties: OrigineIngrediente.allCases,
-                kpPropertyInObject: \IngredientModel.origine.id)
+                kpPropertyInObject: \IngredientModel.origine.id,
+                labelColor: CatalogoColori.seaTurtle_3.color())
             
         } else {
             

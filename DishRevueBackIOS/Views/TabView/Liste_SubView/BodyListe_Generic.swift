@@ -17,6 +17,7 @@ import MyFilterPackage
     
 } */ // Trasformata in MapTree nel MyFilterPackage // 
 
+/*
 struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View where M.VM == AccounterVM, M.RS == RowSize {
     
     @EnvironmentObject var viewModel:AccounterVM
@@ -81,8 +82,8 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View where M.VM 
         }
       }
     }
-}
-
+} */
+// deprecata 27.12
 
 
 /*
