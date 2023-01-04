@@ -464,30 +464,9 @@ struct DishModel_RowView: View {
         // add 21.09
         let moneyCode = Locale.current.currency?.identifier ?? "EUR"
         let priceDouble = Double(price) ?? 0
-        // end 21.09
-      //  let (mediaRating,ratingCount) = csIterateDishRating(item: self.item)
-       // let (mediaRating,ratingCount,_) = self.item.ratingInfo(readOnlyViewModel: viewModel)
-        
+     
         HStack(alignment:.center,spacing: 3) {
-            
-          /*  Group {
-                Text("\(mediaRating,specifier: "%.1f")") // media
-                    .fontWeight(.light)
-                    .foregroundColor(Color("SeaTurtlePalette_1"))
-                    .padding(.horizontal,5)
-                    .background(
-                        RoundedRectangle(cornerRadius: 5.0)
-                            .fill(Color("SeaTurtlePalette_2"))
-                    )
 
-                Group {
-                    Text("/")
-                    Text("\(ratingCount) recensioni") // valore da importare
-                        .italic()
-                }
-                .fontWeight(.semibold)
-                .foregroundColor(Color("SeaTurtlePalette_2"))
-            } */
             if self.rowSize != .ibrido {
                 vbReviewLine()
             } else {
@@ -497,7 +476,6 @@ struct DishModel_RowView: View {
                     .foregroundColor(Color("SeaTurtlePalette_2"))
             }
            
-            
             Spacer()
             
             HStack(alignment:.top,spacing:1) {
@@ -602,30 +580,15 @@ struct DishModel_RowView: View {
     }
     
     @ViewBuilder private func vbIngredientScrollRow() -> some View {
-        
-        // Modifiche 21.09
+ 
         let allFilteredIngredients = self.item.allMinusArchiviati(viewModel: self.viewModel)
-       // let areAllBio = self.item.areAllIngredientBio(viewModel: self.viewModel)
-       
+     
             HStack(spacing: 4.0) {
-               
-              //  if areAllBio {
-                    
-                  /*  VStack(spacing:0) {
-                        
-                        Text("💯")
-                        Text("BIO")
-                            .font(.system(.caption2, design: .monospaced, weight: .black))
-                            .foregroundColor(Color("SeaTurtlePalette_1"))
-                        
-                    }.background(Color.green.cornerRadius(5.0)) */
-              //  } else {
-                    
+   
                     Image(systemName: "list.bullet.rectangle")
                         .imageScale(.medium)
                         .foregroundColor(Color("SeaTurtlePalette_4"))
-             //   }
-                // end 21.09
+  
                 if !allFilteredIngredients.isEmpty {
                     
                     ScrollView(.horizontal,showsIndicators: false) {
@@ -650,22 +613,7 @@ struct DishModel_RowView: View {
                                                     .offset(x: 5, y: -3)
                                             }
                                         }
-                                    
-                                /*   if isBio {
-                                       Text("✅")
-                                           .font(.caption2)
-                                      //     .font(.system(.caption2, design: .monospaced, weight: .black))
-                                          // .foregroundColor(Color.green)
-                                         //  .background(Color("SeaTurtlePalette_4").cornerRadius(5.0))
-                                       
-                                   } */
-                                   // Modifiche 30.08
-                                   /* if isTemporaryOff && isThereSostituto {
-                                        
-                                        Text("(\(nameSostituto))")
-                                            .font(isPrincipal ? .headline : .subheadline)
-                                            .foregroundColor(Color("SeaTurtlePalette_3"))
-                                    } */
+
                                    if idSostituto != nil {
                                         
                                        let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.allMyIngredients)
@@ -686,7 +634,7 @@ struct DishModel_RowView: View {
                                        
                                         
                                     }
-                                   // end 30.08
+
                                 }
                                 
                                 Text("•")

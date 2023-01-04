@@ -382,7 +382,7 @@ extension DishModel:
         })
         
         return allMinusBozzeEArchiviati
-    }
+    } // 31.12.22 Spostata nel Package
     
     /// ritorna gli ingredienti Attivi sostituendo gli ingredienti inPausa con gli eventuali sostituti
     func allIngredientsAttivi(viewModel:AccounterVM) -> [IngredientModel] {
@@ -429,7 +429,7 @@ extension DishModel:
         let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.allMyIngredients)
         
         return allActiveModels
-    }
+    } //02.01.23 ricollocata in MyFoodiePackage
     
     /// controlla tutti gii ingredienti attivi del piatto, se sono in stock, in arrivo, o in esaurimento. In caso affermativo ritorna true, il piatto è eseguibile
     func controllaSeEseguibile(viewModel:AccounterVM) -> Bool {
@@ -464,7 +464,7 @@ extension DishModel:
             else { return false }
         }
         return true
-    }
+    }// 02.01.23 ricollata in MyFoodiePackage
     
     func calcolaAllergeniNelPiatto(viewModel:AccounterVM) -> [AllergeniIngrediente] {
       
@@ -482,7 +482,7 @@ extension DishModel:
         
             return orderedAllergeni
     
-     }
+     } // 02.01.23 Ricollocata in MyFoodiePackage
     
     /// Controlla l'origine degli ingredienti e restituisce un array con le diete compatibili
     func returnDietAvaible(viewModel:AccounterVM) -> (inDishTipologia:[TipoDieta],inStringa:[String]) {
@@ -551,7 +551,7 @@ extension DishModel:
     
         return .carne
         
-    }
+    } // 02.01.23 Spostata in MyFoodiePackage
     
     /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse come Int, e un array con i modelli delle recensioni
     func ratingInfo(readOnlyViewModel:AccounterVM) -> (media:Double,count:Int,allModelReview:[DishRatingModel]) {

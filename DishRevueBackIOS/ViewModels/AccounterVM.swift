@@ -208,7 +208,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         
         let containerM = self[keyPath: modelPath]
         return containerM.first(where: {$0.id == id})
-    }
+    } // 31.12.22 Spostata in superClasse
     
     /// ritorna un array di modelli  da un array di riferimenti
     func modelCollectionFromCollectionID<M:MyProStarterPack_L0>(collectionId:[String],modelPath:KeyPath<AccounterVM,[M]>) -> [M] {
@@ -222,7 +222,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
 
         return modelCollection
 
-     }
+     } // 31.12.22 Spostata in superClasse
 
     
     // MyProStarterPack_L1
@@ -503,7 +503,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         
         return (isActive,name,allergeniIn)
         
-    }
+    } // 31.12.22 Spostasta in SuperClass FoodieViewModel
     
     //
     
@@ -567,7 +567,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         let witchContainCount = witchContain.count
         
         return (witchContain,allMenuCount,witchContainCount)
-    }
+    } 
     
     
     /// Permette di inserire o rimuovere un piatto da un MenuModel ed esegue l'update.
@@ -608,7 +608,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
             return false
         }
 
-    }
+    } // 02.01.23 Ricollocato in MyFoodiePackage
     
     /// Ritorna un menuDiSistema Attivo. Se non lo trova ritorna nil
     func trovaMenuDiSistema(menuDiSistema:TipologiaMenu.DiSistema) -> MenuModel? {
@@ -620,7 +620,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
                  $0.tipologia == tipologia && // Vedi Nota 09.11
                  $0.isOnAir()
             })
-    }
+    }// 02.01.23 Ricollocato in MyFoodiePackage
     
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti
@@ -1029,6 +1029,9 @@ extension AccounterVM:VM_FPC {
         return containerOrdinato
     }
 }
+
+
+
 
 /*public class AccounterVM: ObservableObject {
     

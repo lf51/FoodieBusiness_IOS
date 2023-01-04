@@ -8,6 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 
+/*
 struct CSEtichetta: View { // 21.09 --> Rimpiazza parecchio codice simile qua e la uniformando i badge
     
     let text:String
@@ -39,8 +40,7 @@ struct CSEtichetta: View { // 21.09 --> Rimpiazza parecchio codice simile qua e 
                 .fill(backgroundColor.opacity(backgroundOpacity))
         })
     }
-}
-
+}*/ // 02.01.23 Ricollocata nel MyPackView_L0
 /*
 struct CSBadgeView_Previews: PreviewProvider {
     static var previews: some View {

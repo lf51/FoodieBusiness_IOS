@@ -56,7 +56,7 @@ struct DishListView: View {
                 title: "I Miei Prodotti",
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Prodotto e/o Ingrediente",
-                buttonColor: CatalogoColori.seaTurtle_3.color(),
+                buttonColor: .seaTurtle_3,
                 elementContainer: container,
                 mapTree: mapTree,
                 thirdButtonAction: {
@@ -145,7 +145,7 @@ struct DishListView: View {
             self.mapTree = MapTree(
                 mapProperties: self.viewModel.allMyCategories,
                 kpPropertyInObject: \DishModel.categoriaMenu,
-                labelColor: CatalogoColori.seaTurtle_3.color())
+                labelColor: .seaTurtle_3)
             
         } else {
             
@@ -270,7 +270,7 @@ struct DishListView: View {
     @ViewBuilder private func vbSorterView() -> some View {
         
         let isPF = checkStatoScorteAvailability()
-        let color = CatalogoColori.seaTurtle_3.color()
+        let color:Color = .seaTurtle_3
         
         MySortRow(
             sortCondition: $filterCore.sortConditions,

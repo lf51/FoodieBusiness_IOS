@@ -37,7 +37,7 @@ struct MenuListView: View {
                 title: "I Miei Menu",
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Nome e/o Piatto",
-                buttonColor: CatalogoColori.seaTurtle_3.color(),
+                buttonColor: .seaTurtle_3,
                 elementContainer: container,
                 mapTree: mapTree) {
                     self.thirdButtonAction()
@@ -136,7 +136,7 @@ struct MenuListView: View {
             self.mapTree = MapTree(
                 mapProperties: TipologiaMenu.allCases,
                 kpPropertyInObject: \MenuModel.tipologia.id,
-                labelColor: CatalogoColori.seaTurtle_3.color())
+                labelColor: .seaTurtle_3)
             
         } else {
             
@@ -149,7 +149,7 @@ struct MenuListView: View {
         LargeBar_TextPlusButton(
             buttonTitle: "Nuovo Menu",
             font: .callout,
-            imageBack: CatalogoColori.seaTurtle_2.color(),
+            imageBack: .seaTurtle_2,
             imageFore: Color.white) {
                 self.viewModel.menuListPath.append(DestinationPathView.menu(MenuModel()))
             }
@@ -220,7 +220,7 @@ struct MenuListView: View {
            // self.filterProperty.tipologiaMenu != .allaCarta()
         }()
         
-        let color = CatalogoColori.seaTurtle_3.color()
+        let color:Color = .seaTurtle_3
     
 
         MySortRow(

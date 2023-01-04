@@ -86,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/lf51/MyFilterPackage.git",
       "state" : {
-        "revision" : "ca37cb2772179de4523da23261fad5f68d9df433",
-        "version" : "0.3.0"
+        "revision" : "8c6e40b199eece2fd9a5fd248ed0aded80edc71a",
+        "version" : "0.3.1"
       }
     },
     {

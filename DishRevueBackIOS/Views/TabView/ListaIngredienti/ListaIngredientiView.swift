@@ -38,7 +38,7 @@ struct ListaIngredientiView: View {
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per nome e/o allergene",
                 altezzaPopOverSorter: 300,
-                buttonColor: CatalogoColori.seaTurtle_3.color(),
+                buttonColor: .seaTurtle_3,
                 elementContainer: container,
                 mapTree: mapTree) {
                     self.thirdButtonAction()
@@ -142,7 +142,7 @@ struct ListaIngredientiView: View {
             self.mapTree = MapTree(
                 mapProperties: OrigineIngrediente.allCases,
                 kpPropertyInObject: \IngredientModel.origine.id,
-                labelColor: CatalogoColori.seaTurtle_3.color())
+                labelColor: .seaTurtle_3)
             
         } else {
             
@@ -155,7 +155,7 @@ struct ListaIngredientiView: View {
         LargeBar_TextPlusButton(
             buttonTitle: "Nuovo Ingrediente",
             font: .callout,
-            imageBack: CatalogoColori.seaTurtle_2.color(),
+            imageBack: .seaTurtle_2,
             imageFore: Color.white) {
                 self.viewModel.ingredientListPath.append(DestinationPathView.ingrediente(IngredientModel()))
             }
@@ -232,7 +232,7 @@ struct ListaIngredientiView: View {
     
     @ViewBuilder private func vbSorterView() -> some View {
         
-        let color = CatalogoColori.seaTurtle_3.color()
+        let color:Color = .seaTurtle_3
         
         MySortRow(
             sortCondition: $filterCore.sortConditions,
