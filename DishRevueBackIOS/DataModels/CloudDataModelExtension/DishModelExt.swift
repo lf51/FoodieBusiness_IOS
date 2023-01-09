@@ -527,7 +527,7 @@ extension DishModel:
         }
     
         return (dieteOk,dieteOkInStringa)
-    }
+    } // 07.01.23 Ricollocata In MyFoodiePackage
     
     /// Calcola se la preparazione è a base di carne, pesce, o verdure
     func calcolaBaseDellaPreparazione(readOnlyVM:AccounterVM) -> BasePreparazione {
