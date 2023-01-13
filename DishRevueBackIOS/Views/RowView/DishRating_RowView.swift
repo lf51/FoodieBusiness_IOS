@@ -8,7 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
-
+// 13.01  Verrà spostata nel MyFoodiepackage
 struct DishRating_RowView: View {
     
     let rating: DishRatingModel
