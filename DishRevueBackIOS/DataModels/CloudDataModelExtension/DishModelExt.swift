@@ -570,7 +570,7 @@ extension DishModel:
  
         return (mediaPonderata,ratingCount,allLocalReviews)
         
-    }
+    } // 13.01 Ricollocata Nel MyFoodiePackage
     
     /// Torna un valore da usare per ordinare i model nella classifica TopRated. In questo caso torna il peso delle recensioni, ossia la media ponderata per il numero di recensioni
     func topRatedValue(readOnlyVM:AccounterVM) -> Double {

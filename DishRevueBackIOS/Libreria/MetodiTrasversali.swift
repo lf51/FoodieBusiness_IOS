@@ -145,7 +145,7 @@ func csCalcoloMediaRecensioni(elementi:[DishRatingModel]) -> Double {
         
         return sommaVoti / sommaPesi
 
-}
+} // 13.01.23 Ricollocata in MyFoodiePackage
 
 /// somma dei valori di una collection di valori Double
 func csSommaValoriCollection(collectionValue:[Double]) -> Double {
