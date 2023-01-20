@@ -237,15 +237,18 @@ struct CSTextField_4b<VisualContent:View>: View {
     @Binding var textFieldItem: String
     let placeHolder: String
     let showDelete: Bool
-    let keyboardType: UIKeyboardType?
+    let keyboardType: UIKeyboardType
+    let strokeColor:Color
+    
     @ViewBuilder var image: VisualContent
     
-    init(textFieldItem:Binding<String>,placeHolder:String,showDelete:Bool = false, keyboardType: UIKeyboardType? = .default, image:() -> VisualContent) {
+    init(textFieldItem:Binding<String>,placeHolder:String,showDelete:Bool = false, keyboardType: UIKeyboardType = .default,strokeColor:Color = .blue, image:() -> VisualContent) {
         
         _textFieldItem = textFieldItem
         self.placeHolder = placeHolder
         self.showDelete = showDelete
         self.keyboardType = keyboardType
+        self.strokeColor = strokeColor
         self.image = image()
     }
     
@@ -257,7 +260,7 @@ struct CSTextField_4b<VisualContent:View>: View {
                 .padding(.leading)
             
             TextField (self.placeHolder, text: $textFieldItem)
-                .keyboardType(keyboardType!)
+                .keyboardType(keyboardType)
                 ._tightPadding()
                 .accentColor(Color.white)
             
@@ -277,7 +280,7 @@ struct CSTextField_4b<VisualContent:View>: View {
         }.background(
             
             RoundedRectangle(cornerRadius: 5.0)
-                .strokeBorder(Color.blue)
+                .strokeBorder(strokeColor)
                 .background(
                     RoundedRectangle(cornerRadius: 5.0)
                         .fill(Color.gray.opacity(self.textFieldItem != "" ? 0.6 : 0.2))
@@ -296,10 +299,10 @@ struct CSTextField_5: View {
     let placeHolder: String
     let image: String
     let showDelete: Bool
-    let keyboardType: UIKeyboardType?
+    let keyboardType: UIKeyboardType
     let action: () -> Void
     
-    init(textFieldItem:Binding<String>,placeHolder:String,image:String,showDelete:Bool = false, keyboardType: UIKeyboardType? = .default, action: @escaping () -> Void ) {
+    init(textFieldItem:Binding<String>,placeHolder:String,image:String,showDelete:Bool = false, keyboardType: UIKeyboardType = .default, action: @escaping () -> Void ) {
         
         _textFieldItem = textFieldItem
         self.placeHolder = placeHolder
@@ -325,11 +328,11 @@ struct CSTextField_6: View {
     let placeHolder: String
     let image: String
     let showDelete: Bool
-    let keyboardType: UIKeyboardType?
+    let keyboardType: UIKeyboardType
     let conformeA: ConformitàTextField
     let action: () -> Void
     
-    init(textFieldItem:Binding<String>,placeHolder:String,image:String,showDelete:Bool = false, keyboardType: UIKeyboardType? = .default, conformeA:ConformitàTextField, action: @escaping () -> Void ) {
+    init(textFieldItem:Binding<String>,placeHolder:String,image:String,showDelete:Bool = false, keyboardType: UIKeyboardType = .default, conformeA:ConformitàTextField, action: @escaping () -> Void ) {
         
         _textFieldItem = textFieldItem
         self.placeHolder = placeHolder

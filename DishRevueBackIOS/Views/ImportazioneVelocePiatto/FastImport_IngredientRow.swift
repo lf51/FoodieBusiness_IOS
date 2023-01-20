@@ -94,7 +94,7 @@ struct FastImport_IngredientRow: View {
 
                             }
                         } else {
-                            Text("Prodotto Finito")
+                            Text("Prodotto di terzi")
                                 .italic()
                                 .font(.callout)
                                 .foregroundColor(Color("SeaTurtlePalette_3"))
@@ -136,12 +136,14 @@ struct FastImport_IngredientRow: View {
                                 ._tightPadding()
                                 .background(
                                     Circle()
-                                        .fill(Color.white.opacity(0.5))
-                                        .shadow(radius: 5.0)
+                                        .fill(Color.white.opacity(isIngredientOld ? 0.2 : 0.5))
+                                        .shadow(radius: isIngredientOld ? 0.0 : 5.0)
                                 )
                             
                         }
                     }
+                    .disabled(isIngredientOld)
+                    //.blur(radius: isIngredientOld ? 0.8 : 0.0)
                     
                     VStack(alignment:.leading,spacing:4) {
                         

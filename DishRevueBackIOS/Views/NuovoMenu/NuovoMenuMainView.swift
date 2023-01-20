@@ -103,10 +103,11 @@ struct NuovoMenuMainView: View {
                                 placeHolder: "Piatti in Menu",
                                 imageNameOrEmojy: "fork.knife.circle",
                                 backgroundColor: Color.black) {
+                                    
                                     CSButton_image(
                                         frontImage: "plus.circle",
                                         imageScale: .large,
-                                        frontColor: Color("SeaTurtlePalette_3")) {
+                                        frontColor: .seaTurtle_3) {
                                             withAnimation(.default) {
                                                 self.openDishList.toggle()
                                             }
@@ -176,9 +177,9 @@ struct NuovoMenuMainView: View {
                         
                         
                     } // Chiusa ScrollView
-                    .disabled(openDishList)
+                   // .disabled(openDishList)
                     
-                    if openDishList {
+                  /*  if openDishList {
                         
                         SelettoreMyModel<_,DishModel>(
                             itemModel: $nuovoMenu,
@@ -191,14 +192,19 @@ struct NuovoMenuMainView: View {
                                     destinationView: .piatto(DishModel()))
                             }
                         
-                    }
+                    } */
 
                 CSDivider()
 
             }
 
         } // Chiusa ZStack MAdre
-        
+        .popover(isPresented: $openDishList) {
+            PreCallVistaPiattiEspansa(
+                currentMenu: $nuovoMenu,
+                backgroundColorView: backgroundColorView,
+                destinationPath: destinationPath)
+        }
      //   .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
 
     }

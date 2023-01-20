@@ -20,7 +20,6 @@ struct FastImport_CorpoScheda:View {
     let saveAction: (_ :TemporaryModel) -> Void
     // End 28.08
     
-
     @State private var areAllergeniOk: Bool = false
     @State private var dishPrice: String = ""
 
@@ -127,8 +126,8 @@ struct FastImport_CorpoScheda:View {
                         self.addSecondary(id: idIngredient)
                       
                     }
-                    .disabled(isIngredientOld)
-                    .blur(radius: isIngredientOld ? 0.8 : 0.0)
+                   // .disabled(isIngredientOld)
+                   // .blur(radius: isIngredientOld ? 0.8 : 0.0)
                     .overlay(alignment:.center) {
                         if isIngredientOld{
                             

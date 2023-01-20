@@ -77,7 +77,7 @@ struct IngredientModel_RowView: View {
      
             } // chiuda VStack madre
            // ._tightPadding()
-            .padding(.horizontal)
+            .padding(.horizontal,10)
           //  .padding(.vertical,5)
         } // chiusa Zstack Madre
         

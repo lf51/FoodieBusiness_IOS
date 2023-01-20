@@ -78,7 +78,11 @@ import MyFoodiePackage
             VistaMenuEspansa(currentDish: dish, backgroundColorView: backgroundColorView,viewModel: readOnlyViewModel)
             
         case .vistaPiattiEspansa(let menu):
-            VistaPiattiEspansa(currentMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+            PreCallVistaPiattiEspansa(
+                currentMenu: menu,
+                backgroundColorView: backgroundColorView,
+                destinationPath: destinationPath)
+           /* VistaPiattiEspansa(currentMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */
             
         case .vistaCronologiaAcquisti(let ingredient):
             VistaCronologiaAcquisti(ingrediente: ingredient, backgroundColorView: backgroundColorView)

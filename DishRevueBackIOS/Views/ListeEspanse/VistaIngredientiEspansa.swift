@@ -8,6 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
+import MyFilterPackage
 
 struct VistaIngredientiEspansa: View {
     
@@ -139,6 +140,169 @@ struct VistaIngredientiEspansa: View {
         } else { EmptyView() }
         
     }
+}
+
+struct VistaIngredientiEspansa_Selectable: View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    @Binding private var currentDish: DishModel
+    let backgroundColorView: Color
+    let destinationPath:DestinationPath
+    
+    @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
+    
+    init(currentDish: Binding<DishModel>, backgroundColorView: Color, destinationPath: DestinationPath) {
+        
+        _currentDish = currentDish
+        self.backgroundColorView = backgroundColorView
+        self.destinationPath = destinationPath
+    }
+   
+    var body: some View {
+        
+        CSZStackVB(
+            title: "Seleziona Ingredienti",
+            titlePosition: .bodyEmbed([.horizontal,.top],15),
+            backgroundColorView: backgroundColorView) {
+        
+                VStack(alignment:.leading) {
+                    
+                    let container = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
+                    
+                    HStack {
+                        
+                        Grid(alignment:.leading,verticalSpacing: 5) {
+                            
+                            GridRow(alignment:.lastTextBaseline) {
+                                
+                                Image(systemName: "leaf.fill")
+                                    .imageScale(.medium)
+                                    .foregroundColor(.seaTurtle_3)
+                                Text("Principali:")
+                                    .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                                Text("\(self.currentDish.ingredientiPrincipali.count)")
+                                    .monospaced()
+                                
+                            }
+                            
+                            GridRow(alignment:.lastTextBaseline)  {
+                                Image(systemName: "leaf.fill")
+                                    .imageScale(.medium)
+                                    .foregroundColor(.orange)
+                                Text("Secondari:")
+                                    .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                                Text("\(self.currentDish.ingredientiSecondari.count)")
+                                    .monospaced()
+                                
+                            }
+                        }
+
+                    Spacer()
+                        
+                    CSTextField_4(
+                        textFieldItem: $filterCore.stringaRicerca,
+                        placeHolder: "Nome/Allergene",
+                        image: "text.magnifyingglass",
+                        imageBasicColor: .gray,
+                        imageActiveColor: .black,
+                        imageScale: .medium,
+                        showDelete: true)
+                        
+                    }
+
+                    vbFilterView(container: container)
+                    
+                    ScrollView(showsIndicators: false) {
+                        
+                        ForEach(container) { ing in
+                            
+                            let valuePath = self.currentDish.individuaPathIngrediente(idIngrediente: ing.id)
+                            let valueRow = self.checkSelection(rifIng: ing.id, path: valuePath.path)
+                            
+                            ing.returnModelRowView(rowSize: .normale)
+                                .opacity(valuePath.path != nil ? 1.0 : 0.4)
+                                .overlay(alignment: .bottomTrailing) {
+                                    
+                                    CSButton_image(
+                                        frontImage: valueRow.image,
+                                        imageScale: .large,
+                                        frontColor: valueRow.colore) {
+                                            withAnimation {
+                                                selectDeselectAction(rif: ing.id, valuePath: valuePath)
+                                            }
+                                        }
+                                        .padding(.trailing,10)
+                                        .padding(.bottom,5)
+                                        .shadow(radius: 5.0)
+                                }
+  
+                        }
+  
+                    }
+                    
+                    CSDivider()
+                }
+         
+    
+            } // chiusa CSZStack
+   
+    }
+    
+    //Method
+    
+    @ViewBuilder private func vbFilterView(container:[IngredientModel]) -> some View {
+        
+                MyFilterRow(
+                    allCases: [Inventario.TransitoScorte.inStock],
+                    filterCollection: $filterCore.filterProperties.inventario,
+                    selectionColor: Color.teal.opacity(0.6)) { value in
+                        container.filter({
+                            self.viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value
+                        }).count
+                    }
+
+                MyFilterRow(
+                    allCases: OrigineIngrediente.allCases,
+                    filterProperty: $filterCore.filterProperties.origineING,
+                    selectionColor: Color.brown) { value in
+                        container.filter({$0.origine == value}).count
+                    }
+ 
+        }
+    
+    private func checkSelection(rifIng:String,path:WritableKeyPath<DishModel,[String]>?) -> (colore:Color,image:String) {
+        
+        guard path != nil else { return (.gray,"leaf") }
+        
+        if path == \.ingredientiPrincipali { return (.seaTurtle_3,"leaf.fill")}
+        else if path == \.ingredientiSecondari { return (.orange,"leaf.fill")}
+        else { return (.black,"leaf")}
+        
+    }
+    
+    private func selectDeselectAction(rif:String,valuePath:(path:WritableKeyPath<DishModel,[String]>?,index:Int?)) {
+        
+        guard let currentPath = valuePath.path,
+              let currentIndex = valuePath.index else {
+            
+            self.currentDish.ingredientiPrincipali.append(rif)
+            return }
+        
+        if currentPath == \.ingredientiPrincipali {
+            self.currentDish.ingredientiPrincipali.remove(at: currentIndex)
+            self.currentDish.ingredientiSecondari.append(rif)
+        }
+        else /*if currentPath == \.ingredientiSecondari*/ {
+            
+            self.currentDish.ingredientiSecondari.remove(at: currentIndex)
+        }
+    
+    }
+    
+    
+ 
+    
 }
 
 struct VistaIngredientiEspansa_Previews: PreviewProvider {

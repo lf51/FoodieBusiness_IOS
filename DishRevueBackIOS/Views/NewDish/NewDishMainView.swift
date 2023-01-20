@@ -109,7 +109,7 @@ struct NewDishMainView: View {
                     .opacity(wannaAddIngredient ? 0.6 : 1.0)
                     .disabled(wannaAddIngredient)
     
-                if wannaAddIngredient {
+              /*  if wannaAddIngredient {
            
                    /* SelettoreMyModel<_,IngredientModel>(
                         itemModel: $newDish,
@@ -129,7 +129,7 @@ struct NewDishMainView: View {
                             
                         }
                     
-                }
+                } */ // deprecata 18.01.23
             
              //   CSDivider() // risolve il problema del cambio colore della tabView
             //    } // end ZStack Interno
@@ -147,7 +147,12 @@ struct NewDishMainView: View {
                 
                 
            }
-      
+            .popover(isPresented: $wannaAddIngredient) {
+                VistaIngredientiEspansa_Selectable(
+                    currentDish: $newDish,
+                    backgroundColorView: backgroundColorView,
+                    destinationPath: destinationPath)
+            }
        // } // end ZStack Esterno
     }
     
