@@ -448,11 +448,11 @@ extension DishModel:
     
     private func preCallHasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T?) -> Bool {
         
-        guard quality != nil else { return true }
+        guard let unwrapQuality = quality else { return true }
         
-       return self.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: kpQuality, quality: quality!)
+       return self.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: kpQuality, quality: unwrapQuality)
         
-    }
+    } // Migrata su MyFoodiePackage 20.01.23
     
     func hasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T) -> Bool {
         
@@ -579,7 +579,7 @@ extension DishModel:
        
         return (media * Double(count))
      
-    }
+    } // 20.01.23 Ricollocata in MyFoodiePackage
     
 }
 
@@ -627,10 +627,11 @@ extension DishModel: Object_FPC {
         guard readOnlyVM != nil else { return conditionOne } // è inutile percheè passeremo sempre un valore valido. Lo mettiamo per forma. Abbiamo messo il parametro optional per non passarlo negli altri modelli dove non ci serve
         
         let allIngredients = self.allMinusArchiviati(viewModel: readOnlyVM!)
+      //  let allIngredients = self.allIngredientsAttivi(viewModel: readOnlyVM!)
         let allINGMapped = allIngredients.map({$0.intestazione.lowercased()})
         
-        let allInGChecked = allINGMapped.filter({$0.contains(ricerca)})
-        let conditionTwo = !allInGChecked.isEmpty
+        let allINGChecked = allINGMapped.filter({$0.contains(ricerca)})
+        let conditionTwo = !allINGChecked.isEmpty
         
         return conditionOne || conditionTwo
         // inserire la ricerca degli ingredienti
@@ -638,20 +639,25 @@ extension DishModel: Object_FPC {
     
     public func propertyCompare(coreFilter:CoreFilter<Self>, readOnlyVM: VM) -> Bool {
         
+        let properties = coreFilter.filterProperties
+        
         let allAllergeniIn = self.calcolaAllergeniNelPiatto(viewModel: readOnlyVM)
         let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
         let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
-        
+        let allRIFCategories = properties.categorieMenu?.map({$0.id})
        // let core = filterProperties.coreFilter
         
       //  return
         
       //  !self.status.checkStatusBozza() && // pre Condizione
-        let properties = coreFilter.filterProperties
+        
         
        return self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
         
         coreFilter.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: properties.percorsoPRP) &&
+        
+        coreFilter.compareRifToCollectionRif(localPropertyRif: self.categoriaMenu,
+           filterCollection: allRIFCategories) &&
         
         coreFilter.compareCollectionToCollection(localCollection: allAllergeniIn, filterCollection: properties.allergeniIn) &&
         
