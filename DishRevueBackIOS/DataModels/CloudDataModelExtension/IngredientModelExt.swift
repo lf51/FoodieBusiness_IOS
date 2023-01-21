@@ -312,7 +312,7 @@ extension IngredientModel:Object_FPC {
     
     public func stringResearch(string: String, readOnlyVM: AccounterVM?) -> Bool {
         
-        guard string != "" else { return true }
+       // guard string != "" else { return true }
         
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
         let condtionOne = self.intestazione.lowercased().contains(ricerca)
@@ -331,9 +331,20 @@ extension IngredientModel:Object_FPC {
         
         let filterProperties = coreFilter.filterProperties
         
+        let stringResult:Bool = {
+            
+            let stringa = coreFilter.stringaRicerca
+            guard stringa != "" else { return true }
+            
+            let result = self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: nil)
+            return coreFilter.tipologiaFiltro.normalizeBoolValue(value: result)
+            
+        }()
+        
         return self.status != .bozza() && // esclude gli ing per prodotti finiti
         
-        self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: nil) &&
+       // self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: nil) &&
+        stringResult &&
         
         coreFilter.comparePropertyToProperty(localProperty: self.provenienza, filterProperty: filterProperties.provenienzaING) &&
         

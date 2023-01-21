@@ -296,7 +296,7 @@ extension MenuModel:Object_FPC {
     
     public func stringResearch(string: String, readOnlyVM: AccounterVM?) -> Bool {
         
-        guard string != "" else { return true }
+      //  guard string != "" else { return true }
         
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
         let conditionOne = self.intestazione.lowercased().contains(ricerca)
@@ -319,7 +319,19 @@ extension MenuModel:Object_FPC {
         
         let filterProperties = coreFilter.filterProperties
         
-        return self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
+        let stringResult:Bool = {
+            
+            let stringa = coreFilter.stringaRicerca
+            guard stringa != "" else { return true }
+            
+            let result = self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM)
+            return coreFilter.tipologiaFiltro.normalizeBoolValue(value: result)
+            
+        }()
+
+        
+        return stringResult &&
+        //self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
         
         self.preCallIsOnAir(filterValue: filterProperties.onlineOfflineMenu) &&
         

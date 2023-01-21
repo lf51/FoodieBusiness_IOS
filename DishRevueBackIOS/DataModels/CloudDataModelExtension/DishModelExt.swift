@@ -619,7 +619,7 @@ extension DishModel: Object_FPC {
     
     public func stringResearch(string: String, readOnlyVM: VM?) -> Bool {
         
-        guard string != "" else { return true }
+       // guard string != "" else { return true }
         
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
         let conditionOne = self.intestazione.lowercased().contains(ricerca)
@@ -645,6 +645,16 @@ extension DishModel: Object_FPC {
         let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
         let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
         let allRIFCategories = properties.categorieMenu?.map({$0.id})
+        
+        let stringResult:Bool = {
+            
+            let stringa = coreFilter.stringaRicerca
+            guard stringa != "" else { return true }
+            
+            let result = self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM)
+            return coreFilter.tipologiaFiltro.normalizeBoolValue(value: result)
+            
+        }()
        // let core = filterProperties.coreFilter
         
       //  return
@@ -652,7 +662,9 @@ extension DishModel: Object_FPC {
       //  !self.status.checkStatusBozza() && // pre Condizione
         
         
-       return self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
+       return stringResult &&
+        
+        //self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
         
         coreFilter.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: properties.percorsoPRP) &&
         
