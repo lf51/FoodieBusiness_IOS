@@ -231,8 +231,9 @@ struct CSTextField_4: View {
     }
 }*/ // Spostato in MyPackView.20.12.22
 
+/*
 /// Identico al TextField4. Crea l'image attraverso un viewBuilder (Utile per il checkVisuale)
-struct CSTextField_4b<VisualContent:View>: View {
+struct CSTextField_4b<InlineContent:View>: View {
     
     @Binding var textFieldItem: String
     let placeHolder: String
@@ -240,24 +241,30 @@ struct CSTextField_4b<VisualContent:View>: View {
     let keyboardType: UIKeyboardType
     let strokeColor:Color
     
-    @ViewBuilder var image: VisualContent
+    @ViewBuilder var inlineContent: InlineContent
     
-    init(textFieldItem:Binding<String>,placeHolder:String,showDelete:Bool = false, keyboardType: UIKeyboardType = .default,strokeColor:Color = .blue, image:() -> VisualContent) {
+    init(
+        textFieldItem:Binding<String>,
+        placeHolder:String,
+        showDelete:Bool = false,
+        keyboardType: UIKeyboardType = .default,
+        strokeColor:Color = .blue,
+        inlineContent:() -> InlineContent) {
         
         _textFieldItem = textFieldItem
         self.placeHolder = placeHolder
         self.showDelete = showDelete
         self.keyboardType = keyboardType
         self.strokeColor = strokeColor
-        self.image = image()
+        self.inlineContent = inlineContent()
     }
     
     var body: some View {
         
         HStack {
             
-            image
-                .padding(.leading)
+            inlineContent
+               // .padding(.leading)
             
             TextField (self.placeHolder, text: $textFieldItem)
                 .keyboardType(keyboardType)
@@ -290,7 +297,7 @@ struct CSTextField_4b<VisualContent:View>: View {
         )
         .animation(Animation.easeInOut, value: self.textFieldItem)
     }
-}
+}*/ // 23.01.23 Ricollocato in MyPackView
 
 /// Small Custom textfield con una immagine, il TightPadding, e una action on Submit
 struct CSTextField_5: View {
