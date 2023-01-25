@@ -10,7 +10,7 @@ import MyPackView_L0
 import MyFoodiePackage
 
 struct DishRatingListView: View {
-    
+    // 25.01  Verrà spostata nel MyFoodiepackage dall'upgrade in lavorazione nella foodieClient
     let dishTitle: String
     let dishRating: [DishRatingModel]
     let ratingsCount: Int
