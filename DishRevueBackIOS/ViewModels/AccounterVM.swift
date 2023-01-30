@@ -894,7 +894,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         let topRange = allVote.filter({$0 >= 9.0}).count //.2
         
         let complete = allRev.filter({
-            $0.image != "" &&
+            $0.rifImage != "" &&
             $0.titolo != "" &&
             $0.commento != ""
         }).count //.3
@@ -925,7 +925,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         }
         
         let l10Complete = lastTenArray.filter({
-            $0.image != "" &&
+            $0.rifImage != "" &&
             $0.titolo != "" &&
             $0.commento != ""
         }).count

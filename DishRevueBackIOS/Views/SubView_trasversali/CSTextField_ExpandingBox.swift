@@ -133,7 +133,7 @@ struct CSTextField_ExpandingBoxPlain: View {
 
 
 ///BoxTextField Espandibile fino a 5 lineel. Lunghezza di default 300 caratteri
- struct CSTextField_ExpandingBox<M:MyProDescriptionPack_L0>: View {
+ /*struct CSTextField_ExpandingBox<M:MyProDescriptionPack_L0>: View {
     // 15.09 Passa da M:MyProModelPackL0 a M:MyProToolPackL0
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -280,7 +280,7 @@ struct CSTextField_ExpandingBoxPlain: View {
         
     }
     
-}
+} */ //30.01.23 Ricollocato in MyFoodiePackage
 
 
 

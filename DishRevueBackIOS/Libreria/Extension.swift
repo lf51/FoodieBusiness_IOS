@@ -36,9 +36,9 @@ extension View {
                 .background(content())
         }
     
-    func csCornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+  /*  func csCornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
           clipShape( RoundedCorner(radius: radius, corners: corners) )
-      } // 27.01.23 Ricollocata ib MyPackView
+      } // 27.01.23 Ricollocata ib MyPackView */
     
     /// Mette una vela alla Model Row per notificare che è stato creato nella sessione o che è stato modificato
     func csOverlayModelChange(rifModel:String) -> some View {

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import MyPackView_L0
 // SubView Button Riutilizzabili
 
 // Usare il .buttomStyle per semplificare lo stile dei bottoni
@@ -79,7 +79,7 @@ struct CSButton_large: View {
     let accentColor: Color
     let backgroundColor: Color
     let cornerRadius: CGFloat
-    var corners: UIRectCorner? = .allCorners
+    var corners: UIRectCorner = .allCorners
     var paddingValue:CGFloat? = nil
     let action: () -> Void
 
@@ -98,7 +98,7 @@ struct CSButton_large: View {
       }
     }
     .background(backgroundColor)
-    .csCornerRadius(cornerRadius, corners: corners!)
+    .csCornerRadius(cornerRadius, corners: corners)
     
   }
 }

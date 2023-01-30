@@ -9,7 +9,7 @@ import SwiftUI
 import MyFoodiePackage
 import MyPackView_L0
 
-struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
+/*struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
     // 15.09 passa da MyProModelPack a MyProToolPack
     
     @Binding var itemModel:M
@@ -45,7 +45,7 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
         
     }
     
-}
+} */ // 30.01.23 Ricollocata in MyFoodiePackage
 
 /*
 struct BoxDescriptionModel_Generic_Previews: PreviewProvider {
