@@ -1007,5 +1007,5 @@ private func estrapolaListaAllergeni(listaAllergeni:[AllergeniIngrediente]) -> [
             .foregroundColor(Color.red)
     }
     
-}
+} // 07.02.23 Ricollocato in MyFoodiePackage
 // end comparto Recensioni

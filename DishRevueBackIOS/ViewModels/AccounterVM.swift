@@ -868,7 +868,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         let mediaL10 = csCalcoloMediaRecensioni(elementi: onlyL10) //.3
         
         return (totalCount,last24Count,mediaGeneralePonderata,mediaL10)
-    }
+    } // 07.02.23 Ricollocata in MyFoodiePackage
     
     /// Analizza un array di recensioni, di default è nil e analizza l'intero comparto recensioni nel viewModel. Ritorna il numero di recensioni negative, positive, topRange, complete, il trend di voto (positivo, negativo, topRange), e il trend di completamento delle recensioni.
     func monitorRecensioniPlus(rifReview:[String]? = nil) -> (negative:Int,positive:Int,top:Int,complete:Int,trendVoto:Int,trendComplete:Int) {
