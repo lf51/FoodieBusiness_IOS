@@ -107,14 +107,14 @@ struct NuovoIngredienteGeneralView: View {
                                     self.salvaECreaPostAction()
                                 }
 
-                        }.padding(.horizontal)
+                        }//.padding(.horizontal)
                       
                     }
-                    .zIndex(0)
-                    .opacity(wannaAddAllergeni ? 0.6 : 1.0)
-                    .disabled(wannaAddAllergeni)
+                  //  .zIndex(0)
+                   // .opacity(wannaAddAllergeni ? 0.6 : 1.0)
+                   // .disabled(wannaAddAllergeni)
 
-                    if wannaAddAllergeni {
+                 /*   if wannaAddAllergeni {
                
                         SelettoreMyModel<_,AllergeniIngrediente>(
                             itemModel: $nuovoIngrediente,
@@ -127,7 +127,7 @@ struct NuovoIngredienteGeneralView: View {
                                             }
                             }
                         
-                    }
+                    } */
                    
             //   CSDivider()
                     
@@ -140,8 +140,15 @@ struct NuovoIngredienteGeneralView: View {
                 .font(.caption2)
                 .foregroundColor(Color.black)
                 .opacity(0.6)
-                .padding(.horizontal)
+              //  .padding(.horizontal)
                    
+            }
+            .padding(.horizontal,10)
+            .popover(isPresented: $wannaAddAllergeni) {
+                VistaAllergeni_Selectable(
+                    allergeneIn: $nuovoIngrediente.allergeni,
+                    backgroundColor: backgroundColorView)
+                    .presentationDetents([.height(500)])
             }
     
        }

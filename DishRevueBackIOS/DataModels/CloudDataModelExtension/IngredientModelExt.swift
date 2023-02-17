@@ -317,10 +317,20 @@ extension IngredientModel:Object_FPC {
         let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
         let condtionOne = self.intestazione.lowercased().contains(ricerca)
 
-        let allAllergens = self.allergeni.map({$0.intestazione.lowercased()})
-        let allAllergensChecked = allAllergens.filter({$0.contains(ricerca)})
-        
-        let conditionTwo = !allAllergensChecked.isEmpty
+      //  let allAllergens = self.allergeni.map({$0.intestazione.lowercased()})
+       // let allAllergensChecked = allAllergens.filter({$0.contains(ricerca)})
+      // let conditionTwo = !allAllergensChecked.isEmpty
+        let conditionTwo:Bool = {
+           
+            if let allergeneIn = self.allergeni {
+                
+                let allAllergens = allergeneIn.map({$0.intestazione.lowercased()})
+                let allAllergensChecked = allAllergens.filter({$0.contains(ricerca)})
+                return !allAllergensChecked.isEmpty
+                
+            } else { return false }
+            
+        }()
         
         return condtionOne || conditionTwo
         
@@ -341,6 +351,8 @@ extension IngredientModel:Object_FPC {
             
         }()
         
+        let allergens = self.allergeni ?? []
+        
         return self.status != .bozza() && // esclude gli ing per prodotti finiti
         
        // self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: nil) &&
@@ -354,7 +366,7 @@ extension IngredientModel:Object_FPC {
         
         coreFilter.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: filterProperties.conservazioneING) &&
         
-        coreFilter.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: filterProperties.allergeniIn) &&
+        coreFilter.compareCollectionToCollection(localCollection: allergens, filterCollection: filterProperties.allergeniIn) &&
         
         coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
         

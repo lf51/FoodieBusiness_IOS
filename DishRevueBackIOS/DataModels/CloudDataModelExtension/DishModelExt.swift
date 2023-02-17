@@ -454,7 +454,7 @@ extension DishModel:
         
     } // Migrata su MyFoodiePackage 20.01.23
     
-    func hasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T) -> Bool {
+   /* func hasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T) -> Bool {
         
         let allIngredient = self.allIngredientsAttivi(viewModel: viewModel)
         guard !allIngredient.isEmpty else { return false }
@@ -464,9 +464,9 @@ extension DishModel:
             else { return false }
         }
         return true
-    }// 02.01.23 ricollata in MyFoodiePackage
+    }*/ // 02.01.23 ricollata in MyFoodiePackage
     
-    func calcolaAllergeniNelPiatto(viewModel:AccounterVM) -> [AllergeniIngrediente] {
+   /* func calcolaAllergeniNelPiatto(viewModel:AccounterVM) -> [AllergeniIngrediente] {
       
         let allIngredients = self.allIngredientsAttivi(viewModel: viewModel)
         var allergeniPiatto:[AllergeniIngrediente] = []
@@ -482,10 +482,10 @@ extension DishModel:
         
             return orderedAllergeni
     
-     } // 02.01.23 Ricollocata in MyFoodiePackage
+     }*/ // 02.01.23 Ricollocata in MyFoodiePackage
     
     /// Controlla l'origine degli ingredienti e restituisce un array con le diete compatibili
-    func returnDietAvaible(viewModel:AccounterVM) -> (inDishTipologia:[TipoDieta],inStringa:[String]) {
+   /* func returnDietAvaible(viewModel:AccounterVM) -> (inDishTipologia:[TipoDieta],inStringa:[String]) {
         
         let allModelIngredients = self.allIngredientsAttivi(viewModel: viewModel)
         
@@ -527,10 +527,10 @@ extension DishModel:
         }
     
         return (dieteOk,dieteOkInStringa)
-    } // 07.01.23 Ricollocata In MyFoodiePackage
+    } */// 07.01.23 Ricollocata In MyFoodiePackage
     
     /// Calcola se la preparazione è a base di carne, pesce, o verdure
-    func calcolaBaseDellaPreparazione(readOnlyVM:AccounterVM) -> BasePreparazione {
+ /*  func calcolaBaseDellaPreparazione(readOnlyVM:AccounterVM) -> BasePreparazione {
         
         let allING = self.allIngredientsAttivi(viewModel: readOnlyVM)
         let allInGMapped = allING.map({$0.origine})
@@ -551,7 +551,7 @@ extension DishModel:
     
         return .carne
         
-    } // 02.01.23 Spostata in MyFoodiePackage
+    }*/ // 02.01.23 Spostata in MyFoodiePackage
     
     /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse come Int, e un array con i modelli delle recensioni
     func ratingInfo(readOnlyViewModel:AccounterVM) -> (media:Double,count:Int,allModelReview:[DishRatingModel]) {

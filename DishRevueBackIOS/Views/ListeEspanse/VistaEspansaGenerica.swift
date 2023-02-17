@@ -14,7 +14,8 @@ struct VistaEspansaGenerica<M:MyProToolPack_L1>: View where M.VM == AccounterVM,
     @EnvironmentObject var viewModel:AccounterVM
     
     let container:[String]
-    let containerPath:KeyPath<AccounterVM,[M]>
+  //  let containerPath:KeyPath<AccounterVM,[M]>
+    let containerPath:KeyPath<FoodieViewModel,[M]>
     let label: String
     let backgroundColorView:Color
 

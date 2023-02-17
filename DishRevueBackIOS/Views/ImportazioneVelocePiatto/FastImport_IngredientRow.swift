@@ -196,7 +196,7 @@ struct FastImport_IngredientRow: View {
 
    @ViewBuilder private func vbOrigineIcon() -> some View {
         
-       let allergeni = self.ingredient.allergeni
+       let allergeni = self.ingredient.allergeni ?? []
     
        if self.ingredient.origine != .defaultValue {
            
@@ -217,7 +217,7 @@ struct FastImport_IngredientRow: View {
     
     private func iterateAllergeni() -> String {
         
-        let allergeni = self.ingredient.allergeni
+        let allergeni = self.ingredient.allergeni ?? []
         var image = self.ingredient.origine.imageAssociated()
         
         if allergeni.contains(.latte_e_derivati) { image = "🥛"}

@@ -5,6 +5,7 @@
 //  Created by Calogero Friscia on 02/08/22.
 //
 
+/*
 import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
@@ -62,7 +63,10 @@ struct DishRatingListView: View {
                         ForEach(dishRating,id:\.self) { rate in
                             // da ordinare seguendo la data
                             if rate.isVoteInRange(min: minMaxRange.0, max: minMaxRange.1) {
-                                DishRating_RowView(rating: rate) }
+                              //  DishRating_RowView(rating: rate)
+                                Text(rate.id) +
+                                Text("Da SETTAre in DishRatingListView")
+                            }
                             
                         }
                         
@@ -90,7 +94,8 @@ struct DishRatingListView: View {
         
         for rating in self.dishRating {
             
-            guard let vote = Double(rating.voto) else { continue }
+          // guard let vote = Double(rating.voto) else { continue }
+            let vote = rating.voto.generale
             
             if vote <= 6.0 { ratingContainer[fromZeroToSix]! += 1 }
             else if vote <= 8.0 { ratingContainer[fromSixTo8]! += 1 }
@@ -175,11 +180,11 @@ struct DishRatingListView_Previews: PreviewProvider {
     static var viewModel: AccounterVM = {
        var vm = AccounterVM()
         vm.allMyReviews =  [
-            DishRatingModel( voto: "9.0", titolo: "Strepitoso", commento: "Materie Prime eccezzionali perfettamente combinate fra loro per un gusto autentico e genuino.", idPiatto: "Lailo05"),
-            DishRatingModel(voto: "5.0", titolo: "Il mare non c'è", commento: "Pesce congelato senza sapore", idPiatto: "Lailo05"),
-            DishRatingModel( voto: "9.0", titolo: "Il mare..forse", commento: "Pescato locale sicuramente di primissima qualità, cucinato forse un po' male.", idPiatto: "Lailo05"),
-            DishRatingModel(voto: "10.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!", idPiatto: "Lailo05"),
-            DishRatingModel(voto: "4.0", titolo: "Sapore di Niente", commento: "NoComment", idPiatto: "Lailo05")
+            DishRatingModel(idPiatto: "Lailo05"),
+            DishRatingModel(idPiatto: "Lailo05"),
+            DishRatingModel(idPiatto: "Lailo05"),
+            DishRatingModel(idPiatto: "Lailo05"),
+            DishRatingModel(idPiatto: "Lailo05")
             
             ]
         return vm
@@ -215,3 +220,4 @@ struct DishRatingListView_Previews: PreviewProvider {
     }
 }
 
+*/ // 08.02.23 Ricollacato Upgrade in MyFoodiePackage

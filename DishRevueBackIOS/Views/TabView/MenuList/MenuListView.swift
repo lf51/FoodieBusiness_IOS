@@ -31,6 +31,7 @@ struct MenuListView: View {
         NavigationStack(path:$viewModel.menuListPath) {
             
             let container = self.viewModel.ricercaFiltra(containerPath: \.allMyMenu, coreFilter: filterCore)
+            let generalDisable = container.isEmpty
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
@@ -39,15 +40,17 @@ struct MenuListView: View {
                 placeHolderBarraRicerca: "Cerca per Nome e/o Piatto",
                 buttonColor: .seaTurtle_3,
                 elementContainer: container,
-                mapTree: mapTree) {
+                mapTree: mapTree,
+                generalDisable: generalDisable,
+                mapButtonAction: {
                     self.thirdButtonAction()
-                } trailingView: {
+                }, trailingView: {
                     self.vbTrailing()
-                } filterView: {
+                }, filterView: {
                     self.vbFilterView(container: container)
-                } sorterView: {
+                }, sorterView: {
                     self.vbSorterView()
-                } elementView: { menu in
+                }, elementView: { menu in
                     
                     let navigationPath = \AccounterVM.menuListPath
                     
@@ -70,7 +73,7 @@ struct MenuListView: View {
                         mapTree: mapTree,
                         navigationPath: \.menuListPath) */
                     
-                }
+                })
 
             
             

@@ -8,6 +8,7 @@
 import SwiftUI
 import MyFoodiePackage
 
+
 struct NewDishMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
@@ -35,7 +36,12 @@ struct NewDishMainView: View {
             let newD: DishModel = {
                 var new = newDish
                 new.percorsoProdotto = percorso
-                new.pricingPiatto = [DishFormat(type: .mandatory)]
+               
+                if let formats = DishFormat.modelloCorrente {
+                    new.pricingPiatto = formats
+                } else {
+                    new.pricingPiatto = [DishFormat(type: .mandatory)]
+                }
                 return new
             }()
             localDish = newD
@@ -50,6 +56,12 @@ struct NewDishMainView: View {
         self.destinationPath = destinationPath
     }
     
+    // Update 10.02.23 DishFormat
+     
+    @State private var uploadDishFormat:Bool = false
+     // update 10.02
+    
+    
     var body: some View {
        
       //  CSZStackVB(title: self.newDish.intestazione == "" ? "Nuovo Piatto" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
@@ -58,7 +70,7 @@ struct NewDishMainView: View {
 
              //   CSDivider()
                     
-                    ScrollView { // La View Mobile
+                ScrollView(showsIndicators:false) { // La View Mobile
 
                         VStack(alignment:.leading) {
                                 
@@ -82,7 +94,7 @@ struct NewDishMainView: View {
  
                             DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
  
-                            DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
+                            DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, openUploadFormat: $uploadDishFormat, generalErrorCheck: generalErrorCheck)
  
                          //   Spacer()
                             
@@ -153,6 +165,15 @@ struct NewDishMainView: View {
                     backgroundColorView: backgroundColorView,
                     destinationPath: destinationPath)
             }
+            .popover(isPresented: $uploadDishFormat) {
+                
+                DishFormatUploadLabel(
+                    allDishFormat: $newDish.pricingPiatto,backgroundColorView: backgroundColorView)
+                    .presentationDetents([.height(500)])
+
+                
+            }
+         
        // } // end ZStack Esterno
     }
     
@@ -324,7 +345,7 @@ struct NewDishMainView_Previews: PreviewProvider {
             price.price = "12.5"
             return price
         }()
-        dish.pricingPiatto = [dishPrice]
+      //  dish.pricingPiatto = [dishPrice]
         dish.mostraDieteCompatibili = true
        // dish.categoriaMenu = CategoriaMenu(nome: "PortataTest")
         dish.status = .bozza(.disponibile)
@@ -341,7 +362,8 @@ struct NewDishMainView_Previews: PreviewProvider {
       var viewM = AccounterVM()
         viewM.allMyDish = [dishSample]
         viewM.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
-        return viewM
+       // return viewM
+        return testAccount
     }()
     
     static var previews: some View {

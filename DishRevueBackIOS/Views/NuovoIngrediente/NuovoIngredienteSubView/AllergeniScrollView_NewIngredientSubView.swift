@@ -41,13 +41,23 @@ struct AllergeniScrollView_NewIngredientSubView: View {
                         
                         HStack {
                             Spacer()
-                            Text(self.areAllergeniOk ? "Confermato" : "Confermare")
-                                .font(.system(.callout, design: .monospaced))
+                         /*   Text(/*self.areAllergeniOk ? "Confermato" :*/ "Confermare:")
+                                .font(.system(.callout, design: .monospaced)) */
+                         //   Spacer()
+                            Text("No")
+                                .bold(!self.areAllergeniOk)
+                                .foregroundColor(.black)
+                                .opacity(self.areAllergeniOk ? 0.4 : 1.0)
                             
                             CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.areAllergeniOk)
 
                         }
                     }
+                    
+                   Text("Si")
+                        .bold(self.areAllergeniOk)
+                        .foregroundColor(.black)
+                        .opacity(!self.areAllergeniOk ? 0.4 : 1.0)
 
                 }
 
@@ -65,15 +75,18 @@ struct AllergeniScrollView_NewIngredientSubView: View {
             
             VStack(alignment:.leading) {
 
+                let allergens = self.nuovoIngrediente.allergeni ?? []
+                
                 SimpleModelScrollGeneric_SubView(
-                    modelToShow: self.nuovoIngrediente.allergeni,
+                    modelToShow: allergens /*self.nuovoIngrediente.allergeni*/,
                     fontWeight: .semibold,
                     strokeColor: Color.red)
                 
                 HStack(spacing:0) {
                     
                     let string_1 = self.areAllergeniOk ? "Confermata" : "Non Confermata"
-                    let string_2 = self.nuovoIngrediente.allergeni.isEmpty ? "l'assenza" : "la presenza"
+                   // let string_2 = self.nuovoIngrediente.allergeni.isEmpty ? "l'assenza" : "la presenza"
+                    let string_2 = allergens.isEmpty ? "l'assenza" : "la presenza"
                     
                     Text("\(string_1) \(string_2) ")
                         .bold(self.areAllergeniOk)

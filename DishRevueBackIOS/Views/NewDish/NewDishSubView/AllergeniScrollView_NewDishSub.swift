@@ -43,16 +43,32 @@ struct AllergeniScrollView_NewDishSub: View {
                 imageNameOrEmojy: "exclamationmark.shield",
                 backgroundColor: Color.black) {
                     
-                    Toggle(isOn: self.$areAllergeniOk) {
-                        
-                        HStack {
-                            Spacer()
-                            Text(self.areAllergeniOk ? "Confermato" : "Confermare")
-                                .font(.system(.callout, design: .monospaced))
+                    HStack {
+                        Toggle(isOn: self.$areAllergeniOk) {
                             
-                            CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.areAllergeniOk)
-   
+                            HStack {
+                              /*  Spacer()
+                                Text(self.areAllergeniOk ? "Confermato" : "Confermare")
+                                    .font(.system(.callout, design: .monospaced)) */
+                                
+                                Spacer()
+                                
+                               // Text("Confermare:")
+                                 //   .font(.system(.callout, design: .monospaced))
+                                    
+                                Text("No")
+                                    .bold(!self.areAllergeniOk)
+                                    .foregroundColor(.black)
+                                    .opacity(self.areAllergeniOk ? 0.4 : 1.0)
+                                
+                                CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.areAllergeniOk)
+       
+                            }
                         }
+                        Text("Si")
+                             .bold(self.areAllergeniOk)
+                             .foregroundColor(.black)
+                             .opacity(!self.areAllergeniOk ? 0.4 : 1.0)
                     }
                 }
             

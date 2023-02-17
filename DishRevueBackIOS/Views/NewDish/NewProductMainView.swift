@@ -49,6 +49,7 @@ struct NewProductMainView: View {
             }
             
         } // end ZStack Esterno
+      
     }
     
     // Method

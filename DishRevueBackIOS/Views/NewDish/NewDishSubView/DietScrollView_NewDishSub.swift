@@ -38,6 +38,8 @@ struct DietScrollView_NewDishSub: View {
                 
                 HStack {
                     
+                    let showDiet = self.newDish.mostraDieteCompatibili
+                    
                     CSInfoAlertView(
                         imageScale: .large,
                         title: "Info Diete",
@@ -45,17 +47,30 @@ struct DietScrollView_NewDishSub: View {
                     
                     Toggle(isOn: self.$newDish.mostraDieteCompatibili) {
                         
-                        HStack {
+                        HStack{
                             Spacer()
                             
-                            Text(self.newDish.mostraDieteCompatibili ? "Visibile" : "Nascosto")
-                                .font(.system(.callout, design: .monospaced))
+                          /*  Text(/*self.newDish.mostraDieteCompatibili ? "Visibile" : "Nascosto"*/"Visibile:")
+                                .font(.system(.callout, design: .monospaced)) */
+                            
+                           // Spacer()
+                            
+                            Text("No")
+                                .bold(!showDiet)
+                                .foregroundColor(.black)
+                                .opacity(showDiet ? 0.4 : 1.0)
                          /*   Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
                                 .foregroundColor(confermaDiete ? Color.green : Color.gray)
                                 .imageScale(.medium) */
                         }
                         
                     }
+                    
+                    Text("Si")
+                         .bold(showDiet)
+                         .foregroundColor(.black)
+                         .opacity(!showDiet ? 0.4 : 1.0)
+                    
                 }
             }
             

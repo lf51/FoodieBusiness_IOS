@@ -146,7 +146,9 @@ private struct RevRowLocal:View {
                         HStack {
                             
                             ForEach(allDishrev) { review in
-                                DishRating_RowView(rating: review)
+                              /* DishRating_RowView(rating: review) */
+                                Text(review.id) +
+                                Text("Da SETTAre in RevRowLocal")
                             }
                         }
                         

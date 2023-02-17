@@ -84,6 +84,7 @@
 		3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */; };
 		3FBE221F292FCB150096F11B /* PopNewCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBE221E292FCB150096F11B /* PopNewCollab.swift */; };
 		3FBF8CFB293B6BFB004AE361 /* CS_Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBF8CFA293B6BFB004AE361 /* CS_Shapes.swift */; };
+		3FC26D0C2994F5EB00763915 /* VistaAllergeni_Selectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC26D0B2994F5EB00763915 /* VistaAllergeni_Selectable.swift */; };
 		3FC5B0DB292D2A320000A1BB /* WaitLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC5B0DA292D2A320000A1BB /* WaitLoadingView.swift */; };
 		3FC7EAA42954916F00BEF03E /* PropertyExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC7EAA32954916F00BEF03E /* PropertyExtension.swift */; };
 		3FC7EAA62954927900BEF03E /* CoreFilterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC7EAA52954927900BEF03E /* CoreFilterExtension.swift */; };
@@ -292,6 +293,7 @@
 		3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverradeStateTEST.swift; sourceTree = "<group>"; };
 		3FBE221E292FCB150096F11B /* PopNewCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopNewCollab.swift; sourceTree = "<group>"; };
 		3FBF8CFA293B6BFB004AE361 /* CS_Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CS_Shapes.swift; sourceTree = "<group>"; };
+		3FC26D0B2994F5EB00763915 /* VistaAllergeni_Selectable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaAllergeni_Selectable.swift; sourceTree = "<group>"; };
 		3FC5B0DA292D2A320000A1BB /* WaitLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitLoadingView.swift; sourceTree = "<group>"; };
 		3FC7EAA32954916F00BEF03E /* PropertyExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyExtension.swift; sourceTree = "<group>"; };
 		3FC7EAA52954927900BEF03E /* CoreFilterExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreFilterExtension.swift; sourceTree = "<group>"; };
@@ -603,6 +605,7 @@
 				3F39855C29029C03007731C2 /* VistaRecensioniEspansa.swift */,
 				3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */,
 				3F300F3B293A5757003E5861 /* ElencoModelDeleted.swift */,
+				3FC26D0B2994F5EB00763915 /* VistaAllergeni_Selectable.swift */,
 			);
 			path = ListeEspanse;
 			sourceTree = "<group>";
@@ -1421,6 +1424,7 @@
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
 				3F7A10EB291287DE0071B647 /* FilterRow_Generic.swift in Sources */,
 				4D168C10284A56A9000B137E /* GemotryReaderTEST.swift in Sources */,
+				3FC26D0C2994F5EB00763915 /* VistaAllergeni_Selectable.swift in Sources */,
 				3F39855D29029C03007731C2 /* VistaRecensioniEspansa.swift in Sources */,
 				3F1781962944E92400AA1474 /* AllergeniExt.swift in Sources */,
 				4D4947022822DD890093AFD6 /* CSDivider.swift in Sources */,

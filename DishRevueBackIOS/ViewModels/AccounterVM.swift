@@ -12,23 +12,25 @@ import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
 
-public final class AccounterVM: MyProViewModelPack_L1 {
+//public final class AccounterVM: MyProViewModelPack_L1 {
+public final class AccounterVM:FoodieViewModel {
     
-    private let instanceDBCompiler: CloudDataCompiler
+    private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
+    
     private var loadingCount:Int { willSet { isLoading = newValue != 8 } }
     @Published var isLoading: Bool
   //  let instanceCloudData:CloudDataStore // Non sappiamo ancora cosa farne 18.11
     
-    @Published var setupAccount:AccountSetup
-    @Published var inventarioScorte:Inventario
+   // @Published var setupAccount:AccountSetup
+   // @Published var inventarioScorte:Inventario
 
-    @Published public var allMyIngredients:[IngredientModel]
-    @Published public var allMyDish:[DishModel]
-    @Published public var allMyMenu:[MenuModel]
-    @Published public var allMyProperties:[PropertyModel]
+   // @Published public var allMyIngredients:[IngredientModel]
+   // @Published public var allMyDish:[DishModel]
+   // @Published public var allMyMenu:[MenuModel]
+   // @Published public var allMyProperties:[PropertyModel]
     
-    @Published public var allMyCategories: [CategoriaMenu]
-    @Published public var allMyReviews:[DishRatingModel]
+   // @Published public var allMyCategories: [CategoriaMenu]
+   // @Published public var allMyReviews:[DishRatingModel]
 
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
@@ -45,8 +47,18 @@ public final class AccounterVM: MyProViewModelPack_L1 {
    // @Published var menuStatusChanged:Int = 0
     @Published var remoteStorage:RemoteChangeStorage = RemoteChangeStorage()
     
+    //10.02.23 Upgrade DishFormat
     
-    init(userUID:String? = nil) { // L'Init ufficiale del viewModel
+    var allDishFormatLabel:Set<String> {
+        
+        let allFormat:[DishFormat] = self.allMyDish.flatMap({$0.pricingPiatto})
+        let allLabel = allFormat.compactMap({$0.label})
+        return Set(allLabel)
+    }
+    
+    //10.02.23
+    
+   override init(userUID:String? = nil) { // L'Init ufficiale del viewModel
       
             
            // let compilerInstance = CloudDataCompiler(UID: userUID)
@@ -57,8 +69,8 @@ public final class AccounterVM: MyProViewModelPack_L1 {
             
             // Quello che segue si potrebbe accorpare in una instanza cloud Data. Richiede un mare di modifiche :( - Attualmente 18.11 in standBy
            // let cloudDataStore = compilerInstance.cloudDataInstance()
-         
-                self.allMyIngredients = []
+       super.init(userUID: userUID)
+               /* self.allMyIngredients = []
                 self.allMyDish = []
                 self.allMyMenu = []
                 self.allMyProperties = []
@@ -67,7 +79,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
                 self.inventarioScorte = Inventario()
                 
                 self.allMyReviews = []
-                self.allMyCategories = []
+                self.allMyCategories = [] */
         
 
         // fine categorie accorpabili
@@ -90,91 +102,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         self.loadingCount = 8
         
     }
-    
-  /*  func fetchDataFromFirebase() {
-        
-      //  self.isLoading = true
-        
-     /* self.instanceDBCompiler.downloadFromFirebase { cloudData in
-            self.setupAccount = cloudData.setupAccount
-            print("2. Fetch SetupAccpunt")
-            
-        }*/
-       /* self.instanceDBCompiler.downloadIngredientFirebase { cloudData in
-            self.allMyIngredients = cloudData.allMyIngredients
-            print("3.end Fetch ingredients")
-        } */
-        
-        
-      /*  self.instanceDBCompiler.downloadFromFirebase_allMyElement { cloudData in
-            print("isCloudData allMyDishEmpty: \(cloudData.allMyDish.isEmpty.description)")
-            
-            self.allMyIngredients = cloudData.allMyIngredients
-            self.allMyDish = cloudData.allMyDish
-            self.allMyMenu = cloudData.allMyMenu
-            self.allMyProperties = cloudData.allMyProperties
-            self.allMyCategories = cloudData.allMyCategories
-            self.allMyReviews = cloudData.allMyReviews
-            
-            print("isCloudData at end allMyDishEmpty: \(cloudData.allMyDish.isEmpty.description)")
-        } */
-        print("1.fetchData.Start")
-        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyIngredients,cloudCollectionKey: .ingredient) { allMyElements,isDone in
-            
-            self.allMyIngredients = allMyElements
-            self.loadingCount += isDone
-            print("1.Closure.ING")
-        }
-        print("2.fetchData.InG")
-        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyDish,cloudCollectionKey: .dish) { allMyElements,isDone in
-            
-            self.allMyDish = allMyElements
-            self.loadingCount += isDone
-            print("2.Closure.Dish")
-        }
-        print("3.fetchData.Dish")
-        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyMenu,cloudCollectionKey: .menu) { allMyElements,isDone in
-            
-            self.allMyMenu = allMyElements
-            self.loadingCount += isDone
-            print("3.Closure.Menu")
-        }
-        print("4.fetchData.Menu")
-        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyProperties,cloudCollectionKey: .properties) { allMyElements,isDone in
-            
-            self.allMyProperties = allMyElements
-            self.loadingCount += isDone
-            print("4.Closure.Pro")
-        }
-        print("5.fetchData.Prop")
-        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyCategories,cloudCollectionKey: .categories) { allMyElements,isDone in
-            
-            self.allMyCategories = allMyElements.sorted(by: {$0.listIndex ?? 0 < $1.listIndex ?? 1}) // Nota 24.11
-            self.loadingCount += isDone
-            print("5.Closure.Cat")
-        }
-        print("6.fetchData.Cat")
-        self.instanceDBCompiler.downloadFromFirebase_allMyElement(collectionKP: \.allMyReviews,cloudCollectionKey: .reviews) { allMyElements,isDone in
-            
-            self.allMyReviews = allMyElements
-            self.loadingCount += isDone
-            print("6.Closure.Rev")
-        }
-        print("7.fetchData.Rev")
-        
-        self.instanceDBCompiler.downloadFromFirebase_singleElement(singleKP: \.setupAccount, cloudCollectionKey: .anyDocument) { singleElement,isDone in
-            self.setupAccount = singleElement
-            self.loadingCount += isDone
-            print("7.Closure.Setup")
-        }
-        
-        self.instanceDBCompiler.downloadFromFirebase_singleElement(singleKP: \.inventarioScorte, cloudCollectionKey: .anyDocument) { singleElement,isDone in
-            self.inventarioScorte = singleElement
-            self.loadingCount += isDone
-            print("8.Closure.INV")
-        }
-        
-    } */ // Deprecata 15.12.22
+
     
     // Method
     
@@ -203,8 +131,9 @@ public final class AccounterVM: MyProViewModelPack_L1 {
     
     // MyProStarterPack_L0
     
+    
     /// ritorna un modello da un riferimento.
-    func modelFromId<M:MyProStarterPack_L0>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
+  /*   func modelFromId<M:MyProStarterPack_L0>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
         
         let containerM = self[keyPath: modelPath]
         return containerM.first(where: {$0.id == id})
@@ -222,7 +151,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
 
         return modelCollection
 
-     } // 31.12.22 Spostata in superClasse
+     }*/ // 31.12.22 Spostata in superClasse
 
     
     // MyProStarterPack_L1
@@ -489,7 +418,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
     
     // MyProModelPack_L2 aka MyModelStatusConformity
     
-    func infoFromId<M:MyProToolPack_L0>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> (isActive:Bool,nome:String,hasAllergeni:Bool) {
+    /*func infoFromId<M:MyProToolPack_L0>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> (isActive:Bool,nome:String,hasAllergeni:Bool) {
         
         guard let model = modelFromId(id: id, modelPath: modelPath) else { return (false,"",false) }
 
@@ -503,7 +432,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         
         return (isActive,name,allergeniIn)
         
-    } // 31.12.22 Spostasta in SuperClass FoodieViewModel
+    }*/ // 31.12.22 Spostasta in SuperClass FoodieViewModel
     
     //
     
@@ -600,7 +529,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
     
     
     /// Controlla se un menuDiSistema contiene un dato piatto
-    func checkMenuDiSistemaContainDish(idPiatto:String,menuDiSistema:TipologiaMenu.DiSistema) -> Bool {
+  /*  func checkMenuDiSistemaContainDish(idPiatto:String,menuDiSistema:TipologiaMenu.DiSistema) -> Bool {
         
         if let menuDS = trovaMenuDiSistema(menuDiSistema: menuDiSistema) {
             return menuDS.rifDishIn.contains(idPiatto)
@@ -608,10 +537,10 @@ public final class AccounterVM: MyProViewModelPack_L1 {
             return false
         }
 
-    } // 02.01.23 Ricollocato in MyFoodiePackage
+    }*/ // 02.01.23 Ricollocato in MyFoodiePackage
     
     /// Ritorna un menuDiSistema Attivo. Se non lo trova ritorna nil
-    func trovaMenuDiSistema(menuDiSistema:TipologiaMenu.DiSistema) -> MenuModel? {
+   /*func trovaMenuDiSistema(menuDiSistema:TipologiaMenu.DiSistema) -> MenuModel? {
         
         let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
         
@@ -620,7 +549,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
                  $0.tipologia == tipologia && // Vedi Nota 09.11
                  $0.isOnAir()
             })
-    }// 02.01.23 Ricollocato in MyFoodiePackage
+    }*/ // 02.01.23 Ricollocato in MyFoodiePackage
     
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti
@@ -754,7 +683,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
              $0.origine.returnTypeCase() == .vegetale
          }).sorted(by: {$0.intestazione < $1.intestazione})
         
-         let allMeat = allING.filter({
+        /* let allMeat = allING.filter({
                $0.origine.returnTypeCase() == .animale &&
                !$0.allergeni.contains(.latte_e_derivati) &&
                !$0.allergeni.contains(.molluschi) &&
@@ -773,6 +702,50 @@ public final class AccounterVM: MyProViewModelPack_L1 {
                $0.allergeni.contains(.latte_e_derivati)
            }).sorted(by: {$0.intestazione < $1.intestazione})
          
+         // 09.02
+         */
+         
+        let allMeat = allING.filter({
+            
+            let conditionOne = $0.origine.returnTypeCase() == .animale
+            var conditionTwo = true
+            
+            if let allergens = $0.allergeni {
+                
+                conditionTwo =
+                !allergens.contains(.latte_e_derivati) &&
+                !allergens.contains(.molluschi) &&
+                !allergens.contains(.pesce) &&
+                !allergens.contains(.crostacei)
+                
+            }
+               return conditionOne && conditionTwo
+              
+          }).sorted(by: {$0.intestazione < $1.intestazione})
+       
+        let allFish = allING.filter({
+            
+            if let allergens = $0.allergeni {
+                
+               return allergens.contains(.molluschi) ||
+                allergens.contains(.pesce) ||
+                allergens.contains(.crostacei)
+                
+            } else { return false }
+             
+            
+          }).sorted(by: {$0.intestazione < $1.intestazione})
+          
+        let allMilk = allING.filter({
+            
+            let conditionOne = $0.origine.returnTypeCase() == .animale
+            var conditionTwo = false
+            if let allergens = $0.allergeni {
+                conditionTwo = allergens.contains(.latte_e_derivati)
+            }
+              return conditionOne && conditionTwo
+          }).sorted(by: {$0.intestazione < $1.intestazione})
+        
          print("Dentro Inventario Filtrato")
 
          return (allVegetable + allMilk + allMeat + allFish)
@@ -838,7 +811,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
     }
     
     /// ritorna il numero di recensioni totali, quelle delle ultime 24h, la media totale, la media delle ulteme 10
-    func monitorRecensioni(rifReview:[String]? = nil) -> (totali:Int,l24:Int,mediaGen:Double,ml10:Double) {
+  /*  func monitorRecensioni(rifReview:[String]? = nil) -> (totali:Int,l24:Int,mediaGen:Double,ml10:Double) {
         
         let starter:[DishRatingModel]
         
@@ -868,7 +841,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         let mediaL10 = csCalcoloMediaRecensioni(elementi: onlyL10) //.3
         
         return (totalCount,last24Count,mediaGeneralePonderata,mediaL10)
-    } // 07.02.23 Ricollocata in MyFoodiePackage
+    }*/ // 07.02.23 Ricollocata in MyFoodiePackage
     
     /// Analizza un array di recensioni, di default è nil e analizza l'intero comparto recensioni nel viewModel. Ritorna il numero di recensioni negative, positive, topRange, complete, il trend di voto (positivo, negativo, topRange), e il trend di completamento delle recensioni.
     func monitorRecensioniPlus(rifReview:[String]? = nil) -> (negative:Int,positive:Int,top:Int,complete:Int,trendVoto:Int,trendComplete:Int) {
@@ -884,7 +857,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
             allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.allMyReviews)
         }
     
-        let allVote = allRev.compactMap({Double($0.voto)})
+        let allVote = allRev.compactMap({$0.voto.generale})
         
         let negative = allVote.filter({$0 < 6.0}).count//.0
         let positive = allVote.filter({
@@ -905,7 +878,7 @@ public final class AccounterVM: MyProViewModelPack_L1 {
         let lastTen = allByDate.prefix(10)
         let lastTenArray = Array(lastTen)
         
-        let l10AllVote = lastTenArray.compactMap({Double($0.voto)})
+        let l10AllVote = lastTenArray.compactMap({$0.voto.generale})
         
         let l10negative = l10AllVote.filter({$0 < 6.0}).count//.0
         let l10positive = l10AllVote.filter({

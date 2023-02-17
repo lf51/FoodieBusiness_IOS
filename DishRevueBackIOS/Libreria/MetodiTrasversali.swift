@@ -106,13 +106,23 @@ func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> 
     
     if areAllergeniOk {
         
-        if nuovoIngrediente.allergeni.isEmpty {
+        if let allergens = nuovoIngrediente.allergeni,
+           !allergens.isEmpty {
+         
+            let count = allergens.count
+            stringaAllergeni = "Questo prodotto contiene \(count > 1 ? "\(count) Allergeni" : "1 Allergene")."
+            
+        } else {
+            stringaAllergeni = "Questo prodotto è privo di Allergeni."
+        }
+        
+      /*  if nuovoIngrediente.allergeni.isEmpty {
             stringaAllergeni = "Questo prodotto è privo di Allergeni."
         } else {
 
             let count = nuovoIngrediente.allergeni.count
             stringaAllergeni = "Questo prodotto contiene \(count > 1 ? "\(count) Allergeni" : "1 Allergene")."
-        }
+        } */
     }
     
     if nuovoIngrediente.conservazione != .defaultValue {
@@ -129,7 +139,7 @@ func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> 
 }
 
 /// ritorna il valore della media Pesata di un array di Recensioni
-func csCalcoloMediaRecensioni(elementi:[DishRatingModel]) -> Double {
+/*func csCalcoloMediaRecensioni(elementi:[DishRatingModel]) -> Double {
     
     let votiEPesi = elementi.map({$0.votoEPeso()})
        
@@ -145,7 +155,7 @@ func csCalcoloMediaRecensioni(elementi:[DishRatingModel]) -> Double {
         
         return sommaVoti / sommaPesi
 
-} // 13.01.23 Ricollocata in MyFoodiePackage
+}*/ // 13.01.23 Ricollocata in MyFoodiePackage
 
 /// somma dei valori di una collection di valori Double
 func csSommaValoriCollection(collectionValue:[Double]) -> Double {

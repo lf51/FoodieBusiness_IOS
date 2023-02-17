@@ -591,12 +591,14 @@ struct SpesaRowIngredientView: View {
     
     private func coloreAssociato(ingredient:IngredientModel) -> Color {
      
+        let allergens = ingredient.allergeni ?? []
+        
      if ingredient.origine == .vegetale { return .green}
      else if
-             ingredient.allergeni.contains(.molluschi) ||
-             ingredient.allergeni.contains(.crostacei) ||
-             ingredient.allergeni.contains(.pesce) { return .indigo }
-     else if ingredient.allergeni.contains(.latte_e_derivati) { return .white }
+             allergens.contains(.molluschi) ||
+             allergens.contains(.crostacei) ||
+             allergens.contains(.pesce) { return .indigo }
+     else if allergens.contains(.latte_e_derivati) { return .white }
      else { return .pink }
          
      }

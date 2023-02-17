@@ -346,47 +346,47 @@ var ingredientSample7_Test =  IngredientModel(
     status: .bozza(.inPausa)
 )
 
-var rate1 = DishRatingModel( voto: "8.0", titolo: "bello", commento: "casacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasa", idPiatto: "lailo4")
-var rate2 = DishRatingModel(voto: "8.0", titolo: "bello", commento: "casacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasa", idPiatto: "lailo4")
-var rate3 = DishRatingModel( voto: "8.0", titolo: "bello", commento: "casacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasacasa", idPiatto: "lailo4")
+var rate1 = DishRatingModel( idPiatto: "lailo4")
+var rate2 = DishRatingModel(idPiatto: "lailo4")
+var rate3 = DishRatingModel(idPiatto: "lailo4")
 
-var rate4 = DishRatingModel(voto: "8.0", titolo: "Amazing", commento: "I saw the sea from the terrace and feel it in this amazing dish, with a true salty taste!! To eat again again again again for ever!!! I would like to be there again next summer hoping to find Marco and Graziella, two amazing host!! They provide us all kind of amenities, helping with baby food, gluten free, no Milk. No other place in Sicily gave to us such amazing help!!", idPiatto: "lailo4")
+var rate4 = DishRatingModel(idPiatto: "lailo4")
 
-var rate5 = DishRatingModel(voto: "8.0", titolo: "Sapore di Niente", commento: "NoComment", idPiatto: "lailo4")
-var rate6 = DishRatingModel(voto: "8.0",titolo: "", commento: "", idPiatto: "lailo4")
-var rate7 = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo4")
+var rate5 = DishRatingModel(idPiatto: "lailo4")
+var rate6 = DishRatingModel(idPiatto: "lailo4")
+var rate7 = DishRatingModel(idPiatto: "lailo4")
 
 
 
 var rate8 = {
     
-    var rate = DishRatingModel(voto: "10.0", titolo: "", commento: "", idPiatto: "lailo5")
+    var rate = DishRatingModel( idPiatto: "lailo5")
   //  rate.dataRilascio = oldDate
     return rate
 } ()
 
 var rate9 = {
     
-    var rate = DishRatingModel(voto: "10.0", titolo: "", commento: "", idPiatto: "lailo5")
+    var rate = DishRatingModel( idPiatto: "lailo5")
    // rate.dataRilascio = otherDate
     return rate
 } ()
 
 var rate10 = {
     
-    var rate = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo5")
+    var rate = DishRatingModel( idPiatto: "lailo5")
    // rate.dataRilascio = otherDate1
     return rate
 } ()
 
 var rate11 = {
     
-    var rate = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo5")
+    var rate = DishRatingModel( idPiatto: "lailo5")
     //rate.dataRilascio = otherDate2
     return rate
 } ()
 
-var rate12 = DishRatingModel(voto: "8.0", titolo: "", commento: "", idPiatto: "lailo5")
+var rate12 = DishRatingModel( idPiatto: "lailo5")
 
 let rifDish3 = dishItem3_Test.id
 let rifDish4 = dishItem4_Test.id

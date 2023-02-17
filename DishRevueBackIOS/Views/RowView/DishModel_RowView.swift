@@ -537,7 +537,7 @@ struct DishModel_RowView: View {
             for format in self.item.pricingPiatto {
                 
                 if format.type == .mandatory {
-                    mandatoryPrice = format.price
+                    mandatoryPrice = format.price ?? "0.00"
                     break
                 }
                
@@ -663,7 +663,12 @@ struct DishModel_RowView: View {
         let allTemporaryOff = self.item.elencoIngredientiOff
         
         let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient.id)
-        let hasAllergene = !ingredient.allergeni.isEmpty
+       // let hasAllergene = !ingredient.allergeni.isEmpty
+        let hasAllergene:Bool = {
+            if let allergens = ingredient.allergeni {
+                return !allergens.isEmpty
+            } else { return false }
+        }()
         let isItBio = ingredient.produzione == .biologico
         // Modifiche 30.08
         

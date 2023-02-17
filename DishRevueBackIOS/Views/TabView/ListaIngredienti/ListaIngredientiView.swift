@@ -31,7 +31,8 @@ struct ListaIngredientiView: View {
         NavigationStack(path:$viewModel.ingredientListPath) {
             
             let container = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
-           
+            let generalDisable = container.isEmpty
+            
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
                 title: "I Miei Ingredienti",
@@ -40,15 +41,17 @@ struct ListaIngredientiView: View {
                 altezzaPopOverSorter: 300,
                 buttonColor: .seaTurtle_3,
                 elementContainer: container,
-                mapTree: mapTree) {
+                mapTree: mapTree,
+                generalDisable: generalDisable,
+                mapButtonAction: {
                     self.thirdButtonAction()
-                } trailingView: {
+                }, trailingView: {
                     vbTrailing()
-                } filterView: {
+                }, filterView: {
                     vbFilterView(container: container)
-                } sorterView: {
+                }, sorterView: {
                     vbSorterView()
-                } elementView: { ingredient in
+                }, elementView: { ingredient in
                     
                     let navigationPath = \AccounterVM.ingredientListPath
                     
@@ -71,7 +74,7 @@ struct ListaIngredientiView: View {
                         mapTree: mapTree,
                         navigationPath: \.ingredientListPath) */
                     
-                }
+                })
 
             
             
@@ -225,7 +228,13 @@ struct ListaIngredientiView: View {
             selectionColor: Color.red.opacity(0.7),
             imageOrEmoji: "allergens",
             label: "Allergeni Contenuti") { value in
-                container.filter({$0.allergeni.contains(value)}).count
+               // container.filter({$0.allergeni.contains(value)}).count
+                container.filter({
+                    
+                    if let allergens = $0.allergeni {
+                        return allergens.contains(value)
+                    } else { return false }
+                }).count
             }
         
     }

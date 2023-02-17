@@ -71,7 +71,7 @@ struct NewDishIbridView: View {
        
             VStack {
 
-                    ScrollView { // La View Mobile
+                ScrollView(showsIndicators:false) { // La View Mobile
 
                         VStack(alignment:.leading) {
                                 
@@ -109,8 +109,15 @@ struct NewDishIbridView: View {
  
                             DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
  
+                            
+                            
+                            /* 10.02.23 silenziata per upgrade
+                            
                             DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
  
+                            */
+                            
+                            
                          //   Spacer()
                             
                           /* BottomViewGeneric_NewModelSubView(
@@ -143,14 +150,14 @@ struct NewDishIbridView: View {
                                 }
                             
                         }
-                    .padding(.horizontal)
+                  //  .padding(.horizontal)
      
                     }
-                    .zIndex(0)
-                    .opacity(wannaAddAllergeni ? 0.6 : 1.0)
-                    .disabled(wannaAddAllergeni)
+                   // .zIndex(0)
+                //    .opacity(wannaAddAllergeni ? 0.6 : 1.0)
+                  //  .disabled(wannaAddAllergeni)
     
-                if wannaAddAllergeni {
+              /* if wannaAddAllergeni {
            
                     SelettoreMyModel<_,AllergeniIngrediente>(
                         itemModel: $ingredienteDiSistema,
@@ -163,7 +170,7 @@ struct NewDishIbridView: View {
                                         }
                         }
                     
-                }
+                }*/
                 
      
 
@@ -180,6 +187,13 @@ struct NewDishIbridView: View {
                 
                 
            }
+            .padding(.horizontal,10)
+            .popover(isPresented: $wannaAddAllergeni) {
+                VistaAllergeni_Selectable(
+                    allergeneIn: $ingredienteDiSistema.allergeni,
+                    backgroundColor: backgroundColorView)
+                    .presentationDetents([.height(500)])
+            }
       
        // } // end ZStack Esterno
     }

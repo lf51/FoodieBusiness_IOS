@@ -7,7 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
-
+/*
 struct MENU_TEST: View {
     
     @StateObject var viewModel: AccounterVM = AccounterVM()
@@ -127,7 +127,7 @@ struct TestRow:View {
     }
     
     
-}
+} */
 
 /*
 HStack {

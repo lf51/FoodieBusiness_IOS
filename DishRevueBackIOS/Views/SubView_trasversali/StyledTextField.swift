@@ -339,7 +339,14 @@ struct CSTextField_6: View {
     let conformeA: ConformitàTextField
     let action: () -> Void
     
-    init(textFieldItem:Binding<String>,placeHolder:String,image:String,showDelete:Bool = false, keyboardType: UIKeyboardType = .default, conformeA:ConformitàTextField, action: @escaping () -> Void ) {
+    init(
+        textFieldItem:Binding<String>,
+        placeHolder:String,
+        image:String,
+        showDelete:Bool = false,
+        keyboardType: UIKeyboardType = .default,
+        conformeA:ConformitàTextField,
+        action: @escaping () -> Void ) {
         
         _textFieldItem = textFieldItem
         self.placeHolder = placeHolder
@@ -353,11 +360,17 @@ struct CSTextField_6: View {
     
     var body: some View {
         
-        CSTextField_4b(textFieldItem: $textFieldItem, placeHolder: placeHolder, showDelete: showDelete, keyboardType: keyboardType) {
+        CSTextField_4b(
+            textFieldItem: $textFieldItem,
+            placeHolder: placeHolder,
+            showDelete: showDelete,
+            keyboardType: keyboardType) {
             csVisualCheck(
                 testo: self.textFieldItem,
                 staticImage: self.image,
+                editingImage: self.image,
                 conformeA: conformeA)
+            .padding(.leading,5)
             
         }
             .onSubmit(self.action)
@@ -371,6 +384,7 @@ struct CSTextField_6: View {
                         csHideKeyboard()
                         self.action() }
                 }
+                
             }
     } // Chiusa Body
     

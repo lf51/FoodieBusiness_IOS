@@ -50,6 +50,7 @@ struct DishListView: View {
             }*/
             
             let container = self.viewModel.ricercaFiltra(containerPath: \.allMyDish, coreFilter: filterCore)
+            let generalDisable = container.isEmpty
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
@@ -59,7 +60,8 @@ struct DishListView: View {
                 buttonColor: .seaTurtle_3,
                 elementContainer: container,
                 mapTree: mapTree,
-                thirdButtonAction: {
+                generalDisable: generalDisable,
+                mapButtonAction: {
                     self.thirdButtonAction()
                 },
                 trailingView: {

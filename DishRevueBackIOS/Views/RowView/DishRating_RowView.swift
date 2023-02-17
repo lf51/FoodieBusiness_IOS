@@ -9,6 +9,8 @@ import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
 // 13.01  Verrà spostata nel MyFoodiepackage dall'upgrade in lavorazione nella foodieClient
+
+/*
 struct DishRating_RowView: View {
     
     let rating: DishRatingModel
@@ -110,3 +112,6 @@ struct DishRating_RowView_Previews: PreviewProvider {
         }
     }
 }
+
+
+ */ //08.02.23 Sostituita da un update nel MyFoodiePackage

@@ -42,7 +42,7 @@ struct CSMenuAllergeni_MultiSelection: View {
     
     private func buttonAction(allergene: AllergeniIngrediente) {
         
-        if self.ingredient.allergeni.contains(allergene) {
+       /* if self.ingredient.allergeni.contains(allergene) {
             
             let index = self.ingredient.allergeni.firstIndex(of: allergene)
             self.ingredient.allergeni.remove(at: index!)
@@ -50,14 +50,57 @@ struct CSMenuAllergeni_MultiSelection: View {
         } else {
             
             self.ingredient.allergeni.append(allergene)
+        } */
+        
+        // 09.02.23
+        
+      /*  if let allergens = self.ingredient.allergeni {
+            
+            if allergens.contains(allergene) {
+                
+                let index = allergens.firstIndex(of: allergene)
+                self.ingredient.allergeni!.remove(at: index!)
+                
+            } else {
+                self.ingredient.allergeni!.append(allergene)
+            }
+
+        } else {
+            
+            self.ingredient.allergeni = [allergene]
+            
+        } */
+        
+        //
+        
+        var allergens = self.ingredient.allergeni ?? []
+        
+        if let index = allergens.firstIndex(of: allergene) {
+            
+            allergens.remove(at: index)
+            
+        } else {
+            
+            allergens.append(allergene)
         }
         
-        
+        self.ingredient.allergeni = allergens.isEmpty ? nil : allergens
+
     }
         
    @ViewBuilder private func buttonLabel(allergene: AllergeniIngrediente) -> some View {
         
-        if self.ingredient.allergeni.contains(allergene) {
+       /* if self.ingredient.allergeni.contains(allergene) {
+            
+            HStack {
+                Text(allergene.simpleDescription())
+                Image(systemName: "checkmark")
+            }
+      
+        } else { Text(allergene.simpleDescription()) } */
+       
+       if let allergens = self.ingredient.allergeni,
+          allergens.contains(allergene){
             
             HStack {
                 Text(allergene.simpleDescription())

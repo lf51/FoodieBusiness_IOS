@@ -112,10 +112,14 @@ struct CurrentModelListView<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View
             
             else if let destinationCollection = self.itemModel[keyPath:keypath] as? [String] {
                 
-                let modelCollection = self.viewModel.modelCollectionFromCollectionID(collectionId: destinationCollection, modelPath: model.basicModelInfoInstanceAccess().vmPathContainer)
+              /*  let modelCollection = self.viewModel.modelCollectionFromCollectionID(
+                    collectionId: destinationCollection,
+                    modelPath: model.basicModelInfoInstanceAccess().vmPathContainer)
                 
-                destinationContainer[title] = (modelCollection,containerColor)
-              
+             
+                
+                destinationContainer[title] = (modelCollection,containerColor) */
+              // 08.02.23 Chiuso per silenziare un errore nel keypath: (il medtodo vuole un percorso nella superClasse, e il percorso gli è dato da una generica che usa un typealias conforme alla superClasse. Il problema nasce perchè ad esempio gli allergeni non sono in superClasse (e non avrebbero motivo di starci, e se tutto ciò è un problema per il selettore e basta apporteremo delle modifiche a questo in quanto lo usiamo ormai soltanto per gli allergeni)) 
             }
             
             

@@ -905,7 +905,9 @@ struct CSZStackVB_Framed<Content:View>:View {
     }
 } */ // Deprecata 24.08
 /// Ritorna uno scroll orizzontale degli Allergeni utile per le rowView del Dish e dell'ingredient
-@ViewBuilder func vbAllergeneScrollRowView(listaAllergeni:[AllergeniIngrediente]) -> some View {
+@ViewBuilder func vbAllergeneScrollRowView(listaAllergeni:[AllergeniIngrediente]?) -> some View {
+    
+    let allergens = listaAllergeni ?? []
     
     HStack(spacing: 4.0) {
         
@@ -917,9 +919,9 @@ struct CSZStackVB_Framed<Content:View>:View {
             
             HStack(spacing: 2.0) {
                 
-                if !listaAllergeni.isEmpty {
+                if !allergens.isEmpty {
                     
-                    let listaA:[String] = estrapolaListaAllergeni(listaAllergeni: listaAllergeni)
+                    let listaA:[String] = estrapolaListaAllergeni(listaAllergeni: allergens)
                     
                     Text(listaA,format: .list(type: .and))
                         .italic()
