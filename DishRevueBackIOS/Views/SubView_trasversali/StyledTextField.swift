@@ -137,12 +137,14 @@ struct CSTextField_3b<VisualContent:View>: View {
         
         HStack {
             
+            let condition = self.textFieldItem == ""
+            
             visualConten
                 .padding(.leading)
             
             TextField (self.placeHolder, text: $textFieldItem)
                 .padding()
-                .accentColor(Color.white)
+              //  .accentColor(Color.white)
                 
             Button(action: self.action) {
                     
@@ -150,9 +152,18 @@ struct CSTextField_3b<VisualContent:View>: View {
                         .imageScale(.large)
                         .foregroundColor(Color.white)
                         .padding(.trailing)
-                }.disabled(self.textFieldItem == "")
+                }
+            .opacity(condition ? 0.5 : 1.0)
+            .disabled(condition)
         
-        }.background(
+        }
+        .background(
+            Color.white.opacity(0.05)
+                
+        )
+        .cornerRadius(5.0)
+        
+        /*.background(
             
             RoundedRectangle(cornerRadius: 5.0)
                 .strokeBorder(Color.blue)
@@ -162,7 +173,7 @@ struct CSTextField_3b<VisualContent:View>: View {
                     
                 )
                 .shadow(radius: 3.0)
-        )
+        )*/
             .onSubmit(self.action)
             .animation(Animation.easeInOut, value: self.textFieldItem)
     }

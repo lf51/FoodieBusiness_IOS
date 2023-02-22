@@ -16,17 +16,22 @@ struct OrigineScrollView_NewIngredientSubView: View {
 
     var body: some View {
         
-        VStack(alignment:.leading) {
+        VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
             
             CSLabel_conVB(
                 placeHolder: "Origine",
                 imageNameOrEmojy: "arrow.3.trianglepath",
                 backgroundColor: Color.black) {
                     
-                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoIngrediente.origine == .defaultValue)
+                    CS_ErrorMarkView(
+                        generalErrorCheck: generalErrorCheck,
+                        localErrorCondition: self.nuovoIngrediente.origine == .defaultValue)
                 }
             
-            PropertyScrollCases(cases: OrigineIngrediente.allCases, dishSingleProperty: self.$nuovoIngrediente.origine, colorSelection: Color.indigo)
+            PropertyScrollCases(
+                cases: OrigineIngrediente.allCases,
+                dishSingleProperty: self.$nuovoIngrediente.origine,
+                colorSelection: Color.indigo)
 
         }
     }

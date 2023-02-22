@@ -39,7 +39,8 @@ struct NewProductMainView: View {
                 let disabilita = self.disabilitaSwitch()
                 //  CSDivider()
                 SwitchProductType(type:$type,nascondiTesto: disabilita)
-                    .padding(.horizontal)
+                    .csHpadding()
+                  //  .padding(.horizontal)
                     .disabled(disabilita)
                 
                 vbPercorsoProdotto()
@@ -59,9 +60,18 @@ struct NewProductMainView: View {
         switch self.type {
             
         case .prodottoFinito:
-            NewDishIbridView(newDish: newDish, percorso: type, backgroundColorView: backgroundColorView, destinationPath: destinationPath, observedVM: viewModel)
+            NewDishIbridView(
+                newDish: newDish,
+                percorso: type,
+                backgroundColorView: backgroundColorView,
+                destinationPath: destinationPath,
+                observedVM: viewModel)
         default:
-            NewDishMainView(newDish: newDish, percorso: type, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+            NewDishMainView(
+                newDish: newDish,
+                percorso: type,
+                backgroundColorView: backgroundColorView,
+                destinationPath: destinationPath)
             
         }
     }

@@ -42,9 +42,24 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProToolPack_L0> : View where T.VM ==
     
     var body: some View {
         
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading,spacing: .vStackLabelBodySpacing) {
             
-            CSLabel_1Button(placeHolder: placeHolderItemName, imageNameOrEmojy: imageLabel,imageColor: imageColor, backgroundColor: Color.black)
+          /*  CSLabel_1Button(
+                placeHolder: placeHolderItemName,
+                imageNameOrEmojy: imageLabel,
+                imageColor: imageColor,
+                backgroundColor: Color.black) */
+            
+            CSLabel_conVB(
+                placeHolder: placeHolderItemName,
+                imageNameOrEmojy: imageLabel,
+                imageColor: imageColor,
+                backgroundColor: .black) {
+                    CS_ErrorMarkView(
+                        generalErrorCheck: generalErrorCheck,
+                        localErrorCondition: self.itemModel.intestazione == "")
+                }
+               
         
             if self.itemModel.intestazione == "" || self.editNuovaStringa {
     
@@ -61,10 +76,10 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProToolPack_L0> : View where T.VM ==
                     },
                     action: { checkAndSubmit() }
                 )
-                .csWarningModifier(isPresented: generalErrorCheck) {
+              /*  .csWarningModifier(isPresented: generalErrorCheck) {
                     return self.itemModel.intestazione == ""
                   //  return !csCheckStringa(testo: self.nuovaStringa,minLenght: minLenght)
-                }
+                } */
         
             }
             

@@ -16,10 +16,10 @@ struct ProduzioneScrollView_NewIngredientSubView: View {
     
     var body: some View {
         
-        VStack(alignment:.leading) {
+        VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
             
             CSLabel_1Button(
-                placeHolder: "Metodo di Produzione (Optional)",
+                placeHolder: "Produzione di qualità (Optional)",
                 imageNameOrEmojy: "gearshape.2.fill",
                 backgroundColor: Color.black)
             

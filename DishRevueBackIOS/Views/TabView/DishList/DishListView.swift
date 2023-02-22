@@ -28,27 +28,6 @@ struct DishListView: View {
         
         NavigationStack(path:$viewModel.dishListPath) {
             
-          /*  CSZStackVB(title: "I Miei Prodotti", backgroundColorView: backgroundColorView) {
-
-                let container = self.viewModel.filtraERicerca(containerPath: \.allMyDish, filterProperty: filterProperty) // Vedi Nota 08.11
- 
-                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container,
-                                  mapObject: mapObject,
-                                  navigationPath: \.dishListPath, placeHolder: "Cerca per Prodotto e/o Ingrediente..")
-                    .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
-                          vbLocalFilterPop(containerFiltered: container)
-                              .presentationDetents([.height(600)])
-
-                    
-                      }
-                    .popover(isPresented: $openSort, attachmentAnchor: .point(.top)) {
-                          vbLocalSorterPop()
-                              .presentationDetents([.height(400)])
- 
-                      }
-
-            }*/
-            
             let container = self.viewModel.ricercaFiltra(containerPath: \.allMyDish, coreFilter: filterCore)
             let generalDisable = container.isEmpty
             
@@ -76,18 +55,19 @@ struct DishListView: View {
                 elementView: { dish in
                     
                     let navigationPath = \AccounterVM.dishListPath
+
+                        GenericItemModel_RowViewMask(model: dish) {
                     
-                    GenericItemModel_RowViewMask(model: dish) {
-                        
-                        dish.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
+                            dish.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
+                                
+                                vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
                             
-                            vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
-                        
-                            vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
-                        
-                            vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
-                       
-                    }
+                                vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
+                            
+                                vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
+                           
+                        }
+              
                     
                     
                     
@@ -101,6 +81,7 @@ struct DishListView: View {
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
                 destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .dishList, readOnlyViewModel: viewModel)
             })
+            
      
            /* .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

@@ -19,10 +19,6 @@ struct NuovaCategoriaMenu: View {
     @State private var nuovaCategoria: CategoriaMenu
     @State private var categoriaArchiviata: CategoriaMenu
     
-   // @State private var nomeCategoria: String = ""
-  //  @State private var image: String = "🍽"
-  //  @State private var positionOrder: Int = 0
-    
     init(backgroundColorView: Color) {
        
         let categoriaVuota = CategoriaMenu()
@@ -37,108 +33,106 @@ struct NuovaCategoriaMenu: View {
         
         CSZStackVB(title: "Categorie dei Menu", backgroundColorView: backgroundColorView) {
             
-            VStack(alignment:.leading) {
+            VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
                 
-                CSLabel_1Button(placeHolder: "Crea Nuova Categoria", imageNameOrEmojy: "🍽", backgroundColor: Color("SeaTurtlePalette_3"), toggleBottone: $creaNuovaCategoria)
-                
-                if creaNuovaCategoria! {
+                VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
                     
-                    CorpoNuovaCategoria(
-                        nuovaCategoria: $nuovaCategoria,
-                        categoriaArchiviata: categoriaArchiviata) {
-                            self.aggiungiButton()
-                        }
+                    CSLabel_1Button(placeHolder: "Crea Nuova Categoria", imageNameOrEmojy: "🍽", backgroundColor: Color("SeaTurtlePalette_3"), toggleBottone: $creaNuovaCategoria)
                     
-                  /*  CorpoNuovaCategoria(
-                        nomeCategoria: $nomeCategoria,
-                        image: $image) {
-                            self.creaCategoria()
-                        } */
-               
+                    if creaNuovaCategoria! {
+                        
+                        CorpoNuovaCategoria(
+                            nuovaCategoria: $nuovaCategoria,
+                            categoriaArchiviata: categoriaArchiviata) {
+                                self.aggiungiButton()
+                            }
+
+                    }
                 }
                 
-              /*  Text("Al pubblico saranno visibili solo le categorie che contengono dei piatti; qui è possibile eliminare quelle superflue e stabilire l'ordine di visualizzazione.")
-                    .fontWeight(.light)
-                    .font(.system(.caption, design: .rounded)) */ // mod.16.09
-                
-                CSLabel_conVB(
-                    placeHolder: "Elenco Categorie (\(self.viewModel.allMyCategories.count)):",
-                    imageNameOrEmojy: "list.bullet.circle",
-                    backgroundColor: Color("SeaTurtlePalette_3")) {
-                       
-                       HStack {
+                VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
+                    
+                    CSLabel_conVB(
+                        placeHolder: "Elenco Categorie (\(self.viewModel.allMyCategories.count)):",
+                        imageNameOrEmojy: "list.bullet.circle",
+                        backgroundColor: Color("SeaTurtlePalette_3")) {
                            
-                           CSInfoAlertView(
-                            imageScale: .large,
-                            title: "Elenco Categorie",
-                            message: .elencoCategorieMenu)
-                           
-                            Spacer()
-                            CSButton_tight(
-                                title: self.mode?.wrappedValue.isEditing ?? false ? "Chiudi" : "Ordina",
-                                fontWeight: .semibold,
-                                titleColor: Color("SeaTurtlePalette_4"),
-                                fillColor: Color("SeaTurtlePalette_2")) {
-                                    
-                                    withAnimation {
-                                        if self.mode?.wrappedValue.isEditing == true {
-                                            self.mode?.wrappedValue = .inactive
-                                            
-                                        } else { self.mode?.wrappedValue = .active}
-                                    }
-                                    
-                                }
-                        }
-                    }
-
-                    List {
-      
-                            ForEach(viewModel.allMyCategories) { categoria in
-                                
-                                let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
-                                
-                                HStack {
-                                    //  Text("\(categoria.listPositionOrder)")
-                                    
-                                    csVbSwitchImageText(string: categoria.image)
-                                    Text(categoria.intestazione)
-                                        .fontWeight(.semibold)
-                                        .font(.system(.body, design: .rounded))
-                                        .foregroundColor(Color("SeaTurtlePalette_4"))
-                                    
-                                    if self.mode?.wrappedValue == .inactive {
-                                        Button {
-                                            
-                                          pencilButton(categoria: categoria)
-                                            
-                                        } label: {
-                                            Image(systemName: "pencil")
-                                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                           HStack {
+                               
+                               CSInfoAlertView(
+                                imageScale: .large,
+                                title: "Elenco Categorie",
+                                message: .elencoCategorieMenu)
+                               
+                                Spacer()
+                                CSButton_tight(
+                                    title: self.mode?.wrappedValue.isEditing ?? false ? "Chiudi" : "Ordina",
+                                    fontWeight: .semibold,
+                                    titleColor: Color("SeaTurtlePalette_4"),
+                                    fillColor: Color("SeaTurtlePalette_2")) {
+                                        
+                                        withAnimation {
+                                            if self.mode?.wrappedValue.isEditing == true {
+                                                self.mode?.wrappedValue = .inactive
+                                                
+                                            } else { self.mode?.wrappedValue = .active}
                                         }
+                                        
+                                    }
+                            }
+                        }
 
+                        List {
+          
+                                ForEach(viewModel.allMyCategories) { categoria in
+                                    
+                                    let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
+                                    
+                                    HStack {
+                        
+                                        csVbSwitchImageText(string: categoria.image)
+                                            .font(.body)
+                                        
+                                        Text(categoria.intestazione)
+                                            .fontWeight(.semibold)
+                                            .font(.system(.body, design: .rounded))
+                                            .foregroundColor(.seaTurtle_4)
+                                        
+                                        if self.mode?.wrappedValue == .inactive {
+                                            Button {
+                                                
+                                              pencilButton(categoria: categoria)
+                                                
+                                            } label: {
+                                                Image(systemName: "pencil")
+                                                    .foregroundColor(.seaTurtle_3)
+                                            }
+
+                                        }
+                                        
+                                        Spacer()
+                                        Text("\(dishCount) 🍽️")
+                                            .foregroundColor(.seaTurtle_4)
+                                        
                                     }
                                     
-                                    Spacer()
-                                    Text("\(dishCount) 🍽️")
-                                        .foregroundColor(Color("SeaTurtlePalette_4"))
-                                    
                                 }
-                                
-                            }
-                            .onDelete(perform: removeFromList)
-                            .onMove(perform: makeOrder)
-                            .listRowBackground(backgroundColorView)
-                        
-                    }
-                    .clipShape(RoundedRectangle(cornerRadius: 10.0))
-                  //  .scaledToFit() 
-                    .listStyle(.plain)
+                                .onDelete(perform: removeFromList)
+                                .onMove(perform: makeOrder)
+                                .listRowBackground(backgroundColorView)
+                            
+                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 10.0))
+                      //  .scaledToFit()
+                        .listStyle(.plain)
+                }
                     
 
                Spacer()
             
             }
-            .padding(.horizontal)
+            .csHpadding()
+           // .padding(.horizontal)
         }
 
     }
@@ -228,10 +222,10 @@ struct CorpoNuovaCategoria:View {
     @Binding var nuovaCategoria: CategoriaMenu
     let categoriaArchiviata: CategoriaMenu
 
-   // @Binding var nomeCategoria: String
-   // @Binding var image: String
-    
     let creAction: () -> Void
+    
+    // 17.02.23 Focus State
+    @FocusState private var modelField:ModelField?
     
     var body: some View {
         
@@ -242,26 +236,16 @@ struct CorpoNuovaCategoria:View {
             else { return (false,1.0)}
         }() // vedi NotaVocale 14.09
         
-      /*  Picker(selection: $image) {
-            ForEach(csReturnEmojyCollection(), id:\.self) { emojy in
-                
-                Text(emojy)
-                
-                
-            }
-        } label: {
-            Text("")
-        }.pickerStyle(WheelPickerStyle()) */
-        
         VStack {
             
             ScrollView(.horizontal,showsIndicators: false) {
                 
-                HStack(spacing:10) {
+                HStack(spacing:15) {
                     
                     ForEach(csReturnEmojyCollection(),id:\.self) { emojy in
                         
                         Text(emojy)
+                            .font(.title)
                             .onTapGesture {
                                // self.image = emojy
                                 self.nuovaCategoria.image = emojy
@@ -270,37 +254,20 @@ struct CorpoNuovaCategoria:View {
                     }
                 }
                 
-            }.padding(.vertical)
-            
-         /*   Grid(alignment:.center) {
-                
-               // let emojySubArray = [["a","b"],["c","f"]]
-                let emojySubArray = disponiRowEmojy()
-                
-                ForEach(emojySubArray,id:\.self) { subArray in
-
-                    GridRow {
-                        Text("\(subArray.count)")
-                        ForEach(subArray,id:\.self) { emojy in
-                            csVbSwitchImageText(string: emojy)
-                            }
-                   
-                        }
-                    }
-                } */
-            
+            }.padding(.vertical,5)
+                        
             HStack {
-                
-               
-                
+
                 CSTextField_4b(
                     textFieldItem: $nuovaCategoria.intestazione,
                     placeHolder: "Associa un Nome..",
                     showDelete: true) {
                         csVbSwitchImageText(string: self.nuovaCategoria.image, size: .large)
+                            .padding(.leading,10)
                     }
                 
                 Spacer()
+                
                 CSButton_tight(
                     title: "Aggiungi",
                     fontWeight: .semibold,
@@ -312,17 +279,16 @@ struct CorpoNuovaCategoria:View {
                     }
                     .opacity(value.opacity)
                     .disabled(value.isDisabled)
-                  //  .opacity(self.nuovaCategoria.intestazione == "" ? 0.6 : 1.0)
-                  //  .disabled(self.nuovaCategoria.intestazione == "")
-                
-                
+   
             }
             
             BoxDescriptionModel_Generic(
                 itemModel: $nuovaCategoria,
                 labelString: "Descrizione (Optional)",
                 disabledCondition: false,
-                backgroundColor: Color("SeaTurtlePalette_3"))
+                backgroundColor: .seaTurtle_3,
+                modelField: $modelField)
+            .focused($modelField, equals: .descrizione)
             
         }
     

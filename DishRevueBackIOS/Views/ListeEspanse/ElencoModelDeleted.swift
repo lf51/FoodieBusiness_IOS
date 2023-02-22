@@ -77,7 +77,8 @@ struct ElencoModelDeleted: View {
                     }
                 }
             }
-            .padding(.horizontal)
+            .csHpadding()
+           // .padding(.horizontal)
         }
     }
     

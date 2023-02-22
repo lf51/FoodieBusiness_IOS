@@ -9,8 +9,25 @@ import SwiftUI
 import UIKit
 import MyFoodiePackage
 
- public enum DestinationPathView: Hashable {
+/*
+/// Struct di servizio per incapsulare una label string con una azione
+public struct WrapLabelAction:Hashable {
     
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.label)
+    }
+    
+    public static func == (lhs: WrapLabelAction, rhs: WrapLabelAction) -> Bool {
+        lhs.label == rhs.label &&
+        lhs.action() == rhs.action()
+    }
+
+    let label:String
+    let action:() -> Void
+}
+*/
+public enum DestinationPathView: Hashable {
+ 
     case accountSetup(_ :AuthPasswordLess)
     case propertyList
     case property(_ :PropertyModel)
@@ -33,9 +50,12 @@ import MyFoodiePackage
     
     case listaDellaSpesa
     
-    case listaGenericaMenu(_containerRif:[String], _label:String)
+    case listaGenericaMenu(_containerRif:[String],_label:String)
     case listaGenericaIng(_containerRif:[String], _label:String)
     case listaGenericaDish(_containerRif:[String], _label:String)
+    
+    case listaMenuPerAnteprima(_containerRif:[String],_label:String)
+    case anteprimaPiattiMenu(containerMod:[DishModel],label:String)
     
     case elencoModelDeleted
     
@@ -98,11 +118,32 @@ import MyFoodiePackage
             ListaDellaSpesa_MainView(inventarioIngredienti: inventario, backgroundColorView: backgroundColorView)
 
         case .listaGenericaMenu(let container,let label):
-            VistaEspansaGenerica(container: container, containerPath: \.allMyMenu, label:label, backgroundColorView: backgroundColorView)
+            VistaEspansaGenerica(
+                container: container,
+                containerPath: \.allMyMenu,
+                label:label,
+                backgroundColorView: backgroundColorView)
         case .listaGenericaIng(let container,let label):
             VistaEspansaGenerica(container:container,containerPath: \.allMyIngredients, label:label, backgroundColorView: backgroundColorView)
         case .listaGenericaDish(let container,let label):
             VistaEspansaGenerica(container: container,containerPath: \.allMyDish, label:label, backgroundColorView: backgroundColorView)
+            
+        case .listaMenuPerAnteprima(let container,let label):
+            VistaEspansaMenuPerAnteprima(
+                viewModel:readOnlyViewModel,
+                container: container,
+                containerPath: \.allMyMenu,
+                label: label,
+                destinationPath: destinationPath,
+                backgroundColorView: backgroundColorView)
+            
+        case .anteprimaPiattiMenu(let container,let label):
+            AnteprimaPiattiMenu(
+                container: container,
+                containerPath: \.allMyDish,
+                label: label,
+                destinationPath: destinationPath,
+                backgroundColorView: backgroundColorView)
             
         case .elencoModelDeleted:
             ElencoModelDeleted(backgroundColorView: backgroundColorView)

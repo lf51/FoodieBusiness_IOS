@@ -45,6 +45,13 @@ extension View {
         
         self.modifier(CS_RemoteModelChange(rifModel: rifModel))
     }
+    
+    /// Padding orizzontale da 10 punti
+    func csHpadding() -> some View {
+        
+        self.modifier(CustomHpadding())
+        
+    }
 
     
 }
@@ -59,4 +66,9 @@ extension UICollectionReusableView {
 }
 #endif
 
-
+extension CGFloat {
+    
+    static let vStackLabelBodySpacing:CGFloat = 5
+    static let vStackBoxSpacing:CGFloat = 10
+    
+}

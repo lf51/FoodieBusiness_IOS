@@ -10,7 +10,6 @@ import MyFoodiePackage
 
 struct NewDishIbridView: View {
 
-   // @EnvironmentObject var viewModel: AccounterVM
     @Environment(\.openURL) private var openURL
     
     @ObservedObject var viewModel:AccounterVM
@@ -25,14 +24,16 @@ struct NewDishIbridView: View {
     
     @State private var generalErrorCheck: Bool = false
     
-  //  @State private var noIngredientsNeeded: Bool = false //
-  //  @State private var wannaAddIngredient: Bool = false //
-    
     @State private var areAllergeniOk: Bool = false
     @State private var wannaAddAllergeni: Bool = false
-  //  @State private var confermaDiete: Bool
-    
-    init(newDish: DishModel,percorso:DishModel.PercorsoProdotto, backgroundColorView: Color, destinationPath:DestinationPath, observedVM:AccounterVM) {
+    @State private var uploadDishFormat:Bool = false
+
+    init(
+        newDish: DishModel,
+        percorso:DishModel.PercorsoProdotto,
+        backgroundColorView: Color,
+        destinationPath:DestinationPath,
+        observedVM:AccounterVM) {
 
         self.viewModel = observedVM
         
@@ -44,7 +45,7 @@ struct NewDishIbridView: View {
             let newD: DishModel = {
                 var new = newDish
                 new.ingredientiPrincipali = [newDish.id]
-                new.pricingPiatto = [DishFormat(type: .mandatory)]
+               // new.pricingPiatto = [DishFormat(type: .mandatory)]
                 new.percorsoProdotto = percorso
                 return new
             }()
@@ -67,21 +68,30 @@ struct NewDishIbridView: View {
 
     }
     
+    // 17.02.23 Focus State
+    @FocusState private var modelField:ModelField?
+    
     var body: some View {
        
             VStack {
 
                 ScrollView(showsIndicators:false) { // La View Mobile
 
-                        VStack(alignment:.leading) {
+                    VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
                                 
                             IntestazioneNuovoOggetto_Generic(
                                     itemModel: $newDish,
                                     generalErrorCheck: generalErrorCheck,
                                     minLenght: 3,
                                     coloreContainer: Color("SeaTurtlePalette_2"))
+                            .focused($modelField, equals: .intestazione)
  
-                            BoxDescriptionModel_Generic(itemModel: $newDish, labelString: "Descrizione (Optional)", disabledCondition: wannaAddAllergeni)
+                            BoxDescriptionModel_Generic(
+                                itemModel: $newDish,
+                                labelString: "Descrizione (Optional)",
+                                disabledCondition: wannaAddAllergeni,
+                                modelField: $modelField)
+                            .focused($modelField, equals: .descrizione)
                             
                             CategoriaScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
                             
@@ -108,15 +118,13 @@ struct NewDishIbridView: View {
              
  
                             DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
- 
-                            
-                            
-                            /* 10.02.23 silenziata per upgrade
-                            
-                            DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)
- 
-                            */
-                            
+
+                           /* DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)*/
+
+                            DishSpecific_NewDishSubView(
+                                allDishFormats: $newDish.pricingPiatto,
+                                openUploadFormat: $uploadDishFormat,
+                                generalErrorCheck: generalErrorCheck)
                             
                          //   Spacer()
                             
@@ -183,11 +191,12 @@ struct NewDishIbridView: View {
                 .font(.caption2)
                 .foregroundColor(Color.black)
                 .opacity(0.6)
-                .padding(.horizontal)
+                //.padding(.horizontal)
                 
                 
            }
-            .padding(.horizontal,10)
+            .csHpadding()
+            //.padding(.horizontal,10)
             .popover(isPresented: $wannaAddAllergeni) {
                 VistaAllergeni_Selectable(
                     allergeneIn: $ingredienteDiSistema.allergeni,
@@ -252,7 +261,9 @@ struct NewDishIbridView: View {
    
     private func checkPreliminare() -> Bool { //Ok
         
-        guard checkIntestazione() else { return false }
+        guard checkIntestazione() else {
+            self.modelField = .intestazione
+            return false }
         
         guard checkCategoria() else { return false }
       

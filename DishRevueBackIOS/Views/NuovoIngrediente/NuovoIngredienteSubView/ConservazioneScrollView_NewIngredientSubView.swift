@@ -18,7 +18,7 @@ struct ConservazioneScrollView_NewIngredientSubView: View {
     
     var body: some View {
         
-        VStack(alignment:.leading) {
+        VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
             
             CSLabel_conVB(
                 placeHolder: "Conservazione",

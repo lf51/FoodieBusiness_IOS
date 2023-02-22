@@ -25,6 +25,7 @@ struct NewPropertyMainView: View {
     @State private var currentRegion: MKCoordinateRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
+    
     @State private var showActivityInfo:Bool = false
     
     var body: some View {

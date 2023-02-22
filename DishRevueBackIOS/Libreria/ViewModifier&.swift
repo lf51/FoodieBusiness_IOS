@@ -41,7 +41,13 @@ struct CS_RemoteModelChange:ViewModifier {
     }
 }
 
-
+struct CustomHpadding: ViewModifier {
+    
+    func body(content: Content) -> some View {
+        content
+            .padding(.horizontal,10)
+    }
+}
 
 
 

@@ -15,7 +15,6 @@ struct PannelloIngredienti_NewDishSubView: View {
     // Add 25.08
     @EnvironmentObject var viewModel: AccounterVM
     //
-    
     let newDish: DishModel
     let generalErrorCheck: Bool
     @Binding var wannaAddIngredient: Bool
@@ -23,28 +22,14 @@ struct PannelloIngredienti_NewDishSubView: View {
 
     var body: some View {
         
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading,spacing: .vStackBoxSpacing) {
 
-            VStack(alignment:.leading) {
+            VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
 
                 CSLabel_conVB(placeHolder: "Ingredienti Principali", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) {
-              
-               //     Spacer()
-                    
-                    HStack {
-                        
 
-                     //   Spacer()
-                      /*  CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty) */
-  
-                    /*   NavigationLink(value: DestinationPathView.ingrediente(IngredientModel())) {
-                            Image(systemName: "plus.circle")
-                                .imageScale(.large)
-                                .foregroundColor(Color("SeaTurtlePalette_3"))
-                        } */
-  
-                    //  Spacer()
-                        
+                    HStack {
+
                         CSButton_image(
                             frontImage: "plus.circle",
                             imageScale: .large,
@@ -57,27 +42,11 @@ struct PannelloIngredienti_NewDishSubView: View {
                         
                         CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: (newDish.ingredientiPrincipali.isEmpty && !noIngredientsNeeded))
 
-                        
-                      /*  Button {
-                            withAnimation(.default) {
-                                self.wannaAddIngredient?.toggle()
-                            }
-                        } label: {
-                            Text("Edit")
-                                .fontWeight(.semibold)
-                                .foregroundColor(Color.white)
-                        }
-                        .buttonStyle(.borderedProminent) */
                                                 
                     }
       
                 }
-                
-             /*   if !self.newDish.ingredientiPrincipali.isEmpty {
-                    
-                    SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiPrincipali, fillColor: Color.mint)
-                } */ // deprecata 17.08
-                
+ 
                 ScrollView(.horizontal, showsIndicators: false) {
                     
                     HStack {
@@ -115,28 +84,13 @@ struct PannelloIngredienti_NewDishSubView: View {
                 
             }
             
-            VStack(alignment:.leading) {
+            VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
                 
                 CSLabel_conVB(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) { CSInfoAlertView(
                     imageScale: .large,
                     title: "Info",
                     message: .ingredienteSecondario) }
-                
-               /* CSLabel_1Button(placeHolder: "Ingredienti Secondari", imageNameOrEmojy: "curlybraces", backgroundColor: Color.black) */
-                
-            //    if self.newDish.ingredientiSecondari.isEmpty {
-                    
-                /*    Text("I secondari sono ingredienti usati anche in piccole quantità nella preparazione del piatto.")
-                        .italic()
-                        .fontWeight(.light)
-                        .font(.caption)
-                        .foregroundColor(Color.black) */
 
-             //   } else {
-                    
-                  /*  SimpleModelScrollGeneric_SubView(modelToShow: self.newDish.ingredientiSecondari, fillColor: Color.yellow) */
-                    // deprecata 17.08
-                    
                     ScrollView(.horizontal, showsIndicators: false) {
                         
                         HStack {

@@ -14,11 +14,15 @@ struct VistaRecensioniEspansa: View {
     @EnvironmentObject var viewModel:AccounterVM
     let backgroundColorView:Color
     
+    @State private var frames:[CGRect] = []
+    
     var body: some View {
         
-        CSZStackVB(title: "Monitor Recensioni", backgroundColorView: backgroundColorView) {
+        CSZStackVB(
+            title: "Monitor Recensioni",
+            backgroundColorView: backgroundColorView) {
             
-            VStack(alignment:.leading) {
+                VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
                 
                 let element = mapValue().enumerated()
                 
@@ -28,25 +32,32 @@ struct VistaRecensioniEspansa: View {
                     
                     ForEach(Array(element),id:\.element) { position,element in
  
-                    RevRowLocal(mapDish: element)
-                            .padding(.bottom,5)
-                            .overlay(alignment: .topLeading) {
+                    RevRowLocal(
+                        mapDish: element,
+                        position: position,
+                        frames: $frames,
+                        coordinateSpaceName: "MainScrollReview")
+                          //  .padding(.bottom,5)
+                          /*  .overlay(alignment: .topLeading) {
                                 if position <= 2 {
                                     Text(csRatingMedalReward(position: position))
                                         .offset(x: -5)
                                 }
-                            }
+                            } */
                         
                     }
                     
                 }
+                .coordinateSpace(name: "MainScrollReview")
+                .onPreferenceChange(FramePreference.self, perform: {
+                                frames = $0.sorted(by: { $0.minY < $1.minY })
+                            })
                 
                 CSDivider()
             }
-            .padding(.horizontal)
+            .csHpadding()
+            //.padding(.horizontal)
         }
-        
-        
     }
     
     // method
@@ -73,7 +84,12 @@ struct VistaRecensioniEspansa: View {
 
 struct VistaRecensioniEspansa_Previews: PreviewProvider {
     static var previews: some View {
-        VistaRecensioniEspansa(backgroundColorView: Color("SeaTurtlePalette_1"))
+        
+        NavigationStack {
+           VistaRecensioniEspansa(backgroundColorView: .seaTurtle_1)
+        }
+        .environmentObject(testAccount)
+        
     }
 }
 
@@ -82,20 +98,30 @@ private struct RevRowLocal:View {
     @EnvironmentObject var viewModel:AccounterVM
     
     let mapDish:DishModel
+    let position:Int
     @State private var showRev:Bool? = nil
-  
     
+    @Binding var frames:[CGRect]
+    let coordinateSpaceName:String
+
     var body: some View {
         
-        VStack(alignment:.leading) {
+        VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
             
             HStack {
                 
                 DishModel_RowView(item: mapDish, rowSize: .sintetico)
-                
+                    .overlay(alignment: .topLeading) {
+                        
+                        if position <= 2 {
+                            Text(csRatingMedalReward(position: position))
+                                .offset(x: -5)
+                        }
+                    }
+                 
                 Spacer()
                 
-                HStack {
+                HStack(spacing:10) {
                     
                     CSButton_image(
                         frontImage: "pencil.and.ruler",
@@ -108,11 +134,11 @@ private struct RevRowLocal:View {
                         ._tightPadding()
                         .background(
                             Circle()
-                                .fill(Color("SeaTurtlePalette_1").opacity(0.5))
+                                .fill(Color.seaTurtle_1.opacity(0.5))
                                 .shadow(radius: 5.0)
                     )
                     
-                    Spacer()
+                 //   Spacer()
                     
                     CSButton_image(
                         frontImage: "books.vertical",
@@ -125,7 +151,7 @@ private struct RevRowLocal:View {
                         ._tightPadding()
                         .background(
                             Circle()
-                                .fill(Color("SeaTurtlePalette_2").opacity(0.5))
+                                .fill(Color.seaTurtle_2.opacity(0.5))
                                 .shadow(radius: 5.0)
                     )
                 
@@ -134,6 +160,10 @@ private struct RevRowLocal:View {
     
                 
             }
+            .sticky(frames,
+                    coordinateSpace: coordinateSpaceName,
+                    applicaBackgroundScuro: true)
+           
             
             if showRev != nil {
                 
@@ -141,26 +171,27 @@ private struct RevRowLocal:View {
                     
                     let allDishrev = reviewValue(dish: mapDish)
                     
-                    ScrollView(.horizontal,showsIndicators: false) {
+                    ScrollView(showsIndicators: false) {
                         
-                        HStack {
-                            
+                        VStack(spacing:.vStackBoxSpacing) {
                             ForEach(allDishrev) { review in
-                              /* DishRating_RowView(rating: review) */
-                                Text(review.id) +
-                                Text("Da SETTAre in RevRowLocal")
+
+                                DishRating_RowView(
+                                    rating: review,
+                                    backgroundColorView: .seaTurtle_1)
+                               
                             }
                         }
                         
                     }
-                    
+
                 } else {
                     
                     ReviewStatMonitor(singleDishRif: mapDish.rifReviews) {
                         Group {
                             Text("Statistica Recensioni")
                                   .font(.system(.headline, design: .monospaced, weight: .black))
-                                  .foregroundColor(Color("SeaTurtlePalette_2"))
+                                  .foregroundColor(.seaTurtle_2)
                             Spacer()
                         }
                     } extraContent:{ EmptyView() }
@@ -195,4 +226,123 @@ private struct RevRowLocal:View {
     
 }
 
+/*
+ struct DishRating_RowViewPlain: View {
+    
+    let rating: DishRatingModel
+    let frameWidth: CGFloat
+    let backgroundColorView:Color
+    let backgroundOpacity:CGFloat
 
+    init(
+        rating: DishRatingModel,
+        frameWidth: CGFloat = 650,
+        riduzioneMainBounds:CGFloat = 20,
+        backgroundColorView:Color,
+        backgroundOpacity:CGFloat = 0.6)
+        {
+        
+        let screenWidth: CGFloat = UIScreen.main.bounds.width - riduzioneMainBounds
+        
+        self.rating = rating
+        self.frameWidth = .minimum(frameWidth, screenWidth)
+        self.backgroundColorView = backgroundColorView
+        self.backgroundOpacity = backgroundOpacity
+      
+    }
+    
+    public var body: some View {
+        
+        VStack(alignment:.leading,spacing: 0) {
+            
+            HStack {
+                
+                Text("\(rating.voto.generale,format: .number)")
+                    .font(.system(size: frameWidth * 0.12))
+                    .fontWeight(.black)
+                    .padding(.horizontal,5)
+                    .background(
+
+                        rating.rateColor()
+                            .csCornerRadius(10, corners: [.topLeft])
+                            .opacity(0.7)
+                            
+                    )
+ 
+                Text(rating.titolo ?? "Nessun Titolo")
+                    .font(.system(size: frameWidth * 0.1,weight: .black,design: .serif))
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
+                
+                Spacer()
+                
+            }
+            .foregroundColor(.seaTurtle_4)
+            .padding(.trailing,5)
+            .background {
+               Color.seaTurtle_1
+                   //.cornerRadius(10)
+                   .csCornerRadius(10, corners: [.topRight,.topLeft])
+                   .opacity(0.4)
+           }
+           
+           .padding(.bottom,10)
+            
+            VStack(alignment:.leading,spacing:10) {
+                
+                Image(rating.rifImage ?? "TavolaIngredienti")
+                   // Temporanea
+                    .resizable()
+                    .scaledToFit()
+                    .cornerRadius(10)
+                    .background {
+                     //   Color.brown
+                    }
+                
+                Text(rating.commento ?? "Nessun Commento"  )
+                    .font(.system(size:frameWidth * 0.05, weight: .light,design: .serif))
+                    .foregroundColor(.black)
+                    .opacity(0.8)
+                   //.multilineTextAlignment(.center)
+                    .background {
+                       // Color.orange
+                    }
+            }
+
+            VStack(alignment:.center,spacing:10) {
+                
+                HStack(spacing:4) {
+                    
+                    Spacer()
+                    Text( csTimeFormatter().data.string(from: Date()) )
+                    Text( csTimeFormatter().ora.string(from: Date()) )
+                    Text("- user anonimo")
+                    
+                }
+                .italic()
+                .font(.system(.caption, design: .serif, weight: .ultraLight))
+                .foregroundColor(Color.black)
+               // .padding(.bottom,5)
+                .background {
+                   // Color.white
+                }
+  
+            }
+            .padding(.horizontal,5)
+            .padding(.vertical,10)
+         
+            
+            
+        } // chiusa ZStack
+        .frame(width:frameWidth)
+      //  .padding(.horizontal,10)
+        .background(
+            backgroundColorView
+          //  .cornerRadius(10)
+                .csCornerRadius(10, corners: [.topLeft,.topRight])
+            .opacity(backgroundOpacity)
+           // .shadow(color: .gray, radius: 1, x: 0, y: 1)
+        )
+    
+    }
+} */ // 20.02.23 Deprecata in favore di un upgrade della Row View nel FoodiePackage che incorpora uno sticky optional

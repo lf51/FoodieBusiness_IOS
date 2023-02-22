@@ -14,17 +14,14 @@ struct DietScrollView_NewDishSub: View {
     static var mostraAlertDiete:Bool = true
     
     @ObservedObject var viewModel:AccounterVM
-    // usiamo un observed per usare il viewModel nell'init
     @Binding var newDish: DishModel
-  //  @Binding var confermaDiete: Bool
-    
+
     let dietAvaible:[TipoDieta]
     let dietAvaibleString:[String]
     
     init(newDish:Binding<DishModel>,viewModel:AccounterVM) {
        
         _newDish = newDish
-      //  _confermaDiete = confermaDiete
         self.viewModel = viewModel
      
         (self.dietAvaible,self.dietAvaibleString) = newDish.wrappedValue.returnDietAvaible(viewModel: viewModel)
@@ -32,7 +29,7 @@ struct DietScrollView_NewDishSub: View {
     
     var body: some View {
         
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading,spacing: .vStackLabelBodySpacing) {
             
             CSLabel_conVB(placeHolder: "Dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) {
                 
@@ -49,19 +46,12 @@ struct DietScrollView_NewDishSub: View {
                         
                         HStack{
                             Spacer()
-                            
-                          /*  Text(/*self.newDish.mostraDieteCompatibili ? "Visibile" : "Nascosto"*/"Visibile:")
-                                .font(.system(.callout, design: .monospaced)) */
-                            
-                           // Spacer()
-                            
+   
                             Text("No")
                                 .bold(!showDiet)
                                 .foregroundColor(.black)
                                 .opacity(showDiet ? 0.4 : 1.0)
-                         /*   Image(systemName: confermaDiete ? "eye.fill" : "eye.slash.fill")
-                                .foregroundColor(confermaDiete ? Color.green : Color.gray)
-                                .imageScale(.medium) */
+
                         }
                         
                     }
@@ -86,17 +76,13 @@ struct DietScrollView_NewDishSub: View {
                                .foregroundColor(self.newDish.mostraDieteCompatibili ? .green : .black)
                     
                     if !self.newDish.mostraDieteCompatibili {
-  
-                        // mod. 11.09
-                     //   let diet = self.newDish.dieteCompatibili[0].simpleDescription()
-                        
+
                         Text("Mostra nel piatto la compatibilità con una dieta Standard !!")
                               .underline()
                               .fontWeight(.semibold)
                               .font(.caption)
                               .foregroundColor(Color.black)
-                        
-                        // end 11.09
+  
                     }
                 }
             }
@@ -106,16 +92,9 @@ struct DietScrollView_NewDishSub: View {
             self.newDish.mostraDieteCompatibili = false
         })
         .onChange(of: self.newDish.mostraDieteCompatibili) { newValue in
-            
-          // self.newDish.mostraDieteCompatibili = newValue
-            
+
             if newValue && Self.mostraAlertDiete {
  
-              /*  viewModel.alertItem = AlertModel(
-                    title: "Mostra Diete",
-                    message: "Sarà mostrata nel piatto la compatibilità con le diete: \(dietAvaibleString.formatted(.list(type: .and)))."
-                        ) */
-                
                 viewModel.alertItem = AlertModel(
                     title: "Diete Compatibili",
                     message: "Visibile nel piatto la compatibilitò con le diete: \(dietAvaibleString.formatted(.list(type: .and))).",
@@ -123,8 +102,7 @@ struct DietScrollView_NewDishSub: View {
                         Self.mostraAlertDiete = false
                     })
                         )
-               // self.newDish.dieteCompatibili = self.dietAvaible
-               
+
                  }
         }
     }

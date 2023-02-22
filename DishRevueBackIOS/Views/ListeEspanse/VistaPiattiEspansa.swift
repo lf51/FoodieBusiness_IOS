@@ -62,7 +62,7 @@ struct PreCallVistaPiattiEspansa: View {
             
             CSZStackVB(
                 title: "Seleziona Piatti",
-                titlePosition: .bodyEmbed([.horizontal,.top]),
+                titlePosition: .bodyEmbed([.horizontal,.top],10),
                 backgroundColorView: backgroundColorView) {
                 VistaPiattiEspansa(
                     currentMenu: $globalBindingMenu,
@@ -80,7 +80,8 @@ struct PreCallVistaPiattiEspansa: View {
                     menuArchiviato: menuArchiviato,
                     backgroundColorView: backgroundColorView,
                     destinationPath: destinationPath)
-                .padding(.horizontal)
+                .csHpadding()
+               //.padding(.horizontal)
             }
         }
         
@@ -124,11 +125,10 @@ struct PreCallVistaPiattiEspansa: View {
         }
         
         @State private var filterCategoria:CategoriaMenu = .defaultValue
+        @State private var filterPercorso:DishModel.PercorsoProdotto = .preparazioneFood
         
         var body: some View {
             
-           // CSZStackVB(title: currentMenu.intestazione, backgroundColorView: //backgroundColorView) {
-                
                 VStack(alignment:.leading) {
                     
                     let container:[DishModel] = {
@@ -152,8 +152,6 @@ struct PreCallVistaPiattiEspansa: View {
                         return allDish
                     }()
                     
-                //    VStack(alignment:.leading) {
-                        
                         HStack(spacing:4) {
                             
                             Text("Status:")
@@ -169,9 +167,9 @@ struct PreCallVistaPiattiEspansa: View {
                             Spacer()
                             
                             CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.allMyCategories)
+
                         }
-     
-                
+
                   //  }
                     let placeHolder:String = {
                       

@@ -25,6 +25,9 @@ struct EditingPropertyModel: View {
         
     }
     
+    // 17.02.23 Focus State
+    @FocusState private var modelField:ModelField?
+    
     var body: some View {
         
         CSZStackVB(title: itemModel.intestazione, backgroundColorView: backgroundColorView) {
@@ -35,7 +38,12 @@ struct EditingPropertyModel: View {
                     
                 ScrollView(showsIndicators:false) {
 
-                    BoxDescriptionModel_Generic(itemModel: $itemModel, labelString: "Descrizione Attività", disabledCondition: false)
+                    BoxDescriptionModel_Generic(
+                        itemModel: $itemModel,
+                        labelString: "Descrizione Attività",
+                        disabledCondition: false,
+                        modelField: $modelField)
+                    .focused($modelField, equals: .descrizione)
   
                   /* VStack(alignment:.leading) {
                         

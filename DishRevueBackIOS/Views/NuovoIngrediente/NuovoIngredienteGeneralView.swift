@@ -45,6 +45,9 @@ struct NuovoIngredienteGeneralView: View {
        
     }
     
+    // 17.02.23 Focus State
+    @FocusState private var modelField:ModelField?
+    
     var body: some View {
         
         CSZStackVB(title:self.nuovoIngrediente.intestazione == "" ? "Nuovo Ingrediente" : self.nuovoIngrediente.intestazione, backgroundColorView: backgroundColorView) {
@@ -55,21 +58,26 @@ struct NuovoIngredienteGeneralView: View {
                     
                     ScrollView(showsIndicators: false) {
                       
-                        VStack(alignment:.leading){
+                        VStack(alignment:.leading,spacing: .vStackBoxSpacing){
                             
                             IntestazioneNuovoOggetto_Generic(
                                 itemModel: $nuovoIngrediente,
                                 generalErrorCheck: generalErrorCheck,
                                 minLenght: 3,
-                                coloreContainer: Color("SeaTurtlePalette_3"))
+                                coloreContainer:.seaTurtle_3)
+                            .focused($modelField, equals: .intestazione)
                                
                             BoxDescriptionModel_Generic(
                                 itemModel: $nuovoIngrediente,
                                 labelString: "Descrizione (Optional)",
-                                disabledCondition: wannaAddAllergeni)
+                                disabledCondition: wannaAddAllergeni,
+                                modelField: $modelField)
+                            .focused($modelField, equals: .descrizione)
                             
                             // Origine
-                            OrigineScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente, generalErrorCheck: generalErrorCheck)
+                            OrigineScrollView_NewIngredientSubView(
+                                nuovoIngrediente: $nuovoIngrediente,
+                                generalErrorCheck: generalErrorCheck)
                            
                             
                             // Allergeni
@@ -83,9 +91,11 @@ struct NuovoIngredienteGeneralView: View {
                             nuovoIngrediente: $nuovoIngrediente,
                             generalErrorCheck: generalErrorCheck)
                             
-                            ProduzioneScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente)
+                            ProduzioneScrollView_NewIngredientSubView(
+                                nuovoIngrediente: $nuovoIngrediente)
                             
-                            ProvenienzaScrollView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente)
+                            ProvenienzaScrollView_NewIngredientSubView(
+                                nuovoIngrediente: $nuovoIngrediente)
 
                             // Sostituto
                             
@@ -143,7 +153,8 @@ struct NuovoIngredienteGeneralView: View {
               //  .padding(.horizontal)
                    
             }
-            .padding(.horizontal,10)
+            .csHpadding()
+            //.padding(.horizontal,10)
             .popover(isPresented: $wannaAddAllergeni) {
                 VistaAllergeni_Selectable(
                     allergeneIn: $nuovoIngrediente.allergeni,
@@ -209,7 +220,9 @@ struct NuovoIngredienteGeneralView: View {
     
     private func checkPreliminare() -> Bool {
         
-        guard checkIntestazione() else { return false }
+        guard checkIntestazione() else {
+            self.modelField = .intestazione
+            return false }
         
         guard checkOrigine() else { return false }
         

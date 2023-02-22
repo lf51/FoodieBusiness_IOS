@@ -43,7 +43,7 @@ struct VistaIngredientiEspansa: View {
                         .foregroundColor(Color.blue)
                         .padding(5)
                         .background {
-                            Color("SeaTurtlePalette_3").cornerRadius(5.0)
+                            Color.seaTurtle_3.cornerRadius(5.0)
                         }
                     Spacer()
                     
@@ -62,7 +62,7 @@ struct VistaIngredientiEspansa: View {
                       
                       RoundedRectangle(cornerRadius: 5.0)
                         .fill(Color.white.opacity(0.8))
-                          .shadow(radius: 1.0)
+                        .shadow(radius: 1.0)
                     )
                 }
                 
@@ -98,7 +98,8 @@ struct VistaIngredientiEspansa: View {
                 CSDivider()
                 
             }
-            .padding(.horizontal)
+           // .padding(.horizontal)
+            .csHpadding()
             .animation(.default, value: container)
             
             

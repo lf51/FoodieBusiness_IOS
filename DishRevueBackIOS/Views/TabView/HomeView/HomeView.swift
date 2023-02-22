@@ -103,7 +103,9 @@ struct HomeView: View {
                             
                            TopRated_SubView(
                             allRated: allMenuRated,
-                            destinationPathView: .listaGenericaMenu(_containerRif: allRifMenu, _label: "Menu Rated(Prov)"),
+                            destinationPathView: .listaGenericaMenu(
+                                _containerRif: allRifMenu,
+                                _label: "Menu Rated(Prov)"),
                             label: "Menu Top Rated",
                             linkTitle: "Tutti")
                                 .padding(.bottom,5)
@@ -173,7 +175,11 @@ struct HomeView: View {
            
         }
         
-        self.viewModel.homeViewPath.append(DestinationPathView.accountSetup(self.authProcess))
+        self.viewModel.addToThePath(
+            destinationPath: .homeView,
+            destinationView: .accountSetup(self.authProcess))
+        
+       /* self.viewModel.homeViewPath.append(DestinationPathView.accountSetup(self.authProcess)) */
         
     }
     

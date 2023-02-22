@@ -84,7 +84,8 @@ struct VistaCronologiaAcquisti: View {
               //  Spacer()
                 
             }
-            .padding(.horizontal)
+            .csHpadding()
+           // .padding(.horizontal)
         }
     }
     
@@ -104,7 +105,10 @@ struct VistaCronologiaAcquisti_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             VistaCronologiaAcquisti(ingrediente: ingredientSample_Test, backgroundColorView: Color("SeaTurtlePalette_1"))
+                
+               
         }
+       
             .environmentObject(testAccount)
     }
 }

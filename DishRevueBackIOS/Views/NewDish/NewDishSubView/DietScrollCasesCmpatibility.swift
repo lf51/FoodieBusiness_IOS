@@ -33,7 +33,7 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
     
     var body: some View {
         
-        VStack(alignment:.leading) {
+        VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
             
             ScrollView(.horizontal,showsIndicators: false) {
                 
@@ -56,12 +56,6 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
             }
 
             content
-         /*   Text("Diete compatibili: \(instanceCasesString, format: .list(type: .and)).")
-                .fontWeight(.light)
-                .font(.caption)
-                .foregroundColor(.black) */
-            
-            
         }
     }
     

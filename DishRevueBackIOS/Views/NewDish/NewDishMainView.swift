@@ -8,7 +8,6 @@
 import SwiftUI
 import MyFoodiePackage
 
-
 struct NewDishMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
@@ -27,27 +26,23 @@ struct NewDishMainView: View {
     @State private var areAllergeniOk: Bool = false
   //  @State private var confermaDiete: Bool
     
-    init(newDish: DishModel,percorso:DishModel.PercorsoProdotto,backgroundColorView: Color, destinationPath:DestinationPath) {
-
-        let localDish: DishModel
+    init(
+        newDish: DishModel,
+        percorso:DishModel.PercorsoProdotto,
+        backgroundColorView: Color,
+        destinationPath:DestinationPath) {
         
-        if newDish.pricingPiatto.isEmpty {
-            
-            let newD: DishModel = {
-                var new = newDish
-                new.percorsoProdotto = percorso
+            let localDish: DishModel = {
                
-                if let formats = DishFormat.modelloCorrente {
-                    new.pricingPiatto = formats
-                } else {
-                    new.pricingPiatto = [DishFormat(type: .mandatory)]
-                }
-                return new
+                if newDish.status == .bozza() {
+                    
+                    var new = newDish
+                    new.percorsoProdotto = percorso
+                    return new
+                } else { return newDish }
+                
             }()
-            localDish = newD
-    
-        } else { localDish = newDish }
-        
+  
         _newDish = State(wrappedValue: localDish)
    
         self.piattoArchiviato = localDish
@@ -61,26 +56,33 @@ struct NewDishMainView: View {
     @State private var uploadDishFormat:Bool = false
      // update 10.02
     
+    // 17.02.23 Focus State
+    @FocusState private var modelField:ModelField?
+    
+
+    // 17.02
     
     var body: some View {
-       
-      //  CSZStackVB(title: self.newDish.intestazione == "" ? "Nuovo Piatto" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
-            
+
             VStack {
 
-             //   CSDivider()
-                    
                 ScrollView(showsIndicators:false) { // La View Mobile
 
-                        VStack(alignment:.leading) {
+                    VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
                                 
                             IntestazioneNuovoOggetto_Generic(
                                     itemModel: $newDish,
                                     generalErrorCheck: generalErrorCheck,
                                     minLenght: 3,
                                     coloreContainer: Color("SeaTurtlePalette_2"))
+                                .focused($modelField, equals: .intestazione)
  
-                            BoxDescriptionModel_Generic(itemModel: $newDish, labelString: "Descrizione (Optional)", disabledCondition: wannaAddIngredient)
+                            BoxDescriptionModel_Generic(
+                                itemModel: $newDish,
+                                labelString: "Descrizione (Optional)",
+                                disabledCondition: wannaAddIngredient,
+                                modelField: $modelField)
+                                .focused($modelField, equals: .descrizione)
                             
                             CategoriaScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
                             
@@ -95,9 +97,7 @@ struct NewDishMainView: View {
                             DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
  
                             DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, openUploadFormat: $uploadDishFormat, generalErrorCheck: generalErrorCheck)
- 
-                         //   Spacer()
-                            
+
                             BottomViewGeneric_NewModelSubView(
                                 itemModel: $newDish,
                                 generalErrorCheck: $generalErrorCheck,
@@ -114,39 +114,17 @@ struct NewDishMainView: View {
 
                             
                         }
-                    .padding(.horizontal)
+                       //.padding(.horizontal,.csHlenght)
+                    //    .csHpadding()
+                        
      
                     }
-                    .zIndex(0)
-                    .opacity(wannaAddIngredient ? 0.6 : 1.0)
-                    .disabled(wannaAddIngredient)
-    
-              /*  if wannaAddIngredient {
-           
-                   /* SelettoreMyModel<_,IngredientModel>(
-                        itemModel: $newDish,
-                        allModelList: ModelList.dishIngredientsList,
-                        closeButton: $wannaAddIngredient, action: () -> Void) */
-                    
-                    SelettoreMyModel<_,IngredientModel>(
-                        itemModel: $newDish,
-                        allModelList: ModelList.dishIngredientsList,
-                        closeButton: $wannaAddIngredient,
-                        backgroundColorView: backgroundColorView,
-                        actionTitle: "[+] Ingrediente") {
-                            
-                            viewModel.addToThePath(
-                                destinationPath: destinationPath,
-                                destinationView: .ingrediente(IngredientModel()))
-                            
-                        }
-                    
-                } */ // deprecata 18.01.23
-            
-             //   CSDivider() // risolve il problema del cambio colore della tabView
-            //    } // end ZStack Interno
+                  //  .zIndex(0)
+                 //  .opacity(wannaAddIngredient ? 0.6 : 1.0)
+                  //  .disabled(wannaAddIngredient)
 
                 HStack {
+                    
                     Spacer()
                     Text(newDish.id)
                         
@@ -155,21 +133,23 @@ struct NewDishMainView: View {
                 .font(.caption2)
                 .foregroundColor(Color.black)
                 .opacity(0.6)
-                .padding(.horizontal)
+              //  .padding(.horizontal)
                 
                 
            }
+            .csHpadding()
             .popover(isPresented: $wannaAddIngredient) {
                 VistaIngredientiEspansa_Selectable(
                     currentDish: $newDish,
                     backgroundColorView: backgroundColorView,
                     destinationPath: destinationPath)
+                .presentationDetents([.fraction(0.85)])
             }
             .popover(isPresented: $uploadDishFormat) {
                 
                 DishFormatUploadLabel(
                     allDishFormat: $newDish.pricingPiatto,backgroundColorView: backgroundColorView)
-                    .presentationDetents([.height(500)])
+                .presentationDetents([.fraction(0.60)])
 
                 
             }
@@ -195,11 +175,11 @@ struct NewDishMainView: View {
         
         self.generalErrorCheck = false
         self.areAllergeniOk = false
-        self.newDish = {
+        self.newDish = DishModel() /*{
            var newD = DishModel()
             newD.pricingPiatto = [DishFormat(type: .mandatory)]
             return newD
-        }()
+        }() */
     }
     
     private func infoPiatto() -> Text {
@@ -225,9 +205,12 @@ struct NewDishMainView: View {
    
     private func checkPreliminare() -> Bool {
         
-        guard checkIntestazione() else { return false }
+        guard checkIntestazione() else {
+            self.modelField = .intestazione
+            return false }
         
-        guard checkCategoria() else { return false }
+        guard checkCategoria() else {
+            return false }
       
         guard checkIngredienti() else { return false }
        
@@ -252,7 +235,8 @@ struct NewDishMainView: View {
     private func checkCategoria() -> Bool {
         
       // return self.newDish.categoriaMenuDEPRECATA != .defaultValue
-        return !self.newDish.categoriaMenu.isEmpty
+       // return !self.newDish.categoriaMenu.isEmpty
+        return self.newDish.categoriaMenu != CategoriaMenu.defaultValue.id
     }
     
     private func checkIngredienti() -> Bool {

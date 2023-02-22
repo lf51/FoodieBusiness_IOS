@@ -69,7 +69,8 @@ struct ListaDellaSpesa_MainView: View {
                 }
                 
             }
-            .padding(.horizontal)
+            .csHpadding()
+            //.padding(.horizontal)
 
         }
         

@@ -13,7 +13,6 @@ struct MonitorServizio: View {
     
     @EnvironmentObject var viewModel:AccounterVM
 
-    
     var body: some View {
         
         CSZStackVB_Framed(frameWidth:500,backgroundOpacity: 0.05,shadowColor: .clear) {
@@ -62,7 +61,7 @@ struct MonitorServizio: View {
         let stringPrepOkPercent = String(format:"%.1f%%",(prepOkPercent * 100))
         
         let linkMenuDisabled = menuOn.isEmpty
-        
+    
         VStack(alignment:.leading) {
             
             HStack {
@@ -77,7 +76,7 @@ struct MonitorServizio: View {
                 
                     Text("\(currentDay) \(currentDate)")
                         .fontWeight(.bold)
-                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                        .foregroundColor(.seaTurtle_2)
                 
  
             }
@@ -92,18 +91,32 @@ struct MonitorServizio: View {
                         .fontWeight(.black)
                     Text("\(menuOn.count)")
                         .fontWeight(.bold)
-            
-                    NavigationLink(value: DestinationPathView.listaGenericaMenu(_containerRif: menuOn, _label: "I Menu di Oggi")) {
+            // Nota 20.02.23 Anteprima Menu
+                 /*   NavigationLink(value:
+                    DestinationPathView.listaGenericaMenu(
+                            _containerRif: menuOn,
+                            _label: "I Menu di Oggi")) {
+                        
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(.seaTurtle_3)
+                    } */
+                    NavigationLink(value:
+                    DestinationPathView.listaMenuPerAnteprima(
+                            _containerRif: menuOn,
+                            _label: "I Menu di Oggi")) {
+                        
+                        Image(systemName: "arrow.up.right")
+                            .imageScale(.medium)
+                            .bold()
+                            .foregroundColor(.seaTurtle_3)
                     }
                     .opacity(linkMenuDisabled ? 0.6 : 1.0)
                     .disabled(linkMenuDisabled)
                    
                 }
-                .foregroundColor(Color("SeaTurtlePalette_3"))
+                .foregroundColor(.seaTurtle_3)
                 Spacer()
                 
                let statoIng = checkStatoServizio(rifIngOrPrep: ingredientsNeeded)
@@ -151,7 +164,7 @@ struct MonitorServizio: View {
                         
                         Text("\(ingredientsNeeded.count)")
                             .fontWeight(.bold)
-                        NavigationLink(value: DestinationPathView.listaGenericaIng(_containerRif: ingredientsNeeded,_label: "Gli Ingredienti di Oggi")) {
+                        NavigationLink(value: DestinationPathView.listaGenericaIng(_containerRif: ingredientsNeeded,_label: "Ingredienti di Oggi")) {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
@@ -166,7 +179,7 @@ struct MonitorServizio: View {
                 
                 VStack {
                     
-                    Text("Preparati")
+                    Text("PF di terzi")
                   
                     HStack {
                         
@@ -174,11 +187,11 @@ struct MonitorServizio: View {
                         
                         Text("\(readyProduct.count)")
                             .fontWeight(.bold)
-                        NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: readyProduct,_label: "I Prodotti Finiti di Oggi")) {
+                        NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: readyProduct,_label: "PF di terzi in Menu Oggi")) {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                .foregroundColor(.seaTurtle_3)
                         }
                         .opacity(linkPFDisabled ? 0.6 : 1.0)
                         .disabled(linkPFDisabled)

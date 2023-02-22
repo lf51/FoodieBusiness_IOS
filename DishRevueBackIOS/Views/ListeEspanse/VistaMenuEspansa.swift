@@ -112,7 +112,8 @@ struct VistaMenuEspansa: View {
 
                 
             }
-            .padding(.horizontal)
+            .csHpadding()
+          //  .padding(.horizontal)
 
         }
     }

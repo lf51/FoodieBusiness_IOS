@@ -18,7 +18,7 @@ struct DishSpecific_NewDishSubView: View {
 
     var body: some View {
         
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading,spacing: .vStackLabelBodySpacing) {
             
             let placeHolder = priceStructureCount()
             
@@ -401,7 +401,7 @@ struct PriceRow:View {
     @State private var label:String
     @State private var price:String
 
-    @FocusState private var fieldInFocuse:Field?
+    @FocusState private var fieldInFocuse:PriceField?
     
     init(
         formatoPiatto: Binding<DishFormat>,
@@ -418,7 +418,7 @@ struct PriceRow:View {
         
     }
     
-    enum Field:Hashable { case label,price}
+    enum PriceField:Hashable { case label,price }
         
     var body: some View {
      

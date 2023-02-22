@@ -16,10 +16,10 @@ struct ProvenienzaScrollView_NewIngredientSubView: View {
 
     var body: some View {
         
-        VStack(alignment:.leading) {
+        VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
             
             CSLabel_1Button(
-                placeHolder: "Luogo di Produzione (Optional)",
+                placeHolder: "Provenienza di Qualità (Optional)",
                 imageNameOrEmojy: "globe",
                 backgroundColor: Color.black)
             

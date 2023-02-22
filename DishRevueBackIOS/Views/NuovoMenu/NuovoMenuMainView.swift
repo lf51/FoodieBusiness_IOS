@@ -32,15 +32,9 @@ struct NuovoMenuMainView: View {
        
     }
     
-  /*  var isThereAReasonToDisable: (tipologia:Bool, programmazione: Bool, bottom: Bool) {
+    // 17.02.23 Focus State
+    @FocusState private var modelField:ModelField?
 
-      let disableTipologia = self.nuovoMenu.intestazione == ""
-      let disableProgrammazione = self.nuovoMenu.tipologia == nil
-      let dissableBottom = self.nuovoMenu == self.menuArchiviato
-        
-      return (disableTipologia,disableProgrammazione,dissableBottom)
-    } */
- 
     var body: some View {
         
         CSZStackVB(title: self.nuovoMenu.intestazione == "" ? "Nuovo Menu" : self.nuovoMenu.intestazione, backgroundColorView: backgroundColorView) {
@@ -51,81 +45,88 @@ struct NuovoMenuMainView: View {
                 
                     ScrollView {
                         
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading,spacing: .vStackBoxSpacing) {
 
                             IntestazioneNuovoOggetto_Generic(
                                 itemModel: $nuovoMenu,
                                 generalErrorCheck: generalErrorCheck,
                                 minLenght: 3,
-                                coloreContainer: Color("SeaTurtlePalette_2"))
+                                coloreContainer: .seaTurtle_2)
+                                .focused($modelField, equals: .intestazione)
                           
-                            BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: openDishList)
+                            BoxDescriptionModel_Generic(
+                                itemModel: $nuovoMenu,
+                                labelString: "Descrizione (Optional)",
+                                disabledCondition: openDishList,
+                                modelField: $modelField)
+                                .focused($modelField, equals: .descrizione)
+
+                            VStack(alignment: .leading, spacing: .vStackLabelBodySpacing){
                                 
-                             /*   CSLabel_1Button(placeHolder: "Tipologia", imageNameOrEmojy: "dollarsign.circle", backgroundColor: Color.black) */
-                            
-                               CSLabel_conVB(
-                                placeHolder: "Tipologia Menu",
-                                imageNameOrEmojy: "dollarsign.circle",
-                                backgroundColor: Color.black) {
-                                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.tipologia == .defaultValue)
+                                CSLabel_conVB(
+                                 placeHolder: "Tipologia Menu",
+                                 imageNameOrEmojy: "dollarsign.circle",
+                                 backgroundColor: Color.black) {
+                                     CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.tipologia == .defaultValue)
+                                 }
+                                 
+                                 SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
+                                
+                            }
+
+                            VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
+                                
+                                CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen)
+
+                                HStack {
+                                    
+                                    Text(self.nuovoMenu.isAvaibleWhen.extendedDescription())
+                                        .font(.caption)
+                                        .fontWeight(.light)
+                                        .italic()
+                                        .foregroundColor(Color.black)
+                                    
+                                    CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.isAvaibleWhen == .defaultValue)
+                                    
                                 }
-                                
-                                SpecificTipologiaNuovoMenu_SubView(newMenu: $nuovoMenu)
 
-                            CSLabel_1Picker(placeHolder: "Programmazione", imageName: "calendar.badge.clock", backgroundColor: Color.black, availabilityMenu: self.$nuovoMenu.isAvaibleWhen)
-
-                        //    if !isThereAReasonToDisable.programmazione {
-                        
-                            HStack {
-                                
-                                Text(self.nuovoMenu.isAvaibleWhen.extendedDescription())
-                                    .font(.caption)
-                                    .fontWeight(.light)
-                                    .italic()
-                                    .foregroundColor(Color.black)
-                                
-                                CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.isAvaibleWhen == .defaultValue)
-                                
+                                if self.nuovoMenu.isAvaibleWhen != .defaultValue {
+                          
+                                    CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
+                                }
                             }
-                            
-                                
-                       //     }
-                            
-                            if self.nuovoMenu.isAvaibleWhen != .defaultValue {
-                      
-                                CorpoProgrammazioneMenu_SubView(nuovoMenu: $nuovoMenu)
-                            }
-                    //  Spacer()
-                            
-                          /*  CSLabel_2Button(placeHolder: "Piatti in Menu", imageName: "fork.knife.circle", backgroundColor: Color.black, toggleBottoneTEXT: $openDishList, testoBottoneTEXT: "Vedi", disabledCondition: self.nuovoMenu.isAvaibleWhen == nil) */
+ 
                                
-                            CSLabel_conVB(
-                                placeHolder: "Piatti in Menu",
-                                imageNameOrEmojy: "fork.knife.circle",
-                                backgroundColor: Color.black) {
-                                    
-                                    CSButton_image(
-                                        frontImage: "plus.circle",
-                                        imageScale: .large,
-                                        frontColor: .seaTurtle_3) {
-                                            withAnimation(.default) {
-                                                self.openDishList.toggle()
+                            VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
+                                
+                                CSLabel_conVB(
+                                    placeHolder: "Piatti in Menu",
+                                    imageNameOrEmojy: "fork.knife.circle",
+                                    backgroundColor: Color.black) {
+                                        
+                                        CSButton_image(
+                                            frontImage: "plus.circle",
+                                            imageScale: .large,
+                                            frontColor: .seaTurtle_3) {
+                                                withAnimation(.default) {
+                                                    self.openDishList.toggle()
+                                                }
                                             }
-                                        }
-                                }
-                            
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    
-                                    HStack {
-                                        
-                                        ForEach(self.nuovoMenu.rifDishIn, id:\.self) { dishId in
-                                            
-                                            vbShowDishIn(id: dishId)
-                                          //  DishModel_RowView(item: dish) // Rendere Cliccabile? non so
-                                        }
-                                        
                                     }
-                                }
+                                
+                                    ScrollView(.horizontal, showsIndicators: false) {
+                                        
+                                        HStack {
+                                            
+                                            ForEach(self.nuovoMenu.rifDishIn, id:\.self) { dishId in
+                                                
+                                                vbShowDishIn(id: dishId)
+     
+                                            }
+                                            
+                                        }
+                                    }
+                            }
              
                             BottomViewGeneric_NewModelSubView(
                                 itemModel: $nuovoMenu,
@@ -140,63 +141,18 @@ struct NuovoMenuMainView: View {
                                 } salvaECreaPostAction: {
                                     self.salvaECreaPostAction()
                                 }
-
-                            
-                            /*
-                            BottomViewGeneric_NewModelSubView(
-                                generalErrorCheck: $generalErrorCheck,
-                                wannaDisableButtonBar: (nuovoMenu == menuArchiviato)) {
-                                    self.menuDescription()
-                                } resetAction: {
-                                    csResetModel(modelAttivo: &self.nuovoMenu, modelArchiviato: self.menuArchiviato)
-                                } checkPreliminare: {
-                                    self.checkPreliminare()
-                                } saveButtonDialogView: {
-                                    self.scheduleANewMenu()
-                                } */
-
-                            
-                            
-                          /*  BottomViewGeneric_NewModelSubView(
-                                wannaDisableSaveButton: self.nuovoMenu.isAvaibleWhen == nil) {
-                                    self.menuDescription()
-                                } resetAction: {
-                                    resetModel(modelAttivo: &self.nuovoMenu, modelArchiviato: self.menuArchiviato)
-                                   // self.resetMenu()
-                                } saveButtonDialogView: {
-                                    self.scheduleANewMenu()
-                                }
-                                .opacity(isThereAReasonToDisable.bottom ? 0.6 : 1.0)
-                                .disabled(isThereAReasonToDisable.bottom) */
-
-
-
-                            
-                        }.padding(.horizontal)
-                            .zIndex(0)
-                        
-                        
+   
+                        }
+                        //.padding(.horizontal)
+                          //  .zIndex(0)
+ 
                     } // Chiusa ScrollView
-                   // .disabled(openDishList)
-                    
-                  /*  if openDishList {
-                        
-                        SelettoreMyModel<_,DishModel>(
-                            itemModel: $nuovoMenu,
-                            allModelList: ModelList.menuDishList,
-                            closeButton: $openDishList,
-                            backgroundColorView: backgroundColorView,
-                            actionTitle: "[+] Piatto") {
-                                viewModel.addToThePath(
-                                    destinationPath: destinationPath,
-                                    destinationView: .piatto(DishModel()))
-                            }
-                        
-                    } */
+         
 
                 CSDivider()
 
             }
+            .csHpadding()
 
         } // Chiusa ZStack MAdre
         .popover(isPresented: $openDishList) {
@@ -204,6 +160,7 @@ struct NuovoMenuMainView: View {
                 currentMenu: $nuovoMenu,
                 backgroundColorView: backgroundColorView,
                 destinationPath: destinationPath)
+            .presentationDetents([.fraction(0.8)])
         }
      //   .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
 
@@ -277,7 +234,9 @@ struct NuovoMenuMainView: View {
     
     private func checkPreliminare() -> Bool {
         
-        guard checkIntestazione() else { return false }
+        guard checkIntestazione() else {
+            self.modelField = .intestazione
+            return false }
       
         guard checkTipologiaMenu() else { return false }
        
