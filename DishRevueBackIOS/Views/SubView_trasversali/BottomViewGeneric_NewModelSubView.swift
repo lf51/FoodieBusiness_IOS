@@ -16,14 +16,14 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM
     
     @Binding var itemModel: M
     @Binding var generalErrorCheck:Bool
-   // let wannaDisableButtonBar: Bool
+
     let itemModelArchiviato: M
     let destinationPath: DestinationPath
+    var dialogType:SaveDialogType = .completo
     let description: () -> Text
     let resetAction: () -> Void
     let checkPreliminare: () -> Bool
     let salvaECreaPostAction: () -> Void
-  //  @ViewBuilder var saveButtonDialogView: Content
     
     @State private var showDialog: Bool = false
     
@@ -52,27 +52,27 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM
         .confirmationDialog(
                 description(),
                 isPresented: $showDialog,
-                titleVisibility: .visible) { saveButtonDialogView() }
+                titleVisibility: .visible) { preCallDialogButton() }
         
     }
     
     // Method
-    
-    /// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
- /*  private func resetAction() {
-      
-        self.itemModel = itemModelArchiviato
-      //  modelAttivo = modelArchiviato
-    } */
 
+    @ViewBuilder private func preCallDialogButton() -> some View {
+        
+        switch self.dialogType {
+            
+        case .completo:
+            saveButtonDialogView()
+        case .ridotto:
+            vbSaveEscButton()
+        }
+    }
+    
     @ViewBuilder private func saveButtonDialogView() -> some View {
-        
-      //  let (_,newModelName) = self.itemModel.returnNewModel()
-      /*  let newModelName = self.itemModel.returnNewModel().nometipo */
-       // let newModelName = self.itemModel.returnModelTypeName()
+
         let newModelName = self.itemModel.basicModelInfoInstanceAccess().nomeOggetto
-     
-        
+
         if itemModelArchiviato.intestazione == "" {
             // crea un Nuovo Oggetto
             Group {
@@ -80,8 +80,6 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM
                 Button("Salva e Crea Nuovo", role: .none) {
                     
                     self.viewModel.createItemModel(itemModel: self.itemModel)
-                 //   self.generalErrorCheck = false
-                  //  self.itemModel = newModelType
                     self.salvaECreaPostAction()
                     
                 }
@@ -96,7 +94,6 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM
         
         else if self.itemModelArchiviato.intestazione == self.itemModel.intestazione {
             // modifica l'oggetto corrente
-            
             Group { vbEditingSaveButton() }
         }
         
@@ -110,7 +107,6 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM
                     // Add 18.08
                     self.itemModel.id = UUID().uuidString
                     // vedi NotaVocale 13.09
-                    
                     // assegniamo un nuovo id e salviamo così un nuovo oggetto
                     // end
                     self.viewModel.createItemModel(itemModel: self.itemModel,destinationPath: self.destinationPath)
@@ -121,22 +117,31 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM
     
     @ViewBuilder private func vbEditingSaveButton() -> some View {
         
-        Button("Salva Modifiche ed Esci", role: .none) {
+      /*  Button("Salva Modifiche ed Esci", role: .none) {
             
             self.viewModel.updateItemModel(itemModel: self.itemModel, destinationPath: self.destinationPath)
-        }
+        } */
+        
+        vbSaveEscButton()
         
         Button("Salva Modifiche e Crea Nuovo", role: .none) {
             
         self.viewModel.updateItemModel(itemModel: self.itemModel)
-           // self.generalErrorCheck = false
-          //  self.itemModel = modelVuoto
+
             self.salvaECreaPostAction() // BUG -> deve partire se dall'update non torna un errore - Da sistemare
         }
  
     }
     
-    
+    @ViewBuilder private func vbSaveEscButton() -> some View {
+        
+        Button("Salva Modifiche ed Esci", role: .none) {
+            
+            self.viewModel.updateItemModel(itemModel: self.itemModel, destinationPath: self.destinationPath)
+        }
+        
+    }
+
 }
 
 

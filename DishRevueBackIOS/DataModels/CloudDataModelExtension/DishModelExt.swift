@@ -91,7 +91,7 @@ extension DishModel:
             
             Button {
                 
-                viewModel[keyPath: navigationPath].append(DestinationPathView.recensioni(self))
+                viewModel[keyPath: navigationPath].append(DestinationPathView.recensioni(self.id))
                 
             } label: {
                 HStack{

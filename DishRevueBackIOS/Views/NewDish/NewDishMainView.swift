@@ -17,6 +17,7 @@ struct NewDishMainView: View {
     
     let piattoArchiviato: DishModel // per il reset
     let destinationPath: DestinationPath
+    let saveDialogType:SaveDialogType
     
     @State private var generalErrorCheck: Bool = false
     
@@ -30,7 +31,8 @@ struct NewDishMainView: View {
         newDish: DishModel,
         percorso:DishModel.PercorsoProdotto,
         backgroundColorView: Color,
-        destinationPath:DestinationPath) {
+        destinationPath:DestinationPath,
+        saveDialogType:SaveDialogType) {
         
             let localDish: DishModel = {
                
@@ -49,6 +51,7 @@ struct NewDishMainView: View {
 
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
+        self.saveDialogType = saveDialogType
     }
     
     // Update 10.02.23 DishFormat
@@ -102,7 +105,8 @@ struct NewDishMainView: View {
                                 itemModel: $newDish,
                                 generalErrorCheck: $generalErrorCheck,
                                 itemModelArchiviato: piattoArchiviato,
-                                destinationPath: destinationPath) {
+                                destinationPath: destinationPath,
+                                dialogType: self.saveDialogType) {
                                     self.infoPiatto()
                                 } resetAction: {
                                     self.resetAction()
@@ -354,7 +358,7 @@ struct NewDishMainView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            NewDishMainView(newDish: dishSample, percorso: .preparazioneFood, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList)
+            NewDishMainView(newDish: dishSample, percorso: .preparazioneFood, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList,saveDialogType: .completo)
             
         }.environmentObject(viewModel)
     }

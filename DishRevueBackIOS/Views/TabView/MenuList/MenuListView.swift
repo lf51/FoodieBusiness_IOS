@@ -14,7 +14,7 @@ struct MenuListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    @Binding var tabSelection: Int // non usata
+    let tabSelection: DestinationPath // non usata
     let backgroundColorView: Color
     
     @State private var openFilter: Bool = false
@@ -42,6 +42,14 @@ struct MenuListView: View {
                 elementContainer: container,
                 mapTree: mapTree,
                 generalDisable: generalDisable,
+                onChangeValue: self.viewModel.resetScroll,
+                onChangeProxyControl: { proxy in
+                    if self.tabSelection == .menuList {
+                        withAnimation {
+                            proxy.scrollTo(1, anchor: .top)
+                        }
+                    }
+                },
                 mapButtonAction: {
                     self.thirdButtonAction()
                 }, trailingView: {
@@ -527,7 +535,7 @@ struct MenuListView: View {
 
 struct MenuListView_Previews: PreviewProvider {
     static var previews: some View {
-        MenuListView(tabSelection: .constant(3), backgroundColorView: Color("SeaTurtlePalette_1"))
+        MenuListView(tabSelection:.menuList, backgroundColorView: Color("SeaTurtlePalette_1"))
             .environmentObject(testAccount)
     }
 }

@@ -193,10 +193,10 @@ struct VistaEspansaMenuPerAnteprima: View {
             let mapLabel = MapTree(
                 mapProperties: self.viewModel.allMyCategories,
                 kpPropertyInObject: \DishModel.categoriaMenu,
-                labelColor: .seaTurtle_2,
-                labelText: .seaTurtle_1,
-                textSizeAsScreenPercentage: 0.125,
-                labelOpacity: 0.8,
+                labelColor: .black,
+                labelText: .white,
+                textSizeAsScreenPercentage: 0.1,
+                labelOpacity: 0.35,
                 extendedVersion: true)
             
             VStack {
@@ -205,10 +205,59 @@ struct VistaEspansaMenuPerAnteprima: View {
                 
                 ScrollView(showsIndicators: false) {
                     
+                FiltrableBodyContent_SubView(
+                    container: container,
+                    mapTree: mapLabel,
+                    frames: $frames,
+                    coordinateSpace: "AnteprimaMainScroll") { labelProperty in
+                        
+                    MapLabel_MenuVistaCliente(
+                        label: labelProperty.simpleDescription(),
+                        imageName: labelProperty.imageAssociated(),
+                        rowBoundReduction: 20,
+                        textSizeAsScreenPercentage: mapLabel.textSizeAsScreenPercentage,
+                        rowColor: mapLabel.labelColor,
+                        textColor: mapLabel.labelTextColor,
+                        shadowColor: mapLabel.shadowColor,
+                        rowOpacity: mapLabel.opacity)
+                        
+                    } elementView: { model in
+                        
+                        DishModelRow_ClientVersion(
+                            viewModel: viewModel,
+                            item: model,
+                            rowColor: backgroundColorView,
+                            rowOpacity: 0.15,
+                            rowBoundReduction: 20,
+                            vistaEspansa: true) {
+                                self.currentDishForRatingList = model
+                            }
+                            .modifierIf(self.editMode) { view in
+                                
+                                view.overlay(alignment: .bottomTrailing) {
+                                   
+                                    Button {
+                                        self.viewModel.addToThePath(
+                                            destinationPath: destinationPath,
+                                            destinationView: .piatto(model))
+                                    } label: {
+                                        Image(systemName:"gearshape")
+                                            .imageScale(.large)
+                                            .foregroundColor(.seaTurtle_3)
+                                            .padding(5)
+                                            .background {
+                                                Color.seaTurtle_2.opacity(0.2)
+                                                    .clipShape(Circle())
+                                                    .shadow(radius: 5.0)
+                                                  //  .cornerRadius(5.0)
+                                            }
+                                    }
+                                }
+                            }
+                    }
+
                     
-                 //  FiltrableBodyContent_SubView // 21.02.23 Da testare/ occorre renderla public
-                    
-                    FiltrableBodyContent_SubView(
+                  /*  FiltrableBodyContent_SubView(
                         container: container,
                         mapTree: mapLabel,
                         frames: $frames,
@@ -253,7 +302,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                                         }
                                     }
                           //  }
-                        }
+                        } */
                     
                     /*ForEach(container,id:\.self) { rif in
                         
@@ -298,6 +347,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                     }*/ // Chiusa ForEach
                     
                 }
+                .csCornerRadius(10, corners: [.topLeft,.topRight])
                 .coordinateSpace(name: "AnteprimaMainScroll")
                 .onPreferenceChange(FramePreference.self, perform: {
                                 frames = $0.sorted(by: { $0.minY < $1.minY })

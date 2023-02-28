@@ -16,3 +16,8 @@ enum InitType {
         case single,collection,singleFromMethod,collectionFromMethod
     }
 }
+
+public enum SaveDialogType {
+    
+    case completo, ridotto
+}

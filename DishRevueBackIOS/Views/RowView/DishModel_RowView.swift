@@ -10,7 +10,7 @@ import MyPackView_L0
 import MyFoodiePackage
 
 public enum RowSize {
-    
+
     case sintetico,ridotto,normale,ibrido
     
 }
@@ -225,11 +225,11 @@ struct DishModel_RowView: View {
                             fontStyle: .headline,
                             fontWeight: .semibold,
                             fontDesign: .default,
-                            textColor: Color("SeaTurtlePalette_4"),
+                            textColor: .seaTurtle_4,
                             image: conservazione.imageAssociated(),
                             imageColor: nil,
                             imageSize: .large,
-                            backgroundColor: Color("SeaTurtlePalette_4"),
+                            backgroundColor: .seaTurtle_4,
                             backgroundOpacity: 0.2)
                         
                         
@@ -238,11 +238,11 @@ struct DishModel_RowView: View {
                             fontStyle: .headline,
                             fontWeight: .semibold,
                             fontDesign: .default,
-                            textColor: Color("SeaTurtlePalette_4"),
+                            textColor:.seaTurtle_4,
                             image: origine.imageAssociated(),
                             imageColor: nil,
                             imageSize: .large,
-                            backgroundColor: Color("SeaTurtlePalette_1"),
+                            backgroundColor: .seaTurtle_1,
                             backgroundOpacity: 1.0)
                         
                         CSEtichetta(
@@ -250,11 +250,11 @@ struct DishModel_RowView: View {
                             fontStyle: .headline,
                             fontWeight: .semibold,
                             fontDesign: .default,
-                            textColor: Color("SeaTurtlePalette_1"),
+                            textColor: .seaTurtle_1,
                             image: provenienza.imageAssociated(),
                             imageColor: nil,
                             imageSize: .large,
-                            backgroundColor: Color("SeaTurtlePalette_4"),
+                            backgroundColor: .seaTurtle_4,
                             backgroundOpacity: 0.8)
                     }
                     
@@ -295,11 +295,11 @@ struct DishModel_RowView: View {
                 text: "\(menuWhereIsIn)",
                 fontStyle: .subheadline,
                 fontWeight: .semibold,
-                textColor: Color("SeaTurtlePalette_4"),
+                textColor: .seaTurtle_4,
                 image: "menucard",
-                imageColor: Color("SeaTurtlePalette_4"),
+                imageColor: .seaTurtle_4,
                 imageSize: .medium,
-                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundColor:.seaTurtle_2,
                 backgroundOpacity: 1.0)
            /* .onTapGesture {
                 self.viewModel.alertItem = AlertModel(
@@ -316,9 +316,9 @@ struct DishModel_RowView: View {
                     fontStyle: .subheadline,
                     fontWeight: .semibold,
                     fontDesign: .default,
-                    textColor:Color("SeaTurtlePalette_1"),
+                    textColor: .seaTurtle_1,
                     image: statoScorte.imageAssociata(),
-                    imageColor: Color("SeaTurtlePalette_1"),
+                    imageColor: .seaTurtle_1,
                     imageSize: .medium,
                     backgroundColor: statoScorte.coloreAssociato(),
                     backgroundOpacity: 1.0)
@@ -327,7 +327,7 @@ struct DishModel_RowView: View {
                                 
                 CSEtichetta(
                     text: "",
-                    textColor:Color("SeaTurtlePalette_2"),
+                    textColor: .seaTurtle_2,
                     image: basePreparazione.imageAssociate(),
                     imageColor: nil,
                     imageSize: .large,
@@ -344,7 +344,7 @@ struct DishModel_RowView: View {
                         
                         CSEtichetta(
                             text: "BIO",
-                            textColor: Color("SeaTurtlePalette_1"),
+                            textColor: .seaTurtle_1,
                             image: "💯",
                             imageColor: nil,
                             imageSize: .large,

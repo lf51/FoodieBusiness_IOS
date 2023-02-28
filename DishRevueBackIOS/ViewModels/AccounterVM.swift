@@ -39,6 +39,8 @@ public final class AccounterVM:FoodieViewModel {
     @Published var menuListPath = NavigationPath()
     @Published var dishListPath = NavigationPath()
     @Published var ingredientListPath = NavigationPath()
+    
+    @Published var resetScroll:Bool = false 
    
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // necessario al selettore Allergeni
     
@@ -46,6 +48,7 @@ public final class AccounterVM:FoodieViewModel {
    // @Published var dishStatusChanged:Int = 0
    // @Published var menuStatusChanged:Int = 0
     @Published var remoteStorage:RemoteChangeStorage = RemoteChangeStorage()
+    
     
     //10.02.23 Upgrade DishFormat
     
@@ -611,6 +614,17 @@ public final class AccounterVM:FoodieViewModel {
         }
         
     }
+    
+    /// Azzera il path di riferimento e chiama il reset dello Scroll
+    func refreshPathAndScroll(tab:DestinationPath) -> Void {
+
+        let path = tab.vmPathAssociato()
+        
+        if self[keyPath: path].isEmpty { self.resetScroll.toggle() }
+        else { self[keyPath: path] = NavigationPath() }
+
+    }
+    
 
     ///Richiede un TemporaryModel, e oltre a salvare il piatto, salva anche gli ingredienti nel viewModel. Ideata per Modulo Importazione Veloce
     func dishAndIngredientsFastSave(item: TemporaryModel) /*throws*/ {
@@ -937,6 +951,39 @@ public final class AccounterVM:FoodieViewModel {
         
         
         return (dishReviewedCount,totalePreparazioni,negative,positive,topRange)
+    }
+    
+    /// Ritorna un array di recensioni ordinate per data di rilascio
+    func reviewValue(rifReviews:[String]) -> [DishRatingModel] {
+        
+      //  let allRif = dish.rifReviews
+        let allRev = self.modelCollectionFromCollectionID(collectionId: rifReviews, modelPath: \.allMyReviews)
+        let sortElement = allRev.sorted(by: {$0.dataRilascio > $1.dataRilascio})
+        
+        return sortElement
+        
+    } // Da Spostare altrove
+    
+   // 28.02.23
+    func filtroRecensioni(rifReviews:[String],filter:TimeSchedule,lastCount:Int) -> [DishRatingModel] {
+        
+        let all = reviewValue(rifReviews: rifReviews)
+
+        switch filter {
+            
+        case .all:
+           return all
+        case .last:
+           return Array(all.prefix(lastCount))
+        case .new:
+            let currentDate = Date()
+            let last24Count = all.filter({
+                $0.dataRilascio < currentDate &&
+                $0.dataRilascio > currentDate.addingTimeInterval(-86400)
+            })
+            return last24Count
+            
+        }
     }
     
     // MyProSearchPack_L0 // Metodi per filtro e Ricarca

@@ -14,7 +14,7 @@ struct ListaIngredientiView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    @Binding var tabSelection: Int // Ancora non Usate
+    let tabSelection: DestinationPath // Ancora non Usate
     let backgroundColorView: Color
     
     @State private var openFilter:Bool = false
@@ -43,6 +43,14 @@ struct ListaIngredientiView: View {
                 elementContainer: container,
                 mapTree: mapTree,
                 generalDisable: generalDisable,
+                onChangeValue: self.viewModel.resetScroll,
+                onChangeProxyControl: { proxy in
+                    if self.tabSelection == .ingredientList {
+                        withAnimation {
+                            proxy.scrollTo(1, anchor: .top)
+                        }
+                    }
+                },
                 mapButtonAction: {
                     self.thirdButtonAction()
                 }, trailingView: {
@@ -481,7 +489,7 @@ struct ListaIngredientiView: View {
 
 struct ListaIngredientiView_Previews: PreviewProvider {
     static var previews: some View {
-        ListaIngredientiView(tabSelection: .constant(2), backgroundColorView: Color("SeaTurtlePalette_1"))
+        ListaIngredientiView(tabSelection: .ingredientList, backgroundColorView: Color("SeaTurtlePalette_1"))
             .environmentObject(testAccount)
     }
 }

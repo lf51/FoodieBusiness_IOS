@@ -16,14 +16,16 @@ struct NewProductMainView: View {
     let newDish: DishModel
     let backgroundColorView: Color
     let destinationPath: DestinationPath
+    let saveDialogType:SaveDialogType
     
     @State private var type:DishModel.PercorsoProdotto
     
-    init(newDish: DishModel, backgroundColorView: Color, destinationPath: DestinationPath) {
+    init(newDish: DishModel, backgroundColorView: Color, destinationPath: DestinationPath,saveDialogType:SaveDialogType) {
         
         self.newDish = newDish
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
+        self.saveDialogType = saveDialogType
       
        /* if newDish.ingredientiPrincipali.contains(newDish.id) {
             self.type = .prodottoFinito
@@ -71,7 +73,8 @@ struct NewProductMainView: View {
                 newDish: newDish,
                 percorso: type,
                 backgroundColorView: backgroundColorView,
-                destinationPath: destinationPath)
+                destinationPath: destinationPath,
+                saveDialogType: saveDialogType)
             
         }
     }
@@ -165,7 +168,7 @@ struct NewProductMainView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            NewProductMainView(newDish: DishModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList)
+            NewProductMainView(newDish: DishModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList,saveDialogType: .completo)
             
         }.environmentObject(viewModel)
     }

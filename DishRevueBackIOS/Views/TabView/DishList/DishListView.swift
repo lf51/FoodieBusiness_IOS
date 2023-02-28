@@ -14,7 +14,7 @@ struct DishListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    @Binding var tabSelection: Int // non Usata
+    let tabSelection: DestinationPath // non Usata
     let backgroundColorView: Color
     
     @State private var openFilter: Bool = false
@@ -40,6 +40,14 @@ struct DishListView: View {
                 elementContainer: container,
                 mapTree: mapTree,
                 generalDisable: generalDisable,
+                onChangeValue: self.viewModel.resetScroll,
+                onChangeProxyControl: { proxy in
+                    if self.tabSelection == .dishList {
+                        withAnimation {
+                            proxy.scrollTo(1, anchor: .top)
+                        }
+                    }
+                },
                 mapButtonAction: {
                     self.thirdButtonAction()
                 },
@@ -893,7 +901,7 @@ struct DishListView_Previews: PreviewProvider {
     
     static var previews: some View {
        
-            DishListView(tabSelection: .constant(1), backgroundColorView: Color("SeaTurtlePalette_1"))
+        DishListView(tabSelection: .dishList, backgroundColorView: Color("SeaTurtlePalette_1"))
             .environmentObject(testAccount)
     }
 }

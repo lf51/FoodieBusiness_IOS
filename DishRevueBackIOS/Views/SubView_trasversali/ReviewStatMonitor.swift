@@ -14,8 +14,10 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
     @EnvironmentObject var viewModel:AccounterVM
  
     var singleDishRif:[String]? = nil
+    var textColor:Color = .black
     let labelPlus: () -> Label
     @ViewBuilder var extraContent: ExtraContent
+    var mL10CalcoloDinamico:( () -> (Double,Int)? )? = nil
 
     var body: some View {
         
@@ -25,7 +27,7 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
                 
                 let(allRev,all24h,mediaGen,mL10) = self.viewModel.monitorRecensioni(rifReview: singleDishRif)
 
-                HStack(spacing:2) {
+                HStack {
 
                     labelPlus()
 
@@ -53,19 +55,35 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
     @ViewBuilder private func vbFirstLine(allRev:Int,all24h:Int,mediaGen:Double,mL10:Double) -> some View {
         
         let mediaGenString = String(format: "%.1f", mediaGen)
-        let ml10String = String(format: "%.1f", mL10)
+      // let ml10String = String(format: "%.1f", mL10)
+        
+        let mediaL10:(value:Double,title:String,dynamicColor:Color) = {
+            
+            if let calcoloDinamico = self.mL10CalcoloDinamico,
+               let valuesIn = calcoloDinamico()
+            {
+                let title = "Media.L\(valuesIn.1)"
+                return (valuesIn.0,title,Color.seaTurtle_2)
+            }
+            else {
+                return (mL10,"Media.L10",Color.clear)
+            }
+ 
+        }()
+        
+        let ml10String = String(format: "%.1f", mediaL10.value)
         
         HStack {
             
             VStack {
-                Text("Totali")
+                Text("Tot")
                 Text("\(allRev)")
                         .fontWeight(.bold)
                   
             }
                 Spacer()
                 VStack {
-                    Text("24H")
+                    Text("New")
                     Text("\(all24h)")
                         .fontWeight(.bold)
                     
@@ -78,20 +96,29 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
                 
             }
             Spacer()
-            VStack {
-                Text("Media-L10")
-                HStack {
-                    Text(ml10String)
-                    vbMediaL10(mediaGen: mediaGen, mediaL10: mL10)
+            VStack(alignment:.center) {
+                
+                HStack(spacing:2) {
+                    
+                    Text(mediaL10.title)
+                    vbMediaL10(mediaGen: mediaGen, mediaL10: mediaL10.value)
                         .imageScale(.medium)
             
-                }.fontWeight(.bold)
+                }
+                
+                Text(ml10String)
+                .fontWeight(.bold)
                 
             }
+            .padding(.horizontal,5)
+            .background {
+                mediaL10.dynamicColor
+                    .cornerRadius(5.0)
+            }
         }
-        .foregroundColor(Color.black)
+        .foregroundColor(textColor)
         .lineLimit(1)
-        .padding(.bottom,1)
+       // .padding(.bottom,1)
         
     }
     
@@ -124,51 +151,56 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
                 }
         
             }
-            .foregroundColor(Color.black)
+            .foregroundColor(textColor)
             .padding(.vertical,1)
             
             HStack {
                 
                 VStack {
-                    Text("Negative(<6)")
                     
-                    HStack {
-                        Text("\(neg) (\(negPercentString))")
-                                
+                    HStack(spacing:0){
+                        Text("(<6)")
                         vbIndicatoreTrendVotoRecensioni(valoreAssociato: 1, trend: trend, coloreAssociato: .red)
                             .imageScale(.medium)
-                        
-                    }.fontWeight(.bold)
-                      
+                    }
+ 
+                        Text("\(neg) (\(negPercentString))")
+                            .fontWeight(.bold)
+                       
                 }
                     Spacer()
                 
                     VStack {
-                        Text("Positive(>=6)")
-                        HStack {
-                            Text("\(pos) (\(posPercentString))")
+                        
+                        HStack(spacing:0) {
+                            Text("(>=6)")
+                            
                             vbIndicatoreTrendVotoRecensioni(valoreAssociato: 5, trend: trend, coloreAssociato: .green)
                                 .imageScale(.medium)
                             
-                        } .fontWeight(.bold)
+                        }
+                        Text("\(pos) (\(posPercentString))")
+                            .fontWeight(.bold)
                         
                     }
                 Spacer()
                 
                 VStack {
-                    
-                    Text("Top(>=9)")
-                    
-                    HStack {
-                        Text("\(top) (\(topPercentString))")
+  
+                    HStack(spacing:0) {
+                        Text("(>=9)")
+                        
                         vbIndicatoreTrendVotoRecensioni(valoreAssociato: 10, trend: trend, coloreAssociato: .green)
                             .imageScale(.medium)
-                    } .fontWeight(.bold)
+                    }
+                    
+                    Text("\(top) (\(topPercentString))")
+                    .fontWeight(.bold)
                     
                 }
 
             }
-            .foregroundColor(Color.black)
+            .foregroundColor(textColor)
             .padding(.bottom,1)
             
         }

@@ -33,12 +33,12 @@ public enum DestinationPathView: Hashable {
     case property(_ :PropertyModel)
     
     case menu(_ :MenuModel)
-    case piatto(_ :DishModel)
+    case piatto(_ dishModel:DishModel,_ saveDialogType:SaveDialogType = .completo)
     case ingrediente(_ :IngredientModel)
     case categoriaMenu
     case moduloImportazioneVeloce
     
-    case recensioni(_ :DishModel)
+    case recensioni(_ :String)
     
     case vistaIngredientiEspansa(_ :DishModel)
     case vistaMenuEspansa(_ :DishModel)
@@ -75,8 +75,12 @@ public enum DestinationPathView: Hashable {
         case .menu(let menu):
             NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
             
-        case .piatto(let piatto):
-            NewProductMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+        case .piatto(let piatto,let dialogType):
+            NewProductMainView(
+                newDish: piatto,
+                backgroundColorView: backgroundColorView,
+                destinationPath: destinationPath,
+                saveDialogType: dialogType)
            /* NewDishMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */
             
         case .ingrediente(let ingredient):
@@ -88,8 +92,10 @@ public enum DestinationPathView: Hashable {
         case .moduloImportazioneVeloce:
             FastImport_MainView(backgroundColorView: backgroundColorView)
             
-        case .recensioni(let dish):
-            DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)
+        case .recensioni(let rifDish):
+           // DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)
+            VistaRecensioniEspansa_SingleDish(backgroundColorView: backgroundColorView, rifDish: rifDish, navigationPath: destinationPath)
+            
             // vedi Nota vocale 13.09
         case .vistaIngredientiEspansa(let dish):
             VistaIngredientiEspansa(currentDish: dish, backgroundColorView: backgroundColorView)
@@ -125,6 +131,7 @@ public enum DestinationPathView: Hashable {
                 backgroundColorView: backgroundColorView)
         case .listaGenericaIng(let container,let label):
             VistaEspansaGenerica(container:container,containerPath: \.allMyIngredients, label:label, backgroundColorView: backgroundColorView)
+            
         case .listaGenericaDish(let container,let label):
             VistaEspansaGenerica(container: container,containerPath: \.allMyDish, label:label, backgroundColorView: backgroundColorView)
             
@@ -153,10 +160,26 @@ public enum DestinationPathView: Hashable {
     
 }
 
- enum DestinationPath {
+enum DestinationPath:Hashable {
     
     case homeView
     case menuList
     case dishList
     case ingredientList
+    
+    func vmPathAssociato() -> ReferenceWritableKeyPath<AccounterVM,NavigationPath> {
+        
+        switch self {
+        case .homeView:
+            return \.homeViewPath
+        case .menuList:
+            return \.menuListPath
+        case .dishList:
+            return \.dishListPath
+        case .ingredientList:
+            return \.ingredientListPath
+        }
+        
+        
+    }
 }
