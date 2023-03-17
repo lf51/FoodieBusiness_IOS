@@ -25,7 +25,6 @@ struct MenuListView: View {
    // @State private var filterProperty:MenuModel.FilterProperty = MenuModel.FilterProperty()
     @State private var filterCore:CoreFilter<MenuModel> = CoreFilter()
     
-    
     var body: some View {
         
         NavigationStack(path:$viewModel.menuListPath) {

@@ -57,7 +57,8 @@ struct VistaEspansaGenerica<M:MyProToolPack_L1>: View where M.VM == AccounterVM,
                                 
                                 model.vbMenuInterattivoModuloCustom(viewModel: self.viewModel, navigationPath: \.homeViewPath)
                                 
-                                vbMenuInterattivoModuloCambioStatus(myModel: model, viewModel: self.viewModel)                                
+                                vbMenuInterattivoModuloCambioStatus(myModel: model, viewModel: self.viewModel)
+                                
                             }
                             
                         }
@@ -83,51 +84,54 @@ struct VistaEspansaGenerica_Previews: PreviewProvider {
 
 struct VistaEspansaMenuPerAnteprima: View {
     
-    @ObservedObject var viewModel:AccounterVM
+    @EnvironmentObject var viewModel:AccounterVM
     
-    let container:[String]
-    let containerPath:KeyPath<FoodieViewModel,[MenuModel]>
+    let rifMenuOn:[String]
+    let rifDishOn:[String]
+   // let containerPath:KeyPath<FoodieViewModel,[MenuModel]>
     let label: String
     let destinationPath:DestinationPath
     let backgroundColorView:Color
     
-    private let allDishModel:[DishModel]
+   // private let allDishesRif:[String]
         
     init(
-        viewModel:AccounterVM,
-        container: [String],
-        containerPath: KeyPath<FoodieViewModel, [MenuModel]>,
+       // viewModel:AccounterVM,
+        rifMenuOn: [String],
+        rifDishOn:[String],
+       // containerPath: KeyPath<FoodieViewModel, [MenuModel]>,
         label: String,
         destinationPath:DestinationPath,
         backgroundColorView: Color) {
        
-        self.viewModel = viewModel
-        self.container = container
-        self.containerPath = containerPath
+      //  self.viewModel = viewModel
+        self.rifMenuOn = rifMenuOn
+        self.rifDishOn = rifDishOn
+      //  self.containerPath = containerPath
         self.label = label
         self.destinationPath = destinationPath
         self.backgroundColorView = backgroundColorView
             
-        self.allDishModel = {
+       /* self.allDishesRif = {
                 
             let allMenu = viewModel.modelCollectionFromCollectionID(
                 collectionId: container,
                 modelPath: containerPath)
                 
             let allDish = allMenu.flatMap({$0.rifDishIn})
-            let allModelDish = viewModel.modelCollectionFromCollectionID(collectionId: allDish, modelPath: \.allMyDish)
+           // let allModelDish = viewModel.modelCollectionFromCollectionID(collectionId: allDish, modelPath: \.allMyDish)
          
-            return allModelDish
+            return allDish
                 
-            }()
+            }() */
 
     }
     
     var body: some View {
         
       VistaEspansaGenerica(
-        container: container,
-        containerPath: containerPath,
+        container: rifMenuOn,
+        containerPath: \.allMyMenu,
         label: label,
         backgroundColorView: backgroundColorView)
         .toolbar {
@@ -137,7 +141,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                     self.viewModel.addToThePath(
                         destinationPath: destinationPath,
                         destinationView: .anteprimaPiattiMenu(
-                            containerMod: allDishModel,
+                            rifDishes: rifDishOn,
                             label: "Anteprima al Cliente")
                     )
                 } label: {
@@ -157,24 +161,23 @@ struct VistaEspansaMenuPerAnteprima: View {
 }
 
  struct AnteprimaPiattiMenu: View {
-    
+    // 01.03.23 Questa è la view gemella di quella che sarà visualizzata al cliente. Ne creiamo due perchè questa avrà delle chiare modifiche per permettere al ristoratore di fare modifiche
     @EnvironmentObject var viewModel:AccounterVM
     
-    let container:[DishModel]
-    let containerPath:KeyPath<FoodieViewModel,[DishModel]>
+    let rifDishes:[String]
+   // let containerPath:KeyPath<FoodieViewModel,[DishModel]>
     let label: String
     let destinationPath:DestinationPath
     let backgroundColorView:Color
     
     init(
-        container: [DishModel],
-        containerPath: KeyPath<FoodieViewModel, [DishModel]>,
+        rifDishes: [String],
         label: String,
         destinationPath:DestinationPath,
         backgroundColorView: Color) {
       
-        self.container = container
-        self.containerPath = containerPath
+        self.rifDishes = rifDishes
+      //  self.containerPath = containerPath
         self.label = label
         self.destinationPath = destinationPath
         self.backgroundColorView = backgroundColorView
@@ -183,9 +186,7 @@ struct VistaEspansaMenuPerAnteprima: View {
     @State private var currentDishForRatingList:DishModel?
     @State private var editMode:Bool = false
     @State private var frames:[CGRect] = []
-     
-    //@State private var mapTree:MapTree // dobbiamo / possiamo dare all'utente la possibilità d scegliersi la categoria per il Map
-     
+
     var body: some View {
         
         CSZStackVB(title: label, backgroundColorView: backgroundColorView) {
@@ -198,6 +199,8 @@ struct VistaEspansaMenuPerAnteprima: View {
                 textSizeAsScreenPercentage: 0.1,
                 labelOpacity: 0.35,
                 extendedVersion: true)
+            
+            let container = self.viewModel.modelCollectionFromCollectionID(collectionId: rifDishes, modelPath: \.allMyDish).sorted(by: {$0.intestazione < $1.intestazione})
             
             VStack {
                 
@@ -239,7 +242,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                                     Button {
                                         self.viewModel.addToThePath(
                                             destinationPath: destinationPath,
-                                            destinationView: .piatto(model))
+                                            destinationView: .piatto(model,.ridotto))
                                     } label: {
                                         Image(systemName:"gearshape")
                                             .imageScale(.large)
@@ -255,111 +258,19 @@ struct VistaEspansaMenuPerAnteprima: View {
                                 }
                             }
                     }
-
-                    
-                  /*  FiltrableBodyContent_SubView(
-                        container: container,
-                        mapTree: mapLabel,
-                        frames: $frames,
-                        coordinateSpace: "AnteprimaMainScroll") { model in
-                            
-                          //  VStack {
-                              /* MapLabel(
-                                    rowBoundReduction: 20,
-                                    rowColor: .seaTurtle_3,
-                                    shadowColor: .black,
-                                    rowOpacity: 1.0) */
-                                
-                                DishModelRow_ClientVersion(
-                                    viewModel: viewModel,
-                                    item: model,
-                                    rowColor: backgroundColorView,
-                                    rowOpacity: 0.15,
-                                    rowBoundReduction: 20,
-                                    vistaEspansa: true) {
-                                        self.currentDishForRatingList = model
-                                    }
-                                    .modifierIf(self.editMode) { view in
-                                        
-                                        view.overlay(alignment: .bottomTrailing) {
-                                           
-                                            Button {
-                                                self.viewModel.addToThePath(
-                                                    destinationPath: destinationPath,
-                                                    destinationView: .piatto(model))
-                                            } label: {
-                                                Image(systemName:"gearshape")
-                                                    .imageScale(.large)
-                                                    .foregroundColor(.seaTurtle_3)
-                                                    .padding(5)
-                                                    .background {
-                                                        Color.seaTurtle_2.opacity(0.2)
-                                                            .clipShape(Circle())
-                                                            .shadow(radius: 5.0)
-                                                          //  .cornerRadius(5.0)
-                                                    }
-                                            }
-                                        }
-                                    }
-                          //  }
-                        } */
-                    
-                    /*ForEach(container,id:\.self) { rif in
-                        
-                        if let model = self.viewModel.modelFromId(id: rif, modelPath: containerPath) {
-                            
-                            DishModelRow_ClientVersion(
-                                viewModel: viewModel,
-                                item: model,
-                                rowColor: backgroundColorView,
-                                rowOpacity: 0.15,
-                                rowBoundReduction: 20,
-                                vistaEspansa: true) {
-                                    self.currentDishForRatingList = model
-                                }
-                                .modifierIf(self.editMode) { view in
-                                    view.overlay(alignment: .bottomTrailing) {
-                                       
-                                        Button {
-                                            self.viewModel.addToThePath(
-                                                destinationPath: destinationPath,
-                                                destinationView: .piatto(model))
-                                        } label: {
-                                            Image(systemName:"gearshape")
-                                                .imageScale(.large)
-                                                .foregroundColor(.seaTurtle_3)
-                                                .padding(5)
-                                                .background {
-                                                    Color.seaTurtle_2.opacity(0.2)
-                                                        .clipShape(Circle())
-                                                        .shadow(radius: 5.0)
-                                                      //  .cornerRadius(5.0)
-                                                }
-                                        }
-
-                                        
-                                        
-                                    }
-                                }
-                            
-                        }
-                      
-                    }*/ // Chiusa ForEach
-                    
                 }
                 .csCornerRadius(10, corners: [.topLeft,.topRight])
                 .coordinateSpace(name: "AnteprimaMainScroll")
                 .onPreferenceChange(FramePreference.self, perform: {
                                 frames = $0.sorted(by: { $0.minY < $1.minY })
                             })
-                // coordinateSpace
-                //onChangePreferece
                 CSDivider()
             } // end vStack Madre
             .padding(.horizontal,10)
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
+                
                 Button {
                
                         self.editMode.toggle()
@@ -387,3 +298,5 @@ struct VistaEspansaMenuPerAnteprima: View {
     }
     
 }
+
+

@@ -66,7 +66,7 @@ extension DishModel:
     public func modelStatusDescription() -> String {
         "\(self.percorsoProdotto.simpleDescription()) (\(self.status.simpleDescription().capitalized))"
     }
-        
+            
     public func returnModelRowView(rowSize:RowSize) -> some View {
         DishModel_RowView(item: self,rowSize: rowSize)
     }
@@ -369,7 +369,7 @@ extension DishModel:
         viewModel.deleteItemModel(itemModel: self)
     }
     
-    /// ritorna gli ingredienti meno le bozze e gli archiviati. Comprende i completi(.pubblici) e i completi(.inPausa)
+    /// filtra gli ingredienti principali e secondari ritornandoli tutti meno gli archiviati. Comprende i disponibili e gli inPausa
     func allMinusArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
         
         let allIngredientsID = self.ingredientiPrincipali + self.ingredientiSecondari
@@ -430,22 +430,7 @@ extension DishModel:
         
         return allActiveModels
     } //02.01.23 ricollocata in MyFoodiePackage
-    
-    /// controlla tutti gii ingredienti attivi del piatto, se sono in stock, in arrivo, o in esaurimento. In caso affermativo ritorna true, il piatto è eseguibile
-    func controllaSeEseguibile(viewModel:AccounterVM) -> Bool {
         
-        let allIngActive = self.allIngredientsAttivi(viewModel: viewModel)
-        let mapStock = allIngActive.map({
-            viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)
-        })
-        let filtraStock = mapStock.filter({
-            $0 != .esaurito
-        })
-        
-        return allIngActive.count == filtraStock.count
-        
-    }
-    
     private func preCallHasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T?) -> Bool {
         
         guard let unwrapQuality = quality else { return true }
@@ -581,6 +566,113 @@ extension DishModel:
      
     } // 20.01.23 Ricollocata in MyFoodiePackage
     
+    /// controlla tutti gii ingredienti attivi del piatto, se sono in stock, in arrivo, o in esaurimento. In caso affermativo ritorna true, il piatto è eseguibile
+    func controllaSeEseguibile(viewModel:AccounterVM) -> Bool {
+        
+        let allIngActive = self.allIngredientsAttivi(viewModel: viewModel)
+        
+        let mapStock = allIngActive.map({
+            viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)
+        })
+        let filtraStock = mapStock.filter({
+            $0 != .esaurito
+        })
+        
+        return allIngActive.count == filtraStock.count
+        
+    } // deprecata 16.03.23
+    
+    /// analizza gli ingredienti per comprendere se un piatto è eseguibile o meno
+    func checkStatusExecution(viewModel:AccounterVM) -> ExecutionState {
+        
+        // 1. Eseguibile
+        // 1a. Tutti gli ing sono disponibili, principali, secondari o eventuali sostituti
+        // Passaggio di status sempre consentito. 16.03.23 Nessuna modifica da apportare
+        let allIng = self.allMinusArchiviati(viewModel: viewModel)
+        let ingCount = allIng.count
+        let ingActive = self.allIngredientsAttivi(viewModel: viewModel)
+        let activeCount = ingActive.count
+        
+        guard ingCount != activeCount else { return .eseguibile }
+        
+        // 1b. Non tutti gli ing sono disponibili, ma sono tutti in stock
+        // Passaggio di status consentito con alert informativo della presenza di ing inPausa. 16.03.23 da implementare
+        let allInPausa = allIng.filter({$0.status.checkStatusTransition(check: .inPausa)})
+       /* let allInPausaAvaible = allInPausa.map({viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)}).contains(.esaurito) */
+        
+        let areNotAllIngInPausaAvaible = allInPausa.contains(where: { viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == .esaurito })
+        
+        guard areNotAllIngInPausaAvaible else { return .eseguibile }
+        
+        // 2.Eseguibile con Riserva
+        
+        //2a. Se Gli ing in Pausa, e non in stock, sono tutti secondari è consentito eseguire il piatto con riserva dello chef
+        // In questo caso il passaggio di Status da inPausa a Disponibile può essere consentito con conferma. 16.03.23 da implementare
+        
+        let idIngInPausa = allInPausa.map({$0.id})
+        let areNotInPausaAllSecondary = self.ingredientiPrincipali.contains {
+            idIngInPausa.contains($0)
+        }
+        
+        guard areNotInPausaAllSecondary else { return .eseguibileConRiserva }
+        
+        // 3. Non Eseguibile. Il piatto contiene fra i principali degli ing in pausa e non in stock
+        // In questo caso il passaggio di Status da inPausa a Disponibile deve essere bloccato. 16.03.23 da implementare
+        
+        return .nonEseguibile
+        
+    }
+    
+    
+    public enum ExecutionState:Property_FPC {
+        
+        static let allCases:[ExecutionState] = [.eseguibile,.eseguibileConRiserva,.nonEseguibile]
+        
+        case eseguibile
+        case eseguibileConRiserva
+        case nonEseguibile
+        
+        public func simpleDescription() -> String {
+            switch self {
+                
+            case .eseguibile: return "Eseguibile"
+            case .eseguibileConRiserva: return "con Riserva"
+            case .nonEseguibile: return "non Eseguibile"
+            
+            }
+        }
+        
+        public func returnTypeCase() -> DishModel.ExecutionState {
+           
+            return self
+        }
+        
+        public func orderAndStorageValue() -> Int {
+            switch self {
+                
+            case .eseguibile: return 0
+            case .eseguibileConRiserva: return 1
+            case .nonEseguibile: return 2
+            
+            }
+        }
+        
+        public func coloreAssociato() -> Color {
+            
+            switch self {
+                
+            case .eseguibile: return .green
+            case .eseguibileConRiserva: return .yellow
+            case .nonEseguibile: return .red
+            
+            }
+
+            
+        }
+        
+    }
+    
+    
 }
 
 extension DishModel: Object_FPC {
@@ -655,6 +747,8 @@ extension DishModel: Object_FPC {
             return coreFilter.tipologiaFiltro.normalizeBoolValue(value: result)
             
         }()
+        
+        let executionState:ExecutionState = self.checkStatusExecution(viewModel: readOnlyVM)
        // let core = filterProperties.coreFilter
         
       //  return
@@ -679,6 +773,16 @@ extension DishModel: Object_FPC {
         
         coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: properties.status) &&
         
+        // innsesto 16.03.23
+        
+        coreFilter.compareStatusTransition(
+            localStatus: self.status,
+            singleFilter: properties.status_singleChoice) &&
+        
+        coreFilter.comparePropertyToProperty(localProperty: executionState, filterProperty: properties.executionState) &&
+        
+        // end 16.03
+        
         coreFilter.compareStatoScorte(modelId: self.id, filterInventario: properties.inventario, readOnlyVM: readOnlyVM) &&
         
         self.preCallHasAllIngredientSameQuality(
@@ -702,7 +806,11 @@ extension DishModel: Object_FPC {
       //  public var sortCondition: SortCondition
         
         var status:[StatusTransition]?
+        // innest0 16.03.23 escluse dal countChange
+        var status_singleChoice:StatusTransition?
+        var executionState:ExecutionState?
         
+        // 16.03 end
         var percorsoPRP:[DishModel.PercorsoProdotto]? { willSet {
             if let value = newValue,
                !value.contains(.prodottoFinito) { self.inventario = nil }
@@ -764,7 +872,13 @@ extension DishModel: Object_FPC {
                 oldValue: old.dietePRP) +
             countManageCollection_FPC(
                 newValue: new.inventario,
-                oldValue: old.inventario)
+                oldValue: old.inventario) +
+            countManageSingle_FPC(
+                newValue: new.executionState,
+                oldValue: old.executionState) +
+            countManageSingle_FPC(
+                newValue: new.status_singleChoice,
+                oldValue: old.status_singleChoice)
             
         }
 
@@ -817,5 +931,7 @@ extension DishModel: Object_FPC {
         
         
     }
+    
+ 
     
 }

@@ -120,6 +120,7 @@ struct NuovoIngredienteGeneralView: View {
                         }//.padding(.horizontal)
                       
                     }
+                    .scrollDismissesKeyboard(.immediately)
                   //  .zIndex(0)
                    // .opacity(wannaAddAllergeni ? 0.6 : 1.0)
                    // .disabled(wannaAddAllergeni)

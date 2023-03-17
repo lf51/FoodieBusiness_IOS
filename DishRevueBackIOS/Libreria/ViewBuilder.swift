@@ -24,7 +24,7 @@ import MyFoodiePackage
 
 } */ // deprecata 07.09
 
-
+/*
 /// Ritorna l'immagine associata allo Status del Modello
 @ViewBuilder func vbEstrapolaStatusImage<M:MyProStatusPack_L0>(itemModel:M) -> some View {
     // M passa da MyModelStatusConformity a MyProStatusPackL0
@@ -36,8 +36,55 @@ import MyFoodiePackage
             .imageScale(.large)
             .foregroundColor(color)
         
- 
+}*/ // 17.03.23 deprecata per upgrade
+
+/// Ritorna l'immagine associata allo Status del Modello
+@ViewBuilder func vbEstrapolaStatusImage<M:MyProStatusPack_L0>(itemModel:M,dashedColor:Color) -> some View {
+    // M passa da MyModelStatusConformity a MyProStatusPackL0
+   
+    let image = itemModel.status.imageAssociated()
+    let color = itemModel.status.transitionStateColor()
+
+    csCircleDashed(
+        internalCircle: image,
+        internalColor: color,
+        dashedColor: dashedColor)
+    
+       /* ZStack {
+            
+            Image(systemName: image)
+                .imageScale(.medium)
+                .foregroundColor(color)
+                .zIndex(0)
+            
+            Image(systemName: "circle.dashed")
+                .imageScale(.large)
+                .foregroundColor(dashedColor)
+                .zIndex(1)
+            
+        } */
+       
 }
+
+/// Versione custom del circle.dashed.inset.filled. L'immagine internal, internalCircle, può essere customizzata. Chiaramente è preferibile che sia comunque un cerchio. Utile però perchè per le bozze passiamo un martello cerchiato.
+func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,dashedColor:Color) -> some View {
+    
+    ZStack {
+        
+        Image(systemName: internalCircle)
+            .imageScale(.small)
+            .foregroundColor(internalColor)
+            .zIndex(0)
+        
+        Image(systemName: "circle.dashed")
+            .bold()
+            .imageScale(.large)
+            .foregroundColor(dashedColor)
+            .zIndex(1)
+        
+    }
+}
+
 
 
 /// ViewBuilder - Riconosce il modello e ritorna la rowView associata. Deprecata 19.07 Sostituita da una func nel Protocolo

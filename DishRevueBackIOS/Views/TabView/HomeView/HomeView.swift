@@ -9,6 +9,7 @@ import SwiftUI
 import UIKit
 import MyPackView_L0
 import MyFoodiePackage
+import MyFilterPackage
 
 /*
 struct HomeView: View {
@@ -425,17 +426,22 @@ struct HomeView: View {
                                     .opacity(0.03)
                                     .cornerRadius(5.0)
                             }
-                           
-                      
+                                                 
                         ScrollView(showsIndicators:false) {
                            
+                            PullToRefresh(coordinateSpaceName: "HomeViewMainScroll") {
+                                self.viewModel.objectWillChange.send()
+                                // manda l'update del view model e questo permette di aggiornare l'ora nel monitor ma anche i menu che nel fratttempo sono entrati in servizio
+                       
+                            }
+                            
                             VStack(alignment: .leading,spacing:.vStackBoxSpacing) {
                                 
                                MonitorServizio()
                                     .padding(.bottom,1)
                                     .id(0)
                                     
-
+                                    
                                 VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
                                     MenuDiSistema_BoxView(menuDiSistema: .delGiorno)
 
@@ -445,18 +451,20 @@ struct HomeView: View {
                                   //  Color.red
                                 }
 
-                                CSZStackVB_Framed(frameWidth:500,backgroundOpacity: 0.05,shadowColor: .clear) {
-                                    
+                             //  MonitorServizioGlobale()//Global
+                                
+                                CSZStackVB_Framed(frameWidth:650,backgroundOpacity: 0.05,shadowColor: .clear) {
+                                    // Nota 01.03 ScheduleServizio
                                         ScheduleServizio()
-                                            .padding(5)
+                                          .padding(5)
+                                          //.background { Color.white.opacity(0.4)}
+                                          
                                 }
-                              //  .padding(.bottom,1)
-                                
-                                
+                              //  .background { Color.yellow.opacity(0.6)}
+
                                 MonitorReview()
                                      .padding(.bottom,1)
                                      
-                                
                             let allPrepRated = compilaArrayPreparazioni()
                                 
                                 TopRated_SubView(
@@ -480,6 +488,7 @@ struct HomeView: View {
 
                         } // chiusa scrollView
                         //.id(1)
+                        .coordinateSpace(name: "HomeViewMainScroll")
                         .onChange(of: self.viewModel.resetScroll) { _ in
                             if self.tabSelection == .homeView {
                                 withAnimation {
@@ -500,8 +509,6 @@ struct HomeView: View {
          /*  .navigationDestination(for: PropertyModel.self, destination: { property in
                 EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)
             }) */
-           
-            
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
    
@@ -515,8 +522,6 @@ struct HomeView: View {
                         csSetupButton()
                     }
            
-                    
-                    
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -844,6 +849,21 @@ struct MenuDiSistema_BoxView:View {
                                     
                                     
                             }.disabled(allDish == 0)
+                            
+                            Spacer()
+                            
+                            CSButton_image(
+                                frontImage: "x.circle",
+                                imageScale: .medium,
+                                frontColor: .seaTurtle_4) {
+                                   // self.viewModel.deleteItemModel(itemModel: menuDS)
+                                    withAnimation {
+                                        menuDS?.manageModelDelete(viewModel: self.viewModel)
+                                    }
+                                }
+                                .shadow(color: .seaTurtle_4, radius: 1.0)
+                                .padding(.trailing)
+                         //   Spacer()
                             
                         }
                     }

@@ -21,7 +21,7 @@ struct NewDishMainView: View {
     
     @State private var generalErrorCheck: Bool = false
     
-    @State private var noIngredientsNeeded: Bool = false
+  //  @State private var noIngredientsNeeded: Bool = false
     @State private var wannaAddIngredient: Bool = false
     
     @State private var areAllergeniOk: Bool = false
@@ -92,8 +92,7 @@ struct NewDishMainView: View {
                             PannelloIngredienti_NewDishSubView(
                                 newDish: newDish,
                                 generalErrorCheck: generalErrorCheck,
-                                wannaAddIngredient: $wannaAddIngredient,
-                                noIngredientsNeeded: $noIngredientsNeeded)
+                                wannaAddIngredient: $wannaAddIngredient)
                                 
                             AllergeniScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck, areAllergeniOk: $areAllergeniOk)
  
@@ -123,6 +122,7 @@ struct NewDishMainView: View {
                         
      
                     }
+                .scrollDismissesKeyboard(.immediately)
                   //  .zIndex(0)
                  //  .opacity(wannaAddIngredient ? 0.6 : 1.0)
                   //  .disabled(wannaAddIngredient)
@@ -245,7 +245,7 @@ struct NewDishMainView: View {
     
     private func checkIngredienti() -> Bool {
         
-        guard !self.noIngredientsNeeded else { return true }
+      //  guard !self.noIngredientsNeeded else { return true }
         
         return !self.newDish.ingredientiPrincipali.isEmpty
     }

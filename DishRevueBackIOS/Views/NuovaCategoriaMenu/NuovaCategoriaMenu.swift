@@ -123,6 +123,7 @@ struct NuovaCategoriaMenu: View {
                             
                         }
                         .clipShape(RoundedRectangle(cornerRadius: 10.0))
+                        .scrollDismissesKeyboard(.immediately)
                       //  .scaledToFit()
                         .listStyle(.plain)
                 }
@@ -254,7 +255,9 @@ struct CorpoNuovaCategoria:View {
                     }
                 }
                 
-            }.padding(.vertical,5)
+            }
+            .padding(.vertical,5)
+            .scrollDismissesKeyboard(.immediately)
                         
             HStack {
 

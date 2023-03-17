@@ -67,6 +67,7 @@
 		3F62DDFE289E56D9008F17A4 /* DishListByIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */; };
 		3F66D6582905474100FF2751 /* VistaEspansaGenerica.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */; };
 		3F7179912913D853002D14A4 /* FilterSortMap_Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7179902913D853002D14A4 /* FilterSortMap_Bar.swift */; };
+		3F721A7A29C31F1C002467FC /* DishExecutionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F721A7929C31F1C002467FC /* DishExecutionStatus.swift */; };
 		3F734A2729167935007F17AE /* TestGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F734A2629167935007F17AE /* TestGrid.swift */; };
 		3F7A10E8291285BB0071B647 /* InitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10E7291285BB0071B647 /* InitType.swift */; };
 		3F7A10EB291287DE0071B647 /* FilterRow_Generic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10EA291287DE0071B647 /* FilterRow_Generic.swift */; };
@@ -281,6 +282,7 @@
 		3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishListByIngredientView.swift; sourceTree = "<group>"; };
 		3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaEspansaGenerica.swift; sourceTree = "<group>"; };
 		3F7179902913D853002D14A4 /* FilterSortMap_Bar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSortMap_Bar.swift; sourceTree = "<group>"; };
+		3F721A7929C31F1C002467FC /* DishExecutionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishExecutionStatus.swift; sourceTree = "<group>"; };
 		3F734A2629167935007F17AE /* TestGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestGrid.swift; sourceTree = "<group>"; };
 		3F7A10E7291285BB0071B647 /* InitType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitType.swift; sourceTree = "<group>"; };
 		3F7A10EA291287DE0071B647 /* FilterRow_Generic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterRow_Generic.swift; sourceTree = "<group>"; };
@@ -511,6 +513,7 @@
 				3F3957FA28C9DCD6004937D2 /* DestinationPath.swift */,
 				3F7A10E7291285BB0071B647 /* InitType.swift */,
 				3FA965F629A0F120006B2002 /* ModelField.swift */,
+				3F721A7929C31F1C002467FC /* DishExecutionStatus.swift */,
 			);
 			path = OtherData;
 			sourceTree = "<group>";
@@ -1458,6 +1461,7 @@
 				3F1781942944D9BD00AA1474 /* PropertyModelExt.swift in Sources */,
 				3F3D1EC1290D8D2300ED107E /* ScheduleServizio.swift in Sources */,
 				4DCCD6D927BAC01E00F387B2 /* GridInfoDishValue_NewDishSubView.swift in Sources */,
+				3F721A7A29C31F1C002467FC /* DishExecutionStatus.swift in Sources */,
 				4DB75EDF2812BC22008C1765 /* PropertyModel_RowView.swift in Sources */,
 				4DF7D9D527A4429F001DB949 /* VariousTabStyle.swift in Sources */,
 				3FCC71B828E9D1D600F105A2 /* MonitorServizio.swift in Sources */,
@@ -1592,7 +1596,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 101;
+				CURRENT_PROJECT_VERSION = 102;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1623,7 +1627,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 101;
+				CURRENT_PROJECT_VERSION = 102;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

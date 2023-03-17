@@ -111,22 +111,21 @@ extension MenuModel:
     
     public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
-        let disabilita = self.rifDishIn.isEmpty
+      //  let disabilita = self.rifDishIn.isEmpty
         let dishCount = viewModel.allMyDish.count
         let dishInMenu = self.rifDishIn.count
         
-      return VStack {
+      return //VStack {
             
-            Button {
+          /*  Button {
              //   viewModel[keyPath: navigationPath].append(DestinationPathView.categoriaMenu)
-             
-                
+
             } label: {
                 HStack{
                     Text("Anteprima")
                     Image(systemName: "eye")
                 }
-            }.disabled(disabilita)
+            }.disabled(disabilita) */
           
           Button {
               viewModel[keyPath: navigationPath].append(DestinationPathView.vistaPiattiEspansa(self))
@@ -138,7 +137,7 @@ extension MenuModel:
               }
           }.disabled(dishCount == 0)
             
-        }
+      //  }
     }
     
    /* public static func sortModelInstance(lhs: MenuModel, rhs: MenuModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {

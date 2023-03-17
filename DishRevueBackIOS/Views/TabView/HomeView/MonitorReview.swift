@@ -18,9 +18,9 @@ struct MonitorReview: View {
             Group {
                 Text("Recensioni")
                     .font(.system(.headline, design: .monospaced, weight: .black))
-                    .foregroundColor(Color("SeaTurtlePalette_2"))
+                    .foregroundColor(.seaTurtle_2)
                 
-                CSInfoAlertView(imageScale: .small, title: "Legenda", message: .monitorRecensioni)
+                CSInfoAlertView(title: "Legenda", message: .monitorRecensioni)
                    Spacer()
             }
         } extraContent: { vbExtraStat() }

@@ -16,21 +16,32 @@ struct ListaDellaSpesa_MainView: View {
     let currentDate:String = csTimeFormatter().data.string(from: Date())
     let inventarioEnumerato:EnumeratedSequence<[IngredientModel]>
     let countInventario:Int
-  //  let inventarioArchiviato:Inventario
     let backgroundColorView:Color
     
     init(inventarioIngredienti:[IngredientModel], backgroundColorView: Color) {
-        
-       // let inventarioScorte = onlyReaderVM.inventarioScorte
-        
-       // self.inventarioArchiviato = copiaInventario
+
         self.inventarioEnumerato = inventarioIngredienti.enumerated()
         self.countInventario = inventarioIngredienti.count
         self.backgroundColorView = backgroundColorView
         
         print("Init Lista della Spesa")
-       // self.allInventario = inventarioScorte.inventarioFiltrato(viewModel: onlyReaderVM)
+
         
+    }
+    
+    // Upgrade 08.03
+    @State private var espandiNote:Bool = true
+    var value:(title:String,color:Color,image:String) {
+        if self.espandiNote {
+            return (
+                "Chiudi Note",
+                Color.seaTurtle_2,
+                "arrow.down.and.line.horizontal.and.arrow.up" )}
+        else {
+            return (
+                "Espandi Note",
+                Color.seaTurtle_3,
+                "arrow.up.and.line.horizontal.and.arrow.down")}
     }
     
     var body: some View {
@@ -56,75 +67,43 @@ struct ListaDellaSpesa_MainView: View {
                         ForEach(Array(inventarioEnumerato),id:\.element) { position, element in
 
                                 rowIngredient(ing: element, position: position)
-                              /*  .padding(.horizontal,5)
-                                .padding(.vertical,14)
-                                .background {
-                                 coloreAssociato(ingredient: element)
-                                        .opacity(0.4)
-                                    .cornerRadius(4)
-                                 } */
+    
                         }
 
                     }
                 }
+                .scrollDismissesKeyboard(.immediately)
                 
+                CSDivider()
             }
             .csHpadding()
-            //.padding(.horizontal)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
 
+                Button {
+                    withAnimation {
+                        self.espandiNote.toggle()
+                    }
+                } label: {
+                
+                    HStack {
+                        
+                        Image(systemName: value.image)
+                            .imageScale(.medium)
+                        Text(value.title)
+                        
+                    }
+                    .foregroundColor(value.color)
+                    
+                }
+
+            }
         }
         
     }
     
     // Method
-    
-    /*
-   private func inventarioFiltrato() -> EnumeratedSequence<[IngredientModel]> {
-        
-        let allIDing = self.viewModel.inventarioScorte.allInventario()
-        let allING = self.viewModel.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
-          
-        let allVegetable = allING.filter({ $0.origine.returnTypeCase() == .vegetale })
-        let allMeat = allING.filter({
-              $0.origine.returnTypeCase() == .animale &&
-              !$0.allergeni.contains(.latte_e_derivati) &&
-              !$0.allergeni.contains(.molluschi) &&
-              !$0.allergeni.contains(.pesce) &&
-              !$0.allergeni.contains(.crostacei)
-          })
-        let allFish = allING.filter({
-              $0.allergeni.contains(.molluschi) ||
-              $0.allergeni.contains(.pesce) ||
-              $0.allergeni.contains(.crostacei)
-          })
-          
-        let allMilk = allING.filter({
-              $0.origine.returnTypeCase() == .animale &&
-              $0.allergeni.contains(.latte_e_derivati)
-          })
-        
-         /* allVegetable.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-           allMilk.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-           
-           allMeat.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           })
-       
-           allFish.sort(by: {
-               viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id).orderValue() > viewModel.inventarioScorte.statoScorteIng(idIngredient: $1.id).orderValue()
-           }) */
-        print("Dentro Inventario Filtrato")
-        return (allVegetable + allMilk + allMeat + allFish).enumerated()
-      
-       
-    }*/
-    
-    
-    
     
     @ViewBuilder private func rowIngredient(ing:IngredientModel, position:Int) -> some View {
         
@@ -135,7 +114,7 @@ struct ListaDellaSpesa_MainView: View {
             let provenienza:String
             
             if ing.provenienza == .km0 || ing.provenienza == .italia {
-                provenienza = "\(ing.provenienza.simpleDescription())"
+                provenienza = "\(ing.provenienza.shortDescription())"
             } else { provenienza = "" }
             
             return conservazione + produzione + provenienza
@@ -143,193 +122,16 @@ struct ListaDellaSpesa_MainView: View {
         
         let statoInventario = self.viewModel.inventarioScorte.statoScorteIng(idIngredient: ing.id)
         
-        
-        SpesaRowIngredientView(element: ing, position: position, moreInfo: moreInfo, statoInventario: statoInventario, currentDate: self.currentDate)
-        
-      //  let condition = statoInventario == .inArrivo
-        // Nota Vocale 01.10
-        
-       /* let statusChanged:Color? = {
-           
-            let model = self.viewModel.modelFromId(id: ing.id, modelPath: \.allMyIngredients)
-            return model?.status.transitionStateColor()
-            
-        }() */
-        // end
-        
-        
-    //    VStack(alignment:.leading,spacing: 5) {
-            
-         /*   HStack {
-                
-                let condition = statoInventario == .inArrivo
-                
-                    HStack(alignment:.center,spacing:2) {
-                        
-                        Text("\(position + 1).")
-                            .font(.system(.subheadline, design: .monospaced, weight: .bold))
-                            .foregroundColor(Color.white.opacity(0.8))
-                        
-                        HStack(spacing:5) {
-
-                         //   HStack(spacing:3) {
-                               
-                                
-                                RoundedRectangle(cornerRadius: 2.0)
-                                        .frame(width: 5)
-                                        .foregroundColor(ing.status.transitionStateColor())
-                                
-                              /*  RoundedRectangle(cornerRadius: 2.0)
-                                        .frame(width: 3)
-                                        .foregroundColor(ing.statusPrecedente?.transitionStateColor() ?? Color.gray) */
-                              
-                         //   }
-     
-                            Text(ing.intestazione)
-                                .italic()
-                                .font(.title3)
-                                .strikethrough(condition, color: Color("SeaTurtlePalette_3"))
-                                .foregroundColor(Color.black)
-                                .lineLimit(1)
-                                .brightness(0.1)
-                                .opacity(condition ? 0.5 : 1.0)
-                        }
-                    }
-                    
-                  //  Spacer()
-                    Text(moreInfo.isEmpty ? "--" : "\(moreInfo)")
-                        .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
-                
-                //.opacity(statoInventario == .inArrivo ? 0.5 : 1.0)
-           
-                Spacer()
-                
-                if !condition {
-                    
-                   /* Text(statoInventario == .esaurito ? "!!!" : "!")
-                        .italic()
-                        .font(.title3)
-                        .foregroundColor(statoInventario.coloreAssociato()) */
-                    Image(systemName: statoInventario.imageAssociata())
-                        .imageScale(.medium)
-                        .foregroundColor(statoInventario.coloreAssociato())
-                }
-
-                depennaLogic(id:ing.id,stato:statoInventario)
-                   
-                  //  .foregroundColor(ing.status.transitionStateColor())
-              //  Spacer()
-            }//.padding(.vertical,5)
-           */
-         //   Divider()
-              
-   //     }
-        
-        
+        SpesaRowIngredientView(
+            element: ing,
+            position: position,
+            moreInfo: moreInfo,
+            statoInventario: statoInventario,
+            currentDate: self.currentDate,
+            showNote: self.espandiNote)
+    
     }
-    
-   /* private func coloreAssociato(ingredient:IngredientModel) -> Color {
-     
-     if ingredient.origine == .vegetale { return .green}
-     else if
-             ingredient.allergeni.contains(.molluschi) ||
-             ingredient.allergeni.contains(.crostacei) ||
-             ingredient.allergeni.contains(.pesce) { return .indigo }
-     else if ingredient.allergeni.contains(.latte_e_derivati) { return .white }
-     else { return .pink }
-         
-     } */
-       
-    
-   /* private func depennaLogic(id:String,stato:Inventario.TransitoScorte) -> some View {
-        
-      //  let today = csTimeFormatter().data.string(from: Date())
-        let value:(disable:Bool,opacity:CGFloat,checkColor:Color) = {
-           
-            if let key = self.viewModel.inventarioScorte.lockedId[self.currentDate] {
-                if key.contains(id) {return (true,0.4,Color("SeaTurtlePalette_4")) }
-                else { return (false,1.0,Color("SeaTurtlePalette_3")) }
-            } else {
-                return (false,1.0,Color("SeaTurtlePalette_3"))
-            }
-            
-        }()
-        
-        return HStack {
-            
-            if value.disable {
-                Image(systemName: "triangle")
-                    .imageScale(.medium)
-                    .foregroundColor(Color("SeaTurtlePalette_2"))
-            }
 
-            Image(systemName: "square")
-                  .imageScale(.large)
-                  .foregroundColor(Color.black)
-                  .brightness(0.3)
-                  .overlay {
-                      if stato == .inArrivo {
-                          Image(systemName: "checkmark")
-                              .bold()
-                              .imageScale(.large)
-                              .foregroundColor(value.checkColor)
-                      }
-                  }
-                  .onTapGesture {
-                      withAnimation {
-                          self.depennaAction(id: id, statoCorrente: stato)
-                      }
-                  }
-                  .onLongPressGesture {
-                      withAnimation {
-                          self.undoDepennaAction(id: id, statoCorrente: stato)
-                      }
-                  }
-                  .opacity(value.opacity)
-                  .disabled(value.disable)
-        }
-       // }
-    }*/
-    
-   /* private func undoStatusInArrivo(id:String) {
-        
-        let today = csTimeFormatter().data.string(from: Date())
-        
-        self.viewModel.inventarioScorte.cronologiaAcquisti[today]?.removeAll(where: {$0 == id})
-        
-    } */
-    
-  /*  private func undoDepennaAction(id:String,statoCorrente:Inventario.TransitoScorte) {
-        
-        if statoCorrente == .inArrivo {
-            
-           /* self.viewModel.inventarioScorte.cronologiaAcquisti[self.currentDate]?.removeAll(where: {$0 == id}) */
-            self.viewModel.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0 == self.currentDate})
-        
-           /* if self.inventarioArchiviato.ingInEsaurimento.contains(id) {
-                self.viewModel.inventarioScorte.ingInEsaurimento.append(id)
-                
-            } */
-            
-            if let key = self.viewModel.inventarioScorte.archivioIngInEsaurimento[currentDate] {
-                
-                if key.contains(id) {  self.viewModel.inventarioScorte.ingInEsaurimento.append(id) }
-                else { self.viewModel.inventarioScorte.ingEsauriti.append(id) }
- 
-            } else {
-                self.viewModel.inventarioScorte.ingEsauriti.append(id)
-            }
-        }
-    }
-    
-    private func depennaAction(id:String,statoCorrente:Inventario.TransitoScorte) {
-        
-        if statoCorrente != .inArrivo {
-            self.viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: id, nuovoStato: .inArrivo)
-        }
-    }*/
-    
     @ViewBuilder private func dialogAction() -> some View {
         
         Button("Cambia tutti in 'disponibile'", role: .destructive) {
@@ -440,8 +242,312 @@ struct SpesaRowIngredientView: View {
     let statoInventario:Inventario.TransitoScorte
     let currentDate:String
     
+   // @State private var showNote:Bool = false
+    let showNote:Bool
+    @State private var openNoteUpdate:Bool = false
+    
+    @FocusState private var modelField:ModelField?
+    
+    var body: some View {
+        
+        VStack(alignment:.leading) {
+            
+            let isStatoInArrivo = statoInventario == .inArrivo
+            
+            HStack(alignment:.top) {
+                
+                    HStack(alignment:.center,spacing:2) {
+
+                            Text("\(position + 1).")
+                                .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                                .foregroundColor(Color.white.opacity(0.8))
+
+                        HStack(spacing:5) {
+     
+                           RoundedRectangle(cornerRadius: 2.0)
+                                        .frame(width: 5)
+                                        .foregroundColor(element.status.transitionStateColor())
+        
+                            VStack(alignment:.leading,spacing:0) {
+                                Text(element.intestazione)
+                                    .italic()
+                                    .font(.title3)
+                                    .strikethrough(isStatoInArrivo, color: .seaTurtle_3)
+                                    .foregroundColor(Color.black)
+                                    .lineLimit(1)
+                                    .brightness(0.1)
+                                    .opacity(isStatoInArrivo ? 0.5 : 1.0)
+                                
+                                Text(moreInfo.isEmpty ? "--" : "\(moreInfo)")
+                                    .font(.system(.caption, design: .monospaced, weight: .semibold))
+                                    .foregroundColor(.seaTurtle_4)
+                            } // vstack intestazione
+                        }
+                    }
+                    
+                  //  Spacer()
+                  /*  Text(moreInfo.isEmpty ? "--" : "\(moreInfo)")
+                        .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                        .foregroundColor(.seaTurtle_4) */
+           
+                Spacer()
+
+                depennaLogic(id:element.id,isInArrivo: isStatoInArrivo)
+
+            }
+           //.padding(.horizontal,5)
+           // .padding(.vertical,15)
+            .padding(.top,15)
+            .modifierIf(!self.showNote) { view in
+                view.padding(.bottom,15)
+            }
+           /* .overlay(alignment: .bottom) {
+                
+                ZStack {
+                    Image(systemName:self.showNote ? "chevron.compact.up" : "chevron.compact.down")
+                        //.bold()
+                        .imageScale(.large)
+                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .onTapGesture {
+                            withAnimation {
+                               // self.showNote.toggle()
+                            }
+                        }
+                    
+                    if showNote {
+                        
+                        Image(systemName: self.openNoteUpdate ? "pencil.slash" : "pencil.line")
+                            .imageScale(.medium)
+                            .foregroundColor(self.openNoteUpdate ? Color("SeaTurtlePalette_4") : Color("SeaTurtlePalette_2"))
+                            .opacity(isStatoInArrivo ? 0.4 : 1.0)
+                            .offset(x: 40)
+                            .onTapGesture {
+                                withAnimation {
+                                    self.openNoteUpdate.toggle()
+                                }
+                            }.disabled(isStatoInArrivo)
+                    }
+                    
+                }
+            } */
+            
+            if showNote {
+                
+               vbNotaAcquisto(disableTap: isStatoInArrivo)
+                    .focused($modelField, equals: .descrizione)
+                    .padding(.bottom,5)
+            }
+            
+        }
+        .padding(.horizontal,5)
+        .background {
+            coloreAssociato(ingredient: element)
+                .opacity(0.4)
+                .cornerRadius(4)
+        }
+        .onChange(of: self.statoInventario) { newValue in
+            if newValue == .inArrivo {
+                self.openNoteUpdate = false
+            }
+        }
+        
+    }
+    
+    // Method
+    
+    @ViewBuilder private func vbNotaAcquisto(disableTap:Bool) -> some View {
+        
+        let nota = self.viewModel.inventarioScorte.estrapolaNota(idIngrediente: self.element.id,currentDate: self.currentDate)
+        
+        if openNoteUpdate {
+            
+            CSTextField_ExpandingBoxPlain(
+                value: nota,
+                dismissButton:$openNoteUpdate,
+                maxDescriptionLenght: 100,
+                modelField: $modelField) { value in
+                saveNota(value: value)
+            }
+            
+        } else {
+            
+          //  let localBool = nota == ""
+            let value:(note:String, opacity:CGFloat) = {
+                
+                let opacoBase = disableTap ? 0.7 : 1.0
+                if nota == "" { return ("Nessuna",(opacoBase - 0.1) ) }
+                else { return (nota,opacoBase) }
+                
+            }()
+            
+            
+            HStack(alignment:.top,spacing:5) {
+                Text("Note:")
+                    .fontWeight(.semibold)
+            
+                Text(value.note)
+                    .italic()
+                   //.font(.subheadline)
+                    .foregroundColor(Color.black)
+                    .opacity(value.opacity)
+                    .multilineTextAlignment(.leading)
+            }
+            .font(.subheadline)
+            .onTapGesture(count:2) {
+                    withAnimation {
+                        self.openNoteUpdate.toggle()
+                    }
+                }
+            .disabled(disableTap)
+               // .disabled(isStatoInArrivo)
+            
+        }
+        
+        
+    
+        
+        
+    }
+    
+   /* private func saveNota(value:String) {
+        
+    let string = value == "" ? "" : "\(currentDate)|\(value)"
+
+    self.viewModel.inventarioScorte.archivioNotaAcquisto[self.element.id] = string
+        
+    } */ // 08.03.23 bk upgrade
+    
+    private func saveNota(value:String) {
+    
+        let step_0:String = {
+            
+            if value != "" {
+                let step_01 = csStringCleaner(string: value)
+                let step_02 = csStringCut(testo: step_01, maxLenght: 100)
+                return "\(currentDate)|\(step_02)"
+            } else { return value }
+        }()
+        
+   // let string = step_0 == "" ? "" : "\(currentDate)|\(value)"
+
+    self.viewModel.inventarioScorte.archivioNotaAcquisto[self.element.id] = step_0
+        
+    }
+    
+    private func coloreAssociato(ingredient:IngredientModel) -> Color {
+     
+        let allergens = ingredient.allergeni ?? []
+        
+     if ingredient.origine == .vegetale { return .green}
+     else if
+             allergens.contains(.molluschi) ||
+             allergens.contains(.crostacei) ||
+             allergens.contains(.pesce) { return .indigo }
+     else if allergens.contains(.latte_e_derivati) { return .white }
+     else { return .pink }
+         
+     }
+    private func depennaLogic(id:String,isInArrivo:Bool) -> some View {
+        
+      //  let today = csTimeFormatter().data.string(from: Date())
+        let value:(disable:Bool,opacity:CGFloat,checkColor:Color) = {
+           
+            if let key = self.viewModel.inventarioScorte.lockedId[self.currentDate] {
+                if key.contains(id) {return (true,0.4,.seaTurtle_4) }
+                else { return (false,1.0,.seaTurtle_3) }
+            } else {
+                return (false,1.0,.seaTurtle_3)
+            }
+            
+        }()
+        
+        return HStack {
+            
+            if !value.disable {
+                
+                Image(systemName: self.statoInventario.imageAssociata())
+                    .imageScale(.medium)
+                    .foregroundColor(self.statoInventario.coloreAssociato())
+                
+            } else {
+                
+                Image(systemName: "triangle")
+                    .imageScale(.medium)
+                    .foregroundColor(.seaTurtle_2)
+            }
+
+            Image(systemName: "square")
+                  .imageScale(.large)
+                  .foregroundColor(Color.black)
+                  .brightness(0.3)
+                  .overlay {
+                      if isInArrivo {
+                          Image(systemName: "checkmark")
+                              .bold()
+                              .imageScale(.large)
+                              .foregroundColor(value.checkColor)
+                      }
+                  }
+                  .onTapGesture {
+                      withAnimation {
+                          self.depennaAction(id: id, isInArrivo:isInArrivo)
+                      }
+                  }
+                  .onLongPressGesture {
+                      withAnimation {
+                          self.undoDepennaAction(id: id, isInArrivo:isInArrivo)
+                      }
+                  }
+                  .opacity(value.opacity)
+                  .disabled(value.disable)
+        }
+       // }
+    }
+    private func undoDepennaAction(id:String,isInArrivo:Bool) {
+        
+        if isInArrivo {
+            
+          /*  self.viewModel.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0 == self.currentDate}) */
+            self.viewModel.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0.hasPrefix(self.currentDate)})
+        
+            if let key = self.viewModel.inventarioScorte.archivioIngInEsaurimento[self.currentDate] {
+                
+                if key.contains(id) {  self.viewModel.inventarioScorte.ingInEsaurimento.append(id) }
+                else { self.viewModel.inventarioScorte.ingEsauriti.append(id) }
+ 
+            } else {
+                self.viewModel.inventarioScorte.ingEsauriti.append(id)
+            }
+        }
+    }
+    
+    private func depennaAction(id:String,isInArrivo:Bool) {
+        
+        if !isInArrivo {
+            self.viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: id, nuovoStato: .inArrivo)
+        } else {
+            
+            self.viewModel.alertItem = AlertModel(title: "Info", message: "Long Press to depenn")
+        }
+    }
+}
+
+
+/*
+struct SpesaRowIngredientView: View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    
+    let element:IngredientModel
+    let position:Int
+    let moreInfo:String
+    let statoInventario:Inventario.TransitoScorte
+    let currentDate:String
+    
     @State private var showNote:Bool = false
     @State private var openNoteUpdate:Bool = false
+    
+    @FocusState private var modelField:ModelField?
     
     var body: some View {
         
@@ -450,8 +556,6 @@ struct SpesaRowIngredientView: View {
             let isStatoInArrivo = statoInventario == .inArrivo
             
             HStack {
-                
-               // let isStatoInArrivo = statoInventario == .inArrivo
                 
                     HStack(alignment:.center,spacing:2) {
                         
@@ -482,24 +586,12 @@ struct SpesaRowIngredientView: View {
                         .foregroundColor(Color("SeaTurtlePalette_4"))
            
                 Spacer()
-                
-              //  if !condition {
-
-                   /* Image(systemName: statoInventario.imageAssociata())
-                        .imageScale(.medium)
-                        .foregroundColor(statoInventario.coloreAssociato()) */
-            //    }
 
                 depennaLogic(id:element.id,isInArrivo: isStatoInArrivo)
 
             }
            //.padding(.horizontal,5)
             .padding(.vertical,15)
-           /* .background {
-                coloreAssociato(ingredient: element)
-                    .opacity(0.4)
-                    .cornerRadius(4)
-            } */
             .overlay(alignment: .bottom) {
                 
                 ZStack {
@@ -533,6 +625,7 @@ struct SpesaRowIngredientView: View {
             if showNote {
                 
                notaAcquisto()
+                    .focused($modelField, equals: .descrizione)
                     .padding(.bottom,5)
             }
             
@@ -559,7 +652,11 @@ struct SpesaRowIngredientView: View {
         
         if openNoteUpdate {
             
-            CSTextField_ExpandingBoxPlain(value: nota, dismissButton:$openNoteUpdate,maxDescriptionLenght: 600) { value in
+            CSTextField_ExpandingBoxPlain(
+                value: nota,
+                dismissButton:$openNoteUpdate,
+                maxDescriptionLenght: 250,
+                modelField: $modelField) { value in
                 saveNota(value: value)
             }
             
@@ -683,4 +780,4 @@ struct SpesaRowIngredientView: View {
             self.viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: id, nuovoStato: .inArrivo)
         }
     }
-}
+}*/ // 08.03.23 bacckUp per Upgrade

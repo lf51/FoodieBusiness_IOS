@@ -25,7 +25,16 @@ extension CoreFilter {
         }
         return false
         
-    }
+    } 
+    
+    func compareStatusTransition(localStatus:StatusModel,singleFilter:StatusTransition?) -> Bool {
+        
+        guard
+            let filter = singleFilter else { return true }
+      
+            return localStatus.checkStatusTransition(check: filter)
+        
+    }  // creata 16.03.23
     
     func compareStatoScorte(modelId:String,filterInventario:[Inventario.TransitoScorte]?, readOnlyVM:AccounterVM) -> Bool {
         

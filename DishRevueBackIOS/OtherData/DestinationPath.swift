@@ -32,7 +32,7 @@ public enum DestinationPathView: Hashable {
     case propertyList
     case property(_ :PropertyModel)
     
-    case menu(_ :MenuModel)
+    case menu(_ menuModel:MenuModel,_ saveDialogType:SaveDialogType = .completo)
     case piatto(_ dishModel:DishModel,_ saveDialogType:SaveDialogType = .completo)
     case ingrediente(_ :IngredientModel)
     case categoriaMenu
@@ -54,10 +54,12 @@ public enum DestinationPathView: Hashable {
     case listaGenericaIng(_containerRif:[String], _label:String)
     case listaGenericaDish(_containerRif:[String], _label:String)
     
-    case listaMenuPerAnteprima(_containerRif:[String],_label:String)
-    case anteprimaPiattiMenu(containerMod:[DishModel],label:String)
-    
+    case listaMenuPerAnteprima(rifMenuOn:[String],rifDishOn:[String],label:String)
+    case anteprimaPiattiMenu(rifDishes:[String],label:String)
+
     case elencoModelDeleted
+    
+    case monitorServizio_vistaEspansaDish(containerRif:[String],label:String)
     
     @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath, readOnlyViewModel:AccounterVM) -> some View {
         
@@ -72,8 +74,12 @@ public enum DestinationPathView: Hashable {
         case .property(let property):
             EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)
             
-        case .menu(let menu):
-            NuovoMenuMainView(nuovoMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
+        case .menu(let menu,let dialogType):
+            NuovoMenuMainView(
+                nuovoMenu: menu,
+                backgroundColorView: backgroundColorView,
+                destinationPath: destinationPath,
+                saveDialogType: dialogType)
             
         case .piatto(let piatto,let dialogType):
             NewProductMainView(
@@ -133,27 +139,37 @@ public enum DestinationPathView: Hashable {
             VistaEspansaGenerica(container:container,containerPath: \.allMyIngredients, label:label, backgroundColorView: backgroundColorView)
             
         case .listaGenericaDish(let container,let label):
-            VistaEspansaGenerica(container: container,containerPath: \.allMyDish, label:label, backgroundColorView: backgroundColorView)
-            
-        case .listaMenuPerAnteprima(let container,let label):
-            VistaEspansaMenuPerAnteprima(
-                viewModel:readOnlyViewModel,
+            VistaEspansaGenerica(
                 container: container,
-                containerPath: \.allMyMenu,
+                containerPath: \.allMyDish,
+                label:label,
+                backgroundColorView: backgroundColorView)
+            
+        case .listaMenuPerAnteprima(let rifMenuOn,let rifDishOn, let label):
+            VistaEspansaMenuPerAnteprima(
+               // viewModel:readOnlyViewModel,
+                rifMenuOn: rifMenuOn,
+                rifDishOn: rifDishOn,
+                //containerPath: \.allMyMenu,
                 label: label,
                 destinationPath: destinationPath,
                 backgroundColorView: backgroundColorView)
             
-        case .anteprimaPiattiMenu(let container,let label):
+        case .anteprimaPiattiMenu(let rifDishes,let label):
             AnteprimaPiattiMenu(
-                container: container,
-                containerPath: \.allMyDish,
+                rifDishes: rifDishes,
                 label: label,
                 destinationPath: destinationPath,
                 backgroundColorView: backgroundColorView)
             
         case .elencoModelDeleted:
             ElencoModelDeleted(backgroundColorView: backgroundColorView)
+            
+        case .monitorServizio_vistaEspansaDish(let container,let label):
+            VistaEspansaDish_MonitorServizio(
+                container: container,
+                label: label,
+                backgroundColorView: backgroundColorView)
         }
         
     }

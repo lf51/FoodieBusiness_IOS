@@ -18,7 +18,7 @@ struct PannelloIngredienti_NewDishSubView: View {
     let newDish: DishModel
     let generalErrorCheck: Bool
     @Binding var wannaAddIngredient: Bool
-    @Binding var noIngredientsNeeded: Bool
+  //  @Binding var noIngredientsNeeded: Bool
 
     var body: some View {
         
@@ -33,14 +33,15 @@ struct PannelloIngredienti_NewDishSubView: View {
                         CSButton_image(
                             frontImage: "plus.circle",
                             imageScale: .large,
-                            frontColor: Color("SeaTurtlePalette_3")) {
+                            frontColor: .seaTurtle_3) {
                                 withAnimation(.default) {
                                     self.wannaAddIngredient.toggle()
-                                    self.noIngredientsNeeded = false
+                                  //  self.noIngredientsNeeded = false
                                 }
                             }
                         
-                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: (newDish.ingredientiPrincipali.isEmpty && !noIngredientsNeeded))
+                       /* CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: (newDish.ingredientiPrincipali.isEmpty && !noIngredientsNeeded)) */
+                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty)
 
                                                 
                     }
@@ -60,7 +61,18 @@ struct PannelloIngredienti_NewDishSubView: View {
                     }
                 }
                 
-                if generalErrorCheck && self.newDish.ingredientiPrincipali.isEmpty {
+                if generalErrorCheck {
+   
+                            Text("Il box degli ingredienti principali non può essere vuoto.\nPer inserire un prodotto senza ingredienti scegliere Prodotto di Terzi")
+                                .italic()
+                                .fontWeight(.bold)
+                                .font(.caption)
+                                .foregroundColor(Color.black)
+                                .multilineTextAlignment(.leading)
+                            
+                }
+                
+               /* if generalErrorCheck && self.newDish.ingredientiPrincipali.isEmpty {
                                             
                         if !self.newDish.ingredientiSecondari.isEmpty {
                             
@@ -80,7 +92,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                             }
                             
                         }
-                }
+                } */
                 
             }
             

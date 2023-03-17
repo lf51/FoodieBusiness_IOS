@@ -113,6 +113,8 @@ struct IngredientModel_SmallRowView: View {
             
     @ViewBuilder private func vbIntestazioneIngrediente(itemIsModel:Bool) -> some View {
         
+        let dashedColor = Color.gray
+        
         HStack(alignment:.lastTextBaseline) {
             
             Text(self.currentModel.intestazione)
@@ -137,7 +139,9 @@ struct IngredientModel_SmallRowView: View {
             Spacer()
             
             if itemIsModel {
-                vbEstrapolaStatusImage(itemModel: self.currentModel)
+                vbEstrapolaStatusImage(
+                    itemModel: self.currentModel,
+                    dashedColor: dashedColor)
             }
             
             else {

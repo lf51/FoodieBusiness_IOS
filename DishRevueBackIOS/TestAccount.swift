@@ -30,7 +30,7 @@ var testAccount: AccounterVM = {
      vm.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
      vm.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
     vm.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
-    vm.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*/ingredientSample2_Test.id,ingredientSample3_Test.id,ingredientSample4_Test.id]
+    vm.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*//*ingredientSample2_Test.id,*/ingredientSample3_Test.id,ingredientSample4_Test.id]
     vm.inventarioScorte.cronologiaAcquisti = [
         ingredientSample_Test.id:[otherDateString3,otherDateString1,otherDateString,oldDateString,todayString],ingredientSample5_Test.id:[oldDateString,todayString]
     
@@ -91,7 +91,7 @@ var dishItem2_Test: DishModel = {
     
     var newDish = DishModel()
     newDish.intestazione = "Bucatini alla Matriciana"
-    newDish.status = .completo(.disponibile)
+    newDish.status = .completo(.inPausa)
     newDish.ingredientiPrincipali = [ingredientSample4_Test.id]
     newDish.ingredientiSecondari = [ingredientSample2_Test.id]
      newDish.rifReviews = [rate8.id,rate9.id,rate10.id,rate11.id,rate12.id]
@@ -120,7 +120,7 @@ var dishItem4_Test: DishModel = {
     
     var newDish = DishModel()
     newDish.intestazione = "Trofie al Pesto"
-    newDish.status = .completo(.disponibile)
+    newDish.status = .completo(.inPausa)
     newDish.ingredientiPrincipali = [ingredientSample_Test.id]
     newDish.ingredientiSecondari = [ingredientSample3_Test.id]
     newDish.rifReviews = [rate1.id,rate2.id,rate3.id,rate4.id,rate5.id,rate6.id,rate7.id]
@@ -290,7 +290,7 @@ var ingredientSample3_Test =  IngredientModel(
     provenienza: .restoDelMondo,
     allergeni: [],
     origine: .vegetale,
-    status: .bozza(.disponibile))
+    status: .bozza(.inPausa))
 
  var ingredientSample4_Test =  IngredientModel(
     intestazione: "Mozzarella di Bufala",
@@ -300,7 +300,7 @@ var ingredientSample3_Test =  IngredientModel(
     provenienza: .km0,
     allergeni: [.latte_e_derivati],
     origine: .animale,
-    status: .bozza(.disponibile)
+    status: .bozza(.inPausa)
 )
 
 var ingredientSample5_Test =  IngredientModel(

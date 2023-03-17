@@ -18,17 +18,23 @@ struct NuovoMenuMainView: View {
     
     let menuArchiviato: MenuModel // per il reset
     let destinationPath: DestinationPath
+    let saveDialogType:SaveDialogType
     
     @State private var openDishList: Bool = false
     @State private var generalErrorCheck: Bool = false
   
-    init(nuovoMenu: MenuModel, backgroundColorView: Color, destinationPath:DestinationPath) {
+    init(
+        nuovoMenu: MenuModel,
+        backgroundColorView: Color,
+        destinationPath:DestinationPath,
+        saveDialogType:SaveDialogType) {
         
         _nuovoMenu = State(wrappedValue: nuovoMenu)
         self.backgroundColorView = backgroundColorView
         
         self.menuArchiviato = nuovoMenu
         self.destinationPath = destinationPath
+        self.saveDialogType = saveDialogType
        
     }
     
@@ -43,7 +49,7 @@ struct NuovoMenuMainView: View {
                 
                 CSDivider()
                 
-                    ScrollView {
+                ScrollView(showsIndicators:false) {
                         
                         VStack(alignment: .leading,spacing: .vStackBoxSpacing) {
 
@@ -132,7 +138,8 @@ struct NuovoMenuMainView: View {
                                 itemModel: $nuovoMenu,
                                 generalErrorCheck: $generalErrorCheck,
                                 itemModelArchiviato: menuArchiviato,
-                                destinationPath: destinationPath) {
+                                destinationPath: destinationPath,
+                                dialogType: self.saveDialogType) {
                                     self.menuDescription()
                                 } resetAction: {
                                     self.resetAction()
@@ -147,7 +154,7 @@ struct NuovoMenuMainView: View {
                           //  .zIndex(0)
  
                     } // Chiusa ScrollView
-         
+                .scrollDismissesKeyboard(.immediately)
 
                 CSDivider()
 
@@ -365,7 +372,7 @@ struct NuovoMenuMainView_Previews: PreviewProvider {
     }()
     
     static var previews: some View {
-        NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .menuList )
+        NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .menuList ,saveDialogType: .completo)
     }
 }
 

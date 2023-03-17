@@ -440,6 +440,8 @@ struct DishModel_RowView: View {
             else { return .title3}
         }()
         
+        let dashedColor = self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
+        
         HStack(alignment:.bottom) {
             
             Text(self.item.intestazione)
@@ -452,7 +454,9 @@ struct DishModel_RowView: View {
             
             Spacer()
             
-            vbEstrapolaStatusImage(itemModel: self.item)
+            vbEstrapolaStatusImage(
+                itemModel: self.item,
+                dashedColor: dashedColor)
             
         }
         

@@ -767,6 +767,97 @@ public final class AccounterVM:FoodieViewModel {
      }
 
     /// Ritorna un quadro corrente del servizio, ossia il servizo del giorno. Le preparazione tornate sono quelle marcate come .disponibili, i menu sono quelli onAir, e gli ingredienti quelli attivi delle preparazioni disponibili.
+    func monitorServizio(menuModelToAnalize allMenuOnAir:[MenuModel]) -> (rifMenuOnAir:[String],rifFoodBeverage:[String],rifProdottiFiniti:[String], rifIngredients:[String],rifPreparazioniEseguibili:[String]) {
+        
+        // Menu
+       
+        // menuModelToAnalize è il punto di partenza
+       
+        // Dish
+        var allDishId:[String] = []
+
+        for cart in allMenuOnAir {
+            
+            allDishId.append(contentsOf: cart.rifDishIn)
+            
+        }
+        
+        let cleanDish = Set(allDishId)
+        let allDishIdCleaned = Array(cleanDish)
+        
+        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.allMyDish)
+        
+        let allDishAvaible = allDishModel.filter({
+            $0.status.checkStatusTransition(check: .disponibile) ||
+            $0.status.checkStatusTransition(check: .inPausa)
+        })
+       
+        let foodB = allDishAvaible.filter({
+            $0.percorsoProdotto == .preparazioneBeverage ||
+            $0.percorsoProdotto == .preparazioneFood
+        })
+        
+        let prodottiFiniti = allDishAvaible.filter({
+            $0.percorsoProdotto == .prodottoFinito
+        })
+        // Ingredient && eseguibilità Piatto
+        var allIngredientsRif:[String] = []
+        var dishEseguibili:[DishModel] = [] // deprecata 16.03.23
+        
+        for dish in foodB {
+            
+           // let activeIngredient = dish.allIngredientsAttivi(viewModel: self)
+            let activeIngRif = dish.allIngredientsRif()
+            allIngredientsRif.append(contentsOf: activeIngRif)
+            
+            let isEseguibile = dish.controllaSeEseguibile(viewModel: self)
+            if isEseguibile { dishEseguibili.append(dish) }
+            
+        }
+        
+        let cleanAllIngredient = Set(allIngredientsRif)
+        let cleanAllIngreArray = Array(cleanAllIngredient)
+        //
+        
+        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
+        
+        //
+        
+        let menuOn = allMenuOnAir.map({$0.id})
+        let foodAndB = foodB.map({$0.id})
+        let readyProduct = prodottiFiniti.map({$0.id})
+        let ingredientsNeeded = allIngModelFiltered.map({$0.id})
+        let preparazioniOk = dishEseguibili.map({$0.id})
+        
+        return (menuOn,foodAndB,readyProduct,ingredientsNeeded,preparazioniOk)
+        
+    }
+    
+    /// Filtra una collezione di piatti per un executionStatus. Se passiamo nil, verrà filtrata l'intera collezione di piatti del viewModel.
+    public func checkDishStatusExecution(of dishes:[String]? = nil,check:DishModel.ExecutionState) -> [String] {
+        
+        let allModel:[DishModel] = {
+            
+            guard let allDishes = dishes else {
+                return self.allMyDish
+            }
+            
+          let allModelDishes = self.modelCollectionFromCollectionID(
+            collectionId: allDishes,
+            modelPath: \.allMyDish)
+        
+            return allModelDishes
+        }()
+        
+        let allModelChecked = allModel.filter({$0.checkStatusExecution(viewModel: self) == check})
+        let allRif = allModelChecked.map({$0.id})
+        
+        return allRif
+    }
+    
+    
+    /*
+    /// Ritorna un quadro corrente del servizio, ossia il servizo del giorno. Le preparazione tornate sono quelle marcate come .disponibili, i menu sono quelli onAir, e gli ingredienti quelli attivi delle preparazioni disponibili.
     func monitorServizio() -> (rifMenuOnAir:[String],rifFoodBeverage:[String],rifProdottiFiniti:[String], rifIngredients:[String],rifPreparazioniEseguibili:[String]) {
         
         // Menu
@@ -822,7 +913,7 @@ public final class AccounterVM:FoodieViewModel {
         
         return (menuOn,foodAndB,readyProduct,ingredientsNeeded,preparazioniOk)
         
-    }
+    } */ // 09.03.23 Backup per upgrade a multiversion today/general
     
     /// ritorna il numero di recensioni totali, quelle delle ultime 24h, la media totale, la media delle ulteme 10
   /*  func monitorRecensioni(rifReview:[String]? = nil) -> (totali:Int,l24:Int,mediaGen:Double,ml10:Double) {
@@ -1034,20 +1125,34 @@ extension AccounterVM:VM_FPC {
     public func ricercaFiltra<M:Object_FPC>(
         containerPath: WritableKeyPath<AccounterVM, [M]>,
         coreFilter: CoreFilter<M>) -> [M] where AccounterVM == M.VM {
-        
-        let container = self[keyPath: containerPath]
-       // print("isContainerEmpty:\(container.isEmpty)")
-      // let filterZero = container.filter({$0.status != .bozza()}) ???
-        let containerFiltrato = container.filter({
-            $0.propertyCompare(coreFilter: coreFilter, readOnlyVM: self)
-        })
-       // print("isContainerFilteredEmpty:\(containerFiltrato.isEmpty)")
-        let containerOrdinato = containerFiltrato.sorted {
-            M.sortModelInstance(lhs: $0, rhs: $1, condition: coreFilter.sortConditions, readOnlyVM: self)
+            
+            let container = self[keyPath: containerPath]
+            // print("isContainerEmpty:\(container.isEmpty)")
+            // let filterZero = container.filter({$0.status != .bozza()}) ???
+            let containerFiltrato = container.filter({
+                $0.propertyCompare(coreFilter: coreFilter, readOnlyVM: self)
+            })
+            // print("isContainerFilteredEmpty:\(containerFiltrato.isEmpty)")
+            let containerOrdinato = containerFiltrato.sorted {
+                M.sortModelInstance(lhs: $0, rhs: $1, condition: coreFilter.sortConditions, readOnlyVM: self)
+            }
+            //  print("isContainerSortedEmpty:\(containerOrdinato.isEmpty)")
+            return containerOrdinato
         }
-      //  print("isContainerSortedEmpty:\(containerOrdinato.isEmpty)")
-        return containerOrdinato
-    }
+    
+    public func filtraSpecificCollection<M:Object_FPC>(
+        ofModel collection:[M],
+        coreFilter: CoreFilter<M>) -> [M] where AccounterVM == M.VM {
+            
+            let container = collection.filter({$0.propertyCompare(coreFilter: coreFilter, readOnlyVM: self)})
+            
+            let containerOrdinato = container.sorted {
+                M.sortModelInstance(lhs: $0, rhs: $1, condition: coreFilter.sortConditions, readOnlyVM: self)
+            } // Lo abbiamo inserito per usare l'ordine alfabeico di default. in quanto non abbiamo predisposto la customizzazione del valore nella view che la utilizza
+            
+           return containerOrdinato
+            
+        }
 }
 
 

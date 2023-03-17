@@ -59,7 +59,7 @@ struct MainView: View {
                         Image(systemName: "house")
                         Text("Home")
                     }.tag(DestinationPath.homeView)
-                     .tag(1)
+                    // .tag(1)
                
             MenuListView(tabSelection: tabSelector, backgroundColorView: backgroundColorView)
                 .badge(viewModel.remoteStorage.menu_countModificheIndirette)

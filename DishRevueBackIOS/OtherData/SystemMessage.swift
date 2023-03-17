@@ -21,6 +21,7 @@ enum SystemMessage {
     case infoScheduleServizio
     case cambioStatusPreparazioni
     case timerMenu
+    case quadroGenerale
     
     case noValue
     
@@ -59,6 +60,8 @@ enum SystemMessage {
         case .timerMenu:
             return "L'utente può scegliere quanti minuti prima mostrare al cliente il count down della messa offline di un menu."
             
+        case .quadroGenerale:
+            return "Menu attivi: considera solo i menu con status <disponibile>.\n\nFood&Bev: considera solo le preparazioni con status <disponible> contenute nei menu sopra.\n\nIngredienti: considera solo quelli <disponibili> contenuti nelle preparazioni sopra.\n\nF&B eseguibili: considera solo le preparazioni per cui gli ingredienti necessari sono tutti in stock."
             
         case .noValue:
             return "Da inserire"

@@ -274,6 +274,8 @@ struct MenuModel_RowView: View {
             if self.rowSize == .normale { return .title2}
             else { return .title3}
         }()
+        
+        let dashedColor:Color = .white
             
         HStack(alignment:.bottom) {
             
@@ -286,7 +288,9 @@ struct MenuModel_RowView: View {
             
             Spacer()
             
-            vbEstrapolaStatusImage(itemModel: self.menuItem)
+            vbEstrapolaStatusImage(
+                itemModel: self.menuItem,
+                dashedColor: dashedColor)
             
         }
       

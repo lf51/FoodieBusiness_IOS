@@ -221,6 +221,8 @@ struct IngredientModel_RowView: View {
     
     @ViewBuilder private func vbIntestazioneIngrediente() -> some View {
         
+        let dashedColor = Color.gray
+        
         HStack(alignment:.lastTextBaseline) {
             
             Text(self.item.intestazione)
@@ -278,7 +280,9 @@ struct IngredientModel_RowView: View {
             
             Spacer()
             
-            vbEstrapolaStatusImage(itemModel: self.item)
+            vbEstrapolaStatusImage(
+                itemModel: self.item,
+                dashedColor: dashedColor)
             
         }
         

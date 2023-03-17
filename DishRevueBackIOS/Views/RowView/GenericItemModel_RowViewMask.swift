@@ -63,10 +63,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View wher
            .overlay(alignment: .bottomTrailing) {
   
                 Menu {
-                    
                     interactiveMenuContent
-
-                    
                 } label: {
                     Image(systemName:pushImage)
                         .imageScale(.large)
