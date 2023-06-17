@@ -23,7 +23,7 @@ struct WaitLoadingView: View {
             Image(systemName: "fork.knife.circle")
                 .resizable()
                 .scaledToFit()
-                .foregroundColor(Color("SeaTurtlePalette_2"))
+                .foregroundColor(.seaTurtle_2)
                 .frame(maxWidth:500)
                 .padding(.horizontal)
                 .zIndex(0)
@@ -31,13 +31,11 @@ struct WaitLoadingView: View {
             
         }
        // .background(backgroundColorView.opacity(0.6))
-       
-        
     }
 }
 
 struct WaitLoadingView_Previews: PreviewProvider {
     static var previews: some View {
-        WaitLoadingView(backgroundColorView: Color("SeaTurtlePalette_1"))
+        WaitLoadingView(backgroundColorView: .seaTurtle_1)
     }
 }

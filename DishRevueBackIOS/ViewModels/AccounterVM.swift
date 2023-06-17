@@ -91,7 +91,9 @@ public final class AccounterVM:FoodieViewModel {
     
     func fetchDataFromFirebase() {
         
-        self.allMyIngredients = fakeCloudData.allMyIngredients
+        // Deve scaricare i dati dal firebase
+        
+      /*  self.allMyIngredients = fakeCloudData.allMyIngredients
         self.allMyDish = fakeCloudData.allMyDish
         self.allMyMenu = fakeCloudData.allMyMenu
         self.allMyProperties = fakeCloudData.allMyProperties
@@ -100,9 +102,9 @@ public final class AccounterVM:FoodieViewModel {
         self.inventarioScorte = fakeCloudData.inventarioScorte
         
         self.allMyReviews = fakeCloudData.allMyReviews
-        self.allMyCategories = fakeCloudData.allMyCategories
+        self.allMyCategories = fakeCloudData.allMyCategories */
         
-        self.loadingCount = 8
+        self.loadingCount = 8 // Questo valore permette di togliere la schermata di loading
         
     }
 

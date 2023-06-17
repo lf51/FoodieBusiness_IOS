@@ -31,7 +31,7 @@ struct MainView: View {
         print("init MainView - userUID:\(authProcess.currentUser?.userUID ?? "nil")")
     }
 
-    private let backgroundColorView: Color = Color("SeaTurtlePalette_1")
+    private let backgroundColorView: Color = Color.seaTurtle_1
     @State private var tabSelector: DestinationPath = .homeView
    // @State private var controlProxyReset:Bool = false
     // innesto 01.12.22

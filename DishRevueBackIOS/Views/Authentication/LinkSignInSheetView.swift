@@ -12,7 +12,7 @@ import Firebase
 struct LinkSignInSheetView: View {
    
     @ObservedObject var authProcess: AuthPasswordLess
-    let backgroundColorView = Color("SeaTurtlePalette_1")
+    let backgroundColorView = Color.seaTurtle_1
     
     var body: some View {
       
@@ -47,7 +47,7 @@ struct LinkSignInSheetView: View {
                   
                   Text("Skip")
                       .font(.caption)
-                      .foregroundColor(Color("SeaTurtlePalette_4"))
+                      .foregroundColor(.seaTurtle_4)
                       .onTapGesture {
                           withAnimation {
                               self.authProcess.openSignInView = false
@@ -63,7 +63,7 @@ struct LinkSignInSheetView: View {
                   Image(systemName: "fork.knife.circle")
                       .resizable()
                       .scaledToFit()
-                      .foregroundColor(Color("SeaTurtlePalette_2"))
+                      .foregroundColor(.seaTurtle_2)
                       .frame(maxWidth:500)
                       .padding(.vertical,60)
                   
@@ -76,7 +76,12 @@ struct LinkSignInSheetView: View {
                       keyboardType: .emailAddress
                   )
 
-                  CSButton_large(title: "Send Link", accentColor: .white,backgroundColor: Color("SeaTurtlePalette_2"),cornerRadius: 16.0, action: {
+                  CSButton_large(
+                    title: "Send Link",
+                    accentColor: .white,
+                    backgroundColor: .seaTurtle_2,
+                    cornerRadius: 16.0,
+                    action: {
                         authProcess.sendSignInLink()
                      
                     })
