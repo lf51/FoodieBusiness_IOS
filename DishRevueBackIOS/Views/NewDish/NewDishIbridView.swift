@@ -83,17 +83,23 @@ struct NewDishIbridView: View {
                                     itemModel: $newDish,
                                     generalErrorCheck: generalErrorCheck,
                                     minLenght: 3,
-                                    coloreContainer: Color("SeaTurtlePalette_2"))
+                                    coloreContainer: .seaTurtle_2)
                             .focused($modelField, equals: .intestazione)
  
+                        let isComposizione = self.newDish.percorsoProdotto == .composizione
+                        let labelString = isComposizione ? "la composizione" : "il prodotto (Optional)"
+                        
                             BoxDescriptionModel_Generic(
                                 itemModel: $newDish,
-                                labelString: "Descrizione (Optional)",
+                                labelString: "Racconta \(labelString)",
                                 disabledCondition: wannaAddAllergeni,
+                                generalErrorCheck: isComposizione ? generalErrorCheck : false,
                                 modelField: $modelField)
                             .focused($modelField, equals: .descrizione)
                             
-                            CategoriaScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
+                            CategoriaScrollView_NewDishSub(
+                                newDish: $newDish,
+                                generalErrorCheck: generalErrorCheck)
                             
                           
                             Group {   // Innesto
@@ -266,6 +272,8 @@ struct NewDishIbridView: View {
             self.modelField = .intestazione
             return false }
         
+        guard checkDescrizione() else { return false }
+        
         guard checkCategoria() else { return false }
       
       //  guard checkIngredienti() else { return false }
@@ -301,6 +309,14 @@ struct NewDishIbridView: View {
         self.ingredienteDiSistema.provenienza != .defaultValue &&
         self.newDish.optionalComplete()
         
+    }
+    
+    private func checkDescrizione() -> Bool {
+        
+        if self.newDish.percorsoProdotto == .composizione {
+            return self.newDish.descrizione != ""
+        }
+        return true
     }
     
     private func checkConservazione() -> Bool {

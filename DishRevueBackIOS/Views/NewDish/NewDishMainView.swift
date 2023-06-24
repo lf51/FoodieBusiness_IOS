@@ -77,12 +77,12 @@ struct NewDishMainView: View {
                                     itemModel: $newDish,
                                     generalErrorCheck: generalErrorCheck,
                                     minLenght: 3,
-                                    coloreContainer: Color("SeaTurtlePalette_2"))
+                                    coloreContainer: .seaTurtle_2)
                                 .focused($modelField, equals: .intestazione)
  
                             BoxDescriptionModel_Generic(
                                 itemModel: $newDish,
-                                labelString: "Descrizione (Optional)",
+                                labelString: "Racconta il \(self.newDish.percorsoProdotto.simpleDescription()) (Optional)",
                                 disabledCondition: wannaAddIngredient,
                                 modelField: $modelField)
                                 .focused($modelField, equals: .descrizione)

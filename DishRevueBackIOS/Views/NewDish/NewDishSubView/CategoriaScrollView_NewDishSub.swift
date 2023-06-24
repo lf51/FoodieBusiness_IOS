@@ -29,7 +29,7 @@ struct CategoriaScrollView_NewDishSub: View {
                     NavigationLink(value: DestinationPathView.categoriaMenu) {
                         Image(systemName: "arrow.up.forward.app")
                             .imageScale(.large)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(.seaTurtle_3)
                     }
                     
                    /* CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.categoriaMenuDEPRECATA == .defaultValue) */

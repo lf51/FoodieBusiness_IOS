@@ -54,6 +54,8 @@ struct DishModel_RowView: View {
     let item: DishModel
     let rowSize:RowSize
     
+    @State private var showDescription:Bool = false
+    
     init(item: DishModel, rowSize: RowSize = .normale()) {
         
         self.item = item
@@ -187,12 +189,19 @@ struct DishModel_RowView: View {
                 
                 Spacer()
                 
-                VStack(spacing:10) {
+                VStack(alignment:.leading,spacing:10) {
                     
                     vbBadgeRow()
                     
-                    if percorsoIbrido {vbIngredientQuality()}
-                    else {vbIngredientScrollRow()}
+                    if showDescription {
+                        
+                       vbDescriptionScrollRow()
+                    }
+                    else if percorsoIbrido { vbIngredientQuality() }
+                    else { vbIngredientScrollRow() }
+                    
+                   /* if percorsoIbrido {vbIngredientQuality()}
+                    else {vbIngredientScrollRow()} */
                     
                     vbDieteCompatibili()
                 }
@@ -477,17 +486,25 @@ struct DishModel_RowView: View {
             
             let describeButton:Color = isNotDescribed ? .gray : .seaTurtle_4
             
+            
             CSButton_image(
-                frontImage: "doc.richtext",
+                activationBool: self.showDescription,
+                frontImage: "arrow.triangle.2.circlepath",
                 imageScale: .medium,
-                frontColor: describeButton) {
-                    //
+                backColor: .seaTurtle_2,
+                frontColor: describeButton,
+                rotationDegree: 120) {
+                    withAnimation(.linear) {
+                        self.showDescription.toggle()
+                    }
                 }
-                .csModifier(!isNotDescribed, transform: { image in
+                .shadow(color: .gray, radius: 1.0,x:1.5)
+                .csModifier(self.rowSize != .normale(), transform: { image in
                     image
-                        .shadow(color: .gray, radius: 2.0)
+                        .hidden()
                 })
                 .disabled(isNotDescribed)
+   
 
         } // end HastackMadre
     }
@@ -558,8 +575,7 @@ struct DishModel_RowView: View {
               
                 vbReviewLine()
             } else {
-               // Text(self.item.percorsoProdotto.simpleDescription().lowercased())
-                Text("non recensibile")
+                Text(self.item.percorsoProdotto.simpleDescription().lowercased())
                     .italic()
                     .fontWeight(.semibold)
                     .foregroundColor(.seaTurtle_2)
@@ -606,7 +622,7 @@ struct DishModel_RowView: View {
                     .italic()
             }
             .fontWeight(.semibold)
-            .foregroundColor(Color("SeaTurtlePalette_2"))
+            .foregroundColor(.seaTurtle_2)
         }
         
     }
@@ -664,6 +680,24 @@ struct DishModel_RowView: View {
 
                     }
                 }
+            }
+        }
+    }
+    
+    @ViewBuilder private func vbDescriptionScrollRow() -> some View {
+        
+        HStack(spacing:4) {
+            
+            Image(systemName: "list.bullet.rectangle")
+                .imageScale(.medium)
+                .foregroundColor(.seaTurtle_3)
+            
+            ScrollView(.horizontal,showsIndicators: false) {
+                Text(self.item.descrizione)
+                    .font(.headline)
+                    .italic()
+                    .foregroundColor(Color.black)
+                    .opacity(0.6)
             }
         }
     }
@@ -1000,6 +1034,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         var dish = DishModel()
         dish.intestazione = "Spaghetti alla Carbonara"
         dish.status = .completo(.disponibile)
+        dish.descrizione = "Piatto della tradizione romanesca con uova di galline della nonna Anna"
       /*  dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ] */
@@ -1122,17 +1157,40 @@ struct DishModel_RowView_Previews: PreviewProvider {
                 
                 Color("SeaTurtlePalette_1").ignoresSafeArea()
                 
-                VStack(spacing:55) {
+                VStack {
 
                     
-                    DishModel_RowView(item: dishSample)
-                        .frame(height:150)
-                    DishModel_RowView(item: dishSample2)
-                        .frame(height:150)
-                    DishModel_RowView(item: dishSample3)
-                        .frame(height:150)
-                    DishModel_RowView(item: dishSample4)
-                        .frame(height:150)
+                    ScrollView {
+                        
+                        VStack(spacing:10) {
+                            Group {
+                                DishModel_RowView(item: dishSample)
+                                DishModel_RowView(item: dishSample, rowSize: .ridotto)
+                                DishModel_RowView(item: dishSample, rowSize: .sintetico)
+                            }
+                              //  .frame(height:150)
+                            Group {
+                                DishModel_RowView(item: dishSample2)
+                                DishModel_RowView(item: dishSample2,rowSize: .ridotto)
+                                DishModel_RowView(item: dishSample2,rowSize: .sintetico)
+                            }
+                               // .frame(height:150)
+                            Group {
+                                DishModel_RowView(item: dishSample3)
+                                DishModel_RowView(item: dishSample3,rowSize: .ridotto)
+                                DishModel_RowView(item: dishSample3,rowSize: .sintetico)
+                            }
+                               // .frame(height:150)
+                            Group {
+                                DishModel_RowView(item: dishSample4)
+                                DishModel_RowView(item: dishSample4,rowSize: .ridotto)
+                                DishModel_RowView(item: dishSample4,rowSize: .sintetico)
+                            }
+                               // .frame(height:150)
+                            
+                           
+                        }
+                    }
           
                 }
                 

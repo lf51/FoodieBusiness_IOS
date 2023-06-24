@@ -35,7 +35,7 @@ struct NewProductMainView: View {
     
     var body: some View {
         
-        var genere:String = self.type == .composizione ? "Nuova" : "Nuovo"
+        let genere:String = self.type == .composizione ? "Nuova" : "Nuovo"
         
         CSZStackVB(title: self.newDish.intestazione == "" ? "\(genere) \(self.type.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
             

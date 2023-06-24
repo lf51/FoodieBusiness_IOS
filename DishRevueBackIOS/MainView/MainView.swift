@@ -41,7 +41,7 @@ struct MainView: View {
     
     var body: some View {
             
-        TabView(selection:$tabSelector.onUpdate { oldValue, newValue in
+        TabView(selection:$tabSelector.csOnUpdate { oldValue, newValue in
             
             if oldValue == newValue {
                 self.viewModel.refreshPathAndScroll(tab: self.tabSelector)
