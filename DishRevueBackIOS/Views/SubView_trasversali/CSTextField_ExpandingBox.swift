@@ -67,6 +67,7 @@ import MyPackView_L0
                         .disabled(description == "")
                         .padding(.trailing)
                     }
+                    
                    /* .onTapGesture {
                         
                         withAnimation {
@@ -186,16 +187,18 @@ import MyPackView_L0
                     
                       Spacer()
                       
+                      let descriptionTooLong = self.description.count > self.maxDescriptionLenght
+                      
                       HStack(spacing:0) {
                           
                           Text("\(description.count)")
                               .fontWeight(.semibold)
-                              .foregroundColor(description.count <= maxDescriptionLenght ? Color.blue : Color.red)
+                              .foregroundColor(descriptionTooLong ? Color.red : Color.blue)
                           Text("/\(maxDescriptionLenght)")
                               .fontWeight(.light)
                           
                       }
-                      
+
                       Button {
                           withAnimation {
                               self.saveAction()
@@ -205,7 +208,8 @@ import MyPackView_L0
                               .fontWeight(.heavy)
                               .foregroundColor(.green)
                       }
-                      
+                      .opacity(descriptionTooLong ? 0.4 : 1.0)
+                      .disabled(descriptionTooLong)
                    /*   CSButton_tight(
                           title: "Salva",
                           fontWeight: .heavy,

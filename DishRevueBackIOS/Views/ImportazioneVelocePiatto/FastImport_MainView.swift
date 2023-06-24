@@ -14,22 +14,23 @@ struct FastImport_MainView: View {
     @EnvironmentObject var viewModel: AccounterVM
     @State private var allFastDish: [TemporaryModel] = []
     let backgroundColorView: Color
-    @State private var text: String = "CocaCola Classic.CocaCola Zero"
+    @State private var text: String = ""
     
     @State private var isUpdateDisable: Bool = true
+    @State private var tabViewHeight:CGFloat = 200
     var body: some View {
         
-        CSZStackVB(title: "Importazione Veloce", backgroundColorView: backgroundColorView) {
+      //  CSZStackVB(title: "Importazione Veloce", backgroundColorView: backgroundColorView) {
             
-            VStack {
+         //   VStack {
                 
-                CSDivider()
+            //   CSDivider()
                 
                 ScrollView(showsIndicators:false) {
                     
                     VStack(alignment:.leading) {
 
-                        CSDivider() // senza il testo del texeditor va su e si disallinea
+                      //  CSDivider() // senza il testo del texeditor va su e si disallinea
 
                         TextEditor(text: $text)
                             .font(.system(.body,design:.rounded))
@@ -48,13 +49,13 @@ struct FastImport_MainView: View {
                         
                         HStack {
                             
-                            CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color("SeaTurtlePalette_4"), fillColor: Color("SeaTurtlePalette_2")) {
+                            CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.seaTurtle_4, fillColor: Color.seaTurtle_2) {
                                
                                 self.estrapolaStringhe()
                                 self.postEstrapolaAction()
                              
                             }
-                            .opacity(self.isUpdateDisable ? 0.6 : 1.0)
+                            .opacity(self.isUpdateDisable ? 0.3 : 1.0)
                             .disabled(self.isUpdateDisable)
  
                             CSInfoAlertView(imageScale: .large, title: "Guida Formato", message: .formattazioneInserimentoVeloce)
@@ -73,11 +74,11 @@ struct FastImport_MainView: View {
                             TabView { // Risolto bug 23.06.2022 Se allFastDish è vuoto, con la TabView andiamo in crash.
                                 
                                 ForEach($allFastDish) { $fastDish in
-                                    
-                                  //  CSZStackVB_Framed(frameWidth: 380, rateWH: 1.5) {
+
                                     let checkExistence = self.viewModel.checkExistingUniqueModelName(model: fastDish.dish).0
                                     
-                                    CSZStackVB_Framed(frameWidth:1200) {
+                                  //  CSZStackVB_Framed(frameWidth:1200) {
+                                    ZStack {
                                         
                                         VStack {
                                             FastImport_CorpoScheda(temporaryModel: $fastDish) { newDish in
@@ -88,7 +89,7 @@ struct FastImport_MainView: View {
                                            
                                             Spacer()
                                         }
-                                        .padding()
+                                        //.padding()
                                         .opacity(checkExistence ? 0.6 : 1.0)
                                         .disabled(checkExistence)
                                         .overlay(alignment:.topLeading) {
@@ -99,7 +100,7 @@ struct FastImport_MainView: View {
                                                     Text("Esistente")
                                                         .bold()
                                                         .font(.largeTitle)
-                                                        .foregroundColor(Color("SeaTurtlePalette_1"))
+                                                        .foregroundColor(Color.seaTurtle_1)
                                                         .lineLimit(1)
                                                         .padding(.horizontal,100)
                                                    // Spacer()
@@ -116,22 +117,22 @@ struct FastImport_MainView: View {
                                     }
                                 }
                             }
-                            .frame(height:800)
+                            .frame(height:tabViewHeight)
                             .tabViewStyle(PageTabViewStyle())
-                            
-                            
-                            
+ 
                         } // Chiusa if
                         
-                Spacer()
+                        Spacer()
                  
                     }//.padding(.horizontal)
                     
                 }
-                CSDivider()
-            }.padding(.horizontal)
-       
-        }
+               // .edgesIgnoringSafeArea(.all)
+                
+           // }
+            .csHpadding()
+      //  CSDivider()
+       // }
     }
     
     // Method
@@ -147,28 +148,6 @@ struct FastImport_MainView: View {
 
      
     }
-    /*
-    private func fastSaveDEPRECATA(item: TemporaryModel) {
- 
-        do {
-            
-            try self.viewModel.dishAndIngredientsFastSave(item: item)
-
-            let localAllFastDish:[TemporaryModel] = self.allFastDish.filter {$0.id != item.id}
- 
-            if !localAllFastDish.isEmpty {
-                self.reBuildIngredientContainer(localTemporaryModel: localAllFastDish)
-            }  else {self.allFastDish = localAllFastDish}
-
-        } catch _ {
-            
-            viewModel.alertItem = AlertModel(
-                title: "Errore - Piatto Esistente",
-                message: "Modifica il nome del piatto nell'Editor ed estrai nuovamente il testo.")
-            
-        }
- 
-    }*/ // deprecata 06.10
  
     /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
     private func reBuildIngredientContainer(localTemporaryModel:[TemporaryModel]) {
@@ -186,6 +165,7 @@ struct FastImport_MainView: View {
                 
                 if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 { newTemporaryModel?.ingredients.append(oldIngredient) } else {newTemporaryModel?.ingredients.append(ingredient) }
        
+                
             }
             
             newTemporaryContainer.append(newTemporaryModel!)
@@ -195,31 +175,6 @@ struct FastImport_MainView: View {
         self.allFastDish = newTemporaryContainer
    
     }
-    /*
-    /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
-    private func reBuildIngredientContainer(localAllFastDish:[DishModel]) {
-        
-        var newDishContainer:[DishModel] = []
-        var newDish:DishModel = DishModel()
-        
-        for dish in localAllFastDish {
-            
-            newDish = dish
-            newDish.ingredientiPrincipaliDEPRECATO = []
-            
-            for ingredient in dish.ingredientiPrincipaliDEPRECATO {
-                
-                if let oldIngredient = viewModel.checkExistingUniqueModelID(model: ingredient).1 { newDish.ingredientiPrincipaliDEPRECATO.append(oldIngredient) } else {newDish.ingredientiPrincipaliDEPRECATO.append(ingredient) }
-       
-            }
-            
-            newDishContainer.append(newDish)
-            
-        }
-        
-        self.allFastDish = newDishContainer
-   
-    } */ // Deprecata 28.08
     
     private func estrapolaStringhe() {
          
@@ -288,11 +243,14 @@ struct FastImport_MainView: View {
             
             let temporaryDish: TemporaryModel = TemporaryModel(dish: fastDish, ingredients: step_5)
             
-
             self.allFastDish.append(temporaryDish)
             print("Dentro Estrapola/Fine Ciclo piatto: \(cleanedDishTitle)")
         }
-     
+        // impostiamo la altezza della tabView sulla base del piatto che ha il maggior numero di ingredienti. Le tabview ci hanno dato problemi di rendering (18/06/2023) e devono avere tutte la stessa altezza. E dovranno avere dunque l'altezza maggiore altrimenti parte del contenuto va sotto il resto. Abbiamo tolto lo scroll interno alla tab perchè non funzionava bene e senza fissare il nome del piatto aveva anche poco tempo. Vedi nota vocale 18.06.23
+        let maxIngredientsIn = self.allFastDish.map({$0.ingredients.count}).max()
+        let maxIn = CGFloat(maxIngredientsIn ?? 0)
+        self.tabViewHeight += (maxIn * 200)
+        
     }
  
     private func postEstrapolaAction() {
@@ -311,7 +269,7 @@ struct FastImportMainView_Previews: PreviewProvider {
     static var previews: some View {
     
         NavigationStack {
-            FastImport_MainView(backgroundColorView: Color("SeaTurtlePalette_1"))
+            FastImport_MainView(backgroundColorView: Color.seaTurtle_1)
                 
         }.environmentObject(AccounterVM())
          //   Color.cyan

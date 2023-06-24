@@ -10,7 +10,7 @@
 import SwiftUI
 import MapKit
 import MyFoodiePackage
-
+// 17/06/2023 Maps di Apple -> tentiamo di scriverne un altra con maps di Google
 struct NewPropertyMainView: View {
     
     @EnvironmentObject var viewModel:AccounterVM

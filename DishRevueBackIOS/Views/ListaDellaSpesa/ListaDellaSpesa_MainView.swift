@@ -298,7 +298,7 @@ struct SpesaRowIngredientView: View {
            //.padding(.horizontal,5)
            // .padding(.vertical,15)
             .padding(.top,15)
-            .modifierIf(!self.showNote) { view in
+            .csModifier(!self.showNote) { view in
                 view.padding(.bottom,15)
             }
            /* .overlay(alignment: .bottom) {

@@ -21,7 +21,7 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
 
     var body: some View {
         
-        CSZStackVB_Framed(frameWidth:500,backgroundOpacity: 0.05,shadowColor: .clear) {
+        CSZStackVB_Framed(/*frameWidth:500,*/backgroundOpacity: 0.05,shadowColor: .clear) {
             
             VStack(alignment:.leading) {
                 

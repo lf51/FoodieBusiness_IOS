@@ -162,13 +162,17 @@ struct NuovoMenuMainView: View {
             .csHpadding()
 
         } // Chiusa ZStack MAdre
-        .popover(isPresented: $openDishList) {
+        .popover(isPresented: $openDishList,attachmentAnchor: .point(.top),arrowEdge: .bottom) {
+            
             PreCallVistaPiattiEspansa(
                 currentMenu: $nuovoMenu,
+                rowViewSize: .normale(700),
                 backgroundColorView: backgroundColorView,
                 destinationPath: destinationPath)
             .presentationDetents([.fraction(0.8)])
+            
         }
+
      //   .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
 
     }

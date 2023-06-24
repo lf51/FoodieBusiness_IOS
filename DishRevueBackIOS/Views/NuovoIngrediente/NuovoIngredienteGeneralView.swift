@@ -156,11 +156,11 @@ struct NuovoIngredienteGeneralView: View {
             }
             .csHpadding()
             //.padding(.horizontal,10)
-            .popover(isPresented: $wannaAddAllergeni) {
+            .popover(isPresented: $wannaAddAllergeni,attachmentAnchor: .point(.top),arrowEdge: .bottom) {
                 VistaAllergeni_Selectable(
                     allergeneIn: $nuovoIngrediente.allergeni,
                     backgroundColor: backgroundColorView)
-                    .presentationDetents([.height(500)])
+                .presentationDetents([.height(500)])
             }
     
        }

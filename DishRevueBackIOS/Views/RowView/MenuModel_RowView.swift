@@ -24,7 +24,7 @@ struct MenuModel_RowView: View {
     let menuItem: MenuModel
     let rowSize: RowSize
     
-    init(menuItem: MenuModel, rowSize: RowSize = .normale) {
+    init(menuItem: MenuModel, rowSize: RowSize = .normale()) {
    
         self.menuItem = menuItem
         self.rowSize = rowSize
@@ -271,7 +271,7 @@ struct MenuModel_RowView: View {
         
       //  HStack {
         let value:Font = {
-            if self.rowSize == .normale { return .title2}
+            if self.rowSize.returnType() == .normale() { return .title2}
             else { return .title3}
         }()
         
@@ -321,7 +321,7 @@ struct MenuModel_RowView: View {
            
         let value:(imageSize:Image.Scale,textSize:Font.TextStyle) = {
            
-            if self.rowSize == .normale { return (.large,.title3)}
+            if self.rowSize.returnType() == .normale() { return (.large,.title3)}
             else { return (.medium,.headline)}
         }()
         

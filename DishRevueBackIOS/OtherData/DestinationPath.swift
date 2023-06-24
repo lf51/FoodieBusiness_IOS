@@ -42,7 +42,8 @@ public enum DestinationPathView: Hashable {
     
     case vistaIngredientiEspansa(_ :DishModel)
     case vistaMenuEspansa(_ :DishModel)
-    case vistaPiattiEspansa(_ :MenuModel)
+    case vistaPiattiEspansa(_ :MenuModel,_ :RowSize = .normale())
+    
     case vistaCronologiaAcquisti(_ :IngredientModel)
     case vistaRecensioniEspansa
     
@@ -96,7 +97,8 @@ public enum DestinationPathView: Hashable {
             NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
             
         case .moduloImportazioneVeloce:
-            FastImport_MainView(backgroundColorView: backgroundColorView)
+          //  FastImport_MainView(backgroundColorView: backgroundColorView)
+            Switch_ImportObject(backgroundColorView: backgroundColorView)
             
         case .recensioni(let rifDish):
            // DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)
@@ -109,9 +111,10 @@ public enum DestinationPathView: Hashable {
         case .vistaMenuEspansa(let dish):
             VistaMenuEspansa(currentDish: dish, backgroundColorView: backgroundColorView,viewModel: readOnlyViewModel)
             
-        case .vistaPiattiEspansa(let menu):
+        case .vistaPiattiEspansa(let menu,let rowSize):
             PreCallVistaPiattiEspansa(
                 currentMenu: menu,
+                rowViewSize: rowSize,
                 backgroundColorView: backgroundColorView,
                 destinationPath: destinationPath)
            /* VistaPiattiEspansa(currentMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */

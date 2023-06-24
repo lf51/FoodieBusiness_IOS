@@ -9,9 +9,42 @@ import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
 
-public enum RowSize {
+public enum RowSize:Equatable,Hashable { // Nota 22.06.23
 
-    case sintetico,ridotto,normale,ibrido
+    case sintetico
+    case ridotto
+    case normale(_ limitedTo:CGFloat? = nil)
+  //  case ibrido(_ limitedTo:CGFloat? = nil)
+    
+    func returnType() -> RowSize {
+        
+        switch self {
+        case .sintetico:
+            return .sintetico
+        case .ridotto:
+            return .ridotto
+        case .normale(_):
+            return .normale()
+       /* case .ibrido(_):
+            return .ibrido() */
+        }
+    }
+    
+    func getFrameWidth() -> CGFloat? {
+        
+        switch self {
+        case .sintetico:
+            return 300
+        case .ridotto:
+            return 300
+        case .normale(let width):
+            return width
+       /* case .ibrido(let width):
+            return width */
+
+        }
+        
+    }
     
 }
 
@@ -21,17 +54,20 @@ struct DishModel_RowView: View {
     let item: DishModel
     let rowSize:RowSize
     
-    init(item: DishModel, rowSize: RowSize = .normale) {
+    init(item: DishModel, rowSize: RowSize = .normale()) {
+        
         self.item = item
+        self.rowSize = rowSize
         
-        let checkIsIbrido = item.ingredientiPrincipali.contains(item.id)
+  
+       /* let checkIsIbrido = item.percorsoProdotto == .prodottoFinito
+        let plaiRowSize = rowSize.returnType()
         
-        if checkIsIbrido && rowSize == .normale {
-            self.rowSize = .ibrido
+        if checkIsIbrido && plaiRowSize == .normale() {
+            self.rowSize = .ibrido(plaiRowSize.getFrameWidth())
         } else {
             self.rowSize = rowSize
-        }
-        
+        } */
     }
     
     var body: some View { vbSwitchRowSize() }
@@ -48,15 +84,31 @@ struct DishModel_RowView: View {
             vbSmallRow()
         case .normale:
             vbNormalRow()
-        case .ibrido:
-           vbIbridoRow()
+       /* case .ibrido:
+           vbIbridoRow() */
         }
     }
     
-    // RowSize Builder
-    @ViewBuilder private func vbIbridoRow() -> some View {
+    
+  /*  @ViewBuilder private func vbRowEstesa() -> some View {
         
-        CSZStackVB_Framed {
+        switch self.item.percorsoProdotto {
+            
+        case .prodottoFinito:
+            vbIbridoRow()
+        case .composizione:
+            vbIbridoRow()
+        default:
+            vbNormalRow()
+        }
+        
+    } */
+    
+    
+
+    /*@ViewBuilder private func vbIbridoRow() -> some View {
+        
+        CSZStackVB_Framed(frameWidth:rowSize.getFrameWidth()) {
             
             VStack(alignment:.leading) {
                 
@@ -96,11 +148,11 @@ struct DishModel_RowView: View {
                             
         } // chiusa Zstack Madre
         
-    }
+    }*/ // deprecato 24.06.23
     
     @ViewBuilder private func vbSinteticRow() -> some View {
         
-        CSZStackVB_Framed(frameWidth:300) {
+        CSZStackVB_Framed(frameWidth:rowSize.getFrameWidth()) {
             
             VStack(alignment:.leading) {
 
@@ -116,7 +168,12 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbNormalRow() -> some View {
         
-        CSZStackVB_Framed {
+        let percorsoIbrido:Bool = {
+            self.item.percorsoProdotto == .composizione ||
+            self.item.percorsoProdotto == .prodottoFinito
+        }()
+        
+        CSZStackVB_Framed(frameWidth:rowSize.getFrameWidth()) {
             
             VStack(alignment:.leading) {
                 
@@ -133,7 +190,10 @@ struct DishModel_RowView: View {
                 VStack(spacing:10) {
                     
                     vbBadgeRow()
-                    vbIngredientScrollRow()
+                    
+                    if percorsoIbrido {vbIngredientQuality()}
+                    else {vbIngredientScrollRow()}
+                    
                     vbDieteCompatibili()
                 }
                 
@@ -159,7 +219,7 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbSmallRow() -> some View {
         
-        CSZStackVB_Framed(frameWidth:300) {
+        CSZStackVB_Framed(frameWidth:rowSize.getFrameWidth()) {
             
             VStack(alignment:.leading) {
                 
@@ -287,7 +347,9 @@ struct DishModel_RowView: View {
         let menuWhereIsIn = self.viewModel.allMenuContaining(idPiatto: self.item.id).countWhereDishIsIn
         // end 19.10
         
-        let isIbrido = self.rowSize == .ibrido
+       // let isIbrido = self.rowSize.returnType() == .ibrido()
+        let isIbrido = self.item.percorsoProdotto == .prodottoFinito
+        let isNotDescribed = self.item.descrizione == ""
         
         HStack {
          
@@ -409,11 +471,25 @@ struct DishModel_RowView: View {
                             backgroundOpacity: 0.7)
                     }
                     
-                }
+                } // chiusa HStack Interno
                 
-            }
+            } // chiusa ScrollHorizontal
+            
+            let describeButton:Color = isNotDescribed ? .gray : .seaTurtle_4
+            
+            CSButton_image(
+                frontImage: "doc.richtext",
+                imageScale: .medium,
+                frontColor: describeButton) {
+                    //
+                }
+                .csModifier(!isNotDescribed, transform: { image in
+                    image
+                        .shadow(color: .gray, radius: 2.0)
+                })
+                .disabled(isNotDescribed)
 
-        }
+        } // end HastackMadre
     }
     
     @ViewBuilder private func vbNoticeAllergeni() -> some View {
@@ -436,13 +512,17 @@ struct DishModel_RowView: View {
         
         let value:Font = {
            
-            if self.rowSize == .normale || self.rowSize == .ibrido { return .title2}
+            if self.rowSize.returnType() == .normale() { return .title2}
             else { return .title3}
         }()
         
         let dashedColor = self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
+        let percorsoImage = self.item.percorsoProdotto.imageAssociated()
         
-        HStack(alignment:.bottom) {
+        HStack(alignment:.center,spacing: 3) {
+            
+            Image(systemName: percorsoImage.system)
+                .foregroundColor(percorsoImage.color)
             
             Text(self.item.intestazione)
                 .font(value)
@@ -469,15 +549,20 @@ struct DishModel_RowView: View {
         let moneyCode = Locale.current.currency?.identifier ?? "EUR"
         let priceDouble = Double(price) ?? 0
      
+     
         HStack(alignment:.center,spacing: 3) {
-
-            if self.rowSize != .ibrido {
+            
+           // let percorso = self.item.percorsoProdotto
+            
+            if self.item.percorsoProdotto != .prodottoFinito {
+              
                 vbReviewLine()
             } else {
-                Text(self.item.percorsoProdotto.simpleDescription().lowercased())
+               // Text(self.item.percorsoProdotto.simpleDescription().lowercased())
+                Text("non recensibile")
                     .italic()
                     .fontWeight(.semibold)
-                    .foregroundColor(Color("SeaTurtlePalette_2"))
+                    .foregroundColor(.seaTurtle_2)
             }
            
             Spacer()
@@ -487,12 +572,12 @@ struct DishModel_RowView: View {
                 Text("\(priceDouble,format: .currency(code: moneyCode))")
                     .fontWeight(.bold)
                     .font(.title3)
-                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                    .foregroundColor(.seaTurtle_4)
                 
                 Text("+\(count)")
                     .fontWeight(.bold)
                     .font(.caption2)
-                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                    .foregroundColor(.seaTurtle_3)
             }
             
             
@@ -508,11 +593,11 @@ struct DishModel_RowView: View {
         Group {
             Text("\(mediaRating,specifier: "%.1f")") // media
                 .fontWeight(.light)
-                .foregroundColor(Color("SeaTurtlePalette_1"))
+                .foregroundColor(.seaTurtle_1)
                 .padding(.horizontal,5)
                 .background(
                     RoundedRectangle(cornerRadius: 5.0)
-                        .fill(Color("SeaTurtlePalette_2"))
+                        .fill(Color.seaTurtle_2)
                 )
 
             Group {
@@ -541,7 +626,7 @@ struct DishModel_RowView: View {
             for format in self.item.pricingPiatto {
                 
                 if format.type == .mandatory {
-                    mandatoryPrice = format.price ?? "0.00"
+                    mandatoryPrice = format.price
                     break
                 }
                
@@ -559,7 +644,7 @@ struct DishModel_RowView: View {
             
             Image(systemName: "person.fill.checkmark")
                 .imageScale(.medium)
-                .foregroundColor(Color("SeaTurtlePalette_4"))
+                .foregroundColor(.seaTurtle_4)
          
             ScrollView(.horizontal,showsIndicators: false) {
                 
@@ -570,12 +655,12 @@ struct DishModel_RowView: View {
                         Text(diet)
                             .font(.subheadline)
                             .fontWeight(.black)
-                            .foregroundColor(Color("SeaTurtlePalette_4"))
+                            .foregroundColor(.seaTurtle_4)
                         
                         Text("•")
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundColor(Color("SeaTurtlePalette_4"))
+                            .foregroundColor(.seaTurtle_4)
 
                     }
                 }
@@ -591,7 +676,7 @@ struct DishModel_RowView: View {
    
                     Image(systemName: "list.bullet.rectangle")
                         .imageScale(.medium)
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                        .foregroundColor(.seaTurtle_4)
   
                 if !allFilteredIngredients.isEmpty {
                     
@@ -607,7 +692,7 @@ struct DishModel_RowView: View {
                                     
                                    Text(ingredient.intestazione)
                                         .font(isPrincipal ? .headline : .subheadline)
-                                        .foregroundColor(isTemporaryOff ? Color("SeaTurtlePalette_1") : Color("SeaTurtlePalette_4"))
+                                        .foregroundColor(isTemporaryOff ? .seaTurtle_1 : .seaTurtle_4)
                                         .strikethrough(isTemporaryOff, color: Color.gray)
                                         .underline(isBio, pattern: .solid, color: Color.green)
                                         .overlay(alignment:.topTrailing) {
@@ -626,7 +711,7 @@ struct DishModel_RowView: View {
                                            
                                            Text("(\(name))")
                                                .font(isPrincipal ? .headline : .subheadline)
-                                               .foregroundColor(Color("SeaTurtlePalette_3"))
+                                               .foregroundColor(.seaTurtle_3)
                                                .overlay(alignment:.topTrailing) {
                                                    if allergeniIn {
                                                        Text("*")
@@ -644,7 +729,7 @@ struct DishModel_RowView: View {
                                 Text("•")
                                     .font(.subheadline)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                                    .foregroundColor(.seaTurtle_4)
                
                             }
                         }
@@ -654,7 +739,7 @@ struct DishModel_RowView: View {
                     Text("Lista Ingredienti Vuota")
                         .italic()
                         .font(.headline)
-                        .foregroundColor(Color("SeaTurtlePalette_1"))
+                        .foregroundColor(.seaTurtle_1)
                     Spacer()
                 }
                 
@@ -936,7 +1021,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
     static var dishSample2 = {
        
         var dish = DishModel()
-        dish.intestazione = "Bucatini alla Matriciana"
+        dish.intestazione = "Gin Tonic"
         dish.status = .completo(.disponibile)
       /*  dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
@@ -944,27 +1029,27 @@ struct DishModel_RowView_Previews: PreviewProvider {
         
         let price1 = {
            var priceFirst = DishFormat(type: .opzionale)
-            priceFirst.label = "Pizzetta"
-            priceFirst.price = "4.5"
+            priceFirst.label = "Monkey"
+            priceFirst.price = "14.5"
             return priceFirst
         }()
         let price2 = {
            var priceFirst = DishFormat(type: .opzionale)
-            priceFirst.label = "Pizza"
+            priceFirst.label = "Mare"
             priceFirst.price = "9.5"
             return priceFirst
         }()
         let price3 = {
            var priceFirst = DishFormat(type: .mandatory)
-            priceFirst.label = "Tabisca"
-            priceFirst.price = "14.9"
+            priceFirst.label = "Bombay"
+            priceFirst.price = "4.9"
             return priceFirst
         }()
         
         dish.pricingPiatto = [price1,price2,price3]
         dish.ingredientiPrincipali = [ing1.id,ing4.id]
         dish.ingredientiSecondari = [ing2.id,ing3.id]
-
+        dish.percorsoProdotto = .preparazioneBeverage
       /*  dish.dieteCompatibili = TipoDieta.returnDietAvaible(ingredients: [ing1,ing2,ing3,ing4]).inDishTipologia */
         
         return dish
@@ -972,30 +1057,25 @@ struct DishModel_RowView_Previews: PreviewProvider {
     static var dishSample3 = {
        
         var dish = DishModel()
-        dish.intestazione = "Trofie Pesto Noci e Gamberi"
-      /*  dish.rating = [
-            DishRatingModel(voto: "5.7", titolo: "", commento: ""),
-            DishRatingModel(voto: "6.7", titolo: "", commento: ""),
-            DishRatingModel(voto: "8.7", titolo: "", commento: ""),
-            DishRatingModel(voto: "9.7", titolo: "", commento: ""),
-            DishRatingModel(voto: "9.7", titolo: "", commento: ""),
-            DishRatingModel(voto: "9.7", titolo: "", commento: "")
-        ] */
+        dish.intestazione = "Tagliere Locale"
         
         let price1 = {
            var priceFirst = DishFormat(type: .mandatory)
-            priceFirst.label = "Mezza Pinta"
+            priceFirst.label = "Piccolo"
             priceFirst.price = "4.0"
             return priceFirst
         }()
         let price2 = {
            var priceFirst = DishFormat(type: .opzionale)
-            priceFirst.label = "Pinta"
+            priceFirst.label = "Grande"
             priceFirst.price = "7.5"
             return priceFirst
         }()
         dish.status = .completo(.disponibile)
         dish.pricingPiatto = [price1,price2]
+        dish.percorsoProdotto = .composizione
+        dish.ingredientiPrincipali = [dish.id]
+        dish.descrizione = "Salumi e Formaggi Locali"
        // dish.ingredientiPrincipali = [ing3.id]
       //  dish.ingredientiSecondari = [ing1.id,ing2.id,ing4.id]
     
@@ -1006,7 +1086,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
     static var dishSample4 = {
        
         var dish = DishModel()
-        dish.intestazione = "Birra bionda alla Spina"
+        dish.intestazione = "CocaCola"
        /* dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
         ] */
@@ -1026,10 +1106,10 @@ struct DishModel_RowView_Previews: PreviewProvider {
     
         dish.status = .completo(.disponibile)
         dish.pricingPiatto = [price1,price2]
-        dish.ingredientiPrincipali = [ing4.id]
+        dish.ingredientiPrincipali = [dish.id]
+        dish.percorsoProdotto = .prodottoFinito
+        
 
-        
-        
         return dish
     }()
     
@@ -1047,14 +1127,13 @@ struct DishModel_RowView_Previews: PreviewProvider {
                     
                     DishModel_RowView(item: dishSample)
                         .frame(height:150)
-                  
-             
+                    DishModel_RowView(item: dishSample2)
+                        .frame(height:150)
                     DishModel_RowView(item: dishSample3)
                         .frame(height:150)
                     DishModel_RowView(item: dishSample4)
                         .frame(height:150)
-                    DishModel_RowView(item: dishSample,rowSize: .ridotto)
-                        .frame(height:100)
+          
                 }
                 
             }

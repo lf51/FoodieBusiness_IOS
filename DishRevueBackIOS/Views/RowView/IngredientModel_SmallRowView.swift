@@ -9,6 +9,7 @@ import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
 
+// 22.06.23 Deprecata in futuro - inserendola nell'ingredientModelRow con uno switch, come fatto per il dish e il menu
 struct IngredientModel_SmallRowView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
@@ -189,3 +190,4 @@ struct IngredientModel_SmallRowView_Previews: PreviewProvider {
         }.environmentObject(vm)
     }
 }
+

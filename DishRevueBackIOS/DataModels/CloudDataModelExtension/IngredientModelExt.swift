@@ -161,8 +161,8 @@ extension IngredientModel:
     } // deprecata in futuro
     
     public func returnModelRowView(rowSize:RowSize) -> some View {
-        // rowSize da implementare
-        IngredientModel_RowView(item: self)
+        // rowSize da implementare // 22.06 Implementata
+        IngredientModel_RowView(item: self, rowSize: rowSize)
     }
     
    /* public func modelPropertyCompare(filterProperty: FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool {

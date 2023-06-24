@@ -12,11 +12,277 @@ import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
 
+
 struct IngredientModel_RowView: View {
+    
+    @EnvironmentObject var viewModel: AccounterVM
+    let item: IngredientModel
+    let rowSize:RowSize
+    
+    var body: some View { vbSwitchLocalRowSize() }
+    
+    // ViewBuilder
+    
+    @ViewBuilder private func vbSwitchLocalRowSize() -> some View {
+        
+        switch rowSize {
+            
+        case .sintetico:
+            vbRegular(frameWidth: 300)
+        case .ridotto:
+            vbRegular(frameWidth: 300)
+        case .normale(let width):
+            vbRegular(frameWidth: width)
+       /* case .ibrido(let width):
+            vbRegular(frameWidth: width)*/
+        }
+        
+        
+    }
+        
+    
+    @ViewBuilder private func vbRegular(frameWidth:CGFloat?) -> some View {
+        
+        CSZStackVB_Framed(frameWidth:frameWidth) {
+            
+            VStack(alignment:.leading,spacing: 5.0) {
+                
+                VStack(alignment:.leading,spacing: 0) {
+                    
+                    vbIntestazioneIngrediente()
+                    //    vbSubIntestazioneIngrediente()
+                    vbDishCountIn()
+                    
+                }
+                
+                .padding(.top,5)
+                
+                //  Spacer()
+                
+                HStack {
+                    
+                    let(image,size) = self.item.associaImmagine()
+                    
+                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_4"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_1")) {
+                        HStack {
+                            csVbSwitchImageText(string: image,size: size)
+                            Text(self.item.origine.simpleDescription())
+                        }
+                    }
+                    
+                    let isDefaultValue = self.item.provenienza == .defaultValue
+                    
+                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_1"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_4")) {
+                        HStack {
+                            
+                            csVbSwitchImageText(string: self.item.provenienza.imageAssociated(),size:.large, slash: isDefaultValue)
+                            
+                            Text(self.item.provenienza.simpleDescription())
+                        }
+                    }.opacity(isDefaultValue ? 0.4 : 1.0)
+                    
+                    Spacer()
+                    // 07.09
+                    // vbDishCountIn()
+                    // end 07.09
+                }
+                
+                //    Spacer()
+                
+                VStack(spacing:3) {
+                    
+                    vbProduzioneIngrediente()
+                    vbConservazioneIngrediente()
+                    vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                    
+                }
+                .padding(.bottom,5)
+                //  .padding(.vertical,5)
+                
+            } // chiuda VStack madre
+            // ._tightPadding()
+            .padding(.horizontal,10)
+            //  .padding(.vertical,5)
+        } // chiusa Zstack Madre
+        
+        
+    }
+    
+    @ViewBuilder private func vbDishCountIn() -> some View {
+        
+        let (dishCount,substitution) = self.item.dishWhereIn(readOnlyVM: self.viewModel)
+        let isInPausa = self.item.status.checkStatusTransition(check: .inPausa)
+        let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
+        
+        HStack {
+            
+            CSEtichetta(text: "\(dishCount)",
+                        fontStyle: .title3,
+                        fontWeight: .semibold,
+                        textColor: Color("SeaTurtlePalette_4"),
+                        image: "fork.knife.circle",
+                        imageColor: Color("SeaTurtlePalette_4"),
+                        imageSize: .large,
+                        backgroundColor: Color("SeaTurtlePalette_2"),
+                        backgroundOpacity: isDisponibile ? 1.0 : 0.4)
+            .blur(radius: isDisponibile ? 0.0 : 1.0)
+            
+            
+            if isInPausa {
+                
+                CSEtichetta(text: "\(substitution)",
+                            fontStyle: .title3,
+                            fontWeight: .semibold,
+                            textColor: Color("SeaTurtlePalette_4"),
+                            image: "arrow.left.arrow.right.circle",
+                            imageColor: Color("SeaTurtlePalette_4"),
+                            imageSize: .large,
+                            backgroundColor: Color("SeaTurtlePalette_2"),
+                            backgroundOpacity: 1.0)
+                
+            }
+            
+            Spacer()
+            
+            let statoScorte = self.viewModel.inventarioScorte.statoScorteIng(idIngredient: self.item.id)
+            
+            HStack(spacing:3) {
+                
+                Text(statoScorte.rawValue)
+                    .italic()
+                    .bold()
+                    .font(.subheadline)
+                
+                Image(systemName: statoScorte.imageAssociata())
+                    .imageScale(.medium)
+                
+            }
+            .foregroundColor(statoScorte.coloreAssociato())
+            
+        }
+        
+        
+        
+        
+    }
+    
+    @ViewBuilder private func vbProduzioneIngrediente() -> some View {
+        
+        HStack(spacing: 4.0) {
+            
+            csVbSwitchImageText(string: self.item.produzione.imageAssociated(), size: .large)
+                .foregroundColor(Color.white)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                
+                Text(self.item.produzione.extendedDescription())
+                    .font(.caption)
+                    .fontWeight(.black)
+                    .foregroundColor(Color.white)
+                    .italic()
+            }
+            
+        }
+        
+        
+    }
+    
+    @ViewBuilder private func vbConservazioneIngrediente() -> some View {
+        
+        HStack(spacing: 4.0) {
+            
+            csVbSwitchImageText(string: self.item.conservazione.imageAssociated(), size: .large)
+                .foregroundColor(Color.white)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                
+                Text(self.item.conservazione.extendedDescription())
+                    .font(.caption)
+                    .fontWeight(.black)
+                    .foregroundColor(Color.white)
+                    .italic()
+            }
+            
+        }
+        
+        
+    }
+    
+    @ViewBuilder private func vbIntestazioneIngrediente() -> some View {
+        
+        let dashedColor = Color.gray
+        
+        HStack(alignment:.lastTextBaseline) {
+            
+            Text(self.item.intestazione)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+                .allowsTightening(true)
+                .foregroundColor(Color.white)
+                .overlay(alignment:.topTrailing) {
+                    
+                    if self.item.produzione == .biologico {
+                        
+                        Text("Bio")
+                            .font(.system(.caption2, design: .monospaced, weight: .black))
+                            .foregroundColor(Color.green)
+                            .offset(x: 10, y: -4)
+                    }
+                }
+            
+            // 07.09
+            
+            /*   let isRiservaActive = {
+             self.item.status == .completo(.inPausa) ||
+             self.item.status == .bozza(.inPausa)
+             }()
+             
+             if isRiservaActive {
+             
+             HStack {
+             let dishCount = dishWhereIn()
+             
+             Text("\(dishCount)")
+             Image(systemName: "arrow.left.arrow.right.circle")
+             .imageScale(.medium)
+             .foregroundColor(isRiservaActive ? Color("SeaTurtlePalette_3") : Color("SeaTurtlePalette_1") )
+             .overlay {
+             
+             if !isRiservaActive {
+             
+             Image(systemName: "circle.slash")
+             .imageScale(.medium)
+             .foregroundColor(Color("SeaTurtlePalette_1"))
+             .rotationEffect(Angle(degrees: 90.0))
+             
+             }
+             
+             }
+             
+             }
+             
+             
+             } */
+            
+            // end 07.09
+            
+            Spacer()
+            
+            vbEstrapolaStatusImage(
+                itemModel: self.item,
+                dashedColor: dashedColor)
+            
+        }
+        
+    }
+    
+}
+/*struct IngredientModel_RowView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
     let item: IngredientModel
-
+   
     var body: some View {
                 
         CSZStackVB_Framed {
@@ -290,7 +556,7 @@ struct IngredientModel_RowView: View {
     
     
     
-}
+}*/ // deprecato 22.06.23
 
 
 struct IngredientModel_RowView_Previews: PreviewProvider {
@@ -352,7 +618,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
             
             VStack(spacing:50) {
                 
-                IngredientModel_RowView(item: ingredientSample2)
+                IngredientModel_RowView(item: ingredientSample2, rowSize: .normale())
                     .frame(height:150)
                 IngredientModel_SmallRowView(titolare: ingredientSample2, sostituto: nil)
                     .frame(height:50)

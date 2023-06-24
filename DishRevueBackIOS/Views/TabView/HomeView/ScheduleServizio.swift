@@ -135,7 +135,7 @@ struct ScheduleServizio:View {
                             self.openAllDetail.toggle()
                         }
                     }
-                    .modifierIf(disableExpand) { view in
+                    .csModifier(disableExpand) { view in
                         view.opacity(0.6)
                             .disabled(true)
                     }
@@ -194,7 +194,7 @@ struct ScheduleServizio:View {
                           self.espandiAllDate.toggle()
                       }
                   }
-                  .modifierIf(disableExpand) {view in
+                  .csModifier(disableExpand) {view in
                       view
                           .opacity(0.6)
                           .disabled(true)

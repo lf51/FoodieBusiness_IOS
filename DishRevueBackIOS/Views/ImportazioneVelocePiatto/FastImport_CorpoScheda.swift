@@ -12,14 +12,10 @@ import MyPackView_L0
 struct FastImport_CorpoScheda:View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    
-    // Modifiche 28.08
-  //  @Binding var fastDish: DishModel
-   // let saveAction: (_ :DishModel) -> Void
+
     @Binding var temporaryModel: TemporaryModel
     let saveAction: (_ :TemporaryModel) -> Void
-    // End 28.08
-    
+
     @State private var areAllergeniOk: Bool = false
     @State private var dishPrice: String = ""
 
@@ -115,7 +111,7 @@ struct FastImport_CorpoScheda:View {
                     }
             }
             
-            ScrollView(showsIndicators: false) {
+           // ScrollView(showsIndicators: false) {
                 
                 ForEach($temporaryModel.ingredients) { $ingredient in
                 
@@ -150,7 +146,7 @@ struct FastImport_CorpoScheda:View {
                          
                         }
                 
-                }
+              // }
         }.onTapGesture {
             csHideKeyboard()
         }

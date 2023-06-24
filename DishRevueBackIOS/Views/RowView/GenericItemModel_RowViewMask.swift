@@ -14,7 +14,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View wher
     
     let model: M
     var pushImage: String = "gearshape"
-    var rowSize: RowSize = .normale
+    var rowSize: RowSize = .normale()
     
     @ViewBuilder var interactiveMenuContent: Content
    
@@ -59,7 +59,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View wher
     
     @ViewBuilder private func vbNormalSize(model:M) -> some View {
         
-        model.returnModelRowView(rowSize: .normale)
+        model.returnModelRowView(rowSize: .normale())
            .overlay(alignment: .bottomTrailing) {
   
                 Menu {
@@ -330,8 +330,8 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                     GenericItemModel_RowViewMask(model: menuSample) {
                         Text("Ciao")
                     }
-                    MenuModel_RowView(menuItem: menuSample2, rowSize: .normale)
-                    MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .normale)
+                    MenuModel_RowView(menuItem: menuSample2, rowSize: .normale())
+                    MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .normale())
                     MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .sintetico)
                     MenuModel_RowView(menuItem: menuSample, rowSize: .sintetico)
                     DishModel_RowView(item: dishItem3, rowSize:.sintetico)
@@ -369,7 +369,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                             
                         }*/
                     
-                    DishModel_RowView(item: dishItem3, rowSize:.normale)
+                    DishModel_RowView(item: dishItem3, rowSize:.normale())
                     DishModel_RowView(item: dishItem3, rowSize:.ridotto)
                    
                     

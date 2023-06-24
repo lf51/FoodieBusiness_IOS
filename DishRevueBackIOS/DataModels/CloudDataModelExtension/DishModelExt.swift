@@ -59,7 +59,7 @@ extension DishModel:
          return (
             \.allMyDish, "Lista Piatti",
              self.percorsoProdotto.simpleDescription(),
-             self.percorsoProdotto.imageAssociated()
+             self.percorsoProdotto.imageAssociated().system
          )
      }
     

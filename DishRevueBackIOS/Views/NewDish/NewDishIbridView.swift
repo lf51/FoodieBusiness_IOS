@@ -198,7 +198,7 @@ struct NewDishIbridView: View {
            }
             .csHpadding()
             //.padding(.horizontal,10)
-            .popover(isPresented: $wannaAddAllergeni) {
+            .popover(isPresented: $wannaAddAllergeni,attachmentAnchor: .point(.top),arrowEdge: .bottom) {
                 VistaAllergeni_Selectable(
                     allergeneIn: $ingredienteDiSistema.allergeni,
                     backgroundColor: backgroundColorView)

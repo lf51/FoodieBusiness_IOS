@@ -335,6 +335,7 @@ struct LabelUpRow:View {
                     Divider()
                     
                     Text(label)
+                        .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.black.opacity(0.8))
                 }

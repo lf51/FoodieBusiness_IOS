@@ -64,6 +64,9 @@
 		3F41E25628D9F06200CAF957 /* NuovoMenuMainView2009Undo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F41E25528D9F06200CAF957 /* NuovoMenuMainView2009Undo.swift */; };
 		3F448B9529008DAC0090F996 /* MonitorReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F448B9429008DAC0090F996 /* MonitorReview.swift */; };
 		3F473DB528DAF1570043022F /* CSEtichetta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F473DB428DAF1570043022F /* CSEtichetta.swift */; };
+		3F628A102A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */; };
+		3F628A2D2A3DF1C300976D93 /* FastImport_Categorie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */; };
+		3F628A2F2A3DF45400976D93 /* Switch_ImportObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */; };
 		3F62DDFE289E56D9008F17A4 /* DishListByIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */; };
 		3F66D6582905474100FF2751 /* VistaEspansaGenerica.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */; };
 		3F7179912913D853002D14A4 /* FilterSortMap_Bar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7179902913D853002D14A4 /* FilterSortMap_Bar.swift */; };
@@ -279,6 +282,9 @@
 		3F41E25528D9F06200CAF957 /* NuovoMenuMainView2009Undo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NuovoMenuMainView2009Undo.swift; sourceTree = "<group>"; };
 		3F448B9429008DAC0090F996 /* MonitorReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorReview.swift; sourceTree = "<group>"; };
 		3F473DB428DAF1570043022F /* CSEtichetta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSEtichetta.swift; sourceTree = "<group>"; };
+		3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPropertyMainView_GoogleMaps.swift; sourceTree = "<group>"; };
+		3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastImport_Categorie.swift; sourceTree = "<group>"; };
+		3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_ImportObject.swift; sourceTree = "<group>"; };
 		3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishListByIngredientView.swift; sourceTree = "<group>"; };
 		3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaEspansaGenerica.swift; sourceTree = "<group>"; };
 		3F7179902913D853002D14A4 /* FilterSortMap_Bar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSortMap_Bar.swift; sourceTree = "<group>"; };
@@ -681,6 +687,8 @@
 				4D34D5502838DBB800A57747 /* FastImport_MainView.swift */,
 				4D8A1DCF283D13760016EE27 /* FastImport_CorpoScheda.swift */,
 				4D8A1DD1283D13B90016EE27 /* FastImport_IngredientRow.swift */,
+				3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */,
+				3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */,
 			);
 			path = ImportazioneVelocePiatto;
 			sourceTree = "<group>";
@@ -988,6 +996,7 @@
 			isa = PBXGroup;
 			children = (
 				4DC3EBC827ABD02C00FFC50E /* NewPropertyMainView.swift */,
+				3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */,
 				4DC94A2127E9EAD50080264C /* SubView */,
 			);
 			name = "NuovaProprietà";
@@ -1293,6 +1302,7 @@
 				4DCCD6DE27BAC17D00F387B2 /* PropertyScrollCases.swift in Sources */,
 				4DCCD6D527BABA2300F387B2 /* CustomLabel.swift in Sources */,
 				4D403B9E27981D3500EB4E1B /* GryphonSwiftLibrary.swift in Sources */,
+				3F628A102A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift in Sources */,
 				4DAD4FB8279EEE5400C0EAE8 /* MapView.swift in Sources */,
 				4D92C41E27BE46E60084D214 /* StyledText.swift in Sources */,
 				4DB75EDD280EC73A008C1765 /* AccounterMainView.swift in Sources */,
@@ -1442,6 +1452,7 @@
 				3FC26D0C2994F5EB00763915 /* VistaAllergeni_Selectable.swift in Sources */,
 				3F39855D29029C03007731C2 /* VistaRecensioniEspansa.swift in Sources */,
 				3F1781962944E92400AA1474 /* AllergeniExt.swift in Sources */,
+				3F628A2D2A3DF1C300976D93 /* FastImport_Categorie.swift in Sources */,
 				4D4947022822DD890093AFD6 /* CSDivider.swift in Sources */,
 				3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */,
 				4DD25B53283F8BD100582DCC /* MENU_TEST.swift in Sources */,
@@ -1467,6 +1478,7 @@
 				3FCC71B828E9D1D600F105A2 /* MonitorServizio.swift in Sources */,
 				3F250CCF28995DE800166E46 /* DishRating_RowView.swift in Sources */,
 				4D395901282FFCE800EA3FAA /* ViewModifier&.swift in Sources */,
+				3F628A2F2A3DF45400976D93 /* Switch_ImportObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

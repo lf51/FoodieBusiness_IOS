@@ -77,7 +77,7 @@ struct VistaIngredientiEspansa: View {
                                 let isDisponibile = model.status.checkStatusTransition(check: .disponibile)
  
                                     TabView {
-                                        IngredientModel_RowView(item: model)
+                                        IngredientModel_RowView(item: model, rowSize: .normale())
                                             .opacity(isDisponibile ? 1.0 : 0.6)
 
                                         if !isDisponibile {
@@ -116,7 +116,7 @@ struct VistaIngredientiEspansa: View {
                 
                 let isActive = modelSostituto.status.checkStatusTransition(check: .disponibile)
                 
-                IngredientModel_RowView(item: modelSostituto)
+                IngredientModel_RowView(item: modelSostituto, rowSize: .normale())
                     .opacity(isActive ? 1.0 : 0.6)
                     .overlay(alignment: .leading) {
                         VStack {
@@ -149,14 +149,20 @@ struct VistaIngredientiEspansa_Selectable: View {
     
     @Binding private var currentDish: DishModel
     let backgroundColorView: Color
+    let rowViewSize:RowSize
     let destinationPath:DestinationPath
     
     @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
     
-    init(currentDish: Binding<DishModel>, backgroundColorView: Color, destinationPath: DestinationPath) {
+    init(
+        currentDish: Binding<DishModel>,
+        backgroundColorView: Color,
+        rowViewSize:RowSize,
+        destinationPath: DestinationPath) {
         
         _currentDish = currentDish
         self.backgroundColorView = backgroundColorView
+        self.rowViewSize = rowViewSize
         self.destinationPath = destinationPath
     }
    
@@ -221,7 +227,7 @@ struct VistaIngredientiEspansa_Selectable: View {
                             let valuePath = self.currentDish.individuaPathIngrediente(idIngrediente: ing.id)
                             let valueRow = self.checkSelection(rifIng: ing.id, path: valuePath.path)
                             
-                            ing.returnModelRowView(rowSize: .normale)
+                            ing.returnModelRowView(rowSize: rowViewSize)
                                 .opacity(valuePath.path != nil ? 1.0 : 0.4)
                                 .overlay(alignment: .bottomTrailing) {
                                     

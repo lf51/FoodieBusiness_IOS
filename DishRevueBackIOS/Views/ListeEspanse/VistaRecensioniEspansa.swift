@@ -183,7 +183,7 @@ private struct RevRowLocal:View {
                 }
                 
             }// vstack sticky
-            .sticky(frames,
+            .csSticky(frames,
                     coordinateSpace: coordinateSpaceName,
                     customBackground: Color.seaTurtle_1.opacity(0.90),
                     customBackgroundCornerRadius: 5.0 )

@@ -35,7 +35,9 @@ struct NewProductMainView: View {
     
     var body: some View {
         
-        CSZStackVB(title: self.newDish.intestazione == "" ? "Nuovo \(self.type.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
+        var genere:String = self.type == .composizione ? "Nuova" : "Nuovo"
+        
+        CSZStackVB(title: self.newDish.intestazione == "" ? "\(genere) \(self.type.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
             
             VStack {
                 let disabilita = self.disabilitaSwitch()
@@ -62,6 +64,14 @@ struct NewProductMainView: View {
         switch self.type {
             
         case .prodottoFinito:
+            NewDishIbridView(
+                newDish: newDish,
+                percorso: type,
+                backgroundColorView: backgroundColorView,
+                destinationPath: destinationPath,
+                observedVM: viewModel)
+            
+        case .composizione:
             NewDishIbridView(
                 newDish: newDish,
                 percorso: type,

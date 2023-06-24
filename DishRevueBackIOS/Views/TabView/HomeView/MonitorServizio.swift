@@ -27,7 +27,7 @@ struct MonitorServizio: View {
                 backgroundColor: .white,
                 shadowColor: .seaTurtle_1)
             
-            CSZStackVB_Framed(frameWidth:500,backgroundOpacity: 0.05,shadowColor: .clear) {
+            CSZStackVB_Framed(/*frameWidth:500,*/backgroundOpacity: 0.05,shadowColor: .clear) {
                     
                    // vbServizioStat()
                      //       .padding(.horizontal,5)

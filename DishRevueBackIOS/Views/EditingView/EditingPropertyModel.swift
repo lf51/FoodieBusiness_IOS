@@ -410,12 +410,12 @@ private struct DynamicScrollSizeMM:View {
                 backgroundColor: Color.black) {
                      
                         CSButton_image(
-                            activationBool:self.modelSize == .normale ,
+                            activationBool:self.modelSize.returnType() == .normale() ,
                             frontImage:  "arrow.down.and.line.horizontal.and.arrow.up",
                             backImage: "arrow.up.and.line.horizontal.and.arrow.down",
                             imageScale: .medium,
-                            backColor: Color("SeaTurtlePalette_4"),
-                            frontColor: Color("SeaTurtlePalette_3")){
+                            backColor: .seaTurtle_4,
+                            frontColor: .seaTurtle_3){
                                 withAnimation {
                                     self.changeRowSizeAction()
                                 }
@@ -445,7 +445,7 @@ private struct DynamicScrollSizeMM:View {
     // Method
     private func changeRowSizeAction() {
         
-        self.modelSize = self.modelSize == .normale ? .sintetico : .normale
+        self.modelSize = self.modelSize.returnType() == .normale() ? .sintetico : .normale()
     }
     
 }

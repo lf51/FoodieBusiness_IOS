@@ -29,7 +29,16 @@ struct DishListView: View {
         NavigationStack(path:$viewModel.dishListPath) {
             
             let container = self.viewModel.ricercaFiltra(containerPath: \.allMyDish, coreFilter: filterCore)
-            let generalDisable = container.isEmpty
+            
+            let generalDisable:Bool = {
+                
+                let condition_1 = container.isEmpty
+                let condition_2 = self.filterCore.countChange == 0
+                let condition_3 = self.filterCore.stringaRicerca == ""
+                
+                return condition_1 && condition_2 && condition_3
+                
+            }()
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,

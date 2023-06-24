@@ -19,16 +19,27 @@ struct SwitchProductType: View {
             
             Picker(selection: $type) {
               
-                Text("Food")
+               /* Text("Food")
                     .tag(DishModel.PercorsoProdotto.preparazioneFood)
                 Text("Beverage")
                     .tag(DishModel.PercorsoProdotto.preparazioneBeverage)
-                Text("Prodotto di Terzi")
+                Text("Pronto")
                     .tag(DishModel.PercorsoProdotto.prodottoFinito)
+                Text("Composto")
+                    .tag(DishModel.PercorsoProdotto.composizione) */
+                
+                ForEach(DishModel.PercorsoProdotto.allCases,id:\.self) { percorso in
+                    
+                        Text(percorso.pickerDescription())
+                        .tag(percorso)
+                    
+                }
+                
                 
             } label: {
                 Text("")
             }
+         
             .pickerStyle(.segmented)
 
             if !nascondiTesto {

@@ -142,14 +142,15 @@ struct NewDishMainView: View {
                 
            }
             .csHpadding()
-            .popover(isPresented: $wannaAddIngredient) {
+            .popover(isPresented: $wannaAddIngredient,attachmentAnchor: .point(.top)) {
                 VistaIngredientiEspansa_Selectable(
                     currentDish: $newDish,
                     backgroundColorView: backgroundColorView,
+                    rowViewSize: .normale(700),
                     destinationPath: destinationPath)
                 .presentationDetents([.fraction(0.85)])
             }
-            .popover(isPresented: $uploadDishFormat) {
+            .popover(isPresented: $uploadDishFormat,attachmentAnchor: .point(.top)) {
                 
                 DishFormatUploadLabel(
                     allDishFormat: $newDish.pricingPiatto,backgroundColorView: backgroundColorView)

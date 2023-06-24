@@ -235,7 +235,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                             vistaEspansa: true) {
                                 self.currentDishForRatingList = model
                             }
-                            .modifierIf(self.editMode) { view in
+                            .csModifier(self.editMode) { view in
                                 
                                 view.overlay(alignment: .bottomTrailing) {
                                    
@@ -288,7 +288,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                 }
             }
         }
-        .popover(item: $currentDishForRatingList, attachmentAnchor: .point(.trailing), arrowEdge: .trailing) { dish in
+        .popover(item: $currentDishForRatingList, attachmentAnchor: .point(.top), arrowEdge: .bottom) { dish in
             DishRatingListView(
                 dishItem: dish,
                 backgroundColorView: backgroundColorView,

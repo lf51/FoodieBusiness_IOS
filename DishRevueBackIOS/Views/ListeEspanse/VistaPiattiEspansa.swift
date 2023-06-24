@@ -15,6 +15,7 @@ struct PreCallVistaPiattiEspansa: View {
     @State private var localStateMenu:MenuModel
     @Binding private var globalBindingMenu:MenuModel
     let menuArchiviato: MenuModel
+    let rowViewSize:RowSize
     
     let bindingType: ItemBindingType
     let backgroundColorView:Color
@@ -22,11 +23,13 @@ struct PreCallVistaPiattiEspansa: View {
 
     init(
         currentMenu: MenuModel,
+        rowViewSize:RowSize,
         backgroundColorView: Color,
         destinationPath: DestinationPath) {
             
         _localStateMenu = State(wrappedValue: currentMenu)
         self.menuArchiviato = currentMenu
+        self.rowViewSize = rowViewSize
         self.bindingType = .localState
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
@@ -36,12 +39,14 @@ struct PreCallVistaPiattiEspansa: View {
     
     init(
         currentMenu: Binding<MenuModel>,
+        rowViewSize:RowSize,
         backgroundColorView: Color,
         destinationPath: DestinationPath) {
             
         _globalBindingMenu = currentMenu
            
         self.menuArchiviato = currentMenu.wrappedValue
+        self.rowViewSize = rowViewSize
         self.bindingType = .globalBinding
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
@@ -66,8 +71,10 @@ struct PreCallVistaPiattiEspansa: View {
                 backgroundColorView: backgroundColorView) {
                 VistaPiattiEspansa(
                     currentMenu: $globalBindingMenu,
+                    rowViewSize: rowViewSize,
                     backgroundColorView: backgroundColorView,
                     destinationPath: destinationPath)
+                .csHpadding()
             }
             
         case .localState:
@@ -78,6 +85,7 @@ struct PreCallVistaPiattiEspansa: View {
                 VistaPiattiEspansa(
                     currentMenu: $localStateMenu,
                     menuArchiviato: menuArchiviato,
+                    rowViewSize: rowViewSize,
                     backgroundColorView: backgroundColorView,
                     destinationPath: destinationPath)
                 .csHpadding()
@@ -94,6 +102,7 @@ struct PreCallVistaPiattiEspansa: View {
         @EnvironmentObject var viewModel:AccounterVM
         
         @Binding private var currentMenu: MenuModel
+        let rowViewSize:RowSize
         let backgroundColorView: Color
         let destinationPath:DestinationPath
         
@@ -104,6 +113,7 @@ struct PreCallVistaPiattiEspansa: View {
         init(
             currentMenu: Binding<MenuModel>,
             menuArchiviato:MenuModel? = nil,
+            rowViewSize:RowSize,
             backgroundColorView: Color,
             destinationPath:DestinationPath) {
          
@@ -120,6 +130,7 @@ struct PreCallVistaPiattiEspansa: View {
             
            // self.valoreArchiviato = currentMenu.wrappedValue.rifDishIn
            // self.statusArchiviato = currentMenu.wrappedValue.status
+            self.rowViewSize = rowViewSize
             self.backgroundColorView = backgroundColorView
             self.destinationPath = destinationPath
         }
@@ -156,7 +167,7 @@ struct PreCallVistaPiattiEspansa: View {
                             
                             Text("Status:")
                                 .font(.system(.headline, design: .rounded, weight: .semibold))
-                                .foregroundColor(Color("SeaTurtlePalette_2"))
+                                .foregroundColor(.seaTurtle_2)
                             CSEtichetta(
                                 text: currentMenu.status.simpleDescription(),
                                 textColor: Color.white,
@@ -190,7 +201,7 @@ struct PreCallVistaPiattiEspansa: View {
         
                                 let containTheDish = currentMenu.rifDishIn.contains(dishModel.id)
                                 
-                                dishModel.returnModelRowView(rowSize: .normale)
+                                dishModel.returnModelRowView(rowSize: rowViewSize)
                                     .opacity(containTheDish ? 1.0 : 0.4)
                                     .overlay(alignment: .bottomTrailing) {
                                         
@@ -702,6 +713,7 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
          
             PreCallVistaPiattiEspansa(
                 currentMenu: menuSample,
+                rowViewSize: .normale(),
                 backgroundColorView: .seaTurtle_1,
                 destinationPath: .menuList)
             

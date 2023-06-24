@@ -30,7 +30,16 @@ struct MenuListView: View {
         NavigationStack(path:$viewModel.menuListPath) {
             
             let container = self.viewModel.ricercaFiltra(containerPath: \.allMyMenu, coreFilter: filterCore)
-            let generalDisable = container.isEmpty
+            
+            let generalDisable:Bool = {
+                
+                let condition_1 = container.isEmpty
+                let condition_2 = self.filterCore.countChange == 0
+                let condition_3 = self.filterCore.stringaRicerca == ""
+                
+                return condition_1 && condition_2 && condition_3
+                
+            }()
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,

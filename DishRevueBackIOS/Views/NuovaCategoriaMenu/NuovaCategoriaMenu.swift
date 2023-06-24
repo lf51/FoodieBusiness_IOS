@@ -37,7 +37,7 @@ struct NuovaCategoriaMenu: View {
                 
                 VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
                     
-                    CSLabel_1Button(placeHolder: "Crea Nuova Categoria", imageNameOrEmojy: "🍽", backgroundColor: Color("SeaTurtlePalette_3"), toggleBottone: $creaNuovaCategoria)
+                    CSLabel_1Button(placeHolder: "Nome Categoria", imageNameOrEmojy: "🍽", backgroundColor: Color.seaTurtle_3, toggleBottone: $creaNuovaCategoria)
                     
                     if creaNuovaCategoria! {
                         
@@ -55,7 +55,7 @@ struct NuovaCategoriaMenu: View {
                     CSLabel_conVB(
                         placeHolder: "Elenco Categorie (\(self.viewModel.allMyCategories.count)):",
                         imageNameOrEmojy: "list.bullet.circle",
-                        backgroundColor: Color("SeaTurtlePalette_3")) {
+                        backgroundColor: Color.seaTurtle_3) {
                            
                            HStack {
                                
@@ -68,8 +68,8 @@ struct NuovaCategoriaMenu: View {
                                 CSButton_tight(
                                     title: self.mode?.wrappedValue.isEditing ?? false ? "Chiudi" : "Ordina",
                                     fontWeight: .semibold,
-                                    titleColor: Color("SeaTurtlePalette_4"),
-                                    fillColor: Color("SeaTurtlePalette_2")) {
+                                    titleColor: Color.seaTurtle_4,
+                                    fillColor: Color.seaTurtle_2) {
                                         
                                         withAnimation {
                                             if self.mode?.wrappedValue.isEditing == true {
@@ -88,32 +88,43 @@ struct NuovaCategoriaMenu: View {
                                     
                                     let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
                                     
-                                    HStack {
-                        
-                                        csVbSwitchImageText(string: categoria.image)
-                                            .font(.body)
+                                    VStack(alignment:.leading,spacing: 5) {
                                         
-                                        Text(categoria.intestazione)
-                                            .fontWeight(.semibold)
-                                            .font(.system(.body, design: .rounded))
-                                            .foregroundColor(.seaTurtle_4)
-                                        
-                                        if self.mode?.wrappedValue == .inactive {
-                                            Button {
-                                                
-                                              pencilButton(categoria: categoria)
-                                                
-                                            } label: {
-                                                Image(systemName: "pencil")
-                                                    .foregroundColor(.seaTurtle_3)
-                                            }
+                                        HStack {
+                            
+                                            csVbSwitchImageText(string: categoria.image)
+                                                .font(.body)
+                                            
+                                            Text(categoria.intestazione)
+                                                .fontWeight(.semibold)
+                                                .font(.system(.body, design: .rounded))
+                                                .foregroundColor(.seaTurtle_4)
+                                            
+                                            if self.mode?.wrappedValue == .inactive {
+                                                Button {
+                                                    
+                                                  pencilButton(categoria: categoria)
+                                                    
+                                                } label: {
+                                                    Image(systemName: "pencil")
+                                                        .foregroundColor(.seaTurtle_3)
+                                                }
 
+                                            }
+                                            
+                                            Spacer()
+                                            Text("\(dishCount) 🍽️")
+                                                .foregroundColor(.seaTurtle_4)
+                                            
                                         }
                                         
-                                        Spacer()
-                                        Text("\(dishCount) 🍽️")
-                                            .foregroundColor(.seaTurtle_4)
+                                        let description = categoria.descrizione == "" ? "No description yet" : categoria.descrizione
                                         
+                                        Text(description)
+                                            .font(.callout)
+                                            .italic()
+                                            .foregroundColor(.black)
+                                            .opacity(0.6)
                                     }
                                     
                                 }
@@ -237,7 +248,7 @@ struct CorpoNuovaCategoria:View {
             else { return (false,1.0)}
         }() // vedi NotaVocale 14.09
         
-        VStack {
+        VStack(alignment:.leading) {
             
             ScrollView(.horizontal,showsIndicators: false) {
                 
@@ -259,39 +270,71 @@ struct CorpoNuovaCategoria:View {
             .padding(.vertical,5)
             .scrollDismissesKeyboard(.immediately)
                         
-            HStack {
+         //   HStack {
 
-                CSTextField_4b(
-                    textFieldItem: $nuovaCategoria.intestazione,
-                    placeHolder: "Associa un Nome..",
-                    showDelete: true) {
-                        csVbSwitchImageText(string: self.nuovaCategoria.image, size: .large)
-                            .padding(.leading,10)
-                    }
+     
+                    
+                    CSTextField_4b(
+                        textFieldItem: $nuovaCategoria.intestazione,
+                        placeHolder: "Nome Categoria",
+                        showDelete: true) {
+                            csVbSwitchImageText(string: self.nuovaCategoria.image, size: .large)
+                                .padding(.leading,10)
+                        }
+                        .focused($modelField,equals: .intestazione)
+                    
+                 //   Spacer()
+                    
+              
+       
+              //  }
                 
-                Spacer()
-                
-                CSButton_tight(
-                    title: "Aggiungi",
-                    fontWeight: .semibold,
-                    titleColor: Color("SeaTurtlePalette_4"),
-                    fillColor: Color("SeaTurtlePalette_2")) {
-                       // self.creaCategoria()
+                BoxDescriptionModel_Generic(
+                    itemModel: $nuovaCategoria,
+                    labelString: "Descrizione (Optional)",
+                    disabledCondition: false,
+                    backgroundColor: .seaTurtle_3,
+                    modelField: $modelField)
+                .focused($modelField, equals: .descrizione)
+                .fixedSize(horizontal: false, vertical:true)
+                    
+                    Button(action: {
                         creAction()
-
-                    }
-                    .opacity(value.opacity)
-                    .disabled(value.isDisabled)
-   
-            }
+                    }, label: {
+                        HStack {
+                            
+                           Spacer()
+                            
+                            Text("Aggiungi")
+                                .fontWeight(.semibold)
+                                .font(.system(.body, design: .rounded))
+                                .padding(.vertical,10)
+                                .foregroundColor(.seaTurtle_4)
+                            
+                            Spacer()
+                        }
+                        .background(Color.seaTurtle_2)
+                        .cornerRadius(5.0)
+                    })
+                        
+                        .opacity(value.opacity)
+                        .disabled(value.isDisabled)
+                    
+                    
+                
             
-            BoxDescriptionModel_Generic(
-                itemModel: $nuovaCategoria,
-                labelString: "Descrizione (Optional)",
-                disabledCondition: false,
-                backgroundColor: .seaTurtle_3,
-                modelField: $modelField)
-            .focused($modelField, equals: .descrizione)
+            
+          /*  CSButton_tight(
+                title: "Aggiungi",
+                fontWeight: .semibold,
+                titleColor: Color.seaTurtle_4,
+                fillColor: Color.seaTurtle_2) {
+                   // self.creaCategoria()
+                    creAction()
+
+                } */
+            
+          
             
         }
     

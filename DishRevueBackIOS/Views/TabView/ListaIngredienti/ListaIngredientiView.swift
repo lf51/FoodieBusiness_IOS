@@ -31,7 +31,16 @@ struct ListaIngredientiView: View {
         NavigationStack(path:$viewModel.ingredientListPath) {
             
             let container = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
-            let generalDisable = container.isEmpty
+            
+            let generalDisable:Bool = {
+                
+                let condition_1 = container.isEmpty
+                let condition_2 = self.filterCore.countChange == 0
+                let condition_3 = self.filterCore.stringaRicerca == ""
+                
+                return condition_1 && condition_2 && condition_3
+                
+            }()
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
@@ -489,7 +498,7 @@ struct ListaIngredientiView: View {
 
 struct ListaIngredientiView_Previews: PreviewProvider {
     static var previews: some View {
-        ListaIngredientiView(tabSelection: .ingredientList, backgroundColorView: Color("SeaTurtlePalette_1"))
+        ListaIngredientiView(tabSelection: .ingredientList, backgroundColorView: .seaTurtle_1)
             .environmentObject(testAccount)
     }
 }

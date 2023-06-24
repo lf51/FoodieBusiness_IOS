@@ -397,6 +397,8 @@ struct HomeView: View {
 
 struct HomeView: View {
     
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass // gli ipad e il macOS hanno una regularWidth, mentre gli iphone una compactWidth // vedi Nota 23.06.23
+    
     @ObservedObject var authProcess: AuthPasswordLess
     @EnvironmentObject var viewModel: AccounterVM
     
@@ -410,82 +412,87 @@ struct HomeView: View {
    // @Binding var controlProxyReset:Bool
     
     var body: some View {
-        
+
         NavigationStack(path:$viewModel.homeViewPath) {
       
             CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {
 
                 VStack(alignment: .leading,spacing:.vStackBoxSpacing) {
+                  //  VStack(spacing:.vStackBoxSpacing) {
 
                     ScrollViewReader { proxy in
                         
+                   //     VStack(alignment:.leading) {
+    
                         vbTopView()
-                            .padding(5)
+                            .padding(10)
                             .background {
-                                Color.white
-                                    .opacity(0.03)
+                                Color.seaTurtle_2
+                                    .opacity(0.4)
                                     .cornerRadius(5.0)
                             }
-                                                 
+                        
                         ScrollView(showsIndicators:false) {
-                           
+                            
                             PullToRefresh(coordinateSpaceName: "HomeViewMainScroll") {
                                 self.viewModel.objectWillChange.send()
                                 // manda l'update del view model e questo permette di aggiornare l'ora nel monitor ma anche i menu che nel fratttempo sono entrati in servizio
-                       
+                                
                             }
                             
                             VStack(alignment: .leading,spacing:.vStackBoxSpacing) {
                                 
-                               MonitorServizio()
+                                MonitorServizio()
                                     .padding(.bottom,1)
                                     .id(0)
-                                    
-                                    
+                                
+                                
                                 VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
                                     MenuDiSistema_BoxView(menuDiSistema: .delGiorno)
-
+                                    
                                     MenuDiSistema_BoxView(menuDiSistema: .delloChef)
-                                  //  Spacer()
+                                    //  Spacer()
                                 }.background {
-                                  //  Color.red
+                                    //  Color.red
                                 }
-
-                             //  MonitorServizioGlobale()//Global
                                 
-                                CSZStackVB_Framed(frameWidth:650,backgroundOpacity: 0.05,shadowColor: .clear) {
+                                //  MonitorServizioGlobale()//Global
+                                
+                                CSZStackVB_Framed(/*frameWidth:650,*/backgroundOpacity: 0.05,shadowColor: .clear) {
                                     // Nota 01.03 ScheduleServizio
+                                
                                         ScheduleServizio()
-                                          .padding(5)
-                                          //.background { Color.white.opacity(0.4)}
-                                          
+                                            .padding(5)
+                                    
+                                    //.background { Color.white.opacity(0.4)}
+                                    
                                 }
-                              //  .background { Color.yellow.opacity(0.6)}
-
+                                //  .background { Color.yellow.opacity(0.6)}
+                                
                                 MonitorReview()
-                                     .padding(.bottom,1)
-                                     
-                            let allPrepRated = compilaArrayPreparazioni()
+                                    .padding(.bottom,1)
+                                
+                                let allPrepRated = compilaArrayPreparazioni()
                                 
                                 TopRated_SubView(
                                     allRated: allPrepRated,
                                     destinationPathView: .vistaRecensioniEspansa,
                                     label: "Preparazioni Top Rated",
                                     linkTitle: "Tutte")
-                                  //  .padding(.bottom,5)
+                                //  .padding(.bottom,5)
                                 
-                            let (allMenuRated,allRifMenu) = compilaArrayMenu()
+                                let (allMenuRated,allRifMenu) = compilaArrayMenu()
                                 
-                               TopRated_SubView(
-                                allRated: allMenuRated,
-                                destinationPathView: .listaGenericaMenu(
-                                    _containerRif: allRifMenu,
-                                    _label: "Menu Rated(Prov)"),
-                                label: "Menu Top Rated",
-                                linkTitle: "Tutti")
-                                    .padding(.bottom,5)
+                                TopRated_SubView(
+                                    allRated: allMenuRated,
+                                    destinationPathView: .listaGenericaMenu(
+                                        _containerRif: allRifMenu,
+                                        _label: "Menu Rated(Prov)"),
+                                    label: "Menu Top Rated",
+                                    linkTitle: "Tutti")
+                                .padding(.bottom,5)
                             } // VStack End
-
+                            
                         } // chiusa scrollView
                         //.id(1)
                         .coordinateSpace(name: "HomeViewMainScroll")
@@ -496,6 +503,9 @@ struct HomeView: View {
                                 }
                             }
                         }
+                        
+                //    } // vstack Interno ScrollReader
+                        
                     } // chiusa scrollViewReader
                    
                     CSDivider()
@@ -518,7 +528,7 @@ struct HomeView: View {
                             .foregroundColor(Color("SeaTurtlePalette_2"))
                     }*/
                     
-                    CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: Color("SeaTurtlePalette_2")) {
+                    CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: .seaTurtle_2) {
                         csSetupButton()
                     }
            
@@ -536,7 +546,7 @@ struct HomeView: View {
                           //  Image(systemName: "rectangle.portrait.and.arrow.right")
                            
                         }
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                        .foregroundColor(.seaTurtle_4)
                     }
                     
                     
@@ -593,13 +603,21 @@ struct HomeView: View {
 
     @ViewBuilder private func vbTopView() -> some View {
         
-        VStack(alignment:.leading) {
+        let isCompactWidth = self.horizontalSizeClass == .compact
+        
+        let layout = isCompactWidth ? AnyLayout(VStackLayout(alignment:.leading,spacing:10)) : AnyLayout(HStackLayout(alignment:.center))
+       
+       // VStack(alignment:.leading) {
+       // HStack(alignment:.center) {
+        layout {
             
             HStack {
                 
                 addNewModel()
                 
-                Spacer()
+             //   Spacer()
+                Divider()
+                    .fixedSize()
                 
                 NavigationLink(value: DestinationPathView.categoriaMenu) {
                 
@@ -611,7 +629,7 @@ struct HomeView: View {
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                         
                     }
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                    .foregroundColor(.seaTurtle_3)
                       //  .padding(5)
                        /* .background {
                             Color("SeaTurtlePalette_1")
@@ -622,7 +640,11 @@ struct HomeView: View {
                      
                 }
                 
-                Spacer()
+              //  Spacer()
+                
+                Divider()
+                    .fixedSize()
+                
                 NavigationLink(value: DestinationPathView.moduloImportazioneVeloce) {
                     
                 //    HStack(spacing:2) {
@@ -633,7 +655,7 @@ struct HomeView: View {
                         //    .font(.subheadline)
                         
                  //   }
-                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(.seaTurtle_3)
                    /* .padding(5)
                     .background {
                         Color("SeaTurtlePalette_1")
@@ -644,10 +666,16 @@ struct HomeView: View {
                 }
                 
             }
-            .lineLimit(1)
-            .padding(.bottom,5)
+            //.lineLimit(1)
+            //.padding(.bottom,5)
            // .padding(.vertical,5)
            // .padding(.horizontal,5)
+            
+            if !isCompactWidth {
+                Divider()
+                    .fixedSize()
+            }
+                
             
             HStack {
                 
@@ -656,11 +684,11 @@ struct HomeView: View {
                     HStack(alignment:.lastTextBaseline,spacing:2) {
                         Image(systemName: "cart")
                             .imageScale(.medium)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(.seaTurtle_3)
                         Text("Lista della Spesa")
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                     }
-                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                    .foregroundColor(.seaTurtle_3)
                   /*  .padding(5)
                     .background {
                         Color("SeaTurtlePalette_1")
@@ -670,7 +698,10 @@ struct HomeView: View {
                     } */
                 }
                 
-                Spacer()
+              //  Spacer()
+                
+                Divider()
+                    .fixedSize()
                 
                 let propertyDestination:DestinationPathView? = {
                     
@@ -691,7 +722,7 @@ struct HomeView: View {
                             Text("Edit")
                                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                         }
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(.seaTurtle_3)
                     }
                     .opacity(propertyDestination == nil ? 0.5 : 1.0)
               
@@ -713,13 +744,14 @@ struct HomeView: View {
                 NavigationLink(value: trashDestination) {
                     Image(systemName: "trash")
                           .imageScale(.medium)
-                          .foregroundColor(Color("SeaTurtlePalette_4"))
+                          .foregroundColor(.seaTurtle_4)
                 }
                 .opacity(trashDestination == nil ? 0.5 : 1.0)
                 
             
             }
-            .lineLimit(1)
+           // .lineLimit(1)
+            //.frame(width:UIScreen.main.bounds.width - 40)
         }
     }
     
@@ -756,7 +788,7 @@ struct HomeView: View {
         } label: {
             Text("[+] Aggiungi")
                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                .foregroundColor(Color("SeaTurtlePalette_3"))
+                .foregroundColor(.seaTurtle_3)
         }
        /* .padding(5)
         .background {
@@ -783,8 +815,26 @@ struct HomeView_Previews: PreviewProvider {
             HomeView(
                 authProcess: AuthPasswordLess(),
                 tabSelection: .homeView,
-                backgroundColorView: Color("SeaTurtlePalette_1"))
+                backgroundColorView: .seaTurtle_1)
+          //  .previewDevice(PreviewDevice(rawValue: "Mac"))
+           
+          
         }.environmentObject(testAccount)
+           // .previewDevice("iPhone 8")
+            .previewDevice(PreviewDevice(rawValue: "iPhone 14 Pro Max"))
+        
+        NavigationStack {
+            
+            HomeView(
+                authProcess: AuthPasswordLess(),
+                tabSelection: .homeView,
+                backgroundColorView: .seaTurtle_1)
+          //  .previewDevice(PreviewDevice(rawValue: "Mac"))
+           
+          
+        }.environmentObject(testAccount)
+           // .previewDevice("iPhone 8")
+            .previewDevice(PreviewDevice(rawValue: "12.9” iPad Pro"))
 
     }
 }
