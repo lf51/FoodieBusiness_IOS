@@ -14,7 +14,7 @@ struct MonitorServizio: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
-    @State private var selected:String = LocalEtichette.oggi.rawValue // Predisposizione al Picker - 09.03.23 Non in uso
+    @State private var selected:String = LocalEtichette.defaultValue.rawValue
 
     var body: some View {
 
@@ -69,28 +69,44 @@ struct MonitorServizio: View {
     
     @ViewBuilder private func vbMainSwitch() -> some View {
         
-        let etichetta: LocalEtichette = LocalEtichette(rawValue: self.selected) ?? LocalEtichette.defaultValue
+       let etichetta: LocalEtichette = LocalEtichette(rawValue: self.selected) ?? LocalEtichette.defaultValue
         
        let(currentHour,currentDay,currentDate) = currentTime()
         
         switch etichetta {
             
         case .adesso:
+            
             let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: true)})
-            vbServizioStat("Menu Online:",
+            
+          /*  vbServizioStat("Menu Online:",
                            allMenuToAnalize: allMenuToAnalize) { serviceOff in
             vbTopStackNowOnline(
                 serviceOff: serviceOff,
                 currentHour: currentHour,
                 currentDay: currentDay,
-                currentDate: currentDate) }
+                currentDate: currentDate) } */
+            
+            MonitorServizio_SubLogic(
+                viewModel: viewModel,
+                menuOnLabel: "Menu Online Ora",
+                allMenuToAnalize: allMenuToAnalize) { serviceOff in
+                    
+                    vbTopStackNowOnline(
+                        serviceOff: serviceOff,
+                        currentHour: currentHour,
+                        currentDay: currentDay,
+                        currentDate: currentDate)
+                }
+            
             
         case .oggi:
+            
             let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)})
             
             MonitorServizio_SubLogic(
                 viewModel: self.viewModel,
-                menuOnLabel: "Menu in Programma IMaGE:",
+                menuOnLabel: "Menu Online Oggi",
                 allMenuToAnalize: allMenuToAnalize) { serviceOff in
                     vbTopStackTodayOnline(
                         serviceOff: serviceOff,
@@ -99,17 +115,25 @@ struct MonitorServizio: View {
                 }
             
         case .generale:
+            
             let allMenuToAnalize = self.viewModel.allMyMenu.filter({
                 $0.status.checkStatusTransition(check: .disponibile) ||
                 $0.status.checkStatusTransition(check: .inPausa)
             })
             
-            vbServizioStat("Menu Attivi:",
+            MonitorServizio_SubLogic(
+                viewModel: viewModel,
+                menuOnLabel: "Menu Attivi",
+                allMenuToAnalize: allMenuToAnalize) { _ in
+                    vbTopStackGenerale()
+                }
+            
+           /* vbServizioStat("Menu Attivi:",
                            allMenuToAnalize: allMenuToAnalize) { _ in
                 
             vbTopStackGenerale()
                 
-            }
+            } */
             
         }
     }
@@ -332,6 +356,7 @@ struct MonitorServizio: View {
         .padding(.vertical,5)
     }
     
+    /*
     @ViewBuilder private func vbServizioStat(
         _ menuOnlabel:String,
         allMenuToAnalize:[MenuModel],
@@ -564,7 +589,7 @@ struct MonitorServizio: View {
             
         }
         .font(.system(.subheadline, design: .monospaced))
-    }
+    } */ // Deprecata 28.06.23
     
    /* @ViewBuilder private func vInfobMenu(
         menuOnlabel:String,
@@ -692,9 +717,9 @@ struct MonitorServizio: View {
         
     }
     
-    @ViewBuilder private func vbInfoPF() -> some View { }
+    @ViewBuilder private func vbInfoPF() -> some View { } //Deprecata 26.06.23
     
-    @ViewBuilder private func vbInfoIngredienti() -> some View { }
+    @ViewBuilder private func vbInfoIngredienti() -> some View { } //Deprecata 26.06.23
  
 }
 
@@ -739,7 +764,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
             }()
             
             vbTopStack(serviceOff)
-            vbInfoMenu(serviceOff)
+            vbInfoMenu(serviceOff,menuOnLabel: menuOnLabel)
               //  .padding(.bottom,2)
             Divider()
             vbInfoPreparazioni()
@@ -758,7 +783,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     
     // ViewBuilder
     
-    @ViewBuilder private func vbInfoMenu(_ serviceOff:Bool) -> some View {
+    @ViewBuilder private func vbInfoMenu(_ serviceOff:Bool,menuOnLabel:String) -> some View {
          
         let linkMenuDisabled:Bool = self.menuOn.isEmpty
         let allRifDishOn:[String] = {
@@ -773,7 +798,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                 
                 HStack {
                     
-                    Text(self.menuOnLabel)
+                    Text("\(self.menuOnLabel):")
                         .fontWeight(.black)
                     Text("\(self.menuOn.count)")
                         .fontWeight(.bold)
@@ -784,7 +809,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                                     DestinationPathView.listaMenuPerAnteprima(
                                        rifMenuOn: self.menuOn,
                                         rifDishOn: allRifDishOn,
-                                        label:"I Menu di Oggi")) {
+                                        label: menuOnLabel)) {
                                             
                                             Image(systemName: "arrow.up.right")
                                                 .imageScale(.medium)
@@ -1508,7 +1533,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
             .onTapGesture {
                 self.viewModel.alertItem = AlertModel(
                     title: "Stato Servizio",
-                    message: "Stato Ingredienti: \(statoIngredienti.simpleDescription())\nStato dei Preparati: \(statoPreparati.simpleDescription())")
+                    message: "Stato Ingredienti: \(statoIngredienti.simpleDescription())\nStato dei Prodotti di Terzi: \(statoPreparati.simpleDescription())")
             }
 
         }
@@ -2272,10 +2297,21 @@ struct MonitorServizio: View {
 
 
 struct MonitorModelView_Previews: PreviewProvider {
+    static let allDish = testAccount.allMyDish.map({$0.id})
     static var previews: some View {
-        CSZStackVB(title: "Monitor", backgroundColorView: Color("SeaTurtlePalette_1")) {
-            MonitorServizio()
-        }.environmentObject(testAccount)
+        
+       /* NavigationStack {
+            CSZStackVB(title: "Monitor", backgroundColorView: Color("SeaTurtlePalette_1")) {
+                MonitorServizio()
+            }.environmentObject(testAccount)
+        } */
+        
+        VistaEspansaDish_MonitorServizio(
+            container: allDish,
+            label: "Test",
+            backgroundColorView: .seaTurtle_1)
+        .environmentObject(testAccount)
+        
     }
 }
 
@@ -2321,7 +2357,8 @@ public struct VistaEspansaDish_MonitorServizio:View {
                
                 VStack {
                 
-                vbMonitorFiltri(container: containerModel)
+               // vbMonitorFiltri(container: containerModel)
+                    vbFiltriVisivi()
                     
                 ScrollView(showsIndicators: false) {
                     
@@ -2362,7 +2399,115 @@ public struct VistaEspansaDish_MonitorServizio:View {
     
     // Method
     
-    @ViewBuilder private func vbMonitorFiltri(container:[DishModel]) -> some View {
+    
+    @ViewBuilder private func vbFiltriVisivi() -> some View {
+
+        let executiveInfo:(descr:String,color:Color) = {
+            
+            if let exe = coreFilter.filterProperties.executionState {
+                
+                return (exe.filterDescription(),exe.coloreAssociato())
+            }
+            else { return ("",.gray)}
+        }()
+        
+        let statusInfo:(descr:String,color:Color) = {
+            
+            if let exe = coreFilter.filterProperties.status_singleChoice {
+                
+                return (exe.simpleDescription(),exe.colorAssociated())
+            }
+            else { return ("",.gray)}
+        }()
+        
+        let stringInfo: String = {
+            
+            let emptyString = executiveInfo.descr == "" && statusInfo.descr == ""
+            
+            if emptyString { return "Nessun filtro applicato" }
+            else if executiveInfo.descr == "" { return statusInfo.descr }
+            else if statusInfo.descr == "" { return executiveInfo.descr }
+            else { return executiveInfo.descr + " & " + statusInfo.descr }
+            
+        }()
+        
+        HStack(alignment:.center) {
+            
+           // Spacer()
+            
+            csCircleDashed(
+                internalColor: statusInfo.color,
+                dashedColor: executiveInfo.color)
+            
+            Text(stringInfo)
+                .italic()
+                .fontWeight(.semibold)
+                .font(.subheadline)
+                .foregroundColor(.black)
+                .opacity(0.8)
+                .multilineTextAlignment(.leading)
+            
+            Spacer()
+            
+            Button {
+                withAnimation {
+                    excutiveFilterAction()
+                }
+            } label: {
+                Image(systemName: "circle.dashed")
+                    .font(.custom("Large", size: 40))
+                    .foregroundColor(executiveInfo.color)
+                    .shadow(radius: 5.0)
+            }
+            
+            Button {
+                withAnimation {
+                    statusFilterAction()
+                }
+            } label: {
+                Image(systemName: "circle.fill")
+                    .font(.custom("Large", size: 40))
+                    .foregroundColor(statusInfo.color)
+                    .shadow(radius: 5.0)
+            }
+
+        
+        }
+        .csHpadding()
+    }
+    
+    private func excutiveFilterAction() {
+        
+        let allCases = DishModel.ExecutionState.allCases
+        let casesCount = allCases.count
+        let currentState = coreFilter.filterProperties.executionState
+        
+        guard currentState != nil else {
+            coreFilter.filterProperties.executionState = allCases[0]
+            return
+        }
+        let nextIndex = ((allCases.firstIndex(of: currentState!) ?? 0) + 1) % casesCount
+    
+        coreFilter.filterProperties.executionState = allCases[nextIndex]
+    }
+    private func statusFilterAction() {
+        
+        let allCases = StatusTransition.allCases
+        let casesCount = allCases.count
+        let currentState = coreFilter.filterProperties.status_singleChoice
+        
+        guard currentState != nil else {
+            coreFilter.filterProperties.status_singleChoice = allCases[0]
+            return
+        }
+        
+        let nextIndex = ((allCases.firstIndex(of: currentState!) ?? 0) + 1) % casesCount
+    
+        coreFilter.filterProperties.status_singleChoice = allCases[nextIndex]
+        
+    }
+    
+  /*  @ViewBuilder private func vbMonitorFiltri(container:[DishModel]) -> some View {
         
         VStack(spacing:5) {
             
@@ -2383,7 +2528,7 @@ public struct VistaEspansaDish_MonitorServizio:View {
         }
         .csHpadding()
         
-    }
+    }*/ // Deprecato 28.06.23
     
     
 }

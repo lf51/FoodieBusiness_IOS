@@ -18,8 +18,8 @@ struct NewDishIbridView: View {
     @State private var ingredienteDiSistema:IngredientModel
     let backgroundColorView: Color
     
-    let piattoArchiviato: DishModel // per il reset
-    let ingredienteDSArchiviato: IngredientModel
+    @State private var piattoArchiviato: DishModel // per il reset
+    @State private var ingredienteDSArchiviato: IngredientModel
     let destinationPath: DestinationPath
     
     @State private var generalErrorCheck: Bool = false
@@ -58,10 +58,11 @@ struct NewDishIbridView: View {
             
         }
         
-        self.piattoArchiviato = localDish
-        self.ingredienteDSArchiviato = systemIngredient
         _newDish = State(wrappedValue: localDish)
         _ingredienteDiSistema = State(wrappedValue: systemIngredient)
+            
+        _piattoArchiviato = State(wrappedValue: localDish)
+        _ingredienteDSArchiviato = State(wrappedValue: systemIngredient)
        
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
@@ -193,7 +194,7 @@ struct NewDishIbridView: View {
                     Spacer()
                     Text(newDish.id)
                         
-                    Image(systemName: newDish.id == ingredienteDiSistema.id ? "checkmark.circle" : "circle")
+                    Image(systemName: newDish.id == ingredienteDiSistema.id ? " equal.circle" : "circle")
                 }
                 .font(.caption2)
                 .foregroundColor(Color.black)
@@ -233,14 +234,37 @@ struct NewDishIbridView: View {
         
         self.generalErrorCheck = false
         self.areAllergeniOk = false
-        (self.newDish,self.ingredienteDiSistema) = {
-           var newD = DishModel()
+        
+       /* (self.newDish,self.ingredienteDiSistema) = {
+            
+            var newD = DishModel()
             newD.pricingPiatto = [DishFormat(type: .mandatory)]
+            
             let newIng = IngredientModel(id:newD.id)
             newD.ingredientiPrincipali = [newD.id]
+            
             return (newD,newIng)
+            
+        }() */ //25.06 Deprecato
+        
+        let new:(dish:DishModel,ing:IngredientModel) = {
+            
+            let currentDishType = self.newDish.percorsoProdotto
+            
+            var dish = DishModel()
+            dish.percorsoProdotto = currentDishType
+            dish.ingredientiPrincipali = [dish.id]
+            
+            let newIng = IngredientModel(id: dish.id)
+            
+            return (dish,newIng)
         }()
-       // self.ingredienteDiSistema = IngredientModel(id:self.newDish.id)
+        
+        self.newDish = new.dish
+        self.ingredienteDiSistema = new.ing
+        
+        self.piattoArchiviato = new.dish
+        self.ingredienteDSArchiviato = new.ing
     }
     
     private func infoPiatto() -> Text { // Ok

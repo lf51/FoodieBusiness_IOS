@@ -43,26 +43,29 @@ struct IngredientModel_SmallRowView: View {
             VStack(alignment:.leading,spacing:5) {
                 
                     vbIntestazioneIngrediente(itemIsModel: itemIsModel)
+                
                     vbAllergeneScrollRowView(listaAllergeni: self.currentModel.allergeni)
                     .overlay(alignment: .trailing) {
                         
                         HStack(spacing:4) {
                             
-                            if self.currentModel.conservazione != .altro {
+                          //  if self.currentModel.conservazione != .altro {
+                                
                                 csVbSwitchImageText(string: self.currentModel.conservazione.imageAssociated(), size: .large)
                                    .padding(2.0)
-                                    .background(
-                                        Color("SeaTurtlePalette_2")
+                                   .background(
+                                        Color.seaTurtle_2
                                             .cornerRadius(5.0)
+                                            .opacity(0.4)
                                             )
-                            }
+                          //  }
 
                             let(image,size) = self.currentModel.associaImmagine()
                             
                             csVbSwitchImageText(string: image,size: size)
                                 .padding(2.0)
                                 .background(
-                                    Color("SeaTurtlePalette_1")
+                                    Color.seaTurtle_1
                                         .cornerRadius(5.0)
                                         .opacity(0.6))
                         }
@@ -99,7 +102,7 @@ struct IngredientModel_SmallRowView: View {
                     }
                     
                 }
-            }.foregroundColor(sostituto != nil ? Color("SeaTurtlePalette_3") : Color.black)
+            }.foregroundColor(sostituto != nil ? Color.seaTurtle_3 : Color.black)
         }
         .onTapGesture {
             if sostituto != nil {
@@ -148,7 +151,7 @@ struct IngredientModel_SmallRowView: View {
             else {
                 Image(systemName: "arrow.left.arrow.right.circle.fill")
                     .imageScale(.large)
-                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                    .foregroundColor(Color.seaTurtle_3)
             }
             
             

@@ -642,6 +642,16 @@ extension DishModel:
             }
         }
         
+        public func filterDescription() -> String {
+            
+            switch self {
+            
+            case .eseguibileConRiserva: return "Eseguibile con Riserva"
+            default: return self.simpleDescription()
+            
+            }
+        }
+        
         public func returnTypeCase() -> DishModel.ExecutionState {
            
             return self

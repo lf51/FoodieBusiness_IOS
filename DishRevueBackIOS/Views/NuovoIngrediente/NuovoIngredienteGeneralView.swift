@@ -16,7 +16,7 @@ struct NuovoIngredienteGeneralView: View {
     @State private var nuovoIngrediente: IngredientModel
     let backgroundColorView: Color
     
-    let ingredienteArchiviato: IngredientModel // per il reset
+    @State private var ingredienteArchiviato: IngredientModel // per il reset
     let destinationPath: DestinationPath
     
     @State private var generalErrorCheck: Bool = false
@@ -41,7 +41,7 @@ struct NuovoIngredienteGeneralView: View {
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
         
-        self.ingredienteArchiviato = nuovoIngrediente
+        _ingredienteArchiviato = State(wrappedValue: nuovoIngrediente)
        
     }
     
@@ -146,7 +146,7 @@ struct NuovoIngredienteGeneralView: View {
                     Spacer()
                     Text(nuovoIngrediente.id)
                         
-                    Image(systemName: nuovoIngrediente.id == ingredienteArchiviato.id ? "checkmark.circle" : "circle")
+                    Image(systemName: nuovoIngrediente.id == ingredienteArchiviato.id ? "equal.circle" : "circle")
                 }
                 .font(.caption2)
                 .foregroundColor(Color.black)
@@ -181,7 +181,11 @@ struct NuovoIngredienteGeneralView: View {
         self.generalErrorCheck = false
         self.areAllergeniOk = false
       // self.isConservazioneOk = false
-        self.nuovoIngrediente = IngredientModel()
+        
+        let new = IngredientModel()
+        
+        self.nuovoIngrediente = new
+        self.ingredienteArchiviato = new
     }
     
     private func infoIngrediente() -> Text {

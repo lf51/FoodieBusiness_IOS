@@ -24,16 +24,16 @@ struct CS_RemoteModelChange:ViewModifier {
                     if viewModel.remoteStorage.modelRif_modified.contains(rifModel) {
                         
                         CS_VelaShape()
-                        .foregroundColor(Color.yellow)
-                        .cornerRadius(5.0)
-                        .opacity(0.6)
+                        .foregroundColor(Color.black)
+                        .cornerRadius(15.0)
+                        .opacity(0.8)
                         
                     } else if viewModel.remoteStorage.modelRif_newOne.contains(rifModel) {
                         
                             CS_VelaShape()
-                            .foregroundColor(Color("SeaTurtlePalette_2"))
-                            .cornerRadius(5.0)
-                            .opacity(0.6)
+                            .foregroundColor(.seaTurtle_4)
+                            .cornerRadius(15.0)
+                            .opacity(0.8)
             
                     }
                // }

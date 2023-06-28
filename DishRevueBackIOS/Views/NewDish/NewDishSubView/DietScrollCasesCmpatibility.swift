@@ -43,7 +43,12 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
                         
                         let isSelected = self.checkSelectionOrContainer(type: type)
                         
-                        CSText_tightRectangle(testo: type.simpleDescription(), fontWeight: isSelected ? .bold : .regular, textColor: Color.white, strokeColor: Color.gray, fillColor: colorSelection)
+                        CSText_tightRectangle(
+                            testo: type.simpleDescription(),
+                            fontWeight: isSelected ? .bold : .regular,
+                            textColor: Color.white,
+                            strokeColor: Color.gray,
+                            fillColor: colorSelection)
                             .opacity(isSelected ? 1.0 : 0.6)
                             .onTapGesture {
                                 self.viewModel.alertItem = AlertModel(

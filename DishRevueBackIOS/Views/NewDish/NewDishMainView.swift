@@ -15,7 +15,7 @@ struct NewDishMainView: View {
     @State private var newDish: DishModel
     let backgroundColorView: Color
     
-    let piattoArchiviato: DishModel // per il reset
+    @State private var piattoArchiviato: DishModel // per il reset
     let destinationPath: DestinationPath
     let saveDialogType:SaveDialogType
     
@@ -46,8 +46,7 @@ struct NewDishMainView: View {
             }()
   
         _newDish = State(wrappedValue: localDish)
-   
-        self.piattoArchiviato = localDish
+        _piattoArchiviato = State(wrappedValue: localDish)
 
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
@@ -132,7 +131,7 @@ struct NewDishMainView: View {
                     Spacer()
                     Text(newDish.id)
                         
-                    Image(systemName: newDish.id == piattoArchiviato.id ? "checkmark.circle" : "circle")
+                    Image(systemName: newDish.id == piattoArchiviato.id ? "equal.circle" : "circle")
                 }
                 .font(.caption2)
                 .foregroundColor(Color.black)
@@ -165,8 +164,7 @@ struct NewDishMainView: View {
     // Method
     
     private func resetAction() {
-        
-        // mod 11.09
+                
         self.newDish = self.piattoArchiviato
        // self.confermaDiete = self.newDish.mostraDieteCompatibili // vedi nota vocale 11.09
    
@@ -180,7 +178,18 @@ struct NewDishMainView: View {
         
         self.generalErrorCheck = false
         self.areAllergeniOk = false
-        self.newDish = DishModel() /*{
+        
+        let new:DishModel = {
+            let currentDishType = self.newDish.percorsoProdotto
+            var dish = DishModel()
+            dish.percorsoProdotto = currentDishType
+            return dish
+        }()
+        
+        self.newDish = new
+        self.piattoArchiviato = new // Nota 26.06.23
+        
+        /*{
            var newD = DishModel()
             newD.pricingPiatto = [DishFormat(type: .mandatory)]
             return newD

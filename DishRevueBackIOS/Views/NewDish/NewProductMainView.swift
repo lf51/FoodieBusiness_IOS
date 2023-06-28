@@ -64,7 +64,7 @@ struct NewProductMainView: View {
         switch self.type {
             
         case .prodottoFinito:
-            NewDishIbridView(
+             NewDishIbridView(
                 newDish: newDish,
                 percorso: type,
                 backgroundColorView: backgroundColorView,

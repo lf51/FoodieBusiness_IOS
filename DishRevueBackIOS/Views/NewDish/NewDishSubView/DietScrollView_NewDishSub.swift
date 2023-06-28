@@ -24,15 +24,18 @@ struct DietScrollView_NewDishSub: View {
         _newDish = newDish
         self.viewModel = viewModel
      
-        (self.dietAvaible,self.dietAvaibleString) = newDish.wrappedValue.returnDietAvaible(viewModel: viewModel)
+        (self.dietAvaible,self.dietAvaibleString) =  newDish.wrappedValue.returnDietAvaible(viewModel: viewModel, byPassShowCompatibility: true)
+        
+       
     }
     
     var body: some View {
         
         VStack(alignment: .leading,spacing: .vStackLabelBodySpacing) {
+            let isStandardDish = dietAvaible.contains(.standard)
             
-            CSLabel_conVB(placeHolder: "Dieta", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) {
-                
+            CSLabel_conVB(placeHolder: "Diete Compatibili", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) {
+
                 HStack {
                     
                     let showDiet = self.newDish.mostraDieteCompatibili
@@ -54,7 +57,7 @@ struct DietScrollView_NewDishSub: View {
 
                         }
                         
-                    }
+                    }.disabled(isStandardDish)
                     
                     Text("Si")
                          .bold(showDiet)
@@ -66,7 +69,7 @@ struct DietScrollView_NewDishSub: View {
             
             DietScrollCasesCmpatibility(currentDish: self.newDish, instanceCases: self.dietAvaible) {
                 
-                VStack(alignment:.leading) {
+               /* VStack(alignment:.leading) {
 
                     let string = self.newDish.mostraDieteCompatibili ? "Mostra nel piatto le diete compatibili" : "Non mostrare nel piatto le diete compatibili"
                         
@@ -77,27 +80,29 @@ struct DietScrollView_NewDishSub: View {
                     
                     if !self.newDish.mostraDieteCompatibili {
 
-                        Text("Mostra nel piatto la compatibilità con una dieta Standard !!")
+                        Text("Il piatto viene mostrato compatibile con una dieta Standard !!")
                               .underline()
                               .fontWeight(.semibold)
                               .font(.caption)
                               .foregroundColor(Color.black)
   
                     }
-                }
+                } */ // deprecata 25.06
+                
+             vbLogicText()
             }
 
         }
-        .onChange(of: self.dietAvaible, perform: { _ in
+       /* .onChange(of: self.dietAvaible, perform: { _ in
             self.newDish.mostraDieteCompatibili = false
-        })
+        })*/
         .onChange(of: self.newDish.mostraDieteCompatibili) { newValue in
 
-            if newValue && Self.mostraAlertDiete {
+            if !newValue && Self.mostraAlertDiete {
  
                 viewModel.alertItem = AlertModel(
-                    title: "Diete Compatibili",
-                    message: "Visibile nel piatto la compatibilitò con le diete: \(dietAvaibleString.formatted(.list(type: .and))).",
+                    title: "Nascondi Diete Compatibili",
+                    message: "Non sarà visibile nel piatto la compatibilitò con le diete: \(dietAvaibleString.formatted(.list(type: .and))).",
                     actionPlus: ActionModel(title: .nonMostrare, action: {
                         Self.mostraAlertDiete = false
                     })
@@ -105,6 +110,48 @@ struct DietScrollView_NewDishSub: View {
 
                  }
         }
+    }
+    
+    // Method
+    
+    @ViewBuilder private func vbLogicText() -> some View {
+        
+        let isStandardDish = dietAvaible.contains(.standard)
+        let showDiet = self.newDish.mostraDieteCompatibili
+    
+        let standardString = "Il piatto è compatibile soltanto ad una dieta Standard !"
+    
+        VStack(alignment:.leading) {
+
+            if isStandardDish {
+                
+                Text(standardString)
+                    .underline()
+                    .fontWeight(.semibold)
+                    .font(.caption)
+                    .foregroundColor(.black)
+                
+            } else {
+                
+                let string = showDiet ? "Mostra nel piatto le diete compatibili" : "Non mostrare nel piatto le diete compatibili"
+                
+                Text("\(string): \(dietAvaibleString, format: .list(type: .and)).")
+                           .bold(showDiet)
+                           .font(.caption)
+                           .foregroundColor(showDiet ? .green : .black)
+                
+                if !showDiet {
+                    Text("Mostra il piatto come compatibile soltanto ad una dieta Standard !!")
+                          .underline()
+                          .fontWeight(.semibold)
+                          .font(.caption)
+                          .foregroundColor(Color.black)
+                         
+                }
+                
+            }
+            
+         }
     }
 }
 

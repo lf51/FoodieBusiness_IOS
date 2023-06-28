@@ -527,10 +527,10 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbIntestazioneDishRow() -> some View {
         
-        let value:Font = {
+        let value:(font:Font,imageSize:Image.Scale) = {
            
-            if self.rowSize.returnType() == .normale() { return .title2}
-            else { return .title3}
+            if self.rowSize.returnType() == .normale() { return (.title2,.medium)}
+            else { return (.title3,.small)}
         }()
         
         let dashedColor = self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
@@ -539,10 +539,11 @@ struct DishModel_RowView: View {
         HStack(alignment:.center,spacing: 3) {
             
             Image(systemName: percorsoImage.system)
+                .imageScale(value.imageSize)
                 .foregroundColor(percorsoImage.color)
             
             Text(self.item.intestazione)
-                .font(value)
+                .font(value.font)
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)
@@ -654,7 +655,7 @@ struct DishModel_RowView: View {
     
     @ViewBuilder private func vbDieteCompatibili() -> some View {
         
-        let dietAvaible = self.item.returnDietAvaible(viewModel: self.viewModel).inStringa
+        let dietAvaible = self.item.returnDietAvaible(viewModel: self.viewModel).inDishTipologia
         
         HStack(spacing: 4.0) {
             
@@ -668,7 +669,20 @@ struct DishModel_RowView: View {
                     
                     ForEach(dietAvaible,id:\.self) { diet in
                         
-                        Text(diet)
+                        
+                        CSEtichetta(
+                            text: diet.simpleDescription(),
+                            fontStyle: .subheadline,
+                            fontWeight: .black,
+                            fontDesign: .default,
+                            textColor: .seaTurtle_1,
+                            image: "checkmark.circle.fill",
+                            imageColor: .blue,
+                            imageSize: .medium,
+                            backgroundColor: diet.coloreAssociato(),
+                            backgroundOpacity: 0.8)
+                        
+                       /* Text(diet)
                             .font(.subheadline)
                             .fontWeight(.black)
                             .foregroundColor(.seaTurtle_4)
@@ -676,7 +690,7 @@ struct DishModel_RowView: View {
                         Text("•")
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundColor(.seaTurtle_4)
+                            .foregroundColor(.seaTurtle_4) */
 
                     }
                 }
@@ -1161,12 +1175,30 @@ struct DishModel_RowView_Previews: PreviewProvider {
 
                     
                     ScrollView {
-                        
                         VStack(spacing:10) {
                             Group {
                                 DishModel_RowView(item: dishSample)
+                                    .overlay {
+                                        CS_VelaShape()
+                                        .foregroundColor(Color.black)
+                                        .cornerRadius(15.0)
+                                        .opacity(0.8)
+                                    }
+                                
                                 DishModel_RowView(item: dishSample, rowSize: .ridotto)
+                                    .overlay {
+                                        CS_VelaShape()
+                                        .foregroundColor(Color.seaTurtle_4)
+                                        .cornerRadius(15.0)
+                                        .opacity(0.8)
+                                    }
                                 DishModel_RowView(item: dishSample, rowSize: .sintetico)
+                                    .overlay {
+                                        CS_VelaShape()
+                                        .foregroundColor(Color.black)
+                                        .cornerRadius(15.0)
+                                        .opacity(0.8)
+                                    }
                             }
                               //  .frame(height:150)
                             Group {

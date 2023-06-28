@@ -16,7 +16,7 @@ struct NuovoMenuMainView: View {
     @State private var nuovoMenu: MenuModel
     let backgroundColorView: Color
     
-    let menuArchiviato: MenuModel // per il reset
+    @State private var menuArchiviato: MenuModel // per il reset
     let destinationPath: DestinationPath
     let saveDialogType:SaveDialogType
     
@@ -32,7 +32,7 @@ struct NuovoMenuMainView: View {
         _nuovoMenu = State(wrappedValue: nuovoMenu)
         self.backgroundColorView = backgroundColorView
         
-        self.menuArchiviato = nuovoMenu
+        _menuArchiviato = State(wrappedValue: nuovoMenu)
         self.destinationPath = destinationPath
         self.saveDialogType = saveDialogType
        
@@ -209,7 +209,9 @@ struct NuovoMenuMainView: View {
         
         self.generalErrorCheck = false
         
-        self.nuovoMenu = MenuModel()
+        let new = MenuModel()
+        self.nuovoMenu = new
+        self.menuArchiviato = new
         
     }
     
