@@ -178,7 +178,7 @@ struct NewProductMainView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            NewProductMainView(newDish: DishModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList,saveDialogType: .completo)
+            NewProductMainView(newDish: DishModel(), backgroundColorView: Color.seaTurtle_1, destinationPath: .dishList,saveDialogType: .completo)
             
         }.environmentObject(viewModel)
     }

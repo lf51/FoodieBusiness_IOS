@@ -219,7 +219,7 @@ struct NuovaCategoriaMenu_Previews: PreviewProvider {
         
         NavigationStack {
             
-            NuovaCategoriaMenu(backgroundColorView: Color("SeaTurtlePalette_1")).environmentObject(AccounterVM())
+            NuovaCategoriaMenu(backgroundColorView: Color.seaTurtle_1).environmentObject(AccounterVM())
                 
         }
         

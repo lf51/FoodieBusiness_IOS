@@ -30,7 +30,7 @@ struct ElencoModelDeleted: View {
                        // .italic()
                         .fontWeight(.black)
                         .font(.subheadline)
-                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                        .foregroundColor(Color.seaTurtle_2)
                   
                   //  Spacer()
                 }
@@ -88,7 +88,7 @@ struct ElencoModelDeleted_Previews: PreviewProvider {
     static var previews: some View {
        
         NavigationStack {
-            ElencoModelDeleted(backgroundColorView: Color("SeaTurtlePalette_1"))
+            ElencoModelDeleted(backgroundColorView: Color.seaTurtle_1)
         }
             .environmentObject(testAccount)
     }

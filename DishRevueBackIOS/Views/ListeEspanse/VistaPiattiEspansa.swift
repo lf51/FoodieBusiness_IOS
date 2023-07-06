@@ -67,14 +67,14 @@ struct PreCallVistaPiattiEspansa: View {
             
             CSZStackVB(
                 title: "Seleziona Piatti",
-                titlePosition: .bodyEmbed([.horizontal,.top],10),
+                titlePosition: .bodyEmbed([.horizontal,.top],15),
                 backgroundColorView: backgroundColorView) {
                 VistaPiattiEspansa(
                     currentMenu: $globalBindingMenu,
                     rowViewSize: rowViewSize,
                     backgroundColorView: backgroundColorView,
                     destinationPath: destinationPath)
-                .csHpadding()
+               // .csHpadding()
             }
             
         case .localState:
@@ -371,7 +371,7 @@ struct PreCallVistaPiattiEspansa: View {
                         
                         Text("Status:")
                             .font(.system(.headline, design: .rounded, weight: .semibold))
-                            .foregroundColor(Color("SeaTurtlePalette_2"))
+                            .foregroundColor(Color.seaTurtle_2)
                         CSEtichetta(text: currentMenu.status.simpleDescription(), textColor: Color.white, image: currentMenu.status.imageAssociated(), imageColor: currentMenu.status.transitionStateColor(), imageSize: .large, backgroundColor: Color.white, backgroundOpacity: 0.2).fixedSize()
                         Spacer()
                         

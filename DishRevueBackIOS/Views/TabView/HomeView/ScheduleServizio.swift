@@ -665,7 +665,7 @@ private struct DayWeekTimeRow:View {
                 HStack {
                     Image(systemName: "\(key.imageAssociated()).fill")
                         .imageScale(.medium)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                         .opacity(disableAction ? 0.4 : 1.0)
                     
                     Text(key.simpleDescription())
@@ -701,8 +701,8 @@ private struct DayWeekTimeRow:View {
                             frontImage: "chevron.compact.up",
                             backImage: "chevron.compact.down",
                             imageScale: .medium,
-                            backColor: Color("SeaTurtlePalette_4"),
-                            frontColor: Color("SeaTurtlePalette_3")) {
+                            backColor: Color.seaTurtle_4,
+                            frontColor: Color.seaTurtle_3) {
                                 withAnimation {
                                     self.openDetail.toggle()
                                 }
@@ -759,7 +759,7 @@ private struct DayWeekTimeRow:View {
                         NavigationLink(value: DestinationPathView.menu(value)) {
                             Image(systemName: "arrow.up.forward.circle")
                                 .font(.subheadline)
-                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                .foregroundColor(Color.seaTurtle_3)
                         }
                         
                     }

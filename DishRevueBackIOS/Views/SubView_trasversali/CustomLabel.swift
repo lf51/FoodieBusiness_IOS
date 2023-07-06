@@ -119,7 +119,7 @@ struct CSLabel_1Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
                      
                     Image(systemName: toggleBottone! ? "minus.circle" : "plus.circle")
                         .imageScale(.large)
-                        .foregroundColor(toggleBottone! ? .red : Color("SeaTurtlePalette_3"))
+                        .foregroundColor(toggleBottone! ? .red : Color.seaTurtle_3)
                 }
                 .opacity(disabledCondition ?? false ? 0.6 : 1.0)
                 .disabled(disabledCondition ?? false)
@@ -189,7 +189,7 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
                      
                     Image(systemName: toggleBottonePLUS! ? "minus.circle" : "plus.circle")
                         .imageScale(.large)
-                        .foregroundColor(toggleBottonePLUS! ? .red : Color("SeaTurtlePalette_3"))
+                        .foregroundColor(toggleBottonePLUS! ? .red : Color.seaTurtle_3)
                     
                 }
                 .opacity(disabledCondition ?? false ? 0.6 : 1.0)
@@ -205,7 +205,7 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
                     title: testoBottoneTEXT ?? "",
                     fontWeight: .semibold,
                     titleColor: .white,
-                    fillColor: Color("SeaTurtlePalette_2")) {
+                    fillColor: Color.seaTurtle_2) {
                         withAnimation(.default) {
                             toggleBottoneTEXT!.toggle()
                         }
@@ -276,7 +276,7 @@ struct CSLabel_2Action: View {
                      
                     Image(systemName: "plus.circle")
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                     
                 }//.disabled(toggleBottoneTEXT ?? false)
             }

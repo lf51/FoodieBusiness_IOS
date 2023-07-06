@@ -21,7 +21,7 @@ struct SortRow_Generic<M:MyProFilter_L0>: View {
         
         CSLabel_conVB(
             placeHolder: localSortCondition.simpleDescription(),
-            placeHolderColor: isConditionSelected ?  Color("SeaTurtlePalette_2") : Color.black,
+            placeHolderColor: isConditionSelected ?  Color.seaTurtle_2 : Color.black,
             imageNameOrEmojy: localSortCondition.imageAssociated(),
             backgroundColor: Color.black,
             backgroundOpacity: 0.03) {
@@ -35,7 +35,7 @@ struct SortRow_Generic<M:MyProFilter_L0>: View {
                         frontImage: "arrow.up.arrow.down.circle.fill",
                         backImage: "circle",
                         imageScale: .large,
-                        backColor: Color("SeaTurtlePalette_2"),
+                        backColor: Color.seaTurtle_2,
                         frontColor: Color.gray) {
                             self.action()
                         }
@@ -66,7 +66,7 @@ struct SortRow_Generic: View {
         
         CSLabel_conVB(
             placeHolder: localSortCondition.simpleDescription(),
-            placeHolderColor: isConditionSelected ?  Color("SeaTurtlePalette_2") : Color.black,
+            placeHolderColor: isConditionSelected ?  Color.seaTurtle_2 : Color.black,
             imageNameOrEmojy: localSortCondition.imageAssociated(),
             backgroundColor: Color.black,
             backgroundOpacity: 0.03) {
@@ -80,7 +80,7 @@ struct SortRow_Generic: View {
                         frontImage: "arrow.up.arrow.down.circle.fill",
                         backImage: "circle",
                         imageScale: .large,
-                        backColor: Color("SeaTurtlePalette_2"),
+                        backColor: Color.seaTurtle_2,
                         frontColor: Color.gray) {
                             self.action()
                         }

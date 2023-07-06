@@ -482,7 +482,7 @@ struct NewDishIbridView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            NewDishIbridView(newDish: dishSample, percorso: .prodottoFinito, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList, observedVM: viewModel)
+            NewDishIbridView(newDish: dishSample, percorso: .prodottoFinito, backgroundColorView: Color.seaTurtle_1, destinationPath: .dishList, observedVM: viewModel)
             
         }.environmentObject(viewModel)
     }

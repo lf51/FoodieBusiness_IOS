@@ -75,7 +75,7 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View where M.VM 
                 CSLabel_1Button(
                     placeHolder: category.simpleDescription(),
                     imageNameOrEmojy: category.imageAssociated(),
-                    backgroundColor: Color("SeaTurtlePalette_3"),
+                    backgroundColor: Color.seaTurtle_3,
                     backgroundOpacity: 0.6)
             }
             
@@ -137,7 +137,7 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View where M.VM 
         }
         .padding(.horizontal)
         .popover(item: $modelToAct) { model in
-             PopAction(backgroundColorView: Color("SeaTurtlePalette_1"),modelToAct: model)
+             PopAction(backgroundColorView: Color.seaTurtle_1,modelToAct: model)
                  .presentationDetents([.height(250)])
          }
       
@@ -193,7 +193,7 @@ struct BodyListe_Generic<M:MyProToolPack_L1,C:MyProEnumPack_L2>:View where M.VM 
                 CSLabel_1Button(
                     placeHolder: category.simpleDescription(),
                     imageNameOrEmojy: category.imageAssociated(),
-                    backgroundColor: Color("SeaTurtlePalette_3"),
+                    backgroundColor: Color.seaTurtle_3,
                     backgroundOpacity: 0.6)
             }
             

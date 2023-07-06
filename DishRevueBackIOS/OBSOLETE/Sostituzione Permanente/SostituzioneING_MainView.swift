@@ -65,7 +65,7 @@ struct SostituzioneING_MainView: View {
                             Spacer()
                             Image(systemName: isPermamente ? "exclamationmark.circle" : "clock")
                                 .imageScale(.large)
-                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                .foregroundColor(Color.seaTurtle_3)
                            
                         }
                     }
@@ -204,7 +204,7 @@ struct SostituzioneING_MainView: View {
                 
                 Image(systemName: isPermamente ? "exclamationmark.circle" : "clock")
                     .imageScale(.large)
-                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                    .foregroundColor(Color.seaTurtle_3)
                 
                /* CSInfoAlertView(
                     imageScale: .large,
@@ -412,9 +412,9 @@ struct SostituzioneING_MainView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             
-         // SostituzioneING_MainView(ingredientModelCorrente: ingredientSample3, destinationPath: DestinationPath.ingredientList, backgroundColorView: Color("SeaTurtlePalette_1"))
+         // SostituzioneING_MainView(ingredientModelCorrente: ingredientSample3, destinationPath: DestinationPath.ingredientList, backgroundColorView: Color.seaTurtle_1)
             
-            SostituzioneING_MainView(destinationPath: DestinationPath.ingredientList, backgroundColorView: Color("SeaTurtlePalette_1"))
+            SostituzioneING_MainView(destinationPath: DestinationPath.ingredientList, backgroundColorView: Color.seaTurtle_1)
                 
         }.environmentObject(viewModel)
     }

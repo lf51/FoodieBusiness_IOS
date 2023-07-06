@@ -9,51 +9,147 @@ import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
 
+class TimerVM:ObservableObject {
+    
+    static var menuItemCount:[MenuModel] = [] // da eliminare. Dato di controllo. 02.07 Mette dentro ogni modello due volte (BUG)
+    
+    var menuItem:MenuModel
+    
+   // @Published var isOnAir:Bool
+    @Published var countDown:Int?
+    var nextCheck:TimeInterval?
+    var codiceOnOff:MenuModel.CodiceOnOffLive
+   // var invalidate:Bool
+    
+    var timer:Timer?
+    @Published var count:Int = 0 // 02.07.23 Serve per controllo del timer. Da eliminare
+    
+    init(menuItem:MenuModel) {
+        
+        self.menuItem = menuItem
+    
+        (self.codiceOnOff,self.nextCheck,self.countDown) = menuItem.timeScheduleInfo()
+        
+        Self.menuItemCount.append(menuItem) // temporanea
+      //  self.timerInit(menuItem: menuItem)
+        self.updateTimer()
+    
+    }
+    
+   private func updateTimer() {
+        
+       guard let checkNext = self.nextCheck else {
+           self.timer = nil
+           return }
+       
+        self.timer = Timer.scheduledTimer(
+            withTimeInterval: checkNext,
+            repeats: true,
+            block: { timer in
+                self.updateValue(timeInterval: timer.timeInterval)
+                self.count += 1 // temporaneo
+                
+            })
+    }
+    
+    private func updateValue(timeInterval:TimeInterval) {
+        // Nota 03.07.23
+        (self.codiceOnOff,self.nextCheck,self.countDown) = self.menuItem.timeScheduleInfo()
+
+         if self.nextCheck != timeInterval {
+            self.timer!.invalidate()
+            self.updateTimer()
+        }
+    }
+    
+    func updateItemWithSchedule(menuItem:MenuModel) {
+        // aggiorniamo l'item e forziamo l'aggiornamento per non dover aspettare il next check, e rendere la modifica immediata per l'utente al di là del nextcheck
+        self.menuItem = menuItem
+        
+        (self.codiceOnOff,self.nextCheck,self.countDown) = menuItem.timeScheduleInfo()
+        
+        self.updateTimer()
+    }
+}
+
+
 struct MenuModel_RowView: View {
     
     // Mod 05.10
     @EnvironmentObject var viewModel:AccounterVM
     
-    // Le State sono modificate dalla scheduleTimer
-    @State private var isOnAir: Bool = false
-    @State private var countDown:Int = 0
-    @State private var nextCheck:TimeInterval = 1.0
-    @State private var invalidate:Bool = false
-    // Mod 05.10
-    
+    @StateObject private var timerViewModel:TimerVM
     let menuItem: MenuModel
     let rowSize: RowSize
-    
+
     init(menuItem: MenuModel, rowSize: RowSize = .normale()) {
    
         self.menuItem = menuItem
         self.rowSize = rowSize
-    }
         
+        _timerViewModel = StateObject(wrappedValue: TimerVM(menuItem: menuItem))
+        
+    }
+
     var body: some View {
         
-       // CSZStackVB_Framed { // ha uno sfondo bianco con opacità 0.3 - Questo conferisce un colore azzurro chiaro alle schedine
-
+        // CSZStackVB_Framed { // ha uno sfondo bianco con opacità 0.3 - Questo conferisce un colore azzurro chiaro alle schedine
+        /* let _ = Timer.scheduledTimer(withTimeInterval: timerViewModel.nextCheck, repeats: true) { timer in
+         
+         (self.isOnAir,self.nextCheck,self.invalidate,self.countDown) = self.menuItem.timeScheduleInfo()
+         
+         self.count += 1
+         // if !self.invalidate { timer.invalidate() }
+         } */
+        VStack { // temporaneo
             vbIteratoreSize()
-                .overlay(alignment: .topLeading) {
+            VStack(alignment:.leading){ // temporaneo
+                Text("Timer:\(timerViewModel.count)")
+                Text("MenuCount:\(TimerVM.menuItemCount.count)")
+                Text("NextCheck:\(timerViewModel.nextCheck ?? 0.0) min:\(timerViewModel.nextCheck ?? 1.0 / 60.0)")
+                Text("countDownValue:\(timerViewModel.countDown ?? 0)")
+                Text("menuItemLocal:\(menuItem.modelStatusDescription())")
+                Text("menuItemTimerVM:\(timerViewModel.menuItem.modelStatusDescription())")
+                
+                Spacer()
+                Text("\(timerViewModel.timer?.fireDate ?? Date.now )").font(.caption)
+            }
+        }
+            .onChange(of: menuItem) { newValue in
+                self.timerViewModel.updateItemWithSchedule(menuItem: newValue)
+                
+            }
+            .onChange(of: timerViewModel.codiceOnOff) { newValue in
+                // Nota 06.07.23 onChangeCodiceOnOff
+                guard newValue == .scadutoForEver else { return }
+                let currentStatus = self.menuItem.status.checkStatusTransition(check: .archiviato)
+    
+                if !currentStatus {
+                    self.viewModel.manageCambioStatusModel(model: self.menuItem, nuovoStatus: .archiviato)
+                }
+            }
+            
+               /* .overlay(alignment: .topLeading) {
                     PuntoLampeggiante(disableCondition: !isOnAir,fontPunto: .system(size: 5))
                         .offset(x: 3, y: 3)
-                    }
-                .onAppear{
+                    }*/
+            
+              /*  .onAppear{
     
                  (self.isOnAir,self.nextCheck,self.invalidate,self.countDown) = self.menuItem.timeScheduleInfo()
                  
-                 Timer.scheduledTimer(withTimeInterval: nextCheck, repeats: true) { time in
+                    Timer.scheduledTimer(withTimeInterval: self.nextCheck, repeats: true) { time in
   
                      (self.isOnAir,self.nextCheck,self.invalidate,self.countDown) = self.menuItem.timeScheduleInfo()
+                        
                      if self.invalidate { time.invalidate() }
                  }
-             }
+             } */
  
        // } // chiusa Zstack Madre
         
     }
-    
+        
     // ViewBuilder Size
     
     @ViewBuilder private func vbIteratoreSize() -> some View {
@@ -101,7 +197,7 @@ struct MenuModel_RowView: View {
 
                 Spacer()
                 
-                iteratingCalendarMenuInformation(isOnAir: isOnAir)
+                iteratingCalendarMenuInformation()
                 
                 Spacer()
                 
@@ -110,7 +206,7 @@ struct MenuModel_RowView: View {
                     ForEach(GiorniDelServizio.allCases) { day in
                         
                         iteratingGiorniDelServizio(day: day)
-                            .opacity(isOnAir ? 1.0 : 0.4)
+                            .opacity(timerViewModel.codiceOnOff == .liveNow ? 1.0 : 0.4)
                     }
                     
                     Spacer()
@@ -125,18 +221,35 @@ struct MenuModel_RowView: View {
 
     // Method
    
-    @ViewBuilder private func iteratingCalendarMenuInformation(isOnAir:Bool) -> some View {
+    @ViewBuilder private func iteratingCalendarMenuInformation() -> some View {
           
         let avaibility = self.menuItem.isAvaibleWhen
         let(incipit,postFix,showPost) = avaibility.iteratingAvaibilityMenu()
         //
         let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,fontWeight:Font.Weight) = {
         
-            let isCountDownStarted = self.countDown < self.viewModel.setupAccount.startCountDownMenuAt.rawValue
-            let countString = isCountDownStarted ? " (Chiude in \(countDown)min)" : ""
-          
-            if isOnAir { return (1.0,"eye",.green,"on\(countString)",.semibold)}
-            else { return (0.4,"eye.slash",.gray,"off",.light)}
+            let isCountDownStarted:Bool = self.timerViewModel.countDown != nil
+            
+            let openClose:String = {
+                
+                if let countDown = self.timerViewModel.countDown {
+                    
+                    let count = "\(self.timerViewModel.codiceOnOff.openCloseDescription())\(countDown)min"
+                    return count
+                        }
+                else {
+                    return self.timerViewModel.codiceOnOff.simpleDescription()
+                   }
+                    }()
+  
+            if self.timerViewModel.codiceOnOff == .liveNow {
+                
+                return (1.0,"eye",.green,"on (\(openClose))",.semibold)
+                
+            } else {
+                return (0.4,"eye.slash",.gray,"off (\(openClose))",.light)
+                
+            }
             
         }() // add 17.09
         
@@ -157,15 +270,15 @@ struct MenuModel_RowView: View {
                 }
                 .fontWeight(.semibold)
                 .font(.headline)
-                .foregroundColor(Color("SeaTurtlePalette_3"))
+                .foregroundColor(Color.seaTurtle_3)
                 
                 Spacer()
                 
                 HStack(alignment:.bottom,spacing:2) {
-                    Text("dalle")
+                    Text("apre")
                         .italic()
                         .font(.caption2)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                     Text(oraInizio)
                         .fontWeight(.semibold)
                         .font(.headline)
@@ -184,12 +297,12 @@ struct MenuModel_RowView: View {
                 }
                 .fontWeight(.semibold)
                 .font(.subheadline)
-                .foregroundColor(Color("SeaTurtlePalette_3"))
+                .foregroundColor(Color.seaTurtle_3)
                
                 Spacer()
                 
                 HStack(alignment: .bottom, spacing: 2) {
-                    Text("alle")
+                    Text("chiude")
                         .italic()
                         .font(.caption2)
                         .foregroundColor(Color.red.opacity(0.8))
@@ -222,7 +335,7 @@ struct MenuModel_RowView: View {
             .padding(2)
             .background(content: {
                 RoundedRectangle(cornerRadius: 5.0)
-                    .fill(Color("SeaTurtlePalette_1").opacity(0.4))
+                    .fill(Color.seaTurtle_1.opacity(0.4))
             }) */
             CSEtichetta(
                 text: value.caption,
@@ -231,7 +344,7 @@ struct MenuModel_RowView: View {
                 image: value.image,
                 imageColor: value.imageColor,
                 imageSize: .small,
-                backgroundColor: Color("SeaTurtlePalette_1"),
+                backgroundColor: Color.seaTurtle_1,
                 backgroundOpacity: 0.4)
                 .offset(x: -5, y: -10)
         } // end Modifche 17.09
@@ -246,7 +359,7 @@ struct MenuModel_RowView: View {
             
             Image(systemName: image)
                 .imageScale(.large)
-                .foregroundColor(Color("SeaTurtlePalette_2"))
+                .foregroundColor(Color.seaTurtle_2)
                 .zIndex(0)
             
         } else {
@@ -255,12 +368,12 @@ struct MenuModel_RowView: View {
                 
                 Image(systemName: day.imageAssociated())
                     .imageScale(.large)
-                    .foregroundColor(Color("SeaTurtlePalette_2"))
+                    .foregroundColor(Color.seaTurtle_2)
                     .zIndex(0)
                     
                 Image(systemName: "circle.slash")
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                        .foregroundColor(Color.seaTurtle_2)
                         .zIndex(1)
                     
             }
@@ -274,9 +387,7 @@ struct MenuModel_RowView: View {
             if self.rowSize.returnType() == .normale() { return .title2}
             else { return .title3}
         }()
-        
-        let dashedColor:Color = .white
-            
+
         HStack(alignment:.bottom) {
             
             Text(self.menuItem.intestazione)
@@ -290,7 +401,15 @@ struct MenuModel_RowView: View {
             
             vbEstrapolaStatusImage(
                 itemModel: self.menuItem,
-                dashedColor: dashedColor)
+                dashedColor: .clear)
+            .overlay(alignment:.center) {
+               ImageLampeggiante(
+                image: "circle.dashed",
+                sizeImage: .large,
+                disableCondition: self.timerViewModel.codiceOnOff != .liveNow)
+               
+                    
+            }
             
         }
       
@@ -308,7 +427,7 @@ struct MenuModel_RowView: View {
             Spacer()
             Image(systemName: pax.imageAssociated())
                  .imageScale(.large)
-                 .foregroundColor(Color("SeaTurtlePalette_2"))
+                 .foregroundColor(Color.seaTurtle_2)
                  .padding(.trailing,-10)
             
         default: EmptyView()
@@ -346,11 +465,11 @@ struct MenuModel_RowView: View {
                 text: "\(self.menuItem.rifDishIn.count)",
                 fontStyle: value.textSize,
                 fontWeight: .semibold,
-                textColor: Color("SeaTurtlePalette_4"),
+                textColor: Color.seaTurtle_4,
                 image: "fork.knife.circle",
-                imageColor: Color("SeaTurtlePalette_4"),
+                imageColor: Color.seaTurtle_4,
                 imageSize: value.imageSize,
-                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundColor: Color.seaTurtle_2,
                 backgroundOpacity: 1.0)
    
         }
@@ -387,7 +506,7 @@ struct MenuModel_RowView: View {
                             Text("x")
                             Image(systemName: pax.imageAssociated())
                                  .imageScale(.medium)
-                                 .foregroundColor(Color("SeaTurtlePalette_3"))
+                                 .foregroundColor(Color.seaTurtle_3)
                         }
                     
                 case .allaCarta(_):
@@ -402,7 +521,7 @@ struct MenuModel_RowView: View {
                 }
             }
             .font(.callout)
-            .foregroundColor(Color("SeaTurtlePalette_3"))
+            .foregroundColor(Color.seaTurtle_3)
     }
     
     
@@ -476,7 +595,8 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                     
             ZStack {
                 
-                Color("SeaTurtlePalette_1").ignoresSafeArea()
+                Color.seaTurtle_1.ignoresSafeArea()
+
                 VStack(spacing:40) {
                     
                     MenuModel_RowView(menuItem: menuItem)
@@ -491,7 +611,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                 }
             }
         
-        }
+        }.environmentObject(testAccount)
     
         
     }
@@ -627,7 +747,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                  }
                  .fontWeight(.semibold)
                  .font(.headline)
-                 .foregroundColor(Color("SeaTurtlePalette_3"))
+                 .foregroundColor(Color.seaTurtle_3)
                  
                  Spacer()
                  
@@ -635,7 +755,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                      Text("dalle")
                          .italic()
                          .font(.caption2)
-                         .foregroundColor(Color("SeaTurtlePalette_3"))
+                         .foregroundColor(Color.seaTurtle_3)
                      Text(oraInizio)
                          .fontWeight(.semibold)
                          .font(.headline)
@@ -654,7 +774,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                  }
                  .fontWeight(.semibold)
                  .font(.subheadline)
-                 .foregroundColor(Color("SeaTurtlePalette_3"))
+                 .foregroundColor(Color.seaTurtle_3)
                 
                  
                  Spacer()
@@ -693,7 +813,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
              .padding(2)
              .background(content: {
                  RoundedRectangle(cornerRadius: 5.0)
-                     .fill(Color("SeaTurtlePalette_1").opacity(0.4))
+                     .fill(Color.seaTurtle_1.opacity(0.4))
              }) */
              CSEtichetta(
                  text: value.caption,
@@ -702,7 +822,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                  image: value.image,
                  imageColor: value.imageColor,
                  imageSize: .small,
-                 backgroundColor: Color("SeaTurtlePalette_1"),
+                 backgroundColor: Color.seaTurtle_1,
                  backgroundOpacity: 0.4)
                  .offset(x: -5, y: -10)
          } // end Modifche 17.09
@@ -717,7 +837,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
              
              Image(systemName: image)
                  .imageScale(.large)
-                 .foregroundColor(Color("SeaTurtlePalette_2"))
+                 .foregroundColor(Color.seaTurtle_2)
                  .zIndex(0)
              
          } else {
@@ -726,12 +846,12 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                  
                  Image(systemName: day.imageAssociated())
                      .imageScale(.large)
-                     .foregroundColor(Color("SeaTurtlePalette_2"))
+                     .foregroundColor(Color.seaTurtle_2)
                      .zIndex(0)
                      
                  Image(systemName: "circle.slash")
                          .imageScale(.large)
-                         .foregroundColor(Color("SeaTurtlePalette_2"))
+                         .foregroundColor(Color.seaTurtle_2)
                          .zIndex(1)
                      
              }
@@ -757,7 +877,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
              Spacer()
              Image(systemName: pax.imageAssociated())
                   .imageScale(.large)
-                  .foregroundColor(Color("SeaTurtlePalette_2"))
+                  .foregroundColor(Color.seaTurtle_2)
                   .padding(.trailing,-10)
              
          default: EmptyView()
@@ -786,11 +906,11 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                  text: "\(self.menuItem.rifDishIn.count)",
                  fontStyle: .title3,
                  fontWeight: .semibold,
-                 textColor: Color("SeaTurtlePalette_4"),
+                 textColor: Color.seaTurtle_4,
                  image: "fork.knife.circle",
-                 imageColor: Color("SeaTurtlePalette_4"),
+                 imageColor: Color.seaTurtle_4,
                  imageSize: .large,
-                 backgroundColor: Color("SeaTurtlePalette_2"),
+                 backgroundColor: Color.seaTurtle_2,
                  backgroundOpacity: 1.0)
     
          }
@@ -816,7 +936,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                              Text("x")
                              Image(systemName: pax.imageAssociated())
                                   .imageScale(.medium)
-                                  .foregroundColor(Color("SeaTurtlePalette_3"))
+                                  .foregroundColor(Color.seaTurtle_3)
                          }
                      
                  case .noValue: EmptyView()
@@ -827,7 +947,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
                  }
              }
              .font(.callout)
-             .foregroundColor(Color("SeaTurtlePalette_3"))
+             .foregroundColor(Color.seaTurtle_3)
      }
      
      
@@ -859,7 +979,7 @@ struct MenuModel_RowView_Previews: PreviewProvider {
  // .padding(1)
   .background(content: {
       RoundedRectangle(cornerRadius: 5.0)
-          .fill(Color("SeaTurtlePalette_1").opacity(0.4))
+          .fill(Color.seaTurtle_1.opacity(0.4))
   }) */
   
 /*  CSEtichetta(
@@ -869,5 +989,5 @@ struct MenuModel_RowView_Previews: PreviewProvider {
       image: value.image,
       imageColor: value.imageColor,
       imageSize: .small,
-      backgroundColor: Color("SeaTurtlePalette_1"),
+      backgroundColor: Color.seaTurtle_1,
       backgroundOpacity: 0.4) */

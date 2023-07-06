@@ -23,7 +23,7 @@ struct ColorTabViewMain: View {
             
             
             ZStack{
-                Color("SeaTurtlePalette_1")
+                Color.seaTurtle_1
                 Text("HelloWorld")
             }
                 .tabItem {
@@ -35,7 +35,7 @@ struct ColorTabViewMain: View {
             
             
         }
-        .accentColor(Color("SeaTurtlePalette_3"))
+        .accentColor(Color.seaTurtle_3)
         
         
         
@@ -50,10 +50,10 @@ struct ColorTabViewMain: View {
 struct ColoreTabViewTest: View {
     var body: some View {
         
-        CSZStackVB(title: "My Test", backgroundColorView: Color("SeaTurtlePalette_1")) {
+        CSZStackVB(title: "My Test", backgroundColorView: Color.seaTurtle_1) {
             
             
-           // Color("SeaTurtlePalette_1")
+           // Color.seaTurtle_1
             
             VStack {
                 
@@ -78,7 +78,7 @@ struct ColoreTabViewTest: View {
             
             
         }
-        .background(Color("SeaTurtlePalette_1").opacity(0.6))
+        .background(Color.seaTurtle_1.opacity(0.6))
         
         
     }

@@ -30,7 +30,7 @@ struct VistaCronologiaAcquisti: View {
                         .italic()
                         .fontWeight(.light)
                         .font(.title2)
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                        .foregroundColor(Color.seaTurtle_4)
                   
                     Spacer()
                 }
@@ -47,7 +47,7 @@ struct VistaCronologiaAcquisti: View {
                                 Text("\(position + 1).")
                                     .font(.system(.headline, design: .monospaced, weight: .bold))
                                     .foregroundColor(Color.gray)
-                                   // .foregroundColor(Color("SeaTurtlePalette_4"))
+                                   // .foregroundColor(Color.seaTurtle_4)
                                 
                                 Text("\(time)")
                                     .italic()
@@ -59,7 +59,7 @@ struct VistaCronologiaAcquisti: View {
                                     Text("ultimo acquisto")
                                         .italic()
                                         .font(.callout)
-                                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                                        .foregroundColor(Color.seaTurtle_3)
                                     
                                 }
                               
@@ -104,7 +104,7 @@ struct VistaCronologiaAcquisti: View {
 struct VistaCronologiaAcquisti_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            VistaCronologiaAcquisti(ingrediente: ingredientSample_Test, backgroundColorView: Color("SeaTurtlePalette_1"))
+            VistaCronologiaAcquisti(ingrediente: ingredientSample_Test, backgroundColorView: Color.seaTurtle_1)
                 
                
         }

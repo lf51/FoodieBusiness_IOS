@@ -54,7 +54,7 @@ struct NuovoMenuMainViewl: View {
                                 itemModel: $nuovoMenu,
                                 generalErrorCheck: generalErrorCheck,
                                 minLenght: 3,
-                                coloreContainer: Color("SeaTurtlePalette_2")) */
+                                coloreContainer: Color.seaTurtle_2) */
                           
                            /* BoxDescriptionModel_Generic(itemModel: $nuovoMenu, labelString: "Descrizione (Optional)", disabledCondition: openDishList) */
                                 vbIntestazione()
@@ -110,7 +110,7 @@ struct NuovoMenuMainViewl: View {
                                     CSButton_image(
                                         frontImage: "plus.circle",
                                         imageScale: .large,
-                                        frontColor: Color("SeaTurtlePalette_3")) {
+                                        frontColor: Color.seaTurtle_3) {
                                             withAnimation(.default) {
                                                 self.openDishList.toggle()
                                             }
@@ -266,7 +266,7 @@ struct NuovoMenuMainViewl: View {
                 
                 CSLabel_1Button(placeHolder: self.nuovoMenu.intestazione, imageNameOrEmojy: self.nuovoMenu.status.imageAssociated(),imageColor: self.nuovoMenu.status.transitionStateColor(), backgroundColor: Color.black)
                 
-                CSText_tightRectangle(testo: self.nuovoMenu.intestazione, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color("SeaTurtlePalette_2") )
+                CSText_tightRectangle(testo: self.nuovoMenu.intestazione, fontWeight: .bold, textColor: Color.white, strokeColor: Color.blue, fillColor: Color.seaTurtle_2 )
                 
             }
             
@@ -276,7 +276,7 @@ struct NuovoMenuMainViewl: View {
                 itemModel: $nuovoMenu,
                 generalErrorCheck: generalErrorCheck,
                 minLenght: 3,
-                coloreContainer: Color("SeaTurtlePalette_2"))
+                coloreContainer: Color.seaTurtle_2)
         }
         
     }
@@ -311,7 +311,7 @@ struct NuovoMenuMainViewl: View {
             HStack {
                 ForEach(TipologiaMenu.allCases) { tipologia in
                     
-                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: tipologia != .delGiorno ? Color.gray : Color.blue, fillColor: tipologia == .delGiorno ? Color("SeaTurtlePalette_2") : Color.clear)
+                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: tipologia != .delGiorno ? Color.gray : Color.blue, fillColor: tipologia == .delGiorno ? Color.seaTurtle_2 : Color.clear)
                         .opacity(tipologia != .delGiorno ? 0.5 : 1.0)
                     
                 }
@@ -512,7 +512,7 @@ struct NuovoMenuMainViewl_Previews: PreviewProvider {
     }()
     
     static var previews: some View {
-        NuovoMenuMainViewl(nuovoMenu: menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .menuList )
+        NuovoMenuMainViewl(nuovoMenu: menuItem, backgroundColorView: Color.seaTurtle_1, destinationPath: .menuList )
     }
 }
 

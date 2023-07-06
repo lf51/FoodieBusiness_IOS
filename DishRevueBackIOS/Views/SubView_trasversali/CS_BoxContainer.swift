@@ -16,7 +16,7 @@ struct CS_BoxContainer<Big,S1,S2,S3>: View where Big:View, S1:View, S2:View, S3:
     
     var body: some View {
         
-     //   CSZStackVB(title: "@lillofree", backgroundColorView: Color("SeaTurtlePalette_1")) {
+     //   CSZStackVB(title: "@lillofree", backgroundColorView: Color.seaTurtle_1) {
             
           //  VStack(alignment:.leading) {
           
@@ -30,10 +30,10 @@ struct CS_BoxContainer<Big,S1,S2,S3>: View where Big:View, S1:View, S2:View, S3:
                                     .fontWeight(.heavy)
                                     .font(.system(.largeTitle, design: .default))
                                     .shadow(radius: 1.0)
-                                    .foregroundColor(Color("SeaTurtlePalette_2"))
+                                    .foregroundColor(Color.seaTurtle_2)
                                     .padding()
                                     .frame(width: 250, height: 225,alignment: .bottomTrailing)
-                                    .background(Color("SeaTurtlePalette_4").blur(radius: 4.0))
+                                    .background(Color.seaTurtle_4.blur(radius: 4.0))
                                     .cornerRadius(20.0)
                                     .shadow(radius: 5.0)
                           
@@ -50,10 +50,10 @@ struct CS_BoxContainer<Big,S1,S2,S3>: View where Big:View, S1:View, S2:View, S3:
                                         .fontWeight(.semibold)
                                         .font(.system(.caption, design: .default))
                                         .shadow(radius: 1.0)
-                                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                                        .foregroundColor(Color.seaTurtle_2)
                                         .padding()
                                         .frame(width: 100, height: 70,alignment: .bottomTrailing)
-                                        .background(Color("SeaTurtlePalette_4").blur(radius: 2.0))
+                                        .background(Color.seaTurtle_4.blur(radius: 2.0))
                                         .cornerRadius(20.0)
                                         .shadow(radius: 5.0)
                                 }
@@ -65,10 +65,10 @@ struct CS_BoxContainer<Big,S1,S2,S3>: View where Big:View, S1:View, S2:View, S3:
                                         .fontWeight(.semibold)
                                         .font(.system(.caption, design: .default))
                                         .shadow(radius: 1.0)
-                                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                                        .foregroundColor(Color.seaTurtle_2)
                                         .padding()
                                         .frame(width: 100, height: 70,alignment: .bottomTrailing)
-                                        .background(Color("SeaTurtlePalette_4").blur(radius: 2.0))
+                                        .background(Color.seaTurtle_4.blur(radius: 2.0))
                                         .cornerRadius(20.0)
                                         .shadow(radius: 5.0)
                                 }
@@ -80,10 +80,10 @@ struct CS_BoxContainer<Big,S1,S2,S3>: View where Big:View, S1:View, S2:View, S3:
                                         .fontWeight(.semibold)
                                         .font(.system(.caption, design: .default))
                                         .shadow(radius: 1.0)
-                                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                                        .foregroundColor(Color.seaTurtle_2)
                                         .padding()
                                         .frame(width: 100, height: 70,alignment: .bottomTrailing)
-                                        .background(Color("SeaTurtlePalette_4").blur(radius: 2.0))
+                                        .background(Color.seaTurtle_4.blur(radius: 2.0))
                                         .cornerRadius(20.0)
                                         .shadow(radius: 5.0)
                                 }

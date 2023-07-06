@@ -533,7 +533,19 @@ struct DishModel_RowView: View {
             else { return (.title3,.small)}
         }()
         
-        let dashedColor = self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
+        let dashedColor:Color = {
+            
+            if self.item.percorsoProdotto == .prodottoFinito {
+                
+               return self.viewModel.inventarioScorte.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
+                
+            } else if self.item.percorsoProdotto == .composizione { return DishModel.ExecutionState.eseguibileConRiserva.coloreAssociato() }
+            
+            else {
+                return self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
+            }
+        }()
+        
         let percorsoImage = self.item.percorsoProdotto.imageAssociated()
         
         HStack(alignment:.center,spacing: 3) {
@@ -908,7 +920,7 @@ struct DishModel_RowView: View {
                 
                 Image(systemName: "list.bullet.rectangle")
                     .imageScale(.medium)
-                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                    .foregroundColor(Color.seaTurtle_4)
              
                 ScrollView(.horizontal,showsIndicators: false) {
                     
@@ -936,7 +948,7 @@ struct DishModel_RowView: View {
                                 
                                 Text(ingredient.intestazione)
                                     .font(isPrincipal ? .headline : .subheadline)
-                                    .foregroundColor(isTemporaryOff ? Color("SeaTurtlePalette_1") : Color("SeaTurtlePalette_4"))
+                                    .foregroundColor(isTemporaryOff ? Color.seaTurtle_1 : Color.seaTurtle_4)
                                     .strikethrough(isTemporaryOff, color: Color.gray)
                                     .overlay(alignment:.topTrailing) {
                                         if hasAllergene {
@@ -950,7 +962,7 @@ struct DishModel_RowView: View {
                                     
                                     Text("(\(nameSostituto))")
                                         .font(isPrincipal ? .headline : .subheadline)
-                                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                                        .foregroundColor(Color.seaTurtle_3)
                                 }
     
                             }
@@ -958,7 +970,7 @@ struct DishModel_RowView: View {
                             Text("•")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundColor(Color("SeaTurtlePalette_4"))
+                                .foregroundColor(Color.seaTurtle_4)
            
                         }
                     }
@@ -978,7 +990,7 @@ struct DishModel_RowView: View {
                 
                 Image(systemName: "list.bullet.rectangle")
                     .imageScale(.medium)
-                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                    .foregroundColor(Color.seaTurtle_4)
              
                 ScrollView(.horizontal,showsIndicators: false) {
                     
@@ -995,7 +1007,7 @@ struct DishModel_RowView: View {
                                 
                                 Text(ingredient.intestazione)
                                     .font(isPrincipal ? .headline : .subheadline)
-                                    .foregroundColor(isSelected ? Color.blue : Color("SeaTurtlePalette_4"))
+                                    .foregroundColor(isSelected ? Color.blue : Color.seaTurtle_4)
                                     .strikethrough(isSelected && isThereSostituto, color: Color.gray)
                                     .overlay(alignment:.topTrailing) {
                                         if hasAllergene {
@@ -1009,7 +1021,7 @@ struct DishModel_RowView: View {
                                     
                                     Text("\(nomeIngredienteSostituto)")
                                         .font(isPrincipal ? .headline : .subheadline)
-                                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                                        .foregroundColor(Color.seaTurtle_3)
                                 }
     
                             }
@@ -1017,7 +1029,7 @@ struct DishModel_RowView: View {
                             Text("•")
                                 .font(.caption)
                                 .fontWeight(.semibold)
-                                .foregroundColor(Color("SeaTurtlePalette_4"))
+                                .foregroundColor(Color.seaTurtle_4)
            
                         }
                     }
@@ -1169,7 +1181,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
             
             ZStack {
                 
-                Color("SeaTurtlePalette_1").ignoresSafeArea()
+                Color.seaTurtle_1.ignoresSafeArea()
                 
                 VStack {
 

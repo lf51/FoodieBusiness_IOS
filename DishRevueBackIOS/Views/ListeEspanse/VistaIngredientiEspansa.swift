@@ -391,7 +391,7 @@ struct VistaIngredientiEspansa_Previews: PreviewProvider {
      }()
     static var previews: some View {
         NavigationStack {
-          VistaIngredientiEspansa(currentDish: dishItem3, backgroundColorView: Color("SeaTurtlePalette_1"))
+          VistaIngredientiEspansa(currentDish: dishItem3, backgroundColorView: Color.seaTurtle_1)
         }.environmentObject(viewModel)
     }
 }

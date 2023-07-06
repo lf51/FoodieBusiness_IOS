@@ -22,7 +22,7 @@ struct CS_CircleSnakeView: View {
         VStack { // temporaneo
             ZStack {
                 
-                Color("SeaTurtlePalette_1")
+                Color.seaTurtle_1
                 
                 csVbSwitchImageText(string: imageBehind, size: .large)
                     .foregroundColor(imageColor)
@@ -76,7 +76,7 @@ struct CS_CircleSnakeView_Previews: PreviewProvider {
             colorBase: Color.blue,
             shadowColor: Color.gray)  */
         
-        /*CS_SquarePiramidView(imageBehind: "trash.fill", imageColor: Color.red, piramidColor: Color("SeaTurtlePalette_2"),shadowColor: Color("SeaTurtlePalette_2"),borderColor: Color("SeaTurtlePalette_3")) */
+        /*CS_SquarePiramidView(imageBehind: "trash.fill", imageColor: Color.red, piramidColor: Color.seaTurtle_2,shadowColor: Color.seaTurtle_2,borderColor: Color.seaTurtle_3) */
     }
 }
 

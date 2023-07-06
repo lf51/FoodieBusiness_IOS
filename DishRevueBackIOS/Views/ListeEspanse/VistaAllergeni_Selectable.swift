@@ -57,7 +57,7 @@ struct VistaAllergeni_Selectable: View {
 
         CSZStackVB(
             title: "Seleziona Allergeni",
-            titlePosition: .bodyEmbed([.top,.horizontal]),
+            titlePosition: .bodyEmbed([.top,.horizontal],15),
             backgroundColorView: backgroundColorView) {
                 
                 let allCases = AllergeniIngrediente.allCases

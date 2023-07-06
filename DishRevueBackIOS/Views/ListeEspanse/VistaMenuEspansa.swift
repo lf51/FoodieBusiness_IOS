@@ -59,7 +59,7 @@ struct VistaMenuEspansa: View {
                     }
                     
                 .font(.system(.headline, design: .rounded, weight: .semibold))
-                .foregroundColor(Color("SeaTurtlePalette_2"))
+                .foregroundColor(Color.seaTurtle_2)
                 
                 ScrollView(showsIndicators:false) {
                     
@@ -327,7 +327,7 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationStack {
-            VistaMenuEspansa(currentDish: dishItem3, backgroundColorView: Color("SeaTurtlePalette_1"), viewModel: viewModel)
+            VistaMenuEspansa(currentDish: dishItem3, backgroundColorView: Color.seaTurtle_1, viewModel: viewModel)
         }.environmentObject(viewModel)
             
     }
@@ -374,7 +374,7 @@ struct VistaMenuEspansa: View {
             
                 }
                 .font(.system(.headline, design: .rounded, weight: .semibold))
-                .foregroundColor(Color("SeaTurtlePalette_2"))
+                .foregroundColor(Color.seaTurtle_2)
                 
                 ScrollView(showsIndicators:false) {
                     

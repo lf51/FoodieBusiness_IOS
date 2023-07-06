@@ -87,7 +87,7 @@ struct FastImport_IngredientRow: View {
                                                 Image(systemName: "checkmark")
                                                     .imageScale(.large)
                                                     .bold()
-                                                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                                                    .foregroundColor(Color.seaTurtle_3)
                                             }
                                         }
                                 }
@@ -97,7 +97,7 @@ struct FastImport_IngredientRow: View {
                             Text("Prodotto di terzi")
                                 .italic()
                                 .font(.callout)
-                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                .foregroundColor(Color.seaTurtle_3)
                         }
                         
                     }

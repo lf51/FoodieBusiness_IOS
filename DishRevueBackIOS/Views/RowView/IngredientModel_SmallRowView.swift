@@ -75,7 +75,7 @@ struct IngredientModel_SmallRowView: View {
      
             } // chiuda VStack madre
             .padding(.vertical,5)
-            .padding(.horizontal)
+            .padding(.horizontal,10)
             
         } // chiusa Zstack Madre
         .opacity(value.opacity)
@@ -117,7 +117,7 @@ struct IngredientModel_SmallRowView: View {
             
     @ViewBuilder private func vbIntestazioneIngrediente(itemIsModel:Bool) -> some View {
         
-        let dashedColor = Color.gray
+        let dashedColor = self.viewModel.inventarioScorte.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()
         
         HStack(alignment:.lastTextBaseline) {
             
@@ -185,7 +185,7 @@ struct IngredientModel_SmallRowView_Previews: PreviewProvider {
     
     static var previews: some View {
         
-        CSZStackVB(title: "Test", backgroundColorView: Color("SeaTurtlePalette_1")) {
+        CSZStackVB(title: "Test", backgroundColorView: Color.seaTurtle_1) {
             VStack {
                 IngredientModel_SmallRowView(titolare: ing1, sostituto: nil)
              

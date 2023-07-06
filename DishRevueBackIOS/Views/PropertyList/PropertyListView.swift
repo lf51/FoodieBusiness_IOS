@@ -97,8 +97,8 @@ struct PropertyListView: View {
                 LargeBar_TextPlusButton(
                     buttonTitle: "Registra Proprietà",
                     font: .callout,
-                    imageBack: viewModel.allMyProperties.isEmpty ? Color("SeaTurtlePalette_2") : Color.red.opacity(0.6),
-                    imageFore: Color("SeaTurtlePalette_4")) {
+                    imageBack: viewModel.allMyProperties.isEmpty ? Color.seaTurtle_2 : Color.red.opacity(0.6),
+                    imageFore: Color.seaTurtle_4) {
                     
                     withAnimation {
                       
@@ -118,7 +118,7 @@ struct PropertyListView: View {
           /*.navigationBarItems(
               trailing:
                   
-          LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color("SeaTurtlePalette_2"), imageFore: Color.white) {
+          LargeBar_TextPlusButton(buttonTitle: "Registra Proprietà",font: .callout, imageBack: Color.seaTurtle_2, imageFore: Color.white) {
               
               withAnimation {
                   self.wannaAddNewProperty.toggle()

@@ -43,13 +43,13 @@ struct PropertyModel_RowView: View {
                                     image: "checkmark.seal.fill",
                                     imageColor: Color.white,
                                     imageSize: .medium,
-                                    backgroundColor: Color("SeaTurtlePalette_2"),
+                                    backgroundColor: Color.seaTurtle_2,
                                     backgroundOpacity: 0.4)
                             }
                             
                             
                           /*  NavigationLink {
-                                EditingPropertyModel(itemModel: $itemModel, backgroundColorView: Color("SeaTurtlePalette_1"))
+                                EditingPropertyModel(itemModel: $itemModel, backgroundColorView: Color.seaTurtle_1)
                             } label: {
                                 Image(systemName:"arrow.up.forward.square") // "rectangle.portrait.and.arrow.right"
                                     .imageScale(.medium)
@@ -108,7 +108,7 @@ struct PropertyModel_RowView_Previews: PreviewProvider {
        /* PropertyModel_RowView(itemModel: $testProperty)
             .environmentObject(AccounterVM()) */
        NavigationView {
-            EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color("SeaTurtlePalette_1"))
+            EditingPropertyModel(itemModel: $testProperty, backgroundColorView: Color.seaTurtle_1)
         }
         .navigationBarTitleDisplayMode(.large)
         .navigationViewStyle(StackNavigationViewStyle())

@@ -44,7 +44,7 @@ struct DishListByIngredientView: View {
                 
                 return ("Cambio Permanente","exclamationmark.circle",.red,.sostituzionePermanenteING)
             } else {
-                return ("Cambio Temporaneo","clock",Color("SeaTurtlePalette_3"),.sostituzioneTemporaneaING)
+                return ("Cambio Temporaneo","clock",Color.seaTurtle_3,.sostituzioneTemporaneaING)
             }
             
         }()
@@ -62,11 +62,11 @@ struct DishListByIngredientView: View {
                         imageNameOrEmojy: "arrowshape.backward",
                         backgroundColor: Color.black) {
                           /*  Text(nomeIngredienteCorrente)
-                                .foregroundColor(Color("SeaTurtlePalette_4"))
+                                .foregroundColor(Color.seaTurtle_4)
                                 ._tightPadding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 5.0)
-                                        .fill(Color("SeaTurtlePalette_1"))
+                                        .fill(Color.seaTurtle_1)
                                             ) */
                             
                            /* Toggle(isOn: $isPermamente) {
@@ -75,23 +75,23 @@ struct DishListByIngredientView: View {
                                   
                                     Text(nomeIngredienteCorrente)
                                          .lineLimit(1)
-                                         .foregroundColor(Color("SeaTurtlePalette_4"))
+                                         .foregroundColor(Color.seaTurtle_4)
                                        //  ._tightPadding()
                                        /*  .background(
                                              RoundedRectangle(cornerRadius: 5.0)
-                                                 .fill(Color("SeaTurtlePalette_1"))
+                                                 .fill(Color.seaTurtle_1)
                                                      )*/
                                    // Spacer()
                                     Image(systemName: isPermamente ? "exclamationmark.circle" : "clock")
                                         .imageScale(.medium)
-                                        .foregroundColor(isPermamente ? Color.red : Color("SeaTurtlePalette_3"))
+                                        .foregroundColor(isPermamente ? Color.red : Color.seaTurtle_3)
                                    
                                 }
                                 ._tightPadding()
                                // .padding(.horizontal)
                                 .background(
                                     RoundedRectangle(cornerRadius: 5.0)
-                                        .fill(Color("SeaTurtlePalette_1"))
+                                        .fill(Color.seaTurtle_1)
                                             )
                             } */ // Mod.16.09
                            
@@ -100,11 +100,11 @@ struct DishListByIngredientView: View {
                               
                                 Text(nomeIngredienteCorrente)
                                      .lineLimit(1)
-                                     .foregroundColor(Color("SeaTurtlePalette_4"))
+                                     .foregroundColor(Color.seaTurtle_4)
                                    //  ._tightPadding()
                                    /*  .background(
                                          RoundedRectangle(cornerRadius: 5.0)
-                                             .fill(Color("SeaTurtlePalette_1"))
+                                             .fill(Color.seaTurtle_1)
                                                  )*/
                                // Spacer()
                                 Image(systemName: value.image)
@@ -116,7 +116,7 @@ struct DishListByIngredientView: View {
                            // .padding(.horizontal)
                             .background(
                                 RoundedRectangle(cornerRadius: 5.0)
-                                    .fill(Color("SeaTurtlePalette_1"))
+                                    .fill(Color.seaTurtle_1)
                                         )
                             
                             
@@ -501,7 +501,7 @@ struct DishListByIngredientView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             
-            DishListByIngredientView(ingredientModelCorrente: ingredientSample3, isPermanente: true, destinationPath: DestinationPath.ingredientList, backgroundColorView: Color("SeaTurtlePalette_1"))
+            DishListByIngredientView(ingredientModelCorrente: ingredientSample3, isPermanente: true, destinationPath: DestinationPath.ingredientList, backgroundColorView: Color.seaTurtle_1)
                 
         }.environmentObject(viewModel)
     }

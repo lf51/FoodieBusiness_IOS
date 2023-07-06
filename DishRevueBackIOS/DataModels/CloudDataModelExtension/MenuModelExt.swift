@@ -189,8 +189,21 @@ extension MenuModel:
         
         return conditionOne || conditionTwo
     }*/ // deprecata 22.12 cancellare
-    
     public func preCallIsOnAir(filterValue:MenuModel.OnlineStatus?) -> Bool {
+    
+        switch filterValue {
+            
+        case .online:
+            return isOnAirValue().today
+        case .offline:
+            return !isOnAirValue().today
+            
+        default:
+            return true
+        }
+        
+    }// Deprecata da accorpare l'OnlineStatus con quello che abbiamo creato nuovo con i codici
+    /*public func preCallIsOnAir(filterValue:MenuModel.OnlineStatus?) -> Bool {
     
         switch filterValue {
             
@@ -203,7 +216,7 @@ extension MenuModel:
             return true
         }
         
-    }
+    }*/// 04.07.23 Deprecata
     
    /* public func modelPropertyCompare(filterProperty: FilterPropertyModel, readOnlyVM: AccounterVM) -> Bool {
         

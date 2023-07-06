@@ -55,7 +55,7 @@ struct DataModelAlphabeticViewTEST_Sub<T:MyModelProtocol>: View {
                     ForEach($dataFiltering){ $item in
                         
                         HStack {
-                            MenuModel_RowLabelMenu(menuItem: $item as! Binding<MenuModel>, backgroundColorView: Color("SeaTurtlePalette_1")) {
+                            MenuModel_RowLabelMenu(menuItem: $item as! Binding<MenuModel>, backgroundColorView: Color.seaTurtle_1) {
                                 
                                 Text("Modifica Piano")
                                 Button("Rimuovi") {

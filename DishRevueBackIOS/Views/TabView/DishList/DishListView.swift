@@ -106,7 +106,7 @@ struct DishListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Nuovo Prodotto",
                         font: .callout,
-                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
                            // viewModel.dishListPath.append(DishModel())
                             self.viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
@@ -158,7 +158,7 @@ struct DishListView: View {
         LargeBar_TextPlusButton(
             buttonTitle: "Nuovo Prodotto",
             font: .callout,
-            imageBack: Color("SeaTurtlePalette_2"),
+            imageBack: Color.seaTurtle_2,
             imageFore: Color.white) {
                 self.viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
             }
@@ -494,7 +494,7 @@ struct DishListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Nuovo Prodotto",
                         font: .callout,
-                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
                            // viewModel.dishListPath.append(DishModel())
                             self.viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
@@ -733,7 +733,7 @@ struct DishListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Nuovo Prodotto",
                         font: .callout,
-                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
                            // viewModel.dishListPath.append(DishModel())
                             self.viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
@@ -910,7 +910,7 @@ struct DishListView_Previews: PreviewProvider {
     
     static var previews: some View {
        
-        DishListView(tabSelection: .dishList, backgroundColorView: Color("SeaTurtlePalette_1"))
+        DishListView(tabSelection: .dishList, backgroundColorView: Color.seaTurtle_1)
             .environmentObject(testAccount)
     }
 }

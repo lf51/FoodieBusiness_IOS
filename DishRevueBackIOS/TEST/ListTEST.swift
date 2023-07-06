@@ -29,7 +29,7 @@ struct ListTEST: View {
        // CSZStackVB(title: "Ciao List", backgroundColorView: Color.red)
         ZStack {
             
-            Color("SeaTurtlePalette_1").ignoresSafeArea()
+            Color.seaTurtle_1.ignoresSafeArea()
             
             VStack(alignment:.leading) {
                 
@@ -47,7 +47,7 @@ struct ListTEST: View {
                         
                             
                         }
-                      //  .listRowBackground(Color("SeaTurtlePalette_1"))
+                      //  .listRowBackground(Color.seaTurtle_1)
                       
                         
                     

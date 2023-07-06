@@ -11,7 +11,7 @@ import SwiftUI
 /*
 struct CS_SquarePiramidView_Previews: PreviewProvider {
     static var previews: some View {
-        CS_SquarePiramidView(imageBehind: "trash.fill", imageColor: Color.red, piramidColor: Color("SeaTurtlePalette_2"),shadowColor: Color("SeaTurtlePalette_2"),borderColor: Color("SeaTurtlePalette_3"))
+        CS_SquarePiramidView(imageBehind: "trash.fill", imageColor: Color.red, piramidColor: Color.seaTurtle_2,shadowColor: Color.seaTurtle_2,borderColor: Color.seaTurtle_3)
     }
 }
 

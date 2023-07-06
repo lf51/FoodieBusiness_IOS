@@ -60,7 +60,7 @@ struct MonitorReview: View {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                .foregroundColor(Color.seaTurtle_3)
                         }
                         
                     }
@@ -108,7 +108,7 @@ struct MonitorReview: View {
 
 struct MonitorReview_Previews: PreviewProvider {
     static var previews: some View {
-        CSZStackVB(title: "Monitor", backgroundColorView: Color("SeaTurtlePalette_1")) {
+        CSZStackVB(title: "Monitor", backgroundColorView: Color.seaTurtle_1) {
             MonitorReview()
         }.environmentObject(testAccount)
     }

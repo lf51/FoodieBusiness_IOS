@@ -123,7 +123,7 @@ struct ListaIngredientiView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Nuovo Ingrediente",
                         font: .callout,
-                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
                             self.viewModel.ingredientListPath.append(DestinationPathView.ingrediente(IngredientModel()))
                         }
@@ -138,7 +138,7 @@ struct ListaIngredientiView: View {
                         thirdButtonAction()
                     }
                     
-                  /*  CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color("SeaTurtlePalette_3")) {
+                  /*  CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color.seaTurtle_3) {
                         self.openFilter.toggle()
                     } */
 
@@ -387,7 +387,7 @@ struct ListaIngredientiView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Nuovo Ingrediente",
                         font: .callout,
-                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
                             self.viewModel.ingredientListPath.append(DestinationPathView.ingrediente(IngredientModel()))
                         }
@@ -402,7 +402,7 @@ struct ListaIngredientiView: View {
                         thirdButtonAction()
                     }
                     
-                  /*  CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color("SeaTurtlePalette_3")) {
+                  /*  CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color.seaTurtle_3) {
                         self.openFilter.toggle()
                     } */
 

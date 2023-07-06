@@ -780,7 +780,7 @@ struct DishSpecific_NewDishSubView: View {
                         CSButton_image(
                             frontImage: "plus.circle",
                             imageScale: .large,
-                            frontColor:  Color("SeaTurtlePalette_3")) {
+                            frontColor:  Color.seaTurtle_3) {
                                 withAnimation {
                                    addNewRow()
                                 }
@@ -790,12 +790,12 @@ struct DishSpecific_NewDishSubView: View {
                         
                      /*   Text("\(self.formatsIn)/\(self.allDishFormats.count)")
                             .fontWeight(.semibold)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(Color.seaTurtle_3)
                     
                         CSButton_image(
                             frontImage: "tray.and.arrow.down",
                             imageScale: .large,
-                            frontColor:  Color("SeaTurtlePalette_3")) {
+                            frontColor:  Color.seaTurtle_3) {
                                 withAnimation {
                                     self.saveFormats()
                                 }
@@ -923,7 +923,7 @@ struct PriceRow:View {
                 .overlay {
                     if labelsCount == 1 {
                         ZStack {
-                            Color("SeaTurtlePalette_1").cornerRadius(5.0)
+                            Color.seaTurtle_1.cornerRadius(5.0)
                             Text("Label Non Richiesta")
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color.white)

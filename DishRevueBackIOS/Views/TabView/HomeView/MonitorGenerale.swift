@@ -212,7 +212,7 @@ struct MonitorGenerale: View {
                 
                 Text("Monitor Attività")
                     .font(.system(.headline, design: .monospaced, weight: .black))
-                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                    .foregroundColor(Color.seaTurtle_4)
                 
                    Spacer()
 

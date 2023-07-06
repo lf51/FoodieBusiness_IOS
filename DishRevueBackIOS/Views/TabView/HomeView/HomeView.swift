@@ -136,10 +136,10 @@ struct HomeView: View {
     
                    /* NavigationLink(value: DestinationPathView.accountSetup(authProcess)) {
                         Image(systemName: "person.fill")
-                            .foregroundColor(Color("SeaTurtlePalette_2"))
+                            .foregroundColor(Color.seaTurtle_2)
                     }*/
                     
-                    CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: Color("SeaTurtlePalette_2")) {
+                    CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: Color.seaTurtle_2) {
                         csSetupButton()
                     }
            
@@ -159,7 +159,7 @@ struct HomeView: View {
                           //  Image(systemName: "rectangle.portrait.and.arrow.right")
                            
                         }
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                        .foregroundColor(Color.seaTurtle_4)
                     }
                     
                     
@@ -234,10 +234,10 @@ struct HomeView: View {
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                         
                     }
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                       //  .padding(5)
                        /* .background {
-                            Color("SeaTurtlePalette_1")
+                            Color.seaTurtle_1
                                 .opacity(0.9)
                                 .blur(radius: 10.0)
                                 .cornerRadius(5.0)
@@ -256,10 +256,10 @@ struct HomeView: View {
                         //    .font(.subheadline)
                         
                  //   }
-                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                    .foregroundColor(Color.seaTurtle_3)
                    /* .padding(5)
                     .background {
-                        Color("SeaTurtlePalette_1")
+                        Color.seaTurtle_1
                             .opacity(0.9)
                             .blur(radius: 10.0)
                             .cornerRadius(5.0)
@@ -279,14 +279,14 @@ struct HomeView: View {
                     HStack(alignment:.lastTextBaseline,spacing:2) {
                         Image(systemName: "cart")
                             .imageScale(.medium)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(Color.seaTurtle_3)
                         Text("Lista della Spesa")
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                     }
-                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                    .foregroundColor(Color.seaTurtle_3)
                   /*  .padding(5)
                     .background {
-                        Color("SeaTurtlePalette_1")
+                        Color.seaTurtle_1
                             .opacity(0.9)
                             .blur(radius: 10.0)
                             .cornerRadius(5.0)
@@ -314,7 +314,7 @@ struct HomeView: View {
                             Text("Edit")
                                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                         }
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                     }
                     .opacity(propertyDestination == nil ? 0.5 : 1.0)
               
@@ -336,7 +336,7 @@ struct HomeView: View {
                 NavigationLink(value: trashDestination) {
                     Image(systemName: "trash")
                           .imageScale(.medium)
-                          .foregroundColor(Color("SeaTurtlePalette_4"))
+                          .foregroundColor(Color.seaTurtle_4)
                 }
                 .opacity(trashDestination == nil ? 0.5 : 1.0)
                 
@@ -379,11 +379,11 @@ struct HomeView: View {
         } label: {
             Text("[+] Aggiungi")
                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                .foregroundColor(Color("SeaTurtlePalette_3"))
+                .foregroundColor(Color.seaTurtle_3)
         }
        /* .padding(5)
         .background {
-            Color("SeaTurtlePalette_1")
+            Color.seaTurtle_1
                 .opacity(0.9)
                 .blur(radius: 10.0)
                 .cornerRadius(5.0)
@@ -525,7 +525,7 @@ struct HomeView: View {
     
                    /* NavigationLink(value: DestinationPathView.accountSetup(authProcess)) {
                         Image(systemName: "person.fill")
-                            .foregroundColor(Color("SeaTurtlePalette_2"))
+                            .foregroundColor(Color.seaTurtle_2)
                     }*/
                     
                     CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: .seaTurtle_2) {
@@ -632,7 +632,7 @@ struct HomeView: View {
                     .foregroundColor(.seaTurtle_3)
                       //  .padding(5)
                        /* .background {
-                            Color("SeaTurtlePalette_1")
+                            Color.seaTurtle_1
                                 .opacity(0.9)
                                 .blur(radius: 10.0)
                                 .cornerRadius(5.0)
@@ -658,7 +658,7 @@ struct HomeView: View {
                             .foregroundColor(.seaTurtle_3)
                    /* .padding(5)
                     .background {
-                        Color("SeaTurtlePalette_1")
+                        Color.seaTurtle_1
                             .opacity(0.9)
                             .blur(radius: 10.0)
                             .cornerRadius(5.0)
@@ -691,7 +691,7 @@ struct HomeView: View {
                     .foregroundColor(.seaTurtle_3)
                   /*  .padding(5)
                     .background {
-                        Color("SeaTurtlePalette_1")
+                        Color.seaTurtle_1
                             .opacity(0.9)
                             .blur(radius: 10.0)
                             .cornerRadius(5.0)
@@ -792,7 +792,7 @@ struct HomeView: View {
         }
        /* .padding(5)
         .background {
-            Color("SeaTurtlePalette_1")
+            Color.seaTurtle_1
                 .opacity(0.9)
                 .blur(radius: 10.0)
                 .cornerRadius(5.0)
@@ -1012,7 +1012,7 @@ struct NewItem_BarView:View {
                             .font(.subheadline)
                         
                     }
-                    .foregroundColor(Color("SeaTurtlePalette_2"))
+                    .foregroundColor(Color.seaTurtle_2)
                 }
                 
                 Spacer()
@@ -1020,14 +1020,14 @@ struct NewItem_BarView:View {
                 NavigationLink(value: DestinationPathView.categoriaMenu) {
                     Text("[+]Categoria Menu")
                         .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                        .foregroundColor(Color.seaTurtle_2)
                 }
             }
         }
         .padding(.vertical,5)
         .padding(.horizontal,5)
         .background {
-            Color("SeaTurtlePalette_1")
+            Color.seaTurtle_1
                 .opacity(0.1)
                 .blur(radius: 10.0)
                 .cornerRadius(5.0)
@@ -1050,7 +1050,7 @@ struct NewItem_BoxView<M:MyProStatusPack_L1>:View {
             NavigationLink(value: item.pathDestination()) {
                 Text("[+]\(item.viewModelContainerInstance().nomeOggetto)")
                     .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                    .foregroundColor(Color("SeaTurtlePalette_2"))
+                    .foregroundColor(Color.seaTurtle_2)
             }
     }
 } */
@@ -1186,7 +1186,7 @@ struct TopRatedMenu_SubView:View {
             CSLabel_conVB(
                 placeHolder: "Menu Top Rated",
                 imageNameOrEmojy: "medal",
-                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundColor: Color.seaTurtle_2,
                 backgroundOpacity: disabled ? 0.2 : 1.0) {
                     
                     NavigationLink(value: DestinationPathView.vistaRecensioniEspansa) {
@@ -1199,7 +1199,7 @@ struct TopRatedMenu_SubView:View {
                                 .imageScale(.medium)
                             
                         }
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                         .shadow(radius: 5.0)
                         .opacity(disabled ? 0.4 : 1.0)
                             
@@ -1258,7 +1258,7 @@ struct TopRated_SubView:View {
             CSLabel_conVB(
                 placeHolder: "Preparazioni Top Rated",
                 imageNameOrEmojy: "medal",
-                backgroundColor: Color("SeaTurtlePalette_2"),
+                backgroundColor: Color.seaTurtle_2,
                 backgroundOpacity: disabled ? 0.2 : 1.0) {
                     
                     NavigationLink(value: DestinationPathView.vistaRecensioniEspansa) {
@@ -1271,7 +1271,7 @@ struct TopRated_SubView:View {
                                 .imageScale(.medium)
                             
                         }
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                         .shadow(radius: 5.0)
                         .opacity(disabled ? 0.4 : 1.0)
                             

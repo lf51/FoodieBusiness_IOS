@@ -48,10 +48,10 @@ struct DishRatingListView: View {
                         Text("\(mediaRating)")
                             .fontWeight(.black)
                             .font(.largeTitle)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(Color.seaTurtle_3)
                         Text("\(ratingsCount) recensioni")
                             .font(.subheadline)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(Color.seaTurtle_3)
                     }
                     
                     
@@ -115,7 +115,7 @@ struct DishRatingListView: View {
                     
                     Text("( \(value) )")
                         .fontWeight(.black)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                     
                     Button {
                         withAnimation {
@@ -124,7 +124,7 @@ struct DishRatingListView: View {
                     } label: {
                         Image(systemName: isTheRangeActive ? "eye" : "eye.slash")
                             .imageScale(.medium)
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(Color.seaTurtle_3)
                             .opacity(isTheRangeActive ? 1.0 : 0.6)
                     }
                     
@@ -148,7 +148,7 @@ struct DishRatingListView: View {
                   
                   Text("( \(value) )")
                       .fontWeight(.black)
-                      .foregroundColor(Color("SeaTurtlePalette_3"))
+                      .foregroundColor(Color.seaTurtle_3)
                   
                   Button {
                       withAnimation {
@@ -157,7 +157,7 @@ struct DishRatingListView: View {
                   } label: {
                       Image(systemName: isTheRangeActive ? "eye" : "eye.slash")
                           .imageScale(.medium)
-                          .foregroundColor(Color("SeaTurtlePalette_3"))
+                          .foregroundColor(Color.seaTurtle_3)
                           .opacity(isTheRangeActive ? 1.0 : 0.6)
                   }
 
@@ -207,7 +207,7 @@ struct DishRatingListView_Previews: PreviewProvider {
         return newDish
     }()
 
-    static var background = Color("SeaTurtlePalette_1")
+    static var background = Color.seaTurtle_1
     
     static var previews: some View {
         

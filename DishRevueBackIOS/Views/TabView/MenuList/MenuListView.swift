@@ -123,7 +123,7 @@ struct MenuListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Nuovo Menu",
                         font: .callout,
-                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
                    
                             self.viewModel.menuListPath.append(DestinationPathView.menu(MenuModel()))
@@ -182,7 +182,7 @@ struct MenuListView: View {
             selectionColor: Color.cyan,
             imageOrEmoji: "face.dashed",
             label: "Programmazione Odierna") { value in
-                container.filter({$0.isOnAir(checkTimeRange: false)}).count
+                container.filter({$0.isOnAirValue().today}).count
             }
         
         MyFilterRow(
@@ -421,7 +421,7 @@ struct MenuListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Nuovo Menu",
                         font: .callout,
-                        imageBack: Color("SeaTurtlePalette_2"),
+                        imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
                    
                             self.viewModel.menuListPath.append(DestinationPathView.menu(MenuModel()))
@@ -543,7 +543,7 @@ struct MenuListView: View {
 
 struct MenuListView_Previews: PreviewProvider {
     static var previews: some View {
-        MenuListView(tabSelection:.menuList, backgroundColorView: Color("SeaTurtlePalette_1"))
+        MenuListView(tabSelection:.menuList, backgroundColorView: Color.seaTurtle_1)
             .environmentObject(testAccount)
     }
 }

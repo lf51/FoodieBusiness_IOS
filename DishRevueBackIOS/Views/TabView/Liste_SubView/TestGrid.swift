@@ -62,7 +62,7 @@ struct TestGrid: View {
 
 struct TestGrid_Previews: PreviewProvider {
     static var previews: some View {
-        TestGrid(backgroundColorView: Color("SeaTurtlePalette_1"))
+        TestGrid(backgroundColorView: Color.seaTurtle_1)
             .environmentObject(testAccount)
     }
 } */

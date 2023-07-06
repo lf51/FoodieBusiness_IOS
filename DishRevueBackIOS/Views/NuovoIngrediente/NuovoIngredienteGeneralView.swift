@@ -347,7 +347,7 @@ struct NuovoIngredienteGeneralView_Previews: PreviewProvider {
           //  ZStack {
                 
               //  Color.cyan.ignoresSafeArea()
-                NuovoIngredienteGeneralView(nuovoIngrediente: IngredientModel(), backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .ingredientList)
+                NuovoIngredienteGeneralView(nuovoIngrediente: IngredientModel(), backgroundColorView: Color.seaTurtle_1, destinationPath: .ingredientList)
                   // .cornerRadius(20.0)
                     //.padding(.vertical)
                     

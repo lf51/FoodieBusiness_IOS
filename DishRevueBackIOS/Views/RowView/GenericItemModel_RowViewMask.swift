@@ -100,7 +100,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
                 // l'overlay crea un zStack implicito
             /*   Circle()
                    .frame(width: 35, height: 35)
-                   .foregroundColor(Color("SeaTurtlePalette_1")) */
+                   .foregroundColor(Color.seaTurtle_1) */
                
                 Menu {
                     
@@ -112,10 +112,10 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
                 } label: {
                     Image(systemName:pushImage)
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                         .padding(5)
                         .background {
-                            Color("SeaTurtlePalette_2").opacity(0.5)
+                            Color.seaTurtle_2.opacity(0.5)
                                 .clipShape(Circle())
                                 .shadow(radius: 5.0)
                               //  .cornerRadius(5.0)
@@ -123,7 +123,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View {
                        /* .background(content: {
                             Circle()
                                 .frame(width: 35, height: 35)
-                                .foregroundColor(Color("SeaTurtlePalette_1"))
+                                .foregroundColor(Color.seaTurtle_1)
                         }) */
                 }
              //   .offset(x:3,y:0)
@@ -160,11 +160,11 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
                 } label: {
                     Image(systemName:pushImage)
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_2"))
+                        .foregroundColor(Color.seaTurtle_2)
                         .background(content: {
                             Circle()
                                 .frame(width: 35, height: 35)
-                                .foregroundColor(Color("SeaTurtlePalette_1"))
+                                .foregroundColor(Color.seaTurtle_1)
                         })
                 }
              //   .offset(x:3,y:0)
@@ -200,7 +200,7 @@ struct GenericItemModel_RowViewMask<M:MyModelProtocol,Content:View>:View {
                 } label: {
                     Image(systemName: imageToPush)
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                     
                 }.offset(x:10,y:15)
                 
@@ -283,7 +283,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
        
         ZStack {
             
-            Color("SeaTurtlePalette_1").ignoresSafeArea()
+            Color.seaTurtle_1.ignoresSafeArea()
             
             ScrollView(showsIndicators:false) {
                 

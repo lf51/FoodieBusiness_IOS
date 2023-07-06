@@ -29,7 +29,7 @@ struct DataModelPickerView_SubView: View {
                 CS_Picker(selection: $mapCategory, customLabel: "Scegli..", dataContainer: updateContainer(element: filterCategory))
                // Spacer()
                 
-                CSButton_tight(title: self.showFilter ? "Reset" : "Filtri", fontWeight: .semibold, titleColor: Color("SeaTurtlePalette_3"), fillColor: Color.clear) {
+                CSButton_tight(title: self.showFilter ? "Reset" : "Filtri", fontWeight: .semibold, titleColor: Color.seaTurtle_3, fillColor: Color.clear) {
                     withAnimation {
                         if self.showFilter {
                             self.filterCategory = .defaultValue

@@ -890,7 +890,7 @@ struct CSTextField_ExpandingBox_Previews: PreviewProvider {
         
         ZStack {
             Rectangle()
-                .fill(Color("SeaTurtlePalette_1"))
+                .fill(Color.seaTurtle_1)
                 .ignoresSafeArea()
             
             

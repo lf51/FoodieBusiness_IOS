@@ -225,7 +225,7 @@ struct ListaDellaSpesa_MainView: View {
 struct ListaDellaSpesa_MainView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            ListaDellaSpesa_MainView( inventarioIngredienti: testAccount.inventarioIngredienti(), backgroundColorView: Color("SeaTurtlePalette_1"))
+            ListaDellaSpesa_MainView( inventarioIngredienti: testAccount.inventarioIngredienti(), backgroundColorView: Color.seaTurtle_1)
                 .environmentObject(testAccount)
         }
         
@@ -307,7 +307,7 @@ struct SpesaRowIngredientView: View {
                     Image(systemName:self.showNote ? "chevron.compact.up" : "chevron.compact.down")
                         //.bold()
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                         .onTapGesture {
                             withAnimation {
                                // self.showNote.toggle()
@@ -318,7 +318,7 @@ struct SpesaRowIngredientView: View {
                         
                         Image(systemName: self.openNoteUpdate ? "pencil.slash" : "pencil.line")
                             .imageScale(.medium)
-                            .foregroundColor(self.openNoteUpdate ? Color("SeaTurtlePalette_4") : Color("SeaTurtlePalette_2"))
+                            .foregroundColor(self.openNoteUpdate ? Color.seaTurtle_4 : Color.seaTurtle_2)
                             .opacity(isStatoInArrivo ? 0.4 : 1.0)
                             .offset(x: 40)
                             .onTapGesture {
@@ -572,7 +572,7 @@ struct SpesaRowIngredientView: View {
                             Text(element.intestazione)
                                 .italic()
                                 .font(.title3)
-                                .strikethrough(isStatoInArrivo, color: Color("SeaTurtlePalette_3"))
+                                .strikethrough(isStatoInArrivo, color: Color.seaTurtle_3)
                                 .foregroundColor(Color.black)
                                 .lineLimit(1)
                                 .brightness(0.1)
@@ -583,7 +583,7 @@ struct SpesaRowIngredientView: View {
                   //  Spacer()
                     Text(moreInfo.isEmpty ? "--" : "\(moreInfo)")
                         .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                        .foregroundColor(Color.seaTurtle_4)
            
                 Spacer()
 
@@ -598,7 +598,7 @@ struct SpesaRowIngredientView: View {
                     Image(systemName:self.showNote ? "chevron.compact.up" : "chevron.compact.down")
                         //.bold()
                         .imageScale(.large)
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                         .onTapGesture {
                             withAnimation {
                                 self.showNote.toggle()
@@ -609,7 +609,7 @@ struct SpesaRowIngredientView: View {
                         
                         Image(systemName: self.openNoteUpdate ? "pencil.slash" : "pencil.line")
                             .imageScale(.medium)
-                            .foregroundColor(self.openNoteUpdate ? Color("SeaTurtlePalette_4") : Color("SeaTurtlePalette_2"))
+                            .foregroundColor(self.openNoteUpdate ? Color.seaTurtle_4 : Color.seaTurtle_2)
                             .opacity(isStatoInArrivo ? 0.4 : 1.0)
                             .offset(x: 40)
                             .onTapGesture {
@@ -706,10 +706,10 @@ struct SpesaRowIngredientView: View {
         let value:(disable:Bool,opacity:CGFloat,checkColor:Color) = {
            
             if let key = self.viewModel.inventarioScorte.lockedId[self.currentDate] {
-                if key.contains(id) {return (true,0.4,Color("SeaTurtlePalette_4")) }
-                else { return (false,1.0,Color("SeaTurtlePalette_3")) }
+                if key.contains(id) {return (true,0.4,Color.seaTurtle_4) }
+                else { return (false,1.0,Color.seaTurtle_3) }
             } else {
-                return (false,1.0,Color("SeaTurtlePalette_3"))
+                return (false,1.0,Color.seaTurtle_3)
             }
             
         }()
@@ -726,7 +726,7 @@ struct SpesaRowIngredientView: View {
                 
                 Image(systemName: "triangle")
                     .imageScale(.medium)
-                    .foregroundColor(Color("SeaTurtlePalette_2"))
+                    .foregroundColor(Color.seaTurtle_2)
             }
 
             Image(systemName: "square")

@@ -30,16 +30,16 @@ struct AccounterMainView: View {
                   let value:(string:String,color:Color) = {
                      
                       if wannaChangeDisplayName {
-                          return ("Fatto",Color("SeaTurtlePalette_3"))
+                          return ("Fatto",Color.seaTurtle_3)
                       } else {
-                          return ("Edit",Color("SeaTurtlePalette_2"))
+                          return ("Edit",Color.seaTurtle_2)
                       }
                   }()
                   
                   CSLabel_conVB(
                       placeHolder: "Dati Utente",
                       imageNameOrEmojy: "person.text.rectangle",
-                      backgroundColor:Color("SeaTurtlePalette_2")) {
+                      backgroundColor:Color.seaTurtle_2) {
                        
                           Text(value.string)
                               .bold()
@@ -54,13 +54,13 @@ struct AccounterMainView: View {
                   HStack {
                       
                       Image(systemName: "person.fill")
-                          .foregroundColor(Color("SeaTurtlePalette_2"))
+                          .foregroundColor(Color.seaTurtle_2)
 
                       if !wannaChangeDisplayName {
                           
                           Text("\(self.authProcess.currentUser?.userDisplayName ?? "not_username")")
                               .font(.system(.headline, design: .monospaced, weight: .semibold))
-                              .foregroundColor(Color("SeaTurtlePalette_4"))
+                              .foregroundColor(Color.seaTurtle_4)
 
                           
                       } else {
@@ -79,11 +79,11 @@ struct AccounterMainView: View {
                   HStack {
                       
                       Image(systemName: "key.fill")
-                          .foregroundColor(Color("SeaTurtlePalette_2"))
+                          .foregroundColor(Color.seaTurtle_2)
                      
                       Text("\(self.authProcess.currentUser?.userEmail ?? "email")")
                           .font(.system(.headline, design: .monospaced, weight: .light))
-                          .foregroundColor(Color("SeaTurtlePalette_4"))
+                          .foregroundColor(Color.seaTurtle_4)
                       
                       Image(systemName: "lock.fill")
                       
@@ -92,12 +92,12 @@ struct AccounterMainView: View {
                   HStack {
                       
                       Image(systemName: "shield.lefthalf.filled")
-                          .foregroundColor(Color("SeaTurtlePalette_2"))
+                          .foregroundColor(Color.seaTurtle_2)
 
                       Text(authProcess.currentUser?.userEmailVerified ?? false ? "Amministratore" : "not_verified")
                           .italic()
                           .font(.system(.headline, design: .monospaced, weight: .light))
-                          .foregroundColor(Color("SeaTurtlePalette_4"))
+                          .foregroundColor(Color.seaTurtle_4)
                       
                       Image(systemName: "lock.fill")
     
@@ -108,7 +108,7 @@ struct AccounterMainView: View {
                       CSLabel_1Button(
                         placeHolder: "Funzioni",
                         imageNameOrEmojy: "gear",
-                        backgroundColor: Color("SeaTurtlePalette_2"))
+                        backgroundColor: Color.seaTurtle_2)
                       
                       Group {
  
@@ -173,10 +173,10 @@ struct AccounterMainView: View {
                       CSLabel_conVB(
                         placeHolder: "Autorizzazioni:",
                         imageNameOrEmojy: "person.crop.rectangle.stack",
-                        backgroundColor:Color("SeaTurtlePalette_4")) {
+                        backgroundColor:Color.seaTurtle_4) {
                             Text("Add")
                                 .bold()
-                                .foregroundColor(Color("SeaTurtlePalette_4"))
+                                .foregroundColor(Color.seaTurtle_4)
                                 .opacity(0.4)
                               
                         }
@@ -186,25 +186,25 @@ struct AccounterMainView: View {
                           HStack {
 
                            Text("\(self.authProcess.currentUser?.userEmail ?? "email")")
-                                  .foregroundColor(Color("SeaTurtlePalette_4"))
+                                  .foregroundColor(Color.seaTurtle_4)
                                   .opacity(0.8)
                                     
                            Spacer()
                            Text(authProcess.currentUser?.userEmailVerified ?? false ? "Admin" : "not_verified")
                                    .italic()
-                                   .foregroundColor(Color("SeaTurtlePalette_4"))
+                                   .foregroundColor(Color.seaTurtle_4)
                                    .opacity(0.8)
                           
                            Image(systemName: "person.fill.badge.minus")
                            .imageScale(.large)
-                           .foregroundColor(Color("SeaTurtlePalette_4"))
+                           .foregroundColor(Color.seaTurtle_4)
                            .opacity(0.4)
                            
                            }
                           
                           Text(authProcess.currentUser?.userUID ?? "nil")
                               .font(.caption)
-                              .foregroundColor(Color("SeaTurtlePalette_4"))
+                              .foregroundColor(Color.seaTurtle_4)
                               .opacity(0.4)
                           Divider()
                       }
@@ -262,7 +262,7 @@ struct AccounterMainView_Previews: PreviewProvider {
         NavigationStack {
             
          //   NavigationLink {
-            AccounterMainView(authProcess: auth, backgroundColorView: Color("SeaTurtlePalette_1"))
+            AccounterMainView(authProcess: auth, backgroundColorView: Color.seaTurtle_1)
                    
          /*  } label: {
                 Text("Test").foregroundColor(Color.red)
@@ -301,7 +301,7 @@ struct AccounterMainView_Previews: PreviewProvider {
                    CSLabel_conVB(
                        placeHolder: "Dati Utente",
                        imageNameOrEmojy: "person.text.rectangle",
-                       backgroundColor:Color("SeaTurtlePalette_2")) {
+                       backgroundColor:Color.seaTurtle_2) {
                            Text("Edit")
                                .onTapGesture {
                                    withAnimation {
@@ -314,13 +314,13 @@ struct AccounterMainView_Previews: PreviewProvider {
                    HStack {
                        
                        Image(systemName: "person.fill")
-                           .foregroundColor(Color("SeaTurtlePalette_2"))
+                           .foregroundColor(Color.seaTurtle_2)
 
                        if !wannaChangeDisplayName {
                            
                            Text("\(authProcess.currentUser?.userDisplayName ?? "DVlillofree")")
                                .font(.system(.headline, design: .monospaced, weight: .semibold))
-                               .foregroundColor(Color("SeaTurtlePalette_4"))
+                               .foregroundColor(Color.seaTurtle_4)
                               /* .onTapGesture {
                                    withAnimation {
                                        self.wannaChangeDisplayName.toggle()
@@ -347,17 +347,17 @@ struct AccounterMainView_Previews: PreviewProvider {
                    HStack {
                        
                        Image(systemName: "shield.lefthalf.filled")
-                           .foregroundColor(Color("SeaTurtlePalette_2"))
+                           .foregroundColor(Color.seaTurtle_2)
                      /*  Text("Autorizzazione:")
                            //.italic()
                            .font(.system(.headline, design: .monospaced, weight: .semibold))
-                           .foregroundColor(Color("SeaTurtlePalette_2"))
+                           .foregroundColor(Color.seaTurtle_2)
                            //.shadow(color: Color.white, radius: 10.0, x: 0, y:  0) */
                        
                        Text(authProcess.currentUser?.userUID ?? "Amministratore")
                            .italic()
                            .font(.system(.headline, design: .monospaced, weight: .light))
-                           .foregroundColor(Color("SeaTurtlePalette_4"))
+                           .foregroundColor(Color.seaTurtle_4)
                        
                        Image(systemName: "lock.fill")
                        
@@ -367,12 +367,12 @@ struct AccounterMainView_Previews: PreviewProvider {
                    HStack {
                        
                        Image(systemName: "key.fill")
-                           .foregroundColor(Color("SeaTurtlePalette_2"))
+                           .foregroundColor(Color.seaTurtle_2)
                       
                        
                        Text("\(authProcess.currentUser?.userEmail ?? "DVlillof@gmailc.om")")
                            .font(.system(.headline, design: .monospaced, weight: .semibold))
-                           .foregroundColor(Color("SeaTurtlePalette_4"))
+                           .foregroundColor(Color.seaTurtle_4)
                        
                        Image(systemName: "lock.fill")
                        
@@ -385,7 +385,7 @@ struct AccounterMainView_Previews: PreviewProvider {
                        CSLabel_1Button(
                          placeHolder: "Setup Funzioni",
                          imageNameOrEmojy: "gear",
-                         backgroundColor: Color("SeaTurtlePalette_2"))
+                         backgroundColor: Color.seaTurtle_2)
                        
                        Group {
   
@@ -436,11 +436,11 @@ struct AccounterMainView_Previews: PreviewProvider {
                       /* HStack {
                            
                            Image(systemName: "person.crop.rectangle.stack.fill")
-                               .foregroundColor(Color("SeaTurtlePalette_2"))
+                               .foregroundColor(Color.seaTurtle_2)
                            
                            Text("Collaboratori:")
                                .font(.system(.title3, design: .monospaced, weight: .black))
-                               .foregroundColor(Color("SeaTurtlePalette_2"))
+                               .foregroundColor(Color.seaTurtle_2)
                            
                           
                        }
@@ -449,7 +449,7 @@ struct AccounterMainView_Previews: PreviewProvider {
                      CSLabel_conVB(
                          placeHolder: "Collaboratori(Da Sviluppare):",
                          imageNameOrEmojy: "person.crop.rectangle.stack.fill",
-                         backgroundColor:Color("SeaTurtlePalette_2")) {
+                         backgroundColor:Color.seaTurtle_2) {
                              Text("Add")
                                  .onTapGesture {
                                      self.newCollab = CollaboratorModel(
@@ -476,7 +476,7 @@ struct AccounterMainView_Previews: PreviewProvider {
                      /*  HStack {
                           /* Image(systemName: "person.badge.shield.checkmark.fill")
                                .imageScale(.medium)
-                               .foregroundColor(Color("SeaTurtlePalette_2")) */
+                               .foregroundColor(Color.seaTurtle_2) */
                            
                            Text("gf@hotmail.it")
                            Text("Livello 5")

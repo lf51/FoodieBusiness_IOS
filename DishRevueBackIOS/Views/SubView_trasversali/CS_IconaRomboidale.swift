@@ -20,19 +20,19 @@ struct CS_IconaRomboidale: View {
                 
                 Image(systemName: image)
                     .imageScale(.large)
-                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                    .foregroundColor(Color.seaTurtle_4)
                     .padding()
                     .background(
                         RoundedRectangle(cornerRadius: 5.0)
                         .foregroundColor(backgroundColor)
-                        .shadow(color: Color("SeaTurtlePalette_4"), radius: 1.0)
+                        .shadow(color: Color.seaTurtle_4, radius: 1.0)
                         .frame(width: 40, height: 40, alignment: .center)
                         .rotationEffect(Angle(degrees: 45.0))
                     )
             
                 Text(title)
                     .font(.system(.callout, design: .rounded))
-                    .foregroundColor(Color("SeaTurtlePalette_4"))
+                    .foregroundColor(Color.seaTurtle_4)
                 
             }
 
@@ -44,8 +44,8 @@ struct HomeIcon_Previews: PreviewProvider {
     static var previews: some View {
         
         ZStack {
-            Color("SeaTurtlePalette_1").ignoresSafeArea()
-            CS_IconaRomboidale(image: "bolt", backgroundColor: Color("SeaTurtlePalette_1"), title: "Crea Veloce")
+            Color.seaTurtle_1.ignoresSafeArea()
+            CS_IconaRomboidale(image: "bolt", backgroundColor: Color.seaTurtle_1, title: "Crea Veloce")
         }
         
     }

@@ -40,7 +40,7 @@ struct SelettoreMyModel<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View whe
 
         self.allModelList = allModelList
         _closeButton = closeButton
-        self.backgroundColorView = Color("SeaTurtlePalette_2")//backgroundColorView.opacity(0.8)
+        self.backgroundColorView = Color.seaTurtle_2//backgroundColorView.opacity(0.8)
         self.actionTitle = actionTitle
         self.action = action
         

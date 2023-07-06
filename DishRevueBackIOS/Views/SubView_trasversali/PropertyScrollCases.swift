@@ -57,7 +57,7 @@ struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
                         
                         let isSelected = self.checkSelectionOrContainer(type: type)
                         
-                        CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: isSelected ? Color.white : Color("SeaTurtlePalette_3"), fillColor: isSelected ? colorSelection : Color.clear) {
+                        CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: isSelected ? Color.white : Color.seaTurtle_3, fillColor: isSelected ? colorSelection : Color.clear) {
                             
                             HStack {
                                 
@@ -186,7 +186,7 @@ struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
                         
                         let isSelected = self.checkSelectionOrContainer(type: type)
                         
-                        CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: isSelected ? Color.white : Color("SeaTurtlePalette_3"), fillColor: isSelected ? colorSelection : Color.clear) {
+                        CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: isSelected ? Color.white : Color.seaTurtle_3, fillColor: isSelected ? colorSelection : Color.clear) {
                             
                             HStack {
                                 

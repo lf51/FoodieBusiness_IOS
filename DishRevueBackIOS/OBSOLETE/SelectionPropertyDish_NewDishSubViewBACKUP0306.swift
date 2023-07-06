@@ -63,12 +63,12 @@ struct SelectionPropertyDish_NewDishSubView: View {
                 CSLabel_conVB(placeHolder: "Categoria Menu", imageNameOrEmojy: "list.bullet.below.rectangle", backgroundColor: Color.black) {
                     
                     NavigationLink {
-                        NuovaCategoriaMenu(backgroundColorView: Color("SeaTurtlePalette_1"))
+                        NuovaCategoriaMenu(backgroundColorView: Color.seaTurtle_1)
                     } label: {
                         Image(systemName: "arrow.up.forward.app")
                             .imageScale(.medium)
                             .foregroundColor(Color.blue)
-                            //.foregroundColor(Color("SeaTurtlePalette_4"))
+                            //.foregroundColor(Color.seaTurtle_4)
                     }
                   /*  CSButton_image(frontImage: "arrow.up.forward.app", imageScale: .medium, frontColor: Color.white) {
                         self.creaNuovaTipologia.toggle()
@@ -77,7 +77,7 @@ struct SelectionPropertyDish_NewDishSubView: View {
                         
                     
                 }/*.popover(isPresented: $creaNuovaTipologia) {
-                    NuovaCategoriaMenu(backgroundColorView: Color("SeaTurtlePalette_1")).padding(.top)
+                    NuovaCategoriaMenu(backgroundColorView: Color.seaTurtle_1).padding(.top)
                 } */
                 
                 

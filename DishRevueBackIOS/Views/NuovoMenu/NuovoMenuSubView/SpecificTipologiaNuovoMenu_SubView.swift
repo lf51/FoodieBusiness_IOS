@@ -29,7 +29,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             
                 ForEach(TipologiaMenu.allCases) { tipologia in
  
-                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia.id == tipologia.id ? Color("SeaTurtlePalette_3") : Color.clear)
+                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia.id == tipologia.id ? Color.seaTurtle_3 : Color.clear)
                         .onTapGesture {
                             withAnimation(.default) {
                               

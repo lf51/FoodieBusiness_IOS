@@ -77,8 +77,8 @@ struct MonitorServizio: View {
             
         case .adesso:
             
-            let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: true)})
-            
+           //let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: true)})
+            let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAirValue().now})
           /*  vbServizioStat("Menu Online:",
                            allMenuToAnalize: allMenuToAnalize) { serviceOff in
             vbTopStackNowOnline(
@@ -102,7 +102,7 @@ struct MonitorServizio: View {
             
         case .oggi:
             
-            let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)})
+            let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAirValue().today})
             
             MonitorServizio_SubLogic(
                 viewModel: self.viewModel,
@@ -572,7 +572,7 @@ struct MonitorServizio: View {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(Color.seaTurtle_3)
                     }
                     .opacity(linkEseguibiliDisabled ? 0.6 : 1.0)
                     .disabled(linkEseguibiliDisabled)
@@ -696,7 +696,7 @@ struct MonitorServizio: View {
                     Image(systemName: "arrow.up.right")
                         .imageScale(.medium)
                         .bold()
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                 }
                 .opacity(linkEseguibiliDisabled ? 0.6 : 1.0)
                 .disabled(linkEseguibiliDisabled)
@@ -1913,7 +1913,7 @@ struct MonitorServizio: View {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(Color("SeaTurtlePalette_3"))
+                            .foregroundColor(Color.seaTurtle_3)
                     }
                     .opacity(linkEseguibiliDisabled ? 0.6 : 1.0)
                     .disabled(linkEseguibiliDisabled)
@@ -2146,7 +2146,7 @@ struct MonitorServizio: View {
                                 Image(systemName: "arrow.up.right")
                                     .imageScale(.medium)
                                     .bold()
-                                    .foregroundColor(Color("SeaTurtlePalette_3"))
+                                    .foregroundColor(Color.seaTurtle_3)
                             }
                             .opacity(linkFBDisabled ? 0.6 : 1.0)
                             .disabled(linkFBDisabled)
@@ -2168,7 +2168,7 @@ struct MonitorServizio: View {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(Color("SeaTurtlePalette_3"))
+                                .foregroundColor(Color.seaTurtle_3)
                         }
                         .opacity(linkIngredientDisabled ? 0.6 : 1.0)
                         .disabled(linkIngredientDisabled)
@@ -2232,7 +2232,7 @@ struct MonitorServizio: View {
                     Image(systemName: "arrow.up.right")
                         .imageScale(.medium)
                         .bold()
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                 }
                 .opacity(linkEseguibiliDisabled ? 0.6 : 1.0)
                 .disabled(linkEseguibiliDisabled)
@@ -2301,7 +2301,7 @@ struct MonitorModelView_Previews: PreviewProvider {
     static var previews: some View {
         
        /* NavigationStack {
-            CSZStackVB(title: "Monitor", backgroundColorView: Color("SeaTurtlePalette_1")) {
+            CSZStackVB(title: "Monitor", backgroundColorView: Color.seaTurtle_1) {
                 MonitorServizio()
             }.environmentObject(testAccount)
         } */

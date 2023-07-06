@@ -26,13 +26,13 @@ struct DishRating_RowView: View {
                     Text(rating.voto)
                         .font(.largeTitle)
                         .fontWeight(.black)
-                        .foregroundColor(Color("SeaTurtlePalette_4"))
+                        .foregroundColor(Color.seaTurtle_4)
                         .padding(.horizontal,5)
                         .background(rating.rateColor().cornerRadius(5.0))
    
                     Text(rating.titolo)
                         .font(.system(.largeTitle, design: .serif, weight: .semibold))
-                        .foregroundColor(Color("SeaTurtlePalette_3"))
+                        .foregroundColor(Color.seaTurtle_3)
                         .lineLimit(1)
                     
                 }
@@ -45,7 +45,7 @@ struct DishRating_RowView: View {
                         
                         Text(rating.commento)
                             .font(.system(.body, design: .serif, weight: .light))
-                            .foregroundColor(Color("SeaTurtlePalette_4"))
+                            .foregroundColor(Color.seaTurtle_4)
                         
                     }
                     
@@ -91,7 +91,7 @@ struct DishRating_RowView_Previews: PreviewProvider {
             
             ZStack {
                 
-                Color("SeaTurtlePalette_1").ignoresSafeArea()
+                Color.seaTurtle_1.ignoresSafeArea()
                 
                 ScrollView(showsIndicators: false) {
                     VStack {

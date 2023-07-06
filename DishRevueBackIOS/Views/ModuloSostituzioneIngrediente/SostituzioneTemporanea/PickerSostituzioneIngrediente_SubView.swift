@@ -44,12 +44,12 @@ struct PickerSostituzioneIngrediente_SubView: View {
                         Text("Pick")
                     }
                     .pickerStyle(MenuPickerStyle())
-                    .accentColor(Color("SeaTurtlePalette_3"))
+                    .accentColor(Color.seaTurtle_3)
                     .padding(.horizontal)
                     .background(
                   
                   RoundedRectangle(cornerRadius: 5.0)
-                    .fill(Color("SeaTurtlePalette_2").opacity(0.4))
+                    .fill(Color.seaTurtle_2.opacity(0.4))
                       .shadow(radius: 1.0)
               )
 

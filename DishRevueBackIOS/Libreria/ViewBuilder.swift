@@ -236,7 +236,7 @@ struct CSZStackVB_Framed<Content:View>:View {
                 
               /*  Circle()
                     .frame(width: 50, height: 50)
-                    .foregroundColor(Color("SeaTurtlePalette_1"))
+                    .foregroundColor(Color.seaTurtle_1)
                   // .offset(x: 10, y: 10)
                     .zIndex(2) */
                 

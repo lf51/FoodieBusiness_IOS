@@ -149,13 +149,13 @@ struct LinkSignInSheetViewBACKUP: View {
         
         ZStack {
           //  Color.cyan
-            Color("SeaTurtlePalette_1")
+            Color.seaTurtle_1
             Color.white.opacity(0.4)
         }
   
     }()
     
-  //  let backgroundColorView = Color("SeaTurtlePalette_1")
+  //  let backgroundColorView = Color.seaTurtle_1
     
     var body: some View {
       

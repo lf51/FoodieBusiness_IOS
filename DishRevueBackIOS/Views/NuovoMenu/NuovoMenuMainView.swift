@@ -378,7 +378,7 @@ struct NuovoMenuMainView_Previews: PreviewProvider {
     }()
     
     static var previews: some View {
-        NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .menuList ,saveDialogType: .completo)
+        NuovoMenuMainView(nuovoMenu: menuItem, backgroundColorView: Color.seaTurtle_1, destinationPath: .menuList ,saveDialogType: .completo)
     }
 }
 

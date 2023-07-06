@@ -37,38 +37,15 @@ struct EditingPropertyModel: View {
                 CSDivider()
                     
                 ScrollView(showsIndicators:false) {
-
+                    
+                    VStack(alignment:.leading) {
+                    
                     BoxDescriptionModel_Generic(
                         itemModel: $itemModel,
                         labelString: "Descrizione Attività",
                         disabledCondition: false,
                         modelField: $modelField)
                     .focused($modelField, equals: .descrizione)
-  
-                  /* VStack(alignment:.leading) {
-                        
-                       let allMenuActive = self.viewModel.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
-                       
-                       CSLabel_1Button(
-                        placeHolder: "Menu Disponibli(\(allMenuActive.count))",
-                        imageNameOrEmojy: "scroll",
-                        backgroundColor: Color.black)
-        
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                
-                                HStack {
-
-                                    ForEach(allMenuActive) { myMenu in
-                                        
-                                        GenericItemModel_RowViewMask(model: myMenu) {
-                                            vbMenuInterattivoModuloCambioStatus(myModel: myMenu, viewModel: self.viewModel)
-                                            }
-                                        
-                                       }
-         
-                                }
-                            }
-                    } */
                     
                     VStack(spacing:10) {
                         let allMenuActive = self.viewModel.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
@@ -87,91 +64,36 @@ struct EditingPropertyModel: View {
                             menuCollection: allMenuDeActive)
                     }
                     
-                  /*  VStack(alignment:.leading) {
-                         
-                        let allMenuDeActive = self.viewModel.allMyMenu.filter({
-                            $0.status.checkStatusTransition(check: .inPausa) ||
-                            $0.status.checkStatusTransition(check: .archiviato)
-                        })
-                        
-                      /*  CSLabel_1Button(
-                            placeHolder: "Menu in-Pausa & Archiviati(\(allMenuDeActive.count))",
-                         imageNameOrEmojy: "scroll",
-                         backgroundColor: Color.black) */
-                        
-                        CSLabel_conVB(
-                        placeHolder: "Menu in-Pausa & Archiviati(\(allMenuDeActive.count))",
-                        imageNameOrEmojy: "scroll",
-                        backgroundColor: Color.black) {
-                             
-                         //  let activation = self.modelSize == .normale
-                            CSButton_image(
-                                activationBool:self.modelSize == .normale ,
-                                frontImage:  "arrow.down.and.line.horizontal.and.arrow.up",
-                                backImage: "arrow.up.and.line.horizontal.and.arrow.down",
-                                imageScale: .medium,
-                                backColor: Color("SeaTurtlePalette_4"),
-                                frontColor: Color("SeaTurtlePalette_3")){
-                                    withAnimation {
-                                       // self.changeRowSizeAction()
-                                    }
-                                }
- 
-                        }
-                        
-         
-                             ScrollView(.horizontal, showsIndicators: false) {
-                                 
-                                 HStack {
-
-                                     ForEach(allMenuDeActive) { myMenu in
- 
-                                         GenericItemModel_RowViewMask(model: myMenu,rowSize: self.modelSize) {
-                                                 vbMenuInterattivoModuloCambioStatus(myModel: myMenu, viewModel: self.viewModel)
-                                                 }
-                                             
-                                         
-                                         
-                                        }
-          
-                                 }
-                             }
-                     } */
-                    
-                    
                     VStack(alignment:.leading) {
                         
-                      /*  CSLabel_1Button(
-                              placeHolder: "Servizio Struttura",
-                              imageNameOrEmojy: "info.circle",
-                              backgroundColor: Color.black ) */
-                          
                         CSLabel_conVB(
                             placeHolder: "Schedule Servizio",
                             imageNameOrEmojy: "info.circle",
                             backgroundColor: Color.black) {
-                       
+                                
                                 HStack {
                                     
-                                    let todayClose = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)}).isEmpty
-                                  
+                                    /* let todayClose = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)}).isEmpty */ // deprecata 03.07.23
+                                    let todayClose = self.viewModel.allMyMenu.filter({$0.isOnAirValue().today}).isEmpty
+                                    
                                     Text("Oggi")
-
+                                    
                                     Text(todayClose ? "Chiuso" : "Aperto")
                                         .fontWeight(.semibold)
-                                        
+                                    
                                 }
                                 .italic()
-                                .foregroundColor(Color("SeaTurtlePalette_2"))
+                                .foregroundColor(Color.seaTurtle_2)
                             }
                         
                         
                         ScheduleServizio()
                         
-                       //  estrapolaGiorniChiusura()
-              
+                        //  estrapolaGiorniChiusura()
+                        
                     }
-                                       
+                    
+                    }
                 } // Chiusa Scroll View
                 
              CSDivider()
@@ -381,7 +303,7 @@ struct EditingPropertyModel_Previews: PreviewProvider {
     static var previews: some View {
 
        NavigationStack {
-            EditingPropertyModel(itemModel: testProperty, backgroundColorView: Color("SeaTurtlePalette_1"))
+            EditingPropertyModel(itemModel: testProperty, backgroundColorView: Color.seaTurtle_1)
        }.environmentObject(testAccount)
       //  .navigationBarTitleDisplayMode(.large)
        // .navigationViewStyle(StackNavigationViewStyle())

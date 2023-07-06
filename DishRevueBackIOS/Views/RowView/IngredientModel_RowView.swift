@@ -63,7 +63,11 @@ struct IngredientModel_RowView: View {
                     
                     let(image,size) = self.item.associaImmagine()
                     
-                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_4"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_1")) {
+                    CSText_tightRectangleVisual(
+                        fontWeight: .bold,
+                        textColor: Color.seaTurtle_4,
+                        strokeColor: Color.seaTurtle_1,
+                        fillColor: Color.seaTurtle_1) {
                         HStack {
                             csVbSwitchImageText(string: image,size: size)
                             Text(self.item.origine.simpleDescription())
@@ -72,7 +76,11 @@ struct IngredientModel_RowView: View {
                     
                     let isDefaultValue = self.item.provenienza == .defaultValue
                     
-                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_1"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_4")) {
+                    CSText_tightRectangleVisual(
+                        fontWeight: .bold,
+                        textColor: Color.seaTurtle_1,
+                        strokeColor: Color.seaTurtle_1,
+                        fillColor: Color.seaTurtle_4) {
                         HStack {
                             
                             csVbSwitchImageText(string: self.item.provenienza.imageAssociated(),size:.large, slash: isDefaultValue)
@@ -119,11 +127,11 @@ struct IngredientModel_RowView: View {
             CSEtichetta(text: "\(dishCount)",
                         fontStyle: .title3,
                         fontWeight: .semibold,
-                        textColor: Color("SeaTurtlePalette_4"),
+                        textColor: Color.seaTurtle_4,
                         image: "fork.knife.circle",
-                        imageColor: Color("SeaTurtlePalette_4"),
+                        imageColor: Color.seaTurtle_4,
                         imageSize: .large,
-                        backgroundColor: Color("SeaTurtlePalette_2"),
+                        backgroundColor: Color.seaTurtle_2,
                         backgroundOpacity: isDisponibile ? 1.0 : 0.4)
             .blur(radius: isDisponibile ? 0.0 : 1.0)
             
@@ -133,11 +141,11 @@ struct IngredientModel_RowView: View {
                 CSEtichetta(text: "\(substitution)",
                             fontStyle: .title3,
                             fontWeight: .semibold,
-                            textColor: Color("SeaTurtlePalette_4"),
+                            textColor: Color.seaTurtle_4,
                             image: "arrow.left.arrow.right.circle",
-                            imageColor: Color("SeaTurtlePalette_4"),
+                            imageColor: Color.seaTurtle_4,
                             imageSize: .large,
-                            backgroundColor: Color("SeaTurtlePalette_2"),
+                            backgroundColor: Color.seaTurtle_2,
                             backgroundOpacity: 1.0)
                 
             }
@@ -210,7 +218,7 @@ struct IngredientModel_RowView: View {
     
     @ViewBuilder private func vbIntestazioneIngrediente() -> some View {
         
-        let dashedColor = Color.gray
+        let dashedColor = self.viewModel.inventarioScorte.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
         
         HStack(alignment:.lastTextBaseline) {
             
@@ -246,14 +254,14 @@ struct IngredientModel_RowView: View {
              Text("\(dishCount)")
              Image(systemName: "arrow.left.arrow.right.circle")
              .imageScale(.medium)
-             .foregroundColor(isRiservaActive ? Color("SeaTurtlePalette_3") : Color("SeaTurtlePalette_1") )
+             .foregroundColor(isRiservaActive ? Color.seaTurtle_3 : Color.seaTurtle_1 )
              .overlay {
              
              if !isRiservaActive {
              
              Image(systemName: "circle.slash")
              .imageScale(.medium)
-             .foregroundColor(Color("SeaTurtlePalette_1"))
+             .foregroundColor(Color.seaTurtle_1)
              .rotationEffect(Angle(degrees: 90.0))
              
              }
@@ -305,7 +313,7 @@ struct IngredientModel_RowView: View {
                     
                     let(image,size) = self.item.associaImmagine()
                     
-                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_4"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_1")) {
+                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color.seaTurtle_4, strokeColor: Color.seaTurtle_1, fillColor: Color.seaTurtle_1) {
                         HStack {
                             csVbSwitchImageText(string: image,size: size)
                             Text(self.item.origine.simpleDescription())
@@ -314,7 +322,7 @@ struct IngredientModel_RowView: View {
                     
                     let isDefaultValue = self.item.provenienza == .defaultValue
                     
-                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color("SeaTurtlePalette_1"), strokeColor: Color("SeaTurtlePalette_1"), fillColor: Color("SeaTurtlePalette_4")) {
+                    CSText_tightRectangleVisual(fontWeight: .bold, textColor: Color.seaTurtle_1, strokeColor: Color.seaTurtle_1, fillColor: Color.seaTurtle_4) {
                         HStack {
                             
                             csVbSwitchImageText(string: self.item.provenienza.imageAssociated(),size:.large, slash: isDefaultValue)
@@ -367,7 +375,7 @@ struct IngredientModel_RowView: View {
       return Text(string)
             .font(.caption)
             .fontWeight(.semibold)
-            .foregroundColor(Color("SeaTurtlePalette_3"))
+            .foregroundColor(Color.seaTurtle_3)
     } */
     
     @ViewBuilder private func vbDishCountIn() -> some View {
@@ -381,11 +389,11 @@ struct IngredientModel_RowView: View {
             CSEtichetta(text: "\(dishCount)",
                         fontStyle: .title3,
                         fontWeight: .semibold,
-                        textColor: Color("SeaTurtlePalette_4"),
+                        textColor: Color.seaTurtle_4,
                         image: "fork.knife.circle",
-                        imageColor: Color("SeaTurtlePalette_4"),
+                        imageColor: Color.seaTurtle_4,
                         imageSize: .large,
-                        backgroundColor: Color("SeaTurtlePalette_2"),
+                        backgroundColor: Color.seaTurtle_2,
                         backgroundOpacity: isDisponibile ? 1.0 : 0.4)
             .blur(radius: isDisponibile ? 0.0 : 1.0)
             
@@ -395,11 +403,11 @@ struct IngredientModel_RowView: View {
                 CSEtichetta(text: "\(substitution)",
                             fontStyle: .title3,
                             fontWeight: .semibold,
-                            textColor: Color("SeaTurtlePalette_4"),
+                            textColor: Color.seaTurtle_4,
                             image: "arrow.left.arrow.right.circle",
-                            imageColor: Color("SeaTurtlePalette_4"),
+                            imageColor: Color.seaTurtle_4,
                             imageSize: .large,
-                            backgroundColor: Color("SeaTurtlePalette_2"),
+                            backgroundColor: Color.seaTurtle_2,
                             backgroundOpacity: 1.0)
                 
             }
@@ -523,14 +531,14 @@ struct IngredientModel_RowView: View {
                     Text("\(dishCount)")
                     Image(systemName: "arrow.left.arrow.right.circle")
                         .imageScale(.medium)
-                        .foregroundColor(isRiservaActive ? Color("SeaTurtlePalette_3") : Color("SeaTurtlePalette_1") )
+                        .foregroundColor(isRiservaActive ? Color.seaTurtle_3 : Color.seaTurtle_1 )
                         .overlay {
                             
                             if !isRiservaActive {
                                 
                                 Image(systemName: "circle.slash")
                                     .imageScale(.medium)
-                                    .foregroundColor(Color("SeaTurtlePalette_1"))
+                                    .foregroundColor(Color.seaTurtle_1)
                                     .rotationEffect(Angle(degrees: 90.0))
                                 
                             }
@@ -614,7 +622,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
         
         ZStack {
             
-            Color("SeaTurtlePalette_1").ignoresSafeArea()
+            Color.seaTurtle_1.ignoresSafeArea()
             
             VStack(spacing:50) {
                 

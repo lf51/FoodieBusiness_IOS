@@ -368,7 +368,7 @@ struct NewDishMainView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            NewDishMainView(newDish: dishSample, percorso: .preparazioneFood, backgroundColorView: Color("SeaTurtlePalette_1"), destinationPath: .dishList,saveDialogType: .completo)
+            NewDishMainView(newDish: dishSample, percorso: .preparazioneFood, backgroundColorView: Color.seaTurtle_1, destinationPath: .dishList,saveDialogType: .completo)
             
         }.environmentObject(viewModel)
     }
@@ -442,7 +442,7 @@ struct NewDishMainView: View {
                                     itemModel: $newDish,
                                     generalErrorCheck: generalErrorCheck,
                                     minLenght: 3,
-                                    coloreContainer: Color("SeaTurtlePalette_2"))
+                                    coloreContainer: Color.seaTurtle_2)
  
                             BoxDescriptionModel_Generic(itemModel: $newDish, labelString: "Descrizione (Optional)", disabledCondition: wannaAddIngredient)
                             

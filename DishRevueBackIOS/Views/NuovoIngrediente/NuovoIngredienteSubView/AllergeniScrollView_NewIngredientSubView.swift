@@ -31,7 +31,7 @@ struct AllergeniScrollView_NewIngredientSubView: View {
                     CSButton_image(
                         frontImage: "plus.circle",
                         imageScale: .large,
-                        frontColor: Color("SeaTurtlePalette_3")) {
+                        frontColor: Color.seaTurtle_3) {
                             withAnimation(.default) {
                                 self.wannaAddAllergene.toggle()
                             }

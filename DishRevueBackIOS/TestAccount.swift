@@ -197,7 +197,7 @@ var ingredienteFinito:IngredientModel = {
     // menu.tipologia = .allaCarta
      menu.isAvaibleWhen = .intervalloAperto
      menu.dataInizio = Date.now
-     menu.oraInizio = Date.now.advanced(by: 3600)
+     menu.oraInizio = Date.now.advanced(by: 60)//Date.now.advanced(by: 3600)
     
    //  menu.dishInDEPRECATO = [dishItem3]
      menu.rifDishIn = [dishItem3_Test.id,prodottoFinito.id]
