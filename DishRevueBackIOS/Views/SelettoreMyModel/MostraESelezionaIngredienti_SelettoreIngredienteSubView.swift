@@ -7,7 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
-
+/*
 struct MostraESelezionaModel<M2:MyProStarterPack_L1>: View {
   
     // M2 passa da MyModelProtocol a MyProStarterPackL1
@@ -65,7 +65,7 @@ struct MostraESelezionaModel<M2:MyProStarterPack_L1>: View {
         }
 
     }
-
+*/
 
 /*
 struct MostraESelezionaIngredienti_Previews: PreviewProvider {

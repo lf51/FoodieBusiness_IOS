@@ -11,67 +11,6 @@ import MyPackView_L0
 
 // Usare il .buttomStyle per semplificare lo stile dei bottoni
 
-
-/*
-struct CSButton_tight: View { // Spostato MyPackView
-    
-  let title: String
-  let fontWeight: Font.Weight
-  let titleColor: Color
-  let fillColor: Color
-  let imageName: String? = nil
-  let action: () -> Void
-
-  var body: some View {
-      
-    Button(action: action) {
-    
-        HStack {
-            
-            if let imageName = imageName {
-                
-                Image(systemName: imageName)
-                    .imageScale(.medium)
-                    .foregroundColor(titleColor)
-            }
-      
-            Text(title)
-                .fontWeight(fontWeight)
-                .font(.system(.body, design: .rounded))
-                ._tightPadding()
-                .foregroundColor(titleColor)
-                .background(fillColor)
-                .cornerRadius(5.0) // 5.0
-            
-                }
-            }
-        }
-    } */
-
-
-
-
-/*struct CSButton_tight: View {
-    
-  let title: String
-  let fontWeight: Font.Weight
-  let titleColor: Color
-  let fillColor: Color
-  let action: () -> Void
-
-  var body: some View {
-    Button(action: action) {
-    
-        Text(title)
-            .fontWeight(fontWeight)
-            ._tightPadding()
-            .foregroundColor(titleColor)
-            .background(fillColor)
-            .cornerRadius(5.0) // 5.0
-            }
-        }
-    } */
-
 /// Di default il cornerRadius se specificato va su tutti gli angoli. Il padding è di default verticale. il PaddingValue modifica il valore del paddingBottom. Lo spazio in orizzontale è erditato dagli spacer.
 struct CSButton_large: View {
     

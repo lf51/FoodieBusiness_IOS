@@ -11,7 +11,6 @@ import Firebase
 import FirebaseFirestoreSwift
 import MyFoodiePackage
 
-
 extension CloudDataStore:Codable {
     
    /* public enum CodingKeys:String,CodingKey {
@@ -97,8 +96,6 @@ extension CloudDataStore:Codable {
     }
     
 } // close extension
-
-
 
 struct CloudDataCompiler {
     

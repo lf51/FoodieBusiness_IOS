@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+/*
 struct SwitchViewModelContainer: View {
         
         let viewModelList: [ModelList]
@@ -88,7 +88,7 @@ struct ContainerRowLabel_Plain:View {
                 }
             }   */
     }
-}
+} */
 
 /*
 struct SwitchListeIngredienti_Previews: PreviewProvider {

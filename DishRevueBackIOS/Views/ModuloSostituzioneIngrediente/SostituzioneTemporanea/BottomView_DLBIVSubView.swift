@@ -62,7 +62,6 @@ struct BottomView_DLBIVSubView: View {
    
 }
 
-
 struct BottomView_ConVB<Content:View>: View {
     
     @EnvironmentObject var viewModel: AccounterVM

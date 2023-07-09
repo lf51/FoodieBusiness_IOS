@@ -338,7 +338,6 @@ struct NuovoIngredienteGeneralView: View {
     
 }
 
-
 struct NuovoIngredienteGeneralView_Previews: PreviewProvider {
     static var previews: some View {
         

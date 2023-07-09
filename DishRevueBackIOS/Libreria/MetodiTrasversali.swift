@@ -24,17 +24,6 @@ func csValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
    }
 } // Deprecata in futuro // da sostituire // deprecata 22.09
 
-
-
-
-
-/// Ritorna un array di case unici (ripuliti dai valori Associati, dai duplicati, e ordinati) di ENUM conformi al MyEnumProtocolMapConform [lf51]
-/// - Parameter array: array description
-/// - Returns: description
-
-
-
-
 /// ritorna un array di Emojy
 func csReturnEmojyCollection() -> [String] {
 
@@ -57,45 +46,11 @@ func csReturnEmojyCollection() -> [String] {
         
     }
 
-/*
-/// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse sempre in Stringa
-func csIterateDishRating(item: DishModel) -> (media:String,count:String) {
-    
-    var sommaVoti: Double = 0.0
-    var mediaRating: String = "0.00"
-    
-    let ratingCount: Int = item.rating.count
-    let stringCount = String(ratingCount)
-    
-    guard !item.rating.isEmpty else {
-        
-        return (mediaRating,stringCount)
-    }
-    
-    for rating in item.rating {
-        
-        let voto = Double(rating.voto)
-        sommaVoti += voto ?? 0.00
-    }
-    
-    let mediaAritmetica = sommaVoti / Double(ratingCount)
-    mediaRating = String(format:"%.1f", mediaAritmetica)
-    return (mediaRating,stringCount)
-    
-} */ // Deprecata 13.09 per trasformazione in riferimenti. Spostata nel dishModel
-
- func csSwitchSingolarePlurale(checkNumber:Int,wordSingolare:String,wordPlurale:String) -> String {
+func csSwitchSingolarePlurale(checkNumber:Int,wordSingolare:String,wordPlurale:String) -> String {
     
     if checkNumber == 1 { return wordSingolare}
     else { return wordPlurale}
 }
-
-/*
-/// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
-func csResetModel<M:MyModelStatusConformity>(modelAttivo:inout M,modelArchiviato:M) {
-  
-    modelAttivo = modelArchiviato
-} */ // Deprecata
 
 /// Analizza le proprietà di un ingrediente e tira fuori una stringa. Trasfersale al modello nuovo Ingrediente e al modello Ibrido
 func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> String {
@@ -137,25 +92,6 @@ func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> 
     
     return ("\(stringaAllergeni)\(stringaCongeSurge)\(metodoProduzione)")
 }
-
-/// ritorna il valore della media Pesata di un array di Recensioni
-/*func csCalcoloMediaRecensioni(elementi:[DishRatingModel]) -> Double {
-    
-    let votiEPesi = elementi.map({$0.votoEPeso()})
-       
-        var sommaVoti: Double = 0.0
-        var sommaPesi: Double = 0.0
-        
-        for (v,p) in votiEPesi {
-            
-            let votoPesato = v * p
-            sommaVoti += votoPesato
-            sommaPesi += p
-        }
-        
-        return sommaVoti / sommaPesi
-
-}*/ // 13.01.23 Ricollocata in MyFoodiePackage
 
 /// somma dei valori di una collection di valori Double
 func csSommaValoriCollection(collectionValue:[Double]) -> Double {

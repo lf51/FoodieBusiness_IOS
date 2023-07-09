@@ -365,9 +365,6 @@ struct NuovoMenuMainView: View {
    */
 }
 
-
-
-
 struct NuovoMenuMainView_Previews: PreviewProvider {
     
     static var menuItem:MenuModel = {

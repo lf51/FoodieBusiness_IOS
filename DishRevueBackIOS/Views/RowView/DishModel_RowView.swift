@@ -1042,7 +1042,6 @@ struct DishModel_RowView: View {
     
 } // chiusa Struct
 
-
 struct DishModel_RowView_Previews: PreviewProvider {
     
     static var viewModel:AccounterVM = AccounterVM()

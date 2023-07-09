@@ -129,7 +129,6 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
         
     }
 
-
 /*struct SpecificTipologiaNuovoMenu_SubView_Previews: PreviewProvider {
     static var previews: some View {
         SpecificTipologiaNuovoMenu_SubView()

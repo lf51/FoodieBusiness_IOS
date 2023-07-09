@@ -10,24 +10,6 @@ import MyPackView_L0
 import MyFoodiePackage
 import MyFilterPackage
 
-/*extension VistaEspansaGenerica where TrailingView == EmptyView {
-    
-    init(
-        container: [String],
-        containerPath: KeyPath<FoodieViewModel, [M]>,
-        label: String,
-        backgroundColorView: Color) {
-       
-            self.init(
-                container: container,
-                containerPath: containerPath,
-                label: label,
-                backgroundColorView: backgroundColorView) {
-                    EmptyView()
-                }
-    }
-} */
-
 
 struct VistaEspansaGenerica<M:MyProToolPack_L1>: View where M.VM == AccounterVM, M.RS == RowSize {
     

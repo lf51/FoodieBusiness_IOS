@@ -227,8 +227,6 @@ struct NuovaCategoriaMenu_Previews: PreviewProvider {
     }
 }
 
-
-
 struct CorpoNuovaCategoria:View {
     
     @Binding var nuovaCategoria: CategoriaMenu

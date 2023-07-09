@@ -433,7 +433,6 @@ struct VistaRecensioniEspansa_SingleDish: View {
     }
 }
 
-
 struct VistaRecensioniEspansa_SingleDish_Previews: PreviewProvider {
     static var previews: some View {
         

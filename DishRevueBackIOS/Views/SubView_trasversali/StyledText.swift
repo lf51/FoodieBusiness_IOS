@@ -90,34 +90,6 @@ struct CSText_bigRectangle: View {
     }
 }
 
-/*struct CSText_RectangleStaticFace: View {
-    
-    let testo: String
-    let fontWeight: Font.Weight
-    let textColor: Color
-    let strokeColor: Color
-    let fillColor: Color
-    
-    var body: some View {
-
-            Text(testo)
-                .fontWeight(fontWeight) // .bold
-                .lineLimit(1)
-                .foregroundColor(textColor) // .white
-                ._tightPadding()
-                .background (
-                    RoundedRectangle(cornerRadius: 5.0)
-                        .strokeBorder(strokeColor) // .blue
-                        .background(
-                            RoundedRectangle(cornerRadius: 5.0)
-                                        .fill(fillColor.opacity(0.8))
-                                   
-                                )
-                        .shadow(radius: 3.0)
-                        )
-    }
-} */
-
 struct CSText_RotatingRectangleStaticFace: View {
     
     let testo: String

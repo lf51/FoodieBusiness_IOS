@@ -403,6 +403,7 @@ struct NewDishIbridView: View {
     
    
 }
+
 struct NewDishIbridView_Previews: PreviewProvider {
 
     @State static var ingredientSample =  IngredientModel(

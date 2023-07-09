@@ -121,9 +121,6 @@ struct CorpoProgrammazioneMenu_SubView: View {
 
 }
 
-
-
-
 /*struct CSLabel_1Picker_Previews: PreviewProvider {
     static var previews: some View {
         CSLabel_1Picker(placeHolder: "Programmazione", imageName: "circle", backgroundColor: Color.black, pickerColor: Color.green, availabilityMenu: .constant(AvailabilityMenu.defaultValue))

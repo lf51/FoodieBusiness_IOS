@@ -8,7 +8,7 @@
 import SwiftUI
 import MyFoodiePackage
 
-
+/*
 struct SwitchItemModelContainer<M1:MyProStarterPack_L1,M2:MyProStarterPack_L1>: View {
     
     // M1 passa da MyModelProtocol a MyProStarterPackL0
@@ -185,7 +185,7 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
     
     }
 
-}
+} */
 
 
 /*

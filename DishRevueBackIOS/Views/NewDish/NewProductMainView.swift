@@ -97,7 +97,6 @@ struct NewProductMainView: View {
     
 }
 
-
 struct NewProductMainView_Previews: PreviewProvider {
 
     @State static var ingredientSample =  IngredientModel(
@@ -183,5 +182,3 @@ struct NewProductMainView_Previews: PreviewProvider {
         }.environmentObject(viewModel)
     }
 }
-
-

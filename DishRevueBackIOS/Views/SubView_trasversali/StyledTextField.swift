@@ -71,16 +71,6 @@ struct CSTextField_2: View {
   }
 }
 
-
-
-
-
-/* struct CustomTextFieldView_Previews: PreviewProvider {
-    static var previews: some View {
-        CSTextField(text: <#Binding<String>#>, placeholder: <#String#>, symbolName: <#String#>)
-    }
-} */
-
 /// Small Custom textfiel con una immagine e una Action
 struct CSTextField_3: View {
     
@@ -178,137 +168,6 @@ struct CSTextField_3b<VisualContent:View>: View {
             .animation(Animation.easeInOut, value: self.textFieldItem)
     }
 }
-
-/*
-/// Small Custom textfield con una immagine e TightPadding
-struct CSTextField_4: View {
-    
-    @Binding var textFieldItem: String
-    let placeHolder: String
-    let image: String
-    let showDelete: Bool
-    let keyboardType: UIKeyboardType?
-    
-    init(textFieldItem:Binding<String>,placeHolder:String,image:String,showDelete:Bool = false, keyboardType: UIKeyboardType? = .default) {
-        
-        _textFieldItem = textFieldItem
-        self.placeHolder = placeHolder
-        self.image = image
-        self.showDelete = showDelete
-        self.keyboardType = keyboardType
-     
-    }
-
-    var body: some View {
-        
-        HStack {
-            
-            Image(systemName: image)
-                .imageScale(.medium)
-                .foregroundColor(self.textFieldItem != "" ? Color.green : Color.black)
-                .padding(.leading)
-            
-          TextField (self.placeHolder, text: $textFieldItem)
-          
-                .keyboardType(keyboardType!)
-                ._tightPadding()
-                .accentColor(Color.white)
-            
-            if showDelete {
-                
-                Button {
-                    self.textFieldItem = ""
-                } label: {
-                    Image(systemName: "x.circle")
-                        .imageScale(.medium)
-                        .foregroundColor(Color.white)
-                        .opacity(self.textFieldItem == "" ? 0.3 : 1.0)
-                        .padding(.trailing)
-                }.disabled(self.textFieldItem == "")
-            }
-            
-        }.background(
-            
-            RoundedRectangle(cornerRadius: 5.0)
-                .strokeBorder(Color.blue)
-                .background(
-                    RoundedRectangle(cornerRadius: 5.0)
-                        .fill(Color.gray.opacity(self.textFieldItem != "" ? 0.6 : 0.2))
-                    
-                )
-                .shadow(radius: 3.0)
-        )
-        .animation(Animation.easeInOut, value: self.textFieldItem)
-    }
-}*/ // Spostato in MyPackView.20.12.22
-
-/*
-/// Identico al TextField4. Crea l'image attraverso un viewBuilder (Utile per il checkVisuale)
-struct CSTextField_4b<InlineContent:View>: View {
-    
-    @Binding var textFieldItem: String
-    let placeHolder: String
-    let showDelete: Bool
-    let keyboardType: UIKeyboardType
-    let strokeColor:Color
-    
-    @ViewBuilder var inlineContent: InlineContent
-    
-    init(
-        textFieldItem:Binding<String>,
-        placeHolder:String,
-        showDelete:Bool = false,
-        keyboardType: UIKeyboardType = .default,
-        strokeColor:Color = .blue,
-        inlineContent:() -> InlineContent) {
-        
-        _textFieldItem = textFieldItem
-        self.placeHolder = placeHolder
-        self.showDelete = showDelete
-        self.keyboardType = keyboardType
-        self.strokeColor = strokeColor
-        self.inlineContent = inlineContent()
-    }
-    
-    var body: some View {
-        
-        HStack {
-            
-            inlineContent
-               // .padding(.leading)
-            
-            TextField (self.placeHolder, text: $textFieldItem)
-                .keyboardType(keyboardType)
-                ._tightPadding()
-                .accentColor(Color.white)
-            
-            if showDelete {
-                
-                Button {
-                    self.textFieldItem = ""
-                } label: {
-                    Image(systemName: "x.circle")
-                        .imageScale(.medium)
-                        .foregroundColor(Color.white)
-                        .opacity(self.textFieldItem == "" ? 0.3 : 1.0)
-                        .padding(.trailing)
-                }.disabled(self.textFieldItem == "")
-            }
-            
-        }.background(
-            
-            RoundedRectangle(cornerRadius: 5.0)
-                .strokeBorder(strokeColor)
-                .background(
-                    RoundedRectangle(cornerRadius: 5.0)
-                        .fill(Color.gray.opacity(self.textFieldItem != "" ? 0.6 : 0.2))
-                    
-                )
-                .shadow(radius: 3.0)
-        )
-        .animation(Animation.easeInOut, value: self.textFieldItem)
-    }
-}*/ // 23.01.23 Ricollocato in MyPackView
 
 /// Small Custom textfield con una immagine, il TightPadding, e una action on Submit
 struct CSTextField_5: View {
@@ -430,3 +289,9 @@ struct CSTextField_6: View {
 } // Chiusa Struct
 
 
+
+/* struct CustomTextFieldView_Previews: PreviewProvider {
+    static var previews: some View {
+        CSTextField(text: <#Binding<String>#>, placeholder: <#String#>, symbolName: <#String#>)
+    }
+} */
