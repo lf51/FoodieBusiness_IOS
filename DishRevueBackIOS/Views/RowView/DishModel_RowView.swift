@@ -539,8 +539,7 @@ struct DishModel_RowView: View {
                 
                return self.viewModel.inventarioScorte.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
                 
-            } else if self.item.percorsoProdotto == .composizione { return DishModel.ExecutionState.eseguibileConRiserva.coloreAssociato() }
-            
+            }
             else {
                 return self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
             }

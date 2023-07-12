@@ -48,7 +48,6 @@ extension DishModel:
         
         return documentData
     } */
-
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
         return \.allMyDish
@@ -78,7 +77,7 @@ extension DishModel:
         let disabilitaReview = self.rifReviews.isEmpty
         let priceCount = self.pricingPiatto.count
         let currencyCode = Locale.current.currency?.identifier ?? "EUR"
-        let (ingredientsCount,ingredientsCantBeExpanded) = countIngredients()
+        let (ingredientsCount,ingredientsCanBeExpanded) = countIngredients()
         
         let isDelGiorno = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delGiorno)
         let isDelloChef = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delloChef)
@@ -154,11 +153,22 @@ extension DishModel:
               }
           }.disabled(allMenuMinusDS == 0)
           
-          if ingredientsCantBeExpanded {
+          if ingredientsCanBeExpanded {
+              
+              Button {
+                  
+                  viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
+            
+              } label: {
+                  HStack{
+                      Text("Espandi Ingredienti (\(ingredientsCount))")
+                      Image(systemName:"leaf")
+                  }
+              }
+          } else if self.percorsoProdotto == .prodottoFinito {
              
               let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
               let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
-              
               
               Menu {
                   
@@ -206,19 +216,10 @@ extension DishModel:
                   }
               }
               
-          } else {
+          }/* else {
               
-              Button {
-                  
-                  viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
-            
-              } label: {
-                  HStack{
-                      Text("Espandi Ingredienti (\(ingredientsCount))")
-                      Image(systemName:"leaf")
-                  }
-              }
-          }
+             Text("NOWAY")
+          }*/
         }
       .disabled(generalDisabled)
     }
@@ -588,6 +589,10 @@ extension DishModel:
         // 1. Eseguibile
         // 1a. Tutti gli ing sono disponibili, principali, secondari o eventuali sostituti
         // Passaggio di status sempre consentito. 16.03.23 Nessuna modifica da apportare
+        
+        //Update 09.07.23
+        guard self.percorsoProdotto != .composizione else { return .eseguibileConRiserva }
+        //end update
         let allIng = self.allMinusArchiviati(viewModel: viewModel)
         let ingCount = allIng.count
         let ingActive = self.allIngredientsAttivi(viewModel: viewModel)
@@ -671,12 +676,11 @@ extension DishModel:
             
             switch self {
                 
-            case .eseguibile: return .green
-            case .eseguibileConRiserva: return .yellow
-            case .nonEseguibile: return .red
+            case .eseguibile: return .seaTurtle_3
+            case .eseguibileConRiserva: return .orange
+            case .nonEseguibile: return .red.opacity(0.8)
             
             }
-
             
         }
         
@@ -819,7 +823,6 @@ extension DishModel: Object_FPC {
         // innest0 16.03.23 escluse dal countChange
         var status_singleChoice:StatusTransition?
         var executionState:ExecutionState?
-        
         // 16.03 end
         var percorsoPRP:[DishModel.PercorsoProdotto]? { willSet {
             if let value = newValue,
@@ -943,5 +946,31 @@ extension DishModel: Object_FPC {
     }
     
  
+    
+}
+
+extension DishModel: MyProProgressBar {
+    
+    public var countProgress: Double {
+
+        var count:Double = 0.0
+            
+            if self.intestazione != "" { count += 0.16 }
+            if self.descrizione != "" { count += 0.1 }
+            if self.categoriaMenu != CategoriaMenu.defaultValue.id &&
+                self.categoriaMenu != "" { count += 0.16 }
+    
+            if self.ingredientiPrincipali != [] &&
+               !self.ingredientiPrincipali.contains(self.id) {
+            count += 0.225 }
+        
+            if self.ingredientiSecondari != [] { count += 0.075 }
+        
+            if self.mostraDieteCompatibili { count += 0.1 }
+            if !self.arePriceEmpty() { count += 0.18 }
+            
+            return count
+        
+    }
     
 }

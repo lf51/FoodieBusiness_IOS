@@ -47,7 +47,11 @@ struct NuovoMenuMainView: View {
             
             VStack {
                 
-                CSDivider()
+              //  CSDivider()
+                ProgressView(value: self.nuovoMenu.countProgress) {
+                    Text("Completo al: \(self.nuovoMenu.countProgress,format: .percent)")
+                        .font(.caption)
+                }
                 
                 ScrollView(showsIndicators:false) {
                         

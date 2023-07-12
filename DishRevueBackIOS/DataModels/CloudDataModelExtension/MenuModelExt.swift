@@ -444,3 +444,20 @@ extension MenuModel:Object_FPC {
     }
     
 }
+
+extension MenuModel:MyProProgressBar {
+    
+    public var countProgress: Double {
+        
+        var count:Double = 0.0
+        
+        if self.intestazione != "" { count += 0.2}
+        if self.descrizione != "" { count += 0.1 }
+        if self.tipologia != .defaultValue { count += 0.2 }
+        if self.isAvaibleWhen != .defaultValue { count += 0.2 }
+        if self.rifDishIn != [] { count += 0.3 }
+        
+        return count
+        
+    }
+}

@@ -30,8 +30,10 @@ struct ListaIngredientiView: View {
         
         NavigationStack(path:$viewModel.ingredientListPath) {
             
-            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
-            
+            let container_0 = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
+            // update 10.07.23
+            let container = container_0.filter({$0.status != .bozza()})
+            // update per escludere gli ing di sistema. Prima questo avveniva nella propertyCompare degli Ing, ma abbiamo dovuto modificare perchè ci impediva di filtrare i prodotti finiti nella vista espansa PF del monitor.
             let generalDisable:Bool = {
                 
                 let condition_1 = container.isEmpty

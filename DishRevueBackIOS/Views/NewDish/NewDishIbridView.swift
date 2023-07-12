@@ -14,7 +14,8 @@ struct NewDishIbridView: View {
     
     @ObservedObject var viewModel:AccounterVM
     
-    @State private var newDish: DishModel
+   // @State private var newDish: DishModel
+    @Binding var newDish:DishModel
     @State private var ingredienteDiSistema:IngredientModel
     let backgroundColorView: Color
     
@@ -28,44 +29,57 @@ struct NewDishIbridView: View {
     @State private var wannaAddAllergeni: Bool = false
     @State private var uploadDishFormat:Bool = false
 
+    @Binding var disabilitaPicker:Bool
+    
+    private var countProgress:Double {
+        self.newDish.countProgress +
+        self.ingredienteDiSistema.countProgress
+    }
+    
     init(
-        newDish: DishModel,
-        percorso:DishModel.PercorsoProdotto,
+        newDish:Binding<DishModel>,
+        disabilitaPicker:Binding<Bool>,
+     //   percorso:DishModel.PercorsoProdotto,// deprecatp
         backgroundColorView: Color,
         destinationPath:DestinationPath,
         observedVM:AccounterVM) {
 
         self.viewModel = observedVM
-        
-        let localDish: DishModel
-        let systemIngredient: IngredientModel
+            
+        let wrappedNewDish = newDish.wrappedValue
+            
+       // let localDish: DishModel
+        let systemIngredient: IngredientModel = observedVM.modelFromId(id: wrappedNewDish.id, modelPath: \.allMyIngredients) ?? IngredientModel(id: wrappedNewDish.id)
  
-        if newDish.status == .bozza() {
+     /*   if wrappedNewDish.status == .bozza() {
             
             let newD: DishModel = {
-                var new = newDish
-                new.ingredientiPrincipali = [newDish.id]
+                var new = wrappedNewDish
+                new.ingredientiPrincipali = [wrappedNewDish.id]
                // new.pricingPiatto = [DishFormat(type: .mandatory)]
-                new.percorsoProdotto = percorso
+                //new.percorsoProdotto = percorso
                 return new
             }()
             localDish = newD
-            systemIngredient = IngredientModel(id:newDish.id)
+            systemIngredient = IngredientModel(id:wrappedNewDish.id)
     
         } else {
-            localDish = newDish
-            systemIngredient = observedVM.modelFromId(id: newDish.id, modelPath: \.allMyIngredients) ?? IngredientModel(id: newDish.id)
+            localDish = wrappedNewDish
+            systemIngredient = observedVM.modelFromId(id: wrappedNewDish.id, modelPath: \.allMyIngredients) ?? IngredientModel(id: wrappedNewDish.id)
             
-        }
+        } */
         
-        _newDish = State(wrappedValue: localDish)
+        //_newDish = State(wrappedValue: localDish)
+        _newDish = newDish
         _ingredienteDiSistema = State(wrappedValue: systemIngredient)
             
-        _piattoArchiviato = State(wrappedValue: localDish)
+        _piattoArchiviato = State(wrappedValue: wrappedNewDish)
         _ingredienteDSArchiviato = State(wrappedValue: systemIngredient)
        
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
+            
+        _disabilitaPicker = disabilitaPicker
 
     }
     
@@ -75,7 +89,15 @@ struct NewDishIbridView: View {
     var body: some View {
        
             VStack {
+                
+                if self.disabilitaPicker {
+                    ProgressView(value: self.countProgress) {
+                        Text("Completo al: \(self.countProgress,format: .percent)")
+                            .font(.caption)
+                    }
 
+                }
+                                
                 ScrollView(showsIndicators:false) { // La View Mobile
 
                     VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
@@ -133,21 +155,6 @@ struct NewDishIbridView: View {
                                 openUploadFormat: $uploadDishFormat,
                                 generalErrorCheck: generalErrorCheck)
                             
-                         //   Spacer()
-                            
-                          /* BottomViewGeneric_NewModelSubView(
-                                itemModel: $newDish,
-                                generalErrorCheck: $generalErrorCheck,
-                                itemModelArchiviato: piattoArchiviato,
-                                destinationPath: destinationPath) {
-                                    self.infoPiatto()
-                                } resetAction: {
-                                    self.resetAction()
-                                } checkPreliminare: {
-                                    self.checkPreliminare()
-                                } salvaECreaPostAction: {
-                                    self.salvaECreaPostAction()
-                                } */
                             BottomViewGenericPlus_NewModelSubView(
                                 itemModel: $newDish,
                                 itemModelPlus: $ingredienteDiSistema,
@@ -204,7 +211,12 @@ struct NewDishIbridView: View {
                 
            }
             .csHpadding()
-            //.padding(.horizontal,10)
+            .onChange(of: self.newDish, perform: { newValue in
+                self.disabilitaPicker = checkDisabilityPicker()
+            })
+            .onChange(of: self.ingredienteDiSistema, perform: { newValue in
+                self.disabilitaPicker = checkDisabilityPicker()
+            })
             .popover(isPresented: $wannaAddAllergeni,attachmentAnchor: .point(.top),arrowEdge: .bottom) {
                 VistaAllergeni_Selectable(
                     allergeneIn: $ingredienteDiSistema.allergeni,
@@ -216,6 +228,13 @@ struct NewDishIbridView: View {
     }
     
     // Method
+    
+    private func checkDisabilityPicker() -> Bool {
+        
+        self.newDish != piattoArchiviato ||
+        self.ingredienteDiSistema != ingredienteDSArchiviato
+        
+    }
     
     private func resetAction() { // Ok
         
@@ -234,26 +253,14 @@ struct NewDishIbridView: View {
         
         self.generalErrorCheck = false
         self.areAllergeniOk = false
-        
-       /* (self.newDish,self.ingredienteDiSistema) = {
-            
-            var newD = DishModel()
-            newD.pricingPiatto = [DishFormat(type: .mandatory)]
-            
-            let newIng = IngredientModel(id:newD.id)
-            newD.ingredientiPrincipali = [newD.id]
-            
-            return (newD,newIng)
-            
-        }() */ //25.06 Deprecato
-        
+                
         let new:(dish:DishModel,ing:IngredientModel) = {
             
             let currentDishType = self.newDish.percorsoProdotto
             
             var dish = DishModel()
             dish.percorsoProdotto = currentDishType
-            dish.ingredientiPrincipali = [dish.id]
+           // dish.ingredientiPrincipali = [dish.id]
             
             let newIng = IngredientModel(id: dish.id)
             
@@ -270,8 +277,9 @@ struct NewDishIbridView: View {
     private func infoPiatto() -> Text { // Ok
         
        let string = csInfoIngrediente(areAllergeniOk: self.areAllergeniOk, nuovoIngrediente: self.ingredienteDiSistema)
+       let stringProduct = self.newDish.percorsoProdotto.simpleDescription()
         
-        return Text("\(self.newDish.intestazione) (Prodotto Finito)\n\(string)")
+        return Text("\(self.newDish.intestazione) (\(stringProduct))\n\(string)")
     }
     
    /* private func infoPiatto() -> Text {
@@ -296,7 +304,9 @@ struct NewDishIbridView: View {
             self.modelField = .intestazione
             return false }
         
-        guard checkDescrizione() else { return false }
+        guard checkDescrizione() else {
+            self.modelField = .descrizione
+            return false }
         
         guard checkCategoria() else { return false }
       
@@ -329,8 +339,8 @@ struct NewDishIbridView: View {
     
     private func allConditionSoddisfatte() -> Bool {
         
-        self.ingredienteDiSistema.produzione != .defaultValue &&
-        self.ingredienteDiSistema.provenienza != .defaultValue &&
+      //  self.ingredienteDiSistema.produzione != .defaultValue &&
+      //  self.ingredienteDiSistema.provenienza != .defaultValue &&
         self.newDish.optionalComplete()
         
     }
@@ -376,7 +386,7 @@ struct NewDishIbridView: View {
     
         let intestazione = self.newDish.intestazione
         
-        self.ingredienteDiSistema.intestazione = "(PF)\(intestazione)"
+        self.ingredienteDiSistema.intestazione = "(DS)\(intestazione)"
         return intestazione != ""
         // i controlli sono già eseguiti all'interno sulla proprietà temporanea, se il valore è stato passato al newDish vuol dire che è buono. Per cui basta controllare se l'intestazione è diversa dal valore vuoto
 
@@ -403,7 +413,7 @@ struct NewDishIbridView: View {
     
    
 }
-
+/*
 struct NewDishIbridView_Previews: PreviewProvider {
 
     @State static var ingredientSample =  IngredientModel(
@@ -487,4 +497,4 @@ struct NewDishIbridView_Previews: PreviewProvider {
             
         }.environmentObject(viewModel)
     }
-}
+} */

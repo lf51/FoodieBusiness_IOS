@@ -20,7 +20,7 @@ struct VistaEspansaGenerica<M:MyProToolPack_L1>: View where M.VM == AccounterVM,
     let containerPath:KeyPath<FoodieViewModel,[M]>
     let label: String
     let backgroundColorView:Color
-
+    
     var body: some View {
         
         CSZStackVB(title: label, backgroundColorView: backgroundColorView) {
@@ -53,7 +53,7 @@ struct VistaEspansaGenerica<M:MyProToolPack_L1>: View where M.VM == AccounterVM,
         
         }
     }
-}
+} // 09.07.23 probabile deprecazione. Controllare uso della VistaEspansaGenerica_PlusVB
 
 
 /*

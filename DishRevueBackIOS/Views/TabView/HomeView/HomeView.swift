@@ -192,8 +192,14 @@ struct HomeView: View {
     
     private func compilaArrayPreparazioni() -> [DishModel] {
         
-        let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
-        
+        //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
+        //update 09.07.23
+        let tutteLePreparazioni = self.viewModel.allMyDish.filter({
+            !$0.rifReviews.isEmpty &&
+            $0.percorsoProdotto != .prodottoFinito
+            
+        })
+        // end update
         let topRated = tutteLePreparazioni.sorted(by: {
             $0.topRatedValue(readOnlyVM: self.viewModel) > $1.topRatedValue(readOnlyVM: self.viewModel)
         })

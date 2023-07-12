@@ -14,7 +14,7 @@ struct MenuListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    let tabSelection: DestinationPath // non usata
+    let tabSelection: DestinationPath 
     let backgroundColorView: Color
     
     @State private var openFilter: Bool = false
@@ -45,7 +45,7 @@ struct MenuListView: View {
                 backgroundColorView: backgroundColorView,
                 title: "I Miei Menu",
                 filterCore: $filterCore,
-                placeHolderBarraRicerca: "Cerca per Nome e/o Piatto",
+                placeHolderBarraRicerca: "Cerca per Menu e/o Piatto",
                 buttonColor: .seaTurtle_3,
                 elementContainer: container,
                 mapTree: mapTree,

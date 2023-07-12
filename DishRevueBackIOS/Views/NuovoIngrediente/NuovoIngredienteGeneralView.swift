@@ -54,7 +54,11 @@ struct NuovoIngredienteGeneralView: View {
             
             VStack {
                     
-                    CSDivider()
+                   // CSDivider()
+                ProgressView(value: self.nuovoIngrediente.countProgress) {
+                    Text("Completo al: \(self.nuovoIngrediente.countProgress,format: .percent)")
+                        .font(.caption)
+                }//.csHpadding()
                     
                     ScrollView(showsIndicators: false) {
                       

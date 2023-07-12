@@ -45,5 +45,14 @@ extension CoreFilter {
         
         return inventario.contains(statoScorte)
     }
+    
+    func compareStatoScorte(modelId:String,singleFilter:Inventario.TransitoScorte?, readOnlyVM:AccounterVM) -> Bool {
+        
+        guard let inventario = singleFilter else { return true }
+        
+        let statoScorte = readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: modelId)
+        
+        return statoScorte == inventario
+    } // create 09.07.23
 
 }

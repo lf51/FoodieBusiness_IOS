@@ -10,40 +10,31 @@ import MyFoodiePackage
 
 struct SwitchProductType: View {
 
-    @Binding var type:DishModel.PercorsoProdotto
+   //@Binding var type:DishModel.PercorsoProdotto
+    @Binding var percorsoItem: DishModel.PercorsoProdotto
     let nascondiTesto:Bool
     
     var body: some View {
         
         VStack(alignment:.leading) {
             
-            Picker(selection: $type) {
-              
-               /* Text("Food")
-                    .tag(DishModel.PercorsoProdotto.preparazioneFood)
-                Text("Beverage")
-                    .tag(DishModel.PercorsoProdotto.preparazioneBeverage)
-                Text("Pronto")
-                    .tag(DishModel.PercorsoProdotto.prodottoFinito)
-                Text("Composto")
-                    .tag(DishModel.PercorsoProdotto.composizione) */
+            Picker(selection: $percorsoItem) {
                 
                 ForEach(DishModel.PercorsoProdotto.allCases,id:\.self) { percorso in
                     
                         Text(percorso.pickerDescription())
                         .tag(percorso)
-                    
+                        
                 }
                 
                 
             } label: {
                 Text("")
             }
-         
             .pickerStyle(.segmented)
 
             if !nascondiTesto {
-                Text(type.extendedDescription())
+                Text(percorsoItem.extendedDescription())
                     .italic()
                     .font(.caption)
                     .foregroundColor(.black)
@@ -53,6 +44,8 @@ struct SwitchProductType: View {
         
 
     }
+
+    
 }
 
 /*

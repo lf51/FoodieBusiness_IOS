@@ -61,6 +61,8 @@ public enum DestinationPathView: Hashable {
     case elencoModelDeleted
     
     case monitorServizio_vistaEspansaDish(containerRif:[String],label:String)
+    case monitorServizio_vistaEspansaIng(containerRif:[String],label:String)
+    case monitorServizio_vistaEspansaPF(containerRif:[String],label:String)
     
     @ViewBuilder func destinationAdress(backgroundColorView: Color, destinationPath: DestinationPath, readOnlyViewModel:AccounterVM) -> some View {
         
@@ -138,8 +140,13 @@ public enum DestinationPathView: Hashable {
                 containerPath: \.allMyMenu,
                 label:label,
                 backgroundColorView: backgroundColorView)
+            
         case .listaGenericaIng(let container,let label):
-            VistaEspansaGenerica(container:container,containerPath: \.allMyIngredients, label:label, backgroundColorView: backgroundColorView)
+            VistaEspansaGenerica(
+                container:container,
+                containerPath: \.allMyIngredients,
+                label:label,
+                backgroundColorView: backgroundColorView)
             
         case .listaGenericaDish(let container,let label):
             VistaEspansaGenerica(
@@ -168,8 +175,20 @@ public enum DestinationPathView: Hashable {
         case .elencoModelDeleted:
             ElencoModelDeleted(backgroundColorView: backgroundColorView)
             
-        case .monitorServizio_vistaEspansaDish(let container,let label):
+        case .monitorServizio_vistaEspansaDish(let container, let label):
             VistaEspansaDish_MonitorServizio(
+                container: container,
+                label: label,
+                backgroundColorView: backgroundColorView)
+            
+        case .monitorServizio_vistaEspansaIng(let container, let label):
+            VistaEspansaIng_MonitorServizio(
+                container: container,
+                label: label,
+                backgroundColorView: backgroundColorView)
+            
+        case .monitorServizio_vistaEspansaPF(let container, let label):
+            VistaEspansaPF_MonitorServizio(
                 container: container,
                 label: label,
                 backgroundColorView: backgroundColorView)

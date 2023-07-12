@@ -175,7 +175,8 @@ struct VistaIngredientiEspansa_Selectable: View {
         
                 VStack(alignment:.leading) {
                     
-                    let container = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
+                    let container_0 = self.viewModel.ricercaFiltra(containerPath: \.allMyIngredients, coreFilter: filterCore)
+                    let container = container_0.filter({$0.status != .bozza()})
                     
                     HStack {
                         

@@ -190,7 +190,7 @@ struct MonitorServizio: View {
             .onTapGesture {
                 self.viewModel.alertItem = AlertModel(
                     title: "Stato Servizio",
-                    message: "Stato Ingredienti: \(statoIngredienti.rawValue)\nStato dei Preparati: \(statoPreparati.rawValue)")
+                    message: "Stato Ingredienti: \(statoIngredienti.rawValue)\nStato Prodotti terzi: \(statoPreparati.rawValue)")
             }
 
         }
@@ -357,320 +357,6 @@ struct MonitorServizio: View {
     }
     
     /*
-    @ViewBuilder private func vbServizioStat(
-        _ menuOnlabel:String,
-        allMenuToAnalize:[MenuModel],
-        topStack: (_ serviceOff:Bool) -> some View) -> some View {
-
-        let(menuOn,foodB,readyProduct,ingredientsNeeded,preparazioniOk) = self.viewModel.monitorServizio(menuModelToAnalize: allMenuToAnalize)
-        
-        let prepOkPercent = Double(preparazioniOk.count) / Double(foodB.count)
-       // let stringPrepOkPercent = String(format:"%.1f%%",(prepOkPercent * 100))
-        
-        let linkMenuDisabled = menuOn.isEmpty
-        
-        let serviceOff:Bool = {
-            
-            menuOn.isEmpty || (foodB.isEmpty && readyProduct.isEmpty)
-            
-        }()
-      //  let warningStatus:Bool = { !linkMenuDisabled && serviceOff }()
-        
-        let allRifDishOn:[String] = {
-            
-            return foodB + readyProduct
-
-        }()
-        
-        VStack(alignment:.leading) {
-            
-            topStack(serviceOff)
-
-            HStack {
-                
-                HStack {
-                    
-                    Text(menuOnlabel)
-                        .fontWeight(.black)
-                    Text("\(menuOn.count)")
-                        .fontWeight(.bold)
-                    // Nota 20.02.23 Anteprima Menu
-                    
-                    NavigationLink(value:
-                                    
-                                    DestinationPathView.listaMenuPerAnteprima(
-                                        rifMenuOn: menuOn,
-                                        rifDishOn: allRifDishOn,
-                                        label:"I Menu di Oggi")) {
-                                            
-                                            Image(systemName: "arrow.up.right")
-                                                .imageScale(.medium)
-                                                .bold()
-                                                .foregroundColor(.seaTurtle_3)
-                                        }
-                                        .opacity(linkMenuDisabled ? 0.6 : 1.0)
-                                        .disabled(linkMenuDisabled)
-                    
-                }
-                .foregroundColor(.seaTurtle_3)
-                
-                Spacer()
-                
-            if serviceOff {
-               
-                HStack {
-                    Text("Stato:")
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color.black)
-                    
-                    if linkMenuDisabled {
-                        
-                        Text("off")
-                            .italic()
-                          //  .font(.caption)
-                        
-                    } else {
-                        
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .imageScale(.medium)
-                            .foregroundColor(Color.yellow)
-                            .onTapGesture {
-                                self.viewModel.alertItem = AlertModel(
-                                    title: "Servizio Off",
-                                    message: "Risultano Menu attivi ma vuoti.")
-                            }
-                        
-                    }
-                    
-                }
-               
-                
-            } else {
-                
-                let statoIng = checkStatoServizio(rifIngOrPrep: ingredientsNeeded)
-                let statoPrep = checkStatoServizio(rifIngOrPrep: readyProduct)
-                
-                vbStatoServizio(
-                    statoIngredienti: statoIng,
-                    statoPreparati: statoPrep)
-                
-            }
-                
-            } // chiusa HStack
-            .padding(.bottom,2)
-
-            HStack {
-
-                    VStack {
-                        Text("Food&Bev")
-                          // .minimumScaleFactor(0.75)
-                     
-                        HStack {
-                            
-                            let linkFBDisabled = foodB.isEmpty
-                            
-                            Text("\(foodB.count)")
-                                .fontWeight(.bold)
-                            
-                            NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: foodB,_label: "In Menu Oggi (F&B)")) {
-                                Image(systemName: "arrow.up.right")
-                                    .imageScale(.medium)
-                                    .bold()
-                                    .foregroundColor(.seaTurtle_3)
-                            }
-                            .opacity(linkFBDisabled ? 0.6 : 1.0)
-                            .disabled(linkFBDisabled)
-                        }
-                        
-                    }
-                   Spacer()
-                
-                VStack {
-                    Text("Ingredienti")
-                   
-                    HStack {
-                        
-                        let linkIngredientDisabled = ingredientsNeeded.isEmpty
-                        
-                        Text("\(ingredientsNeeded.count)")
-                            .fontWeight(.bold)
-                        NavigationLink(value: DestinationPathView.listaGenericaIng(_containerRif: ingredientsNeeded,_label: "In Menu Oggi (Ing)")) {
-                            Image(systemName: "arrow.up.right")
-                                .imageScale(.medium)
-                                .bold()
-                                .foregroundColor(.seaTurtle_3)
-                        }
-                        .opacity(linkIngredientDisabled ? 0.6 : 1.0)
-                        .disabled(linkIngredientDisabled)
-                    }
-                }
-                
-                Spacer()
-                
-                VStack {
-                    
-                    Text("PF-diTerzi")
-                  
-                    HStack {
-                        
-                        let linkPFDisabled = readyProduct.isEmpty
-                        
-                        Text("\(readyProduct.count)")
-                            .fontWeight(.bold)
-                        NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: readyProduct,_label: "In Menu Oggi (PF)")) {
-                            Image(systemName: "arrow.up.right")
-                                .imageScale(.medium)
-                                .bold()
-                                .foregroundColor(.seaTurtle_3)
-                        }
-                        .opacity(linkPFDisabled ? 0.6 : 1.0)
-                        .disabled(linkPFDisabled)
-                        
-                    }
-                    
-                }
-
-            }
-            .foregroundColor(Color.black)
-            .lineLimit(1)
-            .padding(.bottom,1)
-
-            Divider()
-            
-            if !serviceOff {
-                
-                vbInfoPreparazioni(
-                    prepOkPercent: prepOkPercent,
-                    preparazioniOk: preparazioniOk)
-                
-                Divider()
-                
-                monitorIngredientiEPreparati(rifIngOrPrep: ingredientsNeeded, label: "Scorte Ingredienti:")
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
-                    .padding(.bottom,1)
-                
-               
-                
-               /* HStack {
-                    
-                    let arePrepAllEseguibili = prepOkPercent == 1.0
-                    let linkEseguibiliDisabled = preparazioniOk.isEmpty
-            
-                    Text("F&B Eseguibili:")
-                        .fontWeight(.semibold)
-                        .lineLimit(1)
-                    
-                    Text("\(preparazioniOk.count) (\(stringPrepOkPercent))")
-                        .fontWeight(.bold)
-                   
-                    Image(systemName: arePrepAllEseguibili ? "arrowtriangle.up.fill" : "arrowtriangle.down" )
-                            .imageScale(.medium)
-                            .foregroundColor(arePrepAllEseguibili ? .green : .red)
-                    
-                    NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: preparazioniOk,_label: "F&B Eseguibili Oggi")) {
-                        Image(systemName: "arrow.up.right")
-                            .imageScale(.medium)
-                            .bold()
-                            .foregroundColor(Color.seaTurtle_3)
-                    }
-                    .opacity(linkEseguibiliDisabled ? 0.6 : 1.0)
-                    .disabled(linkEseguibiliDisabled)
-                    
-                    Spacer()
-                }
-                .foregroundColor(.seaTurtle_3)*/
-                Divider()
-                
-                monitorIngredientiEPreparati(rifIngOrPrep: readyProduct, label: "Scorte Prodotti Finiti:")
-                    .padding(.bottom,5)
-            }
-          
-            
-        }
-        .font(.system(.subheadline, design: .monospaced))
-    } */ // Deprecata 28.06.23
-    
-   /* @ViewBuilder private func vInfobMenu(
-        menuOnlabel:String,
-        menuOn:[String],
-        allRifDishOn:[String]) -> some View {
-        
-            let linkMenuDisabled:Bool = menuOn.isEmpty
-            
-        HStack {
-            
-            HStack {
-                
-                Text(menuOnlabel)
-                    .fontWeight(.black)
-                Text("\(menuOn.count)")
-                    .fontWeight(.bold)
-                // Nota 20.02.23 Anteprima Menu
-                
-                NavigationLink(value:
-                                
-                                DestinationPathView.listaMenuPerAnteprima(
-                                    rifMenuOn: menuOn,
-                                    rifDishOn: allRifDishOn,
-                                    label:"I Menu di Oggi")) {
-                                        
-                                        Image(systemName: "arrow.up.right")
-                                            .imageScale(.medium)
-                                            .bold()
-                                            .foregroundColor(.seaTurtle_3)
-                                    }
-                                    .opacity(linkMenuDisabled ? 0.6 : 1.0)
-                                    .disabled(linkMenuDisabled)
-                
-            }
-            .foregroundColor(.seaTurtle_3)
-            
-            Spacer()
-            
-        if serviceOff {
-           
-            HStack {
-                Text("Stato:")
-                    .fontWeight(.semibold)
-                    .foregroundColor(Color.black)
-                
-                if linkMenuDisabled {
-                    
-                    Text("off")
-                        .italic()
-                      //  .font(.caption)
-                    
-                } else {
-                    
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .imageScale(.medium)
-                        .foregroundColor(Color.yellow)
-                        .onTapGesture {
-                            self.viewModel.alertItem = AlertModel(
-                                title: "Servizio Off",
-                                message: "Risultano Menu attivi ma vuoti.")
-                        }
-                    
-                }
-                
-            }
-           
-            
-        } else {
-            
-            let statoIng = checkStatoServizio(rifIngOrPrep: ingredientsNeeded)
-            let statoPrep = checkStatoServizio(rifIngOrPrep: readyProduct)
-            
-            vbStatoServizio(
-                statoIngredienti: statoIng,
-                statoPreparati: statoPrep)
-            
-        }
-            
-        }
-    } */
-    
     @ViewBuilder private func vbInfoPreparazioni(prepOkPercent:Double,preparazioniOk:[String]) -> some View {
         
         let stringPrepOkPercent = String(format:"%.1f%%",(prepOkPercent * 100))
@@ -715,11 +401,11 @@ struct MonitorServizio: View {
         }
         .foregroundColor(.seaTurtle_3)
         
-    }
+    } */
+    /*
+    @ViewBuilder private func vbInfoPF() -> some View { } //Deprecata 26.06.23 */
     
-    @ViewBuilder private func vbInfoPF() -> some View { } //Deprecata 26.06.23
-    
-    @ViewBuilder private func vbInfoIngredienti() -> some View { } //Deprecata 26.06.23
+    /*@ViewBuilder private func vbInfoIngredienti() -> some View { } //Deprecata 26.06.23 */
  
 }
 
@@ -953,13 +639,20 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                     Text("\(self.ingredientsNeeded.count)")
                         .fontWeight(.bold)
                     
-                    NavigationLink(value: DestinationPathView.listaGenericaIng(_containerRif: self.ingredientsNeeded,_label: "Ingredienti Necessari")) {
+                    NavigationLink(value: DestinationPathView.monitorServizio_vistaEspansaIng(containerRif: self.ingredientsNeeded, label: "Ingredienti Necessari")) {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
                             .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
                     }
                     .disabled(!showMore)
+                   /* NavigationLink(value: DestinationPathView.listaGenericaIng(_containerRif: self.ingredientsNeeded,_label: "Ingredienti Necessari")) {
+                        Image(systemName: "arrow.up.right")
+                            .imageScale(.medium)
+                            .bold()
+                            .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
+                    }
+                    .disabled(!showMore) */ // deprecata 10.07.23
                 }
                 .foregroundColor(.seaTurtle_2)
                 
@@ -1070,13 +763,23 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                     Text("\(readyProduct.count)")
                         .bold()
                         
-                    NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: readyProduct,_label: "In Menu Oggi (PF)")) {
+                    // update 09.07.23
+                  /* NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: readyProduct,_label: "In Menu Oggi (PF)")) {
+                        Image(systemName: "arrow.up.right")
+                            .imageScale(.medium)
+                            .bold()
+                            .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
+                    }
+                    .disabled(!showMore) */
+                    NavigationLink(
+                        value: DestinationPathView.monitorServizio_vistaEspansaPF(containerRif: readyProduct, label: "Prodotti di Terzi")) {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
                             .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
                     }
                     .disabled(!showMore)
+                    // end update
                     
                 }
                 .foregroundColor(.seaTurtle_2)
@@ -1619,220 +1322,5 @@ struct MonitorModelView_Previews: PreviewProvider {
     }
 }
 
-public struct VistaEspansaDish_MonitorServizio:View {
-    
-    @EnvironmentObject var viewModel:AccounterVM
-    
-    let container:[String]
-    let label: String
-    let backgroundColorView:Color
 
-  // @State private var statusState:StatusTransition?
-    @State private var coreFilter:CoreFilter<DishModel> = CoreFilter()
-    
-    public init(
-        container: [String],
-        label: String,
-        backgroundColorView: Color) {
-      
-        self.container = container
-        self.label = label
-        self.backgroundColorView = backgroundColorView
-      
-    }
-    
-   public var body: some View {
-        
-        CSZStackVB(
-            title: label,
-            backgroundColorView: backgroundColorView) {
-            
-                let containerModel:[DishModel] = {
-                    
-                    let model = self.viewModel.modelCollectionFromCollectionID(
-                        collectionId: container,
-                        modelPath: \.allMyDish)
-                    let filteredModel = self.viewModel.filtraSpecificCollection(
-                        ofModel: model,
-                        coreFilter: coreFilter)
-                    return filteredModel
-                }()
-               
-                VStack {
-                
-               // vbMonitorFiltri(container: containerModel)
-                    vbFiltriVisivi()
-                    
-                ScrollView(showsIndicators: false) {
-                    
-                    ForEach(containerModel) { mod in
-                        
-                     //  if let model = self.viewModel.modelFromId(id: rif, modelPath: \.allMyDish) {
-                            
-                            GenericItemModel_RowViewMask(model: mod) {
-                                
-                                mod.vbMenuInterattivoModuloCustom(viewModel: self.viewModel, navigationPath: \.homeViewPath)
-                                
-                                vbMenuInterattivoModuloCambioStatus(myModel: mod, viewModel: self.viewModel)
-                                
-                            }
-                            
-                      // }
-                      
-                    }
-                    
-                }
-                CSDivider()
-            } // end vStack Madre
-        
-        }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    let disable = self.coreFilter.countChange == 0
-                    Button("Reset") {
-                        withAnimation {
-                            self.coreFilter = CoreFilter()
-                        }
-                    }
-                    .foregroundColor(disable ? .seaTurtle_1 :.seaTurtle_3)
-                    .disabled(disable)
-                }
-            }
-    }
-    
-    // Method
-    
-    
-    @ViewBuilder private func vbFiltriVisivi() -> some View {
-
-        let executiveInfo:(descr:String,color:Color) = {
-            
-            if let exe = coreFilter.filterProperties.executionState {
-                
-                return (exe.filterDescription(),exe.coloreAssociato())
-            }
-            else { return ("",.gray)}
-        }()
-        
-        let statusInfo:(descr:String,color:Color) = {
-            
-            if let exe = coreFilter.filterProperties.status_singleChoice {
-                
-                return (exe.simpleDescription(),exe.colorAssociated())
-            }
-            else { return ("",.gray)}
-        }()
-        
-        let stringInfo: String = {
-            
-            let emptyString = executiveInfo.descr == "" && statusInfo.descr == ""
-            
-            if emptyString { return "Nessun filtro applicato" }
-            else if executiveInfo.descr == "" { return statusInfo.descr }
-            else if statusInfo.descr == "" { return executiveInfo.descr }
-            else { return executiveInfo.descr + " & " + statusInfo.descr }
-            
-        }()
-        
-        HStack(alignment:.center) {
-            
-           // Spacer()
-            
-            csCircleDashed(
-                internalColor: statusInfo.color,
-                dashedColor: executiveInfo.color)
-            
-            Text(stringInfo)
-                .italic()
-                .fontWeight(.semibold)
-                .font(.subheadline)
-                .foregroundColor(.black)
-                .opacity(0.8)
-                .multilineTextAlignment(.leading)
-            
-            Spacer()
-            
-            Button {
-                withAnimation {
-                    excutiveFilterAction()
-                }
-            } label: {
-                Image(systemName: "circle.dashed")
-                    .font(.custom("Large", size: 40))
-                    .foregroundColor(executiveInfo.color)
-                    .shadow(radius: 5.0)
-            }
-            
-            Button {
-                withAnimation {
-                    statusFilterAction()
-                }
-            } label: {
-                Image(systemName: "circle.fill")
-                    .font(.custom("Large", size: 40))
-                    .foregroundColor(statusInfo.color)
-                    .shadow(radius: 5.0)
-            }
-
-        
-        }
-        .csHpadding()
-    }
-    
-    private func excutiveFilterAction() {
-        
-        let allCases = DishModel.ExecutionState.allCases
-        let casesCount = allCases.count
-        let currentState = coreFilter.filterProperties.executionState
-        
-        guard currentState != nil else {
-            coreFilter.filterProperties.executionState = allCases[0]
-            return
-        }
-        let nextIndex = ((allCases.firstIndex(of: currentState!) ?? 0) + 1) % casesCount
-    
-        coreFilter.filterProperties.executionState = allCases[nextIndex]
-    }
-    private func statusFilterAction() {
-        
-        let allCases = StatusTransition.allCases
-        let casesCount = allCases.count
-        let currentState = coreFilter.filterProperties.status_singleChoice
-        
-        guard currentState != nil else {
-            coreFilter.filterProperties.status_singleChoice = allCases[0]
-            return
-        }
-        
-        let nextIndex = ((allCases.firstIndex(of: currentState!) ?? 0) + 1) % casesCount
-    
-        coreFilter.filterProperties.status_singleChoice = allCases[nextIndex]
-        
-    }
-    
-  /*  @ViewBuilder private func vbMonitorFiltri(container:[DishModel]) -> some View {
-        
-        VStack(spacing:5) {
-            
-            MyFilterRow(
-                allCases: [StatusTransition.disponibile,StatusTransition.inPausa],
-                filterProperty:$coreFilter.filterProperties.status_singleChoice,
-                selectionColor: .seaTurtle_4) { value in
-                    container.filter({$0.status.checkStatusTransition(check: value)}).count
-                }
-            
-            MyFilterRow(
-                allCases: DishModel.ExecutionState.allCases,
-                filterProperty: $coreFilter.filterProperties.executionState,
-                selectionColor: .seaTurtle_2) { value in
-                    container.filter({$0.checkStatusExecution(viewModel: self.viewModel) == value}).count
-                }
-         
-        }
-        .csHpadding()
-        
-    }*/ // Deprecato 28.06.23
-    
-    
-}
 

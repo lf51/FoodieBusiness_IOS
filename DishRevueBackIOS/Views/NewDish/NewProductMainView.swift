@@ -10,45 +10,57 @@ import MyPackView_L0
 import MyFoodiePackage
 
 struct NewProductMainView: View {
-    
+    // 10.07.23 bug id esistente. vedi Nota
     @EnvironmentObject var viewModel: AccounterVM
-    
-    let newDish: DishModel
+   // let newDish: DishModel
+    @State private var newDish: DishModel
     let backgroundColorView: Color
     let destinationPath: DestinationPath
     let saveDialogType:SaveDialogType
     
-    @State private var type:DishModel.PercorsoProdotto
+    @State private var disabilitaPicker:Bool = false
+   // @State private var type:DishModel.PercorsoProdotto // deprecato
     
     init(newDish: DishModel, backgroundColorView: Color, destinationPath: DestinationPath,saveDialogType:SaveDialogType) {
         
+       // self.newDish = newDish
         self.newDish = newDish
+        
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
         self.saveDialogType = saveDialogType
       
-       /* if newDish.ingredientiPrincipali.contains(newDish.id) {
-            self.type = .prodottoFinito
-        } else { self.type = .preparazioneFood } */ // Modifica 25.10
-        self.type = newDish.percorsoProdotto
+        //self.type = newDish.percorsoProdotto
     }
     
     var body: some View {
         
-        let genere:String = self.type == .composizione ? "Nuova" : "Nuovo"
+        let percorsoNew = self.newDish.percorsoProdotto
+        let genere:String = percorsoNew == .composizione ? "Nuova" : "Nuovo"
         
-        CSZStackVB(title: self.newDish.intestazione == "" ? "\(genere) \(self.type.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: self.newDish.intestazione == "" ? "\(genere) \(percorsoNew.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
             
             VStack {
                 let disabilita = self.disabilitaSwitch()
                 //  CSDivider()
-                SwitchProductType(type:$type,nascondiTesto: disabilita)
+                SwitchProductType(
+                    percorsoItem:$newDish.percorsoProdotto,
+                    nascondiTesto: disabilita)
                     .csHpadding()
-                  //  .padding(.horizontal)
                     .disabled(disabilita)
                 
+               /* if disabilita {
+                    ProgressView(value: self.newDish.countProgress) {
+                        Text("Completo al: \(self.newDish.countProgress,format: .percent)")
+                            .font(.caption)
+                    }
+                    .csHpadding()
+                    
+                } */
+                  
                 vbPercorsoProdotto()
-                    .id(type) // serve ad aggiornare, altrimenti nel passaggio da food a beverage il valore non cambia in quanto usa la stessa View
+                    .id(percorsoNew)
+                    //.id(type) // serve ad aggiornare, altrimenti nel passaggio da food a beverage il valore non cambia in quanto usa la stessa View
 
                 
             }
@@ -60,28 +72,23 @@ struct NewProductMainView: View {
     // Method
     
     @ViewBuilder private func vbPercorsoProdotto() -> some View {
-        
-        switch self.type {
+                
+        switch self.newDish.percorsoProdotto {
             
-        case .prodottoFinito:
+        case .prodottoFinito,.composizione:
+            
              NewDishIbridView(
-                newDish: newDish,
-                percorso: type,
+                newDish: $newDish,
+                disabilitaPicker: $disabilitaPicker,
                 backgroundColorView: backgroundColorView,
                 destinationPath: destinationPath,
                 observedVM: viewModel)
             
-        case .composizione:
-            NewDishIbridView(
-                newDish: newDish,
-                percorso: type,
-                backgroundColorView: backgroundColorView,
-                destinationPath: destinationPath,
-                observedVM: viewModel)
         default:
+            
             NewDishMainView(
-                newDish: newDish,
-                percorso: type,
+                newDish: $newDish,
+                disabilitaPicker: $disabilitaPicker,
                 backgroundColorView: backgroundColorView,
                 destinationPath: destinationPath,
                 saveDialogType: saveDialogType)
@@ -91,7 +98,8 @@ struct NewProductMainView: View {
     
     private func disabilitaSwitch() -> Bool {
         
-        self.newDish.status != .bozza()
+        self.newDish.status != .bozza() ||
+        self.disabilitaPicker
         
     }
     

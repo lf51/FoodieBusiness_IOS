@@ -227,13 +227,12 @@ struct MenuModel_RowView: View {
         //
         let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,fontWeight:Font.Weight) = {
         
-            let isCountDownStarted:Bool = self.timerViewModel.countDown != nil
             
             let openClose:String = {
                 
                 if let countDown = self.timerViewModel.countDown {
                     
-                    let count = "\(self.timerViewModel.codiceOnOff.openCloseDescription())\(countDown)min"
+                    let count = "\(self.timerViewModel.codiceOnOff.openCloseDescription())\(countDown) min"
                     return count
                         }
                 else {
@@ -322,31 +321,19 @@ struct MenuModel_RowView: View {
         }
         .overlay(alignment: .topLeading) {
             
-          /*  HStack(alignment: .center,spacing:2) {
-                Image(systemName: value.image)
-                    .imageScale(.small)
-                    .foregroundColor(value.imageColor)
-                Text(value.caption)
-                    .bold(value.isBold)
-                    .font(.caption)
-                    
-            }
-            .padding(2)
-            .background(content: {
-                RoundedRectangle(cornerRadius: 5.0)
-                    .fill(Color.seaTurtle_1.opacity(0.4))
-            }) */
-            CSEtichetta(
-                text: value.caption,
-                fontWeight: value.fontWeight,
-                textColor: Color.black,
-                image: value.image,
-                imageColor: value.imageColor,
-                imageSize: .small,
-                backgroundColor: Color.seaTurtle_1,
-                backgroundOpacity: 0.4)
-                .offset(x: -5, y: -10)
-        } // end Modifche 17.09
+                CSEtichetta(
+                    text: value.caption,
+                    fontWeight: value.fontWeight,
+                    textColor: Color.black,
+                    image: value.image,
+                    imageColor: value.imageColor,
+                    imageSize: .small,
+                    backgroundColor: Color.seaTurtle_1,
+                    backgroundOpacity: 0.4)
+                    .offset(x: -5, y: -10)
+                
+            
+        }
         
     }
     

@@ -203,8 +203,7 @@ public final class AccounterVM:FoodieViewModel {
         }
         
     }
-    
-    
+        
     /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto.
     func createItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
         
@@ -802,6 +801,9 @@ public final class AccounterVM:FoodieViewModel {
         let prodottiFiniti = allDishAvaible.filter({
             $0.percorsoProdotto == .prodottoFinito
         })
+        //Update 09.07.23
+        let composizioni = allDishAvaible.filter({$0.percorsoProdotto == .composizione})
+        // end update
         // Ingredient && eseguibilità Piatto
         var allIngredientsRif:[String] = []
         var dishEseguibili:[DishModel] = [] // deprecata 16.03.23
@@ -827,11 +829,15 @@ public final class AccounterVM:FoodieViewModel {
         
         let menuOn = allMenuOnAir.map({$0.id})
         let foodAndB = foodB.map({$0.id})
+        //update 00.07.23
+        let compo = composizioni.map({$0.id})
+        let foodBevCompo = foodAndB + compo
+        // end Update
         let readyProduct = prodottiFiniti.map({$0.id})
         let ingredientsNeeded = allIngModelFiltered.map({$0.id})
         let preparazioniOk = dishEseguibili.map({$0.id})
         
-        return (menuOn,foodAndB,readyProduct,ingredientsNeeded,preparazioniOk)
+        return (menuOn,foodBevCompo,readyProduct,ingredientsNeeded,preparazioniOk)
         
     }
     

@@ -12,7 +12,8 @@ struct NewDishMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
     
-    @State private var newDish: DishModel
+   // @State private var newDish: DishModel
+    @Binding var newDish: DishModel
     let backgroundColorView: Color
     
     @State private var piattoArchiviato: DishModel // per il reset
@@ -26,15 +27,17 @@ struct NewDishMainView: View {
     
     @State private var areAllergeniOk: Bool = false
   //  @State private var confermaDiete: Bool
+    @Binding var disabilitaPicker:Bool
     
     init(
-        newDish: DishModel,
-        percorso:DishModel.PercorsoProdotto,
+        newDish: Binding<DishModel>,
+        disabilitaPicker:Binding<Bool>,
+       // percorso:DishModel.PercorsoProdotto,// deprecato
         backgroundColorView: Color,
         destinationPath:DestinationPath,
         saveDialogType:SaveDialogType) {
         
-            let localDish: DishModel = {
+           /* let localDish: DishModel = {
                
                 if newDish.status == .bozza() {
                     
@@ -43,14 +46,16 @@ struct NewDishMainView: View {
                     return new
                 } else { return newDish }
                 
-            }()
+            }() */
   
-        _newDish = State(wrappedValue: localDish)
-        _piattoArchiviato = State(wrappedValue: localDish)
+       //_newDish = State(wrappedValue: localDish)
+        _newDish = newDish
+        _piattoArchiviato = State(wrappedValue: newDish.wrappedValue)
 
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
         self.saveDialogType = saveDialogType
+        _disabilitaPicker = disabilitaPicker
     }
     
     // Update 10.02.23 DishFormat
@@ -67,6 +72,13 @@ struct NewDishMainView: View {
     var body: some View {
 
             VStack {
+                
+                if disabilitaPicker {
+                    ProgressView(value: self.newDish.countProgress) {
+                        Text("Completo al: \(self.newDish.countProgress,format: .percent)")
+                            .font(.caption)
+                    }
+                }
 
                 ScrollView(showsIndicators:false) { // La View Mobile
 
@@ -141,6 +153,9 @@ struct NewDishMainView: View {
                 
            }
             .csHpadding()
+            .onChange(of: self.newDish, perform: { newValue in
+                self.disabilitaPicker = newValue != piattoArchiviato
+            })
             .popover(isPresented: $wannaAddIngredient,attachmentAnchor: .point(.top)) {
                 VistaIngredientiEspansa_Selectable(
                     currentDish: $newDish,
@@ -188,12 +203,7 @@ struct NewDishMainView: View {
         
         self.newDish = new
         self.piattoArchiviato = new // Nota 26.06.23
-        
-        /*{
-           var newD = DishModel()
-            newD.pricingPiatto = [DishFormat(type: .mandatory)]
-            return newD
-        }() */
+
     }
     
     private func infoPiatto() -> Text {
@@ -289,6 +299,7 @@ struct NewDishMainView: View {
    
 }
 
+/*
 struct NewDishMainView_Previews: PreviewProvider {
 
     @State static var ingredientSample =  IngredientModel(
@@ -373,4 +384,4 @@ struct NewDishMainView_Previews: PreviewProvider {
             
         }.environmentObject(viewModel)
     }
-}
+}*/

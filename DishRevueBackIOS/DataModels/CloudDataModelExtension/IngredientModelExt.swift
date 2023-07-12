@@ -353,10 +353,7 @@ extension IngredientModel:Object_FPC {
         
         let allergens = self.allergeni ?? []
         
-        return self.status != .bozza() && // esclude gli ing per prodotti finiti
-        
-       // self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: nil) &&
-        stringResult &&
+        return stringResult && // update 10.07.23 vedi ListIngredientView
         
         coreFilter.comparePropertyToProperty(localProperty: self.provenienza, filterProperty: filterProperties.provenienzaING) &&
         
@@ -370,7 +367,11 @@ extension IngredientModel:Object_FPC {
         
         coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
         
-        coreFilter.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM)
+        coreFilter.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM) &&
+        
+        coreFilter.compareStatusTransition(localStatus: self.status, singleFilter: filterProperties.status_singleChoice) &&
+        
+        coreFilter.compareStatoScorte(modelId: self.id, singleFilter: filterProperties.inventario_singleChoice, readOnlyVM: readOnlyVM)
         
     }
     
@@ -383,6 +384,11 @@ extension IngredientModel:Object_FPC {
         
         var status:[StatusTransition]?
         var inventario:[Inventario.TransitoScorte]?
+        
+        //09.07.23 innesto per filtro visivo
+        var status_singleChoice:StatusTransition?
+        var inventario_singleChoice:Inventario.TransitoScorte?
+        //end innsto
         
         var provenienzaING:ProvenienzaIngrediente?
         var produzioneING:ProduzioneIngrediente?
@@ -417,7 +423,13 @@ extension IngredientModel:Object_FPC {
                 oldValue: old.conservazioneING) +
             countManageCollection_FPC(
                 newValue: new.allergeniIn,
-                oldValue: old.allergeniIn)
+                oldValue: old.allergeniIn) +
+            countManageSingle_FPC(
+                newValue: new.inventario_singleChoice,
+                oldValue: old.inventario_singleChoice) +
+            countManageSingle_FPC(
+                newValue: new.status_singleChoice,
+                oldValue: old.status_singleChoice)
             
         }
     }
@@ -458,4 +470,21 @@ extension IngredientModel:Object_FPC {
         
     }
     
+}
+
+extension IngredientModel:MyProProgressBar {
+    
+    public var countProgress: Double {
+        
+        let instestazioneOk = self.intestazione != "" && !self.intestazione.contains("(DS)")
+        var count:Double = 0.0
+        
+        if instestazioneOk { count += 0.35 }
+        if self.descrizione != "" { count += 0.35 }
+        if self.conservazione != .defaultValue { count += 0.15 }
+        if self.origine != .defaultValue { count += 0.15 }
+            
+        return count
+        
+    }
 }
