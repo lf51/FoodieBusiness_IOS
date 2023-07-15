@@ -194,7 +194,7 @@ struct HomeView: View {
         
         //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
         //update 09.07.23
-        let tutteLePreparazioni = self.viewModel.allMyDish.filter({
+        let tutteLePreparazioni = self.viewModel.cloudData.allMyDish.filter({
             !$0.rifReviews.isEmpty &&
             $0.percorsoProdotto != .prodottoFinito
             
@@ -210,7 +210,7 @@ struct HomeView: View {
     
     private func compilaArrayMenu() -> (model:[MenuModel],rif:[String]) {
         
-        let allMenu = self.viewModel.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
+        let allMenu = self.viewModel.cloudData.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
         
         let allSorted = allMenu.sorted(by: {
             $0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > $1.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
@@ -327,7 +327,7 @@ struct HomeView: View {
                 
                 let propertyDestination:DestinationPathView? = {
                     
-                    let allProp = self.viewModel.allMyProperties
+                    let allProp = self.viewModel.cloudData.allMyProperties
                     
                     guard !allProp.isEmpty else { return nil }
                     
@@ -502,7 +502,7 @@ struct MenuDiSistema_BoxView:View {
                         } else {
                             
                             let dishIn = menuDS!.rifDishIn.count
-                            let allDish = viewModel.allMyDish.count
+                            let allDish = viewModel.cloudData.allMyDish.count
                             
                             NavigationLink(value: DestinationPathView.vistaPiattiEspansa(menuDS!)) {
                                 
@@ -560,7 +560,7 @@ struct MenuDiSistema_BoxView:View {
                                     
                                     ForEach(menuDS!.rifDishIn,id:\.self) { idPiatto in
                                            
-                                           if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.allMyDish) {
+                                           if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.cloudData.allMyDish) {
                                                
                                              //  DishModel_RowView(item: piatto, rowSize: .sintetico)
                                                GenericItemModel_RowViewMask(

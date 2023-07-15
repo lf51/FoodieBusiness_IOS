@@ -12,25 +12,17 @@ import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
 
-//public final class AccounterVM: MyProViewModelPack_L1 {
-public final class AccounterVM:FoodieViewModel {
+public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
+   
+    public typealias DBCompiler = CloudDataCompiler
     
-    private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
+    public var dbCompiler: CloudDataCompiler
     
-    private var loadingCount:Int { willSet { isLoading = newValue != 8 } }
-    @Published var isLoading: Bool
-  //  let instanceCloudData:CloudDataStore // Non sappiamo ancora cosa farne 18.11
+   // private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
     
-   // @Published var setupAccount:AccountSetup
-   // @Published var inventarioScorte:Inventario
+   // private var loadingCount:Int = 0
 
-   // @Published public var allMyIngredients:[IngredientModel]
-   // @Published public var allMyDish:[DishModel]
-   // @Published public var allMyMenu:[MenuModel]
-   // @Published public var allMyProperties:[PropertyModel]
-    
-   // @Published public var allMyCategories: [CategoriaMenu]
-   // @Published public var allMyReviews:[DishRatingModel]
+    @Published var isLoading: Bool
 
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
@@ -44,52 +36,40 @@ public final class AccounterVM:FoodieViewModel {
    
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // necessario al selettore Allergeni
     
-    // Innesto 01.12.22
-   // @Published var dishStatusChanged:Int = 0
-   // @Published var menuStatusChanged:Int = 0
     @Published var remoteStorage:RemoteChangeStorage = RemoteChangeStorage()
-    
     
     //10.02.23 Upgrade DishFormat
     
     var allDishFormatLabel:Set<String> {
         
-        let allFormat:[DishFormat] = self.allMyDish.flatMap({$0.pricingPiatto})
+        let allFormat:[DishFormat] = self.cloudData.allMyDish.flatMap({$0.pricingPiatto})
         let allLabel = allFormat.compactMap({$0.label})
         return Set(allLabel)
     }
     
     //10.02.23
     
-   override init(userUID:String? = nil) { // L'Init ufficiale del viewModel
-      
-            
-           // let compilerInstance = CloudDataCompiler(UID: userUID)
-            self.instanceDBCompiler = CloudDataCompiler(UID: userUID)
-            self.loadingCount = 0
-            self.isLoading = userUID != nil
-           // self.instanceCloudData = compilerInstance.cloudDataInstance()
-            
-            // Quello che segue si potrebbe accorpare in una instanza cloud Data. Richiede un mare di modifiche :( - Attualmente 18.11 in standBy
-           // let cloudDataStore = compilerInstance.cloudDataInstance()
-       super.init(userUID: userUID)
-               /* self.allMyIngredients = []
-                self.allMyDish = []
-                self.allMyMenu = []
-                self.allMyProperties = []
-                
-                self.setupAccount = AccountSetup()
-                self.inventarioScorte = Inventario()
-                
-                self.allMyReviews = []
-                self.allMyCategories = [] */
-        
+   public init(userUID:String? = nil) { // L'Init ufficiale del viewModel
 
-        // fine categorie accorpabili
+            self.dbCompiler = CloudDataCompiler(UID: userUID)
+            self.isLoading = userUID != nil
+       
+            super.init()
+
+            self.dbCompiler.compilaCloudDataFromFirebase(handle: { cloudData in
+                if let data = cloudData {
+                    self.cloudData = data
+                    print("self.cloudData = data")
+                    
+                }
+                
+                self.isLoading = false
+                print("AccounterVM/publicInit/self.dbCompiler.compilaCloudDataFromFirebase")
+            })
 
     }
     
-    func fetchDataFromFirebase() {
+    func fetchDataFromFirebase() { // deprecata passata al compiler
         
         // Deve scaricare i dati dal firebase
         
@@ -104,16 +84,16 @@ public final class AccounterVM:FoodieViewModel {
         self.allMyReviews = fakeCloudData.allMyReviews
         self.allMyCategories = fakeCloudData.allMyCategories */
         
-        self.loadingCount = 8 // Questo valore permette di togliere la schermata di loading
+       // self.loadingCount = 8 // Questo valore permette di togliere la schermata di loading
         
     }
 
     
     // Method
     
-    func saveDataOnFirebase() {
+    func saveDataOnFirebase() { // deprecata passata al compiler
         
-        var cloudData = CloudDataStore()
+       /* var cloudData = CloudDataStore()
         
         cloudData.allMyIngredients = self.allMyIngredients
         cloudData.allMyMenu = self.allMyMenu
@@ -126,7 +106,7 @@ public final class AccounterVM:FoodieViewModel {
         cloudData.setupAccount = self.setupAccount
         cloudData.inventarioScorte = self.inventarioScorte
         
-        self.instanceDBCompiler.publishOnFirebase(dataCloud: cloudData)
+        self.dbCompiler.publishOnFirebase(dataCloud: cloudData) */
         
     }
     
@@ -464,7 +444,7 @@ public final class AccounterVM:FoodieViewModel {
     /// ritorna un array con i piatti contenenti l'ingrediente passato. La presenza dell'ing è controllata fra i principali, i secondari, e i sosituti.
     func allDishContainingIngredient(idIng:String) -> [DishModel] {
         
-        let allDishFiltered = self.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
+        let allDishFiltered = self.cloudData.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
         return allDishFiltered
         
     }
@@ -474,7 +454,7 @@ public final class AccounterVM:FoodieViewModel {
     /// Ritorna una tupla contenente le seguenti Info: Un array con tutti i menuModel ad accezzione di quelli di Sistema, il count dell'array, e il count dei menu (meno quelli di Sistema) contenenti l'id del piatto
     func allMenuMinusDiSistemaPlusContain(idPiatto:String) -> (allModelMinusDS:[MenuModel], allModelMinusDScount:Int,countWhereDishIsIn:Int) {
         
-        let allMinusSistema = self.allMyMenu.filter({
+        let allMinusSistema = self.cloudData.allMyMenu.filter({
             $0.tipologia != .allaCarta(.delGiorno) &&
             $0.tipologia != .allaCarta(.delloChef)
         })
@@ -492,11 +472,11 @@ public final class AccounterVM:FoodieViewModel {
     /// Ritorna una Tupla gemella dell'AllMenuMinusDiSistemaPlusContain ma senza escludere i menu di sistema
     func allMenuContaining(idPiatto:String) -> (allModelWithDish:[MenuModel], allMyMenuCount:Int,countWhereDishIsIn:Int) {
                 
-        let witchContain = self.allMyMenu.filter({
+        let witchContain = self.cloudData.allMyMenu.filter({
             $0.rifDishIn.contains(idPiatto)
         })
         
-        let allMenuCount = self.allMyMenu.count
+        let allMenuCount = self.cloudData.allMyMenu.count
         let witchContainCount = witchContain.count
         
         return (witchContain,allMenuCount,witchContainCount)
@@ -558,7 +538,7 @@ public final class AccounterVM:FoodieViewModel {
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti
         
-        let filteredDish = self.allMyDish.filter { dish in
+        let filteredDish = self.cloudData.allMyDish.filter { dish in
             dish.ingredientiPrincipali.contains(where: { $0 == idIngredient }) ||
             dish.ingredientiSecondari.contains(where: { $0 == idIngredient })
         }
@@ -570,7 +550,7 @@ public final class AccounterVM:FoodieViewModel {
     /// filtra tutti gli ingredient Model presenti nel viewModel per status, escludendo quello con l'idIngredient passato.
     func ingredientListFilteredBy(idIngredient:String,ingredientStatus:StatusTransition) ->[IngredientModel] {
 
-        let filterArray = self.allMyIngredients.filter({
+        let filterArray = self.cloudData.allMyIngredients.filter({
             $0.id != idIngredient &&
             $0.status.checkStatusTransition(check: ingredientStatus)
             
@@ -651,7 +631,7 @@ public final class AccounterVM:FoodieViewModel {
                 // copia il modello solo se già non esiste
             } */
             
-            if !isTheModelAlreadyExist(modelID: ingredient.id,path: \.allMyIngredients) {
+            if !isTheModelAlreadyExist(modelID: ingredient.id,path: \.cloudData.allMyIngredients) {
              
                  modelIngredients.append(ingredient)
                  // copia il modello solo se già non esiste
@@ -678,8 +658,8 @@ public final class AccounterVM:FoodieViewModel {
             
         }()
  
-        self.allMyDish.append(dish)
-        self.allMyIngredients.append(contentsOf: modelIngredients)
+        self.cloudData.allMyDish.append(dish)
+        self.cloudData.allMyIngredients.append(contentsOf: modelIngredients)
 
     }
 
@@ -691,8 +671,8 @@ public final class AccounterVM:FoodieViewModel {
     /// Crea Inventario Ingredienti per Lista della Spesa ordinato per aree tematiche (vegetali,latticini,carne,pesce)
     func inventarioIngredienti() -> [IngredientModel] {
          
-         let allIDing = self.inventarioScorte.allInventario()
-         let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.allMyIngredients)
+         let allIDing = self.cloudData.inventarioScorte.allInventario()
+         let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.cloudData.allMyIngredients)
            
          let allVegetable = allING.filter({
              $0.origine.returnTypeCase() == .vegetale
@@ -786,7 +766,7 @@ public final class AccounterVM:FoodieViewModel {
         let cleanDish = Set(allDishId)
         let allDishIdCleaned = Array(cleanDish)
         
-        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.allMyDish)
+        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.cloudData.allMyDish)
         
         let allDishAvaible = allDishModel.filter({
             $0.status.checkStatusTransition(check: .disponibile) ||
@@ -823,7 +803,7 @@ public final class AccounterVM:FoodieViewModel {
         let cleanAllIngreArray = Array(cleanAllIngredient)
         //
         
-        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
+        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.cloudData.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
         
         //
         
@@ -847,12 +827,12 @@ public final class AccounterVM:FoodieViewModel {
         let allModel:[DishModel] = {
             
             guard let allDishes = dishes else {
-                return self.allMyDish
+                return self.cloudData.allMyDish
             }
             
           let allModelDishes = self.modelCollectionFromCollectionID(
             collectionId: allDishes,
-            modelPath: \.allMyDish)
+            modelPath: \.cloudData.allMyDish)
         
             return allModelDishes
         }()
@@ -963,11 +943,11 @@ public final class AccounterVM:FoodieViewModel {
         
         if rifReview == nil {
             
-            allRev = self.allMyReviews
+            allRev = self.cloudData.allMyReviews
             
         } else {
             
-            allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.allMyReviews)
+            allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.cloudData.allMyReviews)
         }
     
         let allVote = allRev.compactMap({$0.voto.generale})
@@ -1027,10 +1007,10 @@ public final class AccounterVM:FoodieViewModel {
     /// Ritorna il numero di preparazioni (esclude i prodotti finit) con recensioni, il totale delle preparazioni, il numero di preparazioni con media sotto il 6, sopra il 6, sopra il 9.
     func monitorRecensioniMoreInfo() -> (preparazioniConRev:Int,totPrep:Int,negCount:Int,posCount:Int,topCount:Int) {
         
-        let dishReviewed = self.allMyDish.filter({
+        let dishReviewed = self.cloudData.allMyDish.filter({
             !$0.rifReviews.isEmpty
         })
-        let soloLePreparazioni = self.allMyDish.filter({
+        let soloLePreparazioni = self.cloudData.allMyDish.filter({
             $0.percorsoProdotto != .prodottoFinito
         })
         
@@ -1056,7 +1036,7 @@ public final class AccounterVM:FoodieViewModel {
     func reviewValue(rifReviews:[String]) -> [DishRatingModel] {
         
       //  let allRif = dish.rifReviews
-        let allRev = self.modelCollectionFromCollectionID(collectionId: rifReviews, modelPath: \.allMyReviews)
+        let allRev = self.modelCollectionFromCollectionID(collectionId: rifReviews, modelPath: \.cloudData.allMyReviews)
         let sortElement = allRev.sorted(by: {$0.dataRilascio > $1.dataRilascio})
         
         return sortElement

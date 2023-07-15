@@ -176,8 +176,8 @@ struct NewProductMainView_Previews: PreviewProvider {
     @StateObject static var viewModel:AccounterVM = {
    
       var viewM = AccounterVM()
-        viewM.allMyDish = [dishSample]
-        viewM.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+        viewM.cloudData.allMyDish = [dishSample]
+        viewM.cloudData.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
         return viewM
     }()
     

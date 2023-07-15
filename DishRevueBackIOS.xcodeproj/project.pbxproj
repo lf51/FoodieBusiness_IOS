@@ -32,6 +32,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		3F01A42A2A61AF890020D65D /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 3F01A4292A61AF890020D65D /* CodeScanner */; };
 		3F0463D728E845470053FFB8 /* VistaCronologiaAcquisti.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0463D628E845470053FFB8 /* VistaCronologiaAcquisti.swift */; };
 		3F13D1DF293FA38800C599B2 /* MyPackView_L0 in Frameworks */ = {isa = PBXBuildFile; productRef = 3F13D1DE293FA38800C599B2 /* MyPackView_L0 */; };
 		3F15F04428E1A5B00066FBEC /* VistaPiattiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F15F04328E1A5B00066FBEC /* VistaPiattiEspansa.swift */; };
@@ -334,6 +335,7 @@
 				4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */,
 				4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */,
 				3FB98CF329509E6600B6DE1B /* MyFilterPackage in Frameworks */,
+				3F01A42A2A61AF890020D65D /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -880,6 +882,7 @@
 				3FD85436294254D800F7CC98 /* MyFoodiePackage */,
 				3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */,
 				3FB98CF229509E6600B6DE1B /* MyFilterPackage */,
+				3F01A4292A61AF890020D65D /* CodeScanner */,
 			);
 			productName = DishRevueBackIOS;
 			productReference = 4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */;
@@ -913,6 +916,7 @@
 				4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				4D4946FE28213C870093AFD6 /* XCRemoteSwiftPackageReference "SwipeActions" */,
 				3FB98CF129509E6600B6DE1B /* XCRemoteSwiftPackageReference "MyFilterPackage" */,
+				3F01A4282A61AF880020D65D /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			productRefGroup = 4D403B8D27981BC200EB4E1B /* Products */;
 			projectDirPath = "";
@@ -1244,7 +1248,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 109;
+				CURRENT_PROJECT_VERSION = 110;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1275,7 +1279,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 109;
+				CURRENT_PROJECT_VERSION = 110;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1387,6 +1391,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3F01A4282A61AF880020D65D /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		3FB98CF129509E6600B6DE1B /* XCRemoteSwiftPackageReference "MyFilterPackage" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/lf51/MyFilterPackage.git";
@@ -1414,6 +1426,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3F01A4292A61AF890020D65D /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F01A4282A61AF880020D65D /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
+		};
 		3F13D1DE293FA38800C599B2 /* MyPackView_L0 */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MyPackView_L0;

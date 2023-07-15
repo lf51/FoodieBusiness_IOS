@@ -43,7 +43,7 @@ import MyFilterPackage
                     
                     let model = self.viewModel.modelCollectionFromCollectionID(
                         collectionId: container,
-                        modelPath: \.allMyDish)
+                        modelPath: \.cloudData.allMyDish)
                     let filteredModel = self.viewModel.filtraSpecificCollection(
                         ofModel: model,
                         coreFilter: coreFilter)
@@ -224,7 +224,7 @@ import MyFilterPackage
 
                     let model = self.viewModel.modelCollectionFromCollectionID(
                         collectionId: container,
-                        modelPath: \.allMyIngredients)
+                        modelPath: \.cloudData.allMyIngredients)
                     let filteredModel = self.viewModel.filtraSpecificCollection(
                         ofModel: model,
                         coreFilter: coreFilter)
@@ -415,14 +415,14 @@ struct VistaEspansaPF_MonitorServizio:View {
                    
                    let ingModel = self.viewModel.modelCollectionFromCollectionID(
                        collectionId: container,
-                       modelPath: \.allMyIngredients) // i pf hanno un ingrediente con stesso id
+                       modelPath: \.cloudData.allMyIngredients) // i pf hanno un ingrediente con stesso id
                    print("pfContainer_ing in:\(ingModel.count)")
                    let filteredModel = self.viewModel.filtraSpecificCollection(
                        ofModel: ingModel,
                        coreFilter: coreFilterING)
                    print("pfContainer_filteres in:\(filteredModel.count)")
                    let filteredId = filteredModel.map({$0.id})
-                   let dishModel = self.viewModel.modelCollectionFromCollectionID(collectionId: filteredId, modelPath: \.allMyDish)
+                   let dishModel = self.viewModel.modelCollectionFromCollectionID(collectionId: filteredId, modelPath: \.cloudData.allMyDish)
                    let dishFiltered = self.viewModel.filtraSpecificCollection(ofModel: dishModel, coreFilter: coreFilterDish)
                    print("pfContainer_dish in:\(dishFiltered.count)")
                    return dishFiltered

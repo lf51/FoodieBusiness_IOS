@@ -7,37 +7,19 @@
 
 import Foundation
 import SwiftUI
-import Firebase
-import FirebaseFirestoreSwift
 import MyFoodiePackage
+import Firebase
+import FirebaseFirestore
+import FirebaseFirestoreSwift
+import MyFilterPackage
 
 extension CloudDataStore:Codable {
     
-   /* public enum CodingKeys:String,CodingKey {
-         
-         case allMyIngredients = "allUserIngredients"
-         case allMyDish = "allUserProducts"
-         case allMyMenu = "allUserMenu"
-         case allMyProperties =  "allUserProperties"
-         case allMyCategories = "allUserCategories"
-         case allMyReviews = "allUserReviews"
-                 
-         case anyDocument = "datiDiFunzionamento"
-         
-     }
-     
-    public enum AdditionalInfoKeys:String,CodingKey {
-         
-         case setupAccount = "userAccountSetup"
-         case inventarioScorte = "userInventarioScorte"
-     }
-     */
-     
-    /* public init(from decoder: Decoder) throws {
+     public init(from decoder: Decoder) throws {
         
          self.init()
          
-         let values = try decoder.container(keyedBy: Self.CodingKeys.self)
+         let values = try decoder.container(keyedBy: CodingKeys.self)
          
          self.allMyIngredients = try values.decode([IngredientModel].self, forKey: .allMyIngredients)
          self.allMyDish = try values.decode([DishModel].self, forKey: .allMyDish)
@@ -45,36 +27,14 @@ extension CloudDataStore:Codable {
          self.allMyProperties = try values.decode([PropertyModel].self, forKey: .allMyProperties)
          
          self.allMyCategories = try values.decode([CategoriaMenu].self, forKey: .allMyCategories)
-         self.allMyReviews = try values.decode([DishRatingModel].self, forKey: .allMyReviews)
+       //  self.allMyReviews = try values.decode([DishRatingModel].self, forKey: .allMyReviews)
+         self.allMyReviews = []
          
-         let additionalInfo = try values.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .anyDocument)
+         let additionalInfo = try values.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .otherDocument)
          self.setupAccount = try additionalInfo.decode(AccountSetup.self, forKey: .setupAccount)
          self.inventarioScorte = try additionalInfo.decode(Inventario.self, forKey: .inventarioScorte)
          
          
-     } */
-    
-    
-    
-   /* public func encode(to encoder: Encoder) throws {
-        
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(allMyIngredients, forKey: .allMyIngredients)
-        try container.encode(allMyDish, forKey: .allMyDish)
-        try container.encode(allMyMenu, forKey: .allMyMenu)
-        try container.encode(allMyProperties, forKey: .allMyProperties)
-        try container.encode(allMyCategories, forKey: .allMyCategories)
-        try container.encode(allMyReviews, forKey: .allMyReviews)
-        
-        var additionalInfo = container.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .anyDocument)
-        try additionalInfo.encode(setupAccount, forKey: .setupAccount)
-        try additionalInfo.encode(inventarioScorte, forKey: .inventarioScorte)
-    } */
-    public init(from decoder: Decoder) throws {
-         self.init() // 17.12.22 credo sia necessario perchè il cloudDataStore è optional
-
-        
      }
     
     public func encode(to encoder: Encoder) throws {
@@ -97,19 +57,20 @@ extension CloudDataStore:Codable {
     
 } // close extension
 
-struct CloudDataCompiler {
+public struct CloudDataCompiler {
     
     private let db_base = Firestore.firestore()
     private let ref_userDocument: DocumentReference?
-    private let userUID: String? // quando nil passiamo un accounterVM fake
+   // private let userUID: String? // quando nil passiamo un accounterVM fake
     
-    init(UID:String?) {
+   public init(UID:String?) {
 
-        self.userUID = UID
+      //  self.userUID = UID
         
         if let user = UID {
     
             self.ref_userDocument = db_base.collection("UID_UtenteBusiness").document(user)
+            // 14.07.23 Nota// prima di accedere al documento deve essere verificato il profilo di questo UID. Se è admin si scarica il database, se non è admin si verifica la collaborazione e si scarica il database associato all'uid dell'admin che ha richiesto la collaborazione
     
         } else { self.ref_userDocument = nil }
         
@@ -125,63 +86,43 @@ struct CloudDataCompiler {
     
     // Scarico Dati
     
-    /// esegue il download di una collezione di documenti contenuti in una collection Omogenea  (tutti gli ingredienti, i piatti ecc)
-  /*  func downloadFromFirebase_allMyElement<M:MyProCloudDownloadPack_L1>(collectionKP:WritableKeyPath<CloudDataStore,[M]>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ allMyElements: [M],_ isDone:Int) -> ()) {
+    func compilaCloudDataFromFirebase(handle: @escaping (_ :CloudDataStore?) -> () ) {
         
-        var cloudData:CloudDataStore = CloudDataStore()
-
-        let ref = ref_userDocument?.collection(cloudCollectionKey.rawValue)
-            
-            ref?.getDocuments { queryDoc, error in
-                
-            guard error == nil, queryDoc?.documents != nil else { return }
-                
-            for doc in queryDoc!.documents {
-
-                let element = M.init(frDocID: doc.documentID, frDoc: doc as! [String:Any])
-                cloudData[keyPath: collectionKP].append(element)
-                    }
-               // handler(cloudData[keyPath: collectionKP],1) // Chiudiamo per test (08.12.22)
-                handler(fakeCloudData[keyPath: collectionKP],1) // carichiamo dati fake per test
-            }
-    } */
-    
-    /// esegue il download dei  singoli documenti contenuti in una collection Eterogenea
-  /*  func downloadFromFirebase_singleElement<M:MyProCloudDownloadPack_L1>(singleKP:WritableKeyPath<CloudDataStore,M>,cloudCollectionKey:CloudDataStore.CloudCollectionKey,handler: @escaping (_ singleElement: M,_ isDone:Int) -> ()) {
+        guard let docRef = ref_userDocument else {
+            handle(nil)
+            return
+        }
+     
+        docRef.getDocument(as: CloudDataStore.self) { result in
         
-        var cloudData:CloudDataStore = CloudDataStore()
-
-        let ref = ref_userDocument?.collection(cloudCollectionKey.rawValue)
-            
-            ref?.getDocuments { queryDoc, error in
+            switch result {
                 
-            guard error == nil, queryDoc?.documents != nil else { return }
-                
-            for doc in queryDoc!.documents {
-               
-                let element = M.init(frDocID: doc.documentID, frDoc: doc as! [String:Any])
-                cloudData[keyPath: singleKP] = element
-                    }
-               // handler(cloudData[keyPath: singleKP],1) // pausa per test
-                handler(fakeCloudData[keyPath: singleKP],1)
+            case .success(let cloudData):
+                handle(cloudData)
+                print("CloudDataStore caricato con successo da Firebase")
+            case .failure(let error):
+                handle(nil)
+                print("Download from Firebase FAIL: \(error)")
             }
-    } */
-  
+            
+            
+            
+        }
+
+    }
+      
     
     // Salvataggio Dati
     
     func publishOnFirebase(dataCloud:CloudDataStore) {
         
-        
-        
         do {
             
             try ref_userDocument?.setData(from: dataCloud, merge: true)
            
-            
         } catch let error {
             
-            print("Errore nel salvataggio su Firebase")
+            print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
         }
         
         
@@ -244,7 +185,7 @@ struct CloudDataCompiler {
     
 }
 
-
+/*
 let fakeCloudData = CloudDataStore(
     accountSetup: AccountSetup(),
     inventarioScorte: Inventario(
@@ -263,4 +204,4 @@ let fakeCloudData = CloudDataStore(
     allMyMenu: [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test],
     allMyProperties:[property_Test],
     allMyCategory: [cat1,cat2,cat3,cat4,cat5,cat6,cat7],
-    allMyReviews: [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12])
+    allMyReviews: [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]) */

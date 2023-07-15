@@ -38,7 +38,6 @@ struct MainView: View {
  
     @State private var ingChanged:Int = 0 // serve per il count dall'import veloce. Ancora 01.12 non settato
     
-    
     var body: some View {
             
         TabView(selection:$tabSelector.csOnUpdate { oldValue, newValue in
@@ -114,11 +113,11 @@ struct MainView: View {
         
         .onAppear {
          
-                print("1.Task.beforeFetch")
-                self.viewModel.fetchDataFromFirebase()
-                print("4.Task.afeterFetch")
-                self.isLoading = false
-                print("5.Task.END")
+               // print("1.Task.beforeFetch")
+              //  self.viewModel.fetchDataFromFirebase()
+               // print("4.Task.afeterFetch")
+              //  self.isLoading = false
+              //  print("5.Task.END")
                 
             
 

@@ -117,7 +117,7 @@ struct AccounterMainView: View {
                               Text("Auto-Pause Preparazione by pausing Ingredient")
                               CSInfoAlertView(title: "Info", message: .cambioStatusPreparazioni)
                               Spacer()
-                              Picker(selection: $viewModel.setupAccount.autoPauseDish_byPauseING) {
+                              Picker(selection: $viewModel.cloudData.setupAccount.autoPauseDish_byPauseING) {
                                   ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
 
                                       Text("\(value.rawValue)")
@@ -135,7 +135,7 @@ struct AccounterMainView: View {
                               Text("Auto-Pause Preparazioni by archive Ingredient")
                               CSInfoAlertView(title: "Info", message: .cambioStatusPreparazioni)
                               Spacer()
-                              Picker(selection: $viewModel.setupAccount.autoPauseDish_byArchiveING) {
+                              Picker(selection: $viewModel.cloudData.setupAccount.autoPauseDish_byArchiveING) {
                                   ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
 
                                       Text("\(value.rawValue)")
@@ -153,7 +153,7 @@ struct AccounterMainView: View {
                               Text("Count Down Menu Off")
                               CSInfoAlertView(title: "Info", message: .timerMenu)
                               Spacer()
-                              Picker(selection: $viewModel.setupAccount.startCountDownMenuAt) {
+                              Picker(selection: $viewModel.cloudData.setupAccount.startCountDownMenuAt) {
                                   ForEach(AccountSetup.TimeValue.allCases,id:\.self) { value in
 
                                           Text("\(value.rawValue) minuti")

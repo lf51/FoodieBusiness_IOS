@@ -28,7 +28,7 @@ struct DishListView: View {
         
         NavigationStack(path:$viewModel.dishListPath) {
             
-            let container = self.viewModel.ricercaFiltra(containerPath: \.allMyDish, coreFilter: filterCore)
+            let container = self.viewModel.ricercaFiltra(containerPath: \.cloudData.allMyDish, coreFilter: filterCore)
             
             let generalDisable:Bool = {
                 
@@ -143,7 +143,7 @@ struct DishListView: View {
         if mapTree == nil {
             
             self.mapTree = MapTree(
-                mapProperties: self.viewModel.allMyCategories,
+                mapProperties: self.viewModel.cloudData.allMyCategories,
                 kpPropertyInObject: \DishModel.categoriaMenu,
                 labelColor: .seaTurtle_3)
             
@@ -186,7 +186,7 @@ struct DishListView: View {
                 
                 if checkAvailability {
                      return container.filter({
-                        self.viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value
+                        self.viewModel.cloudData.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value
                     }).count
                 } else { return 0 }
             }
@@ -203,7 +203,7 @@ struct DishListView: View {
             }
      
         MyFilterRow(
-            allCases: self.viewModel.allMyCategories,
+            allCases: self.viewModel.cloudData.allMyCategories,
             filterCollection: $filterCore.filterProperties.categorieMenu,
             selectionColor: Color.yellow.opacity(0.7),
             imageOrEmoji: "list.bullet.indent",

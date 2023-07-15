@@ -136,7 +136,7 @@ struct PannelloIngredienti_NewDishSubView: View {
     
     private func checkPreliminareIngredientSmallRow(id:String) -> (model:IngredientModel?,sosituto:IngredientModel?) {
 
-        guard let ingredient = self.viewModel.modelFromId(id: id, modelPath: \.allMyIngredients) else { return (nil,nil)}
+        guard let ingredient = self.viewModel.modelFromId(id: id, modelPath: \.cloudData.allMyIngredients) else { return (nil,nil)}
       /*  guard let ingredient = self.viewModel.ingredientFromId(id: id) else {
             return (nil,nil)
         }*/
@@ -152,7 +152,7 @@ struct PannelloIngredienti_NewDishSubView: View {
        /* guard let modelSostituto = self.viewModel.ingredientFromId(id: idSostituto!) else {
             return (ingredient,nil)
                 } */
-        guard let modelSostituto = self.viewModel.modelFromId(id: idSostituto!, modelPath: \.allMyIngredients) else { return (ingredient,nil) }
+        guard let modelSostituto = self.viewModel.modelFromId(id: idSostituto!, modelPath: \.cloudData.allMyIngredients) else { return (ingredient,nil) }
         
         guard modelSostituto.status.checkStatusTransition(check: .disponibile) else { return (ingredient,nil)}
                 

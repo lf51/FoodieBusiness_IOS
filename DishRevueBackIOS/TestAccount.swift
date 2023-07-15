@@ -26,18 +26,18 @@ let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 2
 var testAccount: AccounterVM = {
 
     var vm = AccounterVM()
-     vm.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
-     vm.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
-     vm.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
-    vm.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
-    vm.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*//*ingredientSample2_Test.id,*/ingredientSample3_Test.id,ingredientSample4_Test.id]
-    vm.inventarioScorte.cronologiaAcquisti = [
+     vm.cloudData.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
+     vm.cloudData.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
+     vm.cloudData.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
+    vm.cloudData.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
+    vm.cloudData.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*//*ingredientSample2_Test.id,*/ingredientSample3_Test.id,ingredientSample4_Test.id]
+    vm.cloudData.inventarioScorte.cronologiaAcquisti = [
         ingredientSample_Test.id:[otherDateString3,otherDateString1,otherDateString,oldDateString,todayString],ingredientSample5_Test.id:[oldDateString,todayString]
     
     ]
-    vm.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
-    vm.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
-    vm.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
+    vm.cloudData.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
+    vm.cloudData.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
+    vm.cloudData.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
     
     vm.remoteStorage.modelRif_deleted = [ingredientSample_Test.id:ingredientSample_Test.intestazione]
     vm.remoteStorage.modelRif_newOne = [menuSample_Test.id,dishItem3_Test.id]

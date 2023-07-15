@@ -53,8 +53,8 @@ struct TestViewForNavigation: View {
                 
                 Button {
                     
-                    let index = viewModel.allMyProperties.firstIndex(where: {$0.id == testItem.id})
-                    viewModel.allMyProperties[index!] = testItem
+                    let index = viewModel.cloudData.allMyProperties.firstIndex(where: {$0.id == testItem.id})
+                    viewModel.cloudData.allMyProperties[index!] = testItem
                     
                     
                     
@@ -85,9 +85,9 @@ struct NavStackTest: View {
             
                VStack {
                    
-                   Text("property in: \(viewModel.allMyProperties.count)")
+                   Text("property in: \(viewModel.cloudData.allMyProperties.count)")
                    
-                   ForEach(viewModel.allMyProperties) { property in
+                   ForEach(viewModel.cloudData.allMyProperties) { property in
                        
                        NavigationLink {
                            TestViewForNavigation(testItem: property, viewModel: viewModel)
@@ -103,7 +103,7 @@ struct NavStackTest: View {
                
                
                
-           }.onAppear { viewModel.allMyProperties.append(PropertyModel(nome: "Osteria Vera")) }
+           }.onAppear { viewModel.cloudData.allMyProperties.append(PropertyModel(nome: "Osteria Vera")) }
        }
         
         

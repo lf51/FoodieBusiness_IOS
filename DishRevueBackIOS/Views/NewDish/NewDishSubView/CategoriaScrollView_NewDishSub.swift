@@ -40,7 +40,7 @@ struct CategoriaScrollView_NewDishSub: View {
 
             // Mod 13.09
             
-            PropertyScrollCases_Rif(cases:viewModel.allMyCategories, dishSingleProperty: self.$newDish.categoriaMenu, colorSelection: Color.green.opacity(0.8))
+            PropertyScrollCases_Rif(cases:viewModel.cloudData.allMyCategories, dishSingleProperty: self.$newDish.categoriaMenu, colorSelection: Color.green.opacity(0.8))
              //   .padding(.top,5)
             
                /* PropertyScrollCases(cases:viewModel.categoriaMenuAllCases, dishSingleProperty: self.$newDish.categoriaMenuDEPRECATA, colorSelection: Color.green.opacity(0.8))

@@ -41,7 +41,7 @@ extension CoreFilter {
         guard let inventario = filterInventario,
               inventario != [] else { return true }
         
-        let statoScorte = readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: modelId)
+        let statoScorte = readOnlyVM.cloudData.inventarioScorte.statoScorteIng(idIngredient: modelId)
         
         return inventario.contains(statoScorte)
     }
@@ -50,7 +50,7 @@ extension CoreFilter {
         
         guard let inventario = singleFilter else { return true }
         
-        let statoScorte = readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: modelId)
+        let statoScorte = readOnlyVM.cloudData.inventarioScorte.statoScorteIng(idIngredient: modelId)
         
         return statoScorte == inventario
     } // create 09.07.23

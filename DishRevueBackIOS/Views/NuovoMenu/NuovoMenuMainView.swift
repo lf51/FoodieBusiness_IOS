@@ -185,7 +185,7 @@ struct NuovoMenuMainView: View {
     
     @ViewBuilder private func vbShowDishIn(id:String) -> some View {
         
-        if let dishModel = self.viewModel.modelFromId(id: id, modelPath: \.allMyDish) {
+        if let dishModel = self.viewModel.modelFromId(id: id, modelPath: \.cloudData.allMyDish) {
             
            // DishModel_RowView(item: dishModel,rowSize: .sintetico)
             GenericItemModel_RowViewMask(

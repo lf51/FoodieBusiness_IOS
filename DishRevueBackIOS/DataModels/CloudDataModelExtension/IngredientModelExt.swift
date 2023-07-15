@@ -43,7 +43,7 @@ extension IngredientModel:
     } */
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
-          return \.allMyIngredients
+          return \.cloudData.allMyIngredients
       }
     
     public func dishWhereIn(readOnlyVM:AccounterVM) -> (dishCount:Int,Substitution:Int) {
@@ -51,7 +51,7 @@ extension IngredientModel:
         var dishCount: Int = 0
         var dishWhereHasSubstitute: Int = 0
         
-        for dish in readOnlyVM.allMyDish {
+        for dish in readOnlyVM.cloudData.allMyDish {
             
             if dish.checkIngredientsInPlain(idIngrediente: self.id) {
                 dishCount += 1
@@ -80,17 +80,17 @@ extension IngredientModel:
         
        return VStack {
             
-            let statoScorte = viewModel.inventarioScorte.statoScorteIng(idIngredient: self.id)
-            let ultimoAcquisto = viewModel.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
+            let statoScorte = viewModel.cloudData.inventarioScorte.statoScorteIng(idIngredient: self.id)
+            let ultimoAcquisto = viewModel.cloudData.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
                 
                 Menu {
                     
                     Button("in Esaurimento") {
-                        viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
+                        viewModel.cloudData.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
                     }.disabled(statoScorte != .inStock)
                     
                     Button("Esaurite") {
-                        viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                        viewModel.cloudData.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
                         // innesto 01.12.22
                         if self.status.checkStatusTransition(check: .disponibile) {
                             self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
@@ -101,7 +101,7 @@ extension IngredientModel:
                     if statoScorte == .esaurito || statoScorte == .inEsaurimento {
                         
                         Button("Rimetti in Stock") {
-                            viewModel.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                            viewModel.cloudData.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
                         }
                     }
                     
@@ -148,7 +148,7 @@ extension IngredientModel:
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String) {
         
-        return (\.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
+        return (\.cloudData.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
     }
 
     public func pathDestination() -> DestinationPathView {
@@ -229,11 +229,11 @@ extension IngredientModel:
         
         guard nuovoStatus != .disponibile, isCurrentlyDisponibile else { return }
         
-        if nuovoStatus == .inPausa, viewModel.setupAccount.autoPauseDish_byPauseING == .sempre {
+        if nuovoStatus == .inPausa, viewModel.cloudData.setupAccount.autoPauseDish_byPauseING == .sempre {
             
             privateStatusChange()
             
-        } else if nuovoStatus == .archiviato, viewModel.setupAccount.autoPauseDish_byArchiveING == .sempre {
+        } else if nuovoStatus == .archiviato, viewModel.cloudData.setupAccount.autoPauseDish_byArchiveING == .sempre {
             privateStatusChange()
         }
         
@@ -300,7 +300,7 @@ extension IngredientModel:Object_FPC {
             return lhs.intestazione > rhs.intestazione
             
         case .livelloScorte:
-          return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
+          return readOnlyVM.cloudData.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.cloudData.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
             
         case .mostUsed:
             return lhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount > rhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount

@@ -105,13 +105,14 @@ struct MenuModel_RowView: View {
             VStack(alignment:.leading){ // temporaneo
                 Text("Timer:\(timerViewModel.count)")
                 Text("MenuCount:\(TimerVM.menuItemCount.count)")
-                Text("NextCheck:\(timerViewModel.nextCheck ?? 0.0) min:\(timerViewModel.nextCheck ?? 1.0 / 60.0)")
-                Text("countDownValue:\(timerViewModel.countDown ?? 0)")
+                Text("NextCheck:\(timerViewModel.nextCheck ?? 444.0) min:\(timerViewModel.nextCheck ?? 1.0 / 60.0)")
+                Text("countDownValue:\(timerViewModel.countDown ?? 444)")
                 Text("menuItemLocal:\(menuItem.modelStatusDescription())")
                 Text("menuItemTimerVM:\(timerViewModel.menuItem.modelStatusDescription())")
                 
                 Spacer()
                 Text("\(timerViewModel.timer?.fireDate ?? Date.now )").font(.caption)
+               // Text("\(self.viewModel.dbCompiler)")
             }
         }
             .onChange(of: menuItem) { newValue in
@@ -227,7 +228,6 @@ struct MenuModel_RowView: View {
         //
         let value:(opacity:CGFloat,image:String,imageColor:Color,caption:String,fontWeight:Font.Weight) = {
         
-            
             let openClose:String = {
                 
                 if let countDown = self.timerViewModel.countDown {
