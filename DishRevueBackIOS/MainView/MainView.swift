@@ -9,22 +9,16 @@ import SwiftUI
 
 struct MainView: View {
     
-  //  @StateObject var authProcess: AuthPasswordLess
     @ObservedObject var authProcess: AuthPasswordLess
     @StateObject private var viewModel: AccounterVM
-    @State private var isLoading: Bool
-  /* init() {
-        
-        let auth = AuthPasswordLess()
-        let vm = AccounterVM(userUID: auth.currentUser?.userUID)
-        _authProcess = StateObject(wrappedValue: auth)
-        _viewModel = StateObject(wrappedValue: vm )
-        
-    } */
+    
+   // @State private var isLoading: Bool
+
     init(authProcess:AuthPasswordLess) {
         
-        self.isLoading = true
+      //  self.isLoading = true
         self.authProcess = authProcess
+        
         let vm = AccounterVM(userUID: authProcess.currentUser?.userUID)
         _viewModel = StateObject(wrappedValue: vm)
         
@@ -111,7 +105,7 @@ struct MainView: View {
            WaitLoadingView(backgroundColorView: backgroundColorView)
         })
         
-        .onAppear {
+      /*  .onAppear {
          
                // print("1.Task.beforeFetch")
               //  self.viewModel.fetchDataFromFirebase()
@@ -121,7 +115,7 @@ struct MainView: View {
                 
             
 
-        }
+        }*/
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
         .environmentObject(viewModel)
         .accentColor(.seaTurtle_3)

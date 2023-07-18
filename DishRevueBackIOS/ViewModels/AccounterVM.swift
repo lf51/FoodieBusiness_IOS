@@ -12,12 +12,44 @@ import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
 
+struct CollaboratorModel:Codable,Hashable,Identifiable {
+
+    var id: String
+    let inizioCollaborazione:Date
+
+    var mail:String
+    var userName:String
+    let db_uidRef:String
+    var restrictionLevel:[RestrictionLevel]
+    
+    init(uidAmministratore db_uidRef:String) {
+        
+        self.id = "UID_TEMP-" + UUID().uuidString
+        self.inizioCollaborazione = Date.now
+        self.mail = ""
+        self.userName = ""
+        self.db_uidRef = db_uidRef
+        self.restrictionLevel = RestrictionLevel.level_1
+        
+    }
+  
+}
+
+struct ProfiloUtente:Codable {
+  
+    var datiUtente:CollaboratorModel? // per l'admin sarà nil
+    var allMyCollabs:[CollaboratorModel]?
+    
+}
+
+
 public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
    
     public typealias DBCompiler = CloudDataCompiler
     
     public var dbCompiler: CloudDataCompiler
     
+    @Published var profiloUtente:ProfiloUtente
    // private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
     
    // private var loadingCount:Int = 0
@@ -49,14 +81,14 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     //10.02.23
     
-   public init(userUID:String? = nil) { // L'Init ufficiale del viewModel
-
-            self.dbCompiler = CloudDataCompiler(UID: userUID)
-            self.isLoading = userUID != nil
+   public init(userUID:String? = nil) {
        
+            self.isLoading = userUID != nil // Nota 16.07.23 isLoading
+            self.dbCompiler = CloudDataCompiler(UID: userUID)
+   
+            self.profiloUtente = ProfiloUtente()
             super.init()
-
-            self.dbCompiler.compilaCloudDataFromFirebase(handle: { cloudData in
+           /* self.dbCompiler.compilaCloudDataFromFirebase(handle: { cloudData in
                 if let data = cloudData {
                     self.cloudData = data
                     print("self.cloudData = data")
@@ -65,11 +97,37 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
                 
                 self.isLoading = false
                 print("AccounterVM/publicInit/self.dbCompiler.compilaCloudDataFromFirebase")
-            })
-
+            }) */
+       
+      // 18.07.23 Updating...
+       
+       self.dbCompiler.fetchUserData { profiloUtente, dataBase in
+           
+           if let profilo = profiloUtente {
+               self.profiloUtente = profilo
+           }
+           if let db = dataBase {
+               self.cloudData = db
+           }
+           self.isLoading = false
+           print("Concluso fetch all Data")
+       }
+       
+       
+       // end update
     }
     
-    func fetchDataFromFirebase() { // deprecata passata al compiler
+    func publishOnFirebase() {
+        
+        self.dbCompiler.publishOnFirebase(dataCloud: self.cloudData)
+        self.dbCompiler.publishOnFirebase(profilo: self.profiloUtente)
+    }
+    
+    func fetchDataFromFirebase() {
+        // utile per fare l'aggiornamento del database in corso. Utile in vista di un database manipolato da più collaboratori
+    }
+    
+   /* func fetchDataFromFirebase() { // deprecata passata al compiler
         
         // Deve scaricare i dati dal firebase
         
@@ -86,12 +144,12 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         
        // self.loadingCount = 8 // Questo valore permette di togliere la schermata di loading
         
-    }
+    }*/
 
     
     // Method
     
-    func saveDataOnFirebase() { // deprecata passata al compiler
+   /* func saveDataOnFirebase() { // deprecata passata al compiler
         
        /* var cloudData = CloudDataStore()
         
@@ -108,7 +166,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         
         self.dbCompiler.publishOnFirebase(dataCloud: cloudData) */
         
-    }
+    } */
     
     // Modifiche 25.08 / 30.08 - Metodi di compilazione per trasformazione da Oggetto a riferimento degli ingredienti nei Dish
     

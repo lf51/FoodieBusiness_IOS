@@ -27,8 +27,8 @@ extension CloudDataStore:Codable {
          self.allMyProperties = try values.decode([PropertyModel].self, forKey: .allMyProperties)
          
          self.allMyCategories = try values.decode([CategoriaMenu].self, forKey: .allMyCategories)
-       //  self.allMyReviews = try values.decode([DishRatingModel].self, forKey: .allMyReviews)
-         self.allMyReviews = []
+         self.allMyReviews = try values.decode([DishRatingModel].self, forKey: .allMyReviews)
+        // self.allMyReviews = []
          
          let additionalInfo = try values.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .otherDocument)
          self.setupAccount = try additionalInfo.decode(AccountSetup.self, forKey: .setupAccount)
@@ -46,7 +46,7 @@ extension CloudDataStore:Codable {
         try container.encode(allMyMenu, forKey: .allMyMenu)
         try container.encode(allMyProperties, forKey: .allMyProperties)
         try container.encode(allMyCategories, forKey: .allMyCategories)
-        try container.encode(allMyReviews, forKey: .allMyReviews)
+        try container.encode(allMyReviews, forKey: .allMyReviews) 
         
         var secondLevel = container.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .otherDocument)
         try secondLevel.encode(setupAccount, forKey: .setupAccount)
@@ -57,6 +57,276 @@ extension CloudDataStore:Codable {
     
 } // close extension
 
+enum RestrictionLevel:Codable {
+    
+    // le restrizioni funzionano per esclusione. Quelle contenute nei livelli sono quelle che verranno bloccate
+    
+    static let allCases:[RestrictionLevel] = [.listaDellaSpesa,.modificheDiFunzionamento,.creaMod_ing,.creaMod_dish,.creaMod_categorie,.creaMod_menu,.replyReview]
+    
+    static let allLevel:[String:[RestrictionLevel]] = [
+        "Level 1":RestrictionLevel.level_1,
+        "Level 2":RestrictionLevel.level_2,
+        "Level 3":RestrictionLevel.level_3,
+        "Level 4":RestrictionLevel.level_4
+    ]
+    
+    static let level_1:[RestrictionLevel] = [.creaMod_ing,.creaMod_dish,.creaMod_menu,.creaMod_categorie,.replyReview]
+    static let level_2:[RestrictionLevel] = [.creaMod_menu,.replyReview]
+    static let level_3:[RestrictionLevel] = [.replyReview]
+    static let level_4:[RestrictionLevel] = []
+    
+    case listaDellaSpesa
+    case modificheDiFunzionamento // cambio di Status // Livello Scorte
+    
+    case creaMod_dish
+    case creaMod_ing
+    
+    case creaMod_categorie
+    case creaMod_menu
+    
+    case replyReview
+    
+    static func namingLevel(allRestriction:[RestrictionLevel]) -> String {
+        
+        for level in RestrictionLevel.allLevel {
+            
+            if allRestriction == level.value { return level.key}
+            else { continue }
+        }
+        
+        return "Custom"
+    }
+    
+    func simpleDescription() -> String {
+        
+        switch self {
+            
+        case .listaDellaSpesa:
+            return "Abilita modifiche lista della spesa"
+        case .modificheDiFunzionamento:
+            return "Abilita modifiche di status dei modelli"
+        case .creaMod_dish:
+            return "Abilita crea e modifica i prodotti"
+        case .creaMod_ing:
+            return "Abilita crea e modifica gli ingredienti"
+        case .creaMod_menu:
+            return "Abilita crea e modifica i menu"
+        case .replyReview:
+            return "Abilita a rispondere alle recensioni"
+        case .creaMod_categorie:
+            return "Abilita crea e modifica categorie dei Menu"
+        }
+    }
+
+}
+
+
+public struct CloudDataCompiler {
+    
+    private let db_base = Firestore.firestore()
+    private let ref_userDocument: DocumentReference?
+    
+   // public let cloudDataArchiviato:CloudDataStore // contiene l'ultima versione scaricata dal server. Utile per evitare di chiamare il fetch da fuori e per ripristino all'ultima versione
+    
+    public init(UID:String?) {
+
+      //  self.userUID = UID
+        
+        if let user = UID {
+    
+            self.ref_userDocument = db_base.collection("UID_UtenteBusiness").document(user)
+            // 14.07.23 Nota// prima di accedere al documento deve essere verificato il profilo di questo UID. Se è admin si scarica il database, se non è admin si verifica la collaborazione e si scarica il database associato all'uid dell'admin che ha richiesto la collaborazione
+    
+        } else { self.ref_userDocument = nil }
+        
+        
+    }
+    
+   /* func checkUIDRestriction(userAutenticated:String?) -> DocumentReference {
+        // compiliamo il ref_userDocument basandoci o sull'UID passato, se amministratore, o su UID trovato se collaboratore
+        let firstRef = db_base.collection("UID_UtenteBusiness").document(userAutenticated)
+    }*/
+    
+    
+     func firstAuthenticationFuture() {
+        // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
+    self.ref_userDocument?.setData([:])
+        
+    print("firstAuthenticationFuture")
+    
+}
+    
+   /*  func compilaCloudDataFromFirebase(handle: @escaping (_ :CloudDataStore?) -> () ) {
+        
+        guard let docRef = ref_userDocument else {
+            handle(nil)
+            return
+        }
+     
+        docRef.getDocument(as: CloudDataStore.self) { result in
+        
+            switch result {
+                
+            case .success(let cloudData):
+                handle(cloudData)
+                print("CloudDataStore caricato con successo da Firebase")
+            case .failure(let error):
+                handle(nil)
+                print("Download from Firebase FAIL: \(error)")
+            }
+            
+    
+        }
+
+    } */
+    
+    func compilaCloudDataFromFirebase(extRef:String? = nil,handle:@escaping(_:CloudDataStore?) -> () ) {
+        
+        let ref_Actve:DocumentReference?
+        
+        if extRef == nil { ref_Actve = self.ref_userDocument }
+        else { ref_Actve = db_base.collection("UID_UtenteBusiness").document(extRef!) }
+        
+        guard let docRef = ref_Actve else {
+            handle(nil)
+            return
+        }
+        
+        docRef.getDocument(as: CloudDataStore.self) { result in
+        
+            switch result {
+                
+            case .success(let cloudData):
+                handle(cloudData)
+                print("CloudDataStore Esterno caricato con successo da Firebase")
+            case .failure(let error):
+                handle(nil)
+                print("Download from ExternalRef Firebase FAIL: \(error)")
+            }
+            
+    
+        }
+    }
+    
+   
+     func publishOnFirebase(dataCloud:CloudDataStore) {
+        
+        do {
+            
+            try ref_userDocument?.setData(from: dataCloud, merge: true)
+           
+        } catch let error {
+            
+            print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
+        }
+        
+        
+    }
+    
+    func publishOnFirebase(profilo:ProfiloUtente) {
+       
+       do {
+           
+           try ref_userDocument?.setData(from: profilo, merge: true)
+          
+       } catch let error {
+           
+           print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
+       }
+       
+       
+   }
+    
+    // Fetch dati collaborate/Adim
+    
+
+    func fetchUserData(handle: @escaping(_ :ProfiloUtente?,_ :CloudDataStore?) -> () ) {
+        
+        self.fetchUserProfile { profilo in
+            
+            if let db_ExternalRef = profilo?.datiUtente?.db_uidRef {
+                
+                if let mailUser = profilo?.datiUtente?.mail {
+                    
+                    checkCollaborationActive(db_ref: db_ExternalRef, mail: mailUser) { updatedProfile in
+                        
+                        compilaCloudDataFromFirebase(extRef: db_ExternalRef) { ext_db in
+                            handle(updatedProfile,ext_db)
+                        }
+  
+                    }
+                }
+   
+            } else {
+                // admin
+                self.compilaCloudDataFromFirebase { dataBase in
+                   handle(profilo,dataBase)
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+   
+    
+    func checkCollaborationActive(db_ref:String,mail:String, handle:@escaping(_:ProfiloUtente?) -> () ) {
+        
+        let newDoc_ref:DocumentReference? = db_base.collection("UID_UtenteBusiness").document(db_ref)
+
+        guard newDoc_ref != nil else {
+            handle(nil)
+            return
+        }
+        
+        newDoc_ref!.getDocument(as: ProfiloUtente.self) { result in
+            
+            switch result {
+                
+            case .success(let profiloAdmin):
+                
+                let collabModel:CollaboratorModel? = profiloAdmin.allMyCollabs?.first(where: {$0.mail == mail})
+                let newCollabProfile = ProfiloUtente(datiUtente: collabModel)
+                handle(newCollabProfile)
+                
+            case .failure(let error):
+                handle(nil)
+                print("Profilo dell'admin di riferimento per il collab non scaricato: \(error.localizedDescription)")
+            }
+        }
+        
+    }
+    
+    
+    
+    func fetchUserProfile(handle: @escaping (_ :ProfiloUtente?) -> () ) {
+       
+       guard let docRef = ref_userDocument else {
+           handle(nil)
+           return
+       }
+    
+        docRef.getDocument(as: ProfiloUtente.self) { result in
+            
+            switch result {
+            case .success(let profilo):
+                handle(profilo)
+                print("Profilo Utente caricato con successo da Firebase")
+            case .failure(let error):
+                handle(nil)
+                print("Download profiloUtente from Firebase FAIL: \(error)")
+            }
+        }
+        
+   }
+    
+    
+    
+    
+    
+}
+/*
 public struct CloudDataCompiler {
     
     private let db_base = Firestore.firestore()
@@ -78,11 +348,13 @@ public struct CloudDataCompiler {
     }
     
 
-    private func firstAuthenticationFuture() {
+     func firstAuthenticationFuture() {
+         // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
         self.ref_userDocument?.setData([:])
+         
         print("firstAuthenticationFuture")
         
-    }
+    } // deprecare in futuro / non in uso 16.07.2023
     
     // Scarico Dati
     
@@ -105,8 +377,7 @@ public struct CloudDataCompiler {
                 print("Download from Firebase FAIL: \(error)")
             }
             
-            
-            
+    
         }
 
     }
@@ -183,7 +454,7 @@ public struct CloudDataCompiler {
         
     } */
     
-}
+}*/ // Backup 16.07.23 Pre sviluppo autorizzazioni
 
 /*
 let fakeCloudData = CloudDataStore(
