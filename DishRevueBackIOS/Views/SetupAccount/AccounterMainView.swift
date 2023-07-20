@@ -30,110 +30,113 @@ struct AccounterMainView: View {
   var body: some View {
 
       CSZStackVB(title: "Settings", backgroundColorView: backgroundColorView) {
- 
+          
           let currentUser:(userName:String,mail:String,ruolo:RuoloUtente) = {
               
-               let datiUtente = self.viewModel.profiloUtente.datiUtente
-              
-              if datiUtente == nil {
+              if let datiUtente = self.viewModel.profiloUtente.datiUtente {
+                  // collab
+                  let user = datiUtente.userName
+                  let mail = datiUtente.mail
                   
+                  return (user,mail,.collab)
+                  
+              } else {
+                  // admin
                   let user = self.authProcess.currentUser?.userDisplayName ?? "errorUserName"
                   let mail = self.authProcess.currentUser?.userEmail ?? "errorMail"
-                  let ruolo:RuoloUtente = .admin
-                  
-                  return (user,mail,ruolo)
-              } else {
-                  
-                  let user = self.viewModel.profiloUtente.datiUtente?.userName ?? "errorUserName"
-                  let mail = self.viewModel.profiloUtente.datiUtente?.mail ?? "errorMail"
-                  let ruolo:RuoloUtente = .collab
-                  
-                  return (user,mail,ruolo)
+                 
+                  return (user,mail,.admin)
               }
-   
+ 
           }()
-          
-          VStack(alignment:.leading) {
+       
+         VStack(alignment:.leading) {
+              
+             VStack(alignment:.leading,spacing:10) {
+                 
+                 let value:(string:String,color:Color) = {
+                     
+                     if wannaChangeDisplayName {
+                         return ("Fatto",Color.seaTurtle_3)
+                     } else {
+                         return ("Edit",Color.seaTurtle_2)
+                     }
+                 }()
+                 
+                 CSLabel_conVB(
+                   placeHolder: "Dati Utente",
+                   imageNameOrEmojy: "person.text.rectangle",
+                   backgroundColor:Color.seaTurtle_2) {
+                       
+                       Text(value.string)
+                           .bold()
+                           .foregroundColor(value.color)
+                           .onTapGesture {
+                               withAnimation {
+                                   self.wannaChangeDisplayName.toggle()
+                               }
+                           }
+                       
+                   }
+                 
+                 HStack {
+                     
+                     Image(systemName: "person.fill")
+                         .foregroundColor(Color.seaTurtle_2)
+                     
+                     if !wannaChangeDisplayName {
+                         
+                         Text("\(currentUser.userName)")
+                             .font(.system(.headline, design: .monospaced, weight: .semibold))
+                             .foregroundColor(Color.seaTurtle_4)
+                         
+                         
+                     } else {
+                         
+                         CSTextField_5(textFieldItem: $newDisplayName, placeHolder: "UserName", image: "at", showDelete: true, keyboardType: .default){
+                             
+                             self.authProcess.updateDisplayName(newDisplayName: self.newDisplayName)
+                             self.newDisplayName = ""
+                             self.wannaChangeDisplayName = false
+                             
+                         }
+                     }
+                     
+                 }
+                 
+                 HStack {
+                     
+                     Image(systemName: "key.fill")
+                         .foregroundColor(Color.seaTurtle_2)
+                     
+                     Text("\(currentUser.mail)")
+                         .font(.system(.headline, design: .monospaced, weight: .light))
+                         .foregroundColor(Color.seaTurtle_4)
+                     
+                     Image(systemName: "lock.fill")
+                     
+                 }
+                 
+                 HStack {
+                     
+                     Image(systemName: "shield.lefthalf.filled")
+                         .foregroundColor(Color.seaTurtle_2)
+                     
+                     Text(currentUser.ruolo.rawValue)
+                         .italic()
+                         .font(.system(.headline, design: .monospaced, weight: .light))
+                         .foregroundColor(Color.seaTurtle_4)
+                     
+                     Image(systemName: "lock.fill")
+                     
+                 }
+                 
+             }
+             
+          ScrollView(showsIndicators:false) {
               
               VStack(alignment:.leading, spacing: 10.0) {
-
-                  let value:(string:String,color:Color) = {
-                     
-                      if wannaChangeDisplayName {
-                          return ("Fatto",Color.seaTurtle_3)
-                      } else {
-                          return ("Edit",Color.seaTurtle_2)
-                      }
-                  }()
                   
-                  CSLabel_conVB(
-                      placeHolder: "Dati Utente",
-                      imageNameOrEmojy: "person.text.rectangle",
-                      backgroundColor:Color.seaTurtle_2) {
-                       
-                          Text(value.string)
-                              .bold()
-                              .foregroundColor(value.color)
-                              .onTapGesture {
-                                  withAnimation {
-                                      self.wannaChangeDisplayName.toggle()
-                                  }
-                              }
-                             
-                      }
-
-                  HStack {
-                      
-                      Image(systemName: "person.fill")
-                          .foregroundColor(Color.seaTurtle_2)
-
-                      if !wannaChangeDisplayName {
-                          
-                          Text("\(currentUser.userName)")
-                              .font(.system(.headline, design: .monospaced, weight: .semibold))
-                              .foregroundColor(Color.seaTurtle_4)
-
-                          
-                      } else {
-                          
-                          CSTextField_5(textFieldItem: $newDisplayName, placeHolder: "UserName", image: "at", showDelete: true, keyboardType: .default){
-                              
-                              self.authProcess.updateDisplayName(newDisplayName: self.newDisplayName)
-                              self.newDisplayName = ""
-                              self.wannaChangeDisplayName = false
-
-                          }
-                      }
-
-                  }
-
-                  HStack {
-                      
-                      Image(systemName: "key.fill")
-                          .foregroundColor(Color.seaTurtle_2)
-                     
-                      Text("\(currentUser.mail)")
-                          .font(.system(.headline, design: .monospaced, weight: .light))
-                          .foregroundColor(Color.seaTurtle_4)
-                      
-                      Image(systemName: "lock.fill")
-                      
-                  }
-                  
-                  HStack {
-                      
-                      Image(systemName: "shield.lefthalf.filled")
-                          .foregroundColor(Color.seaTurtle_2)
-
-                      Text(currentUser.ruolo.rawValue)
-                          .italic()
-                          .font(.system(.headline, design: .monospaced, weight: .light))
-                          .foregroundColor(Color.seaTurtle_4)
-                      
-                      Image(systemName: "lock.fill")
-    
-                  }
-
                   VStack(alignment:.leading,spacing: 5) {
                       
                       CSLabel_1Button(
@@ -142,7 +145,7 @@ struct AccounterMainView: View {
                         backgroundColor: Color.seaTurtle_2)
                       
                       Group {
- 
+                          
                           HStack {
                               
                               Text("Auto-Pause Preparazione by pausing Ingredient")
@@ -150,7 +153,7 @@ struct AccounterMainView: View {
                               Spacer()
                               Picker(selection: $viewModel.cloudData.setupAccount.autoPauseDish_byPauseING) {
                                   ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
-
+                                      
                                       Text("\(value.rawValue)")
                                       
                                   }
@@ -159,7 +162,7 @@ struct AccounterMainView: View {
                               }
                           }
                           
-                         Divider()
+                          Divider()
                           
                           HStack {
                               
@@ -168,7 +171,7 @@ struct AccounterMainView: View {
                               Spacer()
                               Picker(selection: $viewModel.cloudData.setupAccount.autoPauseDish_byArchiveING) {
                                   ForEach(AccountSetup.autoPauseDish_allCases,id:\.self) { value in
-
+                                      
                                       Text("\(value.rawValue)")
                                       
                                   }
@@ -177,7 +180,7 @@ struct AccounterMainView: View {
                               }
                           }
                           
-                         Divider()
+                          Divider()
                           
                           HStack {
                               
@@ -186,8 +189,8 @@ struct AccounterMainView: View {
                               Spacer()
                               Picker(selection: $viewModel.cloudData.setupAccount.startCountDownMenuAt) {
                                   ForEach(AccountSetup.TimeValue.allCases,id:\.self) { value in
-
-                                          Text("\(value.rawValue) minuti")
+                                      
+                                      Text("\(value.rawValue) minuti")
                                       
                                   }
                               } label: {
@@ -195,10 +198,10 @@ struct AccounterMainView: View {
                               }
                           }
                       }
-                    //  .font(.subheadline)
+                      //  .font(.subheadline)
                       
                   }
- 
+                  
                   VStack(alignment:.leading) {
                       //Nota 24.11 - Collaboratori
                       let currentUserUID = self.authProcess.currentUser?.userUID
@@ -213,8 +216,8 @@ struct AccounterMainView: View {
                                 if let adminUID = currentUserUID {
                                     self.collaborator = CollaboratorModel(uidAmministratore:adminUID)
                                 } /*else {
-                                    self.collaborator = CollaboratorModel(uidAmministratore:"NoUID")
-                                }*/ // else è da togliere
+                                   self.collaborator = CollaboratorModel(uidAmministratore:"NoUID")
+                                   }*/ // else è da togliere
                                 
                             } label: {
                                 Image(systemName: "plus.circle")
@@ -227,56 +230,56 @@ struct AccounterMainView: View {
                       
                       if let collabs = self.viewModel.profiloUtente.allMyCollabs {
                           
-                          ScrollView(showsIndicators:false) {
+                          //   ScrollView(showsIndicators:false) {
+                          VStack {
                               ForEach(collabs,id:\.self) { collab in
                                   collabsRow(collab)
                               }
                           }
                           
                       }
-
+                      
                   }
               } //
-              
-              Spacer()
-              
-              VStack(alignment:.trailing) {
-                  
-                  HStack {
-                      
-                      CSButton_tight(title: "Log Out", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
-                          self.authProcess.logOutUser()
-                            }
-                      
-                      Spacer()
-                      
-                      CSButton_tight(title: "Pubblica", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.green) {
-                          self.viewModel.publishOnFirebase()
-                      }
-                      
-                      CSButton_tight(title: "Erase Data", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.gray) {
-                          self.viewModel.dbCompiler.firstAuthenticationFuture()
-                      }
-                      
-                      Spacer()
-                      
-                      CSButton_tight(title: "Elimina Account", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.red) {
-                          self.authProcess.eliminaAccount()
-                      }
-             
-                  }
-                /*  Text(authProcess.currentUser?.userUID ?? "nil")
-                      .font(.caption)
-                      .foregroundColor(Color.gray) */
-              }
 
-              CSDivider()
-          } // chiusa VStack Madre
-          .padding(.horizontal)
-         
-          //.disabled(self.viewModel.profiloUtente.datiUtente != nil)
-          .disabled(currentUser.ruolo == .collab)
-         
+          } // chiusa Scroll
+             
+             Spacer()
+             
+             VStack(alignment:.trailing) {
+                 
+                 HStack {
+                     
+                     CSButton_tight(title: "Log Out", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.blue) {
+                         self.authProcess.logOutUser()
+                     }
+                     
+                     Spacer()
+                     
+                     CSButton_tight(title: "Pubblica", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.green) {
+                         self.viewModel.publishOnFirebase()
+                     }
+                     
+                     CSButton_tight(title: "Erase Data", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.gray) {
+                         self.viewModel.dbCompiler.firstAuthenticationFuture()
+                     }
+                     
+                     Spacer()
+                     
+                     CSButton_tight(title: "Elimina Account", fontWeight: .semibold, titleColor: Color.white, fillColor: Color.red) {
+                         self.authProcess.eliminaAccount()
+                     }
+                     
+                 }
+                 /*  Text(authProcess.currentUser?.userUID ?? "nil")
+                  .font(.caption)
+                  .foregroundColor(Color.gray) */
+             }
+             
+          
+        } // chiusa VStack Madre
+         .padding(.horizontal)
+         .disabled(currentUser.ruolo == .collab)
       } // chiusa ZStack
       .popover(item:$collaborator) { collabItem in
           CreaModCollabs(
@@ -291,7 +294,7 @@ struct AccounterMainView: View {
     @ViewBuilder private func collabsRow(_ collab:CollaboratorModel) -> some View {
         
         let levelName = RestrictionLevel.namingLevel(allRestriction: collab.restrictionLevel)
-        let isNonAccoppiato = collab.id.contains("UID_TEMP-")
+        let isNonAccoppiato = collab.id.contains("NON_ACCOPPIATO")
         
         VStack(alignment:.leading) {
             
@@ -308,28 +311,40 @@ struct AccounterMainView: View {
                       
              Spacer()
                 
-                Button {
-                    self.collaborator = collab
+                Menu {
+                    
+                    Button {
+                        self.collaborator = collab
+                    } label: {
+                        Text("Edit")
+                    }
+                    
+                    Button(role:.destructive) {
+                        withAnimation {
+                            self.deleteCollab(collab: collab)
+                        }
+                    } label: {
+                        Text("Rimuovi")
+                    }
+                    
                 } label: {
                     
                     Image(systemName: "person.fill.badge.minus")
                     .imageScale(.large)
                     .foregroundColor(Color.black)
                     .opacity(0.7)
-                   // .opacity(0.6)
-                    
+
                     Text(levelName)
                             .italic()
                             .foregroundColor(Color.seaTurtle_4)
-                           // .opacity(0.9)
-                   
-                    
+                          
                 }
                 .padding(.horizontal)
                 .background {
-                    Color.seaTurtle_2.opacity(0.5)
-                        .cornerRadius(5.0)
-                }
+                        Color.seaTurtle_2.opacity(0.5)
+                            .cornerRadius(5.0)
+                    }
+
              }
             
             VStack(alignment:.leading,spacing:5) {
@@ -355,9 +370,25 @@ struct AccounterMainView: View {
         }
     }
     
+    private func deleteCollab(collab:CollaboratorModel) {
+        
+        self.viewModel.alertItem = AlertModel(
+            title: "Azione non Reversibile",
+            message: "Clicca su elimina se vuoi rimuovere \(collab.userName) dai tuoi collaboratori",
+            actionPlus: ActionModel(
+                title: .elimina,
+                action: {
+                    self.viewModel.profiloUtente.allMyCollabs?.removeAll(where: {$0.id == collab.id})
+                }))
+        
+    }
+    
     private struct CreaModCollabs:View {
         
         @EnvironmentObject var viewModel:AccounterVM
+        @Environment(\.presentationMode) var presentationMode
+        
+        @State private var localAlert:String?
         
         @State private var collabItem:CollaboratorModel
         @State private var collabArchiviato:CollaboratorModel
@@ -375,12 +406,12 @@ struct AccounterMainView: View {
             ZStack {
 
                 let alreadyExist:Bool = {
-                  let allID = self.viewModel.profiloUtente.allMyCollabs?.map({$0.id}) ?? []
+                    let allID = self.viewModel.profiloUtente.allMyCollabs?.map({$0.id}) ?? []
                     return allID.contains(self.collabItem.id)
                     
                 }()
                 
-                let isAccoppiato = !self.collabItem.id.contains("UID_TEMP-")
+                let isAccoppiato = !self.collabItem.id.contains("NON_ACCOPPIATO")
                 
                 Rectangle()
                     .fill(backgroundColorView.gradient)
@@ -397,24 +428,47 @@ struct AccounterMainView: View {
                     
                     Spacer()
                     
-                    VStack{
+                    VStack {
 
-                        CSTextField_4(
-                            textFieldItem: $collabItem.mail,
-                            placeHolder: "email adress", image: "at",
-                            showDelete: true,
-                            keyboardType: .emailAddress)
-                            .textContentType(.emailAddress)
-                            .disabled(isAccoppiato)
-                        // disabilitare se accoppiamento è andato in porto
+                        VStack(alignment:.leading) {
+                            CSTextField_4(
+                                textFieldItem: $collabItem.mail,
+                                placeHolder: "email adress", image: "at",
+                                showDelete: true,
+                                keyboardType: .emailAddress)
+                                .textContentType(.emailAddress)
+                                .disabled(isAccoppiato)
+                            
+                            if let alert = localAlert {
+                                Text(alert)
+                                    .bold()
+                                    .font(.caption)
+                                    .foregroundColor(.black)
+                            } else {
+                                Text("Campo Obbligatorio")
+                                    .italic()
+                                    .font(.caption2)
+                                    .foregroundColor(.black)
+                                    .opacity(0.7)
+                            }
+                            
+                        }
                         
-                        
-                        CSTextField_4(
-                            textFieldItem: $collabItem.userName,
-                            placeHolder: "user name",
-                            image: "person",
-                            showDelete: true,
-                            keyboardType: .default)
+                        VStack(alignment:.leading) {
+                            
+                            CSTextField_4(
+                                textFieldItem: $collabItem.userName,
+                                placeHolder: "user name",
+                                image: "person",
+                                showDelete: true,
+                                keyboardType: .default)
+                            
+                            Text("Campo Obbligatorio")
+                                .italic()
+                                .font(.caption2)
+                                .foregroundColor(.black)
+                                .opacity(0.7)
+                        }
                         
                         Spacer()
                         
@@ -441,6 +495,7 @@ struct AccounterMainView: View {
                                     } label: {
                                         Text("")
                                     }
+                                    .accentColor(.seaTurtle_4)
                                   
                                 }
                             
@@ -479,10 +534,10 @@ struct AccounterMainView: View {
                     
                     HStack(spacing:40) {
                         
-                        let value:(creaMod:String,resetDelet:String) = {
+                        let creaMod:String = {
                            
-                            if alreadyExist { return ("Modifica","Rimuovi")}
-                            else { return ("Crea","Reset")}
+                            if alreadyExist { return "Modifica"}
+                            else { return "Crea"}
                             
                         }()
                         
@@ -501,28 +556,22 @@ struct AccounterMainView: View {
                             
                         }()
                         
-                        let disableResetDel:Bool = {
-                           
-                            if alreadyExist { return false }
-                            else {
-                                return self.collabItem == self.collabArchiviato
-                            }
-                        }()
+                        let disableReset:Bool = self.collabItem == self.collabArchiviato
                         
                         Spacer()
                         
                         CSButton_tight(
-                         title: value.resetDelet,
+                         title: "Reset",
                          fontWeight: .bold,
                          titleColor: .orange.opacity(0.85),
                          fillColor: .clear) {
-                             self.resetDeleteCollab(collabExist: alreadyExist)
+                             self.resetCollab()
                          }
-                         .disabled(disableResetDel)
-                         .opacity(disableResetDel ? 0.6 : 1.0)
+                         .disabled(disableReset)
+                         .opacity(disableReset ? 0.6 : 1.0)
                         
                         CSButton_tight(
-                         title: value.creaMod,
+                         title: creaMod,
                          fontWeight: .semibold,
                          titleColor: .seaTurtle_1,
                          fillColor: .seaTurtle_3) {
@@ -550,22 +599,8 @@ struct AccounterMainView: View {
         
         // Method
         
-        private func resetDeleteCollab(collabExist:Bool) {
+        private func resetCollab() {
 
-            guard !collabExist else {
-                //delete
-                self.viewModel.alertItem = AlertModel(
-                    title: "Azione non Reversibile",
-                    message: "Clicca su elimina se vuoi rimuovere \(self.collabItem.userName) dai tuoi collaboratori",
-                    actionPlus: ActionModel(
-                        title: .elimina,
-                        action: {
-                            self.viewModel.profiloUtente.allMyCollabs?.removeAll(where: {$0.mail == self.collabItem.mail}) // possiamo usare anche ID
-                        }))
-                return
-                
-            }
-            // reset
             self.collabItem = self.collabArchiviato
             
         }
@@ -575,35 +610,50 @@ struct AccounterMainView: View {
             guard !collabExist else {
                 // modifica un collab esistente
                 if let index = self.viewModel.profiloUtente.allMyCollabs?.firstIndex(where: {$0.id == self.collabItem.id}) {
+                    
                     self.viewModel.profiloUtente.allMyCollabs?.remove(at: index)
                     self.newCollab()
                 }
                 return
             }
            // crea collab nuovo
-            // verificare che la mail (nuova) non sia già stata utilizzata.
-            let allCollabsMail = self.viewModel.profiloUtente.allMyCollabs?.map({$0.mail}) ?? []
-            let alreadyIn = allCollabsMail.contains(self.collabItem.mail)
-            
-            guard !alreadyIn else {
-                
-                self.viewModel.alertItem = AlertModel(
-                    title: "Error",
-                    message: "Esiste già un collaboratore con questa mail")
-                return
-                
-            }
-            
+ 
             self.newCollab()
         
         }
         
+        private func emailCheckAlert() {
+            
+            let allCollabsMail = self.viewModel.profiloUtente.allMyCollabs?.map({$0.mail}) ?? []
+            let alreadyIn = allCollabsMail.contains(self.collabItem.mail)
+            
+            if alreadyIn { self.localAlert = "⚠️ Esiste già un collaboratore con questa mail" }
+            else { self.localAlert = nil  }
+            
+        }
+        
         private func newCollab() {
-            self.viewModel.profiloUtente.allMyCollabs?.append(self.collabItem)
+            
+            self.emailCheckAlert()
+            
+            guard self.localAlert == nil else { return }
+            
+            if var container = self.viewModel.profiloUtente.allMyCollabs {
+                
+                container.append(self.collabItem)
+                self.viewModel.profiloUtente.allMyCollabs = container
+                
+            } else {
+                self.viewModel.profiloUtente.allMyCollabs = [collabItem]
+            }
+            
             let uidAdmin = self.collabItem.db_uidRef
             let new = CollaboratorModel(uidAmministratore: uidAdmin)
             self.collabItem = new
             self.collabArchiviato = new
+            
+            self.presentationMode.wrappedValue.dismiss()
+            print("newCollab Container \(self.viewModel.profiloUtente.allMyCollabs?.isEmpty)")
         }
         
         private func manageRestriction(restriction:RestrictionLevel) {

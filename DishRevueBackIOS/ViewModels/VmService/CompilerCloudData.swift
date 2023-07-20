@@ -120,49 +120,158 @@ enum RestrictionLevel:Codable {
 
 }
 
-
 public struct CloudDataCompiler {
     
     private let db_base = Firestore.firestore()
-    private let ref_userDocument: DocumentReference?
+    private var ref_db: DocumentReference?
+    private let userAuthUid:String?
+   
+  //  var profiloUtente:ProfiloUtente = ProfiloUtente()
     
-   // public let cloudDataArchiviato:CloudDataStore // contiene l'ultima versione scaricata dal server. Utile per evitare di chiamare il fetch da fuori e per ripristino all'ultima versione
-    
-    public init(UID:String?) {
+    public init(userAuthUID:String?) {
 
-      //  self.userUID = UID
-        
-        if let user = UID {
+        if let user = userAuthUID {
     
-            self.ref_userDocument = db_base.collection("UID_UtenteBusiness").document(user)
-            // 14.07.23 Nota// prima di accedere al documento deve essere verificato il profilo di questo UID. Se è admin si scarica il database, se non è admin si verifica la collaborazione e si scarica il database associato all'uid dell'admin che ha richiesto la collaborazione
-    
-        } else { self.ref_userDocument = nil }
+            self.ref_db = db_base.collection("UID_UtenteBusiness").document(user)
+            self.userAuthUid = user
+         
+           // self.profiloUtente = ProfiloUtente()
+            print("CloudDataCompiler inizializzato con uuid:\(user)")
+            
+        } else {
+            self.ref_db = nil
+            self.userAuthUid = nil
+           // self.profiloUtente = ProfiloUtente()
+            print("CloudDataCompiler init con id: NIL)")
+        }
         
         
     }
     
-   /* func checkUIDRestriction(userAutenticated:String?) -> DocumentReference {
-        // compiliamo il ref_userDocument basandoci o sull'UID passato, se amministratore, o su UID trovato se collaboratore
-        let firstRef = db_base.collection("UID_UtenteBusiness").document(userAutenticated)
-    }*/
-    
-    
-     func firstAuthenticationFuture() {
-        // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
-    self.ref_userDocument?.setData([:])
+     func fetchAllData(handle:@escaping(_ db:CloudDataStore?,_ user:ProfiloUtente?,_ isLoading:Bool) -> ()) {
         
-    print("firstAuthenticationFuture")
-    
-}
-    
-   /*  func compilaCloudDataFromFirebase(handle: @escaping (_ :CloudDataStore?) -> () ) {
-        
-        guard let docRef = ref_userDocument else {
-            handle(nil)
+        guard let userUID = self.userAuthUid else {
+            handle(nil,nil,false)
+            print("No User Auth UID")
             return
         }
-     
+        
+        self.fetchUserProfile(docRef: userUID) { utenteCorrente in
+            // admin o collab
+            if let datiUtente = utenteCorrente?.datiUtente {
+                // collab
+                self.fetchUserProfile(docRef: datiUtente.db_uidRef) { profiloAdmin in
+                    
+                    if let collaboratorProfile:CollaboratorModel = profiloAdmin?.allMyCollabs?.first(where: {$0.mail == datiUtente.mail}) {
+                        // collaboratore esiste
+                        let profiloAggiornato = ProfiloUtente(datiUtente:collaboratorProfile)
+
+                        self.compilaCloudDataFromFirebase(newDbRef:datiUtente.db_uidRef) { dbFromAdmin in
+                            
+                            handle(dbFromAdmin,profiloAggiornato,false)
+                            print("Collaboratore esite - aggiornata key database - scaricati dati dall'adim")
+                        }
+                        
+                    } else {
+                        // collaboratore non esiste
+                        handle(nil,utenteCorrente,false)
+                        print("Collaboratoe ha la chiave ma non risulta fra i collaboratori")
+                        
+                    }
+                    
+                }
+ 
+            } else {
+                // admin
+                self.compilaCloudDataFromFirebase { cloudData in
+                    handle(cloudData,utenteCorrente,false)
+                    print("Compilazione CloudData admin eseguita - profilo: \(utenteCorrente == nil)")
+                }
+                
+            }
+            
+        }
+  
+    }
+    
+    
+    func publishOnFirebase<C:Codable>(dbRef:String? = nil,saveData:C) {
+       
+        let ref:DocumentReference? = {
+            if let uuid = dbRef {
+                let newRef = self.db_base.collection("UID_UtenteBusiness").document(uuid)
+                return newRef
+            } else {
+                return self.ref_db
+            }
+        }()
+        
+       do {
+           
+           try ref?.setData(from: saveData, merge: true)
+          
+       } catch let error {
+           
+           print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
+       }
+       
+       
+   }
+    
+    func fetchUserProfile(docRef:String,handle: @escaping (_ :ProfiloUtente?) -> () ) { // Validata
+       
+        let userRef:DocumentReference? = self.db_base.collection("UID_UtenteBusiness").document(docRef)
+        
+        guard let ref = userRef else {
+            handle(nil)
+            return }
+        
+        ref.getDocument(as: ProfiloUtente.self) { result in
+            
+            switch result {
+                
+            case .success(let profilo):
+                handle(profilo)
+                print("Profilo Utente caricato con successo da Firebase")
+            case .failure(let error):
+                handle(nil)
+                print("Download profiloUtente from Firebase FAIL: \(error)")
+            }
+        }
+        
+   }
+        
+    func firstAuthenticationFuture() {
+    // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
+        self.ref_db?.setData([:])
+    // Va sistemato in chiave collab -admin
+        print("firstAuthenticationFuture")
+
+    }
+        
+    func compilaCloudDataFromFirebase(newDbRef:String? = nil,handle:@escaping(_:CloudDataStore?) -> () ) {
+        
+        let newRef:DocumentReference? = {
+            
+            if let docRef = newDbRef {
+                // avremo un riferimento esterno al database (collab)
+                let db_refNew = self.db_base.collection("UID_UtenteBusiness").document(docRef)
+                return db_refNew
+                
+            } else {
+                // avremo il riferimento salvato in fase di init (admin)
+                return self.ref_db
+            }
+               
+
+        }()
+        
+            guard let docRef = newRef else {
+            handle(nil)
+            print("errore - ref_db == nil")
+            return
+        }
+        
         docRef.getDocument(as: CloudDataStore.self) { result in
         
             switch result {
@@ -177,39 +286,10 @@ public struct CloudDataCompiler {
             
     
         }
-
-    } */
-    
-    func compilaCloudDataFromFirebase(extRef:String? = nil,handle:@escaping(_:CloudDataStore?) -> () ) {
-        
-        let ref_Actve:DocumentReference?
-        
-        if extRef == nil { ref_Actve = self.ref_userDocument }
-        else { ref_Actve = db_base.collection("UID_UtenteBusiness").document(extRef!) }
-        
-        guard let docRef = ref_Actve else {
-            handle(nil)
-            return
-        }
-        
-        docRef.getDocument(as: CloudDataStore.self) { result in
-        
-            switch result {
-                
-            case .success(let cloudData):
-                handle(cloudData)
-                print("CloudDataStore Esterno caricato con successo da Firebase")
-            case .failure(let error):
-                handle(nil)
-                print("Download from ExternalRef Firebase FAIL: \(error)")
-            }
-            
-    
-        }
     }
     
    
-     func publishOnFirebase(dataCloud:CloudDataStore) {
+    /* func publishOnFirebase(dataCloud:CloudDataStore) {
         
         do {
             
@@ -221,26 +301,14 @@ public struct CloudDataCompiler {
         }
         
         
-    }
+    } */
     
-    func publishOnFirebase(profilo:ProfiloUtente) {
-       
-       do {
-           
-           try ref_userDocument?.setData(from: profilo, merge: true)
-          
-       } catch let error {
-           
-           print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
-       }
-       
-       
-   }
+   
     
     // Fetch dati collaborate/Adim
     
 
-    func fetchUserData(handle: @escaping(_ :ProfiloUtente?,_ :CloudDataStore?) -> () ) {
+   /* func fetchUserData(handle: @escaping(_ :ProfiloUtente?,_ :CloudDataStore?) -> () ) {
         
         self.fetchUserProfile { profilo in
             
@@ -252,6 +320,7 @@ public struct CloudDataCompiler {
                         
                         compilaCloudDataFromFirebase(extRef: db_ExternalRef) { ext_db in
                             handle(updatedProfile,ext_db)
+                            print("DataBase esterno scaricato da Firebase")
                         }
   
                     }
@@ -261,49 +330,20 @@ public struct CloudDataCompiler {
                 // admin
                 self.compilaCloudDataFromFirebase { dataBase in
                    handle(profilo,dataBase)
+                    print("DataBase Interno scaricato da Firebase")
                 }
                 
             }
             
         }
         
-    }
+    }*/ // deprecata
     
-   
-    
-    func checkCollaborationActive(db_ref:String,mail:String, handle:@escaping(_:ProfiloUtente?) -> () ) {
-        
-        let newDoc_ref:DocumentReference? = db_base.collection("UID_UtenteBusiness").document(db_ref)
-
-        guard newDoc_ref != nil else {
-            handle(nil)
-            return
-        }
-        
-        newDoc_ref!.getDocument(as: ProfiloUtente.self) { result in
-            
-            switch result {
-                
-            case .success(let profiloAdmin):
-                
-                let collabModel:CollaboratorModel? = profiloAdmin.allMyCollabs?.first(where: {$0.mail == mail})
-                let newCollabProfile = ProfiloUtente(datiUtente: collabModel)
-                handle(newCollabProfile)
-                
-            case .failure(let error):
-                handle(nil)
-                print("Profilo dell'admin di riferimento per il collab non scaricato: \(error.localizedDescription)")
-            }
-        }
-        
-    }
-    
-    
-    
-    func fetchUserProfile(handle: @escaping (_ :ProfiloUtente?) -> () ) {
+  /*  func fetchUserProfile(handle: @escaping (_ :ProfiloUtente?) -> () ) { // validato
        
-       guard let docRef = ref_userDocument else {
+          guard let docRef = self.ref_db else {
            handle(nil)
+           print("docRef == nil")
            return
        }
     
@@ -319,13 +359,40 @@ public struct CloudDataCompiler {
             }
         }
         
-   }
+   }*/
     
-    
-    
-    
+   /* func checkCollaborationActive(db_ref:String,mail:String, handle:@escaping(_:ProfiloUtente) -> () ) { // validato
+        
+        let newDoc_ref:DocumentReference? = db_base.collection("UID_UtenteBusiness").document(db_ref)
+
+        guard let newRef = newDoc_ref else {
+            handle(ProfiloUtente())
+            print("Chiave dbEsterno - documento non trovato")
+            return
+        }
+        
+        newRef.getDocument(as: ProfiloUtente.self) { result in
+            
+            switch result {
+                
+            case .success(let profiloAdmin):
+                
+                let collabModel:CollaboratorModel? = profiloAdmin.allMyCollabs?.first(where: {$0.mail == mail})
+                
+                let newCollabProfile = ProfiloUtente(datiUtente: collabModel)
+                handle(newCollabProfile)
+                print("Profilo collaboratore updated")
+                
+            case .failure(let error):
+                handle(ProfiloUtente())
+                print("Profilo dell'admin di riferimento per il collab non scaricato: \(error.localizedDescription)")
+            }
+        }
+        
+    }*/ // deprecata
     
 }
+            
 /*
 public struct CloudDataCompiler {
     

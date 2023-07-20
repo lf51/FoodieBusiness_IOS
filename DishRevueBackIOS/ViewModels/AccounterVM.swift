@@ -24,7 +24,7 @@ struct CollaboratorModel:Codable,Hashable,Identifiable {
     
     init(uidAmministratore db_uidRef:String) {
         
-        self.id = "UID_TEMP-" + UUID().uuidString
+        self.id = "NON_ACCOPPIATO" + UUID().uuidString
         self.inizioCollaborazione = Date.now
         self.mail = ""
         self.userName = ""
@@ -84,7 +84,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
    public init(userUID:String? = nil) {
        
             self.isLoading = userUID != nil // Nota 16.07.23 isLoading
-            self.dbCompiler = CloudDataCompiler(UID: userUID)
+            self.dbCompiler = CloudDataCompiler(userAuthUID: userUID)
    
             self.profiloUtente = ProfiloUtente()
             super.init()
@@ -101,7 +101,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
        
       // 18.07.23 Updating...
        
-       self.dbCompiler.fetchUserData { profiloUtente, dataBase in
+       /*self.dbCompiler.fetchUserData { profiloUtente, dataBase in
            
            if let profilo = profiloUtente {
                self.profiloUtente = profilo
@@ -111,6 +111,26 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
            }
            self.isLoading = false
            print("Concluso fetch all Data")
+       } */
+      /* self.dbCompiler.compilaCloudDataFromFirebase { db_data in
+           
+           if let db = db_data { self.cloudData = db }
+           self.isLoading = false
+           print("Concluso fetch db data")
+       }*/ // deprecata
+       
+       self.dbCompiler.fetchAllData { db, user, isLoading in
+           
+           if let profilo = user {
+               self.profiloUtente = profilo
+           }
+           
+           if let dataBase = db {
+               self.cloudData = dataBase
+           }
+           
+           self.isLoading = isLoading
+           print("Concluso fetch all Data")
        }
        
        
@@ -119,8 +139,18 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     func publishOnFirebase() {
         
-        self.dbCompiler.publishOnFirebase(dataCloud: self.cloudData)
-        self.dbCompiler.publishOnFirebase(profilo: self.profiloUtente)
+        // admin salva entrambi gli oggetti
+        // collab salva solo il cloudData
+
+        if let extRef = self.profiloUtente.datiUtente?.db_uidRef {
+            // collab
+            self.dbCompiler.publishOnFirebase(dbRef:extRef, saveData: self.cloudData)
+            
+        } else {
+            // admin
+            self.dbCompiler.publishOnFirebase(saveData: self.profiloUtente)
+            self.dbCompiler.publishOnFirebase(saveData: self.cloudData)
+        }
     }
     
     func fetchDataFromFirebase() {
