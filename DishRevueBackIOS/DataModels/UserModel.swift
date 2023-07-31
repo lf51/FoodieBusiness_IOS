@@ -7,12 +7,20 @@
 
 import Foundation
 
-struct UserModel:Equatable {
+public struct UserModel:Equatable,Hashable {
 
-    let userEmail: String // la mail con cui si autentica
-    let userUID: String
-    let userProviderID: String
-    var userDisplayName: String // lo sceglie l'utente
-    let userEmailVerified: Bool // 
+    public let userEmail: String // la mail con cui si autentica
+    public let userUID: String
+    public let userProviderID: String
+    public var userDisplayName: String // lo sceglie l'utente
+    public let userEmailVerified: Bool //
+    
+    public init(userEmail: String, userUID: String, userProviderID: String, userDisplayName: String, userEmailVerified: Bool) {
+        self.userEmail = userEmail
+        self.userUID = userUID
+        self.userProviderID = userProviderID
+        self.userDisplayName = userDisplayName
+        self.userEmailVerified = userEmailVerified
+    }
 
 }

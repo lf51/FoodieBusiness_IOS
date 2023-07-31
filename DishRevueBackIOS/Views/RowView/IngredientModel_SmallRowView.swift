@@ -166,7 +166,8 @@ struct IngredientModel_SmallRowView: View {
 
 struct IngredientModel_SmallRowView_Previews: PreviewProvider {
    @State static var vm = {
-        var viewM = AccounterVM()
+       let user = UserRoleModel()
+       var viewM = AccounterVM(userAuth: user)
        viewM.cloudData.allMyIngredients = [ ing1]
         return viewM
     }()

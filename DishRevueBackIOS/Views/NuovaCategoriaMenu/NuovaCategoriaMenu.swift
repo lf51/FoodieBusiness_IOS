@@ -214,12 +214,13 @@ struct NuovaCategoriaMenu: View {
 }
 
 struct NuovaCategoriaMenu_Previews: PreviewProvider {
-
+    static var user:UserRoleModel = UserRoleModel()
     static var previews: some View {
         
         NavigationStack {
             
-            NuovaCategoriaMenu(backgroundColorView: Color.seaTurtle_1).environmentObject(AccounterVM())
+            NuovaCategoriaMenu(backgroundColorView: Color.seaTurtle_1)
+                .environmentObject(AccounterVM(userAuth:user))
                 
         }
         

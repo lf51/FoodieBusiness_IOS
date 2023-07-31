@@ -12,6 +12,7 @@ import Firebase
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 import MyFilterPackage
+import MyPackView_L0
 
 extension CloudDataStore:Codable {
     
@@ -24,7 +25,8 @@ extension CloudDataStore:Codable {
          self.allMyIngredients = try values.decode([IngredientModel].self, forKey: .allMyIngredients)
          self.allMyDish = try values.decode([DishModel].self, forKey: .allMyDish)
          self.allMyMenu = try values.decode([MenuModel].self, forKey: .allMyMenu)
-         self.allMyProperties = try values.decode([PropertyModel].self, forKey: .allMyProperties)
+         self.allMyProperties = try values.decode([PropertyModel].self, forKey: .allMyProperties)//depreca
+         self.allMyPropertiesRef = try values.decode([RoleModel:String].self, forKey: .allMyPropertiesRef)
          
          self.allMyCategories = try values.decode([CategoriaMenu].self, forKey: .allMyCategories)
          self.allMyReviews = try values.decode([DishRatingModel].self, forKey: .allMyReviews)
@@ -44,7 +46,8 @@ extension CloudDataStore:Codable {
         try container.encode(allMyIngredients, forKey: .allMyIngredients)
         try container.encode(allMyDish, forKey: .allMyDish)
         try container.encode(allMyMenu, forKey: .allMyMenu)
-        try container.encode(allMyProperties, forKey: .allMyProperties)
+        try container.encode(allMyProperties, forKey: .allMyProperties) // depreca
+        try container.encode(allMyPropertiesRef, forKey: .allMyPropertiesRef)
         try container.encode(allMyCategories, forKey: .allMyCategories)
         try container.encode(allMyReviews, forKey: .allMyReviews) 
         
@@ -57,6 +60,7 @@ extension CloudDataStore:Codable {
     
 } // close extension
 
+/*
 enum RestrictionLevel:Codable {
     
     // le restrizioni funzionano per esclusione. Quelle contenute nei livelli sono quelle che verranno bloccate
@@ -118,37 +122,516 @@ enum RestrictionLevel:Codable {
         }
     }
 
+}*/ // spostata su FoodiePackage 22.07
+
+/// Oggetto per far transitare i dati in entrata e uscita dal firestore in un unica chiamata
+struct InvolucroDati:Codable {
+    
+    let property:PropertyModel
+    let dataBase:CloudDataStore?
+    
 }
 
-public struct CloudDataCompiler {
+struct PropertyImage:Hashable {
     
-    private let db_base = Firestore.firestore()
-    private var ref_db: DocumentReference?
-    private let userAuthUid:String?
-   
-  //  var profiloUtente:ProfiloUtente = ProfiloUtente()
+    let userRuolo:String
+    let propertyName:String
+    let propertyRef:String
     
-    public init(userAuthUID:String?) {
+}
 
-        if let user = userAuthUID {
+public class CloudDataCompiler:ObservableObject {
     
-            self.ref_db = db_base.collection("UID_UtenteBusiness").document(user)
-            self.userAuthUid = user
-         
-           // self.profiloUtente = ProfiloUtente()
-            print("CloudDataCompiler inizializzato con uuid:\(user)")
+   private let db_base = Firestore.firestore()
+   private var ref_db: DocumentReference // probabile deprecazione
+   private let userAuthUid:String
+    
+   @Published var allMyProperties:[PropertyImage]? // Valutare la necessità del published
+    
+   public enum CollectionKey:String {
+        case propertyCollection = "UID_PropertyRegistered"
+        case businessUser = "UID_UtenteBusiness"
+    }
+    
+   public init(userAuthUID:String) {
+        
+       // if let user = userAuthUID {
             
-        } else {
+            self.ref_db = db_base.collection(CollectionKey.businessUser.rawValue).document(userAuthUID) // rif al proprio UID
+            self.userAuthUid = userAuthUID
+            
+       
+            self.internalFetch { allProp in
+                    self.allMyProperties = allProp
+                }
+       
+            print("CloudDataCompiler inizializzato con uuid:\(userAuthUID)")
+       
+      /*  } else {
             self.ref_db = nil
             self.userAuthUid = nil
-           // self.profiloUtente = ProfiloUtente()
             print("CloudDataCompiler init con id: NIL)")
-        }
+        } */
         
         
     }
     
-     func fetchAllData(handle:@escaping(_ db:CloudDataStore?,_ user:ProfiloUtente?,_ isLoading:Bool) -> ()) {
+    // Nuovo Corso
+    private func internalFetch(handle:@escaping(_ allProp:[PropertyImage]?) -> ()) {
+        
+        self.ref_db.getDocument { doc, error in
+            
+            if let document = doc,
+               document.exists {
+                
+                let allRef = document.data()?.values ?? nil
+                
+                
+            } else {
+                
+                handle(nil)
+            }
+            
+            
+        }
+        
+        
+        
+        
+        
+        
+        self.ref_db.getDocument(as: [String].self) { result in
+            
+            switch result {
+                
+            case .success(let refProperty):
+                
+                var userRefConfirmed:[String] = refProperty
+                var values:[PropertyImage] = []
+                
+                for ref in refProperty {
+                    
+                    self.fetchDocument(collection: .propertyCollection, docRef: ref, modelSelf: InvolucroDati.self) { modelData in
+                        
+                        if let property = modelData?.property,
+                           let userRoleModel = property.organigramma.first(where: {$0.id == self.userAuthUid}) {
+                            
+                            let ruolo = userRoleModel.ruolo.rawValue
+                            let nameProp = property.intestazione
+                            
+                            let propertyImage = PropertyImage(
+                                userRuolo: ruolo,
+                                propertyName: nameProp,
+                                propertyRef: ref)
+                            
+                            values.append(propertyImage)
+   
+                        } else {
+                            // utente non autorizzato o property rimossa // eliminiamo riferimento
+                            print("Autorizzazione non trovata per user:\(self.userAuthUid) in propertyRef:\(ref) - Procediamo a rimozione automatica")
+                            userRefConfirmed.removeAll(where: {$0 == ref})
+                        }
+   
+                    }
+                }
+                
+                if refProperty.count != userRefConfirmed.count {
+                    
+                   do {
+                        try self.ref_db.setData(from: userRefConfirmed, merge: true)
+                        print("Riferimenti proprietà aggiornati per utente:\(self.userAuthUid)")
+                   } catch let error {
+                       
+                       print("Errore [\(error.localizedDescription)] nell'update dei rif per l'utente:\(self.userAuthUid)")
+                   }
+
+                }
+                
+                print("Compilato role:Prop per l'Utente")
+                if values.isEmpty {
+                    handle(nil)
+                } else {
+                    handle(values)
+                }
+                
+ 
+            case .failure(_):
+                print("No PropertyRef per l'Utente")
+                handle(nil)
+            }
+            
+            
+        }
+        
+        
+    }
+   /* private func internalFetch(handle:@escaping(_ allProp:[RoleModel:PropertyModel]?) -> ()) {
+        
+        self.ref_db.getDocument(as: [RoleModel:String].self) { result in
+            
+            switch result {
+            case .success(let refProperty):
+                
+                var roleProp:[RoleModel:PropertyModel] = [:]
+                
+                for ref in refProperty {
+                    
+                    self.fetchDocument(collection: .propertyCollection, docRef: ref.value, modelSelf: PropertyModel.self) { modelData in
+                        
+                        if modelData?.organigramma.allAdminCollabs?.first(where: {$0.id == self.userAuthUid }) != nil { // utente riconosciuto
+                            
+                            roleProp[ref.key] = modelData
+                            
+                        }
+                    }
+                }
+                print("Compilato role:Prop per l'Utente")
+                if roleProp.isEmpty {
+                    handle(nil)
+                } else {
+                    handle(roleProp)
+                }
+                
+ 
+            case .failure(_):
+                print("No PropertyRef per l'Utente")
+                handle(nil)
+            }
+            
+            
+        }
+        
+        
+    } */ // deprecata
+    
+    func firstFetch(handle:@escaping(_ propUserRole:UserRoleModel?,_ currentProp:PropertyModel?,_ propDB:CloudDataStore?,_ isLoading:Bool) -> ()) {
+        
+        switch self.allMyProperties?.count {
+            
+        case 1:
+            
+            let values = self.allMyProperties?.first
+            
+            self.estrapolaDatiFromPropImage(propertyImage:values) { user, prop, db in
+                handle(user,prop,db,false)
+            }
+           
+       
+        default: handle(nil,nil,nil,false)
+            // se ci sono zero prop o più di una verrà ritornato nil per far partire la schermata di scelta/Primaregistrazione
+        }
+        
+    }
+    
+    func estrapolaDatiFromPropImage(propertyImage:PropertyImage?,handle:@escaping(_ user:UserRoleModel?,_ prop:PropertyModel?,_ db:CloudDataStore?) -> () ) {
+        // chiamata soltanto previa verifica esistenza di una sola Propietà registrata
+         
+      /*  guard let values = self.allMyProperties?.first else {
+            print("Errore estrapolazione unica prop registrata")
+            handle(nil,nil,nil)
+        } */
+        
+        guard let values = propertyImage else {
+            print("Errore etrapolazione dati da una PropertyImage")
+            handle(nil,nil,nil)
+            return 
+        }
+        
+        self.fetchDocument(collection: .propertyCollection, docRef: values.propertyRef, modelSelf: InvolucroDati.self) { modelData in
+            
+                let userProp = modelData?.property.organigramma.first(where: {$0.id == self.userAuthUid})
+                
+                let propCurrent = modelData?.property
+                let dbCurrent = modelData?.dataBase
+                
+                handle(userProp,propCurrent,dbCurrent)
+
+        }
+    }
+    
+    
+    // database
+    /// fetch document generico
+    func fetchDocument<D:Codable>(collection:CollectionKey,docRef:String,modelSelf:D.Type,handle:@escaping(_ modelData:D?) ->()) {
+        
+        let documentRef = self.db_base.collection(collection.rawValue).document(docRef)
+    
+        documentRef.getDocument(as:modelSelf.self) { result in
+            
+            switch result {
+                
+            case .success(let element):
+                handle(element)
+                print("Dato generico scaricato con successo da Firebase")
+            case .failure(let error):
+                handle(nil)
+                print("Download dato generico from Firebase FAIL: \(error)")
+            }
+        }
+        
+     
+    }
+    
+   /* func fetchAllData(userAuthMail:String,handle:@escaping(_ db:CloudDataStore?,_ userRoleUpdate:UserRoleModel?,_ propertyMod:PropertyModel?,_ isLoading:Bool) -> ()) {
+        
+       /* guard let userUID = self.userAuthUid else {
+            handle(nil,nil,nil,false)
+            print("No User Auth UID")
+            return
+        } */
+        
+        self.fetchDocument(collection: .businessUser, docRef: self.userAuthUid, modelSelf: CloudDataStore.self) { modelData in
+            
+            let propertyRef = modelData?.allMyPropertiesRef
+            
+            guard let ref = propertyRef,
+                  let collab = ref.first(where: {$0.key == .collab}) else {
+                // admin or nessuna registrazione/collaborazione
+                handle(modelData,nil,nil,false)
+                print("UserAuth senza registrazione/collaborazione")
+                
+            }
+            
+            let refProprieta = collab.value
+ 
+            // collab
+            // verifica autorizzazioni
+            self.fetchDocument(collection: .propertyCollection, docRef: refProprieta, modelSelf: PropertyModel.self) { modelData2 in
+                
+               // let dbRef = modelData2?.organigramma.admin.id
+                let collabs = modelData2?.organigramma.allAdminCollabs
+                let collabModel = collabs?.first(where: {$0.mail == userAuthMail})
+                
+                guard let collabUserRole = collabModel,
+                let dbRef = modelData2?.organigramma.admin.id else {
+                    // collaboratore non autorizzato // o proprietà registrata senza admin
+                    handle(modelData,nil,nil,false)
+                    print("Collaboratore non autorizzato O proprietà senza riferimento admin")
+                    return
+                }
+                // collaboratore Autorizzato
+               
+                self.fetchDocument(collection: .businessUser, docRef: dbRef, modelSelf:CloudDataStore.self) { modelData3 in
+                   
+                    handle(modelData3,collabUserRole,modelData2,false)
+                    print("Collaboratore Autorizzato - scarico db esterno/UpdateRoleMode/UpdateProperty")
+                }
+                
+            }
+        }
+    } */ // deprecata
+
+    
+    func publishGenericOnFirebase<Element:Codable>(collection:CollectionKey,refKey:String,element:Element) {
+        
+        let key = self.db_base.collection(collection.rawValue).document(refKey)
+        
+        do {
+            try key.setData(from: element,merge: true)
+            
+        } catch let error {
+            print("\(error.localizedDescription) - Errore nel salvataggio Generico su Firebase")
+        }
+        
+    }
+    
+    func publishOnFirebase<C:Codable>(dbRef:String? = nil,saveData:C,handle:@escaping(_ errorIn:Bool) ->() ) {
+        
+        let ref:DocumentReference? = {
+            if let uuid = dbRef {
+                let newRef = self.db_base.collection(CollectionKey.businessUser.rawValue).document(uuid)
+                return newRef
+            } else {
+                return self.ref_db
+            }
+        }()
+        
+        do {
+            try ref?.setData(from: saveData, merge: true)
+            handle(false)
+            
+        } catch let error {
+            handle(true)
+            print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
+        }
+        
+        
+    }
+
+    
+    func firstAuthenticationFuture() {
+        // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
+        self.ref_db.setData([:])
+        // Va sistemato in chiave collab -admin
+        print("firstAuthenticationFuture")
+        
+    } // private
+    
+    // Property Manager
+    
+    /// Registrazione nella collezione delle proprietà
+    func registraPropertyOnFirebase(property:PropertyModel, handle:@escaping(_ alert:AlertModel?) -> () ) {
+        
+        let docRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(property.id)
+        
+        // verifica esistenza su firebase
+        docRef.getDocument { (document,error) in
+            
+            if let doc = document, doc.exists {
+                // già registrata
+                handle(AlertModel(
+                    title: "Proprietà già registrata",
+                    message: "Per reclami e/o errori contattare info@foodies.com.",
+                    actionPlus: nil))
+                
+            } else {
+                // registrabile
+              //  handle(nil)
+                do {
+                    try docRef.setData(from: property, merge: true)
+                    handle(nil)
+                    
+                } catch let error {
+                    handle(AlertModel(
+                        title: "Server Error",
+                        message: "\(error.localizedDescription)\nRiprovare. Se il problema persiste contattare info@foodies.com"))
+                    print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
+                }
+
+            }
+            
+        }
+
+    }
+
+    
+    func deRegistraProprietà(propertyUID:String,handle:@escaping(_ deleteSuccess:Bool) -> () ) {
+        
+        let docRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(propertyUID)
+        
+        docRef.delete() { error in
+            
+            if let _ = error {
+                // eliminazione non avvenuta
+                handle(false)
+                print("Proprietà NON deRegistrata")
+            } else {
+                // eliminazione success
+                handle(true)
+                print("Proprietà deRegistrata con Successo")
+            }
+            
+            
+        }
+    }
+    
+    
+    
+    
+}
+
+
+/*
+public struct CloudDataCompiler {
+    
+    private let db_base = Firestore.firestore()
+    private var ref_db: DocumentReference
+    private let userAuthUid:String
+    
+   public enum CollectionKey:String {
+        case propertyCollection = "UID_PropertyRegistered"
+        case businessUser = "UID_UtenteBusiness"
+    }
+    
+   public init(userAuthUID:String) {
+        
+       // if let user = userAuthUID {
+            
+            self.ref_db = db_base.collection(CollectionKey.businessUser.rawValue).document(userAuthUID) // rif al proprio UID
+            self.userAuthUid = userAuthUID
+            
+            print("CloudDataCompiler inizializzato con uuid:\(userAuthUID)")
+            
+      /*  } else {
+            self.ref_db = nil
+            self.userAuthUid = nil
+            print("CloudDataCompiler init con id: NIL)")
+        } */
+        
+        
+    }
+    
+    // database
+    /// fetch document generico
+    func fetchDocument<D:Codable>(collection:CollectionKey,docRef:String,modelSelf:D.Type,handle:@escaping(_ modelData:D?) ->()) {
+        
+        let documentRef = self.db_base.collection(collection.rawValue).document(docRef)
+    
+        documentRef.getDocument(as:modelSelf.self) { result in
+            
+            switch result {
+                
+            case .success(let element):
+                handle(element)
+                print("Dato generico scaricato con successo da Firebase")
+            case .failure(let error):
+                handle(nil)
+                print("Download dato generico from Firebase FAIL: \(error)")
+            }
+        }
+        
+    }
+    
+    func fetchAllData(userAuthMail:String,handle:@escaping(_ db:CloudDataStore?,_ userRoleUpdate:UserRoleModel?,_ propertyMod:PropertyModel?,_ isLoading:Bool) -> ()) {
+        
+       /* guard let userUID = self.userAuthUid else {
+            handle(nil,nil,nil,false)
+            print("No User Auth UID")
+            return
+        } */
+        
+        self.fetchDocument(collection: .businessUser, docRef: self.userAuthUid, modelSelf: CloudDataStore.self) { modelData in
+            
+            let propertyRef = modelData?.allMyPropertiesRef
+            
+            guard let ref = propertyRef,
+                  let collab = ref.first(where: {$0.key == .collab}) else {
+                // admin or nessuna registrazione/collaborazione
+                handle(modelData,nil,nil,false)
+                print("UserAuth senza registrazione/collaborazione")
+                
+            }
+            
+            let refProprieta = collab.value
+ 
+            // collab
+            // verifica autorizzazioni
+            self.fetchDocument(collection: .propertyCollection, docRef: refProprieta, modelSelf: PropertyModel.self) { modelData2 in
+                
+               // let dbRef = modelData2?.organigramma.admin.id
+                let collabs = modelData2?.organigramma.allAdminCollabs
+                let collabModel = collabs?.first(where: {$0.mail == userAuthMail})
+                
+                guard let collabUserRole = collabModel,
+                let dbRef = modelData2?.organigramma.admin.id else {
+                    // collaboratore non autorizzato // o proprietà registrata senza admin
+                    handle(modelData,nil,nil,false)
+                    print("Collaboratore non autorizzato O proprietà senza riferimento admin")
+                    return
+                }
+                // collaboratore Autorizzato
+               
+                self.fetchDocument(collection: .businessUser, docRef: dbRef, modelSelf:CloudDataStore.self) { modelData3 in
+                   
+                    handle(modelData3,collabUserRole,modelData2,false)
+                    print("Collaboratore Autorizzato - scarico db esterno/UpdateRoleMode/UpdateProperty")
+                }
+                
+            }
+        }
+    }
+    /*
+    func fetchAllData(handle:@escaping(_ db:CloudDataStore?,_ user:ProfiloUtente?,_ isLoading:Bool) -> ()) {
         
         guard let userUID = self.userAuthUid else {
             handle(nil,nil,false)
@@ -165,7 +648,7 @@ public struct CloudDataCompiler {
                     if let collaboratorProfile:CollaboratorModel = profiloAdmin?.allMyCollabs?.first(where: {$0.mail == datiUtente.mail}) {
                         // collaboratore esiste
                         let profiloAggiornato = ProfiloUtente(datiUtente:collaboratorProfile)
-
+                        
                         self.compilaCloudDataFromFirebase(newDbRef:datiUtente.db_uidRef) { dbFromAdmin in
                             
                             handle(dbFromAdmin,profiloAggiornato,false)
@@ -180,7 +663,7 @@ public struct CloudDataCompiler {
                     }
                     
                 }
- 
+                
             } else {
                 // admin
                 self.compilaCloudDataFromFirebase { cloudData in
@@ -191,35 +674,47 @@ public struct CloudDataCompiler {
             }
             
         }
-  
+        
+    }*/ // deprecata 23.07.23
+    
+    func publishGenericOnFirebase<Element:Codable>(collection:CollectionKey,refKey:String,element:Element) {
+        
+        let key = self.db_base.collection(collection.rawValue).document(refKey)
+        
+        do {
+            try key.setData(from: element,merge: true)
+            
+        } catch let error {
+            print("\(error.localizedDescription) - Errore nel salvataggio Generico su Firebase")
+        }
+        
     }
     
-    
-    func publishOnFirebase<C:Codable>(dbRef:String? = nil,saveData:C) {
-       
+    func publishOnFirebase<C:Codable>(dbRef:String? = nil,saveData:C,handle:@escaping(_ errorIn:Bool) ->() ) {
+        
         let ref:DocumentReference? = {
             if let uuid = dbRef {
-                let newRef = self.db_base.collection("UID_UtenteBusiness").document(uuid)
+                let newRef = self.db_base.collection(CollectionKey.businessUser.rawValue).document(uuid)
                 return newRef
             } else {
                 return self.ref_db
             }
         }()
         
-       do {
-           
-           try ref?.setData(from: saveData, merge: true)
-          
-       } catch let error {
-           
-           print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
-       }
-       
-       
-   }
-    
-    func fetchUserProfile(docRef:String,handle: @escaping (_ :ProfiloUtente?) -> () ) { // Validata
-       
+        do {
+            try ref?.setData(from: saveData, merge: true)
+            handle(false)
+            
+        } catch let error {
+            handle(true)
+            print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
+        }
+        
+        
+    }
+    /*
+    private func fetchUserProfile(docRef:String,handle: @escaping (_ :ProfiloUtente?) -> () ) { // Validata
+        
         let userRef:DocumentReference? = self.db_base.collection("UID_UtenteBusiness").document(docRef)
         
         guard let ref = userRef else {
@@ -239,17 +734,18 @@ public struct CloudDataCompiler {
             }
         }
         
-   }
-        
+    }*/ // deprecata
+    
     func firstAuthenticationFuture() {
-    // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
-        self.ref_db?.setData([:])
-    // Va sistemato in chiave collab -admin
+        // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
+        self.ref_db.setData([:])
+        // Va sistemato in chiave collab -admin
         print("firstAuthenticationFuture")
-
-    }
         
-    func compilaCloudDataFromFirebase(newDbRef:String? = nil,handle:@escaping(_:CloudDataStore?) -> () ) {
+    } // private
+    
+    /*
+    private func compilaCloudDataFromFirebase(newDbRef:String? = nil,handle:@escaping(_:CloudDataStore?) -> () ) {
         
         let newRef:DocumentReference? = {
             
@@ -262,18 +758,18 @@ public struct CloudDataCompiler {
                 // avremo il riferimento salvato in fase di init (admin)
                 return self.ref_db
             }
-               
-
+            
+            
         }()
         
-            guard let docRef = newRef else {
+        guard let docRef = newRef else {
             handle(nil)
             print("errore - ref_db == nil")
             return
         }
         
-        docRef.getDocument(as: CloudDataStore.self) { result in
-        
+       docRef.getDocument(as: CloudDataStore.self) { result in
+            
             switch result {
                 
             case .success(let cloudData):
@@ -284,114 +780,108 @@ public struct CloudDataCompiler {
                 print("Download from Firebase FAIL: \(error)")
             }
             
+            
+        }
+
+    } */// deprecata // chiusa metodo
     
+    // Property Manager
+    
+    /// Registrazione nella collezione delle proprietà
+    func registraPropertyOnFirebase(property:PropertyModel, handle:@escaping(_ alert:AlertModel?) -> () ) {
+        
+        let docRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(property.id)
+        
+        // verifica esistenza su firebase
+        docRef.getDocument { (document,error) in
+            
+            if let doc = document, doc.exists {
+                // già registrata
+                handle(AlertModel(
+                    title: "Proprietà già registrata",
+                    message: "Per reclami e/o errori contattare info@foodies.com.",
+                    actionPlus: nil))
+                
+            } else {
+                // registrabile
+              //  handle(nil)
+                do {
+                    try docRef.setData(from: property, merge: true)
+                    handle(nil)
+                    
+                } catch let error {
+                    handle(AlertModel(
+                        title: "Server Error",
+                        message: "\(error.localizedDescription)\nRiprovare. Se il problema persiste contattare info@foodies.com"))
+                    print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
+                }
+
+            }
+            
+        }
+
+    }
+    /*
+    func registraPropertyOnFirebase(propertyUID:String, handle:@escaping(_ alert:AlertModel?) -> () ) {
+        
+        let docRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(propertyUID)
+        
+        // verifica esistenza su firebase
+        docRef.getDocument { (document,error) in
+            
+            if let doc = document, doc.exists {
+                // già registrata
+                handle(AlertModel(
+                    title: "Proprietà già registrata",
+                    message: "Per reclami e/o errori contattare info@foodies.com.",
+                    actionPlus: nil))
+                
+            } else {
+                // registrabile
+              //  handle(nil)
+                docRef.setData(["adminUID":self.userAuthUid ?? ""],merge:false) { err in
+                    if let error = err {
+                        handle(AlertModel(
+                            title: "Server Error",
+                            message: "\(error.localizedDescription)\nRiprovare. Se il problema persiste contattare info@foodies.com"))
+                        print("\(error.localizedDescription) - Errore nella registrazione della Proprietà")
+                    } else {
+                        
+                        handle(nil)
+                        print("- Registrazione della Proprietà avvenuta con successo")
+                    }
+                }
+                
+            }
+            
+        }
+
+    }*/ // deprecata 23.07.23
+    
+    func deRegistraProprietà(propertyUID:String,handle:@escaping(_ deleteSuccess:Bool) -> () ) {
+        
+        let docRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(propertyUID)
+        
+        docRef.delete() { error in
+            
+            if let _ = error {
+                // eliminazione non avvenuta
+                handle(false)
+                print("Proprietà NON deRegistrata")
+            } else {
+                // eliminazione success
+                handle(true)
+                print("Proprietà deRegistrata con Successo")
+            }
+            
+            
         }
     }
     
-   
-    /* func publishOnFirebase(dataCloud:CloudDataStore) {
-        
-        do {
-            
-            try ref_userDocument?.setData(from: dataCloud, merge: true)
-           
-        } catch let error {
-            
-            print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
-        }
-        
-        
-    } */
     
-   
     
-    // Fetch dati collaborate/Adim
     
-
-   /* func fetchUserData(handle: @escaping(_ :ProfiloUtente?,_ :CloudDataStore?) -> () ) {
-        
-        self.fetchUserProfile { profilo in
-            
-            if let db_ExternalRef = profilo?.datiUtente?.db_uidRef {
-                
-                if let mailUser = profilo?.datiUtente?.mail {
-                    
-                    checkCollaborationActive(db_ref: db_ExternalRef, mail: mailUser) { updatedProfile in
-                        
-                        compilaCloudDataFromFirebase(extRef: db_ExternalRef) { ext_db in
-                            handle(updatedProfile,ext_db)
-                            print("DataBase esterno scaricato da Firebase")
-                        }
-  
-                    }
-                }
-   
-            } else {
-                // admin
-                self.compilaCloudDataFromFirebase { dataBase in
-                   handle(profilo,dataBase)
-                    print("DataBase Interno scaricato da Firebase")
-                }
-                
-            }
-            
-        }
-        
-    }*/ // deprecata
-    
-  /*  func fetchUserProfile(handle: @escaping (_ :ProfiloUtente?) -> () ) { // validato
-       
-          guard let docRef = self.ref_db else {
-           handle(nil)
-           print("docRef == nil")
-           return
-       }
-    
-        docRef.getDocument(as: ProfiloUtente.self) { result in
-            
-            switch result {
-            case .success(let profilo):
-                handle(profilo)
-                print("Profilo Utente caricato con successo da Firebase")
-            case .failure(let error):
-                handle(nil)
-                print("Download profiloUtente from Firebase FAIL: \(error)")
-            }
-        }
-        
-   }*/
-    
-   /* func checkCollaborationActive(db_ref:String,mail:String, handle:@escaping(_:ProfiloUtente) -> () ) { // validato
-        
-        let newDoc_ref:DocumentReference? = db_base.collection("UID_UtenteBusiness").document(db_ref)
-
-        guard let newRef = newDoc_ref else {
-            handle(ProfiloUtente())
-            print("Chiave dbEsterno - documento non trovato")
-            return
-        }
-        
-        newRef.getDocument(as: ProfiloUtente.self) { result in
-            
-            switch result {
-                
-            case .success(let profiloAdmin):
-                
-                let collabModel:CollaboratorModel? = profiloAdmin.allMyCollabs?.first(where: {$0.mail == mail})
-                
-                let newCollabProfile = ProfiloUtente(datiUtente: collabModel)
-                handle(newCollabProfile)
-                print("Profilo collaboratore updated")
-                
-            case .failure(let error):
-                handle(ProfiloUtente())
-                print("Profilo dell'admin di riferimento per il collab non scaricato: \(error.localizedDescription)")
-            }
-        }
-        
-    }*/ // deprecata
-    
-}
+} */ // backup 26.07.23 - pre trasformazione in class
             
 /*
 public struct CloudDataCompiler {

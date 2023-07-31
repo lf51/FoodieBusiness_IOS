@@ -10,8 +10,38 @@ import MapKit
 import MyFoodiePackage
 
 //SubView di NewPropertySheetView
-
 struct MapView: View {
+    
+   // @ObservedObject var vm:PropertyVM
+    @Binding var currentRegion: MKCoordinateRegion
+    let queryResults: [MKMapItem]
+    
+    var body: some View {
+          
+        let allResult = queryResults.compactMap { (item) -> ItemCoordinate in
+            
+            return ItemCoordinate(coordinate: item.placemark.coordinate)
+        }
+        
+        Map(coordinateRegion: $currentRegion,
+            annotationItems: allResult) { item in
+                
+                MapMarker(coordinate: item.coordinate , tint: .cyan)
+        
+            }
+    }
+    
+    private struct ItemCoordinate:Identifiable {
+        let id:String
+        let coordinate:CLLocationCoordinate2D
+        
+        init(coordinate: CLLocationCoordinate2D) {
+            self.id = coordinate.latitude.formatted() + coordinate.longitude.formatted()
+            self.coordinate = coordinate
+        }
+    }
+}
+/*struct MapView: View {
     
    // @ObservedObject var vm:PropertyVM
     @Binding var currentRegion: MKCoordinateRegion
@@ -26,7 +56,7 @@ struct MapView: View {
             
             }
     }
-}
+} */ // 29.07.23 deprecata
 
 /*
 struct MapView_Previews: PreviewProvider {

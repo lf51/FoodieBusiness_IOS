@@ -10,7 +10,9 @@
 import SwiftUI
 import MapKit
 import MyFoodiePackage
-// 17/06/2023 Maps di Apple -> tentiamo di scriverne un altra con maps di Google
+import MyPackView_L0
+// 17/06/2023 Maps di Apple -> tentiamo di scriverne un altra con maps di Google. TENTATIVO FALLITO
+
 struct NewPropertyMainView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
@@ -19,20 +21,22 @@ struct NewPropertyMainView: View {
     let screenHeight: CGFloat = UIScreen.main.bounds.height
     let screenWidth: CGFloat = UIScreen.main.bounds.width
     
-    @State private var newProperty: PropertyModel = PropertyModel()
+    @State private var newProperty: MKMapItem?
+    
     @State private var queryRequest: String = ""
-    @State private var queryResults: [PropertyModel] = [] // viene riempita dalla query di ricerca
+    @State private var queryResults: [MKMapItem] = [] // viene riempita dalla query di ricerca
+    
     @State private var currentRegion: MKCoordinateRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
         span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
     
-    @State private var showActivityInfo:Bool = false
+    @State private var showActivityInfo:Bool = false // deprecata
     
     var body: some View {
         
         ZStack {
                 
-                MapView(currentRegion: $currentRegion, queryResults: $queryResults)
+            MapView(currentRegion: $currentRegion, queryResults: queryResults)
                 .ignoresSafeArea()
                 .zIndex(0)
                 
@@ -40,21 +44,28 @@ struct NewPropertyMainView: View {
                 
                 Button("Dismiss") {self.isShowingSheet.toggle()}.padding(.trailing).padding(.top)
            
-                CSTextField_2(text: $queryRequest, placeholder: "nome attività, indirizzo, città", symbolName: "location.circle", accentColor: .green, backGroundColor: .white, autoCap:.words, cornerRadius: 5.0).padding(.horizontal)
+                CSTextField_2(text: $queryRequest, placeholder: "nome attività, indirizzo, città", symbolName: "location.circle", accentColor: .green, backGroundColor: .white, autoCap:.words, cornerRadius: 5.0).padding(.horizontal,5)
                 
-                QueryScrollView_NewPropertySubView(queryResults: $queryResults, queryRequest: $queryRequest, screenHeight: screenHeight){ property in
+                QueryScrollView_NewPropertySubView(
+                    queryResults: queryResults,
+                    queryRequest: queryRequest,
+                    screenHeight: screenHeight){ propertyItem in
                    
-                        self.showPlaceData(place: property)
+                        self.showPlaceData(mkItem: propertyItem)
                     
                 }
                     .zIndex(1)
                 
                 Spacer()
                 
-                if showActivityInfo {
+                if let property = self.newProperty {
                     
-                    ChoiceInfoView_NewPropertySubView(newProperty: $newProperty, screenWidth: screenWidth, frameHeight: screenHeight * 0.20) {
-                        self.actionAddButton()
+                    ChoiceInfoView_NewPropertySubView(
+                        newProperty: property,
+                        screenWidth: screenWidth,
+                        frameHeight: screenHeight * 0.20) {
+                            
+                        self.registrazioneProperty(mkItem: property)
                     }
                         .padding(.vertical, screenHeight * 0.05 )
                     
@@ -78,31 +89,123 @@ struct NewPropertyMainView: View {
     
     // Method
     
-    private func actionAddButton() {
+    private func registrazioneProperty(mkItem:MKMapItem) {
         
-      //  self.viewModel.createOrUpdateItemModel(itemModel: newProperty)
-        self.viewModel.createItemModel(itemModel: newProperty)
-        print("CONTROLLARE ACRIONADDBUTTON() in NEWPROPERTYMAINVIEW")
-        self.showActivityInfo = false
-        self.queryResults = []
-        self.queryRequest = ""
+        // userRoleModel derivato da quello corrente
         
-    }
+        let localUser:UserRoleModel = {
+            // id + email + usernam sono sempre gli stessi per tutte le prop e le collab dell'utente corrente
+            var user = self.viewModel.currentUserRoleModel
+            
+            user.ruolo = .admin
+            user.inizioCollaborazione = Date.now
+            user.restrictionLevel = nil
+            
+            return user
+        }()
     
-   private func showPlaceData(place:PropertyModel) {
+        // genera un propertyModel
+       let modelProperty = PropertyModel(
+         intestazione: mkItem.name ?? "",
+         cityName: mkItem.placemark.locality ?? "",
+         coordinates: mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
+         webSite: mkItem.url?.absoluteString ?? "",
+         phoneNumber: mkItem.phoneNumber ?? "",
+         streetAdress: mkItem.placemark.thoroughfare ?? "",
+         numeroCivico: mkItem.placemark.subThoroughfare ?? "",
+         admin: localUser )
+
+        // crea Imaggine proprietà
         
-        self.currentRegion = MKCoordinateRegion(center: place.coordinates , span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        let propertyImage = PropertyImage(
+            userRuolo: localUser.ruolo.rawValue,
+            propertyName: modelProperty.intestazione,
+            propertyRef: modelProperty.id)
         
-        self.newProperty = place
+        // aggiorna lista imaggini le dbCompiler
+        
+        if self.viewModel.dbCompiler.allMyProperties != nil {
+            self.viewModel.dbCompiler.allMyProperties?.append(propertyImage)
+        } else {
+            self.viewModel.dbCompiler.allMyProperties = [propertyImage]
+        }
+        
+        // registra property sul firebase
+        
+        let involucro = InvolucroDati(property: modelProperty, dataBase: nil)
+        self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: modelProperty.id, element: involucro)
+        // aggiornare i riferimenti nella chiave utente in firebase
+        let ref = propertyImage.propertyRef
+        self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .businessUser, refKey: localUser.id, element: ["propertyRef":[ref]])
+ 
+    }
+    /*
+    private func registrazionePropertyDEPRECATA(newProperty:PropertyModel) {
+        
+        // registra prop nel firebase propCollection
+        self.viewModel.dbCompiler.registraPropertyOnFirebase(property: newProperty) { alert in
+            
+            if let problem = alert {
+                //  proprietà gia' esistente
+                self.viewModel.alertItem = problem
+                
+            } else {
+                // salva CloudData Locale
+               // self.viewModel.createItemModel(itemModel: newProperty)
+                self.viewModel.creaPropertyRef(propertyRef: newProperty.id, role: .admin)
+                
+                if self.viewModel.cloudData.allMyPropertiesRef.isEmpty { // è un check di errore di salvataggio nel viewMODEL locale
+                    // reset
+                    self.viewModel.dbCompiler.deRegistraProprietà(propertyUID: newProperty.id) { deleteSuccess in
+                        
+                        if deleteSuccess {
+                            self.viewModel.alertItem = AlertModel(title: "Server Message", message: "Salvataggio locale Fallito - deRegistrazione dal Server Success")
+                        } else {
+                            self.viewModel.alertItem = AlertModel(title: "Server Message", message: "Salvataggio locale Fallito - deRegistrazione dal server Fallita")
+                        }
+                        
+                    }
+                } else {
+                    // salva cloudDataServer
+                    self.viewModel.publishOnFirebase() { errorIn in
+                        if errorIn {
+                            // reset
+                            self.viewModel.dbCompiler.deRegistraProprietà(propertyUID: newProperty.id) { deleteSuccess in
+                                print("Errore nella registrazione del Ref nel cloud Data. DeRegistrazione property dalla propertyCollection avvenuta con successo? :\(deleteSuccess.description)")
+                               // self.viewModel.deleteProperty(property: newProperty)
+                                self.viewModel.cloudData.allMyPropertiesRef = [:]
+                            }
+                           
+                            
+                        } else {
+                            // Success
+                            self.queryRequest = ""
+                            self.queryResults = []
+                           // self.showActivityInfo = false
+                            self.newProperty = nil
+                            self.isShowingSheet = false
+                        }
+                    }
+                }
+            }
+        }
+    }*/ // 29.07.23 Deprecata
+    
+   private func showPlaceData(mkItem:MKMapItem) {
+        
+       self.currentRegion = MKCoordinateRegion(center: mkItem.placemark.coordinate , span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        
+        self.newProperty = mkItem
        // withAnimation { self.showActivityInfo = true }
-        self.showActivityInfo = true
+       // self.showActivityInfo = true
     }
     
    private func queryResearch() {
 
        withAnimation(.linear(duration: 0.5)) {
            self.queryResults.removeAll()
-           self.showActivityInfo = false
+         //  self.showActivityInfo = false
+           self.newProperty = nil 
        }
         
         let request = MKLocalSearch.Request()
@@ -112,11 +215,11 @@ struct NewPropertyMainView: View {
         MKLocalSearch(request: request).start { (response, _) in
             
             guard let result = response else { return }
-            
-            self.queryResults = result.mapItems.compactMap({ (item) -> PropertyModel? in
+        
+            self.queryResults = result.mapItems
+          /*  self.queryResults = result.mapItems.compactMap({ (item) -> PropertyModel? in
   
-            //  print("itemDescription: \(item.description)")
-            //  print("pointOfIntCategory: \(item.pointOfInterestCategory?.rawValue ?? ""/* == MKPointOfInterestCategory.restaurant.rawValue*/)")
+         
               return PropertyModel(
                 
                 intestazione: item.name ?? "",
@@ -125,10 +228,10 @@ struct NewPropertyMainView: View {
                 webSite: item.url?.absoluteString ?? "",
                 phoneNumber: item.phoneNumber ?? "",
                 streetAdress: item.placemark.thoroughfare ?? "",
-                numeroCivico: item.placemark.subThoroughfare ?? ""
-
+                numeroCivico: item.placemark.subThoroughfare ?? "",
+                admin: self.viewModel.currentUserRoleModel // da cambiare
               )
-            })
+            }) */ // 29.07.23 deprecata
         }
     }
 }

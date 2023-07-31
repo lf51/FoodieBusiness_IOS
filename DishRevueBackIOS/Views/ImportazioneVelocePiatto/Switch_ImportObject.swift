@@ -74,10 +74,11 @@ struct Switch_ImportObject: View {
 }
 
 struct Switch_ImportObject_Previews: PreviewProvider {
+    static var user:UserRoleModel = UserRoleModel()
     static var previews: some View {
         NavigationStack {
             Switch_ImportObject(backgroundColorView: .seaTurtle_1)
-                .environmentObject(AccounterVM())
+                .environmentObject(AccounterVM(userAuth: user))
         }
     }
 }

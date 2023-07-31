@@ -31,7 +31,9 @@ struct HomeView: View {
 
         NavigationStack(path:$viewModel.homeViewPath) {
       
-            CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {
+           /* CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {*/
+                
+            CSZStackVB(title: self.viewModel.currentUserRoleModel.userName, backgroundColorView: backgroundColorView) {
 
                 VStack(alignment: .leading,spacing:.vStackBoxSpacing) {
                   //  VStack(spacing:.vStackBoxSpacing) {
@@ -144,9 +146,49 @@ struct HomeView: View {
                             .foregroundColor(Color.seaTurtle_2)
                     }*/
                     
-                    CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: .seaTurtle_2) {
+                   /* CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: .seaTurtle_2) {
                         csSetupButton()
+                    }*/
+                    
+                    Menu {
+                        
+                       /* Button {
+                            csSetupButton()
+                        } label: {
+                            HStack {
+                                Image(systemName: "circle")
+                                Text("Setup")
+                            }
+                        } */
+
+                        NavigationLink(value: DestinationPathView.accountSetup(self.authProcess)) {
+                            
+                            HStack {
+                                Image(systemName: "circle")
+                                Text("Setup")
+                                    }
+                          
+                                }
+                        
+                        Button {
+                            //
+                        } label: {
+                            HStack {
+                                Image(systemName: "circle")
+                                Text("Logout")
+                            }
+                        }
+                        
+                        
+                    } label: {
+                        
+                        Image(systemName: "person.fill")
+                            .imageScale(.large)
+                            .foregroundColor(.seaTurtle_2)
+                        
                     }
+
+                    
            
                 }
                 
@@ -175,7 +217,7 @@ struct HomeView: View {
     // Method
     
     
-    private func csSetupButton() {
+   /* private func csSetupButton() {
         
         guard self.authProcess.currentUser != nil else {
              return self.authProcess.openSignInView = true
@@ -188,7 +230,7 @@ struct HomeView: View {
         
        /* self.viewModel.homeViewPath.append(DestinationPathView.accountSetup(self.authProcess)) */
         
-    }
+    } */ // deprecata 26.07
     
     private func compilaArrayPreparazioni() -> [DishModel] {
         

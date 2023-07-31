@@ -491,8 +491,8 @@ struct DishListByIngredientView_Previews: PreviewProvider {
 
     
     @StateObject static var viewModel:AccounterVM = {
-   
-      var viewM = AccounterVM()
+        let user = UserRoleModel()
+        var viewM = AccounterVM(userAuth: user)
         viewM.cloudData.allMyDish = [dishItem,dishItem2,dishItem3]
         viewM.cloudData.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4,ingredientSample5 ]
         return viewM

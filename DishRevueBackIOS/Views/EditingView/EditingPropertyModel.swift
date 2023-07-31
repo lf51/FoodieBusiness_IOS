@@ -34,7 +34,8 @@ struct EditingPropertyModel: View {
             
             VStack(alignment:.leading) {
                 
-                CSDivider()
+              //  CSDivider()
+                Text("admin: username")
                     
                 ScrollView(showsIndicators:false) {
                     
@@ -92,6 +93,45 @@ struct EditingPropertyModel: View {
                         //  estrapolaGiorniChiusura()
                         
                     }
+                        
+                     /*   VStack(alignment:.leading) {
+                            //Nota 24.11 - Collaboratori
+                            let currentUserUID = self.authProcess.currentUser?.userUID
+                            
+                            CSLabel_conVB(
+                              placeHolder: "Collaboratori:",
+                              imageNameOrEmojy: "person.crop.rectangle.stack",
+                              backgroundColor:Color.seaTurtle_2) {
+                                  
+                                  Button {
+                                      
+                                      if let adminUID = currentUserUID {
+                                          self.collaborator = CollaboratorModel(uidAmministratore:adminUID)
+                                      } /*else {
+                                         self.collaborator = CollaboratorModel(uidAmministratore:"NoUID")
+                                         }*/ // else è da togliere
+                                      
+                                  } label: {
+                                      Image(systemName: "plus.circle")
+                                          .imageScale(.large)
+                                          .foregroundColor(Color.seaTurtle_3)
+                                  }
+                                  .disabled(currentUserUID == nil)
+                                  .opacity(currentUserUID == nil ? 0.3 : 1.0)
+                              }
+                            
+                            if let collabs = self.viewModel.profiloUtente.allMyCollabs {
+                                
+                                //   ScrollView(showsIndicators:false) {
+                                VStack {
+                                    ForEach(collabs,id:\.self) { collab in
+                                        collabsRow(collab)
+                                    }
+                                }
+                                
+                            }
+                            
+                        } */
                     
                     }
                 } // Chiusa Scroll View
@@ -298,7 +338,15 @@ struct EditingPropertyModel_Previews: PreviewProvider {
         streetAdress: "via roma",
         numeroCivico: "21") */
     
-    static var testProperty = property_Test
+    static var testProperty =  PropertyModel(
+        intestazione: "Osteria del Vicolo",
+        cityName: "Sciacca",
+        coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
+        webSite: "https://osteriadelcorso.com",
+        phoneNumber: "3337213895",
+        streetAdress: "via roma",
+        numeroCivico: "21",
+        admin: UserRoleModel(ruolo: .guest) )
     
     static var previews: some View {
 

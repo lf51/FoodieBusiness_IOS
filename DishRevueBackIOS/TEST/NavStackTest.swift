@@ -7,7 +7,7 @@
 
 import SwiftUI
 import MyFoodiePackage
-
+/*
 struct TestViewForNavigation: View {
     
    // @State private var testItem:PropertyModel = PropertyModel(nome: "Osteria del Buco Nero")
@@ -103,7 +103,7 @@ struct NavStackTest: View {
                
                
                
-           }.onAppear { viewModel.cloudData.allMyProperties.append(PropertyModel(nome: "Osteria Vera")) }
+           }/*.onAppear { viewModel.cloudData.allMyProperties.append(PropertyModel(nome: "Osteria Vera")) }*/
        }
         
         
@@ -119,3 +119,4 @@ struct NavStackTest_Previews: PreviewProvider {
         
     }
 }
+*/

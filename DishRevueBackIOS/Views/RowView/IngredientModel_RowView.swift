@@ -289,8 +289,10 @@ struct IngredientModel_RowView: View {
 
 struct IngredientModel_RowView_Previews: PreviewProvider {
     
+   static let user = UserRoleModel()
+    
     @StateObject static var viewModel: AccounterVM = {
-        var viewM = AccounterVM()
+        var viewM = AccounterVM(userAuth: user)
         viewM.cloudData.allMyIngredients = [ ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4
         
         ]

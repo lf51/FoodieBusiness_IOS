@@ -238,10 +238,11 @@ struct CorpoCompilazioneCategorie:View {
 
 
 struct FastImport_Categorie_Previews: PreviewProvider {
+    static var user:UserRoleModel = UserRoleModel()
     static var previews: some View {
         NavigationStack {
             FastImport_Categorie(backgroundColorView: .seaTurtle_1, disabilitaPicker: .constant(true))
-                .environmentObject(AccounterVM())
+                .environmentObject(AccounterVM(userAuth: user))
         }
     }
 }

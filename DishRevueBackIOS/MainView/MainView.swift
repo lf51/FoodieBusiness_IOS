@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MyFoodiePackage
 
 struct MainView: View {
     
@@ -14,16 +15,23 @@ struct MainView: View {
     
    // @State private var isLoading: Bool
 
-    init(authProcess:AuthPasswordLess) {
+    init(authProcess: AuthPasswordLess, viewModel: AccounterVM) {
+        
+        self.authProcess = authProcess
+        _viewModel = StateObject(wrappedValue: viewModel)
+        
+        print("init MainView - userUID:\(authProcess.utenteCorrente?.id ?? "nil")")
+    }
+   /* init(authProcess:AuthPasswordLess) {
         
       //  self.isLoading = true
         self.authProcess = authProcess
         
-        let vm = AccounterVM(userUID: authProcess.currentUser?.userUID)
+        let vm = AccounterVM(userUID: authProcess.utenteCorrente?.id)
         _viewModel = StateObject(wrappedValue: vm)
         
         print("init MainView - userUID:\(authProcess.currentUser?.userUID ?? "nil")")
-    }
+    } */
 
     private let backgroundColorView: Color = Color.seaTurtle_1
     @State private var tabSelector: DestinationPath = .homeView
@@ -101,9 +109,9 @@ struct MainView: View {
             self.viewModel.refreshPathAndScroll(tab: self.tabSelector)
             
         }) */
-        .fullScreenCover(isPresented: $viewModel.isLoading, content: {
+       /* .fullScreenCover(isPresented: $viewModel.isLoading, content: {
            WaitLoadingView(backgroundColorView: backgroundColorView)
-        })
+        })*/ // 28.07.23 Collocata male dovrebbe spiegare lo schermo bianco
         
       /*  .onAppear {
          
@@ -116,6 +124,7 @@ struct MainView: View {
             
 
         }*/
+     
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
         .environmentObject(viewModel)
         .accentColor(.seaTurtle_3)
@@ -133,8 +142,11 @@ enum CS_TabSelector:Hashable {
 } // 24.02 Deprecata in quanto duplicazione del DestinationPath
 
 struct MainView_Previews: PreviewProvider {
+    static var user: UserRoleModel = UserRoleModel()
     static var previews: some View {
-        MainView(authProcess: AuthPasswordLess())
+        MainView(
+            authProcess: AuthPasswordLess(),
+            viewModel: AccounterVM(userAuth: user) )
     }
 }
 

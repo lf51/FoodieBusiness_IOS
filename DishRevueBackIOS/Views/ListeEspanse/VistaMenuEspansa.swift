@@ -309,7 +309,8 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
     
     @State static var viewModel: AccounterVM = {
          
-        var vm = AccounterVM()
+        let user = UserRoleModel()
+        var vm = AccounterVM(userAuth: user)
          vm.cloudData.allMyDish = [dishItem3]
          vm.cloudData.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
          vm.cloudData.allMyMenu = [menuDelloChef,menuDelGiorno,menuSample,menuSample3,menuSample2]

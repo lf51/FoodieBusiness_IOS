@@ -12,6 +12,7 @@ import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
 
+
 struct CollaboratorModel:Codable,Hashable,Identifiable {
 
     var id: String
@@ -49,12 +50,13 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     public var dbCompiler: CloudDataCompiler
     
-    @Published var profiloUtente:ProfiloUtente
+   // @Published var currentUserRoleModel:UserRoleModel
+   // @Published var currentPropertyRef:PropertyModel? // non salvata nel cloudData ma fetchata dalla property collection e se modificata risalvata li
    // private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
     
    // private var loadingCount:Int = 0
 
-    @Published var isLoading: Bool
+    @Published var isLoading: Bool = true // 28.07.23 Possibile deprecazione per trasferimento a State nel ContentView - necessita verifica di funzionamento
 
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
@@ -81,81 +83,119 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     //10.02.23
     
-   public init(userUID:String? = nil) {
-       
-            self.isLoading = userUID != nil // Nota 16.07.23 isLoading
-            self.dbCompiler = CloudDataCompiler(userAuthUID: userUID)
+    public init(userAuth:UserRoleModel,handle:@escaping(_ isLoading:Bool) -> () = { isLoading in } ) {
+        
+        // self.currentUserRoleModel = userAuth
+        //  self.isLoading = userModel != nil // Nota 16.07.23 isLoading
+        self.dbCompiler = CloudDataCompiler(userAuthUID: userAuth.id)
+        
+        super.init() // sarà deprecato perchè il cloud passa dentro la PropertyModel
    
-            self.profiloUtente = ProfiloUtente()
-            super.init()
-           /* self.dbCompiler.compilaCloudDataFromFirebase(handle: { cloudData in
-                if let data = cloudData {
-                    self.cloudData = data
-                    print("self.cloudData = data")
-                    
-                }
-                
-                self.isLoading = false
-                print("AccounterVM/publicInit/self.dbCompiler.compilaCloudDataFromFirebase")
-            }) */
-       
-      // 18.07.23 Updating...
-       
-       /*self.dbCompiler.fetchUserData { profiloUtente, dataBase in
-           
-           if let profilo = profiloUtente {
-               self.profiloUtente = profilo
-           }
-           if let db = dataBase {
-               self.cloudData = db
-           }
-           self.isLoading = false
-           print("Concluso fetch all Data")
-       } */
-      /* self.dbCompiler.compilaCloudDataFromFirebase { db_data in
-           
-           if let db = db_data { self.cloudData = db }
-           self.isLoading = false
-           print("Concluso fetch db data")
-       }*/ // deprecata
-       
-       self.dbCompiler.fetchAllData { db, user, isLoading in
-           
-           if let profilo = user {
-               self.profiloUtente = profilo
-           }
-           
-           if let dataBase = db {
-               self.cloudData = dataBase
-           }
-           
-           self.isLoading = isLoading
-           print("Concluso fetch all Data")
-       }
-       
-       
-       // end update
+        
+        self.dbCompiler.firstFetch { propUserRole, currentProp, propDB, isLoading in
+            
+            if let user = propUserRole {
+                self.currentUserRoleModel = user
+            } else {
+                self.currentUserRoleModel = userAuth
+            }
+            
+            if let dataCloud = propDB {
+                self.cloudData = dataCloud
+            } else {
+                self.cloudData = CloudDataStore()
+            }
+            
+            if currentProp == nil {
+                // se non c'è una proprietà singola popoliamo la homeViewPath per visualizzare la propertyList
+                self.homeViewPath.append(DestinationPathView.propertyList)
+            }
+            
+            self.currentProperty = currentProp
+            self.isLoading = isLoading // da valutare
+            handle(isLoading) // da valutare
+            
+        }
+
     }
     
-    func publishOnFirebase() {
+    func compilaFromPropertyImage(propertyImage:PropertyImage) {
+        
+        self.dbCompiler.estrapolaDatiFromPropImage(propertyImage: propertyImage) { user, prop, db in
+            
+            if let currentUser = user,
+               let property = prop {
+                self.currentUserRoleModel = currentUser
+                self.currentProperty = property
+            }
+            
+            if let dataCloud = db {
+                self.cloudData = dataCloud
+            } else {
+                self.cloudData = CloudDataStore()
+            }
+      
+        }
+    }
+    
+    /*
+    func publishOnFirebase(handle:@escaping(_ errorIn:Bool) ->()) {
         
         // admin salva entrambi gli oggetti
         // collab salva solo il cloudData
 
         if let extRef = self.profiloUtente.datiUtente?.db_uidRef {
             // collab
-            self.dbCompiler.publishOnFirebase(dbRef:extRef, saveData: self.cloudData)
+            self.dbCompiler.publishOnFirebase(dbRef:extRef, saveData: self.cloudData) { errorIn in
+                
+              handle(errorIn)
+            }
             
         } else {
             // admin
-            self.dbCompiler.publishOnFirebase(saveData: self.profiloUtente)
-            self.dbCompiler.publishOnFirebase(saveData: self.cloudData)
+            self.dbCompiler.publishOnFirebase(saveData: self.profiloUtente) { errorIn in
+               
+                if errorIn {
+                    handle(errorIn)
+                } else {
+                    
+                    self.dbCompiler.publishOnFirebase(saveData: self.cloudData) { errorIn in
+                        handle(errorIn)
+                    }
+                    
+                }
+                
+                
+            }
+            
         }
-    }
+    }*/
     
-    func fetchDataFromFirebase() {
-        // utile per fare l'aggiornamento del database in corso. Utile in vista di un database manipolato da più collaboratori
-    }
+   /* func fetchPropertyData() {
+        // valida solo per admin
+        // i collab popolano la property nel fetchAllData
+        guard self.currentProperty == nil else { return }
+        
+        let propertyRef:String? = {
+            
+            let allRef = self.cloudData.allMyPropertiesRef.first(where: {$0.key == .admin})
+            return allRef?.value
+        }()
+        
+        guard let ref = propertyRef else { return }
+        
+        self.dbCompiler.fetchDocument(collection: .propertyCollection, docRef: ref, modelSelf: PropertyModel.self) { modelData in
+            
+            if let data = modelData {
+                self.currentUserRoleModel = data.organigramma.admin
+                self.currentProperty = data
+            }
+
+            
+        }
+    } */
+    
+  
     
    /* func fetchDataFromFirebase() { // deprecata passata al compiler
         
@@ -271,6 +311,13 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         }
         
     }
+    
+    func creaPropertyRef(propertyRef:String,role:RoleModel) {
+        
+        self.cloudData.allMyPropertiesRef = [role:propertyRef]
+        print("Property ref:\(propertyRef) salvata localmente come:\(role.rawValue)")
+        
+    }
         
     /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto.
     func createItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
@@ -293,7 +340,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
                                         }))
         }
     }
-        
+    
     private func createItemModelExecutive<T:MyProStarterPack_L1>(itemModel:T, destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
         
         // Mod 15.09
@@ -414,6 +461,46 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         
     }
     
+    // PropertyManager
+    
+    /// Metodo specifico delle proprietà che interagisce direttamente anche col server
+    func deletePropertyExecutive(property:PropertyModel){ }
+   /* func deletePropertyExecutive(property:PropertyModel) {
+        
+        self.alertItem = AlertModel(
+            title: "Conferma deRegistrazione",
+            message: "Confermi di volere deRegistrare \(property.intestazione)?",
+            actionPlus: ActionModel(
+                title: .elimina,
+                action: {
+                    withAnimation {
+                        // rimuovi dal firebase - proprietà registrate
+                        // rimuovi dal firebase - utente/allMyProps
+                        self.dbCompiler.deRegistraProprietà(propertyUID: property.id) { deleteSuccess in
+                            
+                            if deleteSuccess {
+                                // rimuovi dal ViewModel
+                               // self.deleteItemModelExecution(itemModel: property)
+                                self.cloudData.allMyPropertiesRef = [:] // vabene finchè limitiamo le prop a 1
+                                // rimuove dal cloudData su firebase
+                                self.publishOnFirebase() { errorIn in
+                                    if errorIn {
+                                        self.alertItem = AlertModel(title: "Server Message", message: "Aggiornamento CloudData Fail")
+                                    } else {
+                                        self.alertItem = AlertModel(title: "Server Message", message: "Aggiornamento CloudData Success")
+                                    }
+                                }
+                            } else {
+                                self.alertItem = AlertModel(title: "Server Error", message: "deRegistrazione non Avvenuta. Controllare la connessione e riprovare.\nSe il problema persiste contattare info@foodies.com")
+                            }
+                        }
+                        // rimuovi dal viewModel
+                       // self.deleteItemModelExecution(itemModel: property)
+                    }
+                   
+                }))
+    }*/
+    
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
     func deleteItemModel<T:MyProStarterPack_L1>(itemModel: T) where T.VM == AccounterVM {
         
@@ -436,7 +523,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         var containerT = assegnaContainer(itemModel: itemModel)
         
         guard let index = containerT.firstIndex(of: itemModel) else {
-            self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
+            self.alertItem = AlertModel(title: "Errore Locale", message: "Oggetto non presente nel database")
             return }
         
         containerT.remove(at: index)

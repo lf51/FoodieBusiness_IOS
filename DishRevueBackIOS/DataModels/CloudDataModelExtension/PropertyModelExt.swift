@@ -75,7 +75,9 @@ extension PropertyModel:
             }.disabled(true)
             
             Button(role:.destructive) {
-                viewModel.deleteItemModel(itemModel: self)
+               // viewModel.deleteItemModel(itemModel: self)
+              //  viewModel.deleteProperty(property: self)
+                viewModel.deletePropertyExecutive(property: self)
             } label: {
                 HStack {
                     Image(systemName:"trash")

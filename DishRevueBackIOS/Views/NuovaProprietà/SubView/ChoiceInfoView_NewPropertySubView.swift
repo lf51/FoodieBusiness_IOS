@@ -6,11 +6,12 @@
 //
 
 import SwiftUI
+import MapKit
 import MyFoodiePackage
 
 struct ChoiceInfoView_NewPropertySubView: View {
     
-    @Binding var newProperty: PropertyModel
+    let newProperty: MKMapItem
     var screenWidth:CGFloat
     var frameHeight:CGFloat
     let action: () -> Void
@@ -21,27 +22,27 @@ struct ChoiceInfoView_NewPropertySubView: View {
             
             VStack(alignment: .leading, spacing: frameHeight/25) {
                             
-                Text(newProperty.intestazione)
+                Text(newProperty.name ?? "")
                     .font(.system(.title3, design: .rounded))
                     .fontWeight(.heavy)
                     .lineLimit(1)
 
-                Text("\(newProperty.streetAdress), \(newProperty.numeroCivico)")
+                Text("\(newProperty.placemark.thoroughfare ?? ""), \(newProperty.placemark.subThoroughfare ?? "")")
                     .italic()
                     .fontWeight(.light)
                     .lineLimit(1)
 
-                Text(newProperty.cityName)
+                Text(newProperty.placemark.locality ?? "")
                     .fontWeight(.semibold)
 
-                Text(newProperty.webSite)
+                Text(newProperty.url?.absoluteString ?? "")
                     .fontWeight(.ultraLight)
                     .lineLimit(1)
 
-                Text(newProperty.phoneNumber)
+                Text(newProperty.phoneNumber ?? "")
                     .fontWeight(.semibold)
                         
-            }.frame(maxWidth: (screenWidth*0.92) * 0.65)
+            }.frame(maxWidth: (screenWidth * 0.92) * 0.65)
           
            Spacer()
             
@@ -53,7 +54,7 @@ struct ChoiceInfoView_NewPropertySubView: View {
                     // Registrare su FireBase Proprietà
                 }
 
-            }.frame(maxWidth: (screenWidth*0.92) * 0.35)
+            }.frame(maxWidth: (screenWidth * 0.92) * 0.35)
                     
         }
         .padding()

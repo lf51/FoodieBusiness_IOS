@@ -266,12 +266,13 @@ struct FastImport_MainView: View {
 }
 
 struct FastImportMainView_Previews: PreviewProvider {
+    static var user:UserRoleModel = UserRoleModel()
     static var previews: some View {
     
         NavigationStack {
             FastImport_MainView(backgroundColorView: Color.seaTurtle_1)
                 
-        }.environmentObject(AccounterVM())
+        }.environmentObject(AccounterVM(userAuth:user))
          //   Color.cyan
     
     }

@@ -175,7 +175,9 @@ struct NewProductMainView_Previews: PreviewProvider {
     
     @StateObject static var viewModel:AccounterVM = {
    
-      var viewM = AccounterVM()
+        let user = UserRoleModel()
+        
+        var viewM = AccounterVM(userAuth: user)
         viewM.cloudData.allMyDish = [dishSample]
         viewM.cloudData.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
         return viewM

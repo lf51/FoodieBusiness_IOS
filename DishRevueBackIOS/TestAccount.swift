@@ -7,6 +7,8 @@
 
 import Foundation
 import MyFoodiePackage
+import MapKit
+
 
 let today = Date()
 let todayString = csTimeFormatter().data.string(from: today)
@@ -25,7 +27,9 @@ let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 2
 
 var testAccount: AccounterVM = {
 
-    var vm = AccounterVM()
+    let user = UserRoleModel()
+    
+    var vm = AccounterVM(userAuth: user)
      vm.cloudData.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
      vm.cloudData.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
      vm.cloudData.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
@@ -48,13 +52,22 @@ var testAccount: AccounterVM = {
 
  var property_Test:PropertyModel = {
   
-    var prp = PropertyModel()
-    prp.intestazione = "Osteria del Vicolo"
+    var prp = PropertyModel(
+        intestazione: "Osteria del Vicolo",
+        cityName: "Sciacca",
+        coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
+        webSite: "https:\\osteriadelvicolo.it",
+        phoneNumber: "340 67 13 777",
+        streetAdress: "vicolo San Martino",
+        numeroCivico: "22",
+        admin: UserRoleModel() )
+  /*  prp.intestazione = "Osteria del Vicolo"
     prp.cityName = "Sciacca"
     prp.streetAdress = "vicolo San Martino"
     prp.numeroCivico = "22"
     prp.webSite = "https:\\osteriadelvicolo.it"
-    prp.phoneNumber = "340 67 13 777"
+    prp.phoneNumber = "340 67 13 777" */
+
     return prp
 }()
 
@@ -427,4 +440,5 @@ let cat7:CategoriaMenu = CategoriaMenu(
     intestazione: "Bevande",
     image: "🍷",
     descrizione: "")
+
 

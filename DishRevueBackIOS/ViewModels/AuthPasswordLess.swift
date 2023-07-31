@@ -8,32 +8,30 @@
 import Foundation
 import MyPackView_L0
 import Firebase
+import MyFoodiePackage
 
 public class AuthPasswordLess: ObservableObject, Hashable {
     
    public static func == (lhs: AuthPasswordLess, rhs: AuthPasswordLess) -> Bool {
-        lhs.currentUser == rhs.currentUser
+       // lhs.currentUser == rhs.currentUser
+       lhs.utenteCorrente == rhs.utenteCorrente
     }
     
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(currentUser?.userUID)
+      //  hasher.combine(currentUser?.userUID)
+        hasher.combine(utenteCorrente?.id)
     }
 
-    @Published var currentUser: UserModel?
+   // @Published var currentUser: UserModel? // deprecato
+    
+    @Published var utenteCorrente: UserRoleModel?
     @Published var email: String = ""
     
     @Published var showAlert: Bool = false 
     @Published var alertItem: AlertModel? {didSet {showAlert = true}}
     
-    @Published var openSignInView: Bool = true
+    @Published var openSignInView: Bool = true // possibile deprecazione da sostituire con il valore nil o non nil dell'utente corrente
 
-    // Innesto Beta del 31.10 per collaboratori - Da Sviluppare
-    
-  //  @Published var allMyCollabs:[CollaboratorModel] = []
-    
-    // end innesto beta 31.10
-    
-    
     init() {
         print("Init -> AuthPassWordLess")
         checkUserSignedIn()
@@ -84,12 +82,18 @@ public class AuthPasswordLess: ObservableObject, Hashable {
               print("✔ Authentication was successful.")
               completion(.success(result?.user))
 
-                self.currentUser = UserModel(
+               /* self.currentUser = UserModel(
                     userEmail: result?.user.email ?? "",
                     userUID: result?.user.uid ?? "",
                     userProviderID: result?.user.providerID ?? "",
                     userDisplayName: result?.user.displayName ?? result?.user.email ?? "",
-                    userEmailVerified: result?.user.isEmailVerified ?? false)
+                    userEmailVerified: result?.user.isEmailVerified ?? false) */
+                
+                self.utenteCorrente = UserRoleModel(
+                    uid: result?.user.uid ?? "No_UID",
+                    userName: result?.user.displayName ?? result?.user.email ?? "NoMail&NoUsername",
+                    mail: result?.user.email ?? "noEmailAdress")
+                
                 
             }
           }
@@ -109,17 +113,22 @@ public class AuthPasswordLess: ObservableObject, Hashable {
             print("UserName: \(user.displayName ?? "")") */
             self.openSignInView = false
             
-            self.currentUser = UserModel(
+            self.utenteCorrente = UserRoleModel(
+                uid: user.uid,
+                userName: user.displayName ?? user.email ?? "NoMail&NoUsername",
+                mail: user.email ?? "noEmailAdress")
+            
+           /* self.currentUser = UserModel(
                 userEmail: user.email ?? "",
                 userUID: user.uid,
                 userProviderID: user.providerID,
                 userDisplayName: user.displayName ?? user.email ?? "",
-                userEmailVerified: user.isEmailVerified)
+                userEmailVerified: user.isEmailVerified) */
 
           /*  self.alertItem = AlertModel(
                 title: "Authentication",
                 message: "Utente \(self.userInfo?.userDisplayName ?? "") autenticato.") */
-            
+            print("CheckUserSignedIn true")
         }
         
         else {
@@ -159,12 +168,14 @@ public class AuthPasswordLess: ObservableObject, Hashable {
         
         guard newDisplayName != "" else {
             
-            self.currentUser?.userDisplayName = self.currentUser?.userEmail ?? ""
+          //  self.currentUser?.userDisplayName = self.currentUser?.userEmail ?? ""
+            self.utenteCorrente?.userName = self.utenteCorrente?.mail ?? "@error"
             // non facciamo update sul server, poichè nel signIn sa che quando il displayName è vuoto deve visualizzare la mail
             return }
         let newUserName = "@" + newDisplayName.replacingOccurrences(of: " ", with: "").lowercased()
         
-        self.currentUser?.userDisplayName = newUserName
+       // self.currentUser?.userDisplayName = newUserName
+        self.utenteCorrente?.userName = newUserName
         
         self.updateCurrentUserProfile()
         
@@ -212,9 +223,9 @@ public class AuthPasswordLess: ObservableObject, Hashable {
             
             try firebaseAuth.signOut()
             self.openSignInView = true
-            self.currentUser = nil
-            
-                 
+          //  self.currentUser = nil
+            self.utenteCorrente = nil
+    
             print("Sign-Out Successfully")
             
         } catch let signOutError as NSError {
@@ -231,7 +242,8 @@ public class AuthPasswordLess: ObservableObject, Hashable {
         
         let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
         
-        changeRequest?.displayName = self.currentUser?.userDisplayName
+       // changeRequest?.displayName = self.currentUser?.userDisplayName
+       changeRequest?.displayName = self.utenteCorrente?.userName
     //    changeRequest?.displayName = self.displayName
        // changeRequest?.photoURL // da implementare
         

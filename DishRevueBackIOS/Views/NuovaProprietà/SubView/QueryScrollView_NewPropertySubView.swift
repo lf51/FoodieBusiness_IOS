@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
+import MapKit
 import MyFoodiePackage
 
 struct QueryScrollView_NewPropertySubView: View {
     //  @ObservedObject var vm: PropertyVM
-      @Binding var queryResults: [PropertyModel]
-      @Binding var queryRequest: String
+      let queryResults: [MKMapItem]
+      let queryRequest: String
       let screenHeight: CGFloat
-      var action:(_ place:PropertyModel) -> Void
+      let action:(_ place:MKMapItem) -> Void
       
       var body: some View {
           
@@ -25,7 +26,7 @@ struct QueryScrollView_NewPropertySubView: View {
                       
                      VStack(spacing: 0) {
                           
-                          ForEach(queryResults) { place in
+                         ForEach(queryResults,id:\.self) { place in
                               
                               QueryRow_NewPropertySubView(place:place)
                                   .onTapGesture {
@@ -34,7 +35,8 @@ struct QueryScrollView_NewPropertySubView: View {
                               
                               Divider()
                                   .shadow(radius: 1.0)
-                                  .padding()
+                                  .padding(.horizontal)
+                                  .padding(.vertical,5)
                           }
                       }
                   }.padding(.vertical)

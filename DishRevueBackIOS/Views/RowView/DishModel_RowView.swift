@@ -1043,7 +1043,9 @@ struct DishModel_RowView: View {
 
 struct DishModel_RowView_Previews: PreviewProvider {
     
-    static var viewModel:AccounterVM = AccounterVM()
+   static let user = UserRoleModel(ruolo: .admin)
+    
+    static var viewModel:AccounterVM = AccounterVM(userAuth: user)
         
     static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [], origine: .animale, status: .completo(.disponibile))
         
