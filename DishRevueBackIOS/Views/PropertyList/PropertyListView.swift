@@ -54,10 +54,10 @@ struct PropertyListView: View {
 
                   ScrollView(showsIndicators: false){
                         
-                      if let allProp = self.viewModel.dbCompiler.allMyProperties {
+                      if !self.viewModel.allMyPropertiesImage.isEmpty {
 
                           // Mostra le proprietà registrate
-                          ForEach(allProp,id:\.self) { values in
+                          ForEach(self.viewModel.allMyPropertiesImage,id:\.self) { values in
                               
                               let disable:Bool = {
                                   
@@ -177,13 +177,13 @@ struct PropertyListView: View {
     
     private func addCollaboration() {
         
-        guard viewModel.dbCompiler.allMyProperties == nil else {
+       /* guard viewModel.dbCompiler.allMyProperties == nil else {
             
             viewModel.alertItem = AlertModel(
                 title: "⛔️ Restrizioni Account",
                 message: "Spiacenti. Raggiunto il numero max di collaborazioni.")
             
-            return }
+            return }*/
         
         self.wannaCollaborate = true
        
@@ -191,13 +191,13 @@ struct PropertyListView: View {
     
     private func addNewPropertyCheck() {
         
-        guard viewModel.dbCompiler.allMyProperties == nil else {
+      /*  guard viewModel.dbCompiler.allMyProperties == nil else {
             
             viewModel.alertItem = AlertModel(
                 title: "⛔️ Restrizioni Account",
                 message: "Spiacenti. Raggiunto il numero max di proprietà registrabili.")
             
-            return }
+            return } */
         
         self.wannaAddNewProperty = true
         

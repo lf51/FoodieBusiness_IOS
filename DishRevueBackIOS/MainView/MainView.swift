@@ -109,9 +109,9 @@ struct MainView: View {
             self.viewModel.refreshPathAndScroll(tab: self.tabSelector)
             
         }) */
-       /* .fullScreenCover(isPresented: $viewModel.isLoading, content: {
+        .fullScreenCover(isPresented: $viewModel.isLoading, content: {
            WaitLoadingView(backgroundColorView: backgroundColorView)
-        })*/ // 28.07.23 Collocata male dovrebbe spiegare lo schermo bianco
+        }) // 28.07.23 Collocata male dovrebbe spiegare lo schermo bianco
         
       /*  .onAppear {
          

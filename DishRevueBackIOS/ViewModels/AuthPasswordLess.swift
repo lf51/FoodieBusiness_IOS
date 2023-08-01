@@ -32,6 +32,8 @@ public class AuthPasswordLess: ObservableObject, Hashable {
     
     @Published var openSignInView: Bool = true // possibile deprecazione da sostituire con il valore nil o non nil dell'utente corrente
 
+    @Published var isLoading:Bool = true // da settare
+    
     init() {
         print("Init -> AuthPassWordLess")
         checkUserSignedIn()

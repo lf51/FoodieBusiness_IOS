@@ -29,6 +29,9 @@ struct ContentView: View {
         }
         .id(authProcess.hashValue)
         .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
+       /* .fullScreenCover(isPresented: $authProcess.isLoading, content: {
+             WaitLoadingView(backgroundColorView: .seaTurtle_1)
+         })*/
        /* .fullScreenCover(isPresented: $isLoading, content: {
             WaitLoadingView(backgroundColorView: .seaTurtle_1)
         }) */

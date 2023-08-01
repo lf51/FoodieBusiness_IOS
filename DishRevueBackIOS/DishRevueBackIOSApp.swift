@@ -12,12 +12,11 @@ import Firebase
 struct DishRevueBackIOSApp: App {
             
    // @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
-    
+
     init() {
         
         FirebaseApp.configure()
         // disattivare raccolta dati
-
     }
     
     var body: some Scene {
@@ -26,8 +25,10 @@ struct DishRevueBackIOSApp: App {
 
         //   MainView()
         ContentView()
+
             
         }
+       
         
     }
     

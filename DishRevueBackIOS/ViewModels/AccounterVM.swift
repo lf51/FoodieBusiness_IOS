@@ -13,7 +13,7 @@ import MyPackView_L0
 import MyFilterPackage
 
 
-struct CollaboratorModel:Codable,Hashable,Identifiable {
+/*struct CollaboratorModel:Codable,Hashable,Identifiable {
 
     var id: String
     let inizioCollaborazione:Date
@@ -41,7 +41,7 @@ struct ProfiloUtente:Codable {
     var datiUtente:CollaboratorModel? // per l'admin sarà nil
     var allMyCollabs:[CollaboratorModel]?
     
-}
+} */
 
 
 public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
@@ -49,6 +49,9 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     public typealias DBCompiler = CloudDataCompiler
     
     public var dbCompiler: CloudDataCompiler
+    
+   // @Published public var userData:UserCloudData?
+    @Published public var allMyPropertiesImage:[PropertyLocalImage] = []
     
    // @Published var currentUserRoleModel:UserRoleModel
    // @Published var currentPropertyRef:PropertyModel? // non salvata nel cloudData ma fetchata dalla property collection e se modificata risalvata li
@@ -83,16 +86,43 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     //10.02.23
     
-    public init(userAuth:UserRoleModel,handle:@escaping(_ isLoading:Bool) -> () = { isLoading in } ) {
+    public init(userAuth:UserRoleModel) {
         
         // self.currentUserRoleModel = userAuth
         //  self.isLoading = userModel != nil // Nota 16.07.23 isLoading
         self.dbCompiler = CloudDataCompiler(userAuthUID: userAuth.id)
+        super.init()// contiene il db,la currentProp,lo userRoleModel per la currentProp
         
-        super.init() // sarà deprecato perchè il cloud passa dentro la PropertyModel
-   
+        self.dbCompiler.firstFetch { propertiesImage, propUserRole, currentProp, propDB, isLoading in
+            
+            self.allMyPropertiesImage = propertiesImage
+            self.currentProperty = currentProp
+            
+            if let user = propUserRole {
+                self.currentUserRoleModel = user
+            } else {
+                self.currentUserRoleModel = userAuth // deve avvenire di default nell'init
+            }
+            
+            if let dataCloud = propDB {
+                self.cloudData = dataCloud
+            } else {
+                self.cloudData = CloudDataStore() // deve avvenire di default nell'init
+            }
+            
+            if currentProp == nil {
+                // se non c'è una proprietà singola popoliamo la homeViewPath per visualizzare la propertyList
+                self.homeViewPath.append(DestinationPathView.propertyList)
+            }
+            
+            self.isLoading = isLoading // di default sarà true e qui andrà su false al termine dell'handle
+         
+            
+        }
         
-        self.dbCompiler.firstFetch { propUserRole, currentProp, propDB, isLoading in
+        
+        
+       /* self.dbCompiler.firstFetch { propUserRole, currentProp, propDB, isLoading in
             
             if let user = propUserRole {
                 self.currentUserRoleModel = user
@@ -115,11 +145,12 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
             self.isLoading = isLoading // da valutare
             handle(isLoading) // da valutare
             
-        }
+        }*/
+     
 
     }
     
-    func compilaFromPropertyImage(propertyImage:PropertyImage) {
+    func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
         
         self.dbCompiler.estrapolaDatiFromPropImage(propertyImage: propertyImage) { user, prop, db in
             
@@ -463,43 +494,54 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     // PropertyManager
     
-    /// Metodo specifico delle proprietà che interagisce direttamente anche col server
-    func deletePropertyExecutive(property:PropertyModel){ }
-   /* func deletePropertyExecutive(property:PropertyModel) {
+    /// Metodo specifico delle proprietà per l'eliminazione che interagisce direttamente anche col server
+    func deletePropertyAlert() {
+        // Configurata per eliminare la proprietà corrente. Quindi per eliminare una property dobbiamo prima caricarla
+        guard let property = currentProperty else { return }
         
         self.alertItem = AlertModel(
-            title: "Conferma deRegistrazione",
-            message: "Confermi di volere deRegistrare \(property.intestazione)?",
+            title: "Azione non Reversibile",
+            message: "Confermi di volere de-Registrare \(property.intestazione)?\nTutti i dati saranno eliminati",
             actionPlus: ActionModel(
                 title: .elimina,
                 action: {
                     withAnimation {
-                        // rimuovi dal firebase - proprietà registrate
-                        // rimuovi dal firebase - utente/allMyProps
-                        self.dbCompiler.deRegistraProprietà(propertyUID: property.id) { deleteSuccess in
-                            
-                            if deleteSuccess {
-                                // rimuovi dal ViewModel
-                               // self.deleteItemModelExecution(itemModel: property)
-                                self.cloudData.allMyPropertiesRef = [:] // vabene finchè limitiamo le prop a 1
-                                // rimuove dal cloudData su firebase
-                                self.publishOnFirebase() { errorIn in
-                                    if errorIn {
-                                        self.alertItem = AlertModel(title: "Server Message", message: "Aggiornamento CloudData Fail")
-                                    } else {
-                                        self.alertItem = AlertModel(title: "Server Message", message: "Aggiornamento CloudData Success")
-                                    }
-                                }
-                            } else {
-                                self.alertItem = AlertModel(title: "Server Error", message: "deRegistrazione non Avvenuta. Controllare la connessione e riprovare.\nSe il problema persiste contattare info@foodies.com")
-                            }
-                        }
-                        // rimuovi dal viewModel
-                       // self.deleteItemModelExecution(itemModel: property)
+                        self.deletePropertyExecutive(property.id)
+                      
                     }
                    
                 }))
-    }*/
+    }
+    
+    private func deletePropertyExecutive(_ propUID:String) {
+     
+        self.dbCompiler.deRegistraProprietà(propertyUID: propUID) { deleteSuccess in
+            
+            if deleteSuccess {
+               // il documento relativo alla Prop è stato eliminato dal firebase
+                // aggiorniamo i ref dello user
+                self.allMyPropertiesImage.removeAll(where: {$0.propertyRef == propUID})
+                let allRef = self.allMyPropertiesImage.map({$0.propertyRef})
+                let userCloud = UserCloudData(propertiesRef: allRef)
+                
+                self.dbCompiler.publishGenericOnFirebase(collection: .businessUser, refKey: self.currentUserRoleModel.id, element: userCloud)
+               // resettiamo lo user ai valori di autentica
+                let resetUser = UserRoleModel(uid: self.currentUserRoleModel.id, userName: self.currentUserRoleModel.userName, mail: self.currentUserRoleModel.mail)
+                // resettiamo i dati della current property
+                self.currentProperty = nil
+                self.cloudData = CloudDataStore()
+                self.currentUserRoleModel = resetUser
+                
+                self.alertItem = AlertModel(title: "Server Message", message: "Aggiornamento Proprietà success")
+                
+            } else {
+                self.alertItem = AlertModel(title: "Server Error", message: "deRegistrazione non Avvenuta. Controllare la connessione e riprovare.\nSe il problema persiste contattare info@foodies.com")
+            }
+        }
+        // rimuovi dal viewModel
+       // self.deleteItemModelExecution(itemModel: property)
+        
+    }
     
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
     func deleteItemModel<T:MyProStarterPack_L1>(itemModel: T) where T.VM == AccounterVM {

@@ -124,29 +124,34 @@ enum RestrictionLevel:Codable {
 
 }*/ // spostata su FoodiePackage 22.07
 
-/// Oggetto per far transitare i dati in entrata e uscita dal firestore in un unica chiamata
-struct InvolucroDati:Codable {
+/// Oggetto per far transitare i dati in entrata e uscita dal firestore in un unica chiamata della proprietà. Contiene le info (dove vi è anche l'otganigramma) e il database
+struct PropertyCloudData:Codable {
     
-    let property:PropertyModel
-    let dataBase:CloudDataStore?
-    
-}
-
-struct PropertyImage:Hashable {
-    
-    let userRuolo:String
-    let propertyName:String
-    let propertyRef:String
+    let propertyInfo:PropertyModel
+    let propertyData:CloudDataStore?
     
 }
+/// oggetto di servizio per mostrare le proprietà registrate con informazioni sintetiche da cui grazie al ref recuperiamo i dati. Utile per multiproprietà e dunque per scegliere e switchare fra l'una e l'altra
+public struct PropertyLocalImage:Hashable {
+    
+   public let userRuolo:String
+   public let propertyName:String
+   public let propertyRef:String
+    
+}
+/// oggetto di servizio per salvare i riferimenti delle proprietà dello User
+public struct UserCloudData:Codable {
+    public var propertiesRef:[String]
+}
 
-public class CloudDataCompiler:ObservableObject {
+public class CloudDataCompiler {
     
    private let db_base = Firestore.firestore()
-   private var ref_db: DocumentReference // probabile deprecazione
+ // private var ref_db: DocumentReference // probabile deprecazione
    private let userAuthUid:String
     
-   @Published var allMyProperties:[PropertyImage]? // Valutare la necessità del published
+ //  public var userData:UserCloudData? // deprecata
+ //  public var allMyProperties:[PropertyLocalImage]? // deprecata
     
    public enum CollectionKey:String {
         case propertyCollection = "UID_PropertyRegistered"
@@ -155,71 +160,156 @@ public class CloudDataCompiler:ObservableObject {
     
    public init(userAuthUID:String) {
         
-       // if let user = userAuthUID {
-            
-            self.ref_db = db_base.collection(CollectionKey.businessUser.rawValue).document(userAuthUID) // rif al proprio UID
             self.userAuthUid = userAuthUID
-            
-       
-            self.internalFetch { allProp in
-                    self.allMyProperties = allProp
-                }
-       
+          
             print("CloudDataCompiler inizializzato con uuid:\(userAuthUID)")
-       
-      /*  } else {
-            self.ref_db = nil
-            self.userAuthUid = nil
-            print("CloudDataCompiler init con id: NIL)")
-        } */
-        
-        
+  
     }
     
     // Nuovo Corso
-    private func internalFetch(handle:@escaping(_ allProp:[PropertyImage]?) -> ()) {
-        
-        self.ref_db.getDocument { doc, error in
+
+    func firstFetch(handle:@escaping(_ propertiesImage:[PropertyLocalImage],_ propUserRole:UserRoleModel?,_ currentProp:PropertyModel?,_ propDB:CloudDataStore?,_ isLoading:Bool) -> () ) {
+                
+        // propertyRef dell'utente
+        self.fetchPropertyRef { allRef in
             
-            if let document = doc,
-               document.exists {
+            // caso_0 nessun ref
+            
+            guard !allRef.isEmpty else {
+                print("Utente non ha ref di proprietà")
+                handle([],nil,nil,nil,false)
+                return
                 
-                let allRef = document.data()?.values ?? nil
-                
-                
-            } else {
-                
-                handle(nil)
             }
-            
-            
+            // recuperiamo gli snap delle property di tutti i ref
+            self.db_base.collection(CollectionKey.propertyCollection.rawValue)
+                .whereField(.documentID(), in: allRef)
+                .getDocuments { (query,error) in
+                
+                if let err = error {
+                    
+                    print("Errore nel get multiplo:\(err.localizedDescription)")
+                    handle([],nil,nil,nil,false)
+                    
+                } else {
+                
+                   let propertyCloudData:[PropertyCloudData]? = query?.documents.compactMap({ (snap) -> PropertyCloudData? in
+                        do {
+                            let prop = try snap.data(as: PropertyCloudData.self)
+                            return prop
+                        } catch let error {
+                            print(error.localizedDescription)
+                            return nil
+                        }
+                    })
+                    
+                    guard let allProp = propertyCloudData,
+                    !allProp.isEmpty else {
+                        
+                        print("Riferimento a proprietà non esistente")
+                        handle([],nil,nil,nil,false)
+                        return
+                    }
+                    
+                    if allProp.count == 1,
+                       let theOnlyOne = allProp.first,
+                       let roleUser = theOnlyOne.propertyInfo.organigramma.first(where: {$0.id == self.userAuthUid}){
+                        // default con una proprietà
+
+                        let propertyImage = PropertyLocalImage(
+                            userRuolo: roleUser.ruolo.rawValue,
+                            propertyName: theOnlyOne.propertyInfo.intestazione,
+                            propertyRef: theOnlyOne.propertyInfo.id)
+                        
+                        let db = theOnlyOne.propertyData
+                        let model = theOnlyOne.propertyInfo
+                        print("Estrapolati dati dell'unica prop registrata")
+                        handle([propertyImage],roleUser,model,db,false)
+                        
+                    } else if allProp.count > 1 {
+                        // contiene più di una prop. Il caso vuoto è nel guard
+                        
+                        let images = allProp.compactMap({ propData in
+                            
+                            if let roleUser = propData.propertyInfo.organigramma.first(where: {$0.id == self.userAuthUid}) {
+                                // user Autorizzato
+                                let image = PropertyLocalImage(
+                                    userRuolo: roleUser.ruolo.rawValue,
+                                    propertyName: propData.propertyInfo.intestazione,
+                                    propertyRef: propData.propertyInfo.id)
+                                
+                                return image
+                            } else {
+                                // User non autorizzato
+                                return nil
+                            }
+
+                        })
+                        print("Estrapolate le image di tutte le prop registrate")
+                        handle(images,nil,nil,nil,false)
+                    }
+                    else {
+                        print("Qualche errore e non è stato eseguito ne il codice della singola ne della multi proprietà")
+                        handle([],nil,nil,nil,false)
+                        
+                    }
+   
+                } // chiusa else no error
+ 
+            }// chiusa getQuery
+ 
         }
+
+    } // end first Fetch
+    
+    private func fetchPropertyRef(handle:@escaping(_ allRef:[String]) -> () ){
         
+        let key = self.db_base.collection(CollectionKey.businessUser.rawValue).document(self.userAuthUid)
+      
+        key.getDocument(as: UserCloudData.self) { result in
+
+            switch result {
+                
+            case .success(let cloudData):
+                print("Scarico UserCloudData OK")
+                handle(cloudData.propertiesRef)
+
+            case .failure(let failure):
+                print("Scarico UserCloudData FAIL: \(failure.localizedDescription)")
+                handle([])
+ 
+            }
+
+        }
+
+    }
+    
+   /* private func internalFetch(handle:@escaping(_ allProp:[PropertyLocalImage]?) -> ()) {
         
+        let key = self.db_base.collection(CollectionKey.businessUser.rawValue).document(self.userAuthUid)
         
-        
-        
-        
-        self.ref_db.getDocument(as: [String].self) { result in
+        key.getDocument(as: UserCloudData.self) { result in
             
             switch result {
                 
-            case .success(let refProperty):
+            case .success(let userCloud):
                 
-                var userRefConfirmed:[String] = refProperty
-                var values:[PropertyImage] = []
+                self.userData = userCloud
                 
-                for ref in refProperty {
+               // var userRefConfirmed:[String] = userCloud.propertiesRef
+                var values:[PropertyLocalImage] = []
+                
+                for ref in userCloud.propertiesRef {
                     
-                    self.fetchDocument(collection: .propertyCollection, docRef: ref, modelSelf: InvolucroDati.self) { modelData in
+                    self.fetchDocument(collection: .propertyCollection, docRef: ref, modelSelf: PropertyCloudData.self) { modelData in
                         
-                        if let property = modelData?.property,
+                        if let property = modelData?.propertyInfo,
                            let userRoleModel = property.organigramma.first(where: {$0.id == self.userAuthUid}) {
                             
                             let ruolo = userRoleModel.ruolo.rawValue
                             let nameProp = property.intestazione
                             
-                            let propertyImage = PropertyImage(
+                            let propertyImage = PropertyLocalImage(
                                 userRuolo: ruolo,
                                 propertyName: nameProp,
                                 propertyRef: ref)
@@ -229,16 +319,16 @@ public class CloudDataCompiler:ObservableObject {
                         } else {
                             // utente non autorizzato o property rimossa // eliminiamo riferimento
                             print("Autorizzazione non trovata per user:\(self.userAuthUid) in propertyRef:\(ref) - Procediamo a rimozione automatica")
-                            userRefConfirmed.removeAll(where: {$0 == ref})
+                            self.userData?.propertiesRef.removeAll(where: {$0 == ref})
                         }
    
                     }
                 }
                 
-                if refProperty.count != userRefConfirmed.count {
+                if userCloud.propertiesRef.count != self.userData?.propertiesRef.count {
                     
                    do {
-                        try self.ref_db.setData(from: userRefConfirmed, merge: true)
+                       try key.setData(from: self.userData, merge: true)
                         print("Riferimenti proprietà aggiornati per utente:\(self.userAuthUid)")
                    } catch let error {
                        
@@ -264,85 +354,39 @@ public class CloudDataCompiler:ObservableObject {
         }
         
         
-    }
-   /* private func internalFetch(handle:@escaping(_ allProp:[RoleModel:PropertyModel]?) -> ()) {
+    }*/
+
+   /* func firstFetch(handle:@escaping(_ propUserRole:UserRoleModel?,_ currentProp:PropertyModel?,_ propDB:CloudDataStore?,_ isLoading:Bool) -> ()) {
         
-        self.ref_db.getDocument(as: [RoleModel:String].self) { result in
+        if let propImage = self.allMyProperties,
+           propImage.count == 1 {
             
-            switch result {
-            case .success(let refProperty):
-                
-                var roleProp:[RoleModel:PropertyModel] = [:]
-                
-                for ref in refProperty {
-                    
-                    self.fetchDocument(collection: .propertyCollection, docRef: ref.value, modelSelf: PropertyModel.self) { modelData in
-                        
-                        if modelData?.organigramma.allAdminCollabs?.first(where: {$0.id == self.userAuthUid }) != nil { // utente riconosciuto
-                            
-                            roleProp[ref.key] = modelData
-                            
-                        }
-                    }
-                }
-                print("Compilato role:Prop per l'Utente")
-                if roleProp.isEmpty {
-                    handle(nil)
-                } else {
-                    handle(roleProp)
-                }
-                
- 
-            case .failure(_):
-                print("No PropertyRef per l'Utente")
-                handle(nil)
-            }
-            
-            
-        }
-        
-        
-    } */ // deprecata
-    
-    func firstFetch(handle:@escaping(_ propUserRole:UserRoleModel?,_ currentProp:PropertyModel?,_ propDB:CloudDataStore?,_ isLoading:Bool) -> ()) {
-        
-        switch self.allMyProperties?.count {
-            
-        case 1:
-            
-            let values = self.allMyProperties?.first
-            
-            self.estrapolaDatiFromPropImage(propertyImage:values) { user, prop, db in
+            let value = propImage.first
+            self.estrapolaDatiFromPropImage(propertyImage: value) { user, prop, db in
                 handle(user,prop,db,false)
             }
-           
-       
-        default: handle(nil,nil,nil,false)
-            // se ci sono zero prop o più di una verrà ritornato nil per far partire la schermata di scelta/Primaregistrazione
+
+        } else {
+            print("PropertyImage contiene un numero di elementi diverso da 1. Esattamente:\(self.allMyProperties?.count ?? nil)")
+            handle(nil,nil,nil,false)
         }
-        
-    }
+
+    }*/ // deprecata
     
-    func estrapolaDatiFromPropImage(propertyImage:PropertyImage?,handle:@escaping(_ user:UserRoleModel?,_ prop:PropertyModel?,_ db:CloudDataStore?) -> () ) {
-        // chiamata soltanto previa verifica esistenza di una sola Propietà registrata
-         
-      /*  guard let values = self.allMyProperties?.first else {
-            print("Errore estrapolazione unica prop registrata")
-            handle(nil,nil,nil)
-        } */
-        
+    func estrapolaDatiFromPropImage(propertyImage:PropertyLocalImage?,handle:@escaping(_ user:UserRoleModel?,_ prop:PropertyModel?,_ db:CloudDataStore?) -> () ) {
+     
         guard let values = propertyImage else {
             print("Errore etrapolazione dati da una PropertyImage")
             handle(nil,nil,nil)
             return 
         }
         
-        self.fetchDocument(collection: .propertyCollection, docRef: values.propertyRef, modelSelf: InvolucroDati.self) { modelData in
+        self.fetchDocument(collection: .propertyCollection, docRef: values.propertyRef, modelSelf: PropertyCloudData.self) { modelData in
             
-                let userProp = modelData?.property.organigramma.first(where: {$0.id == self.userAuthUid})
+                let userProp = modelData?.propertyInfo.organigramma.first(where: {$0.id == self.userAuthUid})
                 
-                let propCurrent = modelData?.property
-                let dbCurrent = modelData?.dataBase
+                let propCurrent = modelData?.propertyInfo
+                let dbCurrent = modelData?.propertyData
                 
                 handle(userProp,propCurrent,dbCurrent)
 
@@ -428,6 +472,7 @@ public class CloudDataCompiler:ObservableObject {
         
         do {
             try key.setData(from: element,merge: true)
+            print("Publish generic on Firebase Succed")
             
         } catch let error {
             print("\(error.localizedDescription) - Errore nel salvataggio Generico su Firebase")
@@ -435,6 +480,7 @@ public class CloudDataCompiler:ObservableObject {
         
     }
     
+    /*
     func publishOnFirebase<C:Codable>(dbRef:String? = nil,saveData:C,handle:@escaping(_ errorIn:Bool) ->() ) {
         
         let ref:DocumentReference? = {
@@ -456,47 +502,37 @@ public class CloudDataCompiler:ObservableObject {
         }
         
         
-    }
+    } */
 
     
-    func firstAuthenticationFuture() {
+   /* func firstAuthenticationFuture() {
         // cancella tutti i dati del database lasciando la chiave. Utile se si vuole creare la chiave in una prima autentica o se si vuole cancellare ogni dato mantenendo la chiave. In questo casa occorrerebbe aggiornare l'app per rifetchare i dati e dunque avere un cloudData locale vuoto
         self.ref_db.setData([:])
         // Va sistemato in chiave collab -admin
         print("firstAuthenticationFuture")
         
-    } // private
+    }*/ // private
     
     // Property Manager
     
     /// Registrazione nella collezione delle proprietà
-    func registraPropertyOnFirebase(property:PropertyModel, handle:@escaping(_ alert:AlertModel?) -> () ) {
+    func checkPropertyOnFirebase(propertyID:String,handle:@escaping(_ registrabile:Bool) -> () ) {
         
-        let docRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(property.id)
+        let docRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(propertyID)
         
         // verifica esistenza su firebase
         docRef.getDocument { (document,error) in
             
-            if let doc = document, doc.exists {
-                // già registrata
-                handle(AlertModel(
-                    title: "Proprietà già registrata",
-                    message: "Per reclami e/o errori contattare info@foodies.com.",
-                    actionPlus: nil))
+            if let doc = document,
+                doc.exists {
+                // Non registrabile
+                print("Property \(propertyID) già esistente")
+                handle(false)
                 
             } else {
                 // registrabile
-              //  handle(nil)
-                do {
-                    try docRef.setData(from: property, merge: true)
-                    handle(nil)
-                    
-                } catch let error {
-                    handle(AlertModel(
-                        title: "Server Error",
-                        message: "\(error.localizedDescription)\nRiprovare. Se il problema persiste contattare info@foodies.com"))
-                    print("\(error.localizedDescription) - Errore nel salvataggio su Firebase")
-                }
+                print("Property \(propertyID) NON esistente")
+                handle(true)
 
             }
             

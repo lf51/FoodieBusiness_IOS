@@ -65,7 +65,8 @@ struct NewPropertyMainView: View {
                         screenWidth: screenWidth,
                         frameHeight: screenHeight * 0.20) {
                             
-                        self.registrazioneProperty(mkItem: property)
+                        //self.registrazioneProperty(mkItem: property)
+                            self.checkProperty(mkItem: property)
                     }
                         .padding(.vertical, screenHeight * 0.05 )
                     
@@ -89,7 +90,42 @@ struct NewPropertyMainView: View {
     
     // Method
     
-    private func registrazioneProperty(mkItem:MKMapItem) {
+    private func checkProperty(mkItem:MKMapItem) {
+        
+        // verifichiamo che la prop non esiste
+        let mkItemCoordinate = mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
+        let mkCity = mkItem.placemark.locality ?? "NOLOCALITY"
+        let idToCheck = PropertyModel.creaID(coordinates: mkItemCoordinate, cityName: mkCity)
+        
+        self.viewModel.dbCompiler.checkPropertyOnFirebase(propertyID: idToCheck) { registrabile in
+            
+            if registrabile {
+                
+                // procediamo alla registrazione
+                registrazioneProperty(
+                    mkItem: mkItem,
+                    mkCity: mkCity,
+                    mkCoordinate: mkItemCoordinate)
+                
+                self.isShowingSheet.toggle()
+                
+            } else {
+                
+                // proprietà già esistente / mandiamo un alert
+                self.viewModel.alertItem = AlertModel(
+                    title: "Proprietà già registrata",
+                    message: "Per reclami e/o errori contattare info@foodies.com.",
+                    actionPlus: nil)
+                return
+            }
+            
+            
+        }
+        
+        
+    }
+    
+    private func registrazioneProperty(mkItem:MKMapItem,mkCity:String,mkCoordinate:CLLocationCoordinate2D) {
         
         // userRoleModel derivato da quello corrente
         
@@ -107,8 +143,8 @@ struct NewPropertyMainView: View {
         // genera un propertyModel
        let modelProperty = PropertyModel(
          intestazione: mkItem.name ?? "",
-         cityName: mkItem.placemark.locality ?? "",
-         coordinates: mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
+         cityName: mkCity,
+         coordinates: mkCoordinate,
          webSite: mkItem.url?.absoluteString ?? "",
          phoneNumber: mkItem.phoneNumber ?? "",
          streetAdress: mkItem.placemark.thoroughfare ?? "",
@@ -117,26 +153,28 @@ struct NewPropertyMainView: View {
 
         // crea Imaggine proprietà
         
-        let propertyImage = PropertyImage(
+        let propertyImage = PropertyLocalImage(
             userRuolo: localUser.ruolo.rawValue,
             propertyName: modelProperty.intestazione,
             propertyRef: modelProperty.id)
         
         // aggiorna lista imaggini le dbCompiler
         
-        if self.viewModel.dbCompiler.allMyProperties != nil {
-            self.viewModel.dbCompiler.allMyProperties?.append(propertyImage)
-        } else {
-            self.viewModel.dbCompiler.allMyProperties = [propertyImage]
-        }
+        self.viewModel.allMyPropertiesImage.append(propertyImage)
         
         // registra property sul firebase
         
-        let involucro = InvolucroDati(property: modelProperty, dataBase: nil)
+        let involucro = PropertyCloudData(propertyInfo: modelProperty, propertyData: nil)
         self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: modelProperty.id, element: involucro)
         // aggiornare i riferimenti nella chiave utente in firebase
-        let ref = propertyImage.propertyRef
-        self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .businessUser, refKey: localUser.id, element: ["propertyRef":[ref]])
+        
+        let allRef = self.viewModel.allMyPropertiesImage.map({$0.propertyRef})
+        let userCloud = UserCloudData(propertiesRef: allRef)
+
+        self.viewModel.dbCompiler.publishGenericOnFirebase(
+            collection: .businessUser,
+            refKey: localUser.id,
+            element: userCloud)
  
     }
     /*
