@@ -131,7 +131,8 @@ struct NewPropertyMainView: View {
         
         let localUser:UserRoleModel = {
             // id + email + usernam sono sempre gli stessi per tutte le prop e le collab dell'utente corrente
-            var user = self.viewModel.currentUserRoleModel
+           // var user = self.viewModel.currentUserRoleModel
+            var user = self.viewModel.onProperty.currentUser // da sostituire con una static dello user di Utentica
             
             user.ruolo = .admin
             user.inizioCollaborazione = Date.now
@@ -151,12 +152,13 @@ struct NewPropertyMainView: View {
          numeroCivico: mkItem.placemark.subThoroughfare ?? "",
          admin: localUser )
 
-        // crea Imaggine proprietà
-        
+        let adress = modelProperty.streetAdress + " " + modelProperty.numeroCivico + "," + " " + modelProperty.cityName
+        // crea Immagine proprietà
         let propertyImage = PropertyLocalImage(
             userRuolo: localUser.ruolo.rawValue,
             propertyName: modelProperty.intestazione,
-            propertyRef: modelProperty.id)
+            propertyRef: modelProperty.id,
+            propertyAdress: adress)
         
         // aggiorna lista imaggini le dbCompiler
         
@@ -164,11 +166,12 @@ struct NewPropertyMainView: View {
         
         // registra property sul firebase
         
-        let involucro = PropertyCloudData(propertyInfo: modelProperty, propertyData: nil)
+        let involucro = PropertyDataModelTransitionObject(propertyInfo: modelProperty, propertyData: nil)
         self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: modelProperty.id, element: involucro)
+        
         // aggiornare i riferimenti nella chiave utente in firebase
         
-        let allRef = self.viewModel.allMyPropertiesImage.map({$0.propertyRef})
+        let allRef = self.viewModel.allMyPropertiesImage.map({$0.propertyID})
         let userCloud = UserCloudData(propertiesRef: allRef)
 
         self.viewModel.dbCompiler.publishGenericOnFirebase(

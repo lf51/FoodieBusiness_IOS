@@ -31,9 +31,18 @@ struct HomeView: View {
 
         NavigationStack(path:$viewModel.homeViewPath) {
       
-           /* CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {*/
+        let userValue:(name:String,role:String,currentProperty:String) = {
+                let propertyData = self.viewModel.onProperty
+                let role = propertyData.currentUser.ruolo.rawValue
+                let userName = propertyData.currentUser.userName
+                let prop = propertyData.propertyInfo?.intestazione ?? "no property in"
                 
-            CSZStackVB(title: self.viewModel.currentUserRoleModel.userName, backgroundColorView: backgroundColorView) {
+                return (userName,role,prop)
+                
+            }()
+           /* CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {*/
+            
+            CSZStackVB(title: userValue.name, backgroundColorView: backgroundColorView) {
 
                 VStack(alignment: .leading,spacing:.vStackBoxSpacing) {
                   //  VStack(spacing:.vStackBoxSpacing) {
@@ -41,14 +50,22 @@ struct HomeView: View {
                     ScrollViewReader { proxy in
                         
                    //     VStack(alignment:.leading) {
+                   
     
-                        vbTopView()
-                            .padding(10)
-                            .background {
-                                Color.seaTurtle_2
-                                    .opacity(0.4)
-                                    .cornerRadius(5.0)
-                            }
+                        VStack(alignment:.leading) {
+                            Text("\(userValue.role): \(userValue.currentProperty)")
+                                .italic()
+                                .font(.caption2)
+                                .foregroundColor(.black)
+                                .opacity(0.75)
+                            vbTopView()
+                                .padding(10)
+                                .background {
+                                    Color.seaTurtle_2
+                                        .opacity(0.4)
+                                        .cornerRadius(5.0)
+                                }
+                        }
                         
                         ScrollView(showsIndicators:false) {
                             
@@ -179,6 +196,19 @@ struct HomeView: View {
                             }
                         }
                         
+                        Button("Pubblica") {
+                            // temporaneo
+                          /*  if let property = self.viewModel.currentProperty {
+                                let prop = PropertyCloudData(propertyInfo: property, propertyData: self.viewModel.cloudData)
+                                
+                                
+                                self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: property.id, element: prop)
+                            } */
+                            
+                          
+                           
+                        }
+                        
                         
                     } label: {
                         
@@ -187,9 +217,6 @@ struct HomeView: View {
                             .foregroundColor(.seaTurtle_2)
                         
                     }
-
-                    
-           
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {

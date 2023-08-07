@@ -35,7 +35,7 @@ struct PropertyListView: View {
             VStack(alignment:.leading, spacing: 10.0) {
    
            // CSDivider()
-                if let propertyCorrente = self.viewModel.currentProperty {
+                if let propertyCorrente = self.viewModel.onProperty.propertyInfo {
                     
                     VStack {
                         
@@ -61,7 +61,7 @@ struct PropertyListView: View {
                               
                               let disable:Bool = {
                                   
-                                  return self.viewModel.currentProperty?.id == values.propertyRef
+                                  return self.viewModel.onProperty.propertyInfo?.id == values.propertyID
                                   
                               }()
                               
@@ -73,6 +73,10 @@ struct PropertyListView: View {
                                       Text(values.propertyName)
                                           .font(.largeTitle)
                                           .foregroundColor(.black)
+                                      
+                                      Text(values.adress)
+                                          .italic()
+                                          .font(.body)
                                       
                                       Text(values.userRuolo)
                                           .italic()

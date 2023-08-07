@@ -124,19 +124,102 @@ enum RestrictionLevel:Codable {
 
 }*/ // spostata su FoodiePackage 22.07
 
-/// Oggetto per far transitare i dati in entrata e uscita dal firestore in un unica chiamata della proprietà. Contiene le info (dove vi è anche l'otganigramma) e il database
-struct PropertyCloudData:Codable {
-    
-    let propertyInfo:PropertyModel
-    let propertyData:CloudDataStore?
-    
-}
-/// oggetto di servizio per mostrare le proprietà registrate con informazioni sintetiche da cui grazie al ref recuperiamo i dati. Utile per multiproprietà e dunque per scegliere e switchare fra l'una e l'altra
-public struct PropertyLocalImage:Hashable {
-    
+
+/// oggetto di servizio per mostrare le proprietà registrate con informazioni sintetiche da cui recuperare le property scelte dall'utente ed effettuare lo switch
+public struct PropertyLocalImage:Decodable,Hashable {
+    // inserire lo snap del ref
+  // public static var userID:String = ""
+
+   public let propertyID:String
    public let userRuolo:String
    public let propertyName:String
-   public let propertyRef:String
+   public let adress:String
+    
+   public var snapShot:QueryDocumentSnapshot?
+    
+    enum CodingKeys:String,CodingKey {
+    
+        case propertyInfo
+  
+    }
+    
+     enum PropertyModelKeys:String,CodingKey {
+        
+        case id
+        case intestazione
+        case cityName
+        case streetAdress
+        case numeroCivico
+        case organigramma
+        
+    }
+    
+    public init(userRuolo:String,propertyName:String,propertyRef:String,propertyAdress:String) {
+        
+        self.userRuolo = userRuolo
+        self.propertyID = propertyRef
+        self.propertyName = propertyName
+        self.adress = propertyAdress
+    }
+    
+    public init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let road = try container.nestedContainer(keyedBy: PropertyModelKeys.self, forKey: .propertyInfo)
+        
+        // verifichiamo in decodifica che lo user è autorizzato
+        let organigramma = try road.decode([UserRoleModel].self, forKey: .organigramma)//.first(where: { $0.id == CloudDataCompiler.userAuthUid})
+        
+        guard let user = organigramma.first(where: {$0.id == CloudDataCompiler.userAuthUid}) else {
+            // User Non Autorizzato
+            let context = DecodingError.Context(codingPath: [Self.PropertyModelKeys.organigramma], debugDescription: "User Non Autorizzato")
+            print("errore di decoding di una ref: \(context.debugDescription)")
+            throw DecodingError.valueNotFound(String.self, context)
+        }
+
+        // user Autorizzato
+        let city = try road.decode(String.self, forKey: .cityName)
+        let street = try road.decode(String.self, forKey: .streetAdress)
+        let numeroCivico = try road.decode(String.self, forKey: .numeroCivico)
+            
+        self.propertyID = try road.decode(String.self, forKey: .id)
+        self.propertyName = try road.decode(String.self, forKey: .intestazione)
+        self.adress = street + " " + numeroCivico + "," + " " + city
+        self.userRuolo = user.ruolo.rawValue
+
+    }
+
+    
+   /* public init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let road = try container.nestedContainer(keyedBy: PropertyModelKeys.self, forKey: .propertyInfo)
+        
+        let organigramma = try road.decode([UserRoleModel].self, forKey: .organigramma)
+        // verifichiamo in decodifica che lo user è autorizzato
+        if let user = organigramma.first(where: {$0.id == CloudDataCompiler.userAuthUid}) {
+            
+            let city = try road.decode(String.self, forKey: .cityName)
+            let street = try road.decode(String.self, forKey: .streetAdress)
+            let numeroCivico = try road.decode(String.self, forKey: .numeroCivico)
+            
+            self.adress = street + " " + numeroCivico + "," + " " + city
+            self.userRuolo = user.ruolo.rawValue
+            self.propertyID = try road.decode(String.self, forKey: .id)
+            self.propertyName = try road.decode(String.self, forKey: .intestazione)
+            
+           // self.snapShot = snap
+            
+        } else {
+
+            self.adress = "VIA DEI GIGLI"
+            self.propertyID = "IDMINE"
+            self.propertyName = "MINEKRAFT"
+            self.userRuolo = "ORESTE"
+            return
+        }
+
+    } */
     
 }
 /// oggetto di servizio per salvare i riferimenti delle proprietà dello User
@@ -148,7 +231,7 @@ public class CloudDataCompiler {
     
    private let db_base = Firestore.firestore()
  // private var ref_db: DocumentReference // probabile deprecazione
-   private let userAuthUid:String
+   static var userAuthUid:String = ""
     
  //  public var userData:UserCloudData? // deprecata
  //  public var allMyProperties:[PropertyLocalImage]? // deprecata
@@ -160,15 +243,89 @@ public class CloudDataCompiler {
     
    public init(userAuthUID:String) {
         
-            self.userAuthUid = userAuthUID
+            Self.userAuthUid = userAuthUID
+            //PropertyLocalImage.userID = userAuthUID // impostiamo le imagini delle prop sull'utente autenticato. Utile in decodifica per decodificare solo le prop dove l'user è autorizzato
           
             print("CloudDataCompiler inizializzato con uuid:\(userAuthUID)")
   
     }
     
     // Nuovo Corso
-
-    func firstFetch(handle:@escaping(_ propertiesImage:[PropertyLocalImage],_ propUserRole:UserRoleModel?,_ currentProp:PropertyModel?,_ propDB:CloudDataStore?,_ isLoading:Bool) -> () ) {
+    
+    func firstFetch(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataModel?,_ isLoading:Bool) -> () ) {
+        
+        self.fetchPropertyRef { allRef in
+            
+            // caso_0 nessun ref
+            
+            guard !allRef.isEmpty else {
+                print("Utente non ha ref di proprietà")
+                handle(nil,nil,false)
+                return
+            }
+            // individuiamo i documenti corrispondenti alle ref
+            self.db_base.collection(CollectionKey.propertyCollection.rawValue)
+                .whereField(.documentID(), in: allRef)
+                .getDocuments { querySnapshot, error in
+                    
+                    guard let query = querySnapshot,
+                          error == nil else {
+                        
+                        print("Errore nel get multiplo:\(error?.localizedDescription ?? "")")
+                        handle(nil,nil,false)
+                        return
+                    }
+                    // convertiamo ciascun documento in una PropertyLocalImage tramide il decoding dell'oggetto che verifica l'autorizzazione dell'utente
+                    let propImages:[PropertyLocalImage]? = query.documents.compactMap({ snap -> PropertyLocalImage? in
+                        
+                        let image = try? snap.data(as: PropertyLocalImage.self)
+                        
+                        guard var propImage = image else {
+                            return nil
+                        }
+                        
+                        propImage.snapShot = snap
+                        return propImage
+  
+                        
+                    }) // chiusa compactMap
+                    
+                    // Analizziamo le images
+                    // Caso -Vuoto o Nil- (ci sono i ref nell'utente ma non decodifica nulla perchè mancano le autorizzazioni)
+                    
+                    guard let allImages = propImages else {
+                        print("Nessun documento è stato convertito in PropertyLocalImage.Ref:\(allRef.count) vs Image:\(propImages?.count ?? 0)")
+                        
+                        handle(nil,nil,false)
+                        return
+                    }
+                    
+                    // Caso -Default_1Prop-
+                    // Caso -MultiProp-
+                    if let lastRef = UserDefaults.standard.string(forKey: "DefaultProperty"),
+                       let associatedImage = allImages.first(where: {$0.propertyID == lastRef}) {
+                        print("Recuperiamo l'immagine di default dell'ultima prop usata")
+                        let propertyData = try? associatedImage.snapShot?.data(as: PropertyDataModel.self)
+                        handle(allImages,propertyData,false)
+           
+                    } else if let first = allImages.first {
+                        print("Recuperiamo la prima Immagine delle prop")
+                        let propertyData = try? first.snapShot?.data(as: PropertyDataModel.self)
+                        handle(allImages,propertyData,false)
+                        
+                    } else {
+                        print("StranoPRINT - questo else in teoria non dovrebbe mai essere eseguito")
+                        handle(nil,nil,false)
+                    }
+                    
+                } // chiusa getDocuments
+            
+        } // chiusa fetchAllRef
+        
+    }
+        
+    
+   /* func firstFetchDEPRECATA(handle:@escaping(_ propertiesImage:[PropertyLocalImage],_ propUserRole:UserRoleModel?,_ currentProp:PropertyModel?,_ propDB:CloudDataStore?,_ isLoading:Bool) -> () ) {
                 
         // propertyRef dell'utente
         self.fetchPropertyRef { allRef in
@@ -213,7 +370,7 @@ public class CloudDataCompiler {
                     
                     if allProp.count == 1,
                        let theOnlyOne = allProp.first,
-                       let roleUser = theOnlyOne.propertyInfo.organigramma.first(where: {$0.id == self.userAuthUid}){
+                       let roleUser = theOnlyOne.propertyInfo.organigramma.first(where: {$0.id == Self.userAuthUid}){
                         // default con una proprietà
 
                         let propertyImage = PropertyLocalImage(
@@ -228,7 +385,7 @@ public class CloudDataCompiler {
                         
                     } else if allProp.count > 1 {
                         // contiene più di una prop. Il caso vuoto è nel guard
-                        
+                        // 03.08.23 update da fare -> occorre caricare l'ultima prop salvata nello userDefualt
                         let images = allProp.compactMap({ propData in
                             
                             if let roleUser = propData.propertyInfo.organigramma.first(where: {$0.id == self.userAuthUid}) {
@@ -260,11 +417,11 @@ public class CloudDataCompiler {
  
         }
 
-    } // end first Fetch
+    } */ // end first Fetch
     
     private func fetchPropertyRef(handle:@escaping(_ allRef:[String]) -> () ){
         
-        let key = self.db_base.collection(CollectionKey.businessUser.rawValue).document(self.userAuthUid)
+        let key = self.db_base.collection(CollectionKey.businessUser.rawValue).document(Self.userAuthUid)
       
         key.getDocument(as: UserCloudData.self) { result in
 
@@ -373,7 +530,7 @@ public class CloudDataCompiler {
 
     }*/ // deprecata
     
-    func estrapolaDatiFromPropImage(propertyImage:PropertyLocalImage?,handle:@escaping(_ user:UserRoleModel?,_ prop:PropertyModel?,_ db:CloudDataStore?) -> () ) {
+   /* func estrapolaDatiFromPropImage(propertyImage:PropertyLocalImage?,handle:@escaping(_ user:UserRoleModel?,_ prop:PropertyModel?,_ db:CloudDataStore?) -> () ) {
      
         guard let values = propertyImage else {
             print("Errore etrapolazione dati da una PropertyImage")
@@ -381,9 +538,9 @@ public class CloudDataCompiler {
             return 
         }
         
-        self.fetchDocument(collection: .propertyCollection, docRef: values.propertyRef, modelSelf: PropertyCloudData.self) { modelData in
+        self.fetchDocument(collection: .propertyCollection, docRef: values.propertyID, modelSelf: PropertyCloudData.self) { modelData in
             
-                let userProp = modelData?.propertyInfo.organigramma.first(where: {$0.id == self.userAuthUid})
+                let userProp = modelData?.propertyInfo.organigramma.first(where: {$0.id == Self.userAuthUid})
                 
                 let propCurrent = modelData?.propertyInfo
                 let dbCurrent = modelData?.propertyData
@@ -391,7 +548,7 @@ public class CloudDataCompiler {
                 handle(userProp,propCurrent,dbCurrent)
 
         }
-    }
+    } */ // 06.08.23 deprecata
     
     
     // database

@@ -42,6 +42,69 @@ struct ProfiloUtente:Codable {
     var allMyCollabs:[CollaboratorModel]?
     
 } */
+/// Oggetto per far transitare i dati in entrata e uscita dal firestore in un unica chiamata della proprietà. Contiene le info (dove vi è anche l'otganigramma) e il database
+struct PropertyDataModelTransitionObject:Codable {
+    
+    let propertyInfo:PropertyModel
+    let propertyData:CloudDataStore?
+    
+}
+
+public struct PropertyDataModel:Codable { // da spostare nel framework myfoodie
+
+    public static var userAuth:(id:String,userName:String,mail:String) = ("","","")
+    
+    public var currentUser:UserRoleModel // viene estrapolato dall'organigramma
+    public var propertyInfo:PropertyModel? // viene salvato su firebase
+    public var propertyData:CloudDataStore // viene salvato su firebase
+  
+    public enum CodingKeys:String,CodingKey {
+        
+        case currentUser // da decodificare e non salvare
+        case propertyInfo
+        case propertyData
+        
+    }
+    
+    public init(userAuth:UserRoleModel) { // inutile ?
+        
+        Self.userAuth = (userAuth.id,userAuth.userName,userAuth.mail)
+        
+        self.currentUser = userAuth
+        self.propertyInfo = nil
+        self.propertyData = CloudDataStore()
+    }
+    
+    public init(from decoder: Decoder) throws {
+        
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let property = try container.decodeIfPresent(PropertyModel.self, forKey: .propertyInfo)
+        
+        guard let organigramma = property?.organigramma,
+              let user = organigramma.first(where: {$0.id == CloudDataCompiler.userAuthUid}) else {
+            // lo user NON è autenticato / verifica superflua in quanto già effettuata nella PropertyLocalImage ma necessaria per tirare fuori lo userRoleModel. Da valutare meccanismi più efficienti
+            let context = DecodingError.Context(codingPath: [Self.CodingKeys.propertyInfo], debugDescription: "Organigramma non trovato o User Non Autorizzato")
+            throw DecodingError.valueNotFound(String.self, context)
+        }
+        
+        self.propertyData = try container.decode(CloudDataStore.self, forKey: .propertyData)
+        self.currentUser = user
+        self.propertyInfo = property
+ 
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(propertyInfo, forKey: .propertyInfo)
+        try container.encode(propertyData, forKey: .propertyData)
+        
+        
+    }
+    
+}
 
 
 public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
@@ -77,6 +140,9 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     //10.02.23 Upgrade DishFormat
     
+    @Published var onProperty:PropertyDataModel // da spostare in superClasse
+    
+    
     var allDishFormatLabel:Set<String> {
         
         let allFormat:[DishFormat] = self.cloudData.allMyDish.flatMap({$0.pricingPiatto})
@@ -91,9 +157,27 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         // self.currentUserRoleModel = userAuth
         //  self.isLoading = userModel != nil // Nota 16.07.23 isLoading
         self.dbCompiler = CloudDataCompiler(userAuthUID: userAuth.id)
+        self.onProperty = PropertyDataModel(userAuth: userAuth)
         super.init()// contiene il db,la currentProp,lo userRoleModel per la currentProp
+
         
-        self.dbCompiler.firstFetch { propertiesImage, propUserRole, currentProp, propDB, isLoading in
+        self.dbCompiler.firstFetch { propertiesImage, propertyDataModel, isLoading in
+            if let images = propertiesImage {
+                self.allMyPropertiesImage = images
+            }
+            if let property = propertyDataModel {
+                self.onProperty = property
+            }
+            self.isLoading = isLoading
+            
+            if self.onProperty.propertyInfo == nil {
+                // se non ci sono proprietà portiamo lo user direttamente nella propertyList
+                self.homeViewPath.append(DestinationPathView.propertyList)
+            }
+            
+        }
+        
+       /* self.dbCompiler.firstFetch { propertiesImage, propUserRole, currentProp, propDB, isLoading in
             
             self.allMyPropertiesImage = propertiesImage
             self.currentProperty = currentProp
@@ -118,7 +202,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
             self.isLoading = isLoading // di default sarà true e qui andrà su false al termine dell'handle
          
             
-        }
+        } */
         
         
         
@@ -152,6 +236,21 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
         
+        // 06-08-23 lo snap potrebbe essere obsoleto. Risulta fondamentale introdurre i listener
+        
+        let snap = try? propertyImage.snapShot?.data(as: PropertyDataModel.self)
+        if let prop = snap {
+            // salviamo l'ultima prop usata nello userDefault
+            UserDefaults.standard.set(propertyImage.propertyID, forKey: "DefaultProperty")
+            print("UserDefaultKey is fill:\(UserDefaults.standard.dictionaryRepresentation().filter({$0.key == "DefaultProperty"}))")
+            self.onProperty = prop
+        }
+        
+        print("Dentro GO.Action - Snap Valido(true is NON VALID):\(snap == nil) ")
+        
+    }
+   /* func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
+        
         self.dbCompiler.estrapolaDatiFromPropImage(propertyImage: propertyImage) { user, prop, db in
             
             if let currentUser = user,
@@ -167,7 +266,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
             }
       
         }
-    }
+    }*/ // 06.08.23 deprecata
     
     /*
     func publishOnFirebase(handle:@escaping(_ errorIn:Bool) ->()) {
@@ -520,17 +619,20 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
             if deleteSuccess {
                // il documento relativo alla Prop è stato eliminato dal firebase
                 // aggiorniamo i ref dello user
-                self.allMyPropertiesImage.removeAll(where: {$0.propertyRef == propUID})
-                let allRef = self.allMyPropertiesImage.map({$0.propertyRef})
+                self.allMyPropertiesImage.removeAll(where: {$0.propertyID == propUID})
+                let allRef = self.allMyPropertiesImage.compactMap({$0.propertyID})
                 let userCloud = UserCloudData(propertiesRef: allRef)
                 
                 self.dbCompiler.publishGenericOnFirebase(collection: .businessUser, refKey: self.currentUserRoleModel.id, element: userCloud)
                // resettiamo lo user ai valori di autentica
+
                 let resetUser = UserRoleModel(uid: self.currentUserRoleModel.id, userName: self.currentUserRoleModel.userName, mail: self.currentUserRoleModel.mail)
                 // resettiamo i dati della current property
-                self.currentProperty = nil
+                self.onProperty = PropertyDataModel(userAuth: resetUser)
+                
+               /* self.currentProperty = nil
                 self.cloudData = CloudDataStore()
-                self.currentUserRoleModel = resetUser
+                self.currentUserRoleModel = resetUser */
                 
                 self.alertItem = AlertModel(title: "Server Message", message: "Aggiornamento Proprietà success")
                 
