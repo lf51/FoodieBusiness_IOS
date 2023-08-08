@@ -24,7 +24,7 @@ extension MenuModel:
     
     
    public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [MenuModel]> {
-        return \.cloudData.allMyMenu
+        return \.currentProperty.cloudData.db.allMyMenu
     }
     
    /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
@@ -79,7 +79,7 @@ extension MenuModel:
     func allDishActive(idDishEscluso:String? = nil,viewModel:AccounterVM) -> [DishModel] {
         
         let cleanRif = self.rifDishIn.filter({$0 != idDishEscluso})
-        let allDishIn = viewModel.modelCollectionFromCollectionID(collectionId: cleanRif, modelPath: \.cloudData.allMyDish)
+        let allDishIn = viewModel.modelCollectionFromCollectionID(collectionId: cleanRif, modelPath: \.currentProperty.cloudData.db.allMyDish)
         let avaibleDish = allDishIn.filter({$0.status.checkStatusTransition(check: .disponibile)})
         return avaibleDish
     }
@@ -112,7 +112,7 @@ extension MenuModel:
     public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
       //  let disabilita = self.rifDishIn.isEmpty
-        let dishCount = viewModel.cloudData.allMyDish.count
+        let dishCount = viewModel.currentProperty.cloudData.db.allMyDish.count
         let dishInMenu = self.rifDishIn.count
         
       return //VStack {
@@ -244,7 +244,7 @@ extension MenuModel:
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [MenuModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
-        return (\.cloudData.allMyMenu, "Lista Menu", "Menu","menucard")
+        return (\.currentProperty.cloudData.db.allMyMenu, "Lista Menu", "Menu","menucard")
     }
 
     public func pathDestination() -> DestinationPathView {
@@ -255,7 +255,7 @@ extension MenuModel:
     /// Ritorna la media dei voti dei piatti contenuti. La media è pesata, tiene conto del numero di recensioni.
     func mediaValorePiattiInMenu(readOnlyVM:AccounterVM) -> Double {
         
-        let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.cloudData.allMyDish)
+        let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.currentProperty.cloudData.db.allMyDish)
         
         let allAvaibleDish = allDish.filter({
             $0.percorsoProdotto != .prodottoFinito &&
@@ -315,7 +315,7 @@ extension MenuModel:Object_FPC {
 
         guard readOnlyVM != nil else { return conditionOne }
         
-        let allDish = readOnlyVM?.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.cloudData.allMyDish)
+        let allDish = readOnlyVM?.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.currentProperty.cloudData.db.allMyDish)
        
         guard let allD = allDish else { return conditionOne }
         

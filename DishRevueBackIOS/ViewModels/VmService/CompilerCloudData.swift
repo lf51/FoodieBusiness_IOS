@@ -14,6 +14,28 @@ import FirebaseFirestoreSwift
 import MyFilterPackage
 import MyPackView_L0
 
+extension PropertyDataObject:Codable {
+    
+    public init(from decoder: Decoder) throws {
+        
+        self.init()
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.info = try container.decodeIfPresent(PropertyModel.self, forKey: .info)
+        self.db = try container.decode(CloudDataStore.self, forKey: .db)
+       
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(info, forKey: .info)
+        try container.encode(db, forKey: .db)
+        
+    }
+}
+
 extension CloudDataStore:Codable {
     
      public init(from decoder: Decoder) throws {
@@ -131,7 +153,8 @@ public struct PropertyLocalImage:Decodable,Hashable {
   // public static var userID:String = ""
 
    public let propertyID:String
-   public let userRuolo:String
+  //public let userRuolo:String
+   public let userRuolo:UserRoleModel
    public let propertyName:String
    public let adress:String
     
@@ -154,7 +177,7 @@ public struct PropertyLocalImage:Decodable,Hashable {
         
     }
     
-    public init(userRuolo:String,propertyName:String,propertyRef:String,propertyAdress:String) {
+    public init(userRuolo:UserRoleModel,propertyName:String,propertyRef:String,propertyAdress:String) {
         
         self.userRuolo = userRuolo
         self.propertyID = propertyRef
@@ -185,7 +208,7 @@ public struct PropertyLocalImage:Decodable,Hashable {
         self.propertyID = try road.decode(String.self, forKey: .id)
         self.propertyName = try road.decode(String.self, forKey: .intestazione)
         self.adress = street + " " + numeroCivico + "," + " " + city
-        self.userRuolo = user.ruolo.rawValue
+        self.userRuolo = user
 
     }
 
@@ -252,7 +275,79 @@ public class CloudDataCompiler {
     
     // Nuovo Corso
     
-    func firstFetch(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataModel?,_ isLoading:Bool) -> () ) {
+    func firstFetch(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataObject?,_ userRoleModel:UserRoleModel?,_ isLoading:Bool) -> () ) {
+        
+        self.fetchPropertyRef { allRef in
+            
+            // caso_0 nessun ref
+            
+            guard !allRef.isEmpty else {
+                print("Utente non ha ref di proprietà")
+                handle(nil,nil,nil,false)
+                return
+            }
+            // individuiamo i documenti corrispondenti alle ref
+            self.db_base.collection(CollectionKey.propertyCollection.rawValue)
+                .whereField(.documentID(), in: allRef)
+                .getDocuments { querySnapshot, error in
+                    
+                    guard let query = querySnapshot,
+                          error == nil else {
+                        
+                        print("Errore nel get multiplo:\(error?.localizedDescription ?? "")")
+                        handle(nil,nil,nil,false)
+                        return
+                    }
+                    // convertiamo ciascun documento in una PropertyLocalImage tramide il decoding dell'oggetto che verifica l'autorizzazione dell'utente
+                    let propImages:[PropertyLocalImage]? = query.documents.compactMap({ snap -> PropertyLocalImage? in
+                        
+                        let image = try? snap.data(as: PropertyLocalImage.self)
+                        
+                        guard var propImage = image else {
+                            return nil
+                        }
+                        
+                        propImage.snapShot = snap
+                        return propImage
+  
+                        
+                    }) // chiusa compactMap
+                    
+                    // Analizziamo le images
+                    // Caso -Vuoto o Nil- (ci sono i ref nell'utente ma non decodifica nulla perchè mancano le autorizzazioni)
+                    
+                    guard let allImages = propImages else {
+                        print("Nessun documento è stato convertito in PropertyLocalImage.Ref:\(allRef.count) vs Image:\(propImages?.count ?? 0)")
+                        
+                        handle(nil,nil,nil,false)
+                        return
+                    }
+                    
+                    // Caso -Default_1Prop-
+                    // Caso -MultiProp-
+                    if let lastRef = UserDefaults.standard.string(forKey: "DefaultProperty"),
+                       let associatedImage = allImages.first(where: {$0.propertyID == lastRef}) {
+                        print("Recuperiamo l'immagine di default dell'ultima prop usata")
+                        let propertyDataObject = try? associatedImage.snapShot?.data(as: PropertyDataObject.self)
+                        handle(allImages,propertyDataObject,associatedImage.userRuolo,false)
+           
+                    } else if let first = allImages.first {
+                        print("Recuperiamo la prima Immagine delle prop")
+                        let propertyDataObject = try? first.snapShot?.data(as: PropertyDataObject.self)
+                        handle(allImages,propertyDataObject,first.userRuolo,false)
+                        
+                    } else {
+                        print("StranoPRINT - questo else in teoria non dovrebbe mai essere eseguito")
+                        handle(nil,nil,nil,false)
+                    }
+                    
+                } // chiusa getDocuments
+            
+        } // chiusa fetchAllRef
+        
+    }
+    
+   /* func firstFetchDeprecata(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataModel?,_ isLoading:Bool) -> () ) {
         
         self.fetchPropertyRef { allRef in
             
@@ -322,7 +417,7 @@ public class CloudDataCompiler {
             
         } // chiusa fetchAllRef
         
-    }
+    } */
         
     
    /* func firstFetchDEPRECATA(handle:@escaping(_ propertiesImage:[PropertyLocalImage],_ propUserRole:UserRoleModel?,_ currentProp:PropertyModel?,_ propDB:CloudDataStore?,_ isLoading:Bool) -> () ) {
@@ -530,25 +625,14 @@ public class CloudDataCompiler {
 
     }*/ // deprecata
     
-   /* func estrapolaDatiFromPropImage(propertyImage:PropertyLocalImage?,handle:@escaping(_ user:UserRoleModel?,_ prop:PropertyModel?,_ db:CloudDataStore?) -> () ) {
-     
-        guard let values = propertyImage else {
-            print("Errore etrapolazione dati da una PropertyImage")
-            handle(nil,nil,nil)
-            return 
-        }
-        
-        self.fetchDocument(collection: .propertyCollection, docRef: values.propertyID, modelSelf: PropertyCloudData.self) { modelData in
+    func estrapolaDatiFromPropImage(propertyImage:PropertyLocalImage,handle:@escaping(_ propertyData:PropertyDataObject?) -> () ) {
+             
+        self.fetchDocument(collection: .propertyCollection, docRef: propertyImage.propertyID, modelSelf: PropertyDataObject.self) { modelData in
+            print("fetch property da propertyImag succed: \(modelData != nil)")
+            handle(modelData)
             
-                let userProp = modelData?.propertyInfo.organigramma.first(where: {$0.id == Self.userAuthUid})
-                
-                let propCurrent = modelData?.propertyInfo
-                let dbCurrent = modelData?.propertyData
-                
-                handle(userProp,propCurrent,dbCurrent)
-
         }
-    } */ // 06.08.23 deprecata
+    }  // 06.08.23 deprecata
     
     
     // database

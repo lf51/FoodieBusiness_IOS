@@ -35,7 +35,7 @@ struct PropertyListView: View {
             VStack(alignment:.leading, spacing: 10.0) {
    
            // CSDivider()
-                if let propertyCorrente = self.viewModel.onProperty.propertyInfo {
+                if let propertyCorrente = self.viewModel.currentProperty.cloudData.info {
                     
                     VStack {
                         
@@ -61,7 +61,7 @@ struct PropertyListView: View {
                               
                               let disable:Bool = {
                                   
-                                  return self.viewModel.onProperty.propertyInfo?.id == values.propertyID
+                                  return self.viewModel.currentProperty.cloudData.info?.id == values.propertyID
                                   
                               }()
                               
@@ -78,7 +78,7 @@ struct PropertyListView: View {
                                           .italic()
                                           .font(.body)
                                       
-                                      Text(values.userRuolo)
+                                      Text(values.userRuolo.ruolo.rawValue)
                                           .italic()
                                           .font(.body)
                                       
@@ -116,7 +116,7 @@ struct PropertyListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Collabora",
                         font: .callout,
-                        imageBack: viewModel.cloudData.allMyProperties.isEmpty ? Color.yellow : Color.red.opacity(0.6),
+                        imageBack: viewModel.currentProperty.cloudData.db.allMyProperties.isEmpty ? Color.yellow : Color.red.opacity(0.6),
                         imageFore: Color.seaTurtle_4) {
                         
                         withAnimation {
@@ -128,7 +128,7 @@ struct PropertyListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Proprietà",
                         font: .callout,
-                        imageBack: viewModel.cloudData.allMyProperties.isEmpty ? Color.seaTurtle_2 : Color.red.opacity(0.6),
+                        imageBack: viewModel.currentProperty.cloudData.db.allMyProperties.isEmpty ? Color.seaTurtle_2 : Color.red.opacity(0.6),
                         imageFore: Color.seaTurtle_4) {
                         
                         withAnimation {

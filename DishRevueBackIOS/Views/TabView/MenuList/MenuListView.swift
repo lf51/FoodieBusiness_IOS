@@ -29,7 +29,7 @@ struct MenuListView: View {
         
         NavigationStack(path:$viewModel.menuListPath) {
             
-            let container = self.viewModel.ricercaFiltra(containerPath: \.cloudData.allMyMenu, coreFilter: filterCore)
+            let container = self.viewModel.ricercaFiltra(containerPath: \.currentProperty.cloudData.db.allMyMenu, coreFilter: filterCore)
             
             let generalDisable:Bool = {
                 

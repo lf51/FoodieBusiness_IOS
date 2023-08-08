@@ -49,9 +49,9 @@ struct EditingPropertyModel: View {
                     .focused($modelField, equals: .descrizione)
                     
                     VStack(spacing:10) {
-                        let allMenuActive = self.viewModel.cloudData.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
+                        let allMenuActive = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
                         
-                        let allMenuDeActive = self.viewModel.cloudData.allMyMenu.filter({
+                        let allMenuDeActive = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({
                             $0.status.checkStatusTransition(check: .inPausa) ||
                             $0.status.checkStatusTransition(check: .archiviato)
                         })
@@ -75,7 +75,7 @@ struct EditingPropertyModel: View {
                                 HStack {
                                     
                                     /* let todayClose = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)}).isEmpty */ // deprecata 03.07.23
-                                    let todayClose = self.viewModel.cloudData.allMyMenu.filter({$0.isOnAirValue().today}).isEmpty
+                                    let todayClose = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({$0.isOnAirValue().today}).isEmpty
                                     
                                     Text("Oggi")
                                     

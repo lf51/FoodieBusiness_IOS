@@ -17,7 +17,7 @@ extension CategoriaMenu:
     
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]> {
-        \.cloudData.allMyCategories
+        \.currentProperty.cloudData.db.allMyCategories
     }
     
   /*  public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
@@ -36,12 +36,12 @@ extension CategoriaMenu:
     } */
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [CategoriaMenu]>, nomeContainer: String, nomeOggetto: String,imageAssociated:String) {
-        return (\.cloudData.allMyCategories,"Elenco Categorie Menu", "Categoria Menu","list.bullet.clipboard")
+        return (\.currentProperty.cloudData.db.allMyCategories,"Elenco Categorie Menu", "Categoria Menu","list.bullet.clipboard")
     }
     
     public func dishPerCategory(viewModel:AccounterVM) -> (count:Int,array:[DishModel]) {
         
-        let dish = viewModel.cloudData.allMyDish.filter {$0.categoriaMenu == self.id}
+        let dish = viewModel.currentProperty.cloudData.db.allMyDish.filter {$0.categoriaMenu == self.id}
         return (dish.count,dish)
     }
     

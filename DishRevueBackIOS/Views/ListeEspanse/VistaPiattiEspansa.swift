@@ -147,10 +147,10 @@ struct PreCallVistaPiattiEspansa: View {
                         var allDish:[DishModel] = []
                         
                         if self.filterCategoria == .defaultValue {
-                            allDish = self.viewModel.cloudData.allMyDish
+                            allDish = self.viewModel.currentProperty.cloudData.db.allMyDish
                         } else {
                             
-                            allDish = self.viewModel.cloudData.allMyDish.filter({
+                            allDish = self.viewModel.currentProperty.cloudData.db.allMyDish.filter({
                                 $0.categoriaMenu == self.filterCategoria.id
                                 })
                         }
@@ -177,7 +177,7 @@ struct PreCallVistaPiattiEspansa: View {
                                 backgroundColor: Color.white, backgroundOpacity: 0.2).fixedSize()
                             Spacer()
                             
-                            CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.cloudData.allMyCategories)
+                            CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.currentProperty.cloudData.db.allMyCategories)
 
                         }
 
@@ -268,7 +268,7 @@ struct PreCallVistaPiattiEspansa: View {
         
         private func description() -> (breve:Text,estesa:Text) {
             
-            let allDishCount = self.viewModel.cloudData.allMyDish.count
+            let allDishCount = self.viewModel.currentProperty.cloudData.db.allMyDish.count
             let dishInAtTheBeginning = valoreArchiviato.count
             
             let currentDishIn = currentMenu.rifDishIn.count
@@ -511,9 +511,9 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
          
         let user = UserRoleModel()
        var vm = AccounterVM(userAuth: user)
-         vm.cloudData.allMyDish = [dishItem3,dishItem4,dishItem5,dishItem6]
-         vm.cloudData.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
-         vm.cloudData.allMyMenu = [menuDelloChef,menuDelGiorno,menuSample,menuSample3,menuSample2]
+         vm.currentProperty.cloudData.db.allMyDish = [dishItem3,dishItem4,dishItem5,dishItem6]
+         vm.currentProperty.cloudData.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+         vm.currentProperty.cloudData.db.allMyMenu = [menuDelloChef,menuDelGiorno,menuSample,menuSample3,menuSample2]
          return vm
      }()
     

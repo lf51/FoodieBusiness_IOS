@@ -45,7 +45,7 @@ struct Switch_ImportObject: View {
         }
         .onAppear {
             
-            if viewModel.cloudData.allMyCategories.isEmpty {
+            if viewModel.currentProperty.cloudData.db.allMyCategories.isEmpty {
                 self.localChoice = .categorieMenu
                 self.disabilitaPicker = true
             }

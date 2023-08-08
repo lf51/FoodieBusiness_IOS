@@ -132,7 +132,7 @@ struct NewPropertyMainView: View {
         let localUser:UserRoleModel = {
             // id + email + usernam sono sempre gli stessi per tutte le prop e le collab dell'utente corrente
            // var user = self.viewModel.currentUserRoleModel
-            var user = self.viewModel.onProperty.currentUser // da sostituire con una static dello user di Utentica
+            var user = self.viewModel.currentProperty.user // c'è sempre uno user
             
             user.ruolo = .admin
             user.inizioCollaborazione = Date.now
@@ -155,7 +155,7 @@ struct NewPropertyMainView: View {
         let adress = modelProperty.streetAdress + " " + modelProperty.numeroCivico + "," + " " + modelProperty.cityName
         // crea Immagine proprietà
         let propertyImage = PropertyLocalImage(
-            userRuolo: localUser.ruolo.rawValue,
+            userRuolo: localUser,
             propertyName: modelProperty.intestazione,
             propertyRef: modelProperty.id,
             propertyAdress: adress)
@@ -165,8 +165,21 @@ struct NewPropertyMainView: View {
         self.viewModel.allMyPropertiesImage.append(propertyImage)
         
         // registra property sul firebase
+        // verifichiamo la presenza di un databaseCorrente non associato ad una proprietà
+        var involucro:PropertyDataObject
         
-        let involucro = PropertyDataModelTransitionObject(propertyInfo: modelProperty, propertyData: nil)
+        if self.viewModel.currentProperty.cloudData.info == nil {
+            // caso in cui l'utente inizi a creare oggetti senza avere una proprietà registrata
+            let dbCorrente = self.viewModel.currentProperty.cloudData.db
+            involucro = PropertyDataObject(registra: modelProperty, dataBase: dbCorrente)
+            
+        } else {
+            // caso in cui esiste una proprietà corrente e quindi la nuova sarà registrata con database vuoto
+            involucro = PropertyDataObject(registra: modelProperty,dataBase: nil)
+        }
+        
+        
+       // let involucro = PropertyDataModelTransitionObject(propertyInfo: modelProperty, propertyData: nil)
         self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: modelProperty.id, element: involucro)
         
         // aggiornare i riferimenti nella chiave utente in firebase

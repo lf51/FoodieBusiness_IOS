@@ -21,7 +21,7 @@ struct VistaCronologiaAcquisti: View {
             
             VStack(alignment:.leading) {
                 
-                let logDate = self.viewModel.cloudData.inventarioScorte.logAcquisti(idIngrediente: ingrediente.id)
+                let logDate = self.viewModel.currentProperty.cloudData.db.inventarioScorte.logAcquisti(idIngrediente: ingrediente.id)
                 let logDateEnumerated = logDate.enumerated()
                 
                 HStack {
@@ -39,7 +39,7 @@ struct VistaCronologiaAcquisti: View {
                     
                     ForEach(Array(logDateEnumerated),id:\.element) { position,stamp in
                         
-                        let(time,note) = self.viewModel.cloudData.inventarioScorte.splitDateFromNote(stringa: stamp)
+                        let(time,note) = self.viewModel.currentProperty.cloudData.db.inventarioScorte.splitDateFromNote(stringa: stamp)
                         
                         VStack(alignment:.leading,spacing:5) {
                             

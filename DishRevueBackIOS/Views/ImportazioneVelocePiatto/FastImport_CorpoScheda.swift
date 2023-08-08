@@ -54,7 +54,7 @@ struct FastImport_CorpoScheda:View {
                         CS_Picker(
                             selection: $temporaryModel.categoriaMenu,
                             customLabel: "Categoria",
-                            dataContainer: viewModel.cloudData.allMyCategories,//CategoriaMenu.allCases,
+                            dataContainer: viewModel.currentProperty.cloudData.db.allMyCategories,//CategoriaMenu.allCases,
                             cleanAndOrderContainer: false,
                             backgroundColor: Color.white.opacity(0.5))
                             .csWarningModifier(
@@ -116,7 +116,7 @@ struct FastImport_CorpoScheda:View {
                 ForEach($temporaryModel.ingredients) { $ingredient in
                 
                   /*  let isIngredientOld = viewModel.checkExistingUniqueModelID(model: ingredient).0 */
-                    let isIngredientOld = viewModel.isTheModelAlreadyExist(modelID: ingredient.id,path: \.cloudData.allMyIngredients)
+                    let isIngredientOld = viewModel.isTheModelAlreadyExist(modelID: ingredient.id,path: \.currentProperty.cloudData.db.allMyIngredients)
                     
                     FastImport_IngredientRow(ingredient: $ingredient,areAllergeniOk: $areAllergeniOk, checkError: checkError, isIngredientOld: isIngredientOld){ idIngredient in
                         self.addSecondary(id: idIngredient)

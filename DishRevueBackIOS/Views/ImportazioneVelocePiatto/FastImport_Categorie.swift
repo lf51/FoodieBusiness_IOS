@@ -160,7 +160,7 @@ struct CorpoCompilazioneCategorie:View {
             ForEach(allFastCategories) { category in
                 
                 let focusCheck:Bool = self.focusCategory.id == category.id
-                let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.cloudData.allMyCategories)
+                let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.currentProperty.cloudData.db.allMyCategories)
                 
                 VStack(alignment:.leading) {
                     
@@ -207,7 +207,7 @@ struct CorpoCompilazioneCategorie:View {
         }
         .onAppear {
             
-            if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.cloudData.allMyCategories)}) {
+            if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.currentProperty.cloudData.db.allMyCategories)}) {
                 self.focusCategory = newFocus
             }
         }
@@ -222,7 +222,7 @@ struct CorpoCompilazioneCategorie:View {
         self.allFastCategories.removeAll(where: {$0.id == self.focusCategory.id})
         self.allFastCategories.append(self.focusCategory)//perchè modifichiamo la state focus e dunque va rimossa quella nell'array allfast e va sostituita con quella nel focus che ha la nuova immagine
         
-        if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.cloudData.allMyCategories)}) {
+        if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.currentProperty.cloudData.db.allMyCategories)}) {
             self.focusCategory = newFocus
         } else {
             self.focusCategory = CategoriaMenu()

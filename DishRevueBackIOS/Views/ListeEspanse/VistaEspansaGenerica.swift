@@ -113,7 +113,7 @@ struct VistaEspansaMenuPerAnteprima: View {
         
       VistaEspansaGenerica(
         container: rifMenuOn,
-        containerPath: \.cloudData.allMyMenu,
+        containerPath: \.currentProperty.cloudData.db.allMyMenu,
         label: label,
         backgroundColorView: backgroundColorView)
         .toolbar {
@@ -174,7 +174,7 @@ struct VistaEspansaMenuPerAnteprima: View {
         CSZStackVB(title: label, backgroundColorView: backgroundColorView) {
             // Nota 22.02.23
             let mapLabel = MapTree(
-                mapProperties: self.viewModel.cloudData.allMyCategories,
+                mapProperties: self.viewModel.currentProperty.cloudData.db.allMyCategories,
                 kpPropertyInObject: \DishModel.categoriaMenu,
                 labelColor: .black,
                 labelText: .white,
@@ -182,7 +182,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                 labelOpacity: 0.35,
                 extendedVersion: true)
             
-            let container = self.viewModel.modelCollectionFromCollectionID(collectionId: rifDishes, modelPath: \.cloudData.allMyDish).sorted(by: {$0.intestazione < $1.intestazione})
+            let container = self.viewModel.modelCollectionFromCollectionID(collectionId: rifDishes, modelPath: \.currentProperty.cloudData.db.allMyDish).sorted(by: {$0.intestazione < $1.intestazione})
             
             VStack {
                 

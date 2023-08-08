@@ -53,7 +53,7 @@ struct NuovaCategoriaMenu: View {
                 VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
                     
                     CSLabel_conVB(
-                        placeHolder: "Elenco Categorie (\(self.viewModel.cloudData.allMyCategories.count)):",
+                        placeHolder: "Elenco Categorie (\(self.viewModel.currentProperty.cloudData.db.allMyCategories.count)):",
                         imageNameOrEmojy: "list.bullet.circle",
                         backgroundColor: Color.seaTurtle_3) {
                            
@@ -84,7 +84,7 @@ struct NuovaCategoriaMenu: View {
 
                         List {
           
-                                ForEach(viewModel.cloudData.allMyCategories) { categoria in
+                                ForEach(viewModel.currentProperty.cloudData.db.allMyCategories) { categoria in
                                     
                                     let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
                                     
@@ -152,12 +152,12 @@ struct NuovaCategoriaMenu: View {
     
     private func removeFromList(index:IndexSet) {
 
-        self.viewModel.cloudData.allMyCategories.remove(atOffsets: index)
+        self.viewModel.currentProperty.cloudData.db.allMyCategories.remove(atOffsets: index)
     }
 
     private func makeOrder(from:IndexSet, to:Int) {
         
-        self.viewModel.cloudData.allMyCategories.move(fromOffsets: from, toOffset: to)
+        self.viewModel.currentProperty.cloudData.db.allMyCategories.move(fromOffsets: from, toOffset: to)
     }
     
     private func pencilButton(categoria:CategoriaMenu) {
@@ -182,7 +182,7 @@ struct NuovaCategoriaMenu: View {
             return cat
         }()
         
-        if self.viewModel.isTheModelAlreadyExist(modelID: self.nuovaCategoria.id,path: \.cloudData.allMyCategories) {  // Update
+        if self.viewModel.isTheModelAlreadyExist(modelID: self.nuovaCategoria.id,path: \.currentProperty.cloudData.db.allMyCategories) {  // Update
             
             self.viewModel.updateItemModel(itemModel:categoriaFinale)
             

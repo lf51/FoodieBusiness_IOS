@@ -296,7 +296,7 @@ struct DishListByIngredientView: View {
         }
         
       if let currentIngredientModel = {
-          let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.cloudData.allMyIngredients)
+          let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
           var cleanCopy = current
           cleanCopy?.status = current?.status.changeStatusTransition(changeIn: .inPausa) ?? .bozza()
          
@@ -346,7 +346,7 @@ struct DishListByIngredientView: View {
         
         if let currentIngredientModel = {
             
-            let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.cloudData.allMyIngredients)
+            let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
             var cleanCopy = current
             cleanCopy?.status = current?.status.changeStatusTransition(changeIn: .archiviato) ?? .bozza()
             return cleanCopy
@@ -493,8 +493,8 @@ struct DishListByIngredientView_Previews: PreviewProvider {
     @StateObject static var viewModel:AccounterVM = {
         let user = UserRoleModel()
         var viewM = AccounterVM(userAuth: user)
-        viewM.cloudData.allMyDish = [dishItem,dishItem2,dishItem3]
-        viewM.cloudData.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4,ingredientSample5 ]
+        viewM.currentProperty.cloudData.db.allMyDish = [dishItem,dishItem2,dishItem3]
+        viewM.currentProperty.cloudData.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4,ingredientSample5 ]
         return viewM
     }()
     

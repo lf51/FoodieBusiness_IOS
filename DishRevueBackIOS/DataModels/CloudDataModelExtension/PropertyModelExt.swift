@@ -18,7 +18,7 @@ extension PropertyModel:
     public typealias RS = RowSize
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [PropertyModel]> {
-        return \.cloudData.allMyProperties
+        return \.currentProperty.cloudData.db.allMyProperties
     }
     
    /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String : Any] {
@@ -102,7 +102,7 @@ extension PropertyModel:
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
-        return (\.cloudData.allMyProperties,"Lista Proprietà", "Proprietà","house")
+        return (\.currentProperty.cloudData.db.allMyProperties,"Lista Proprietà", "Proprietà","house")
     }
 
     

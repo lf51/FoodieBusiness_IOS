@@ -137,21 +137,21 @@ public enum DestinationPathView: Hashable {
         case .listaGenericaMenu(let container,let label):
             VistaEspansaGenerica(
                 container: container,
-                containerPath: \.cloudData.allMyMenu,
+                containerPath: \.currentProperty.cloudData.db.allMyMenu,
                 label:label,
                 backgroundColorView: backgroundColorView)
             
         case .listaGenericaIng(let container,let label):
             VistaEspansaGenerica(
                 container:container,
-                containerPath: \.cloudData.allMyIngredients,
+                containerPath: \.currentProperty.cloudData.db.allMyIngredients,
                 label:label,
                 backgroundColorView: backgroundColorView)
             
         case .listaGenericaDish(let container,let label):
             VistaEspansaGenerica(
                 container: container,
-                containerPath: \.cloudData.allMyDish,
+                containerPath: \.currentProperty.cloudData.db.allMyDish,
                 label:label,
                 backgroundColorView: backgroundColorView)
             

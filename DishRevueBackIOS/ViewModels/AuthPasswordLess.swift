@@ -95,8 +95,7 @@ public class AuthPasswordLess: ObservableObject, Hashable {
                     uid: result?.user.uid ?? "No_UID",
                     userName: result?.user.displayName ?? result?.user.email ?? "NoMail&NoUsername",
                     mail: result?.user.email ?? "noEmailAdress")
-                
-                
+            
             }
           }
             

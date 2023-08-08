@@ -35,7 +35,7 @@ struct ScheduleServizio:View {
     private func ricavaScheduleServizio() -> (menuDataEsatta:[MenuModel],menuByDay:[GiorniDelServizio:[MenuModel]]) {
         
         // .1
-        let allMenuAvaible = self.viewModel.cloudData.allMyMenu.filter({
+        let allMenuAvaible = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({
             $0.status.checkStatusTransition(check: .disponibile)})
         
         let allMenuDataEsatta = allMenuAvaible.filter({$0.isAvaibleWhen == .dataEsatta})

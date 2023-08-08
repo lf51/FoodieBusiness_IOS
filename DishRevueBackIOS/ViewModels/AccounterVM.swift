@@ -43,14 +43,14 @@ struct ProfiloUtente:Codable {
     
 } */
 /// Oggetto per far transitare i dati in entrata e uscita dal firestore in un unica chiamata della proprietà. Contiene le info (dove vi è anche l'otganigramma) e il database
-struct PropertyDataModelTransitionObject:Codable {
+/*struct PropertyDataModelTransitionObjectDEPRECATA:Codable {
     
     let propertyInfo:PropertyModel
     let propertyData:CloudDataStore?
     
 }
 
-public struct PropertyDataModel:Codable { // da spostare nel framework myfoodie
+public struct PropertyDataModelDEPRECATA:Codable { // da spostare nel framework myfoodie
 
     public static var userAuth:(id:String,userName:String,mail:String) = ("","","")
     
@@ -104,13 +104,12 @@ public struct PropertyDataModel:Codable { // da spostare nel framework myfoodie
         
     }
     
-}
+} */
 
 
 public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
    
     public typealias DBCompiler = CloudDataCompiler
-    
     public var dbCompiler: CloudDataCompiler
     
    // @Published public var userData:UserCloudData?
@@ -140,12 +139,11 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     //10.02.23 Upgrade DishFormat
     
-    @Published var onProperty:PropertyDataModel // da spostare in superClasse
-    
+    //@Published var onProperty:PropertyDataModel // da spostare in superClasse
     
     var allDishFormatLabel:Set<String> {
-        
-        let allFormat:[DishFormat] = self.cloudData.allMyDish.flatMap({$0.pricingPiatto})
+    
+        let allFormat:[DishFormat] = self.currentProperty.cloudData.db.allMyDish.flatMap({$0.pricingPiatto})
         let allLabel = allFormat.compactMap({$0.label})
         return Set(allLabel)
     }
@@ -157,11 +155,30 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         // self.currentUserRoleModel = userAuth
         //  self.isLoading = userModel != nil // Nota 16.07.23 isLoading
         self.dbCompiler = CloudDataCompiler(userAuthUID: userAuth.id)
-        self.onProperty = PropertyDataModel(userAuth: userAuth)
-        super.init()// contiene il db,la currentProp,lo userRoleModel per la currentProp
+       // self.onProperty = PropertyDataModel(userAuth: userAuth)
+        super.init(userAuth: userAuth)// contiene il db,la currentProp,lo userRoleModel per la currentProp
 
+        self.dbCompiler.firstFetch { propertiesImage, propertyDataModel, userRoleModel, isLoading in
+            
+            if let images = propertiesImage {
+                self.allMyPropertiesImage = images
+            }
+            
+            if let propertyData = propertyDataModel,
+               let user = userRoleModel {
+                // aggiorniamo la currentProperty di autentica
+                self.currentProperty = PropertyDataModel(user: user, propertyData: propertyData)
+                
+            } else {
+                // in assenza di property nel cloud apriamo diretto la propertyList
+                self.homeViewPath.append(DestinationPathView.propertyList)
+            }
+            
+            self.isLoading = isLoading
+        }
         
-        self.dbCompiler.firstFetch { propertiesImage, propertyDataModel, isLoading in
+        
+       /* self.dbCompiler.firstFetch { propertiesImage, propertyDataModel, isLoading in
             if let images = propertiesImage {
                 self.allMyPropertiesImage = images
             }
@@ -175,7 +192,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
                 self.homeViewPath.append(DestinationPathView.propertyList)
             }
             
-        }
+        } */
         
        /* self.dbCompiler.firstFetch { propertiesImage, propUserRole, currentProp, propDB, isLoading in
             
@@ -236,37 +253,59 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
         
-        // 06-08-23 lo snap potrebbe essere obsoleto. Risulta fondamentale introdurre i listener
-        
-        let snap = try? propertyImage.snapShot?.data(as: PropertyDataModel.self)
-        if let prop = snap {
-            // salviamo l'ultima prop usata nello userDefault
-            UserDefaults.standard.set(propertyImage.propertyID, forKey: "DefaultProperty")
-            print("UserDefaultKey is fill:\(UserDefaults.standard.dictionaryRepresentation().filter({$0.key == "DefaultProperty"}))")
-            self.onProperty = prop
+        if propertyImage.snapShot != nil {
+            // compiliamo la property dallo snap
+            self.estrapolaSnapFromPropertyImage(propertyImage: propertyImage)
+            
+        } else {
+            // la property è probabilmente un primo accesso dopo la registrazione
+            self.fetchFromPropertyImage(propertyImage: propertyImage)
         }
-        
-        print("Dentro GO.Action - Snap Valido(true is NON VALID):\(snap == nil) ")
         
     }
-   /* func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
+    
+   private func estrapolaSnapFromPropertyImage(propertyImage:PropertyLocalImage) {
         
-        self.dbCompiler.estrapolaDatiFromPropImage(propertyImage: propertyImage) { user, prop, db in
-            
-            if let currentUser = user,
-               let property = prop {
-                self.currentUserRoleModel = currentUser
-                self.currentProperty = property
-            }
-            
-            if let dataCloud = db {
-                self.cloudData = dataCloud
-            } else {
-                self.cloudData = CloudDataStore()
-            }
-      
+        // 06-08-23 lo snap potrebbe essere obsoleto. Risulta fondamentale introdurre i listener
+        
+        let snap = try? propertyImage.snapShot?.data(as: PropertyDataObject.self)
+        if let prop = snap {
+            // update current property
+            self.updateCurrentProperty(
+                propertyImage:propertyImage,
+                propertyData: prop)
+
         }
-    }*/ // 06.08.23 deprecata
+        
+        print("Dentro GO.Action - Snap Valido:\(snap != nil) ")
+        
+    }
+    
+   private func fetchFromPropertyImage(propertyImage:PropertyLocalImage) {
+        print("fetch da propertyImage / Probabile primo ingresso dopo registrazione")
+       
+        self.dbCompiler.estrapolaDatiFromPropImage(propertyImage: propertyImage) { propertyData in
+            
+            guard let property = propertyData else {
+                return
+            }
+            // update current Propery
+            
+            self.updateCurrentProperty(
+                propertyImage:propertyImage,
+                propertyData: property)
+            
+        }
+    }
+    
+    private func updateCurrentProperty(propertyImage:PropertyLocalImage,propertyData:PropertyDataObject) {
+        // salviamo il ref nello userDefault e aggiorniamo la current Property
+        UserDefaults.standard.set(propertyImage.propertyID,forKey: "DefaultProperty")
+        print("UserDefaultKey is fill:\(UserDefaults.standard.dictionaryRepresentation().filter({$0.key == "DefaultProperty"}))")
+
+        (self.currentProperty.user,self.currentProperty.cloudData) = (propertyImage.userRuolo,propertyData)
+        
+    }
     
     /*
     func publishOnFirebase(handle:@escaping(_ errorIn:Bool) ->()) {
@@ -444,7 +483,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     
     func creaPropertyRef(propertyRef:String,role:RoleModel) {
         
-        self.cloudData.allMyPropertiesRef = [role:propertyRef]
+        self.currentProperty.cloudData.db.allMyPropertiesRef = [role:propertyRef]
         print("Property ref:\(propertyRef) salvata localmente come:\(role.rawValue)")
         
     }
@@ -596,7 +635,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     /// Metodo specifico delle proprietà per l'eliminazione che interagisce direttamente anche col server
     func deletePropertyAlert() {
         // Configurata per eliminare la proprietà corrente. Quindi per eliminare una property dobbiamo prima caricarla
-        guard let property = currentProperty else { return }
+        guard let property = currentProperty.cloudData.info else { return }
         
         self.alertItem = AlertModel(
             title: "Azione non Reversibile",
@@ -623,17 +662,25 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
                 let allRef = self.allMyPropertiesImage.compactMap({$0.propertyID})
                 let userCloud = UserCloudData(propertiesRef: allRef)
                 
-                self.dbCompiler.publishGenericOnFirebase(collection: .businessUser, refKey: self.currentUserRoleModel.id, element: userCloud)
-               // resettiamo lo user ai valori di autentica
+                self.dbCompiler.publishGenericOnFirebase(collection: .businessUser, refKey: Self.userAuthData.id, element: userCloud)
+               
+                // update currentProperty
+                
+                if let next = self.allMyPropertiesImage.first {
+                    // esistono altre immagini di proprietà / carichiamo la prima
+                    
+                    self.compilaFromPropertyImage(propertyImage: next)
+                    
+                } else {
 
-                let resetUser = UserRoleModel(uid: self.currentUserRoleModel.id, userName: self.currentUserRoleModel.userName, mail: self.currentUserRoleModel.mail)
-                // resettiamo i dati della current property
-                self.onProperty = PropertyDataModel(userAuth: resetUser)
-                
-               /* self.currentProperty = nil
-                self.cloudData = CloudDataStore()
-                self.currentUserRoleModel = resetUser */
-                
+                    // non ci sono altre immagini
+                    // resettiamo lo user ai valori di autentica
+                    let resetUser = UserRoleModel(uid: Self.userAuthData.id, userName: Self.userAuthData.userName, mail: Self.userAuthData.mail)
+                    // creiamo un propertyData con property nil e cloudData vuoto
+                    self.currentProperty = PropertyDataModel(userAuth: resetUser)
+  
+                }
+
                 self.alertItem = AlertModel(title: "Server Message", message: "Aggiornamento Proprietà success")
                 
             } else {
@@ -763,7 +810,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     /// ritorna un array con i piatti contenenti l'ingrediente passato. La presenza dell'ing è controllata fra i principali, i secondari, e i sosituti.
     func allDishContainingIngredient(idIng:String) -> [DishModel] {
         
-        let allDishFiltered = self.cloudData.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
+        let allDishFiltered = self.currentProperty.cloudData.db.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
         return allDishFiltered
         
     }
@@ -773,7 +820,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     /// Ritorna una tupla contenente le seguenti Info: Un array con tutti i menuModel ad accezzione di quelli di Sistema, il count dell'array, e il count dei menu (meno quelli di Sistema) contenenti l'id del piatto
     func allMenuMinusDiSistemaPlusContain(idPiatto:String) -> (allModelMinusDS:[MenuModel], allModelMinusDScount:Int,countWhereDishIsIn:Int) {
         
-        let allMinusSistema = self.cloudData.allMyMenu.filter({
+        let allMinusSistema = self.currentProperty.cloudData.db.allMyMenu.filter({
             $0.tipologia != .allaCarta(.delGiorno) &&
             $0.tipologia != .allaCarta(.delloChef)
         })
@@ -791,11 +838,11 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     /// Ritorna una Tupla gemella dell'AllMenuMinusDiSistemaPlusContain ma senza escludere i menu di sistema
     func allMenuContaining(idPiatto:String) -> (allModelWithDish:[MenuModel], allMyMenuCount:Int,countWhereDishIsIn:Int) {
                 
-        let witchContain = self.cloudData.allMyMenu.filter({
+        let witchContain = self.currentProperty.cloudData.db.allMyMenu.filter({
             $0.rifDishIn.contains(idPiatto)
         })
         
-        let allMenuCount = self.cloudData.allMyMenu.count
+        let allMenuCount = self.currentProperty.cloudData.db.allMyMenu.count
         let witchContainCount = witchContain.count
         
         return (witchContain,allMenuCount,witchContainCount)
@@ -857,7 +904,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti
         
-        let filteredDish = self.cloudData.allMyDish.filter { dish in
+        let filteredDish = self.currentProperty.cloudData.db.allMyDish.filter { dish in
             dish.ingredientiPrincipali.contains(where: { $0 == idIngredient }) ||
             dish.ingredientiSecondari.contains(where: { $0 == idIngredient })
         }
@@ -869,7 +916,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     /// filtra tutti gli ingredient Model presenti nel viewModel per status, escludendo quello con l'idIngredient passato.
     func ingredientListFilteredBy(idIngredient:String,ingredientStatus:StatusTransition) ->[IngredientModel] {
 
-        let filterArray = self.cloudData.allMyIngredients.filter({
+        let filterArray = self.currentProperty.cloudData.db.allMyIngredients.filter({
             $0.id != idIngredient &&
             $0.status.checkStatusTransition(check: ingredientStatus)
             
@@ -950,7 +997,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
                 // copia il modello solo se già non esiste
             } */
             
-            if !isTheModelAlreadyExist(modelID: ingredient.id,path: \.cloudData.allMyIngredients) {
+            if !isTheModelAlreadyExist(modelID: ingredient.id,path: \.currentProperty.cloudData.db.allMyIngredients) {
              
                  modelIngredients.append(ingredient)
                  // copia il modello solo se già non esiste
@@ -977,8 +1024,8 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
             
         }()
  
-        self.cloudData.allMyDish.append(dish)
-        self.cloudData.allMyIngredients.append(contentsOf: modelIngredients)
+        self.currentProperty.cloudData.db.allMyDish.append(dish)
+        self.currentProperty.cloudData.db.allMyIngredients.append(contentsOf: modelIngredients)
 
     }
 
@@ -990,8 +1037,8 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     /// Crea Inventario Ingredienti per Lista della Spesa ordinato per aree tematiche (vegetali,latticini,carne,pesce)
     func inventarioIngredienti() -> [IngredientModel] {
          
-         let allIDing = self.cloudData.inventarioScorte.allInventario()
-         let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.cloudData.allMyIngredients)
+         let allIDing = self.currentProperty.cloudData.db.inventarioScorte.allInventario()
+         let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
            
          let allVegetable = allING.filter({
              $0.origine.returnTypeCase() == .vegetale
@@ -1085,7 +1132,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         let cleanDish = Set(allDishId)
         let allDishIdCleaned = Array(cleanDish)
         
-        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.cloudData.allMyDish)
+        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.currentProperty.cloudData.db.allMyDish)
         
         let allDishAvaible = allDishModel.filter({
             $0.status.checkStatusTransition(check: .disponibile) ||
@@ -1122,7 +1169,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         let cleanAllIngreArray = Array(cleanAllIngredient)
         //
         
-        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.cloudData.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
+        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.currentProperty.cloudData.db.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
         
         //
         
@@ -1146,12 +1193,12 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         let allModel:[DishModel] = {
             
             guard let allDishes = dishes else {
-                return self.cloudData.allMyDish
+                return self.currentProperty.cloudData.db.allMyDish
             }
             
           let allModelDishes = self.modelCollectionFromCollectionID(
             collectionId: allDishes,
-            modelPath: \.cloudData.allMyDish)
+            modelPath: \.currentProperty.cloudData.db.allMyDish)
         
             return allModelDishes
         }()
@@ -1262,11 +1309,11 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
         
         if rifReview == nil {
             
-            allRev = self.cloudData.allMyReviews
+            allRev = self.currentProperty.cloudData.db.allMyReviews
             
         } else {
             
-            allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.cloudData.allMyReviews)
+            allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.currentProperty.cloudData.db.allMyReviews)
         }
     
         let allVote = allRev.compactMap({$0.voto.generale})
@@ -1326,10 +1373,10 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     /// Ritorna il numero di preparazioni (esclude i prodotti finit) con recensioni, il totale delle preparazioni, il numero di preparazioni con media sotto il 6, sopra il 6, sopra il 9.
     func monitorRecensioniMoreInfo() -> (preparazioniConRev:Int,totPrep:Int,negCount:Int,posCount:Int,topCount:Int) {
         
-        let dishReviewed = self.cloudData.allMyDish.filter({
+        let dishReviewed = self.currentProperty.cloudData.db.allMyDish.filter({
             !$0.rifReviews.isEmpty
         })
-        let soloLePreparazioni = self.cloudData.allMyDish.filter({
+        let soloLePreparazioni = self.currentProperty.cloudData.db.allMyDish.filter({
             $0.percorsoProdotto != .prodottoFinito
         })
         
@@ -1355,7 +1402,7 @@ public final class AccounterVM:FoodieViewModel,MyProDataCompiler {
     func reviewValue(rifReviews:[String]) -> [DishRatingModel] {
         
       //  let allRif = dish.rifReviews
-        let allRev = self.modelCollectionFromCollectionID(collectionId: rifReviews, modelPath: \.cloudData.allMyReviews)
+        let allRev = self.modelCollectionFromCollectionID(collectionId: rifReviews, modelPath: \.currentProperty.cloudData.db.allMyReviews)
         let sortElement = allRev.sorted(by: {$0.dataRilascio > $1.dataRilascio})
         
         return sortElement

@@ -72,7 +72,7 @@ struct VistaIngredientiEspansa: View {
                         
                         ForEach(container,id:\.self) { rif in
     
-                            if let model = self.viewModel.modelFromId(id: rif, modelPath: \.cloudData.allMyIngredients) {
+                            if let model = self.viewModel.modelFromId(id: rif, modelPath: \.currentProperty.cloudData.db.allMyIngredients) {
                                 
                                 let isDisponibile = model.status.checkStatusTransition(check: .disponibile)
  
@@ -112,7 +112,7 @@ struct VistaIngredientiEspansa: View {
         
         if let sostituto = currentDish.elencoIngredientiOff[rif] {
            
-            if let modelSostituto = self.viewModel.modelFromId(id: sostituto, modelPath: \.cloudData.allMyIngredients) {
+            if let modelSostituto = self.viewModel.modelFromId(id: sostituto, modelPath: \.currentProperty.cloudData.db.allMyIngredients) {
                 
                 let isActive = modelSostituto.status.checkStatusTransition(check: .disponibile)
                 
@@ -175,7 +175,7 @@ struct VistaIngredientiEspansa_Selectable: View {
         
                 VStack(alignment:.leading) {
                     
-                    let container_0 = self.viewModel.ricercaFiltra(containerPath: \.cloudData.allMyIngredients, coreFilter: filterCore)
+                    let container_0 = self.viewModel.ricercaFiltra(containerPath: \.currentProperty.cloudData.db.allMyIngredients, coreFilter: filterCore)
                     let container = container_0.filter({$0.status != .bozza()})
                     
                     HStack {
@@ -266,7 +266,7 @@ struct VistaIngredientiEspansa_Selectable: View {
                     filterCollection: $filterCore.filterProperties.inventario,
                     selectionColor: Color.teal.opacity(0.6)) { value in
                         container.filter({
-                            self.viewModel.cloudData.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value
+                            self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value
                         }).count
                     }
 
@@ -386,8 +386,8 @@ struct VistaIngredientiEspansa_Previews: PreviewProvider {
     @State static var viewModel: AccounterVM = {
          let user = UserRoleModel()
         var vm = AccounterVM(userAuth: user)
-         vm.cloudData.allMyDish = [dishItem3]
-         vm.cloudData.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+         vm.currentProperty.cloudData.db.allMyDish = [dishItem3]
+         vm.currentProperty.cloudData.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
          return vm
      }()
     static var previews: some View {

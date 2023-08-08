@@ -32,10 +32,11 @@ struct HomeView: View {
         NavigationStack(path:$viewModel.homeViewPath) {
       
         let userValue:(name:String,role:String,currentProperty:String) = {
-                let propertyData = self.viewModel.onProperty
-                let role = propertyData.currentUser.ruolo.rawValue
-                let userName = propertyData.currentUser.userName
-                let prop = propertyData.propertyInfo?.intestazione ?? "no property in"
+            
+            let propertyData = self.viewModel.currentProperty
+                let role = propertyData.user.ruolo.rawValue
+                let userName = propertyData.user.userName
+                let prop = propertyData.cloudData.info?.intestazione ?? "no property in"
                 
                 return (userName,role,prop)
                 
@@ -198,15 +199,13 @@ struct HomeView: View {
                         
                         Button("Pubblica") {
                             // temporaneo
-                          /*  if let property = self.viewModel.currentProperty {
-                                let prop = PropertyCloudData(propertyInfo: property, propertyData: self.viewModel.cloudData)
-                                
-                                
-                                self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: property.id, element: prop)
-                            } */
                             
-                          
-                           
+                            if let property = self.viewModel.currentProperty.cloudData.info {
+                                
+                                self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: property.id, element: self.viewModel.currentProperty.cloudData)
+                                
+                            }
+      
                         }
                         
                         
@@ -263,7 +262,7 @@ struct HomeView: View {
         
         //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
         //update 09.07.23
-        let tutteLePreparazioni = self.viewModel.cloudData.allMyDish.filter({
+        let tutteLePreparazioni = self.viewModel.currentProperty.cloudData.db.allMyDish.filter({
             !$0.rifReviews.isEmpty &&
             $0.percorsoProdotto != .prodottoFinito
             
@@ -279,7 +278,7 @@ struct HomeView: View {
     
     private func compilaArrayMenu() -> (model:[MenuModel],rif:[String]) {
         
-        let allMenu = self.viewModel.cloudData.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
+        let allMenu = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
         
         let allSorted = allMenu.sorted(by: {
             $0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > $1.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
@@ -396,7 +395,7 @@ struct HomeView: View {
                 
                 let propertyDestination:DestinationPathView? = {
                     
-                    let allProp = self.viewModel.cloudData.allMyProperties
+                    let allProp = self.viewModel.currentProperty.cloudData.db.allMyProperties
                     
                     guard !allProp.isEmpty else { return nil }
                     
@@ -571,7 +570,7 @@ struct MenuDiSistema_BoxView:View {
                         } else {
                             
                             let dishIn = menuDS!.rifDishIn.count
-                            let allDish = viewModel.cloudData.allMyDish.count
+                            let allDish = viewModel.currentProperty.cloudData.db.allMyDish.count
                             
                             NavigationLink(value: DestinationPathView.vistaPiattiEspansa(menuDS!)) {
                                 
@@ -629,7 +628,7 @@ struct MenuDiSistema_BoxView:View {
                                     
                                     ForEach(menuDS!.rifDishIn,id:\.self) { idPiatto in
                                            
-                                           if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.cloudData.allMyDish) {
+                                        if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.currentProperty.cloudData.db.allMyDish) {
                                                
                                              //  DishModel_RowView(item: piatto, rowSize: .sintetico)
                                                GenericItemModel_RowViewMask(
