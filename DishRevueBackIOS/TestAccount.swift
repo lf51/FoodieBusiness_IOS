@@ -25,23 +25,35 @@ let otherDate2 = Date().addingTimeInterval(-583200)
 let otherDateString2 = csTimeFormatter().data.string(from: otherDate2)
 let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 26 € prezzo concordato con il titolare in data 11.09.2022"
 
+ let testCurrentProperty = PropertyCurrentData(
+    userRole: UserRoleModel(),
+    info: PropertyModel(intestazione: "", cityName: "", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "", phoneNumber: "", streetAdress: "", numeroCivico: "", admin: UserRoleModel()),
+    inventario: Inventario(),
+    setup: AccountSetup(),
+    db: CloudDataStore())
+
+ let initServiceObject = InitServiceObjet(allPropertiesImage: [], currentProperty: testCurrentProperty)
+
 var testAccount: AccounterVM = {
 
     let user = UserRoleModel()
     
-    var vm = AccounterVM(userAuth: user)
-     vm.currentProperty.cloudData.db.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
-     vm.currentProperty.cloudData.db.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
-     vm.currentProperty.cloudData.db.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
-    vm.currentProperty.cloudData.db.inventarioScorte.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
-    vm.currentProperty.cloudData.db.inventarioScorte.ingEsauriti = [/*ingredientSample_Test.id,*//*ingredientSample2_Test.id,*/ingredientSample3_Test.id,ingredientSample4_Test.id]
-    vm.currentProperty.cloudData.db.inventarioScorte.cronologiaAcquisti = [
+    var vm = AccounterVM(from: initServiceObject)
+    
+    vm.currentProperty.info = property_Test
+    
+     vm.currentProperty.db.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
+     vm.currentProperty.db.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
+     vm.currentProperty.db.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
+    vm.currentProperty.inventario.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
+    vm.currentProperty.inventario.ingEsauriti = [/*ingredientSample_Test.id,*//*ingredientSample2_Test.id,*/ingredientSample3_Test.id,ingredientSample4_Test.id]
+    vm.currentProperty.inventario.cronologiaAcquisti = [
         ingredientSample_Test.id:[otherDateString3,otherDateString1,otherDateString,oldDateString,todayString],ingredientSample5_Test.id:[oldDateString,todayString]
     
     ]
-    vm.currentProperty.cloudData.db.inventarioScorte.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
-    vm.currentProperty.cloudData.db.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
-    vm.currentProperty.cloudData.db.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
+    vm.currentProperty.inventario.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
+    vm.currentProperty.db.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
+    vm.currentProperty.db.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
     
     vm.remoteStorage.modelRif_deleted = [ingredientSample_Test.id:ingredientSample_Test.intestazione]
     vm.remoteStorage.modelRif_newOne = [menuSample_Test.id,dishItem3_Test.id]

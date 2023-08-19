@@ -277,7 +277,7 @@ struct DishModel_RowView: View {
     /// solo per viewRow ibride
     @ViewBuilder private func vbIngredientQuality() -> some View {
         
-        if let modelDS = self.viewModel.modelFromId(id: self.item.id, modelPath: \.currentProperty.cloudData.db.allMyIngredients) {
+        if let modelDS = self.viewModel.modelFromId(id: self.item.id, modelPath: \.currentProperty.db.allMyIngredients) {
             
             let conservazione = modelDS.conservazione
             let origine = modelDS.origine
@@ -380,7 +380,7 @@ struct DishModel_RowView: View {
             
             if isIbrido {
                 
-                let statoScorte = self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: self.item.id)
+                let statoScorte = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id)
                 
                 CSEtichetta(
                     text: statoScorte.rawValue,
@@ -537,7 +537,7 @@ struct DishModel_RowView: View {
             
             if self.item.percorsoProdotto == .prodottoFinito {
                 
-               return self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
+               return self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
                 
             }
             else {
@@ -764,7 +764,7 @@ struct DishModel_RowView: View {
 
                                    if idSostituto != nil {
                                         
-                                       let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
+                                       let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.currentProperty.db.allMyIngredients)
                                        
                                        if isActive {
                                            
@@ -1045,7 +1045,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
     
    static let user = UserRoleModel(ruolo: .admin)
     
-    static var viewModel:AccounterVM = AccounterVM(userAuth: user)
+    static var viewModel:AccounterVM = AccounterVM(from: initServiceObject)//AccounterVM(userAuth: user)
         
     static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [], origine: .animale, status: .completo(.disponibile))
         
@@ -1242,7 +1242,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
             
         }
         .onAppear{
-            viewModel.currentProperty.cloudData.db.allMyIngredients = [ing1,ing2,ing3,ing4]
+            viewModel.currentProperty.db.allMyIngredients = [ing1,ing2,ing3,ing4]
         }
         .environmentObject(viewModel)
         

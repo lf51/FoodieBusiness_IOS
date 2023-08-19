@@ -34,9 +34,9 @@ struct HomeView: View {
         let userValue:(name:String,role:String,currentProperty:String) = {
             
             let propertyData = self.viewModel.currentProperty
-                let role = propertyData.user.ruolo.rawValue
-                let userName = propertyData.user.userName
-                let prop = propertyData.cloudData.info?.intestazione ?? "no property in"
+            let role = propertyData.userRole.ruolo.rawValue
+            let userName = propertyData.userRole.userName
+            let prop = propertyData.info?.intestazione ?? "no property in"
                 
                 return (userName,role,prop)
                 
@@ -200,11 +200,27 @@ struct HomeView: View {
                         Button("Pubblica") {
                             // temporaneo
                             
-                            if let property = self.viewModel.currentProperty.cloudData.info {
+                            Task {
+                                // temporaneo
+                           //  try await GlobalDataManager.cloudData.publishIngOnLibrary(model:self.viewModel.currentProperty.db.allMyIngredients)
+                                
+                              /* try await CloudDataManager.shared.publishIngOnLibrary(model: self.viewModel.currentProperty.cloudData.db.allMyIngredients) */
+                               print("[start]pre publishCloudData")
+                              //  try await CloudDataManager.shared.publishCloudData(from: self.viewModel.currentProperty.cloudData)
+                                print("[end]Out publishCloudData")
+                            }
+                            
+                           /* if let property = self.viewModel.currentProperty.cloudData.info {
                                 
                                 self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: property.id, element: self.viewModel.currentProperty.cloudData)
                                 
-                            }
+                                let allIng = self.viewModel.currentProperty.cloudData.db.allMyIngredients
+                                
+                                for ing in allIng {
+                                    self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .ingredientCollection, refKey: ing.id, element: ing)
+                                }
+
+                            }*/
       
                         }
                         
@@ -262,7 +278,7 @@ struct HomeView: View {
         
         //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
         //update 09.07.23
-        let tutteLePreparazioni = self.viewModel.currentProperty.cloudData.db.allMyDish.filter({
+        let tutteLePreparazioni = self.viewModel.currentProperty.db.allMyDish.filter({
             !$0.rifReviews.isEmpty &&
             $0.percorsoProdotto != .prodottoFinito
             
@@ -278,7 +294,7 @@ struct HomeView: View {
     
     private func compilaArrayMenu() -> (model:[MenuModel],rif:[String]) {
         
-        let allMenu = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
+        let allMenu = self.viewModel.currentProperty.db.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
         
         let allSorted = allMenu.sorted(by: {
             $0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > $1.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
@@ -394,13 +410,13 @@ struct HomeView: View {
                     .fixedSize()
                 
                 let propertyDestination:DestinationPathView? = {
-                    
-                    let allProp = self.viewModel.currentProperty.cloudData.db.allMyProperties
+                    nil 
+                    /*let allProp = self.viewModel.currentProperty.db.allMyProperties
                     
                     guard !allProp.isEmpty else { return nil }
                     
                     let model = allProp[0]
-                    return DestinationPathView.property(model)
+                    return DestinationPathView.property(model) */
 
                     }()
                 
@@ -570,7 +586,7 @@ struct MenuDiSistema_BoxView:View {
                         } else {
                             
                             let dishIn = menuDS!.rifDishIn.count
-                            let allDish = viewModel.currentProperty.cloudData.db.allMyDish.count
+                            let allDish = viewModel.currentProperty.db.allMyDish.count
                             
                             NavigationLink(value: DestinationPathView.vistaPiattiEspansa(menuDS!)) {
                                 
@@ -628,7 +644,7 @@ struct MenuDiSistema_BoxView:View {
                                     
                                     ForEach(menuDS!.rifDishIn,id:\.self) { idPiatto in
                                            
-                                        if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.currentProperty.cloudData.db.allMyDish) {
+                                        if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.currentProperty.db.allMyDish) {
                                                
                                              //  DishModel_RowView(item: piatto, rowSize: .sintetico)
                                                GenericItemModel_RowViewMask(

@@ -117,7 +117,7 @@ struct IngredientModel_SmallRowView: View {
             
     @ViewBuilder private func vbIntestazioneIngrediente(itemIsModel:Bool) -> some View {
         
-        let dashedColor = self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()
+        let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()
         
         HStack(alignment:.lastTextBaseline) {
             
@@ -167,8 +167,8 @@ struct IngredientModel_SmallRowView: View {
 struct IngredientModel_SmallRowView_Previews: PreviewProvider {
    @State static var vm = {
        let user = UserRoleModel()
-       var viewM = AccounterVM(userAuth: user)
-       viewM.currentProperty.cloudData.db.allMyIngredients = [ ing1]
+       var viewM = AccounterVM(from: initServiceObject)
+       viewM.currentProperty.db.allMyIngredients = [ ing1]
         return viewM
     }()
     static var ing1 = {

@@ -120,7 +120,7 @@ struct ListaDellaSpesa_MainView: View {
             return conservazione + produzione + provenienza
         }()
         
-        let statoInventario = self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: ing.id)
+        let statoInventario = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: ing.id)
         
         SpesaRowIngredientView(
             element: ing,
@@ -150,8 +150,8 @@ struct ListaDellaSpesa_MainView: View {
     
     private func filtraInventarioInArrivo(soloAdUnTipo:StatusTransition? = nil) -> [IngredientModel] {
         
-        let allIDInArrivo = self.viewModel.currentProperty.cloudData.db.inventarioScorte.allInArrivo()
-        let allModelInArrivo = self.viewModel.modelCollectionFromCollectionID(collectionId: allIDInArrivo, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
+        let allIDInArrivo = self.viewModel.currentProperty.inventario.allInArrivo()
+        let allModelInArrivo = self.viewModel.modelCollectionFromCollectionID(collectionId: allIDInArrivo, modelPath: \.currentProperty.db.allMyIngredients)
 
         let allFilteredModel = allModelInArrivo.filter({
             
@@ -182,10 +182,10 @@ struct ListaDellaSpesa_MainView: View {
        // let today = csTimeFormatter().data.string(from: Date())
         let idInChange = allFilteredModel.map({$0.id})
         
-        if self.viewModel.currentProperty.cloudData.db.inventarioScorte.lockedId[self.currentDate] != nil {
-            self.viewModel.currentProperty.cloudData.db.inventarioScorte.lockedId[self.currentDate]!.append(contentsOf: idInChange)
+        if self.viewModel.currentProperty.inventario.lockedId[self.currentDate] != nil {
+            self.viewModel.currentProperty.inventario.lockedId[self.currentDate]!.append(contentsOf: idInChange)
         } else {
-            self.viewModel.currentProperty.cloudData.db.inventarioScorte.lockedId[self.currentDate] = idInChange
+            self.viewModel.currentProperty.inventario.lockedId[self.currentDate] = idInChange
         }
         
         self.viewModel.updateItemModelCollection(items: statusChangedModelCollection)
@@ -205,7 +205,7 @@ struct ListaDellaSpesa_MainView: View {
     private func description() -> (breve:Text,estesa:Text) {
         
         //let today = csTimeFormatter().data.string(from: Date())
-        let vmInventarioScorte:Inventario = self.viewModel.currentProperty.cloudData.db.inventarioScorte
+        let vmInventarioScorte:Inventario = self.viewModel.currentProperty.inventario
         
         let daAcquistare = vmInventarioScorte.ingEsauriti.count + vmInventarioScorte.ingInEsaurimento.count
         let acquistati = self.countInventario - daAcquistare
@@ -357,7 +357,7 @@ struct SpesaRowIngredientView: View {
     
     @ViewBuilder private func vbNotaAcquisto(disableTap:Bool) -> some View {
         
-        let nota = self.viewModel.currentProperty.cloudData.db.inventarioScorte.estrapolaNota(idIngrediente: self.element.id,currentDate: self.currentDate)
+        let nota = self.viewModel.currentProperty.inventario.estrapolaNota(idIngrediente: self.element.id,currentDate: self.currentDate)
         
         if openNoteUpdate {
             
@@ -430,7 +430,7 @@ struct SpesaRowIngredientView: View {
         
    // let string = step_0 == "" ? "" : "\(currentDate)|\(value)"
 
-    self.viewModel.currentProperty.cloudData.db.inventarioScorte.archivioNotaAcquisto[self.element.id] = step_0
+    self.viewModel.currentProperty.inventario.archivioNotaAcquisto[self.element.id] = step_0
         
     }
     
@@ -452,7 +452,7 @@ struct SpesaRowIngredientView: View {
       //  let today = csTimeFormatter().data.string(from: Date())
         let value:(disable:Bool,opacity:CGFloat,checkColor:Color) = {
            
-            if let key = self.viewModel.currentProperty.cloudData.db.inventarioScorte.lockedId[self.currentDate] {
+            if let key = self.viewModel.currentProperty.inventario.lockedId[self.currentDate] {
                 if key.contains(id) {return (true,0.4,.seaTurtle_4) }
                 else { return (false,1.0,.seaTurtle_3) }
             } else {
@@ -508,15 +508,15 @@ struct SpesaRowIngredientView: View {
         if isInArrivo {
             
           /*  self.viewModel.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0 == self.currentDate}) */
-            self.viewModel.currentProperty.cloudData.db.inventarioScorte.cronologiaAcquisti[id]?.removeAll(where: {$0.hasPrefix(self.currentDate)})
+            self.viewModel.currentProperty.inventario.cronologiaAcquisti[id]?.removeAll(where: {$0.hasPrefix(self.currentDate)})
         
-            if let key = self.viewModel.currentProperty.cloudData.db.inventarioScorte.archivioIngInEsaurimento[self.currentDate] {
+            if let key = self.viewModel.currentProperty.inventario.archivioIngInEsaurimento[self.currentDate] {
                 
-                if key.contains(id) {  self.viewModel.currentProperty.cloudData.db.inventarioScorte.ingInEsaurimento.append(id) }
-                else { self.viewModel.currentProperty.cloudData.db.inventarioScorte.ingEsauriti.append(id) }
+                if key.contains(id) {  self.viewModel.currentProperty.inventario.ingInEsaurimento.append(id) }
+                else { self.viewModel.currentProperty.inventario.ingEsauriti.append(id) }
  
             } else {
-                self.viewModel.currentProperty.cloudData.db.inventarioScorte.ingEsauriti.append(id)
+                self.viewModel.currentProperty.inventario.ingEsauriti.append(id)
             }
         }
     }
@@ -524,7 +524,7 @@ struct SpesaRowIngredientView: View {
     private func depennaAction(id:String,isInArrivo:Bool) {
         
         if !isInArrivo {
-            self.viewModel.currentProperty.cloudData.db.inventarioScorte.cambioStatoScorte(idIngrediente: id, nuovoStato: .inArrivo)
+            self.viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: id, nuovoStato: .inArrivo)
         } else {
             
             self.viewModel.alertItem = AlertModel(title: "Info", message: "Long Press to depenn")

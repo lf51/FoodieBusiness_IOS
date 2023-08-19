@@ -177,9 +177,9 @@ struct NewProductMainView_Previews: PreviewProvider {
    
         let user = UserRoleModel()
         
-        var viewM = AccounterVM(userAuth: user)
-        viewM.currentProperty.cloudData.db.allMyDish = [dishSample]
-        viewM.currentProperty.cloudData.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+        var viewM = AccounterVM(from: initServiceObject)
+        viewM.currentProperty.db.allMyDish = [dishSample]
+        viewM.currentProperty.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
         return viewM
     }()
     

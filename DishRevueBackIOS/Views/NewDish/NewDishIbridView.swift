@@ -49,7 +49,7 @@ struct NewDishIbridView: View {
         let wrappedNewDish = newDish.wrappedValue
             
        // let localDish: DishModel
-        let systemIngredient: IngredientModel = observedVM.modelFromId(id: wrappedNewDish.id, modelPath: \.currentProperty.cloudData.db.allMyIngredients) ?? IngredientModel(id: wrappedNewDish.id)
+        let systemIngredient: IngredientModel = observedVM.modelFromId(id: wrappedNewDish.id, modelPath: \.currentProperty.db.allMyIngredients) ?? IngredientModel(id: wrappedNewDish.id)
  
      /*   if wrappedNewDish.status == .bozza() {
             

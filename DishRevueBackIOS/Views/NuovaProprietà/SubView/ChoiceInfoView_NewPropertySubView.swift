@@ -14,7 +14,7 @@ struct ChoiceInfoView_NewPropertySubView: View {
     let newProperty: MKMapItem
     var screenWidth:CGFloat
     var frameHeight:CGFloat
-    let action: () -> Void
+    let action: () async throws -> Void
     
     var body: some View {
         
@@ -50,7 +50,9 @@ struct ChoiceInfoView_NewPropertySubView: View {
                 
                 CSButton_large(title: "Add Property", accentColor: .white, backgroundColor: .cyan, cornerRadius: 5.0) {
                     
-                    action()
+                    Task {
+                       try await action()
+                    }
                     // Registrare su FireBase Proprietà
                 }
 

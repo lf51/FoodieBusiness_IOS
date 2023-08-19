@@ -25,7 +25,7 @@ enum ModelList: Equatable, Hashable  {
     ///Case Predefinito per la relazione Piatto/Ingredienti.
     static var dishIngredientsList: [ModelList] = [
     
-        .viewModelContainer("I Miei Ingredienti",\.currentProperty.cloudData.db.allMyIngredients,.fonte),
+        .viewModelContainer("I Miei Ingredienti",\.currentProperty.db.allMyIngredients,.fonte),
        /* .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),*/
         .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale)),
         .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondari,.destinazione(Color.orange, grado: .secondario))
@@ -47,7 +47,7 @@ enum ModelList: Equatable, Hashable  {
     
     ///Case Predefinito per la relazione Menu/Piatti.
     static var menuDishList: [ModelList] = [
-        .viewModelContainer("Lista dei Piatti",\.currentProperty.cloudData.db.allMyDish,.fonte),
+        .viewModelContainer("Lista dei Piatti",\.currentProperty.db.allMyDish,.fonte),
         .itemModelContainer("Piatti in Menu",\MenuModel.rifDishIn, .destinazione(Color.brown, grado: .principale))
     ]
     ///Case Predefinito per la relazione Piatto/Proprietà

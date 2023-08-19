@@ -66,7 +66,7 @@ struct NewPropertyMainView: View {
                         frameHeight: screenHeight * 0.20) {
                             
                         //self.registrazioneProperty(mkItem: property)
-                            self.checkProperty(mkItem: property)
+                        try await checkProperty(mkItem: property)
                     }
                         .padding(.vertical, screenHeight * 0.05 )
                     
@@ -90,49 +90,43 @@ struct NewPropertyMainView: View {
     
     // Method
     
-    private func checkProperty(mkItem:MKMapItem) {
+    private func checkProperty(mkItem:MKMapItem) async throws {
         
         // verifichiamo che la prop non esiste
         let mkItemCoordinate = mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
         let mkCity = mkItem.placemark.locality ?? "NOLOCALITY"
         let idToCheck = PropertyModel.creaID(coordinates: mkItemCoordinate, cityName: mkCity)
+        print("[1]Procediamo al check della unicità della proprietà")
+        let alreadyExist = try await GlobalDataManager.cloudData.checkPropertyExist(for: idToCheck)
         
-        self.viewModel.dbCompiler.checkPropertyOnFirebase(propertyID: idToCheck) { registrabile in
-            
-            if registrabile {
-                
-                // procediamo alla registrazione
-                registrazioneProperty(
-                    mkItem: mkItem,
-                    mkCity: mkCity,
-                    mkCoordinate: mkItemCoordinate)
-                
-                self.isShowingSheet.toggle()
-                
-            } else {
-                
-                // proprietà già esistente / mandiamo un alert
-                self.viewModel.alertItem = AlertModel(
-                    title: "Proprietà già registrata",
-                    message: "Per reclami e/o errori contattare info@foodies.com.",
-                    actionPlus: nil)
-                return
-            }
-            
-            
+        guard !alreadyExist else {
+            // proprietà già esistente / mandiamo un alert
+            self.viewModel.alertItem = AlertModel(
+                title: "Proprietà già registrata",
+                message: "Per reclami e/o errori contattare info@foodies.com.",
+                actionPlus: nil)
+            return
         }
+        print("[3]PropertyDoesNot exist. Procediamo alla registrazione")
+        try await registrazioneProperty(
+                mkItem: mkItem,
+                mkCity: mkCity,
+                mkCoordinate: mkItemCoordinate)
         
+        print("[7]Registrazione terminata. Chiudiamo lo sheet della mappa")
+        self.isShowingSheet.toggle()
+
         
     }
     
-    private func registrazioneProperty(mkItem:MKMapItem,mkCity:String,mkCoordinate:CLLocationCoordinate2D) {
+    private func registrazioneProperty(mkItem:MKMapItem,mkCity:String,mkCoordinate:CLLocationCoordinate2D) async throws {
         
         // userRoleModel derivato da quello corrente
         
         let localUser:UserRoleModel = {
             // id + email + usernam sono sempre gli stessi per tutte le prop e le collab dell'utente corrente
            // var user = self.viewModel.currentUserRoleModel
-            var user = self.viewModel.currentProperty.user // c'è sempre uno user
+            var user = self.viewModel.currentProperty.userRole // c'è sempre uno user
             
             user.ruolo = .admin
             user.inizioCollaborazione = Date.now
@@ -166,31 +160,24 @@ struct NewPropertyMainView: View {
         
         // registra property sul firebase
         // verifichiamo la presenza di un databaseCorrente non associato ad una proprietà
-        var involucro:PropertyDataObject
-        
-        if self.viewModel.currentProperty.cloudData.info == nil {
-            // caso in cui l'utente inizi a creare oggetti senza avere una proprietà registrata
-            let dbCorrente = self.viewModel.currentProperty.cloudData.db
-            involucro = PropertyDataObject(registra: modelProperty, dataBase: dbCorrente)
-            
-        } else {
-            // caso in cui esiste una proprietà corrente e quindi la nuova sarà registrata con database vuoto
-            involucro = PropertyDataObject(registra: modelProperty,dataBase: nil)
-        }
-        
-        
-       // let involucro = PropertyDataModelTransitionObject(propertyInfo: modelProperty, propertyData: nil)
-        self.viewModel.dbCompiler.publishGenericOnFirebase(collection: .propertyCollection, refKey: modelProperty.id, element: involucro)
-        
-        // aggiornare i riferimenti nella chiave utente in firebase
-        
+       /* let involucro:PropertyDataObject = PropertyDataObject(registra: modelProperty, dataBase: nil)*/ // non associamo più in nessun caso nessun database alla proprietà in registrazione
         let allRef = self.viewModel.allMyPropertiesImage.map({$0.propertyID})
         let userCloud = UserCloudData(propertiesRef: allRef)
+        
+     
+        
+       // try await CloudDataManager.shared.publishMainCollection(in: .propertyCollection, idDoc: modelProperty.id, as: involucro)
+        print("[4]Procediamo alla Pubblicazione su firebase")
+      /*  try await CloudDataManager.shared.firstPropertyRegistration(idDoc: modelProperty.id, as: involucro)*/
+        print("[5]Pubblicazione terminata. Procediamo all'update dello user ref")
+        // aggiornare i riferimenti nella chiave utente in firebase
 
-        self.viewModel.dbCompiler.publishGenericOnFirebase(
+        try await GlobalDataManager.cloudData.publishMainCollection(in: .businessUser, idDoc: localUser.id, as: userCloud)
+        print("[6]Update User Ref terminato")
+       /* self.viewModel.dbCompiler.publishGenericOnFirebase(
             collection: .businessUser,
             refKey: localUser.id,
-            element: userCloud)
+            element: userCloud) */
  
     }
     /*

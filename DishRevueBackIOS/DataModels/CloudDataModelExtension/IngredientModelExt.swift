@@ -43,7 +43,7 @@ extension IngredientModel:
     } */
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
-        return \.currentProperty.cloudData.db.allMyIngredients
+        return \.currentProperty.db.allMyIngredients
       }
     
     public func dishWhereIn(readOnlyVM:AccounterVM) -> (dishCount:Int,Substitution:Int) {
@@ -51,7 +51,7 @@ extension IngredientModel:
         var dishCount: Int = 0
         var dishWhereHasSubstitute: Int = 0
         
-        for dish in readOnlyVM.currentProperty.cloudData.db.allMyDish {
+        for dish in readOnlyVM.currentProperty.db.allMyDish {
             
             if dish.checkIngredientsInPlain(idIngrediente: self.id) {
                 dishCount += 1
@@ -80,17 +80,17 @@ extension IngredientModel:
         
        return VStack {
             
-            let statoScorte = viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: self.id)
-            let ultimoAcquisto = viewModel.currentProperty.cloudData.db.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
+            let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
+            let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
                 
                 Menu {
                     
                     Button("in Esaurimento") {
-                        viewModel.currentProperty.cloudData.db.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
+                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
                     }.disabled(statoScorte != .inStock)
                     
                     Button("Esaurite") {
-                        viewModel.currentProperty.cloudData.db.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
                         // innesto 01.12.22
                         if self.status.checkStatusTransition(check: .disponibile) {
                             self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
@@ -101,7 +101,7 @@ extension IngredientModel:
                     if statoScorte == .esaurito || statoScorte == .inEsaurimento {
                         
                         Button("Rimetti in Stock") {
-                            viewModel.currentProperty.cloudData.db.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                            viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
                         }
                     }
                     
@@ -148,7 +148,7 @@ extension IngredientModel:
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String) {
         
-        return (\.currentProperty.cloudData.db.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
+        return (\.currentProperty.db.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
     }
 
     public func pathDestination() -> DestinationPathView {
@@ -229,11 +229,11 @@ extension IngredientModel:
         
         guard nuovoStatus != .disponibile, isCurrentlyDisponibile else { return }
         
-        if nuovoStatus == .inPausa, viewModel.currentProperty.cloudData.db.setupAccount.autoPauseDish_byPauseING == .sempre {
+        if nuovoStatus == .inPausa, viewModel.currentProperty.setup.autoPauseDish_byPauseING == .sempre {
             
             privateStatusChange()
             
-        } else if nuovoStatus == .archiviato, viewModel.currentProperty.cloudData.db.setupAccount.autoPauseDish_byArchiveING == .sempre {
+        } else if nuovoStatus == .archiviato, viewModel.currentProperty.setup.autoPauseDish_byArchiveING == .sempre {
             privateStatusChange()
         }
         
@@ -300,7 +300,7 @@ extension IngredientModel:Object_FPC {
             return lhs.intestazione > rhs.intestazione
             
         case .livelloScorte:
-          return readOnlyVM.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
+          return readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
             
         case .mostUsed:
             return lhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount > rhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount

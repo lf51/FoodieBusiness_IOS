@@ -86,6 +86,7 @@
 		3FD342632904079000C06441 /* ReviewStatMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD342622904079000C06441 /* ReviewStatMonitor.swift */; };
 		3FD854112941FE6500F7CC98 /* CompilerCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */; };
 		3FD85437294254D800F7CC98 /* MyFoodiePackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3FD85436294254D800F7CC98 /* MyFoodiePackage */; };
+		3FFECF2F2A863A960089D759 /* CloudDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFECF2E2A863A960089D759 /* CloudDataManager.swift */; };
 		4D04E28427C7A2BD002F0486 /* SelettoreMyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */; };
 		4D14238227CE7F0C00CFF4AE /* NewDishMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D14238127CE7F0C00CFF4AE /* NewDishMainView.swift */; };
 		4D168C10284A56A9000B137E /* GemotryReaderTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D168C0F284A56A9000B137E /* GemotryReaderTEST.swift */; };
@@ -231,6 +232,7 @@
 		3FD342622904079000C06441 /* ReviewStatMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewStatMonitor.swift; sourceTree = "<group>"; };
 		3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerCloudData.swift; sourceTree = "<group>"; };
 		3FD854352942549300F7CC98 /* MyFoodiePackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MyFoodiePackage; path = ../MyFoodiePackage; sourceTree = "<group>"; };
+		3FFECF2E2A863A960089D759 /* CloudDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudDataManager.swift; sourceTree = "<group>"; };
 		4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelettoreMyModel.swift; sourceTree = "<group>"; };
 		4D14238127CE7F0C00CFF4AE /* NewDishMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishMainView.swift; sourceTree = "<group>"; };
 		4D168C0F284A56A9000B137E /* GemotryReaderTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GemotryReaderTEST.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 			children = (
 				3F300F39293A164D003E5861 /* RemoteChangeStorage.swift */,
 				3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */,
+				3FFECF2E2A863A960089D759 /* CloudDataManager.swift */,
 			);
 			path = VmService;
 			sourceTree = "<group>";
@@ -1083,6 +1086,7 @@
 				4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */,
 				4DCB316628466D0100464308 /* CS_IconaRomboidale.swift in Sources */,
 				4D29C05B27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift in Sources */,
+				3FFECF2F2A863A960089D759 /* CloudDataManager.swift in Sources */,
 				4D3C72852887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift in Sources */,
 				4D8A1DCE283CDBEF0016EE27 /* CheckTestoTextField.swift in Sources */,
 				4DD6308227C68B3000A16E17 /* ListaIngredientiView.swift in Sources */,
@@ -1248,7 +1252,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 116;
+				CURRENT_PROJECT_VERSION = 117;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1279,7 +1283,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 116;
+				CURRENT_PROJECT_VERSION = 117;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

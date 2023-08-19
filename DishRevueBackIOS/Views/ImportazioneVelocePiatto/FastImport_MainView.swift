@@ -272,7 +272,7 @@ struct FastImportMainView_Previews: PreviewProvider {
         NavigationStack {
             FastImport_MainView(backgroundColorView: Color.seaTurtle_1)
                 
-        }.environmentObject(AccounterVM(userAuth:user))
+        }.environmentObject(AccounterVM(from:initServiceObject))
          //   Color.cyan
     
     }

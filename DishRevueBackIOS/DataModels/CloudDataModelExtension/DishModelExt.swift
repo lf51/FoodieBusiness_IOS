@@ -50,13 +50,13 @@ extension DishModel:
     } */
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
-        return \.currentProperty.cloudData.db.allMyDish
+        return \.currentProperty.db.allMyDish
     }
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
          return (
-            \.currentProperty.cloudData.db.allMyDish, "Lista Piatti",
+            \.currentProperty.db.allMyDish, "Lista Piatti",
              self.percorsoProdotto.simpleDescription(),
              self.percorsoProdotto.imageAssociated().system
          )
@@ -167,17 +167,17 @@ extension DishModel:
               }
           } else if self.percorsoProdotto == .prodottoFinito {
              
-              let statoScorte = viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: self.id)
-              let ultimoAcquisto = viewModel.currentProperty.cloudData.db.inventarioScorte.dataUltimoAcquisto(idIngrediente: self.id)
+              let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
+              let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
               
               Menu {
                   
                   Button("in Esaurimento") {
-                      viewModel.currentProperty.cloudData.db.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
+                      viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
                   }.disabled(statoScorte != .inStock)
                   
                   Button("Esaurite") {
-                      viewModel.currentProperty.cloudData.db.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                      viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
                      // innsesto 01.12.22
                       if self.status.checkStatusTransition(check: .disponibile) {
                           
@@ -197,13 +197,13 @@ extension DishModel:
                   if statoScorte == .esaurito || statoScorte == .inEsaurimento {
                       
                       Button("Rimetti in Stock") {
-                          viewModel.currentProperty.cloudData.db.inventarioScorte.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                          viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
                       }
                   }
                   
                   Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
                   
-                  if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.currentProperty.cloudData.db.allMyIngredients) {
+                  if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.currentProperty.db.allMyIngredients) {
                       
                       Button("Cronologia Acquisti") {
                           viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(ingDS))
@@ -374,7 +374,7 @@ extension DishModel:
     func allMinusArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
         
         let allIngredientsID = self.ingredientiPrincipali + self.ingredientiSecondari
-        let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
+        let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.currentProperty.db.allMyIngredients)
         let allMinusBozzeEArchiviati = allTheIngredients.filter({
           // !$0.status.checkStatusTransition(check: .archiviato)
             !$0.status.checkStatusTransition(check: .archiviato)
@@ -391,7 +391,7 @@ extension DishModel:
         // Innesto 06.10
         guard !self.ingredientiPrincipali.contains(self.id) else {
            // Trattasi di ibrido
-            if let model = viewModel.modelFromId(id: self.id, modelPath: \.currentProperty.cloudData.db.allMyIngredients) { return [model] }
+            if let model = viewModel.modelFromId(id: self.id, modelPath: \.currentProperty.db.allMyIngredients) { return [model] }
             else { return [] }
         }
         
@@ -417,7 +417,7 @@ extension DishModel:
             
             if let sostituto = self.elencoIngredientiOff[ingredient.id] {
                 
-                let(isActive,_,_) = viewModel.infoFromId(id: sostituto, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
+                let(isActive,_,_) = viewModel.infoFromId(id: sostituto, modelPath: \.currentProperty.db.allMyIngredients)
                 
                 if isActive {
                     allActiveIDs[position!] = sostituto
@@ -427,7 +427,7 @@ extension DishModel:
             
         }
         
-        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.currentProperty.cloudData.db.allMyIngredients)
+        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.currentProperty.db.allMyIngredients)
         
         return allActiveModels
     } //02.01.23 ricollocata in MyFoodiePackage
@@ -544,7 +544,7 @@ extension DishModel:
         
         // Nota 13.09
 
-        let allLocalReviews:[DishRatingModel] = readOnlyViewModel.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.currentProperty.cloudData.db.allMyReviews)
+        let allLocalReviews:[DishRatingModel] = readOnlyViewModel.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.currentProperty.db.allMyReviews)
         
         guard !allLocalReviews.isEmpty else {
             
@@ -573,7 +573,7 @@ extension DishModel:
         let allIngActive = self.allIngredientsAttivi(viewModel: viewModel)
         
         let mapStock = allIngActive.map({
-            viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0.id)
+            viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id)
         })
         let filtraStock = mapStock.filter({
             $0 != .esaurito
@@ -605,7 +605,7 @@ extension DishModel:
         let allInPausa = allIng.filter({$0.status.checkStatusTransition(check: .inPausa)})
        /* let allInPausaAvaible = allInPausa.map({viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)}).contains(.esaurito) */
         
-        let areNotAllIngInPausaAvaible = allInPausa.contains(where: { viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0.id) == .esaurito })
+        let areNotAllIngInPausaAvaible = allInPausa.contains(where: { viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == .esaurito })
         
         guard areNotAllIngInPausaAvaible else { return .eseguibile }
         
@@ -700,8 +700,8 @@ extension DishModel: Object_FPC {
             return lhs.intestazione > rhs.intestazione
             
         case .livelloScorte:
-            return readOnlyVM.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() <
-                readOnlyVM.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
+            return readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() <
+                readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
         case .mostUsed:
             return readOnlyVM.allMenuContaining(idPiatto: lhs.id).countWhereDishIsIn >
             readOnlyVM.allMenuContaining(idPiatto: rhs.id).countWhereDishIsIn

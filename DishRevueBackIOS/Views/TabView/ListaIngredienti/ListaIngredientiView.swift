@@ -31,7 +31,7 @@ struct ListaIngredientiView: View {
         NavigationStack(path:$viewModel.ingredientListPath) {
             
            // let container_0 = self.viewModel.ricercaFiltra(containerPath: \.cloudData.allMyIngredients, coreFilter: filterCore)
-            let container_0 = self.viewModel.ricercaFiltra(containerPath: \.currentProperty.cloudData.db.allMyIngredients, coreFilter: filterCore)
+            let container_0 = self.viewModel.ricercaFiltra(containerPath: \.currentProperty.db.allMyIngredients, coreFilter: filterCore)
             // update 10.07.23
             let container = container_0.filter({$0.status != .bozza()})
             // update per escludere gli ing di sistema. Prima questo avveniva nella propertyCompare degli Ing, ma abbiamo dovuto modificare perchè ci impediva di filtrare i prodotti finiti nella vista espansa PF del monitor.
@@ -202,7 +202,7 @@ struct ListaIngredientiView: View {
             imageOrEmoji: "cart",
             label: "Livello Scorte") { value in
                 container.filter({
-                    self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value
+                    self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value
                 }).count
             }
         

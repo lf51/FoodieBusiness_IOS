@@ -78,7 +78,7 @@ struct MonitorServizio: View {
         case .adesso:
             
            //let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: true)})
-            let allMenuToAnalize = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({$0.isOnAirValue().now})
+            let allMenuToAnalize = self.viewModel.currentProperty.db.allMyMenu.filter({$0.isOnAirValue().now})
           /*  vbServizioStat("Menu Online:",
                            allMenuToAnalize: allMenuToAnalize) { serviceOff in
             vbTopStackNowOnline(
@@ -102,7 +102,7 @@ struct MonitorServizio: View {
             
         case .oggi:
             
-            let allMenuToAnalize = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({$0.isOnAirValue().today})
+            let allMenuToAnalize = self.viewModel.currentProperty.db.allMyMenu.filter({$0.isOnAirValue().today})
             
             MonitorServizio_SubLogic(
                 viewModel: self.viewModel,
@@ -116,7 +116,7 @@ struct MonitorServizio: View {
             
         case .generale:
             
-            let allMenuToAnalize = self.viewModel.currentProperty.cloudData.db.allMyMenu.filter({
+            let allMenuToAnalize = self.viewModel.currentProperty.db.allMyMenu.filter({
                 $0.status.checkStatusTransition(check: .disponibile) ||
                 $0.status.checkStatusTransition(check: .inPausa)
             })
@@ -157,7 +157,7 @@ struct MonitorServizio: View {
     
     private func checkStatoServizio(rifIngOrPrep:[String]) -> StatoServizio {
         
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0)})
+        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)})
         
         if mapStatoScorte.contains(.esaurito) { return .fareSpesa }
         else if mapStatoScorte.contains([.inEsaurimento,.inArrivo]) { return .controlloScorte}
@@ -200,7 +200,7 @@ struct MonitorServizio: View {
     @ViewBuilder private func monitorIngredientiEPreparati(rifIngOrPrep:[String],label:String) -> some View {
         
         let inCount = rifIngOrPrep.count
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0)})
+        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)})
 
         let generalStock = mapStatoScorte.filter({
             $0 == .inStock ||
@@ -600,13 +600,13 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                             vbSingleStatusRow(
                                 rifToCheck: foodB,
                                 statusCheck: .disponibile,
-                                path: \.currentProperty.cloudData.db.allMyDish,
+                                path: \.currentProperty.db.allMyDish,
                                 label: "in Vendita")
                             
                             vbSingleStatusRow(
                                 rifToCheck: foodB,
                                 statusCheck: .inPausa,
-                                path: \.currentProperty.cloudData.db.allMyDish)
+                                path: \.currentProperty.db.allMyDish)
                             
                         }
                 }
@@ -663,12 +663,12 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         vbSingleStatusRow(
                             rifToCheck: self.ingredientsNeeded,
                             statusCheck: .disponibile,
-                            path: \.currentProperty.cloudData.db.allMyIngredients)
+                            path: \.currentProperty.db.allMyIngredients)
                         
                         vbSingleStatusRow(
                             rifToCheck: self.ingredientsNeeded,
                             statusCheck: .inPausa,
-                            path: \.currentProperty.cloudData.db.allMyIngredients)
+                            path: \.currentProperty.db.allMyIngredients)
                         
                     }
                 }
@@ -791,12 +791,12 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         vbSingleStatusRow(
                             rifToCheck: self.readyProduct,
                             statusCheck: .disponibile,
-                            path: \.currentProperty.cloudData.db.allMyDish)
+                            path: \.currentProperty.db.allMyDish)
                         
                         vbSingleStatusRow(
                             rifToCheck: self.readyProduct,
                             statusCheck: .inPausa,
-                            path: \.currentProperty.cloudData.db.allMyDish)
+                            path: \.currentProperty.db.allMyDish)
                         
                         
                     }
@@ -1054,7 +1054,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
         
       //  let inCount = rifIngOrPrep.count
         
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0)}) //
+        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)}) //
 
       /* let generalStock = mapStatoScorte.filter({
             $0 == .inStock ||
@@ -1244,7 +1244,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     
     private func checkStatoServizio(rifIngOrPrep:[String]) -> StatoServizio {
         
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: $0)})
+        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)})
         
         if mapStatoScorte.contains(.esaurito) { return .fareSpesa }
         
@@ -1304,7 +1304,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
 }
 
 struct MonitorModelView_Previews: PreviewProvider {
-    static let allDish = testAccount.currentProperty.cloudData.db.allMyDish.map({$0.id})
+    static let allDish = testAccount.currentProperty.db.allMyDish.map({$0.id})
     static var previews: some View {
         
        /* NavigationStack {

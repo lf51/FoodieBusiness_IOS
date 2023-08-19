@@ -1684,7 +1684,7 @@ struct AccounterMainView_Previews: PreviewProvider {
             } */
        
         }
-        .environmentObject(AccounterVM(userAuth:user))
+        .environmentObject(AccounterVM(from: initServiceObject))
         .accentColor(Color.white)
             
     }

@@ -310,16 +310,16 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
     @State static var viewModel: AccounterVM = {
          
         let user = UserRoleModel()
-        var vm = AccounterVM(userAuth: user)
-         vm.currentProperty.cloudData.db.allMyDish = [dishItem3]
-         vm.currentProperty.cloudData.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
-         vm.currentProperty.cloudData.db.allMyMenu = [menuDelloChef,menuDelGiorno,menuSample,menuSample3,menuSample2]
+        var vm = AccounterVM(from: initServiceObject)//AccounterVM(userAuth: user)
+         vm.currentProperty.db.allMyDish = [dishItem3]
+         vm.currentProperty.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+         vm.currentProperty.db.allMyMenu = [menuDelloChef,menuDelGiorno,menuSample,menuSample3,menuSample2]
          return vm
      }()
     
     static var allMenu:[MenuModel] = {
        
-        viewModel.currentProperty.cloudData.db.allMyMenu.filter({
+        viewModel.currentProperty.db.allMyMenu.filter({
             $0.tipologia != .allaCarta(.delGiorno) &&
             $0.tipologia != .allaCarta(.delloChef) &&
             $0.rifDishIn.contains(dishItem3.id)

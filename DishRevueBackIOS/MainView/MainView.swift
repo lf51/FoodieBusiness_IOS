@@ -16,11 +16,12 @@ struct MainView: View {
    // @State private var isLoading: Bool
 
     init(authProcess: AuthPasswordLess, viewModel: AccounterVM) {
-        
+        print("[START]INIT MAIN_VIEW")
         self.authProcess = authProcess
-        _viewModel = StateObject(wrappedValue: viewModel)
+       _viewModel = StateObject(wrappedValue: viewModel) // 11.08 closed for test
+      //  _viewModel = StateObject(wrappedValue: testAccount) // test
         
-        print("init MainView - userUID:\(authProcess.utenteCorrente?.id ?? "nil")")
+        print("[END] INIT MainView - for userUID:\(authProcess.utenteCorrente?.id ?? "nil")")
     }
    /* init(authProcess:AuthPasswordLess) {
         
@@ -104,6 +105,11 @@ struct MainView: View {
                 
             }
         }
+        .onAppear {
+            // popoliamo il viewModel con una property
+            print("MAIN VIEW ON APPEAR")
+            
+        }
       /*  .onTapGesture(count: 2, perform: {
             
             self.viewModel.refreshPathAndScroll(tab: self.tabSelector)
@@ -146,7 +152,7 @@ struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView(
             authProcess: AuthPasswordLess(),
-            viewModel: AccounterVM(userAuth: user) )
+            viewModel: AccounterVM(from: initServiceObject) )
     }
 }
 

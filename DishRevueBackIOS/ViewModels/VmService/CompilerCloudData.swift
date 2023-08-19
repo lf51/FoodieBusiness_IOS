@@ -14,6 +14,7 @@ import FirebaseFirestoreSwift
 import MyFilterPackage
 import MyPackView_L0
 
+/*
 extension PropertyDataObject:Codable {
     
     public init(from decoder: Decoder) throws {
@@ -34,17 +35,21 @@ extension PropertyDataObject:Codable {
         try container.encode(db, forKey: .db)
         
     }
-}
+} // deprecata in futuro
 
 extension CloudDataStore:Codable {
     
-     public init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {
         
          self.init()
          
          let values = try decoder.container(keyedBy: CodingKeys.self)
          
-         self.allMyIngredients = try values.decode([IngredientModel].self, forKey: .allMyIngredients)
+        // self.allMyIngredients = try values.decode([IngredientModel].self, forKey: .allMyIngredients)
+        // let allIngImage = try values.decode([IngredientModelImage].self, forKey: .allMyIngredientsImage)
+        // self.allMyIngredients = try IngredientManager.compiler.getIngredientModel(from: allIngImage)
+         print("CLOUDDATASTORE_STEP after allMyIngrediesCOMPILER")
+         
          self.allMyDish = try values.decode([DishModel].self, forKey: .allMyDish)
          self.allMyMenu = try values.decode([MenuModel].self, forKey: .allMyMenu)
          self.allMyProperties = try values.decode([PropertyModel].self, forKey: .allMyProperties)//depreca
@@ -54,18 +59,21 @@ extension CloudDataStore:Codable {
          self.allMyReviews = try values.decode([DishRatingModel].self, forKey: .allMyReviews)
         // self.allMyReviews = []
          
-         let additionalInfo = try values.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .otherDocument)
-         self.setupAccount = try additionalInfo.decode(AccountSetup.self, forKey: .setupAccount)
-         self.inventarioScorte = try additionalInfo.decode(Inventario.self, forKey: .inventarioScorte)
+       //  let additionalInfo = try values.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .otherDocument)
+       //  self.setupAccount = try additionalInfo.decode(AccountSetup.self, forKey: .setupAccount)
+       //  self.inventarioScorte = try additionalInfo.decode(Inventario.self, forKey: .inventarioScorte)
          
          
      }
     
     public func encode(to encoder: Encoder) throws {
         
-        var container = encoder.container(keyedBy: CodingKeys.self)
+      /*  var container = encoder.container(keyedBy: CodingKeys.self)
+            
+        let allIngredientImage = self.allMyIngredients.map({$0.retrieveImageFromSelf()})
         
-        try container.encode(allMyIngredients, forKey: .allMyIngredients)
+        try container.encode(allIngredientImage, forKey: .allMyIngredients)
+       // try container.encode(allMyIngredientsImage, forKey: .allMyIngredientsImage)
         try container.encode(allMyDish, forKey: .allMyDish)
         try container.encode(allMyMenu, forKey: .allMyMenu)
         try container.encode(allMyProperties, forKey: .allMyProperties) // depreca
@@ -75,12 +83,58 @@ extension CloudDataStore:Codable {
         
         var secondLevel = container.nestedContainer(keyedBy: AdditionalInfoKeys.self, forKey: .otherDocument)
         try secondLevel.encode(setupAccount, forKey: .setupAccount)
-        try secondLevel.encode(inventarioScorte, forKey: .inventarioScorte)
+        try secondLevel.encode(inventarioScorte, forKey: .inventarioScorte) */
        
+       // var container = encoder.container(keyedBy: AdditionalInfoKeys.self)
+        
+       // try container.encode(setupAccount, forKey: .setupAccount)
+       // try container.encode(inventarioScorte, forKey: .inventarioScorte)
         
     }
     
-} // close extension
+   
+    
+} */ // deprecato Codable // close extension
+
+/*public final class IngredientManager {
+    
+    static var compiler:IngredientManager = IngredientManager()
+    private let db_base = Firestore.firestore().collection("ingredientFromAllUser")
+    
+    func getIngredientModel(from images:[IngredientModelImage]) throws -> [IngredientModel] {
+        print("Start getIngredientModel in IngredientManager")
+        
+       let allRef = images.map({$0.id})
+       var allModel:[IngredientModel] = []
+        
+        self.db_base
+            .whereField(.documentID(), in: allRef)
+            .getDocuments { querySnap, error in
+                
+                guard let query = querySnap else {
+                    
+                    return
+                }
+                
+                let allIngModel = query.documents.compactMap({try? $0.data(as: IngredientModel.self)})
+                let allUpdatedModel = allIngModel.compactMap { ingModel in
+                    
+                    if let associatedImage = images.first(where: {$0.id == ingModel.id }) {
+                        return ingModel.updateModel(from:associatedImage)
+                    } else {
+                        return nil
+                    }
+                }
+                allModel = allUpdatedModel
+            }
+        
+        print("Ending getIngredientModel in IngredientManager. allRef:\(allRef.count) vs allModel:\(allModel.count)")
+        return allModel
+        
+    }
+    
+} */
+
 
 /*
 enum RestrictionLevel:Codable {
@@ -193,7 +247,7 @@ public struct PropertyLocalImage:Decodable,Hashable {
         // verifichiamo in decodifica che lo user è autorizzato
         let organigramma = try road.decode([UserRoleModel].self, forKey: .organigramma)//.first(where: { $0.id == CloudDataCompiler.userAuthUid})
         
-        guard let user = organigramma.first(where: {$0.id == CloudDataCompiler.userAuthUid}) else {
+        guard let user = organigramma.first(where: {$0.id == AccounterVM.userAuthData.id}) else {
             // User Non Autorizzato
             let context = DecodingError.Context(codingPath: [Self.PropertyModelKeys.organigramma], debugDescription: "User Non Autorizzato")
             print("errore di decoding di una ref: \(context.debugDescription)")
@@ -247,10 +301,15 @@ public struct PropertyLocalImage:Decodable,Hashable {
 }
 /// oggetto di servizio per salvare i riferimenti delle proprietà dello User
 public struct UserCloudData:Codable {
+    
     public var propertiesRef:[String]
+
+    public enum CodingKeys:CodingKey {
+        case propertiesRef
+    }
 }
 
-public class CloudDataCompiler {
+public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudDataManager
     
    private let db_base = Firestore.firestore()
  // private var ref_db: DocumentReference // probabile deprecazione
@@ -258,10 +317,12 @@ public class CloudDataCompiler {
     
  //  public var userData:UserCloudData? // deprecata
  //  public var allMyProperties:[PropertyLocalImage]? // deprecata
+    private var listenerPropertyRef:ListenerRegistration? = nil
     
    public enum CollectionKey:String {
-        case propertyCollection = "UID_PropertyRegistered"
-        case businessUser = "UID_UtenteBusiness"
+        case propertyCollection = "properties_registered"
+        case businessUser = "user_business"
+        case ingredientCollection = "ingredients_library"
     }
     
    public init(userAuthUID:String) {
@@ -275,6 +336,138 @@ public class CloudDataCompiler {
     
     // Nuovo Corso
     
+    
+    private func fetchPropertyRef(handle:@escaping(_ allRef:[String]) -> () ){
+        
+      let key = self.db_base.collection(CollectionKey.businessUser.rawValue).document(Self.userAuthUid)
+
+        self.listenerPropertyRef = key.addSnapshotListener { snapShot, error in
+        print("Dentro LISTENER fetchPropertyREF")
+            guard let doc = snapShot else {
+                print("Scarico UserCloudData FAIL")
+                handle([])
+                return
+            }
+            
+            let allRef:[String]? = try? doc.data(as: UserCloudData.self).propertiesRef
+            
+            if let ref = allRef {
+                
+                print("Scarico UserCloudData OK")
+                handle(ref)
+                
+            }
+            else {
+                print("Scarico UserCloudData FAIL")
+                handle([]) }
+            
+        }
+       
+        
+      /*  key.getDocument(as: UserCloudData.self) { result in
+
+            switch result {
+                
+            case .success(let cloudData):
+                print("Scarico UserCloudData OK")
+                handle(cloudData.propertiesRef)
+
+            case .failure(let failure):
+                print("Scarico UserCloudData FAIL: \(failure.localizedDescription)")
+                handle([])
+ 
+            }
+
+        }*/
+
+    }
+    
+    /*
+    func firstFetchLISTNERDASVILUPPARE(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataObject?,_ userRoleModel:UserRoleModel?,_ isLoading:Bool) -> () ) {
+        
+        self.fetchPropertyRef { allRef in
+            // caso_0 nessun ref
+            guard !allRef.isEmpty else {
+                print("Utente non ha ref di proprietà")
+                self.listenerPropertyRef?.remove()
+                handle(nil,nil,nil,false)
+                return
+            }
+            // individuiamo i documenti corrispondenti alle ref
+             self.db_base.collection(CollectionKey.propertyCollection.rawValue)
+                .whereField(.documentID(), in: allRef)
+                .addSnapshotListener({ querySnapshot, error in
+                    
+                    print("DENTRO IL LISTENER delle property")
+                    
+                    guard let documents = querySnapshot?.documents else {
+                        
+                        print("Errore nel listener:\(error?.localizedDescription ?? "")")
+                        handle(nil,nil,nil,false)
+                        return
+                        
+                    }
+                  //  querySnapshot?.documentChanges // Mandare alert o visualizzare punti rossi
+                    // convertiamo ciascun documento in una PropertyLocalImage tramide il decoding dell'oggetto che verifica l'autorizzazione dell'utente
+                    let allImages:[PropertyLocalImage] = documents.compactMap({ snap -> PropertyLocalImage? in
+                        
+                        let image = try? snap.data(as: PropertyLocalImage.self)
+                        
+                        guard var propImage = image else {
+                            
+                            return nil
+                        }
+                        
+                        propImage.snapShot = snap
+                        return propImage
+  
+                        
+                    }) // chiusa compactMap
+                    
+                    // aggiorniamo i ref dello user // blocca i ref dalla nuova Init e non in realTime
+                    guard allRef.count == allImages.count else {
+                        print("Upodate propertyRef")
+                        let newRef = allImages.map({$0.propertyID})
+                        let newUserCloud = UserCloudData(propertiesRef: newRef)
+                        let userID = AccounterVM.userAuthData.id
+                        self.publishGenericOnFirebase(collection: .businessUser, refKey:userID, element: newUserCloud)
+                        return
+                        
+                    }
+                    
+                    // Analizziamo le images
+                    // Caso -Vuoto o Nil- (ci sono i ref nell'utente ma non decodifica nulla perchè mancano le autorizzazioni)
+                    guard !allImages.isEmpty else {
+                        print("Nessun documento è stato convertito in PropertyLocalImage.Ref:\(allRef.count) vs Image:\(allImages.count)")
+                        
+                        handle(nil,nil,nil,false)
+                        return
+                    }
+                    
+                    // Caso -Default_1Prop-
+                    // Caso -MultiProp-
+                    if let lastRef = UserDefaults.standard.string(forKey: "DefaultProperty"),
+                       let associatedImage = allImages.first(where: {$0.propertyID == lastRef}) {
+                        print("Recuperiamo l'immagine di default dell'ultima prop usata")
+                        let propertyDataObject = try? associatedImage.snapShot?.data(as: PropertyDataObject.self)
+                        handle(allImages,propertyDataObject,associatedImage.userRuolo,false)
+           
+                    } else if let first = allImages.first {
+                        print("Recuperiamo la prima Immagine delle prop")
+                        let propertyDataObject = try? first.snapShot?.data(as: PropertyDataObject.self)
+                        handle(allImages,propertyDataObject,first.userRuolo,false)
+                        
+                    } else {
+                        print("StranoPRINT - questo else in teoria non dovrebbe mai essere eseguito")
+                        handle(nil,nil,nil,false)
+                    }
+                    
+                }) // chiusa getDocuments
+            
+        } // chiusa fetchAllRef
+        
+    } */
+    /*
     func firstFetch(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataObject?,_ userRoleModel:UserRoleModel?,_ isLoading:Bool) -> () ) {
         
         self.fetchPropertyRef { allRef in
@@ -345,7 +538,7 @@ public class CloudDataCompiler {
             
         } // chiusa fetchAllRef
         
-    }
+    }*/
     
    /* func firstFetchDeprecata(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataModel?,_ isLoading:Bool) -> () ) {
         
@@ -513,28 +706,7 @@ public class CloudDataCompiler {
         }
 
     } */ // end first Fetch
-    
-    private func fetchPropertyRef(handle:@escaping(_ allRef:[String]) -> () ){
-        
-        let key = self.db_base.collection(CollectionKey.businessUser.rawValue).document(Self.userAuthUid)
-      
-        key.getDocument(as: UserCloudData.self) { result in
 
-            switch result {
-                
-            case .success(let cloudData):
-                print("Scarico UserCloudData OK")
-                handle(cloudData.propertiesRef)
-
-            case .failure(let failure):
-                print("Scarico UserCloudData FAIL: \(failure.localizedDescription)")
-                handle([])
- 
-            }
-
-        }
-
-    }
     
    /* private func internalFetch(handle:@escaping(_ allProp:[PropertyLocalImage]?) -> ()) {
         
@@ -624,7 +796,7 @@ public class CloudDataCompiler {
         }
 
     }*/ // deprecata
-    
+    /*
     func estrapolaDatiFromPropImage(propertyImage:PropertyLocalImage,handle:@escaping(_ propertyData:PropertyDataObject?) -> () ) {
              
         self.fetchDocument(collection: .propertyCollection, docRef: propertyImage.propertyID, modelSelf: PropertyDataObject.self) { modelData in
@@ -632,7 +804,7 @@ public class CloudDataCompiler {
             handle(modelData)
             
         }
-    }  // 06.08.23 deprecata
+    }*/  // 06.08.23 deprecata
     
     
     // database
@@ -805,7 +977,7 @@ public class CloudDataCompiler {
     
     
     
-}
+} // deprecata
 
 
 /*

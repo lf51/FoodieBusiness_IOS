@@ -152,7 +152,7 @@ struct IngredientModel_RowView: View {
             
             Spacer()
             
-            let statoScorte = self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: self.item.id)
+            let statoScorte = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id)
             
             HStack(spacing:3) {
                 
@@ -218,7 +218,7 @@ struct IngredientModel_RowView: View {
     
     @ViewBuilder private func vbIntestazioneIngrediente() -> some View {
         
-        let dashedColor = self.viewModel.currentProperty.cloudData.db.inventarioScorte.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
+        let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
         
         HStack(alignment:.lastTextBaseline) {
             
@@ -292,8 +292,8 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
    static let user = UserRoleModel()
     
     @StateObject static var viewModel: AccounterVM = {
-        var viewM = AccounterVM(userAuth: user)
-        viewM.currentProperty.cloudData.db.allMyIngredients = [ ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4
+        var viewM = AccounterVM(from: initServiceObject)
+        viewM.currentProperty.db.allMyIngredients = [ ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4
         
         ]
         return viewM

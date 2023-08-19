@@ -45,7 +45,7 @@ struct Switch_ImportObject: View {
         }
         .onAppear {
             
-            if viewModel.currentProperty.cloudData.db.allMyCategories.isEmpty {
+            if viewModel.currentProperty.db.allMyCategories.isEmpty {
                 self.localChoice = .categorieMenu
                 self.disabilitaPicker = true
             }
@@ -78,7 +78,7 @@ struct Switch_ImportObject_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             Switch_ImportObject(backgroundColorView: .seaTurtle_1)
-                .environmentObject(AccounterVM(userAuth: user))
+                .environmentObject(AccounterVM(from:initServiceObject ))
         }
     }
 }

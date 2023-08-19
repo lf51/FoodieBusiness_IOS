@@ -35,7 +35,7 @@ struct PropertyListView: View {
             VStack(alignment:.leading, spacing: 10.0) {
    
            // CSDivider()
-                if let propertyCorrente = self.viewModel.currentProperty.cloudData.info {
+                if let propertyCorrente = self.viewModel.currentProperty.info {
                     
                     VStack {
                         
@@ -61,7 +61,7 @@ struct PropertyListView: View {
                               
                               let disable:Bool = {
                                   
-                                  return self.viewModel.currentProperty.cloudData.info?.id == values.propertyID
+                                  return self.viewModel.currentProperty.info?.id == values.propertyID
                                   
                               }()
                               
@@ -88,7 +88,8 @@ struct PropertyListView: View {
                                   Spacer()
                                   
                                   Button("Go") {
-                                      self.viewModel.compilaFromPropertyImage(propertyImage: values)
+                                      print("Codice Assente in Go Action")
+                                     /* self.viewModel.compilaFromPropertyImage(propertyImage: values)*/
                                   }
                                   
                               }
@@ -111,12 +112,14 @@ struct PropertyListView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 
+                let thereAreNoProperties = self.viewModel.allMyPropertiesImage.isEmpty
+                
                 HStack(spacing:0) {
                 
                     LargeBar_TextPlusButton(
                         buttonTitle: "Collabora",
                         font: .callout,
-                        imageBack: viewModel.currentProperty.cloudData.db.allMyProperties.isEmpty ? Color.yellow : Color.red.opacity(0.6),
+                        imageBack: thereAreNoProperties ? Color.yellow : Color.red.opacity(0.6),
                         imageFore: Color.seaTurtle_4) {
                         
                         withAnimation {
@@ -128,7 +131,7 @@ struct PropertyListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Proprietà",
                         font: .callout,
-                        imageBack: viewModel.currentProperty.cloudData.db.allMyProperties.isEmpty ? Color.seaTurtle_2 : Color.red.opacity(0.6),
+                        imageBack: thereAreNoProperties ? Color.seaTurtle_2 : Color.red.opacity(0.6),
                         imageFore: Color.seaTurtle_4) {
                         
                         withAnimation {
@@ -375,7 +378,8 @@ struct PropertyListView_Previews: PreviewProvider {
     static var user:UserRoleModel = UserRoleModel()
     static var previews: some View {
         NavigationView {
-            PropertyListView(backgroundColorView: Color.seaTurtle_1).environmentObject(AccounterVM(userAuth: user))
+            PropertyListView(backgroundColorView: Color.seaTurtle_1)
+                .environmentObject(AccounterVM(from: initServiceObject))
         }
     }
 }
