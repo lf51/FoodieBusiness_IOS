@@ -56,17 +56,19 @@
 		3F39855D29029C03007731C2 /* VistaRecensioniEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F39855C29029C03007731C2 /* VistaRecensioniEspansa.swift */; };
 		3F3D1EC1290D8D2300ED107E /* ScheduleServizio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3D1EC0290D8D2300ED107E /* ScheduleServizio.swift */; };
 		3F448B9529008DAC0090F996 /* MonitorReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F448B9429008DAC0090F996 /* MonitorReview.swift */; };
+		3F55BEFC2A90FDCC00F66AF9 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3F55BEFB2A90FDCC00F66AF9 /* FirebaseFirestoreSwift */; };
+		3F55BEFE2A9108F400F66AF9 /* NewPropertyLandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F55BEFD2A9108F400F66AF9 /* NewPropertyLandingPage.swift */; };
 		3F58EFD82A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F58EFD72A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift */; };
 		3F628A102A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */; };
 		3F628A2D2A3DF1C300976D93 /* FastImport_Categorie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */; };
 		3F628A2F2A3DF45400976D93 /* Switch_ImportObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */; };
 		3F62DDFE289E56D9008F17A4 /* DishListByIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */; };
 		3F66D6582905474100FF2751 /* VistaEspansaGenerica.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */; };
+		3F742B5F2A97872B00230CE8 /* TestFILTRABLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F742B5E2A97872B00230CE8 /* TestFILTRABLE.swift */; };
 		3F7A10E8291285BB0071B647 /* InitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10E7291285BB0071B647 /* InitType.swift */; };
 		3F7A411428E33D290094B296 /* TestAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A411328E33D290094B296 /* TestAccount.swift */; };
 		3F7D3BD328B6384300177CA6 /* SystemMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7D3BD228B6384300177CA6 /* SystemMessage.swift */; };
 		3F8FC97D2943791D002F8208 /* DishModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8FC97C2943791D002F8208 /* DishModelExt.swift */; };
-		3FA11A9C294A5816002C3610 /* FirebaseFirestoreSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = 3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */; };
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
 		3FA965F729A0F120006B2002 /* ModelField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA965F629A0F120006B2002 /* ModelField.swift */; };
 		3FB15A1329AA3E03005D0526 /* VistaRecensioniEspansa_SingleDish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB15A1229AA3E03005D0526 /* VistaRecensioniEspansa_SingleDish.swift */; };
@@ -204,12 +206,14 @@
 		3F39855C29029C03007731C2 /* VistaRecensioniEspansa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaRecensioniEspansa.swift; sourceTree = "<group>"; };
 		3F3D1EC0290D8D2300ED107E /* ScheduleServizio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleServizio.swift; sourceTree = "<group>"; };
 		3F448B9429008DAC0090F996 /* MonitorReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorReview.swift; sourceTree = "<group>"; };
+		3F55BEFD2A9108F400F66AF9 /* NewPropertyLandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPropertyLandingPage.swift; sourceTree = "<group>"; };
 		3F58EFD72A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaEspansaGenerica_PlusVB.swift; sourceTree = "<group>"; };
 		3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPropertyMainView_GoogleMaps.swift; sourceTree = "<group>"; };
 		3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastImport_Categorie.swift; sourceTree = "<group>"; };
 		3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_ImportObject.swift; sourceTree = "<group>"; };
 		3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishListByIngredientView.swift; sourceTree = "<group>"; };
 		3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaEspansaGenerica.swift; sourceTree = "<group>"; };
+		3F742B5E2A97872B00230CE8 /* TestFILTRABLE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFILTRABLE.swift; sourceTree = "<group>"; };
 		3F7A10E7291285BB0071B647 /* InitType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitType.swift; sourceTree = "<group>"; };
 		3F7A411328E33D290094B296 /* TestAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAccount.swift; sourceTree = "<group>"; };
 		3F7D3BD228B6384300177CA6 /* SystemMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMessage.swift; sourceTree = "<group>"; };
@@ -331,13 +335,13 @@
 			files = (
 				4D403BA42798212600EB4E1B /* FirebaseAuth in Frameworks */,
 				4D49470028213C880093AFD6 /* SwipeActions in Frameworks */,
-				3FA11A9C294A5816002C3610 /* FirebaseFirestoreSwift-Beta in Frameworks */,
 				3F13D1DF293FA38800C599B2 /* MyPackView_L0 in Frameworks */,
 				3FD85437294254D800F7CC98 /* MyFoodiePackage in Frameworks */,
 				4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */,
 				4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */,
 				3FB98CF329509E6600B6DE1B /* MyFilterPackage in Frameworks */,
 				3F01A42A2A61AF890020D65D /* CodeScanner in Frameworks */,
+				3F55BEFC2A90FDCC00F66AF9 /* FirebaseFirestoreSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -651,6 +655,7 @@
 				3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */,
 				3F2026D628D0E72500DDB4FA /* EnumIDTest.swift */,
 				3FCD464229A6345E00E357CD /* MapLabelTest.swift */,
+				3F742B5E2A97872B00230CE8 /* TestFILTRABLE.swift */,
 			);
 			path = TEST;
 			sourceTree = "<group>";
@@ -722,6 +727,7 @@
 			children = (
 				4DC3EBC827ABD02C00FFC50E /* NewPropertyMainView.swift */,
 				3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */,
+				3F55BEFD2A9108F400F66AF9 /* NewPropertyLandingPage.swift */,
 				4DC94A2127E9EAD50080264C /* SubView */,
 			);
 			name = "NuovaProprietà";
@@ -883,9 +889,9 @@
 				4D4946FF28213C880093AFD6 /* SwipeActions */,
 				3F13D1DE293FA38800C599B2 /* MyPackView_L0 */,
 				3FD85436294254D800F7CC98 /* MyFoodiePackage */,
-				3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */,
 				3FB98CF229509E6600B6DE1B /* MyFilterPackage */,
 				3F01A4292A61AF890020D65D /* CodeScanner */,
+				3F55BEFB2A90FDCC00F66AF9 /* FirebaseFirestoreSwift */,
 			);
 			productName = DishRevueBackIOS;
 			productReference = 4D403B8C27981BC200EB4E1B /* DishRevueBackIOS.app */;
@@ -1008,6 +1014,7 @@
 				4DC94A1D27E4FB220080264C /* AccounterVM.swift in Sources */,
 				3F7A10E8291285BB0071B647 /* InitType.swift in Sources */,
 				4DCCD6DE27BAC17D00F387B2 /* PropertyScrollCases.swift in Sources */,
+				3F55BEFE2A9108F400F66AF9 /* NewPropertyLandingPage.swift in Sources */,
 				4DCCD6D527BABA2300F387B2 /* CustomLabel.swift in Sources */,
 				4D403B9E27981D3500EB4E1B /* GryphonSwiftLibrary.swift in Sources */,
 				3F628A102A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift in Sources */,
@@ -1111,6 +1118,7 @@
 				4D8A1DD0283D13770016EE27 /* FastImport_CorpoScheda.swift in Sources */,
 				4D28C85E27C53F12009ECC4C /* ProvenienzaScrollView_NewIngredientSubView.swift in Sources */,
 				4DC94A2727E9ECB70080264C /* ChoiceInfoView_NewPropertySubView.swift in Sources */,
+				3F742B5F2A97872B00230CE8 /* TestFILTRABLE.swift in Sources */,
 				4D56A6282805D1CF00A43E80 /* PICKERTEST.swift in Sources */,
 				4DC94A1027E241610080264C /* IntestazioneNuovoOggetto_Generic.swift in Sources */,
 				4D8A1DD4283D1CC20016EE27 /* CustomPicker.swift in Sources */,
@@ -1180,7 +1188,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1235,7 +1243,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1252,7 +1260,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 117;
+				CURRENT_PROJECT_VERSION = 121;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1262,7 +1270,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1283,7 +1291,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 117;
+				CURRENT_PROJECT_VERSION = 121;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1293,7 +1301,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1415,8 +1423,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
+				kind = exactVersion;
+				version = 10.13.0;
 			};
 		};
 		4D4946FE28213C870093AFD6 /* XCRemoteSwiftPackageReference "SwipeActions" */ = {
@@ -1439,10 +1447,10 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = MyPackView_L0;
 		};
-		3FA11A9B294A5816002C3610 /* FirebaseFirestoreSwift-Beta */ = {
+		3F55BEFB2A90FDCC00F66AF9 /* FirebaseFirestoreSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4D403BA22798212600EB4E1B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = "FirebaseFirestoreSwift-Beta";
+			productName = FirebaseFirestoreSwift;
 		};
 		3FB98CF229509E6600B6DE1B /* MyFilterPackage */ = {
 			isa = XCSwiftPackageProductDependency;

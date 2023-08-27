@@ -30,7 +30,7 @@ struct VistaCronologiaAcquisti: View {
                         .italic()
                         .fontWeight(.light)
                         .font(.title2)
-                        .foregroundColor(Color.seaTurtle_4)
+                        .foregroundStyle(Color.seaTurtle_4)
                   
                     Spacer()
                 }
@@ -46,20 +46,20 @@ struct VistaCronologiaAcquisti: View {
                             HStack(alignment:.bottom) {
                                 Text("\(position + 1).")
                                     .font(.system(.headline, design: .monospaced, weight: .bold))
-                                    .foregroundColor(Color.gray)
-                                   // .foregroundColor(Color.seaTurtle_4)
+                                    .foregroundStyle(Color.gray)
+                                   // .foregroundStyle(Color.seaTurtle_4)
                                 
                                 Text("\(time)")
                                     .italic()
                                     .font(.system(.headline, design: .monospaced, weight: .bold))
-                                    .foregroundColor(Color.black.opacity(0.7))
+                                    .foregroundStyle(Color.black.opacity(0.7))
                                 
                                 if position == (logDate.endIndex - 1) {
                                     
                                     Text("ultimo acquisto")
                                         .italic()
                                         .font(.callout)
-                                        .foregroundColor(Color.seaTurtle_3)
+                                        .foregroundStyle(Color.seaTurtle_3)
                                     
                                 }
                               
@@ -69,7 +69,7 @@ struct VistaCronologiaAcquisti: View {
                             Text(note)
                                 .italic()
                                 .font(.system(.subheadline, design: .default, weight: .light))
-                                .foregroundColor(Color.black.opacity(0.8))
+                                .foregroundStyle(Color.black.opacity(0.8))
                             
                             
                             Divider()

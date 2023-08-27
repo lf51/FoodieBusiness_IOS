@@ -40,7 +40,7 @@ struct MenuListView: View {
                 return condition_1 && condition_2 && condition_3
                 
             }()
-            
+
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
                 title: "I Miei Menu",
@@ -81,68 +81,13 @@ struct MenuListView: View {
                             vbMenuInterattivoModuloTrash(currentModel: menu, viewModel: viewModel)
                        
                     }
-                    
-                    
-                    
-                   /* BodyListe_Generic(
-                        container: container,
-                        mapTree: mapTree,
-                        navigationPath: \.menuListPath) */
-                    
+                      
                 })
 
-            
-            
-            
-            
-            
-            
-          /*  CSZStackVB(title: "I Miei Menu", backgroundColorView: backgroundColorView) {
-                    
-                let container = self.viewModel.filtraERicerca(containerPath: \.allMyMenu, filterProperty: filterProperty)
-                
-                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container: container,mapObject: mapObject, navigationPath: \.menuListPath)
-                    .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
-                        vbLocalFilterPop(container: container)
-                            .presentationDetents([.height(600)])
-                  
-                    }
-                    .popover(isPresented: $openSort, attachmentAnchor: .point(.top)) {
-                        vbLocalSorterPop()
-                            .presentationDetents([.height(400)])
-                    }
-                
-            } */
         .navigationDestination(for: DestinationPathView.self, destination: { destination in
             destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .menuList, readOnlyViewModel: viewModel)
          })
-          /*  .toolbar {
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    
-                    LargeBar_TextPlusButton(
-                        buttonTitle: "Nuovo Menu",
-                        font: .callout,
-                        imageBack: Color.seaTurtle_2,
-                        imageFore: Color.white) {
-                   
-                            self.viewModel.menuListPath.append(DestinationPathView.menu(MenuModel()))
-                        }
-
-                }
-                
-                ToolbarItem(placement: .navigationBarLeading) {
-                    
-                    let sortActive = self.filterProperty.sortCondition != nil
-            
-                    FilterSortMap_Bar(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
-                        thirdButtonAction()
-                    }
-                        
-                        
-                }
-                
-            }*/
+   
         }
     }
     

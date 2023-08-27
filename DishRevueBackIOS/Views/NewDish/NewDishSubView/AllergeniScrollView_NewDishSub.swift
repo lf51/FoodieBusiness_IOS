@@ -38,7 +38,7 @@ struct AllergeniScrollView_NewDishSub: View {
 
                                 Text("No")
                                     .bold(!self.areAllergeniOk)
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(Color.black)
                                     .opacity(self.areAllergeniOk ? 0.4 : 1.0)
                                 
                                 CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: !self.areAllergeniOk)
@@ -47,7 +47,7 @@ struct AllergeniScrollView_NewDishSub: View {
                         }
                         Text("Si")
                              .bold(self.areAllergeniOk)
-                             .foregroundColor(.black)
+                             .foregroundStyle(Color.black)
                              .opacity(!self.areAllergeniOk ? 0.4 : 1.0)
                     }
                 }
@@ -75,18 +75,31 @@ struct AllergeniScrollView_NewDishSub: View {
                     .italic()
                     .fontWeight(.light)
                     .font(.caption)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
 
             }
       
         }
-        .onChange(of: self.newDish.ingredientiPrincipali, perform: { _ in
+        .onChange(of: self.newDish.ingredientiPrincipali,{
             self.areAllergeniOk = false
         })
-        .onChange(of: self.newDish.ingredientiSecondari, perform: { _ in
+        .onChange(of: self.newDish.ingredientiSecondari, {
             self.areAllergeniOk = false
         })
-        .onChange(of: self.areAllergeniOk, perform: { newValue in
+        .onChange(of: self.areAllergeniOk, { _, newValue in
+            if newValue && Self.showAlertAllergene {
+
+                viewModel.alertItem = AlertModel(
+                    title: "⚠️ Attenzione",
+                    message: SystemMessage.allergeni.simpleDescription(),
+                    actionPlus: ActionModel(title: .nonMostrare, action: {
+                        Self.showAlertAllergene = false
+                    }))
+            }
+
+        })
+        
+        /*.onChange(of: self.areAllergeniOk, perform: { newValue in
             
             if newValue && Self.showAlertAllergene {
 
@@ -97,7 +110,7 @@ struct AllergeniScrollView_NewDishSub: View {
                         Self.showAlertAllergene = false
                     }))
             }
-        })
+        })*/
         
     }
     

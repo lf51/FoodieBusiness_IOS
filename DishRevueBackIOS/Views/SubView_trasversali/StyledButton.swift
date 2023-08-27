@@ -15,6 +15,7 @@ import MyPackView_L0
 struct CSButton_large: View {
     
     let title: String
+    var font:Font? = .body
     let accentColor: Color
     let backgroundColor: Color
     let cornerRadius: CGFloat
@@ -30,6 +31,7 @@ struct CSButton_large: View {
         Spacer()
             Text(title)
           .bold()
+          .font(font)
           .padding(.top)
           .padding(.bottom,paddingValue)
           .accentColor(accentColor)

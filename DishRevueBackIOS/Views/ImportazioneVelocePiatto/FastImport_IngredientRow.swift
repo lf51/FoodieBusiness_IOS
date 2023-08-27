@@ -68,7 +68,7 @@ struct FastImport_IngredientRow: View {
                                 Text("Minore")
                                     .underline(isSecondario)
                                     .font(.callout)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                                    // .fixedSize()
                                  
                                 Button {
@@ -80,14 +80,14 @@ struct FastImport_IngredientRow: View {
                                 } label: {
                                     Image(systemName: "circle")
                                         .imageScale(.medium)
-                                        .foregroundColor(.black)
+                                        .foregroundStyle(Color.black)
                                         .opacity(isSecondario ? 0.6 : 1.0)
                                         .overlay {
                                             if isSecondario {
                                                 Image(systemName: "checkmark")
                                                     .imageScale(.large)
                                                     .bold()
-                                                    .foregroundColor(Color.seaTurtle_3)
+                                                    .foregroundStyle(Color.seaTurtle_3)
                                             }
                                         }
                                 }
@@ -97,7 +97,7 @@ struct FastImport_IngredientRow: View {
                             Text("Prodotto di terzi")
                                 .italic()
                                 .font(.callout)
-                                .foregroundColor(Color.seaTurtle_3)
+                                .foregroundStyle(Color.seaTurtle_3)
                         }
                         
                     }
@@ -158,13 +158,13 @@ struct FastImport_IngredientRow: View {
                                     .italic()
                                     .fontWeight(.semibold)
                                     .font(.caption)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                             } else {
                                 Text(ingredient.conservazione.extendedDescription())
                                     .italic()
                                     .fontWeight(.semibold)
                                     .font(.caption)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                             }
                             
                         }
@@ -183,9 +183,9 @@ struct FastImport_IngredientRow: View {
                         } */
                     }
                 }
-                .onChange(of: self.ingredient.allergeni, perform: { _ in
+                .onChange(of: self.ingredient.allergeni) {
                     self.areAllergeniOk = false
-                })
+                }
                 .padding(.top,10) // o .Vertical
   
       //  }
@@ -209,7 +209,7 @@ struct FastImport_IngredientRow: View {
                csVbSwitchImageText(string: image, size: .large)
                Image(systemName: "allergens")
                    .imageScale(.small)
-                   .foregroundColor(Color.black)
+                   .foregroundStyle(Color.black)
            }
            
        } else { EmptyView() }
@@ -235,7 +235,7 @@ struct FastImport_IngredientRow: View {
         case .congelato, .surgelato:
             let image = ingredient.conservazione.imageAssociated()
             csVbSwitchImageText(string: image, size: .large)
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
             
         default:
             EmptyView()
@@ -249,7 +249,7 @@ struct FastImport_IngredientRow: View {
         else {
             Image(systemName: "allergens")
                 .imageScale(.small)
-                .foregroundColor(Color.black.opacity(0.8))
+                .foregroundStyle(Color.black.opacity(0.8))
         }
         
     } */ // deprecata 24.08
@@ -261,7 +261,7 @@ struct FastImport_IngredientRow: View {
         case .biologico:
             Text("Bio")
                 .font(.system(.caption2, design: .monospaced, weight: .black))
-                .foregroundColor(Color.green)
+                .foregroundStyle(Color.green)
         default:
             EmptyView()
             
@@ -277,7 +277,7 @@ struct FastImport_IngredientRow: View {
                 Text("Nessun Allergene Specificato")
                    .fontWeight(.semibold)
                    .font(.caption2)
-                   .foregroundColor(Color.black.opacity(0.8))
+                   .foregroundStyle(Color.black.opacity(0.8))
         
         } else {
             
@@ -287,7 +287,7 @@ struct FastImport_IngredientRow: View {
                 .italic()
                 .fontWeight(.light)
                 .font(.caption2)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
   
             }
         
@@ -315,7 +315,7 @@ struct FastImport_IngredientRow: View {
             Text(ingredient.intestazione)
                 .fontWeight(.light)
                 .font(.title3)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                 .opacity(0.8)
  
         } else {
@@ -323,11 +323,11 @@ struct FastImport_IngredientRow: View {
             Text(ingredient.intestazione)
                 .fontWeight(.light)
                 .font(.title3)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                 .overlay(alignment:.topTrailing) {
                     Text("New")
                         .font(.caption2)
-                        .foregroundColor(Color.white)
+                        .foregroundStyle(Color.white)
                         .offset(x: 10, y: -10)
                       
                         

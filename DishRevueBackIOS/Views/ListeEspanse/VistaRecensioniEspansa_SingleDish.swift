@@ -228,7 +228,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
                               
                                     Text("Statistica Recensioni")
                                           .font(.system(.headline, design: .monospaced, weight: .black))
-                                          .foregroundColor(.seaTurtle_2)
+                                          .foregroundStyle(Color.seaTurtle_2)
                                   
                             } extraContent:{ EmptyView() }
                         }// vstack
@@ -292,7 +292,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
                     } label: {
                         Image(systemName: "x.circle")
                             .imageScale(.large)
-                            .foregroundColor(startCondition ? .seaTurtle_1 : .seaTurtle_3)
+                            .foregroundStyle(startCondition ? Color.seaTurtle_1 : Color.seaTurtle_3)
                     }
                     .id(0)
                     .disabled(startCondition)
@@ -337,7 +337,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
                             let media = calcoloMedia()
                             Text("\(media,specifier: "%.1f")")
                                 .fontWeight(.black)
-                                .foregroundColor(.seaTurtle_2)
+                                .foregroundStyle(Color.seaTurtle_2)
                                 .padding(.leading,15)
                                 .padding(.trailing,5)
                         }*/
@@ -389,7 +389,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
                         
                         Text("\(sign.shortSign())")
                             .fontWeight(.semibold)
-                            .foregroundColor(.white)
+                            .foregroundStyle(Color.white)
                             .padding(.horizontal,15)
                         
                         let range = self.sign.secondCompareRange(firstCompare: firstCompare)

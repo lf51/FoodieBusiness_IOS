@@ -45,7 +45,7 @@ struct DishSpecific_NewDishSubView: View {
                         } label: {
                             Text("Importa")
                                 .fontWeight(.semibold)
-                                .foregroundColor(.seaTurtle_3)
+                                .foregroundStyle(Color.seaTurtle_3)
                         }
   
                     }
@@ -206,7 +206,7 @@ struct DishFormatUploadLabel:View {
                 }
 
             }// chius zstack
-            .onChange(of: self.mandatoryLabel) { newValue in
+            .onChange(of: self.mandatoryLabel) { _, newValue in
                 
                 let conditionOne = self.formatChoice == self.archivioFormatChoice
                 let conditionTwo = newValue == self.archivioMandatoryLabel
@@ -214,7 +214,7 @@ struct DishFormatUploadLabel:View {
                 self.nothingChange = conditionOne && conditionTwo
                
             }
-            .onChange(of: self.formatChoice) { newValue in
+            .onChange(of: self.formatChoice) { _, newValue in
                 
                 let conditionOne = newValue == self.archivioFormatChoice
                 let conditionTwo = self.mandatoryLabel == self.archivioMandatoryLabel
@@ -337,7 +337,7 @@ struct LabelUpRow:View {
                     Text(label)
                         .font(.title2)
                         .fontWeight(.semibold)
-                        .foregroundColor(.black.opacity(0.8))
+                        .foregroundStyle(Color.black.opacity(0.8))
                 }
                 
                     Spacer()
@@ -448,7 +448,7 @@ struct PriceRow:View {
                               //  .opacity(0.6)
                             Text("Label Non Richiesta")
                                 .fontWeight(.semibold)
-                                .foregroundColor(Color.white)
+                                .foregroundStyle(Color.white)
                         }
                     }
                 }
@@ -515,7 +515,7 @@ struct PriceRow:View {
                     .overlay {
                         Image(systemName: "bookmark.fill")
                             .imageScale(.large)
-                            .foregroundColor(.seaTurtle_4)
+                            .foregroundStyle(Color.seaTurtle_4)
                             .onTapGesture {
                                 self.viewModel.alertItem = AlertModel(
                                     title: "Prezzo in evidenza",
@@ -548,7 +548,7 @@ struct PriceRow:View {
                         } label: {
                             Text("Salva")
                                 .bold()
-                                .foregroundColor(.green)
+                                .foregroundStyle(Color.green)
                             }
                         } */
                 }
@@ -582,7 +582,7 @@ struct PriceRow:View {
                         } label: {
                             Text("Salva")
                                 .bold()
-                                .foregroundColor(.green)
+                                .foregroundStyle(Color.green)
                             }
 
                         
@@ -610,7 +610,7 @@ struct PriceRow:View {
                 } label: {
                     Text("Salva")
                         .bold()
-                        .foregroundColor(.green)
+                        .foregroundStyle(Color.green)
                     }
                 }
     }

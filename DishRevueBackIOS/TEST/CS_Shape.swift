@@ -53,7 +53,7 @@ struct CS_Shape: View {
                             ForEach(0..<5) { _ in
 
                                     CS_Exagon()
-                                        .foregroundColor(.blue)
+                                        .foregroundStyle(Color.blue)
                                         .frame(width: 75, height: 75)
                                        // .offset(x: 0, y: 18)
           

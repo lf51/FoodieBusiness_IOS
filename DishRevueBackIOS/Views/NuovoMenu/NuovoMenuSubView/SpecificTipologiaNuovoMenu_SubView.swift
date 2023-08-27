@@ -59,7 +59,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                     .font(.caption)
                     .fontWeight(.light)
                     .italic()
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
             
                         } else {
                     
@@ -85,7 +85,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             
                             Button("Chiudi") {
                                 self.wannaInsertValues = false }
-                            .foregroundColor(Color.blue)
+                            .foregroundStyle(Color.blue)
                             .padding(.trailing)
                             
                             Button {

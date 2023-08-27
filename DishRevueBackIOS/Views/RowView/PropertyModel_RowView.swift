@@ -29,7 +29,7 @@ struct PropertyModel_RowView: View {
                                     .fontWeight(.heavy)
                                     .lineLimit(1)
                                     .allowsTightening(true)
-                                    .foregroundColor(Color.white)
+                                    .foregroundStyle(Color.white)
                      
                             Spacer()
                             
@@ -53,7 +53,7 @@ struct PropertyModel_RowView: View {
                             } label: {
                                 Image(systemName:"arrow.up.forward.square") // "rectangle.portrait.and.arrow.right"
                                     .imageScale(.medium)
-                                    .foregroundColor(Color.white)
+                                    .foregroundStyle(Color.white)
                             } */
              
                         }
@@ -81,7 +81,7 @@ struct PropertyModel_RowView: View {
                                     .fontWeight(.semibold)
                                 }
                 
-                            }.foregroundColor(Color.black)
+                            }.foregroundStyle(Color.black)
                    
                     } // chiuda VStack madre
                     ._tightPadding()

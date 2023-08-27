@@ -67,7 +67,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View wher
                 } label: {
                     Image(systemName:pushImage)
                         .imageScale(.large)
-                        .foregroundColor(.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                         .padding(5)
                         .background {
                             Color.seaTurtle_2.opacity(0.5)

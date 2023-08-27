@@ -42,12 +42,13 @@ struct QueryScrollView_NewPropertySubView: View {
                   }.padding(.vertical)
               }
           }
+         // .padding(.horizontal,5)
           .frame(maxWidth:.infinity)
           .frame(height:screenHeight * 0.25)
           .background(queryResults.isEmpty ? Color.clear : Color(.secondarySystemFill))
           .shadow(radius: 0.5)
           .cornerRadius(5.0)
-          .padding(.horizontal)
+          .padding(.horizontal,5)
           
       }
 }

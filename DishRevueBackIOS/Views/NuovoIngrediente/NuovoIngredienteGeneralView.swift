@@ -153,7 +153,7 @@ struct NuovoIngredienteGeneralView: View {
                     Image(systemName: nuovoIngrediente.id == ingredienteArchiviato.id ? "equal.circle" : "circle")
                 }
                 .font(.caption2)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                 .opacity(0.6)
               //  .padding(.horizontal)
                    

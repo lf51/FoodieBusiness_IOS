@@ -68,7 +68,7 @@ struct CSLabel_2Button: View { // Deprecati in futuro. Sostituibile con CSLabel2
                      
                     Image(systemName: toggleBottonePLUS! ? "minus.circle" : "plus.circle")
                         .imageScale(.large)
-                        .foregroundColor(toggleBottonePLUS! ? .red : Color.seaTurtle_3)
+                        .foregroundStyle(toggleBottonePLUS! ? .red : Color.seaTurtle_3)
                     
                 }
                 .opacity(disabledCondition ?? false ? 0.6 : 1.0)
@@ -155,7 +155,7 @@ struct CSLabel_2Action: View {
                      
                     Image(systemName: "plus.circle")
                         .imageScale(.large)
-                        .foregroundColor(Color.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                     
                 }//.disabled(toggleBottoneTEXT ?? false)
             }
@@ -171,7 +171,7 @@ struct CSLabel_2Action: View {
                 } label: {
                     Text(testoBottoneTEXT ?? "")
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.white)
+                        .foregroundStyle(Color.white)
                 }
                 .buttonStyle(.borderedProminent)
                // .brightness(toggleBottoneTEXT ?? false ? 0.0 : -0.05)

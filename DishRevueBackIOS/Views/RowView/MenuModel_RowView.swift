@@ -115,11 +115,11 @@ struct MenuModel_RowView: View {
                // Text("\(self.viewModel.dbCompiler)")
             }
         }
-            .onChange(of: menuItem) { newValue in
+            .onChange(of: menuItem) { _, newValue in
                 self.timerViewModel.updateItemWithSchedule(menuItem: newValue)
                 
             }
-            .onChange(of: timerViewModel.codiceOnOff) { newValue in
+            .onChange(of: timerViewModel.codiceOnOff) { _, newValue in
                 // Nota 06.07.23 onChangeCodiceOnOff
                 guard newValue == .scadutoForEver else { return }
                 let currentStatus = self.menuItem.status.checkStatusTransition(check: .archiviato)
@@ -268,7 +268,7 @@ struct MenuModel_RowView: View {
                 }
                 .fontWeight(.semibold)
                 .font(.headline)
-                .foregroundColor(Color.seaTurtle_3)
+                .foregroundStyle(Color.seaTurtle_3)
                 
                 Spacer()
                 
@@ -276,11 +276,11 @@ struct MenuModel_RowView: View {
                     Text("apre")
                         .italic()
                         .font(.caption2)
-                        .foregroundColor(Color.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                     Text(oraInizio)
                         .fontWeight(.semibold)
                         .font(.headline)
-                        .foregroundColor(Color.white)
+                        .foregroundStyle(Color.white)
                 }
             
             }
@@ -295,7 +295,7 @@ struct MenuModel_RowView: View {
                 }
                 .fontWeight(.semibold)
                 .font(.subheadline)
-                .foregroundColor(Color.seaTurtle_3)
+                .foregroundStyle(Color.seaTurtle_3)
                
                 Spacer()
                 
@@ -303,11 +303,11 @@ struct MenuModel_RowView: View {
                     Text("chiude")
                         .italic()
                         .font(.caption2)
-                        .foregroundColor(Color.red.opacity(0.8))
+                        .foregroundStyle(Color.red.opacity(0.8))
                     Text(oraFine)
                         .fontWeight(.semibold)
                         .font(.subheadline)
-                        .foregroundColor(Color.white)
+                        .foregroundStyle(Color.white)
                 }
             }
     
@@ -345,7 +345,7 @@ struct MenuModel_RowView: View {
             
             Image(systemName: image)
                 .imageScale(.large)
-                .foregroundColor(Color.seaTurtle_2)
+                .foregroundStyle(Color.seaTurtle_2)
                 .zIndex(0)
             
         } else {
@@ -354,12 +354,12 @@ struct MenuModel_RowView: View {
                 
                 Image(systemName: day.imageAssociated())
                     .imageScale(.large)
-                    .foregroundColor(Color.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                     .zIndex(0)
                     
                 Image(systemName: "circle.slash")
                         .imageScale(.large)
-                        .foregroundColor(Color.seaTurtle_2)
+                        .foregroundStyle(Color.seaTurtle_2)
                         .zIndex(1)
                     
             }
@@ -381,7 +381,7 @@ struct MenuModel_RowView: View {
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
             
             Spacer()
             
@@ -413,7 +413,7 @@ struct MenuModel_RowView: View {
             Spacer()
             Image(systemName: pax.imageAssociated())
                  .imageScale(.large)
-                 .foregroundColor(Color.seaTurtle_2)
+                 .foregroundStyle(Color.seaTurtle_2)
                  .padding(.trailing,-10)
             
         default: EmptyView()
@@ -492,7 +492,7 @@ struct MenuModel_RowView: View {
                             Text("x")
                             Image(systemName: pax.imageAssociated())
                                  .imageScale(.medium)
-                                 .foregroundColor(Color.seaTurtle_3)
+                                 .foregroundStyle(Color.seaTurtle_3)
                         }
                     
                 case .allaCarta(_):
@@ -507,7 +507,7 @@ struct MenuModel_RowView: View {
                 }
             }
             .font(.callout)
-            .foregroundColor(Color.seaTurtle_3)
+            .foregroundStyle(Color.seaTurtle_3)
     }
     
     

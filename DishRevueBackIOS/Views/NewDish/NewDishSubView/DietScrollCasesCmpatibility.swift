@@ -83,7 +83,7 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
          return Text("Diete compatibili: \(dietName, format: .list(type: .and)).")
              .fontWeight(.light)
              .font(.caption)
-             .foregroundColor(.black)
+             .foregroundStyle(Color.black)
         
         
     }*/

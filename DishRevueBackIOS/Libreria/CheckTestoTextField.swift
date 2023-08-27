@@ -13,7 +13,7 @@ func csVisualCheck(testo:String, staticImage:String, editingImage:String? = nil,
     
     guard testo != "" else {
         
-        return Image(systemName: staticImage).imageScale(imageScale).foregroundColor(Color.gray)
+        return Image(systemName: staticImage).imageScale(imageScale).foregroundStyle(Color.gray)
                    
     }
     
@@ -23,13 +23,13 @@ func csVisualCheck(testo:String, staticImage:String, editingImage:String? = nil,
         
         return Image(systemName: editingImage ?? "circle")
             .imageScale(imageScale)
-            .foregroundColor(Color.green)
+            .foregroundStyle(Color.green)
         
     } else {
         
         return Image(systemName: "exclamationmark.circle")
             .imageScale(imageScale)
-            .foregroundColor(Color.red)
+            .foregroundStyle(Color.red)
     }
 }
 

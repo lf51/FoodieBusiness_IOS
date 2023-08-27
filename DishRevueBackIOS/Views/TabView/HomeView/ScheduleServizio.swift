@@ -120,7 +120,7 @@ struct ScheduleServizio:View {
 
                   Text("Orario Settimanale:")
                         .font(.system(.headline, design: .monospaced, weight: .black))
-                        .foregroundColor(.seaTurtle_2)
+                        .foregroundStyle(Color.seaTurtle_2)
                    
                     //Espande e chiude Tutto
                 
@@ -181,7 +181,7 @@ struct ScheduleServizio:View {
                 
                 Text("Date con Menu Specifici:")
                     .font(.system(.headline, design: .monospaced, weight: .black))
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                 
                 CSButton_image(
                   activationBool: self.espandiAllDate,
@@ -239,7 +239,7 @@ struct ScheduleServizio:View {
                 
                 Text(dataEsatta)
                     .font(.system(.body, design: .monospaced, weight: .semibold))
-                    .foregroundColor(.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                 
                 ForEach(allMenuOfTheDay) { menuModel in
                     
@@ -250,13 +250,13 @@ struct ScheduleServizio:View {
                         HStack {
                             
                             Text("\(menuModel.intestazione)")
-                                .foregroundColor(.black)
+                                .foregroundStyle(Color.black)
                                 .fontWeight(.semibold)
                                 .font(.subheadline)
                             
                             NavigationLink(value: DestinationPathView.menu(menuModel)) {
                                 Image(systemName: "arrow.up.forward.app")
-                                    .foregroundColor(disable ? .seaTurtle_1 : .seaTurtle_3)
+                                    .foregroundStyle(disable ? .seaTurtle_1 : .seaTurtle_3)
                             }
                            // .opacity(disable ? 0.5 : 1.0)
                             .disabled(disable)
@@ -267,7 +267,7 @@ struct ScheduleServizio:View {
                             .italic()
                             .font(.subheadline)
                             .multilineTextAlignment(.leading)
-                            .foregroundColor(Color.black)
+                            .foregroundStyle(Color.black)
                     }
                     
                 }
@@ -289,11 +289,11 @@ struct ScheduleServizio:View {
 
                                 Text(dataExact)
                                     .font(.system(.body, design: .monospaced, weight: .semibold))
-                                    .foregroundColor(.seaTurtle_4)
+                                    .foregroundStyle(Color.seaTurtle_4)
                                 
                                 NavigationLink(value: DestinationPathView.menu(model)) {
                                     Image(systemName: "arrow.up.forward.app")
-                                        .foregroundColor(.seaTurtle_3)
+                                        .foregroundStyle(Color.seaTurtle_3)
                                 }
                                 .opacity(disable ? 0.5 : 1.0)
                                 .disabled(disable)
@@ -303,7 +303,7 @@ struct ScheduleServizio:View {
                             VStack(alignment:.leading,spacing:3) {
                                 
                                 Text("\(model.intestazione)")
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(Color.black)
                                     .fontWeight(.semibold)
                                     .font(.subheadline)
                                 
@@ -311,7 +311,7 @@ struct ScheduleServizio:View {
                                     .italic()
                                     .font(.subheadline)
                                     .multilineTextAlignment(.leading)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                             }
                         }
                     }
@@ -327,7 +327,7 @@ struct ScheduleServizio:View {
                 
                 Text("Date con Menu Specifici:")
                     .font(.system(.headline, design: .monospaced, weight: .black))
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                 
                 ForEach(allExactDate,id:\.self) { rif in
                     
@@ -342,11 +342,11 @@ struct ScheduleServizio:View {
 
                                 Text(dataExact)
                                     .font(.system(.body, design: .monospaced, weight: .semibold))
-                                    .foregroundColor(.seaTurtle_4)
+                                    .foregroundStyle(Color.seaTurtle_4)
                                 
                                 NavigationLink(value: DestinationPathView.menu(model)) {
                                     Image(systemName: "arrow.up.forward.app")
-                                        .foregroundColor(.seaTurtle_3)
+                                        .foregroundStyle(Color.seaTurtle_3)
                                 }
                                 .opacity(disable ? 0.5 : 1.0)
                                 .disabled(disable)
@@ -356,7 +356,7 @@ struct ScheduleServizio:View {
                             VStack(alignment:.leading,spacing:3) {
                                 
                                 Text("\(model.intestazione)")
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(Color.black)
                                     .fontWeight(.semibold)
                                     .font(.subheadline)
                                 
@@ -364,7 +364,7 @@ struct ScheduleServizio:View {
                                     .italic()
                                     .font(.subheadline)
                                     .multilineTextAlignment(.leading)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                             }
                         }
                     }
@@ -406,7 +406,7 @@ private struct ExactDateSchedule:View {
                 
                 Text(dataEsatta)
                     .font(.system(.body, design: .monospaced, weight: .semibold))
-                    .foregroundColor(.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                 
                 CSButton_image(
                     activationBool: self.expand,
@@ -433,13 +433,13 @@ private struct ExactDateSchedule:View {
                         HStack {
                             
                             Text("\(menuModel.intestazione)")
-                                .foregroundColor(.black)
+                                .foregroundStyle(Color.black)
                                 .fontWeight(.semibold)
                                 .font(.subheadline)
                             
                             NavigationLink(value: DestinationPathView.menu(menuModel, .ridotto)) {
                                 Image(systemName: "arrow.up.forward.app")
-                                    .foregroundColor(disable ? .seaTurtle_1 : .seaTurtle_3)
+                                    .foregroundStyle(disable ? Color.seaTurtle_1 : Color.seaTurtle_3)
                             }
                            // .opacity(disable ? 0.5 : 1.0)
                             .disabled(disable)
@@ -450,7 +450,7 @@ private struct ExactDateSchedule:View {
                             .italic()
                             .font(.subheadline)
                             .multilineTextAlignment(.leading)
-                            .foregroundColor(Color.black)
+                            .foregroundStyle(Color.black)
                     }
                     
                 }
@@ -487,12 +487,12 @@ private struct DayWeekTimeRow:View {
             
                 Image(systemName: "\(key.imageAssociated()).fill")
                     .imageScale(.large)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                     .opacity(disableAction ? 0.4 : 1.0)
         
                 Text(key.simpleDescription())
                     .font(.system(.headline, design: .monospaced, weight: .semibold))
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
 
                     }
             
@@ -501,16 +501,16 @@ private struct DayWeekTimeRow:View {
             HStack(spacing:3) {
                 
                 Text("\(stringOpenTime)")
-                    .foregroundColor(Color.green)
+                    .foregroundStyle(Color.green)
                     .fontWeight(.semibold)
                     .opacity(0.8)
         
                 Text("-")
                     .font(.subheadline)
-                    .foregroundColor(Color.gray)
+                    .foregroundStyle(Color.gray)
                    
                 Text("\(stringCloseTime)")
-                    .foregroundColor(Color.red)
+                    .foregroundStyle(Color.red)
                     .brightness(0.05)
                     .fontWeight(.black)
                     .opacity(0.7)
@@ -570,7 +570,7 @@ private struct DayWeekTimeRow:View {
             VStack(alignment: .leading, spacing: 3) {
 
                         Text("\(posizione). \(value.intestazione)")
-                            .foregroundColor(Color.seaTurtle_4)
+                            .foregroundStyle(Color.seaTurtle_4)
                             .fontWeight(.semibold)
                             .font(.subheadline)
                             .lineLimit(1)
@@ -581,7 +581,7 @@ private struct DayWeekTimeRow:View {
                             Text("Start:")
                             Text("\(openTime)")
                         }
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                         .font(.subheadline)
                         .padding(.vertical,2)
                         .padding(.horizontal,4)
@@ -591,7 +591,7 @@ private struct DayWeekTimeRow:View {
                             Text("End:")
                             Text("\(closeTime)")
                         }
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                         .fontWeight(.semibold)
                         .font(.subheadline)
                         .padding(.vertical,2)
@@ -604,7 +604,7 @@ private struct DayWeekTimeRow:View {
                
                             Image(systemName: "arrow.up.forward.circle")
                                 .imageScale(.medium)
-                                .foregroundColor(.seaTurtle_3)
+                                .foregroundStyle(Color.seaTurtle_3)
                         
                         }
                     
@@ -616,7 +616,7 @@ private struct DayWeekTimeRow:View {
                             .italic()
                             .font(.caption)
                             .multilineTextAlignment(.leading)
-                            .foregroundColor(Color.black)
+                            .foregroundStyle(Color.black)
                 }
                 
                 Divider()

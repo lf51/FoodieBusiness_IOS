@@ -98,7 +98,7 @@ struct NuovaCategoriaMenu: View {
                                             Text(categoria.intestazione)
                                                 .fontWeight(.semibold)
                                                 .font(.system(.body, design: .rounded))
-                                                .foregroundColor(.seaTurtle_4)
+                                                .foregroundStyle(Color.seaTurtle_4)
                                             
                                             if self.mode?.wrappedValue == .inactive {
                                                 Button {
@@ -107,14 +107,14 @@ struct NuovaCategoriaMenu: View {
                                                     
                                                 } label: {
                                                     Image(systemName: "pencil")
-                                                        .foregroundColor(.seaTurtle_3)
+                                                        .foregroundStyle(Color.seaTurtle_3)
                                                 }
 
                                             }
                                             
                                             Spacer()
                                             Text("\(dishCount) 🍽️")
-                                                .foregroundColor(.seaTurtle_4)
+                                                .foregroundStyle(Color.seaTurtle_4)
                                             
                                         }
                                         
@@ -123,7 +123,7 @@ struct NuovaCategoriaMenu: View {
                                         Text(description)
                                             .font(.callout)
                                             .italic()
-                                            .foregroundColor(.black)
+                                            .foregroundStyle(Color.black)
                                             .opacity(0.6)
                                     }
                                     
@@ -308,7 +308,7 @@ struct CorpoNuovaCategoria:View {
                                 .fontWeight(.semibold)
                                 .font(.system(.body, design: .rounded))
                                 .padding(.vertical,10)
-                                .foregroundColor(.seaTurtle_4)
+                                .foregroundStyle(Color.seaTurtle_4)
                             
                             Spacer()
                         }

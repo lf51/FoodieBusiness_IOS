@@ -22,7 +22,7 @@ struct MostraEOrdinaModelIDGeneric<M2:MyProStarterPack_L1>: View /*where M2.VM =
             VStack(alignment:.trailing) {
                 
                 Text(self.mode?.wrappedValue != .active ? "Edit View" : "Indietro")
-                    .foregroundColor(Color.blue)
+                    .foregroundStyle(Color.blue)
                     .padding(.trailing)
                     .onTapGesture {
                         editActivation()
@@ -97,7 +97,7 @@ struct MostraEOrdinaModelGeneric<M2:MyProStarterPack_L1>: View {
             VStack(alignment:.trailing) {
                 
                 Text(self.mode?.wrappedValue != .active ? "Edit View" : "Indietro")
-                    .foregroundColor(Color.blue)
+                    .foregroundStyle(Color.blue)
                     .padding(.trailing)
                     .onTapGesture {
                         editActivation()

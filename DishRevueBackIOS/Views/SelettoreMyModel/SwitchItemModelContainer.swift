@@ -101,12 +101,12 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
                     
                     Text(localListTitle)
                           .fontWeight(modelListCorrente == localListTitle ? .bold : .light)
-                          .foregroundColor(Color.black)
+                          .foregroundStyle(Color.black)
                           .lineLimit(1)
                          
                     Image(systemName: modelListCorrente == localListTitle ? "eye" : "eye.slash")
                           .imageScale(.medium)
-                          .foregroundColor(modelListCorrente == localListTitle ? Color.blue : Color.gray)
+                          .foregroundStyle(modelListCorrente == localListTitle ? Color.blue : Color.gray)
                     
                 }
                 
@@ -115,7 +115,7 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
             
           /*  Text(localListTitle)
                 .fontWeight(modelListCorrente == localListTitle ? .bold : .light)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                 .lineLimit(1)
                 .onTapGesture {
                     modelListCorrente = localListTitle
@@ -123,7 +123,7 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
             
             Image(systemName: "arrow.up.forward.square")
                 .imageScale(.medium)
-                .foregroundColor(Color.blue) */
+                .foregroundStyle(Color.blue) */
             
             Spacer()
             
@@ -135,7 +135,7 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
                     .fontWeight(.light)
                     .padding(.horizontal)
                 
-            } else {Text("Ø").bold().foregroundColor(.red).padding(.horizontal)}
+            } else {Text("Ø").bold().foregroundStyle(Color.red).padding(.horizontal)}
             
             if localListPath != nil {
                 
@@ -143,7 +143,7 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
                     .fontWeight(.light)
                     .padding(.horizontal)
                 
-            } else {Text("Ø").bold().foregroundColor(.red).padding(.horizontal)} */
+            } else {Text("Ø").bold().foregroundStyle(Color.red).padding(.horizontal)} */
             
             Text("(\(listCount))")
                 .fontWeight(.light)
@@ -179,7 +179,7 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
             
             Image(systemName:"circle.fill")
                 .imageScale(.large)
-                .foregroundColor(localListColor)
+                .foregroundStyle(localListColor)
             
         }._tightPadding()
     

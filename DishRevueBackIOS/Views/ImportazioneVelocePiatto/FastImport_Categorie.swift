@@ -31,7 +31,7 @@ struct FastImport_Categorie: View {
                     
                     TextEditor(text: $text)
                         .font(.system(.body,design:.rounded))
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                         .autocapitalization(.sentences)
                         .disableAutocorrection(true)
                         .keyboardType(.default)
@@ -40,7 +40,7 @@ struct FastImport_Categorie: View {
                         }
                         .cornerRadius(5.0)
                         .frame(height: 150)
-                        .onChange(of: text) { _ in
+                        .onChange(of: text) {
                          self.isUpdateDisable = false
                         }
                     
@@ -62,7 +62,7 @@ struct FastImport_Categorie: View {
                         Text("N°Categorie:\(allFastCategories.count)")
                             .font(.system(.subheadline, design: .monospaced))
                             .fontWeight(.medium)
-                            .foregroundColor(Color.white.opacity(0.6))
+                            .foregroundStyle(Color.white.opacity(0.6))
                         
                     }
                     
@@ -171,7 +171,7 @@ struct CorpoCompilazioneCategorie:View {
                             .opacity(alreadyExist ? 0.3 : 1.0)
                         Text(category.intestazione)
                             .font(.largeTitle)
-                            .foregroundColor(.seaTurtle_4)
+                            .foregroundStyle(Color.seaTurtle_4)
                             .opacity(alreadyExist ? 0.3 : 1.0)
                         Spacer()
                         

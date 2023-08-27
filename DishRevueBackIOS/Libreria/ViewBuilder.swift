@@ -26,12 +26,12 @@ import MyFoodiePackage
             
             Image(systemName: image)
                 .imageScale(.medium)
-                .foregroundColor(color)
+                .foregroundStyle(color)
                 .zIndex(0)
             
             Image(systemName: "circle.dashed")
                 .imageScale(.large)
-                .foregroundColor(dashedColor)
+                .foregroundStyle(dashedColor)
                 .zIndex(1)
             
         } */
@@ -45,13 +45,13 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
         
         Image(systemName: internalCircle)
             .imageScale(.small)
-            .foregroundColor(internalColor)
+            .foregroundStyle(internalColor)
             .zIndex(0)
         
         Image(systemName: "circle.dashed")
             .bold()
             .imageScale(.large)
-            .foregroundColor(dashedColor)
+            .foregroundStyle(dashedColor)
             .zIndex(1)
         
     }
@@ -249,7 +249,7 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
         
         Image(systemName: "allergens")
             .imageScale(.small)
-            .foregroundColor(Color.black)
+            .foregroundStyle(Color.black)
     
         ScrollView(.horizontal,showsIndicators: false) {
             
@@ -263,14 +263,14 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
                         .italic()
                         .fontWeight(.semibold)
                         .font(.caption)
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
  
                     
                 } else {
                     Text("Nessun Allergene indicato")
                         .font(.caption)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                 }   
             }
         }
@@ -300,19 +300,19 @@ private func estrapolaListaAllergeni(listaAllergeni:[AllergeniIngrediente]) -> [
     
     if valoreAssociato == trend {
         Image(systemName: "arrowtriangle.up.fill")
-            .foregroundColor(coloreAssociato)
+            .foregroundStyle(coloreAssociato)
         
     }
     else if trend == 0 {
         Image(systemName: "minus")
-            .foregroundColor(Color.gray)
+            .foregroundStyle(Color.gray)
     }
     
     // Special case
     
     else if trend == 10 && valoreAssociato == 5 {
         Image(systemName: "arrowtriangle.up")
-            .foregroundColor(coloreAssociato)
+            .foregroundStyle(coloreAssociato)
     }
             
 }
@@ -321,11 +321,11 @@ private func estrapolaListaAllergeni(listaAllergeni:[AllergeniIngrediente]) -> [
 
     if trendValue == 1 {
         Image(systemName: "arrowtriangle.down")
-            .foregroundColor(Color.red)
+            .foregroundStyle(Color.red)
     }
     else {
         Image(systemName: "arrowtriangle.up.fill")
-            .foregroundColor(Color.green)
+            .foregroundStyle(Color.green)
     }
 
 }
@@ -335,15 +335,15 @@ private func estrapolaListaAllergeni(listaAllergeni:[AllergeniIngrediente]) -> [
 
     if mediaL10 == mediaGen {
         Image(systemName: "minus")
-            .foregroundColor(Color.gray)
+            .foregroundStyle(Color.gray)
     }
     else if mediaL10 > mediaGen {
         Image(systemName: "arrowtriangle.up.fill")
-            .foregroundColor(Color.green)
+            .foregroundStyle(Color.green)
     }
     else {
         Image(systemName: "arrowtriangle.down")
-            .foregroundColor(Color.red)
+            .foregroundStyle(Color.red)
     }
     
 }*/ // 07.02.23 Ricollocato in MyFoodiePackage

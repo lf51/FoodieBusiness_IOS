@@ -21,7 +21,7 @@ struct CSInfoAlertView: View {
         Image(systemName: "info.circle.fill")
             .imageScale(imageScale)
             .bold()
-            .foregroundColor(Color.white)
+            .foregroundStyle(Color.white)
             .onTapGesture {
                     self.viewModel.alertItem = AlertModel(
                         title: title,

@@ -27,7 +27,7 @@ let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 2
 
  let testCurrentProperty = PropertyCurrentData(
     userRole: UserRoleModel(),
-    info: PropertyModel(intestazione: "", cityName: "", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "", phoneNumber: "", streetAdress: "", numeroCivico: "", admin: UserRoleModel()),
+    info: PropertyModel(intestazione: "", cityName: "TEST", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "", phoneNumber: "", streetAdress: "", numeroCivico: "", admin: UserRoleModel()),
     inventario: Inventario(),
     setup: AccountSetup(),
     db: CloudDataStore())

@@ -18,6 +18,10 @@ struct FastImport_MainView: View {
     
     @State private var isUpdateDisable: Bool = true
     @State private var tabViewHeight:CGFloat = 200
+    
+    @State private var localScrollPosition:Int?
+    @State private var childScrollItem:TemporaryModel.ID?
+    
     var body: some View {
         
       //  CSZStackVB(title: "Importazione Veloce", backgroundColorView: backgroundColorView) {
@@ -34,16 +38,17 @@ struct FastImport_MainView: View {
 
                         TextEditor(text: $text)
                             .font(.system(.body,design:.rounded))
-                            .foregroundColor(Color.black)
+                            .foregroundStyle(Color.black)
                             .autocapitalization(.sentences)
                             .disableAutocorrection(true)
                             .keyboardType(.default)
                             .csTextEditorBackground {
                                 Color.white.opacity(0.2)
                             }
+                            .id(0)
                             .cornerRadius(5.0)
                             .frame(height: 150)
-                            .onChange(of: text) { _ in
+                            .onChange(of: text) {
                              self.isUpdateDisable = false
                             }
                         
@@ -51,8 +56,10 @@ struct FastImport_MainView: View {
                             
                             CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.seaTurtle_4, fillColor: Color.seaTurtle_2) {
                                
-                                self.estrapolaStringhe()
-                                self.postEstrapolaAction()
+                                withAnimation {
+                                    self.estrapolaStringhe()
+                                    self.postEstrapolaAction()
+                                }
                              
                             }
                             .opacity(self.isUpdateDisable ? 0.3 : 1.0)
@@ -65,13 +72,20 @@ struct FastImport_MainView: View {
                             Text("N°Piatti:\(allFastDish.count)")
                                 .font(.system(.subheadline, design: .monospaced))
                                 .fontWeight(.medium)
-                                .foregroundColor(Color.white.opacity(0.6))
+                                .foregroundStyle(Color.white.opacity(0.6))
                             
                         } // Barra dei Bottoni
+                        .id(1)
                         
                         if !allFastDish.isEmpty {
                             
-                            TabView { // Risolto bug 23.06.2022 Se allFastDish è vuoto, con la TabView andiamo in crash.
+                            TemporaryModelRow(
+                                allFastDish: $allFastDish,
+                                tabViewHeight: tabViewHeight,
+                                localScrollPosition:$childScrollItem)
+                            .id(2)
+                            
+                          /*  TabView { // Risolto bug 23.06.2022 Se allFastDish è vuoto, con la TabView andiamo in crash.
                                 
                                 ForEach($allFastDish) { $fastDish in
 
@@ -100,7 +114,7 @@ struct FastImport_MainView: View {
                                                     Text("Esistente")
                                                         .bold()
                                                         .font(.largeTitle)
-                                                        .foregroundColor(Color.seaTurtle_1)
+                                                        .foregroundStyle(Color.seaTurtle_1)
                                                         .lineLimit(1)
                                                         .padding(.horizontal,100)
                                                    // Spacer()
@@ -118,14 +132,20 @@ struct FastImport_MainView: View {
                                 }
                             }
                             .frame(height:tabViewHeight)
-                            .tabViewStyle(PageTabViewStyle())
+                            .tabViewStyle(PageTabViewStyle()) */
  
                         } // Chiusa if
                         
                         Spacer()
                  
                     }//.padding(.horizontal)
-                    
+                    .scrollTargetLayout()
+                }
+                .scrollPosition(id: $localScrollPosition,anchor: .bottom)
+                .onChange(of: childScrollItem) {
+                    withAnimation {
+                        self.localScrollPosition = 0
+                    }
                 }
                // .edgesIgnoringSafeArea(.all)
                 
@@ -136,7 +156,7 @@ struct FastImport_MainView: View {
     }
     
     // Method
-    private func fastSave(item: TemporaryModel) {
+  /*  private func fastSave(item: TemporaryModel) {
  
             self.viewModel.dishAndIngredientsFastSave(item: item)
 
@@ -147,7 +167,7 @@ struct FastImport_MainView: View {
             }  else {self.allFastDish = localAllFastDish}
 
      
-    }
+    }// chiudere
  
     /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
     private func reBuildIngredientContainer(localTemporaryModel:[TemporaryModel]) {
@@ -174,7 +194,7 @@ struct FastImport_MainView: View {
         
         self.allFastDish = newTemporaryContainer
    
-    }
+    }*/ // chiudere
     
     private func estrapolaStringhe() {
          
@@ -257,6 +277,9 @@ struct FastImport_MainView: View {
         
         csHideKeyboard()
         self.isUpdateDisable = true
+        
+      //  self.scrollPosition = 2
+        
         viewModel.alertItem = AlertModel(
             title: "⚠️ Attenzione",
             message: SystemMessage.allergeni.simpleDescription())
@@ -266,11 +289,23 @@ struct FastImport_MainView: View {
 }
 
 struct FastImportMainView_Previews: PreviewProvider {
-    static var user:UserRoleModel = UserRoleModel()
+   
+   static let dish:DishModel = DishModel()
+   static let ingredients:[IngredientModel] = [IngredientModel()]
+    
+    
+    @State static var allDish:[TemporaryModel] = [
+    
+        TemporaryModel(dish: dish, ingredients: ingredients),
+        TemporaryModel(dish: dish, ingredients: ingredients)
+    
+    ]
+    
     static var previews: some View {
     
         NavigationStack {
-            FastImport_MainView(backgroundColorView: Color.seaTurtle_1)
+          //  FastImport_MainView(backgroundColorView: Color.seaTurtle_1)
+            TemporaryModelRow(allFastDish: $allDish,tabViewHeight: 200,localScrollPosition: .constant(""))
                 
         }.environmentObject(AccounterVM(from:initServiceObject))
          //   Color.cyan
@@ -280,5 +315,171 @@ struct FastImportMainView_Previews: PreviewProvider {
 
 
 
+private struct TemporaryModelRow:View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    @Binding var allFastDish:[TemporaryModel]
+    let tabViewHeight:CGFloat
+    
+   // @Binding var motherScrollPosition:Int?
+   // @Binding var anchorMotherPoint:UnitPoint?
+    
+    @Binding var localScrollPosition:TemporaryModel.ID?
+    
+    var body: some View {
+        
+        
+        ScrollView(.horizontal,showsIndicators: false) {
+            
+            LazyHStack {
+                
+                ForEach($allFastDish) { $fastDish in
+                    
+                    let checkExistence = self.viewModel.checkExistingUniqueModelName(model: fastDish.dish).0
+                    
+                    VStack {
+                        FastImport_CorpoScheda(temporaryModel: $fastDish) { newDish in
+                            withAnimation(.spring()) {
+                                fastSave(item: newDish)
+                            }
+                        }
+                      
+                        Spacer()
+                    }
+                    .frame(height:tabViewHeight)
+                    .containerRelativeFrame(.horizontal)
+                    
+                    .csModifier(checkExistence) { view in
+                        view
+                            .opacity(0.6)
+                            .overlay(alignment: .topLeading) {
+                                HStack {
+                                  //  Spacer()
+                                    Text("Esistente")
+                                        .bold()
+                                        .font(.largeTitle)
+                                        .foregroundStyle(Color.seaTurtle_1)
+                                        .lineLimit(1)
+                                        .padding(.horizontal,100)
+                                   // Spacer()
+                                }
+                                .background(content: {
+                                    Color.black.opacity(0.8)
+                                })
+                                .rotationEffect(Angle.degrees(-45))
+                                .offset(x: -70, y: 80)
+                            }
+                            .disabled(true)
+ 
+                    }
+                    
+                } // chiusa forEach
+  
+            }// chiusa lazyHastack
+            .scrollTargetLayout()
 
+        }
+        .scrollPosition(id: $localScrollPosition,anchor: .center)
+        .scrollTargetBehavior(.viewAligned)
+       /* .onChange(of: localScrollPosition) {
+            
+            withAnimation {
+                self.anchorMotherPoint = .bottom
+                self.motherScrollPosition = 1
+               
+            }
+        }*/
 
+    }
+    
+    // method
+    
+    private func fastSave(item: TemporaryModel) {
+ 
+            self.viewModel.dishAndIngredientsFastSave(item: item)
+
+            let localAllFastDish:[TemporaryModel] = self.allFastDish.filter {$0.id != item.id}
+ 
+            if !localAllFastDish.isEmpty {
+                self.reBuildIngredientContainer(localTemporaryModel: localAllFastDish)
+            }  else {self.allFastDish = localAllFastDish}
+
+    }
+    
+    /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
+    private func reBuildIngredientContainer(localTemporaryModel:[TemporaryModel]) {
+        
+        var newTemporaryContainer:[TemporaryModel] = []
+        var newTemporaryModel:TemporaryModel?
+        
+        for model in localTemporaryModel {
+            
+            newTemporaryModel = model
+            newTemporaryModel?.ingredients = []
+          //  newDish.ingredientiPrincipaliDEPRECATO = []
+            
+            for ingredient in model.ingredients {
+                
+                if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 { newTemporaryModel?.ingredients.append(oldIngredient) } else {newTemporaryModel?.ingredients.append(ingredient) }
+       
+                
+            }
+            
+            newTemporaryContainer.append(newTemporaryModel!)
+            
+        }
+        
+        self.allFastDish = newTemporaryContainer
+   
+    }
+}
+
+/*
+TabView { // Risolto bug 23.06.2022 Se allFastDish è vuoto, con la TabView andiamo in crash.
+    
+    ForEach($allFastDish) { $fastDish in
+
+        let checkExistence = self.viewModel.checkExistingUniqueModelName(model: fastDish.dish).0
+        
+      //  CSZStackVB_Framed(frameWidth:1200) {
+        ZStack {
+            
+            VStack {
+                FastImport_CorpoScheda(temporaryModel: $fastDish) { newDish in
+                    withAnimation(.spring()) {
+                        fastSave(item: newDish)
+                    }
+                }
+               
+                Spacer()
+            }
+            //.padding()
+            .opacity(checkExistence ? 0.6 : 1.0)
+            .disabled(checkExistence)
+            .overlay(alignment:.topLeading) {
+                if checkExistence {
+                    
+                    HStack {
+                      //  Spacer()
+                        Text("Esistente")
+                            .bold()
+                            .font(.largeTitle)
+                            .foregroundStyle(Color.seaTurtle_1)
+                            .lineLimit(1)
+                            .padding(.horizontal,100)
+                       // Spacer()
+                    }
+                        .background(content: {
+                            Color.black.opacity(0.8)
+                        })
+                        .rotationEffect(Angle.degrees(-45))
+                        .offset(x: -70, y: 80)
+                }
+            }
+            
+           
+        }
+    }
+}
+.frame(height:tabViewHeight)
+.tabViewStyle(PageTabViewStyle())*/

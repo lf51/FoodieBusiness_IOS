@@ -22,7 +22,7 @@ struct CSText_tightRectangleVisual<VisualContent:View>: View {
 
             content()
             .fontWeight(fontWeight)
-            .foregroundColor(textColor)
+            .foregroundStyle(textColor)
             ._tightPadding()
             .background (
                 
@@ -49,7 +49,7 @@ struct CSText_tightRectangle: View {
 
             Text(testo)
             .fontWeight(fontWeight)
-            .foregroundColor(textColor)
+            .foregroundStyle(textColor)
           // .shadow(color: Color.black, radius: 1.5)
             ._tightPadding()
             .background (
@@ -76,7 +76,7 @@ struct CSText_bigRectangle: View {
     var body: some View {
         Text(testo)
             .fontWeight(fontWeight)
-            .foregroundColor(textColor)
+            .foregroundStyle(textColor)
             .padding()
             .background (
                 
@@ -107,7 +107,7 @@ struct CSText_RotatingRectangleStaticFace: View {
             Text(testo)
                 .fontWeight(fontWeight) // .bold
                 .lineLimit(1)
-                .foregroundColor(textColor) // .white
+                .foregroundStyle(textColor) // .white
                 .minimumScaleFactor(scaleFactor) // 0.6
                 ._tightPadding()
                 .background (
@@ -123,7 +123,7 @@ struct CSText_RotatingRectangleStaticFace: View {
                 Image(systemName: topTrailingImage!)
                     .frame(width:10, height: 10)
                     .background(Color.clear)
-                    .foregroundColor(Color.red)
+                    .foregroundStyle(Color.red)
             }
             
         }
@@ -151,7 +151,7 @@ struct CSText_RotatingRectangleDynamicDeletingFace: View {
             Text(testo)
                 .fontWeight(fontWeight) //.bold
                 .lineLimit(1)
-                .foregroundColor(textColor) // .white
+                .foregroundStyle(textColor) // .white
                 .minimumScaleFactor(scaleFactor) // 0.6
                 ._tightPadding()
                 .background(
@@ -167,7 +167,7 @@ struct CSText_RotatingRectangleDynamicDeletingFace: View {
                 Image(systemName: "x.circle.fill")
                     .frame(width:10, height: 10)
                     .background(Color.white)
-                    .foregroundColor(Color.red)
+                    .foregroundStyle(Color.red)
             }
         }
         .rotationEffect(.degrees(rotationAngle))

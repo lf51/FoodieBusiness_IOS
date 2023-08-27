@@ -7,116 +7,98 @@
 
 import SwiftUI
 import MyFoodiePackage
-/*
-struct TestViewForNavigation: View {
-    
-   // @State private var testItem:PropertyModel = PropertyModel(nome: "Osteria del Buco Nero")
-    @ObservedObject var viewModel:AccounterVM
-    @State private var testItem:PropertyModel
-    
-    init(testItem: PropertyModel? = PropertyModel(nome:"Trattoria del buco nero"), viewModel: AccounterVM) {
-        _testItem = State(wrappedValue: testItem!)
-        self.viewModel = viewModel
-    }
-    
+import MyPackView_L0
+
+struct TEST_NewScroll: View {
     var body: some View {
-        
-      //  CSZStackVB(title: testItem.intestazione, backgroundColorView: Color.black) {
-            
-            VStack{
-                
-                Text("\(testItem.intestazione)")
-                    .bold()
-                   // .foregroundColor(Color.white)
-                    
-                
-                Button {
-                    
-                    self.testItem.intestazione = "This is Better"
-                    
-                    
-                } label: {
-                    Text("Cambia Intestazione")
-                }
-                
-                Text(testItem.descrizione)
-                    .italic()
-                
-                
-                Button {
-                    self.testItem.descrizione = self.testItem.descrizione == "" ? "Try it!" : ""
-                } label: {
-                    Text("Cambia Descrizione")
-                }
-
-                Spacer()
-                
-                Button {
-                    
-                    let index = viewModel.cloudData.allMyProperties.firstIndex(where: {$0.id == testItem.id})
-                    viewModel.cloudData.allMyProperties[index!] = testItem
-                    
-                    
-                    
-                } label: {
-                    Text("Salva Modifiche")
-                }
-
-                
-                
-            }
-           
-     //   }
-               
-    }
     
+        TabView {
+            Group {
+              
+                    InsideTabView(color: .red)
+                        .tabItem { Text("Red") }
+                    
+                
+                
+                InsideTabView(color: .green)
+                    .tabItem { Text("Green") }
+                   
+                   // .toolbarBackground(.hidden, for: .tabBar)
+                
+                InsideTabView(color: .blue)
+                    .tabItem { Text("Blue") }
+            }
+            .toolbarBackground(.visible, for: .tabBar)
+            .toolbarBackground(.yellow, for: .tabBar)
+        
+        }
+        
+        .accentColor(.seaTurtle_3)
+        
+        
+    }
 }
 
-
-struct NavStackTest: View {
-
-    @StateObject var viewModel:AccounterVM = AccounterVM()
+struct InsideTabView:View {
     
-   
+    let color:Color
+    var path:NavigationPath = NavigationPath()
+    
+    @State private var position:Int? = 0
     
     var body: some View {
         
         NavigationStack {
             
-               VStack {
-                   
-                   Text("property in: \(viewModel.cloudData.allMyProperties.count)")
-                   
-                   ForEach(viewModel.cloudData.allMyProperties) { property in
+            CSZStackVB(title: color.description, backgroundColorView: .seaTurtle_1) {
+            
+                VStack {
+                    
+                   CSDivider()
+                    
+                    ScrollView(showsIndicators: false) {
+                        
                        
-                       NavigationLink {
-                           TestViewForNavigation(testItem: property, viewModel: viewModel)
-                       } label: {
-                           Text("Edit \(property.intestazione) / \(property.id)")
-                       }
+                       // ScrollViewReader { proxy in
+                            
+                          Text("Barra Ricerca")
+                                .id(0)
+                            
+                            ForEach(1..<100) { number in
+                                
+                                Text("\(number)")
+                                    .id(number)
+                                
+                            }
+  
+                      //  }// chiusa reader
  
-                   }
-                   
+                    } // chiusa Scroll
+                    
+                    .scrollPosition(id: $position, anchor: .top)
+                  // CSDivider()
+                }// chiusa vstack intenro
+                
+            }// chiusa zstack
+            .onAppear(perform: {
+                position = 85
+            })
             
-                   
-               }
-               
-               
-               
-           }/*.onAppear { viewModel.cloudData.allMyProperties.append(PropertyModel(nome: "Osteria Vera")) }*/
-       }
-        
-        
-    }
-
-
-struct NavStackTest_Previews: PreviewProvider {
-    static var previews: some View {
-       
-            
-            NavStackTest()
-            
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Ciao")
+                }
+            }
+        }// chiusa navStacl
+       // .clipped()
         
     }
 }
-*/
+
+
+
+#Preview {
+    
+        TEST_NewScroll()
+    
+}

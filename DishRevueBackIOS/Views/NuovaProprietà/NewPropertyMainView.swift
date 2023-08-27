@@ -12,7 +12,231 @@ import MapKit
 import MyFoodiePackage
 import MyPackView_L0
 // 17/06/2023 Maps di Apple -> tentiamo di scriverne un altra con maps di Google. TENTATIVO FALLITO
+struct AddPropertyMainView: View {
+    
+    @Binding var showLocalAlert:Bool
+    @Binding var localAlert:AlertModel? {didSet { showLocalAlert = true} }
+    var addTopPadding:Bool = false 
+    let registrationAction:(_ :MKMapItem) async throws -> ()
+    
+    let screenHeight: CGFloat = UIScreen.main.bounds.height
+    let screenWidth: CGFloat = UIScreen.main.bounds.width
+    
+    @State private var newProperty: MKMapItem?
+    
+    @State private var queryRequest: String = ""
+    @State private var queryResults: [MKMapItem] = [] // viene riempita dalla query di ricerca
+    
+    @State private var currentRegion: MKCoordinateRegion = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
+        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
+    
+  //  @State private var showActivityInfo:Bool = false // deprecata
+   // @State private var showLocalAlert:Bool = false
+   // @State private var localAlert:AlertModel? {didSet { showLocalAlert = true } }
+    
+    var body: some View {
+        
+        ZStack {
+                
+            MapView(currentRegion: $currentRegion, queryResults: queryResults)
+                .ignoresSafeArea()
+                .zIndex(0)
+                
+          //  VStack(alignment: .trailing) {
+            VStack {
+    
+                CSTextField_2(
+                    text: $queryRequest,
+                    placeholder: "nome attività, indirizzo, città",
+                    symbolName: "location.circle",
+                    accentColor: .green,
+                    backGroundColor: .white,
+                    autoCap:.words,
+                    cornerRadius: 5.0)
+                    .padding(.horizontal,5)
+                    .csModifier(addTopPadding) { view in
+                        view.padding(.top,30)
+                    }
+                
+                QueryScrollView_NewPropertySubView(
+                    queryResults: queryResults,
+                    queryRequest: queryRequest,
+                    screenHeight: screenHeight){ propertyItem in
+                   
+                        self.showPlaceData(mkItem: propertyItem)
+                    
+                }
+                    .zIndex(1)
+                
+                Spacer()
+                
+                if let property = self.newProperty {
+                    
+                    ChoiceInfoView_NewPropertySubView(
+                        newProperty: property,
+                        screenWidth: screenWidth,
+                        frameHeight: screenHeight * 0.20) {
+                            
+                        //self.registrazioneProperty(mkItem: property)
+                        try await checkProperty(mkItem: property)
+                    }
+                        .padding(.vertical, screenHeight * 0.05 )
+                    
+                }
+      
+            }
+            
+        }
+        .onChange(of: queryRequest) { newValue in
+            // Searching Place...
+            let delay = 0.3
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                
+                if newValue == queryRequest { queryResearch() }
+            }
+        }
+       // .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
+       // .csAlertModifier(isPresented: $showLocalAlert, item: localAlert)
 
+    }
+    
+    // Method
+    
+    private func checkProperty(mkItem:MKMapItem) async throws {
+        
+        // verifichiamo che la prop non esiste
+        let mkItemCoordinate = mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
+        
+        let mkCity = mkItem.placemark.locality ?? "NOLOCALITY"
+        let idToCheck = PropertyModel.creaID(coordinates: mkItemCoordinate, cityName: mkCity)
+        
+        print("[1]Procediamo al check della unicità della proprietà")
+        let alreadyExist = try await GlobalDataManager.property.checkPropertyExist(for: idToCheck)
+        
+        guard !alreadyExist else {
+            // proprietà già esistente / mandiamo un alert
+            
+            self.localAlert = AlertModel(
+                title: "Proprietà già registrata",
+                message: "Per reclami e/o errori contattare info@foodies.com.")
+
+            return
+        }
+        print("[3]PropertyDoesNot exist. Procediamo alla registrazione")
+        
+       // do {
+            try await registrationAction(mkItem)
+            print("[7]Registrazione terminata. Chiudiamo lo sheet della mappa")
+       /* } catch {
+            self.localAlert = AlertModel(
+                title: "Server Error",
+                message: "Controllare la connessione dati e riprovare.\nIn caso di mancata risoluzione del problema contattare info@foodies.com ")
+        }*/
+       /* try await registrazioneProperty(
+                mkItem: mkItem,
+                mkCity: mkCity,
+                mkCoordinate: mkItemCoordinate) */
+        
+        
+        //self.isShowingSheet.toggle()
+
+        
+    }
+    
+   /* private func registrazioneProperty(mkItem:MKMapItem,mkCity:String,mkCoordinate:CLLocationCoordinate2D) async throws {
+        
+        // userRoleModel derivato da quello corrente
+        let authData = AuthPasswordLess.userAuthData
+        
+        let localUser:UserRoleModel = {
+  
+            var user = UserRoleModel(
+                uid: authData.id,
+                userName: authData.userName,
+                mail: authData.mail)
+             
+             user.ruolo = .admin
+             user.inizioCollaborazione = Date.now
+             user.restrictionLevel = nil
+             
+             return user
+         }()
+        
+        // genera un propertyModel
+       let modelProperty = PropertyModel(
+         intestazione: mkItem.name ?? "",
+         cityName: mkCity,
+         coordinates: mkCoordinate,
+         webSite: mkItem.url?.absoluteString ?? "",
+         phoneNumber: mkItem.phoneNumber ?? "",
+         streetAdress: mkItem.placemark.thoroughfare ?? "",
+         numeroCivico: mkItem.placemark.subThoroughfare ?? "",
+         admin: localUser )
+
+        let adress = modelProperty.streetAdress + " " + modelProperty.numeroCivico + "," + " " + modelProperty.cityName
+        // crea Immagine proprietà
+        let propertyImage = PropertyLocalImage(
+            userRuolo: localUser,
+            propertyName: modelProperty.intestazione,
+            propertyRef: modelProperty.id,
+            propertyAdress: adress)
+        
+        // Init array allImages per init ViewModel
+        let allPropImages = [propertyImage] // 1/initServiceObject
+ 
+        // Init Properties ref per l'utenteCorrente
+        let allRef = [modelProperty.id]
+        let userCloud = UserCloudData(propertiesRef: allRef)
+        
+        print("[1]Pre Publish UserCloudData")
+       try await GlobalDataManager.user.publishUserCloudData(forUser: authData.id, from: userCloud)
+        print("[4]Post Publish UserCloudData")
+        
+        print("[1]PRE Pubblicazione su firebase del PropertyModel")
+        try await GlobalDataManager.property.publishPropertyData(propertyRef: modelProperty.id, element: modelProperty)
+        print("[4]POST Pubblicazione su firebase del PropertyModel")
+    
+        // creiamo un propertyCurrentData
+        let propCurrentData = PropertyCurrentData(userRole: localUser, propertyModel: modelProperty) // 2/initServiceObject
+        // creiamo un initServiceObject
+        let serviceObject = InitServiceObjet(allPropertiesImage: allPropImages, currentProperty: propCurrentData)
+        
+ 
+    } */
+
+   private func showPlaceData(mkItem:MKMapItem) {
+        
+       self.currentRegion = MKCoordinateRegion(center: mkItem.placemark.coordinate , span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        
+        self.newProperty = mkItem
+
+    }
+    
+   private func queryResearch() {
+
+       withAnimation(.linear(duration: 0.5)) {
+           self.queryResults.removeAll()
+         //  self.showActivityInfo = false
+           self.newProperty = nil
+       }
+        
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = self.queryRequest
+        // Fetch..
+        
+        MKLocalSearch(request: request).start { (response, _) in
+            
+            guard let result = response else { return }
+        
+            self.queryResults = result.mapItems
+ 
+        }
+    }
+}
+
+/*
 struct NewPropertyMainView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
@@ -275,7 +499,7 @@ struct NewPropertyMainView: View {
             }) */ // 29.07.23 deprecata
         }
     }
-}
+}*/ // Deprecata 19.08.23
 
 // Preview
 /*struct NewPropertySheetView_Previews: PreviewProvider {

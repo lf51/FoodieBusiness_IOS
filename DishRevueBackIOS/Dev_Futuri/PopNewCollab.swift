@@ -36,7 +36,7 @@ struct PopNewCollab:View {
                 Text("Nuovo Collaboratore")
                     .fontWeight(.semibold)
                     .font(.largeTitle)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .padding(.top,10)
                 
                 Spacer()
@@ -61,7 +61,7 @@ struct PopNewCollab:View {
                     } label: {
                         Text("Salva")
                             .fontWeight(.semibold)
-                            .foregroundColor(Color.seaTurtle_3)
+                            .foregroundStyle(Color.seaTurtle_3)
                             .opacity(disableSave ? 0.4 : 1.0)
                     }
                    

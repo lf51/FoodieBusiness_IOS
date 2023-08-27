@@ -176,7 +176,7 @@ private struct RevRowLocal:View {
                        // Group {
                             Text("Statistica Recensioni")
                                   .font(.system(.headline, design: .monospaced, weight: .black))
-                                  .foregroundColor(.seaTurtle_2)
+                                  .foregroundStyle(Color.seaTurtle_2)
                            // Spacer()
                        // }
                     } extraContent:{ EmptyView() }

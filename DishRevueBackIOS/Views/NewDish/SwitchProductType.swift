@@ -37,7 +37,7 @@ struct SwitchProductType: View {
                 Text(percorsoItem.extendedDescription())
                     .italic()
                     .font(.caption)
-                    .foregroundColor(.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.75)
             }
         }

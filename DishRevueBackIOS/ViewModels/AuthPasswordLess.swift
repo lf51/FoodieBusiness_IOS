@@ -12,6 +12,8 @@ import MyFoodiePackage
 
 public class AuthPasswordLess: ObservableObject, Hashable {
     
+    public static var userAuthData:(id:String,userName:String,mail:String,isPremium:Bool) = ("","","",false)
+    
    public static func == (lhs: AuthPasswordLess, rhs: AuthPasswordLess) -> Bool {
        // lhs.currentUser == rhs.currentUser
        lhs.utenteCorrente == rhs.utenteCorrente
@@ -24,7 +26,7 @@ public class AuthPasswordLess: ObservableObject, Hashable {
 
    // @Published var currentUser: UserModel? // deprecato
     
-    @Published var utenteCorrente: UserRoleModel?
+    @Published var utenteCorrente: UserRoleModel? // deprecato
     @Published var email: String = ""
     
     @Published var showAlert: Bool = false 
@@ -34,10 +36,18 @@ public class AuthPasswordLess: ObservableObject, Hashable {
 
     @Published var isLoading:Bool = true // da settare
     
+    @Published var authCase:AuthCase?
+    
     init() {
         print("Init -> AuthPassWordLess")
         checkUserSignedIn()
      //   self.openSignInView = false // -> Ripistinare in futuro il checkUserSignedIn() / l'impostazione su false qui ci serve a bypassare l'auth nel simulatore
+    }
+    
+     enum AuthCase {
+        case noAuth
+        case auth_noUserName
+        case auth
     }
     
     
@@ -61,7 +71,7 @@ public class AuthPasswordLess: ObservableObject, Hashable {
             return
         }
             self.alertItem = AlertModel(title: "Authentication Link inviato a \(self.email)", message: "Nessuna password necessaria.\nApri da questo device la mail (se non la trovi cercala nello spam) e clicca sul link per autenticarti.")
-            UserDefaults.standard.set(self.email, forKey: "Email")
+            UserDefaults.standard.set(self.email, forKey: "email")
             self.email = ""
             print("Link Succesfully sent")
           
@@ -71,17 +81,34 @@ public class AuthPasswordLess: ObservableObject, Hashable {
     func passwordlessSignIn(link: String,
                                     completion: @escaping (Result<User?, Error>) -> Void) {
         
-        if let email = UserDefaults.standard.string(forKey: "Email") {
+        if let email = UserDefaults.standard.string(forKey: "email") {
             
             Auth.auth().signIn(withEmail: email, link: link) { result, error in
               
             if let error = error {
               print("ⓧ Authentication error: \(error.localizedDescription).")
+                self.authCase = .noAuth
               completion(.failure(error))
               //  self.openSignInView = true
                 
             } else {
               print("✔ Authentication was successful.")
+                
+                if let userName = result?.user.displayName {
+                    
+                    Self.userAuthData.id = result?.user.uid ?? "ERROR_NOUID"
+                    Self.userAuthData.userName = userName
+                    Self.userAuthData.mail = result?.user.email ?? "ERROR_NOEMAIL"
+                    
+                    self.authCase = .auth
+                    self.utenteCorrente = UserRoleModel(
+                        uid: result?.user.uid ?? "ERROR_NOUID",
+                        userName: userName,
+                        mail: result?.user.email ?? "ERROR_NOEMAIL") // deprecato
+                } else {
+                    self.authCase = .auth_noUserName
+                }
+
               completion(.success(result?.user))
 
                /* self.currentUser = UserModel(
@@ -91,10 +118,7 @@ public class AuthPasswordLess: ObservableObject, Hashable {
                     userDisplayName: result?.user.displayName ?? result?.user.email ?? "",
                     userEmailVerified: result?.user.isEmailVerified ?? false) */
                 
-                self.utenteCorrente = UserRoleModel(
-                    uid: result?.user.uid ?? "No_UID",
-                    userName: result?.user.displayName ?? result?.user.email ?? "NoMail&NoUsername",
-                    mail: result?.user.email ?? "noEmailAdress")
+                
             
             }
           }
@@ -104,7 +128,35 @@ public class AuthPasswordLess: ObservableObject, Hashable {
     
     func checkUserSignedIn() {
                 
-        if let user = Auth.auth().currentUser {
+        guard let user = Auth.auth().currentUser else {
+            self.authCase = .noAuth
+           // self.openSignInView = true // è true di default
+            print("AUTH - NO USER Authenticated")
+            return
+        }
+
+        if let username = user.displayName {
+            
+            Self.userAuthData.id = user.uid
+            Self.userAuthData.userName = username
+            Self.userAuthData.mail = user.email ?? "ERROR_NOEMAIL"
+            
+            self.authCase = .auth
+            
+            self.utenteCorrente = UserRoleModel(
+                uid: user.uid,
+                userName: username,
+                mail: user.email ?? "ERROR_NOEMAIL") // deprecato
+            
+        } else {
+            
+            // prima autentica o utente ha chiuso l'app dopo il primo sign In e lo userName non è stato settato
+            self.authCase = .auth_noUserName
+            
+        }
+        
+        
+       /* if let user = Auth.auth().currentUser {
           /*  print("STEP_2 - User already Signed In")
             
             print("User email: \(user.email ?? "")")
@@ -116,8 +168,8 @@ public class AuthPasswordLess: ObservableObject, Hashable {
             
             self.utenteCorrente = UserRoleModel(
                 uid: user.uid,
-                userName: user.displayName ?? user.email ?? "NoMail&NoUsername",
-                mail: user.email ?? "noEmailAdress")
+                userName: user.displayName ?? "",
+                mail: user.email ?? "ERROR_NOEMAIL")
             
            /* self.currentUser = UserModel(
                 userEmail: user.email ?? "",
@@ -133,8 +185,9 @@ public class AuthPasswordLess: ObservableObject, Hashable {
         }
         
         else {
+            self.authCase = .noAuth
            // self.openSignInView = true // è true di default
-            print("STEP_2 - NO USER IN") }
+            print("STEP_2 - NO USER IN") } */
       
     }
 
@@ -164,6 +217,24 @@ public class AuthPasswordLess: ObservableObject, Hashable {
     }
     
     func updateDisplayName(newDisplayName: String) {
+       
+        // il submit disable evita di passare userName vuoti == ""
+       
+        let newUserName = normalizzaUserNameString(newDisplayName: newDisplayName)
+        
+       // self.utenteCorrente?.userName = newUserName
+        
+        self.updateCurrentUserProfile(username: newUserName)
+        
+    }
+    
+    func normalizzaUserNameString(newDisplayName: String) -> String {
+        
+       "@" + newDisplayName.replacingOccurrences(of: " ", with: "").lowercased()
+    }
+    
+    /*
+    func updateDisplayName(newDisplayName: String) {
         
         // Inserire in futuro controllo di unicità
         
@@ -180,7 +251,7 @@ public class AuthPasswordLess: ObservableObject, Hashable {
         
         self.updateCurrentUserProfile()
         
-    }
+    }*/ // 20.08.23 Deporecata
     
    private func deleteCurrentUser() {
         
@@ -239,12 +310,15 @@ public class AuthPasswordLess: ObservableObject, Hashable {
         
     }
 
-   private func updateCurrentUserProfile() {
+    private func updateCurrentUserProfile(username:String) {
         
-        let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
+        let currentUser = Auth.auth().currentUser
+        
+        let changeRequest = currentUser?.createProfileChangeRequest()
         
        // changeRequest?.displayName = self.currentUser?.userDisplayName
-       changeRequest?.displayName = self.utenteCorrente?.userName
+       //changeRequest?.displayName = self.utenteCorrente?.userName
+        changeRequest?.displayName = username
     //    changeRequest?.displayName = self.displayName
        // changeRequest?.photoURL // da implementare
         
@@ -259,9 +333,20 @@ public class AuthPasswordLess: ObservableObject, Hashable {
                 return
             }
             
+            Self.userAuthData.id = currentUser?.uid ?? "Error_NOUID"
+            Self.userAuthData.userName = username
+            Self.userAuthData.mail = currentUser?.email ?? "ERROR_NOEMAIL"
+            
+            self.utenteCorrente = UserRoleModel(
+                uid: currentUser?.uid ?? "Error_NOUID",
+                userName: username,
+                mail: currentUser?.email ?? "ERROR_NOEMAIL") // deprecato
+          
+            self.authCase = .auth
+            
             self.alertItem = AlertModel(
-                title: "User Update",
-                message: "Profilo aggiornato correttamente.")
+                title: "Success",
+                message: "Profilo registrato correttamente.")
             
             print("Update User Profile Successfully")
         })

@@ -24,7 +24,7 @@ struct LargeBar_TextPlusButton: View {
             Text(placeHolder ?? "")
                 .font(font)
                 .fontWeight(.semibold)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                // .padding(.leading)
             
             Spacer()
@@ -58,13 +58,13 @@ struct LargeBar_Text: View {
                     Image(systemName: "plus.circle")
                         .font(font)
                         .background(imageBack.clipShape(Circle()))
-                        .foregroundColor(imageFore)
+                        .foregroundStyle(imageFore!)
                      
                     
                     Text(title ?? "")
                         .font(font)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                    
                 }
     }

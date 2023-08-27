@@ -40,7 +40,7 @@ struct VistaIngredientiEspansa: View {
                     Text("Count: \(self.container.count,format: .number)")
                         .font(.title3)
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.blue)
+                        .foregroundStyle(Color.blue)
                         .padding(5)
                         .background {
                             Color.seaTurtle_3.cornerRadius(5.0)
@@ -123,12 +123,12 @@ struct VistaIngredientiEspansa: View {
                             Image(systemName: "arrowshape.forward")
                                 .imageScale(.large)
                                 .fontWeight(.black)
-                                .foregroundColor(Color.red)
+                                .foregroundStyle(Color.red)
                             
                             Image(systemName: "arrowshape.backward.fill")
                                 .imageScale(.large)
                                 .fontWeight(.black)
-                                .foregroundColor(Color.green)
+                                .foregroundStyle(Color.green)
                             
                         }
                         .offset(x: -30)
@@ -186,7 +186,7 @@ struct VistaIngredientiEspansa_Selectable: View {
                                 
                                 Image(systemName: "leaf.fill")
                                     .imageScale(.medium)
-                                    .foregroundColor(.seaTurtle_3)
+                                    .foregroundStyle(Color.seaTurtle_3)
                                 Text("Principali:")
                                     .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                                 Text("\(self.currentDish.ingredientiPrincipali.count)")
@@ -197,7 +197,7 @@ struct VistaIngredientiEspansa_Selectable: View {
                             GridRow(alignment:.lastTextBaseline)  {
                                 Image(systemName: "leaf.fill")
                                     .imageScale(.medium)
-                                    .foregroundColor(.orange)
+                                    .foregroundStyle(Color.orange)
                                 Text("Secondari:")
                                     .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                                 Text("\(self.currentDish.ingredientiSecondari.count)")

@@ -47,7 +47,7 @@ struct FastImport_CorpoScheda:View {
                     
                     Text(temporaryModel.dish.intestazione)
                             .font(.title)
-                            .foregroundColor(Color.white)
+                            .foregroundStyle(Color.white)
 
                     HStack {
 
@@ -101,7 +101,7 @@ struct FastImport_CorpoScheda:View {
    
                             Image(systemName: "allergens")
                                 .imageScale(.medium)
-                                .foregroundColor(Color.black)
+                                .foregroundStyle(Color.black)
   
                         }
                         .csWarningModifier(isPresented: checkError) {
@@ -133,11 +133,11 @@ struct FastImport_CorpoScheda:View {
                                     .scaledToFill()
                                     .frame(width: 35, height: 35,alignment: .bottom)
                                    //.imageScale(.large)
-                                    .foregroundColor(Color.white)
+                                    .foregroundStyle(Color.white)
                                    // .blur(radius: 0.8)
                                 Text("Esistente")
                                     .font(.largeTitle)
-                                    .foregroundColor(Color.white)
+                                    .foregroundStyle(Color.white)
                             }
                         }
                     }

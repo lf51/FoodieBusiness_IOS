@@ -52,7 +52,7 @@ struct DietScrollView_NewDishSub: View {
    
                             Text("No")
                                 .bold(!showDiet)
-                                .foregroundColor(.black)
+                                .foregroundStyle(Color.black)
                                 .opacity(showDiet ? 0.4 : 1.0)
 
                         }
@@ -61,7 +61,7 @@ struct DietScrollView_NewDishSub: View {
                     
                     Text("Si")
                          .bold(showDiet)
-                         .foregroundColor(.black)
+                         .foregroundStyle(Color.black)
                          .opacity(!showDiet ? 0.4 : 1.0)
                     
                 }
@@ -76,7 +76,7 @@ struct DietScrollView_NewDishSub: View {
                     Text("\(string): \(dietAvaibleString, format: .list(type: .and)).")
                                .bold(self.newDish.mostraDieteCompatibili)
                                .font(.caption)
-                               .foregroundColor(self.newDish.mostraDieteCompatibili ? .green : .black)
+                               .foregroundStyle(self.newDish.mostraDieteCompatibili ? .green : .black)
                     
                     if !self.newDish.mostraDieteCompatibili {
 
@@ -84,7 +84,7 @@ struct DietScrollView_NewDishSub: View {
                               .underline()
                               .fontWeight(.semibold)
                               .font(.caption)
-                              .foregroundColor(Color.black)
+                              .foregroundStyle(Color.black)
   
                     }
                 } */ // deprecata 25.06
@@ -96,7 +96,7 @@ struct DietScrollView_NewDishSub: View {
        /* .onChange(of: self.dietAvaible, perform: { _ in
             self.newDish.mostraDieteCompatibili = false
         })*/
-        .onChange(of: self.newDish.mostraDieteCompatibili) { newValue in
+        .onChange(of: self.newDish.mostraDieteCompatibili) { _ , newValue in
 
             if !newValue && Self.mostraAlertDiete {
  
@@ -129,7 +129,7 @@ struct DietScrollView_NewDishSub: View {
                     .underline()
                     .fontWeight(.semibold)
                     .font(.caption)
-                    .foregroundColor(.black)
+                    .foregroundStyle(Color.black)
                 
             } else {
                 
@@ -138,14 +138,14 @@ struct DietScrollView_NewDishSub: View {
                 Text("\(string): \(dietAvaibleString, format: .list(type: .and)).")
                            .bold(showDiet)
                            .font(.caption)
-                           .foregroundColor(showDiet ? .green : .black)
+                           .foregroundStyle(showDiet ? .green : .black)
                 
                 if !showDiet {
                     Text("Mostra il piatto come compatibile soltanto ad una dieta Standard !!")
                           .underline()
                           .fontWeight(.semibold)
                           .font(.caption)
-                          .foregroundColor(Color.black)
+                          .foregroundStyle(Color.black)
                          
                 }
                 

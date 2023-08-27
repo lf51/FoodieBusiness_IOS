@@ -94,7 +94,7 @@ struct NuovoMenuMainView: View {
                                         .font(.caption)
                                         .fontWeight(.light)
                                         .italic()
-                                        .foregroundColor(Color.black)
+                                        .foregroundStyle(Color.black)
                                     
                                     CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: self.nuovoMenu.isAvaibleWhen == .defaultValue)
                                     

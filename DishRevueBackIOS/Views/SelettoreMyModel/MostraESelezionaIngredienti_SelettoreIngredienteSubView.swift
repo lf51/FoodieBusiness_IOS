@@ -48,7 +48,7 @@ struct MostraESelezionaModel<M2:MyProStarterPack_L1>: View {
                 
                 Image(systemName: image)
                     .imageScale(.large)
-                    .foregroundColor(color)
+                    .foregroundStyle(color)
                     .onTapGesture {
                         withAnimation {
                             self.action(model)

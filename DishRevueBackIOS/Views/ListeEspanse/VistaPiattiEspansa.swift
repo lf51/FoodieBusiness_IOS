@@ -167,7 +167,7 @@ struct PreCallVistaPiattiEspansa: View {
                             
                             Text("Status:")
                                 .font(.system(.headline, design: .rounded, weight: .semibold))
-                                .foregroundColor(.seaTurtle_2)
+                                .foregroundStyle(Color.seaTurtle_2)
                             CSEtichetta(
                                 text: currentMenu.status.simpleDescription(),
                                 textColor: Color.white,

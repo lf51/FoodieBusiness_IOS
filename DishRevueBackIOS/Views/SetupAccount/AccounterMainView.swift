@@ -59,11 +59,11 @@ struct AccounterMainView: View {
                  HStack {
                      
                      Image(systemName: "key.fill")
-                         .foregroundColor(Color.seaTurtle_2)
+                         .foregroundStyle(Color.seaTurtle_2)
                      
                      Text("\(currentUser.mail)")
                          .font(.system(.headline, design: .monospaced, weight: .light))
-                         .foregroundColor(Color.seaTurtle_4)
+                         .foregroundStyle(Color.seaTurtle_4)
                      
                      Image(systemName: "lock.fill")
                      
@@ -72,11 +72,11 @@ struct AccounterMainView: View {
                  HStack {
                      
                      Image(systemName: "person.fill")
-                         .foregroundColor(Color.seaTurtle_2)
+                         .foregroundStyle(Color.seaTurtle_2)
 
                          Text("\(currentUser.userName)")
                              .font(.system(.headline, design: .monospaced, weight: .semibold))
-                             .foregroundColor(Color.seaTurtle_4)
+                             .foregroundStyle(Color.seaTurtle_4)
     
                  }
                 
@@ -102,7 +102,7 @@ struct AccounterMainView: View {
                       Text("nessuna collaborazione o proprietà registrata")
                           .italic()
                           .font(.caption)
-                          .foregroundColor(.black)
+                          .foregroundStyle(Color.black)
                           .opacity(0.8)
                       
                   }
@@ -219,7 +219,7 @@ struct AccounterMainView: View {
                  }
                  /*  Text(authProcess.currentUser?.userUID ?? "nil")
                   .font(.caption)
-                  .foregroundColor(Color.gray) */
+                  .foregroundStyle(Color.gray) */
              }
              
           
@@ -268,12 +268,12 @@ struct AccounterMainView: View {
         HStack {
             
             Image(systemName: "shield.lefthalf.filled")
-                .foregroundColor(Color.seaTurtle_2)
+                .foregroundStyle(Color.seaTurtle_2)
             
             Text(propName)
                 .italic()
                 .font(.system(.headline, design: .monospaced, weight: .light))
-                .foregroundColor(Color.seaTurtle_4)
+                .foregroundStyle(Color.seaTurtle_4)
             
             Image(systemName: "lock.fill")
             
@@ -282,12 +282,12 @@ struct AccounterMainView: View {
         HStack {
 
             Image(systemName: "shield.lefthalf.filled")
-                .foregroundColor(Color.seaTurtle_2)
+                .foregroundStyle(Color.seaTurtle_2)
             
             Text(referenceIn.testo)
                 .italic()
                 .font(.system(.headline, design: .monospaced, weight: .light))
-                .foregroundColor(Color.seaTurtle_4)
+                .foregroundStyle(Color.seaTurtle_4)
             
             Image(systemName: "lock.fill")
             
@@ -298,12 +298,12 @@ struct AccounterMainView: View {
             HStack {
                 
                 Image(systemName: "shield.lefthalf.filled")
-                    .foregroundColor(Color.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                 
                 Text("Mio Ruolo: \(referenceIn.ruolo.rawValue)")
                     .italic()
                     .font(.system(.headline, design: .monospaced, weight: .light))
-                    .foregroundColor(Color.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                 
                 Image(systemName: "lock.fill")
                 
@@ -314,7 +314,7 @@ struct AccounterMainView: View {
         Text(startDateString)
             .italic()
             .font(.caption)
-            .foregroundColor(.black)
+            .foregroundStyle(Color.black)
             .opacity(0.8)
         
         VStack(alignment:.leading) {
@@ -333,7 +333,7 @@ struct AccounterMainView: View {
                   } label: {
                       Image(systemName: "plus.circle")
                           .imageScale(.large)
-                          .foregroundColor(Color.seaTurtle_3)
+                          .foregroundStyle(Color.seaTurtle_3)
                   }
                   .disabled(disableCollab)
                   .opacity(disableCollab ? 0.3 : 1.0)
@@ -368,11 +368,11 @@ struct AccounterMainView: View {
 
                 Image(systemName: "arrow.up.arrow.down.circle")
                     .imageScale(.medium)
-                    .foregroundColor(isNonAccoppiato ? .black : .blue)
+                    .foregroundStyle(isNonAccoppiato ? .black : .blue)
                     .opacity(isNonAccoppiato ? 0.4 : 1.0)
                 
                 Text(collab.userName)
-                    .foregroundColor(Color.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                     .opacity(0.9)
                       
              Spacer()
@@ -397,12 +397,12 @@ struct AccounterMainView: View {
                     
                     Image(systemName: "person.fill.badge.minus")
                     .imageScale(.large)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.7)
 
                     Text(levelName)
                             .italic()
-                            .foregroundColor(Color.seaTurtle_4)
+                            .foregroundStyle(Color.seaTurtle_4)
                           
                 }
                 .padding(.horizontal)
@@ -418,18 +418,18 @@ struct AccounterMainView: View {
                 Text(collab.mail)
                     .italic()
                     .font(.caption)
-                    .foregroundColor(Color.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                     .opacity(0.8)
                 
                 Text("Collaborazione attiva dal: \(collab.inizioCollaborazione ?? .now,format: .dateTime)")
                     .italic()
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.7)
                 Text(collab.id)
                     .font(.caption2)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.5)
             }
             
@@ -491,7 +491,7 @@ struct AccounterMainView: View {
                     Text(alreadyExist ? "\(self.collabItem.userName)" : "Nuovo Collaboratore")
                         .fontWeight(.semibold)
                         .font(.largeTitle)
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                         .padding(.top,10)
                     
                     Spacer()
@@ -511,12 +511,12 @@ struct AccounterMainView: View {
                                 Text(alert)
                                     .bold()
                                     .font(.caption)
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(Color.black)
                             } else {
                                 Text("Campo Obbligatorio")
                                     .italic()
                                     .font(.caption2)
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(Color.black)
                                     .opacity(0.7)
                             }
                             
@@ -534,7 +534,7 @@ struct AccounterMainView: View {
                             Text("Campo Obbligatorio")
                                 .italic()
                                 .font(.caption2)
-                                .foregroundColor(.black)
+                                .foregroundStyle(Color.black)
                                 .opacity(0.7)
                         }
                         
@@ -804,7 +804,7 @@ struct AccounterMainViewDEPRECATA: View {
                        
                        Text(value.string)
                            .bold()
-                           .foregroundColor(value.color)
+                           .foregroundStyle(value.color)
                            .onTapGesture {
                                withAnimation {
                                    self.wannaChangeDisplayName.toggle()
@@ -816,13 +816,13 @@ struct AccounterMainViewDEPRECATA: View {
                  HStack {
                      
                      Image(systemName: "person.fill")
-                         .foregroundColor(Color.seaTurtle_2)
+                         .foregroundStyle(Color.seaTurtle_2)
                      
                      if !wannaChangeDisplayName {
                          
                          Text("\(currentUser.userName)")
                              .font(.system(.headline, design: .monospaced, weight: .semibold))
-                             .foregroundColor(Color.seaTurtle_4)
+                             .foregroundStyle(Color.seaTurtle_4)
                          
                          
                      } else {
@@ -847,11 +847,11 @@ struct AccounterMainViewDEPRECATA: View {
                  HStack {
                      
                      Image(systemName: "key.fill")
-                         .foregroundColor(Color.seaTurtle_2)
+                         .foregroundStyle(Color.seaTurtle_2)
                      
                      Text("\(currentUser.mail)")
                          .font(.system(.headline, design: .monospaced, weight: .light))
-                         .foregroundColor(Color.seaTurtle_4)
+                         .foregroundStyle(Color.seaTurtle_4)
                      
                      Image(systemName: "lock.fill")
                      
@@ -860,12 +860,12 @@ struct AccounterMainViewDEPRECATA: View {
                  HStack {
                      
                      Image(systemName: "shield.lefthalf.filled")
-                         .foregroundColor(Color.seaTurtle_2)
+                         .foregroundStyle(Color.seaTurtle_2)
                      
                      Text(currentUser.ruolo.rawValue)
                          .italic()
                          .font(.system(.headline, design: .monospaced, weight: .light))
-                         .foregroundColor(Color.seaTurtle_4)
+                         .foregroundStyle(Color.seaTurtle_4)
                      
                      Image(systemName: "lock.fill")
                      
@@ -962,7 +962,7 @@ struct AccounterMainViewDEPRECATA: View {
                             } label: {
                                 Image(systemName: "plus.circle")
                                     .imageScale(.large)
-                                    .foregroundColor(Color.seaTurtle_3)
+                                    .foregroundStyle(Color.seaTurtle_3)
                             }
                             .disabled(currentUserUID == nil)
                             .opacity(currentUserUID == nil ? 0.3 : 1.0)
@@ -1023,7 +1023,7 @@ struct AccounterMainViewDEPRECATA: View {
                  }
                  /*  Text(authProcess.currentUser?.userUID ?? "nil")
                   .font(.caption)
-                  .foregroundColor(Color.gray) */
+                  .foregroundStyle(Color.gray) */
              }
              
           
@@ -1053,11 +1053,11 @@ struct AccounterMainViewDEPRECATA: View {
 
                 Image(systemName: "arrow.up.arrow.down.circle")
                     .imageScale(.medium)
-                    .foregroundColor(isNonAccoppiato ? .black : .blue)
+                    .foregroundStyle(isNonAccoppiato ? .black : .blue)
                     .opacity(isNonAccoppiato ? 0.4 : 1.0)
                 
                 Text(collab.userName)
-                    .foregroundColor(Color.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                     .opacity(0.9)
                       
              Spacer()
@@ -1082,12 +1082,12 @@ struct AccounterMainViewDEPRECATA: View {
                     
                     Image(systemName: "person.fill.badge.minus")
                     .imageScale(.large)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.7)
 
                     Text(levelName)
                             .italic()
-                            .foregroundColor(Color.seaTurtle_4)
+                            .foregroundStyle(Color.seaTurtle_4)
                           
                 }
                 .padding(.horizontal)
@@ -1102,18 +1102,18 @@ struct AccounterMainViewDEPRECATA: View {
                 Text(collab.mail)
                     .italic()
                     .font(.caption)
-                    .foregroundColor(Color.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                     .opacity(0.8)
                 
                 Text("Collaborazione attiva dal: \(collab.inizioCollaborazione,format: .dateTime)")
                     .italic()
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundColor(.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.7)
                 Text(collab.id)
                     .font(.caption2)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.5)
             }
             
@@ -1174,7 +1174,7 @@ struct AccounterMainViewDEPRECATA: View {
                     Text(alreadyExist ? "\(self.collabItem.userName)" : "Nuovo Collaboratore")
                         .fontWeight(.semibold)
                         .font(.largeTitle)
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                         .padding(.top,10)
                     
                     Spacer()
@@ -1194,12 +1194,12 @@ struct AccounterMainViewDEPRECATA: View {
                                 Text(alert)
                                     .bold()
                                     .font(.caption)
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(Color.black)
                             } else {
                                 Text("Campo Obbligatorio")
                                     .italic()
                                     .font(.caption2)
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(Color.black)
                                     .opacity(0.7)
                             }
                             
@@ -1217,7 +1217,7 @@ struct AccounterMainViewDEPRECATA: View {
                             Text("Campo Obbligatorio")
                                 .italic()
                                 .font(.caption2)
-                                .foregroundColor(.black)
+                                .foregroundStyle(Color.black)
                                 .opacity(0.7)
                         }
                         
@@ -1454,7 +1454,7 @@ struct AccounterMainView: View {
                        
                           Text(value.string)
                               .bold()
-                              .foregroundColor(value.color)
+                              .foregroundStyle(value.color)
                               .onTapGesture {
                                   withAnimation {
                                       self.wannaChangeDisplayName.toggle()
@@ -1465,13 +1465,13 @@ struct AccounterMainView: View {
                   HStack {
                       
                       Image(systemName: "person.fill")
-                          .foregroundColor(Color.seaTurtle_2)
+                          .foregroundStyle(Color.seaTurtle_2)
 
                       if !wannaChangeDisplayName {
                           
                           Text("\(self.authProcess.currentUser?.userDisplayName ?? "not_username")")
                               .font(.system(.headline, design: .monospaced, weight: .semibold))
-                              .foregroundColor(Color.seaTurtle_4)
+                              .foregroundStyle(Color.seaTurtle_4)
 
                           
                       } else {
@@ -1490,11 +1490,11 @@ struct AccounterMainView: View {
                   HStack {
                       
                       Image(systemName: "key.fill")
-                          .foregroundColor(Color.seaTurtle_2)
+                          .foregroundStyle(Color.seaTurtle_2)
                      
                       Text("\(self.authProcess.currentUser?.userEmail ?? "email")")
                           .font(.system(.headline, design: .monospaced, weight: .light))
-                          .foregroundColor(Color.seaTurtle_4)
+                          .foregroundStyle(Color.seaTurtle_4)
                       
                       Image(systemName: "lock.fill")
                       
@@ -1503,12 +1503,12 @@ struct AccounterMainView: View {
                   HStack {
                       
                       Image(systemName: "shield.lefthalf.filled")
-                          .foregroundColor(Color.seaTurtle_2)
+                          .foregroundStyle(Color.seaTurtle_2)
 
                       Text(authProcess.currentUser?.userEmailVerified ?? false ? "Amministratore" : "not_verified")
                           .italic()
                           .font(.system(.headline, design: .monospaced, weight: .light))
-                          .foregroundColor(Color.seaTurtle_4)
+                          .foregroundStyle(Color.seaTurtle_4)
                       
                       Image(systemName: "lock.fill")
     
@@ -1587,7 +1587,7 @@ struct AccounterMainView: View {
                         backgroundColor:Color.seaTurtle_4) {
                             Text("Add")
                                 .bold()
-                                .foregroundColor(Color.seaTurtle_4)
+                                .foregroundStyle(Color.seaTurtle_4)
                                 .opacity(0.4)
                               
                         }
@@ -1597,25 +1597,25 @@ struct AccounterMainView: View {
                           HStack {
 
                            Text("\(self.authProcess.currentUser?.userEmail ?? "email")")
-                                  .foregroundColor(Color.seaTurtle_4)
+                                  .foregroundStyle(Color.seaTurtle_4)
                                   .opacity(0.8)
                                     
                            Spacer()
                            Text(authProcess.currentUser?.userEmailVerified ?? false ? "Admin" : "not_verified")
                                    .italic()
-                                   .foregroundColor(Color.seaTurtle_4)
+                                   .foregroundStyle(Color.seaTurtle_4)
                                    .opacity(0.8)
                           
                            Image(systemName: "person.fill.badge.minus")
                            .imageScale(.large)
-                           .foregroundColor(Color.seaTurtle_4)
+                           .foregroundStyle(Color.seaTurtle_4)
                            .opacity(0.4)
                            
                            }
                           
                           Text(authProcess.currentUser?.userUID ?? "nil")
                               .font(.caption)
-                              .foregroundColor(Color.seaTurtle_4)
+                              .foregroundStyle(Color.seaTurtle_4)
                               .opacity(0.4)
                           Divider()
                       }
@@ -1651,7 +1651,7 @@ struct AccounterMainView: View {
                   }
                 /*  Text(authProcess.currentUser?.userUID ?? "nil")
                       .font(.caption)
-                      .foregroundColor(Color.gray) */
+                      .foregroundStyle(Color.gray) */
               }
 
               CSDivider()
@@ -1680,7 +1680,7 @@ struct AccounterMainView_Previews: PreviewProvider {
             AccounterMainView(authProcess: auth, backgroundColorView: Color.seaTurtle_1)
                    
          /*  } label: {
-                Text("Test").foregroundColor(Color.red)
+                Text("Test").foregroundStyle(Color.red)
             } */
        
         }

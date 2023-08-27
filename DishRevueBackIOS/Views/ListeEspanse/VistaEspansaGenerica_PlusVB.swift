@@ -79,14 +79,14 @@ import MyFilterPackage
         
         }
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     let disable = self.coreFilter.countChange == 0
                     Button("Reset") {
                         withAnimation {
                             self.coreFilter = CoreFilter()
                         }
                     }
-                    .foregroundColor(disable ? .seaTurtle_1 :.seaTurtle_3)
+                    .foregroundStyle(disable ? Color.seaTurtle_1 : Color.seaTurtle_3)
                     .disabled(disable)
                 }
             }
@@ -138,7 +138,7 @@ import MyFilterPackage
                 .italic()
                 .fontWeight(.semibold)
                 .font(.subheadline)
-                .foregroundColor(.black)
+                .foregroundStyle(Color.black)
                 .opacity(0.8)
                 .multilineTextAlignment(.leading)
             
@@ -151,7 +151,7 @@ import MyFilterPackage
             } label: {
                 Image(systemName: "circle.dashed")
                     .font(.custom("Large", size: 40))
-                    .foregroundColor(executiveInfo.color)
+                    .foregroundStyle(executiveInfo.color)
                     .shadow(radius: 5.0)
             }
             
@@ -162,7 +162,7 @@ import MyFilterPackage
             } label: {
                 Image(systemName: "circle.fill")
                     .font(.custom("Large", size: 40))
-                    .foregroundColor(statusInfo.color)
+                    .foregroundStyle(statusInfo.color)
                     .shadow(radius: 5.0)
             }
 
@@ -259,14 +259,14 @@ import MyFilterPackage
             
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 let disable = self.coreFilter.countChange == 0
                 Button("Reset") {
                     withAnimation {
                         self.coreFilter = CoreFilter()
                     }
                 }
-                .foregroundColor(disable ? .seaTurtle_1 :.seaTurtle_3)
+                .foregroundStyle(disable ? Color.seaTurtle_1 : Color.seaTurtle_3)
                 .disabled(disable)
             }
         }
@@ -316,7 +316,7 @@ import MyFilterPackage
                         .italic()
                         .fontWeight(.semibold)
                         .font(.subheadline)
-                        .foregroundColor(.black)
+                        .foregroundStyle(Color.black)
                         .opacity(0.8)
                         .multilineTextAlignment(.leading)
                     
@@ -329,7 +329,7 @@ import MyFilterPackage
                     } label: {
                         Image(systemName: "circle.dashed")
                             .font(.custom("Large", size: 40))
-                            .foregroundColor(executiveInfo.color)
+                            .foregroundStyle(executiveInfo.color)
                             .shadow(radius: 5.0)
                     }
                     
@@ -340,7 +340,7 @@ import MyFilterPackage
                     } label: {
                         Image(systemName: "circle.fill")
                             .font(.custom("Large", size: 40))
-                            .foregroundColor(statusInfo.color)
+                            .foregroundStyle(statusInfo.color)
                             .shadow(radius: 5.0)
                     }
 
@@ -457,7 +457,7 @@ struct VistaEspansaPF_MonitorServizio:View {
        
        }
            .toolbar {
-               ToolbarItem(placement: .navigationBarTrailing) {
+               ToolbarItem(placement: .topBarTrailing) {
                    let disable = (self.coreFilterING.countChange == 0) &&
                    (self.coreFilterDish.countChange == 0)
                    Button("Reset") {
@@ -466,7 +466,7 @@ struct VistaEspansaPF_MonitorServizio:View {
                            self.coreFilterDish = CoreFilter()
                        }
                    }
-                   .foregroundColor(disable ? .seaTurtle_1 :.seaTurtle_3)
+                   .foregroundStyle(disable ? Color.seaTurtle_1 : Color.seaTurtle_3)
                    .disabled(disable)
                }
            }
@@ -518,7 +518,7 @@ struct VistaEspansaPF_MonitorServizio:View {
                .italic()
                .fontWeight(.semibold)
                .font(.subheadline)
-               .foregroundColor(.black)
+               .foregroundStyle(Color.black)
                .opacity(0.8)
                .multilineTextAlignment(.leading)
            
@@ -531,7 +531,7 @@ struct VistaEspansaPF_MonitorServizio:View {
            } label: {
                Image(systemName: "circle.dashed")
                    .font(.custom("Large", size: 40))
-                   .foregroundColor(executiveInfo.color)
+                   .foregroundStyle(executiveInfo.color)
                    .shadow(radius: 5.0)
            }
            
@@ -542,7 +542,7 @@ struct VistaEspansaPF_MonitorServizio:View {
            } label: {
                Image(systemName: "circle.fill")
                    .font(.custom("Large", size: 40))
-                   .foregroundColor(statusInfo.color)
+                   .foregroundStyle(statusInfo.color)
                    .shadow(radius: 5.0)
            }
 

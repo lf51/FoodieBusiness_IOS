@@ -255,11 +255,11 @@ struct DishModel_RowView: View {
                 
                 Image(systemName: "fork.knife.circle.fill")
                     .imageScale(.small)
-                    .foregroundColor(Color.yellow)
+                    .foregroundStyle(Color.yellow)
                 Text("del Giorno")
                     .bold()
                     .font(.caption)
-                    .foregroundColor(Color.white)
+                    .foregroundStyle(Color.white)
                     
             }
             .padding(2)
@@ -522,7 +522,7 @@ struct DishModel_RowView: View {
         .fontWeight(.semibold)
         .font(.caption)
         .underline(!listaAllergeni.isEmpty)
-        .foregroundColor(Color.black)
+        .foregroundStyle(Color.black)
     }
     
     @ViewBuilder private func vbIntestazioneDishRow() -> some View {
@@ -551,14 +551,14 @@ struct DishModel_RowView: View {
             
             Image(systemName: percorsoImage.system)
                 .imageScale(value.imageSize)
-                .foregroundColor(percorsoImage.color)
+                .foregroundStyle(percorsoImage.color)
             
             Text(self.item.intestazione)
                 .font(value.font)
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
               //  .fixedSize()
             
             Spacer()
@@ -590,7 +590,7 @@ struct DishModel_RowView: View {
                 Text(self.item.percorsoProdotto.simpleDescription().lowercased())
                     .italic()
                     .fontWeight(.semibold)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
             }
            
             Spacer()
@@ -600,12 +600,12 @@ struct DishModel_RowView: View {
                 Text("\(priceDouble,format: .currency(code: moneyCode))")
                     .fontWeight(.bold)
                     .font(.title3)
-                    .foregroundColor(.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
                 
                 Text("+\(count)")
                     .fontWeight(.bold)
                     .font(.caption2)
-                    .foregroundColor(.seaTurtle_3)
+                    .foregroundStyle(Color.seaTurtle_3)
             }
             
             
@@ -621,7 +621,7 @@ struct DishModel_RowView: View {
         Group {
             Text("\(mediaRating,specifier: "%.1f")") // media
                 .fontWeight(.light)
-                .foregroundColor(.seaTurtle_1)
+                .foregroundStyle(Color.seaTurtle_1)
                 .padding(.horizontal,5)
                 .background(
                     RoundedRectangle(cornerRadius: 5.0)
@@ -634,7 +634,7 @@ struct DishModel_RowView: View {
                     .italic()
             }
             .fontWeight(.semibold)
-            .foregroundColor(.seaTurtle_2)
+            .foregroundStyle(Color.seaTurtle_2)
         }
         
     }
@@ -672,7 +672,7 @@ struct DishModel_RowView: View {
             
             Image(systemName: "person.fill.checkmark")
                 .imageScale(.medium)
-                .foregroundColor(.seaTurtle_4)
+                .foregroundStyle(Color.seaTurtle_4)
          
             ScrollView(.horizontal,showsIndicators: false) {
                 
@@ -696,12 +696,12 @@ struct DishModel_RowView: View {
                        /* Text(diet)
                             .font(.subheadline)
                             .fontWeight(.black)
-                            .foregroundColor(.seaTurtle_4)
+                            .foregroundStyle(Color.seaTurtle_4)
                         
                         Text("•")
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundColor(.seaTurtle_4) */
+                            .foregroundStyle(Color.seaTurtle_4) */
 
                     }
                 }
@@ -715,13 +715,13 @@ struct DishModel_RowView: View {
             
             Image(systemName: "list.bullet.rectangle")
                 .imageScale(.medium)
-                .foregroundColor(.seaTurtle_3)
+                .foregroundStyle(Color.seaTurtle_3)
             
             ScrollView(.horizontal,showsIndicators: false) {
                 Text(self.item.descrizione)
                     .font(.headline)
                     .italic()
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.6)
             }
         }
@@ -735,7 +735,7 @@ struct DishModel_RowView: View {
    
                     Image(systemName: "list.bullet.rectangle")
                         .imageScale(.medium)
-                        .foregroundColor(.seaTurtle_4)
+                        .foregroundStyle(Color.seaTurtle_4)
   
                 if !allFilteredIngredients.isEmpty {
                     
@@ -751,13 +751,13 @@ struct DishModel_RowView: View {
                                     
                                    Text(ingredient.intestazione)
                                         .font(isPrincipal ? .headline : .subheadline)
-                                        .foregroundColor(isTemporaryOff ? .seaTurtle_1 : .seaTurtle_4)
+                                        .foregroundStyle(isTemporaryOff ? Color.seaTurtle_1 : Color.seaTurtle_4)
                                         .strikethrough(isTemporaryOff, color: Color.gray)
                                         .underline(isBio, pattern: .solid, color: Color.green)
                                         .overlay(alignment:.topTrailing) {
                                             if hasAllergene {
                                                 Text("*")
-                                                    .foregroundColor(Color.black)
+                                                    .foregroundStyle(Color.black)
                                                     .offset(x: 5, y: -3)
                                             }
                                         }
@@ -770,11 +770,11 @@ struct DishModel_RowView: View {
                                            
                                            Text("(\(name))")
                                                .font(isPrincipal ? .headline : .subheadline)
-                                               .foregroundColor(.seaTurtle_3)
+                                               .foregroundStyle(Color.seaTurtle_3)
                                                .overlay(alignment:.topTrailing) {
                                                    if allergeniIn {
                                                        Text("*")
-                                                           .foregroundColor(Color.black)
+                                                           .foregroundStyle(Color.black)
                                                            .offset(x: 5, y: -3)
                                                    }
                                                }
@@ -788,7 +788,7 @@ struct DishModel_RowView: View {
                                 Text("•")
                                     .font(.subheadline)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(.seaTurtle_4)
+                                    .foregroundStyle(Color.seaTurtle_4)
                
                             }
                         }
@@ -798,7 +798,7 @@ struct DishModel_RowView: View {
                     Text("Lista Ingredienti Vuota")
                         .italic()
                         .font(.headline)
-                        .foregroundColor(.seaTurtle_1)
+                        .foregroundStyle(Color.seaTurtle_1)
                     Spacer()
                 }
                 
@@ -919,7 +919,7 @@ struct DishModel_RowView: View {
                 
                 Image(systemName: "list.bullet.rectangle")
                     .imageScale(.medium)
-                    .foregroundColor(Color.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
              
                 ScrollView(.horizontal,showsIndicators: false) {
                     
@@ -947,12 +947,12 @@ struct DishModel_RowView: View {
                                 
                                 Text(ingredient.intestazione)
                                     .font(isPrincipal ? .headline : .subheadline)
-                                    .foregroundColor(isTemporaryOff ? Color.seaTurtle_1 : Color.seaTurtle_4)
+                                    .foregroundStyle(isTemporaryOff ? Color.seaTurtle_1 : Color.seaTurtle_4)
                                     .strikethrough(isTemporaryOff, color: Color.gray)
                                     .overlay(alignment:.topTrailing) {
                                         if hasAllergene {
                                             Text("*")
-                                                .foregroundColor(Color.black)
+                                                .foregroundStyle(Color.black)
                                                 .offset(x: 5, y: -3)
                                         }
                                     }
@@ -961,7 +961,7 @@ struct DishModel_RowView: View {
                                     
                                     Text("(\(nameSostituto))")
                                         .font(isPrincipal ? .headline : .subheadline)
-                                        .foregroundColor(Color.seaTurtle_3)
+                                        .foregroundStyle(Color.seaTurtle_3)
                                 }
     
                             }
@@ -969,7 +969,7 @@ struct DishModel_RowView: View {
                             Text("•")
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-                                .foregroundColor(Color.seaTurtle_4)
+                                .foregroundStyle(Color.seaTurtle_4)
            
                         }
                     }
@@ -989,7 +989,7 @@ struct DishModel_RowView: View {
                 
                 Image(systemName: "list.bullet.rectangle")
                     .imageScale(.medium)
-                    .foregroundColor(Color.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
              
                 ScrollView(.horizontal,showsIndicators: false) {
                     
@@ -1006,12 +1006,12 @@ struct DishModel_RowView: View {
                                 
                                 Text(ingredient.intestazione)
                                     .font(isPrincipal ? .headline : .subheadline)
-                                    .foregroundColor(isSelected ? Color.blue : Color.seaTurtle_4)
+                                    .foregroundStyle(isSelected ? Color.blue : Color.seaTurtle_4)
                                     .strikethrough(isSelected && isThereSostituto, color: Color.gray)
                                     .overlay(alignment:.topTrailing) {
                                         if hasAllergene {
                                             Text("*")
-                                                .foregroundColor(Color.black)
+                                                .foregroundStyle(Color.black)
                                                 .offset(x: 5, y: -3)
                                         }
                                     }
@@ -1020,7 +1020,7 @@ struct DishModel_RowView: View {
                                     
                                     Text("\(nomeIngredienteSostituto)")
                                         .font(isPrincipal ? .headline : .subheadline)
-                                        .foregroundColor(Color.seaTurtle_3)
+                                        .foregroundStyle(Color.seaTurtle_3)
                                 }
     
                             }
@@ -1028,7 +1028,7 @@ struct DishModel_RowView: View {
                             Text("•")
                                 .font(.caption)
                                 .fontWeight(.semibold)
-                                .foregroundColor(Color.seaTurtle_4)
+                                .foregroundStyle(Color.seaTurtle_4)
            
                         }
                     }
@@ -1192,7 +1192,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
                                 DishModel_RowView(item: dishSample)
                                     .overlay {
                                         CS_VelaShape()
-                                        .foregroundColor(Color.black)
+                                        .foregroundStyle(Color.black)
                                         .cornerRadius(15.0)
                                         .opacity(0.8)
                                     }
@@ -1200,14 +1200,14 @@ struct DishModel_RowView_Previews: PreviewProvider {
                                 DishModel_RowView(item: dishSample, rowSize: .ridotto)
                                     .overlay {
                                         CS_VelaShape()
-                                        .foregroundColor(Color.seaTurtle_4)
+                                        .foregroundStyle(Color.seaTurtle_4)
                                         .cornerRadius(15.0)
                                         .opacity(0.8)
                                     }
                                 DishModel_RowView(item: dishSample, rowSize: .sintetico)
                                     .overlay {
                                         CS_VelaShape()
-                                        .foregroundColor(Color.black)
+                                        .foregroundStyle(Color.black)
                                         .cornerRadius(15.0)
                                         .opacity(0.8)
                                     }

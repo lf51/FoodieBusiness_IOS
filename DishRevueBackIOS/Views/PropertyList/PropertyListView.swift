@@ -33,7 +33,12 @@ struct PropertyListView: View {
         CSZStackVB(title: "Le Mie Proprietà", backgroundColorView: backgroundColorView) {
  
             VStack(alignment:.leading, spacing: 10.0) {
-   
+                
+                CSLabel_1Button(
+                    placeHolder: "Attiva",
+                    imageNameOrEmojy: "circle.fill",
+                    imageColor: .green,
+                    backgroundColor: .seaTurtle_3)
            // CSDivider()
                 if let propertyCorrente = self.viewModel.currentProperty.info {
                     
@@ -51,34 +56,40 @@ struct PropertyListView: View {
                     Text("No Property in")
                         .italic()
                 }
+                
+                CSLabel_1Button(
+                    placeHolder: "Others",
+                    imageNameOrEmojy: "circle.fill",
+                    imageColor: .red,
+                    backgroundColor: .seaTurtle_3)
 
                   ScrollView(showsIndicators: false){
                         
                       if !self.viewModel.allMyPropertiesImage.isEmpty {
 
                           // Mostra le proprietà registrate
-                          ForEach(self.viewModel.allMyPropertiesImage,id:\.self) { values in
+                          ForEach(self.viewModel.allMyPropertiesImage,id:\.self) {  propImage in
                               
-                              let disable:Bool = {
+                              let isActive:Bool = {
                                   
-                                  return self.viewModel.currentProperty.info?.id == values.propertyID
+                                  return self.viewModel.currentProperty.info?.id == propImage.propertyID
                                   
                               }()
                               
                               
-                              HStack {
+                             /* HStack {
                                   
                                   VStack {
                                       
-                                      Text(values.propertyName)
+                                      Text(propImage.propertyName)
                                           .font(.largeTitle)
-                                          .foregroundColor(.black)
+                                          .foregroundStyle(Color.black)
                                       
-                                      Text(values.adress)
+                                      Text(propImage.adress)
                                           .italic()
                                           .font(.body)
                                       
-                                      Text(values.userRuolo.ruolo.rawValue)
+                                      Text(propImage.userRuolo.ruolo.rawValue)
                                           .italic()
                                           .font(.body)
                                       
@@ -88,13 +99,25 @@ struct PropertyListView: View {
                                   Spacer()
                                   
                                   Button("Go") {
-                                      print("Codice Assente in Go Action")
-                                     /* self.viewModel.compilaFromPropertyImage(propertyImage: values)*/
+                                      print("Go Action")
+                                      
+                                      GlobalDataManager.property.estrapolaPropertyData(from: propImage) { propertyCurrentData in
+                                          
+                                          DispatchQueue.main.async {
+                                              // Soluzione errore: make sure to publish values from the main thread (via operators like receive(on:)) on model updates
+                                              if let propertyCurrentData {
+                                                  self.viewModel.currentProperty = propertyCurrentData
+                                              }
+                                          }
+
+                                      }
+                                 
                                   }
                                   
-                              }
-                              .disabled(disable)
-                              .opacity(disable ? 0.4 : 1.0)
+                              }*/
+                              InactivePropertyRow(propImage:propImage,isActive:isActive)
+                              .disabled(isActive)
+                              .opacity(isActive ? 0.6 : 1.0)
 
                           }
 
@@ -110,16 +133,16 @@ struct PropertyListView: View {
         }
 
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 
-                let thereAreNoProperties = self.viewModel.allMyPropertiesImage.isEmpty
+                let isPremium = AuthPasswordLess.userAuthData.isPremium
                 
                 HStack(spacing:0) {
                 
                     LargeBar_TextPlusButton(
                         buttonTitle: "Collabora",
                         font: .callout,
-                        imageBack: thereAreNoProperties ? Color.yellow : Color.red.opacity(0.6),
+                        imageBack: isPremium ? Color.yellow : Color.red.opacity(0.6),
                         imageFore: Color.seaTurtle_4) {
                         
                         withAnimation {
@@ -131,30 +154,47 @@ struct PropertyListView: View {
                     LargeBar_TextPlusButton(
                         buttonTitle: "Proprietà",
                         font: .callout,
-                        imageBack: thereAreNoProperties ? Color.seaTurtle_2 : Color.red.opacity(0.6),
+                        imageBack: isPremium ? Color.seaTurtle_2 : Color.red.opacity(0.6),
                         imageFore: Color.seaTurtle_4) {
                         
                         withAnimation {
                           
                             self.addNewPropertyCheck() // Abbiamo scelto di sviluppare come SingleProperty, manteniamo però una impostazione da "MultiProprietà" per eventuali sviluppi futuri. Ci limitiamo quindi a bloccare la possibilità di aggiungere altre proprietà dopo la prima.
                         }
-                    }
-                    
+                    } // Chiusa LargeButton
+ 
                 }
             }
         }
-        .popover(
+       /* .fullScreenCover(isPresented: $wannaAddNewProperty, content: {
+            AddPropertyMainView(
+                showLocalAlert: self.$viewModel.showAlert,
+                localAlert: self.$viewModel.alertItem,
+                registrationAction: { mapItem in
+                    // da compilare quando attiveremo la multiproprietà
+                })
+        }) */
+       .popover(
             isPresented: $wannaAddNewProperty,
             attachmentAnchor: .point(.top),
             arrowEdge: .bottom,
             content: {
-            NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
+           // NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
+                AddPropertyMainView(
+                    showLocalAlert: self.$viewModel.showAlert,
+                    localAlert: self.$viewModel.alertItem,
+                    addTopPadding: true,
+                    registrationAction: { mapItem in
+                        // codice registrazione in multiproprietà
+                    })
                     .presentationDetents([.large])
         })
         .popover(isPresented: $wannaCollaborate) {
            CodeScannerView(codeTypes: [.qr], completion: { result in
                // handle l'uuid dell'admin per compilare il view model con il database
+               // codice registrazione in multiproprietà
             })
+           .presentationDetents([.medium])
         }
 
     }
@@ -184,6 +224,15 @@ struct PropertyListView: View {
     
     private func addCollaboration() {
         
+        guard AuthPasswordLess.userAuthData.isPremium else  {
+            
+            viewModel.alertItem = AlertModel(
+                title: "⛔️ Restrizioni Account",
+                message: "Spiacenti. Raggiunto il numero max di collaborazioni.\nNecessario Upgrade ad account Premium")
+            
+            return
+        }
+        
        /* guard viewModel.dbCompiler.allMyProperties == nil else {
             
             viewModel.alertItem = AlertModel(
@@ -198,18 +247,94 @@ struct PropertyListView: View {
     
     private func addNewPropertyCheck() {
         
-      /*  guard viewModel.dbCompiler.allMyProperties == nil else {
+        guard AuthPasswordLess.userAuthData.isPremium else  {
             
             viewModel.alertItem = AlertModel(
                 title: "⛔️ Restrizioni Account",
-                message: "Spiacenti. Raggiunto il numero max di proprietà registrabili.")
+                message: "Spiacenti. Raggiunto il numero max di Proprietà.\nNecessario Upgrade ad account Premium")
             
-            return } */
+            return
+        }
         
         self.wannaAddNewProperty = true
-        
+ 
     }
     
+}
+
+struct InactivePropertyRow:View {
+    
+    @EnvironmentObject var viewModel:AccounterVM
+    let propImage:PropertyLocalImage
+    let isActive:Bool
+    
+    var body: some View {
+        
+        VStack(alignment:.leading) {
+            
+            let value:(image:String,imageColor:Color) = {
+               
+                if isActive {
+                    
+                    return ("checkmark.icloud.fill",.green)
+                } else {
+                    return ("icloud.and.arrow.down",.seaTurtle_3)
+                }
+                
+            }()
+            
+            HStack {
+                
+                Text(propImage.userRuolo.ruolo.rawValue)
+                    .italic()
+                    .font(.callout)
+                    .foregroundStyle(Color.black)
+                    .opacity(0.75)
+                
+                Divider()
+                
+                VStack(alignment:.leading) {
+                    
+                    Text(propImage.propertyName)
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Color.black)
+                    
+                    Text(propImage.adress)
+                        .italic()
+                        .font(.caption)
+                    
+                }
+                
+                Spacer()
+                
+                Button {
+                    
+                    GlobalDataManager.property.estrapolaPropertyData(from: propImage) { propertyCurrentData in
+                        
+                        DispatchQueue.main.async {
+                            // Soluzione errore: make sure to publish values from the main thread (via operators like receive(on:)) on model updates
+                            if let propertyCurrentData {
+                                self.viewModel.currentProperty = propertyCurrentData
+                            }
+                        }
+
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: value.image)
+                            .imageScale(.large)
+                            .foregroundStyle(value.imageColor)
+                            
+                    }
+                }
+            }
+            Divider()
+            
+        }
+        
+        
+    }
 }
 
 /*

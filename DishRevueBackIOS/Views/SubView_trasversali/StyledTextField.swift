@@ -16,6 +16,9 @@ struct CSTextField_1: View {
   @Binding var text: String
   let placeholder: String
   let symbolName: String
+  var symbolColor:Color = .yellow
+  var backgroundColor:UIColor = .secondarySystemFill
+  var cornerRadius:CGFloat = 16.0
   let keyboardType: UIKeyboardType
 
   var body: some View {
@@ -23,18 +26,18 @@ struct CSTextField_1: View {
     HStack {
       Image(systemName: symbolName)
         .imageScale(.large)
-        .foregroundColor(text == "" ? Color.black : Color.yellow)
+        .foregroundStyle(text == "" ? Color.black : symbolColor)
         .padding(.leading)
 
       TextField(placeholder, text: $text)
         .padding(.vertical)
-        .accentColor(.yellow)
+        .accentColor(symbolColor)
         .autocapitalization(.none)
         .keyboardType(keyboardType)
     }
     .background(
-      RoundedRectangle(cornerRadius: 16.0, style: .circular)
-        .foregroundColor(Color(.secondarySystemFill))
+      RoundedRectangle(cornerRadius: cornerRadius, style: .circular)
+        .foregroundStyle(Color(backgroundColor))
     )
   }
 }
@@ -55,7 +58,7 @@ struct CSTextField_2: View {
         
       Image(systemName: symbolName)
         .imageScale(.large)
-        .foregroundColor(accentColor)
+        .foregroundStyle(accentColor)
         .background(backGroundColor.clipShape(Circle()))
         .padding(.leading)
 
@@ -66,7 +69,7 @@ struct CSTextField_2: View {
     }
     .background(
       RoundedRectangle(cornerRadius: cornerRadius, style: .circular)
-        .foregroundColor(Color(.secondarySystemFill))
+        .foregroundStyle(Color(.secondarySystemFill))
     )
   }
 }
@@ -84,7 +87,7 @@ struct CSTextField_3: View {
             
             Image(systemName: self.textFieldItem != "" ? "rectangle.and.pencil.and.ellipsis" : "square.and.pencil")
                 .imageScale(.large)
-                .foregroundColor(self.textFieldItem != "" ? Color.green : Color.black)
+                .foregroundStyle(self.textFieldItem != "" ? Color.green : Color.black)
                 .padding(.leading)
             
             TextField (self.placeHolder, text: $textFieldItem)
@@ -95,7 +98,7 @@ struct CSTextField_3: View {
                     
                     Image(systemName: "plus.circle")
                         .imageScale(.large)
-                        .foregroundColor(Color.white)
+                        .foregroundStyle(Color.white)
                         .padding(.trailing)
                 }.disabled(self.textFieldItem == "")
         
@@ -140,7 +143,7 @@ struct CSTextField_3b<VisualContent:View>: View {
                     
                     Image(systemName: "plus.circle")
                         .imageScale(.large)
-                        .foregroundColor(Color.white)
+                        .foregroundStyle(Color.white)
                         .padding(.trailing)
                 }
             .opacity(condition ? 0.5 : 1.0)
@@ -263,7 +266,7 @@ struct CSTextField_6: View {
         
         guard self.textFieldItem != "" else {
             
-            return Image(systemName: self.image).imageScale(.medium).foregroundColor(Color.gray)
+            return Image(systemName: self.image).imageScale(.medium).foregroundStyle(Color.gray)
                        
         }
         
@@ -273,14 +276,14 @@ struct CSTextField_6: View {
             
             return Image(systemName: self.image)
                 .imageScale(.medium)
-                .foregroundColor(Color.green)
+                .foregroundStyle(Color.green)
             
             
         } else {
             
             return Image(systemName: "exclamationmark.circle")
                 .imageScale(.medium)
-                .foregroundColor(Color.red)
+                .foregroundStyle(Color.red)
         }
     } */ // Deprecated
     

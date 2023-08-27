@@ -84,7 +84,7 @@ struct EditingPropertyModel: View {
                                     
                                 }
                                 .italic()
-                                .foregroundColor(Color.seaTurtle_2)
+                                .foregroundStyle(Color.seaTurtle_2)
                             }
                         
                         
@@ -114,7 +114,7 @@ struct EditingPropertyModel: View {
                                   } label: {
                                       Image(systemName: "plus.circle")
                                           .imageScale(.large)
-                                          .foregroundColor(Color.seaTurtle_3)
+                                          .foregroundStyle(Color.seaTurtle_3)
                                   }
                                   .disabled(currentUserUID == nil)
                                   .opacity(currentUserUID == nil ? 0.3 : 1.0)
@@ -142,9 +142,9 @@ struct EditingPropertyModel: View {
             .padding(.horizontal)
             
         } // Chiusa ZStack Madre
-        .onChange(of: itemModel, perform: { _ in
+        .onChange(of: itemModel) {
             self.itemModelChanged = true
-        })
+        }
         .onDisappear {
             
             if itemModelChanged {
@@ -161,7 +161,7 @@ struct EditingPropertyModel: View {
             
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 
                 Button {
                     
@@ -221,13 +221,13 @@ struct EditingPropertyModel: View {
             return  HStack {
                 Text("Sempre Aperto")
                     .fontWeight(.bold)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                 
                 Text("Se si intende impostare un giorno di chiusura occorre modificare i giorni di servizio dei menu.")
                     .italic()
                     .fontWeight(.light)
                     .font(.system(.caption, design: .default))
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
             }
             
         } else {
@@ -250,12 +250,12 @@ struct EditingPropertyModel: View {
                 
                 Text("\(incipit) di chiusura:")
                     .fontWeight(.semibold)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                 
                Text("\(corpoTesto, format: .list(type: .and))")
                    .fontWeight(.heavy)
                    .font(.system(.body, design: .default))
-                   .foregroundColor(Color.red.opacity(0.9))
+                   .foregroundStyle(Color.red.opacity(0.9))
                 
             }
         }

@@ -146,16 +146,16 @@ struct NewDishMainView: View {
                     Image(systemName: newDish.id == piattoArchiviato.id ? "equal.circle" : "circle")
                 }
                 .font(.caption2)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                 .opacity(0.6)
               //  .padding(.horizontal)
                 
                 
            }
             .csHpadding()
-            .onChange(of: self.newDish, perform: { newValue in
+            .onChange(of: self.newDish) { _, newValue in
                 self.disabilitaPicker = newValue != piattoArchiviato
-            })
+            }
             .popover(isPresented: $wannaAddIngredient,attachmentAnchor: .point(.top)) {
                 VistaIngredientiEspansa_Selectable(
                     currentDish: $newDish,

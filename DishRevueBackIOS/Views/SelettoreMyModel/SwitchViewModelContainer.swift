@@ -65,11 +65,11 @@ struct ContainerRowLabel_Plain:View {
                 Text(listTitle)
                     .fontWeight(modelListCorrente == listTitle ? .bold : .light)
                     .shadow(radius: modelListCorrente == listTitle ? 0.0 : 1.0)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                   
                 Image(systemName: modelListCorrente == listTitle ? "eye" : "eye.slash")
                       .imageScale(.medium)
-                      .foregroundColor(modelListCorrente == listTitle ? Color.blue : Color.gray)
+                      .foregroundStyle(modelListCorrente == listTitle ? Color.blue : Color.gray)
                 
             }
             

@@ -173,17 +173,17 @@ struct MonitorServizio: View {
             
             Text("Stato:")
                 .fontWeight(.semibold)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                
             HStack(spacing:0) {
                 Image(systemName: "triangle.fill")
                     .imageScale(.small)
-                    .foregroundColor(statoIngredienti.coloreAssociato())
+                    .foregroundStyle(statoIngredienti.coloreAssociato())
                     .rotationEffect(Angle(degrees: -90))
                 
                 Image(systemName: "triangle.fill")
                     .imageScale(.small)
-                    .foregroundColor(statoPreparati.coloreAssociato())
+                    .foregroundStyle(statoPreparati.coloreAssociato())
                     .rotationEffect(Angle(degrees: 90))
             }
             .shadow(radius: 10.0)
@@ -231,7 +231,7 @@ struct MonitorServizio: View {
                 Text(statoServizio.rawValue)
                     .italic()
                     .fontWeight(.bold)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
               
                 
             }
@@ -273,7 +273,7 @@ struct MonitorServizio: View {
         
         if statoServizio == valoreAssociato {
             Image(systemName: "arrowtriangle.up.fill")
-                .foregroundColor(valoreAssociato.coloreAssociato())
+                .foregroundStyle(valoreAssociato.coloreAssociato())
         }
         
     }
@@ -284,7 +284,7 @@ struct MonitorServizio: View {
             
             Text("Quadro Generale")
                 .font(.system(.headline, design: .monospaced, weight: .black))
-                .foregroundColor(.seaTurtle_4)
+                .foregroundStyle(Color.seaTurtle_4)
             
             CSInfoAlertView(
                 title: "Info",
@@ -310,7 +310,7 @@ struct MonitorServizio: View {
                 
                 Text(serviceOff ? "Off" : "On")
                     .font(.system(.headline, design: .monospaced, weight: .black))
-                    .foregroundColor(.seaTurtle_4)
+                    .foregroundStyle(Color.seaTurtle_4)
             }
             
             Text(currentHour)
@@ -319,7 +319,7 @@ struct MonitorServizio: View {
   
             Text("\(currentDay) \(currentDate)")
                     .fontWeight(.bold)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                     .minimumScaleFactor(0.75)
 
         }
@@ -339,7 +339,7 @@ struct MonitorServizio: View {
             
             Text(serviceOff ? "Chiuso" : "Aperto")
                 .font(.system(.headline, design: .monospaced, weight: .black))
-                .foregroundColor(.seaTurtle_4)
+                .foregroundStyle(Color.seaTurtle_4)
                 .opacity(serviceOff ? 0.7 : 1.0)
 
                Spacer()
@@ -348,7 +348,7 @@ struct MonitorServizio: View {
             
                 Text("\(currentDay) \(currentDate)")
                     .fontWeight(.bold)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                     .minimumScaleFactor(0.75)
 
         }
@@ -376,13 +376,13 @@ struct MonitorServizio: View {
                
                 Image(systemName: arePrepAllEseguibili ? "arrowtriangle.up.fill" : "arrowtriangle.down" )
                         .imageScale(.medium)
-                        .foregroundColor(arePrepAllEseguibili ? .green : .red)
+                        .foregroundStyle(arePrepAllEseguibili ? .green : .red)
                 
                 NavigationLink(value: DestinationPathView.listaGenericaDish(_containerRif: preparazioniOk,_label: "F&B Eseguibili Oggi")) {
                     Image(systemName: "arrow.up.right")
                         .imageScale(.medium)
                         .bold()
-                        .foregroundColor(Color.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                 }
                 .opacity(linkEseguibiliDisabled ? 0.6 : 1.0)
                 .disabled(linkEseguibiliDisabled)
@@ -399,7 +399,7 @@ struct MonitorServizio: View {
             }
             
         }
-        .foregroundColor(.seaTurtle_3)
+        .foregroundStyle(Color.seaTurtle_3)
         
     } */
     /*
@@ -499,13 +499,13 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                                             Image(systemName: "arrow.up.right")
                                                 .imageScale(.medium)
                                                 .bold()
-                                                .foregroundColor(.seaTurtle_3)
+                                                .foregroundStyle(Color.seaTurtle_3)
                                         }
                                         .opacity(linkMenuDisabled ? 0.6 : 1.0)
                                         .disabled(linkMenuDisabled)
                     
                 }
-                .foregroundColor(.seaTurtle_3)
+                .foregroundStyle(Color.seaTurtle_3)
                 
                 Spacer()
                 
@@ -514,7 +514,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                 HStack {
                     Text("Stato:")
                         .fontWeight(.semibold)
-                        .foregroundColor(Color.black)
+                        .foregroundStyle(Color.black)
                     
                     if linkMenuDisabled {
                         
@@ -526,7 +526,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         
                         Image(systemName: "exclamationmark.triangle.fill")
                             .imageScale(.medium)
-                            .foregroundColor(Color.yellow)
+                            .foregroundStyle(Color.yellow)
                             .onTapGesture {
                                 self.viewModel.alertItem = AlertModel(
                                     title: "Servizio Off",
@@ -572,7 +572,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                     
                     Text("Preparazioni (F&B):")
                         .fontWeight(.heavy)
-                      //  .foregroundColor(.seaTurtle_3)
+                      //  .foregroundStyle(Color.seaTurtle_3)
                         
                     Text("\(self.foodB.count)")
                         .fontWeight(.bold)
@@ -583,13 +583,13 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
+                            .foregroundStyle(showMore ? Color.seaTurtle_3 : Color.seaTurtle_1)
                     }
                     .disabled(!showMore)
                     
                     
                 }
-                .foregroundColor(.seaTurtle_2)
+                .foregroundStyle(Color.seaTurtle_2)
                // .padding(.bottom,3)
                 
                   //  VStack(alignment:.leading) {
@@ -619,7 +619,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                
             
         }
-     //   .foregroundColor(.seaTurtle_3)
+     //   .foregroundStyle(Color.seaTurtle_3)
         
     }
     
@@ -643,18 +643,18 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
+                            .foregroundStyle(showMore ? Color.seaTurtle_3 : Color.seaTurtle_1)
                     }
                     .disabled(!showMore)
                    /* NavigationLink(value: DestinationPathView.listaGenericaIng(_containerRif: self.ingredientsNeeded,_label: "Ingredienti Necessari")) {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
+                            .foregroundStyle(showMore ? .seaTurtle_3 : .seaTurtle_1)
                     }
                     .disabled(!showMore) */ // deprecata 10.07.23
                 }
-                .foregroundColor(.seaTurtle_2)
+                .foregroundStyle(Color.seaTurtle_2)
                 
                // VStack(alignment:.leading) {
                 if showMore {
@@ -684,7 +684,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         let disableLink = count == 0
                         
                         Image(systemName: "circle.dashed.inset.filled")
-                            .foregroundColor(.green)
+                            .foregroundStyle(Color.green)
                         
                         Text("Disponibili:")
                             .fontWeight(.semibold)
@@ -694,7 +694,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(disableLink ? .seaTurtle_1 : .seaTurtle_3)
+                                .foregroundStyle(disableLink ? .seaTurtle_1 : .seaTurtle_3)
                         }
                         .disabled(disableLink)
                         
@@ -709,7 +709,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         let disableLink = count == 0
                         
                         Image(systemName: "circle.dashed.inset.filled")
-                            .foregroundColor(.yellow)
+                            .foregroundStyle(Color.yellow)
                         
                         Text("in Pausa:")
                             .fontWeight(.semibold)
@@ -719,7 +719,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(disableLink ? .seaTurtle_1 : .seaTurtle_3)
+                                .foregroundStyle(disableLink ? .seaTurtle_1 : .seaTurtle_3)
                         }
                         .disabled(disableLink)
                         
@@ -768,7 +768,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
+                            .foregroundStyle(showMore ? .seaTurtle_3 : .seaTurtle_1)
                     }
                     .disabled(!showMore) */
                     NavigationLink(
@@ -776,13 +776,13 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         Image(systemName: "arrow.up.right")
                             .imageScale(.medium)
                             .bold()
-                            .foregroundColor(showMore ? .seaTurtle_3 : .seaTurtle_1)
+                            .foregroundStyle(showMore ? Color.seaTurtle_3 : Color.seaTurtle_1)
                     }
                     .disabled(!showMore)
                     // end update
                     
                 }
-                .foregroundColor(.seaTurtle_2)
+                .foregroundStyle(Color.seaTurtle_2)
                 
                // VStack(alignment:.leading) {
                 if showMore {
@@ -814,7 +814,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         let disableLink = count == 0
                         
                         Image(systemName: "circle.dashed.inset.filled")
-                            .foregroundColor(.green)
+                            .foregroundStyle(Color.green)
                         
                         Text("in Vendita:")
                             .fontWeight(.semibold)
@@ -828,7 +828,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(disableLink ? .seaTurtle_1 : .seaTurtle_3)
+                                .foregroundStyle(disableLink ? .seaTurtle_1 : .seaTurtle_3)
                         }
                         .disabled(disableLink)
                         
@@ -843,7 +843,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         let disableLink = count == 0
                         
                         Image(systemName: "circle.dashed.inset.filled")
-                            .foregroundColor(.yellow)
+                            .foregroundStyle(Color.yellow)
                         
                         Text("in Pausa:")
                             .fontWeight(.semibold)
@@ -856,7 +856,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(disableLink ? .seaTurtle_1 : .seaTurtle_3)
+                                .foregroundStyle(disableLink ? .seaTurtle_1 : .seaTurtle_3)
                         }
                         .disabled(disableLink)
                         
@@ -950,7 +950,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                 Text("da settare")
                     .italic()
                     .fontWeight(.bold)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
             }
             
            // VStack(alignment:.leading) {
@@ -998,7 +998,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
        // HStack {
             GridRow {
            /* Image(systemName: "circle.dashed")
-                .foregroundColor(executionState.coloreAssociato()) */
+                .foregroundStyle(executionState.coloreAssociato()) */
             
             csCircleDashed(
                 internalColor: .seaTurtle_1,
@@ -1012,7 +1012,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
             
             /* Image(systemName: arePrepAllEseguibili ? "arrowtriangle.up.fill" : "arrowtriangle.down" )
                      .imageScale(.medium)
-                     .foregroundColor(arePrepAllEseguibili ? .green : .red) */
+                     .foregroundStyle(arePrepAllEseguibili ? .green : .red) */
              
            /* NavigationLink(value: DestinationPathView.listaGenericaDish(
                 _containerRif: allRif,
@@ -1020,7 +1020,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                  Image(systemName: "arrow.up.right")
                      .imageScale(.medium)
                      .bold()
-                     .foregroundColor(disableValue ? .seaTurtle_1 : .seaTurtle_3)
+                     .foregroundStyle(disableValue ? .seaTurtle_1 : .seaTurtle_3)
              }
              .opacity(disableValue ? 0.6 : 1.0)
              .disabled(disableValue) */
@@ -1086,7 +1086,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                 Text(statoServizio.simpleDescription())
                     .italic()
                     .fontWeight(.bold)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
               
                 
             }
@@ -1205,7 +1205,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
             let color = valoreAssociato.coloreAssociato()
             
             Image(systemName: image)
-                .foregroundColor(color)
+                .foregroundStyle(color)
         }
         
     }
@@ -1218,17 +1218,17 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
             
             Text("Stato:")
                 .fontWeight(.semibold)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                
             HStack(spacing:0) {
                 Image(systemName: "triangle.fill")
                     .imageScale(.small)
-                    .foregroundColor(statoIngredienti.coloreAssociato())
+                    .foregroundStyle(statoIngredienti.coloreAssociato())
                     .rotationEffect(Angle(degrees: -90))
                 
                 Image(systemName: "triangle.fill")
                     .imageScale(.small)
-                    .foregroundColor(statoPreparati.coloreAssociato())
+                    .foregroundStyle(statoPreparati.coloreAssociato())
                     .rotationEffect(Angle(degrees: 90))
             }
             .shadow(radius: 10.0)

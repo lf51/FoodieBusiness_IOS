@@ -117,7 +117,7 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
                     .cornerRadius(5.0)
             }
         }
-        .foregroundColor(textColor)
+        .foregroundStyle(textColor)
         .lineLimit(1)
        // .padding(.bottom,1)
         
@@ -152,7 +152,7 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
                 }
         
             }
-            .foregroundColor(textColor)
+            .foregroundStyle(textColor)
             .padding(.vertical,1)
             
             HStack {
@@ -201,7 +201,7 @@ struct ReviewStatMonitor<Label:View,ExtraContent:View>: View {
                 }
 
             }
-            .foregroundColor(textColor)
+            .foregroundStyle(textColor)
             .padding(.bottom,1)
             
         }

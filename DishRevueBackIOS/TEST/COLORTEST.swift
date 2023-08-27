@@ -27,7 +27,7 @@ struct COLORTEST: View {
                     RoundedRectangle(cornerRadius: 2)
                         .frame(maxWidth:.infinity)
                         .frame(height:50)
-                        .foregroundColor(Color.cyan)
+                        .foregroundStyle(Color.cyan)
                         .brightness(value[scale])
                     
                     Text("\(value[scale])")

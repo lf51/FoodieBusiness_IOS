@@ -250,7 +250,7 @@ struct SelettoreMyModel_Previews: PreviewProvider {
                         .bold()
                 }
                 .padding()
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
         
             }
         

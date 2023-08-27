@@ -214,11 +214,11 @@ public struct PropertyLocalImage:Decodable,Hashable {
     
    public var snapShot:QueryDocumentSnapshot?
     
-    enum CodingKeys:String,CodingKey {
+   /* enum CodingKeys:String,CodingKey {
     
-        case propertyInfo
+        case propertyInfo = "property_info"
   
-    }
+    }*/
     
      enum PropertyModelKeys:String,CodingKey {
         
@@ -241,13 +241,13 @@ public struct PropertyLocalImage:Decodable,Hashable {
     
     public init(from decoder: Decoder) throws {
         
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: PropertyManager.PropertyMainCodingKeys.self)//try decoder.container(keyedBy: CodingKeys.self)
         let road = try container.nestedContainer(keyedBy: PropertyModelKeys.self, forKey: .propertyInfo)
         
         // verifichiamo in decodifica che lo user è autorizzato
         let organigramma = try road.decode([UserRoleModel].self, forKey: .organigramma)//.first(where: { $0.id == CloudDataCompiler.userAuthUid})
         
-        guard let user = organigramma.first(where: {$0.id == AccounterVM.userAuthData.id}) else {
+        guard let user = organigramma.first(where: {$0.id == AuthPasswordLess.userAuthData.id}) else {
             // User Non Autorizzato
             let context = DecodingError.Context(codingPath: [Self.PropertyModelKeys.organigramma], debugDescription: "User Non Autorizzato")
             print("errore di decoding di una ref: \(context.debugDescription)")
@@ -302,10 +302,16 @@ public struct PropertyLocalImage:Decodable,Hashable {
 /// oggetto di servizio per salvare i riferimenti delle proprietà dello User
 public struct UserCloudData:Codable {
     
+  //  public var id:String
+  //  public var email:String
+  //  public var userName:String
+    
+    public var isPremium:Bool
     public var propertiesRef:[String]
 
-    public enum CodingKeys:CodingKey {
-        case propertiesRef
+    public enum CodingKeys:String,CodingKey {
+        case isPremium = "is_premium"
+        case propertiesRef = "properties_ref"
     }
 }
 
@@ -337,7 +343,7 @@ public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudD
     // Nuovo Corso
     
     
-    private func fetchPropertyRef(handle:@escaping(_ allRef:[String]) -> () ){
+  /*  private func fetchPropertyRef(handle:@escaping(_ allRef:[String]) -> () ){
         
       let key = self.db_base.collection(CollectionKey.businessUser.rawValue).document(Self.userAuthUid)
 
@@ -380,7 +386,7 @@ public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudD
 
         }*/
 
-    }
+    } */
     
     /*
     func firstFetchLISTNERDASVILUPPARE(handle:@escaping(_ propertiesImage:[PropertyLocalImage]?,_ propertyDataModel:PropertyDataObject?,_ userRoleModel:UserRoleModel?,_ isLoading:Bool) -> () ) {
@@ -809,7 +815,7 @@ public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudD
     
     // database
     /// fetch document generico
-    func fetchDocument<D:Codable>(collection:CollectionKey,docRef:String,modelSelf:D.Type,handle:@escaping(_ modelData:D?) ->()) {
+  /*  func fetchDocument<D:Codable>(collection:CollectionKey,docRef:String,modelSelf:D.Type,handle:@escaping(_ modelData:D?) ->()) {
         
         let documentRef = self.db_base.collection(collection.rawValue).document(docRef)
     
@@ -827,7 +833,7 @@ public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudD
         }
         
      
-    }
+    } */
     
    /* func fetchAllData(userAuthMail:String,handle:@escaping(_ db:CloudDataStore?,_ userRoleUpdate:UserRoleModel?,_ propertyMod:PropertyModel?,_ isLoading:Bool) -> ()) {
         
@@ -879,7 +885,7 @@ public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudD
     } */ // deprecata
 
     
-    func publishGenericOnFirebase<Element:Codable>(collection:CollectionKey,refKey:String,element:Element) {
+  /*  func publishGenericOnFirebase<Element:Codable>(collection:CollectionKey,refKey:String,element:Element) {
         
         let key = self.db_base.collection(collection.rawValue).document(refKey)
         
@@ -891,7 +897,7 @@ public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudD
             print("\(error.localizedDescription) - Errore nel salvataggio Generico su Firebase")
         }
         
-    }
+    }*/
     
     /*
     func publishOnFirebase<C:Codable>(dbRef:String? = nil,saveData:C,handle:@escaping(_ errorIn:Bool) ->() ) {

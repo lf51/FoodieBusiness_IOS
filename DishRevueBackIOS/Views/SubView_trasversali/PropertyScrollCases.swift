@@ -80,7 +80,7 @@ struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
                     .font(.caption)
                     .fontWeight(.light)
                     .italic()
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
             }
             
                       
@@ -210,7 +210,7 @@ struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
                             .font(.caption)
                             .fontWeight(.light)
                             .italic()
-                            .foregroundColor(Color.black)
+                            .foregroundStyle(Color.black)
                         
              //   }
         }

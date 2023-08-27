@@ -204,19 +204,19 @@ struct NewDishIbridView: View {
                     Image(systemName: newDish.id == ingredienteDiSistema.id ? " equal.circle" : "circle")
                 }
                 .font(.caption2)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
                 .opacity(0.6)
                 //.padding(.horizontal)
                 
                 
            }
             .csHpadding()
-            .onChange(of: self.newDish, perform: { newValue in
+            .onChange(of: self.newDish){ _, newValue in
                 self.disabilitaPicker = checkDisabilityPicker()
-            })
-            .onChange(of: self.ingredienteDiSistema, perform: { newValue in
+            }
+            .onChange(of: self.ingredienteDiSistema){ _, newValue in
                 self.disabilitaPicker = checkDisabilityPicker()
-            })
+            }
             .popover(isPresented: $wannaAddAllergeni,attachmentAnchor: .point(.top),arrowEdge: .bottom) {
                 VistaAllergeni_Selectable(
                     allergeneIn: $ingredienteDiSistema.allergeni,

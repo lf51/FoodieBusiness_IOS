@@ -50,7 +50,7 @@ import MyPackView_L0
                          
                 TextField("[+] Inserire una descrizione", text: $description, axis: .vertical)
                     .font(.system(.body,design:.rounded))
-                    .foregroundColor(/*isEditorActive ? Color.white :*/ Color.black)
+                    .foregroundStyle(/*isEditorActive ? Color.white :*/ Color.black)
                     .autocapitalization(.sentences)
                     .disableAutocorrection(true)
                     .keyboardType(.default)
@@ -75,7 +75,7 @@ import MyPackView_L0
                         }
                         
                     } */
-                    .onChange(of: description) { newValue in
+                    .onChange(of: description) { _, newValue in
                         
                         if newValue != itemModel.descrizione {
                             isTextChanged = true }
@@ -102,7 +102,7 @@ import MyPackView_L0
                                 
                                 Text("\(description.count)")
                                     .fontWeight(.semibold)
-                                    .foregroundColor(description.count <= maxDescriptionLenght ? Color.blue : Color.red)
+                                    .foregroundStyle(description.count <= maxDescriptionLenght ? Color.blue : Color.red)
                                 Text("/\(maxDescriptionLenght)")
                                     .fontWeight(.light)
                                 
@@ -181,7 +181,7 @@ import MyPackView_L0
                       } label: {
                           Text("Undo")
                               .fontWeight(.heavy)
-                              .foregroundColor(.red)
+                              .foregroundStyle(Color.red)
                       }
 
                     
@@ -193,7 +193,7 @@ import MyPackView_L0
                           
                           Text("\(description.count)")
                               .fontWeight(.semibold)
-                              .foregroundColor(descriptionTooLong ? Color.red : Color.blue)
+                              .foregroundStyle(descriptionTooLong ? Color.red : Color.blue)
                           Text("/\(maxDescriptionLenght)")
                               .fontWeight(.light)
                           
@@ -206,7 +206,7 @@ import MyPackView_L0
                       } label: {
                           Text("Salva")
                               .fontWeight(.heavy)
-                              .foregroundColor(.green)
+                              .foregroundStyle(Color.green)
                       }
                       .opacity(descriptionTooLong ? 0.4 : 1.0)
                       .disabled(descriptionTooLong)
@@ -301,7 +301,7 @@ struct CSTextField_ExpandingBoxPlain: View {
                          
                 TextField("[+] Inserire testo", text: $description, axis: .vertical)
                     .font(.system(.body,design:.rounded))
-                    .foregroundColor(/*isEditorActive ? Color.white :*/ Color.black)
+                    .foregroundStyle(/*isEditorActive ? Color.white :*/ Color.black)
                     .autocapitalization(.sentences)
                     .disableAutocorrection(true)
                     .keyboardType(.default)
@@ -331,7 +331,7 @@ struct CSTextField_ExpandingBoxPlain: View {
                         }
                         
                     } */
-                    .onChange(of: description) { newValue in
+                    .onChange(of: description) { _ , newValue in
                         
                         if newValue != value {
                             isTextChanged = true }
@@ -358,7 +358,7 @@ struct CSTextField_ExpandingBoxPlain: View {
                                 
                                 Text("\(description.count)")
                                     .fontWeight(.semibold)
-                                    .foregroundColor(description.count <= maxDescriptionLenght! ? Color.blue : Color.red)
+                                    .foregroundStyle(description.count <= maxDescriptionLenght! ? Color.blue : Color.red)
                                 Text("/\(maxDescriptionLenght!)")
                                     .fontWeight(.light)
                                 
@@ -411,7 +411,7 @@ struct CSTextField_ExpandingBoxPlain: View {
             } label: {
                 Text("Undo")
                     .fontWeight(.heavy)
-                    .foregroundColor(.red)
+                    .foregroundStyle(Color.red)
             }
 
             Spacer()
@@ -420,7 +420,7 @@ struct CSTextField_ExpandingBoxPlain: View {
                 
                 Text("\(description.count)")
                     .fontWeight(.semibold)
-                    .foregroundColor(description.count <= maxDescriptionLenght ? Color.blue : Color.red)
+                    .foregroundStyle(description.count <= maxDescriptionLenght ? Color.blue : Color.red)
                 Text("/\(maxDescriptionLenght)")
                     .fontWeight(.light)
                 
@@ -433,7 +433,7 @@ struct CSTextField_ExpandingBoxPlain: View {
             } label: {
                 Text("Salva")
                     .fontWeight(.heavy)
-                    .foregroundColor(.green)
+                    .foregroundStyle(Color.green)
             }
             
            /* CSButton_tight(

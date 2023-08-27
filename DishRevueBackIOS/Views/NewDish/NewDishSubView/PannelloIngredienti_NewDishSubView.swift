@@ -67,7 +67,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                                 .italic()
                                 .fontWeight(.bold)
                                 .font(.caption)
-                                .foregroundColor(Color.black)
+                                .foregroundStyle(Color.black)
                                 .multilineTextAlignment(.leading)
                             
                 }
@@ -79,7 +79,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                             Text("Il box degli ingredienti principali non può essere vuoto.")
                                 .italic()
                                 .font(.headline)
-                                .foregroundColor(Color.black)
+                                .foregroundStyle(Color.black)
                                 .multilineTextAlignment(.leading)
                             
                         } else {
@@ -87,7 +87,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                             Toggle(isOn: $noIngredientsNeeded) {
                                 Text("Forza il salvataggio senza ingredienti {ø}")
                                     .font(.headline)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                                     .multilineTextAlignment(.leading)
                             }
                             

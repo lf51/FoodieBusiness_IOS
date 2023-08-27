@@ -30,7 +30,7 @@ struct ElencoModelDeleted: View {
                        // .italic()
                         .fontWeight(.black)
                         .font(.subheadline)
-                        .foregroundColor(Color.seaTurtle_2)
+                        .foregroundStyle(Color.seaTurtle_2)
                   
                   //  Spacer()
                 }
@@ -44,11 +44,11 @@ struct ElencoModelDeleted: View {
                             HStack(alignment:.bottom) {
                                 Text("\(position + 1).")
                                     .font(.system(.headline, design: .monospaced, weight: .bold))
-                                    .foregroundColor(Color.gray)
+                                    .foregroundStyle(Color.gray)
 
                                 Text(dictionary.value)
                                     .font(.system(.headline, design: .monospaced, weight: .bold))
-                                    .foregroundColor(Color.black.opacity(0.7))
+                                    .foregroundStyle(Color.black.opacity(0.7))
                             
                                 
                             }
@@ -56,7 +56,7 @@ struct ElencoModelDeleted: View {
                             Text(dictionary.key)
                                 .italic()
                                 .font(.system(.caption2, design: .default, weight: .light))
-                                .foregroundColor(Color.black.opacity(0.8))
+                                .foregroundStyle(Color.black.opacity(0.8))
                             
                             
                             Divider()
@@ -67,7 +67,7 @@ struct ElencoModelDeleted: View {
                             } label: {
                                 Text("Undo")
                                     .font(.system(.headline, design: .monospaced, weight: .black))
-                                    .foregroundColor(Color.green)
+                                    .foregroundStyle(Color.green)
                             }
                             .opacity(0.5)
                             .disabled(true)

@@ -15,7 +15,6 @@ struct QueryRow_NewPropertySubView: View {
     
     var body: some View {
         
-        
         VStack(alignment:.leading) {
             
             let value:(nome:String,adress:String,city:String) = {
@@ -32,17 +31,17 @@ struct QueryRow_NewPropertySubView: View {
             
             Text(value.nome)
                 .bold()
-                .foregroundColor(.black)
+                .foregroundStyle(Color.black)
                 .font(.body)
             
             HStack {
                 
                 Text(value.adress)
                     .italic()
-                    .foregroundColor(.black)
+                    .foregroundStyle(Color.black)
                 Spacer()
                 Text(value.city)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(Color.gray)
                 
             }
             

@@ -32,7 +32,7 @@ struct CSMenuAllergeni_MultiSelection: View {
 
                     Image(systemName: "allergens")
                         .imageScale(.medium)
-                        .foregroundColor(Color.red.opacity(0.8))
+                        .foregroundStyle(Color.red.opacity(0.8))
     
              }
    

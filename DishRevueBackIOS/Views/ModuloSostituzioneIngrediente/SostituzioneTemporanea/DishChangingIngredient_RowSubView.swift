@@ -52,7 +52,7 @@ struct DishChangingIngredient_RowSubView: View {
                             
                             HStack {
                                 Text("!! Lascia Attivo !! ")
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                                 
                                 Image(systemName: self.dish.idIngredienteDaSostituire == nil ? "checkmark.circle" : "circle")
                                 
@@ -71,7 +71,7 @@ struct DishChangingIngredient_RowSubView: View {
                         } label: {
                             HStack {
                                 Text(ingredient.intestazione)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                                 
                                 Image(systemName: isIngredientSelected ? "checkmark.circle" : "circle")
                                 
@@ -84,7 +84,7 @@ struct DishChangingIngredient_RowSubView: View {
                 switchInfo()
                     .font(.caption)
                     .fontWeight(.light)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .multilineTextAlignment(.leading)
                    
                 Spacer()
@@ -102,7 +102,7 @@ struct DishChangingIngredient_RowSubView: View {
                 
             // BUG 31.08 da risolvere. Vedi Nota Vocale 31.08 - Risolto: vedi nota vovale 01.09
         }
-        .onChange(of: self.isPermanente) { newValue in
+        .onChange(of: self.isPermanente) { _ , newValue in
             if !newValue {
                 self.dish.idIngredienteDaSostituire = idIngredienteCorrente
                 self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = self.idSostitutoGlobale

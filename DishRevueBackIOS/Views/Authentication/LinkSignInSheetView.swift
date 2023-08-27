@@ -36,23 +36,23 @@ struct LinkSignInSheetView: View {
                       Text("Foodies!") // foodies // foodist // foodz / foodish / weFoodies / Foodies! / WeeFoodies / foodie
                             .font(.system(.largeTitle, design: .rounded,weight: .bold))
                          // .font(.system(size: 120, weight: .bold, design: .rounded))
-                            .foregroundColor(Color.black)
+                            .foregroundStyle(Color.black)
                       Text("for business")
                             .font(.system(.caption, design: .monospaced))
                             .fontWeight(.semibold)
-                            .foregroundColor(Color.yellow)
+                            .foregroundStyle(Color.yellow)
                   }
                   
                   Spacer()
                   
-                  Text("Skip")
+                 /* Text("Skip")
                       .font(.caption)
-                      .foregroundColor(.seaTurtle_4)
+                      .foregroundStyle(Color.seaTurtle_4)
                       .onTapGesture {
                           withAnimation {
                               self.authProcess.openSignInView = false
                           }
-                      }
+                      } */
                   
               }
 
@@ -63,7 +63,7 @@ struct LinkSignInSheetView: View {
                   Image(systemName: "fork.knife.circle")
                       .resizable()
                       .scaledToFit()
-                      .foregroundColor(.seaTurtle_2)
+                      .foregroundStyle(Color.seaTurtle_2)
                       .frame(maxWidth:500)
                       .padding(.vertical,60)
                   
@@ -82,10 +82,10 @@ struct LinkSignInSheetView: View {
                     backgroundColor: .seaTurtle_2,
                     cornerRadius: 16.0,
                     action: {
-                        authProcess.sendSignInLink()
+                        self.authProcess.sendSignInLink()
                      
                     })
-                        .disabled(authProcess.email.isEmpty)
+                  .disabled(self.authProcess.email.isEmpty)
             
                    Text("Accesso e Registrazione senza password. ")
                           .font(.caption)
@@ -109,13 +109,13 @@ struct LinkSignInSheetView: View {
             
           if Auth.auth().isSignIn(withEmailLink: link) {
               
-              authProcess.passwordlessSignIn(link: link) { result in
+              self.authProcess.passwordlessSignIn(link: link) { result in
                 
               switch result {
                   
               case let .success(user):
                 
-                  authProcess.sendDispatchAlert(
+                  self.authProcess.sendDispatchAlert(
                     openSignInView: false,
                     alertModel: AlertModel(
                         title: "Authentication Complete",
@@ -123,7 +123,7 @@ struct LinkSignInSheetView: View {
 
               case let .failure(error):
                   
-                  authProcess.sendDispatchAlert(
+                  self.authProcess.sendDispatchAlert(
                     openSignInView: true,
                     alertModel: AlertModel(
                         title: "Authentication Failed",
@@ -134,7 +134,7 @@ struct LinkSignInSheetView: View {
           }
         }
       }
-      .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
+        .csAlertModifier(isPresented: $authProcess.showAlert, item: self.authProcess.alertItem)
       // Lo Sheet e l'Alert vanno in conflitto. Lo Sheet può essere una bella proposta come prima autenticazione per mostrare un carrello di slide e tips su come settare l'account o mostrare un primo settaggio in stile FantaBid
       //L'Alert mi piace per comunicare nei rientri che l'utente xxxx è autenticato. Però voglio che appaia per qualche secondo e si dissolva da solo. IN QUESTA FASE, comunque, sia lo SHEET che l'ALERT servivano a testare l'avvenuto signIN
   }

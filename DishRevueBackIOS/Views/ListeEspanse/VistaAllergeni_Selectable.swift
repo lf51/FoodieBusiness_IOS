@@ -50,7 +50,7 @@ struct VistaAllergeni_Selectable: View {
                 Text("Il numero indica l'ordine di inserimento. Al cliente saranno comunque mostrati in ordine alfabetico.")
                     .italic()
                     .font(.caption2)
-                    .foregroundColor(.black)
+                    .foregroundStyle(Color.black)
                     .opacity(0.8)
             }
         } */
@@ -84,7 +84,7 @@ struct VistaAllergeni_Selectable: View {
                     Text("Il numero indica l'ordine di inserimento. Al cliente saranno comunque mostrati in ordine alfabetico.")
                         .italic()
                         .font(.caption2)
-                        .foregroundColor(.black)
+                        .foregroundStyle(Color.black)
                         .opacity(0.8)
                // }
                 

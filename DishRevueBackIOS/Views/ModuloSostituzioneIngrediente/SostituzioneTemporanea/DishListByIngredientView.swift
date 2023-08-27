@@ -62,7 +62,7 @@ struct DishListByIngredientView: View {
                         imageNameOrEmojy: "arrowshape.backward",
                         backgroundColor: Color.black) {
                           /*  Text(nomeIngredienteCorrente)
-                                .foregroundColor(Color.seaTurtle_4)
+                                .foregroundStyle(Color.seaTurtle_4)
                                 ._tightPadding()
                                 .background(
                                     RoundedRectangle(cornerRadius: 5.0)
@@ -75,7 +75,7 @@ struct DishListByIngredientView: View {
                                   
                                     Text(nomeIngredienteCorrente)
                                          .lineLimit(1)
-                                         .foregroundColor(Color.seaTurtle_4)
+                                         .foregroundStyle(Color.seaTurtle_4)
                                        //  ._tightPadding()
                                        /*  .background(
                                              RoundedRectangle(cornerRadius: 5.0)
@@ -84,7 +84,7 @@ struct DishListByIngredientView: View {
                                    // Spacer()
                                     Image(systemName: isPermamente ? "exclamationmark.circle" : "clock")
                                         .imageScale(.medium)
-                                        .foregroundColor(isPermamente ? Color.red : Color.seaTurtle_3)
+                                        .foregroundStyle(isPermamente ? Color.red : Color.seaTurtle_3)
                                    
                                 }
                                 ._tightPadding()
@@ -100,7 +100,7 @@ struct DishListByIngredientView: View {
                               
                                 Text(nomeIngredienteCorrente)
                                      .lineLimit(1)
-                                     .foregroundColor(Color.seaTurtle_4)
+                                     .foregroundStyle(Color.seaTurtle_4)
                                    //  ._tightPadding()
                                    /*  .background(
                                          RoundedRectangle(cornerRadius: 5.0)
@@ -109,7 +109,7 @@ struct DishListByIngredientView: View {
                                // Spacer()
                                 Image(systemName: value.image)
                                     .imageScale(.medium)
-                                    .foregroundColor(value.imageColor)
+                                    .foregroundStyle(value.imageColor)
                                
                             }
                             ._tightPadding()
@@ -171,7 +171,7 @@ struct DishListByIngredientView: View {
                
   
         }
-        .onChange(of: self.dishWithIngredient, perform: { newArray in
+        .onChange(of: self.dishWithIngredient) { _ , newArray in
             
             var allCheck:Bool = true
             
@@ -183,19 +183,19 @@ struct DishListByIngredientView: View {
                 }
             }
             self.isDeactive = allCheck
-        })
+        }
         .onAppear {
             self.dishWithIngredient = self.viewModel.dishFilteredByIngrediet(idIngredient: idIngredienteCorrente)
           //  self.count = CountView()
           
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 
                 HStack {
                     Image(systemName: value.image)
                         .imageScale(.large)
-                        .foregroundColor(value.imageColor)
+                        .foregroundStyle(value.imageColor)
                     
                     CSInfoAlertView(
                         imageScale: .large,

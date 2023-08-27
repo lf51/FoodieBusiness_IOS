@@ -11,6 +11,7 @@ import MapKit // da togliere quando ripuliamo il codice dai Test
 import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
+import Combine
 
 
 /*struct CollaboratorModel:Codable,Hashable,Identifiable {
@@ -106,30 +107,43 @@ public struct PropertyDataModelDEPRECATA:Codable { // da spostare nel framework 
     
 } */
 
-public struct InitServiceObjet {
+public struct InitServiceObjet { // deprecato
     
     public let allPropertiesImage:[PropertyLocalImage]
     public let currentProperty:PropertyCurrentData
     
 }
 
+public enum SubViewStep {
+    
+    case mainView(loading:Bool)
+    case openLandingPage
+   // case openWaitingView
+    
+}
 
 public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
-   
-   // public typealias DBCompiler = CloudDataCompiler
-   // public var dbCompiler: CloudDataCompiler
     
-   // @Published public var userData:UserCloudData?
-    @Published public var allMyPropertiesImage:[PropertyLocalImage] = []
+    // public typealias DBCompiler = CloudDataCompiler
+    // public var dbCompiler: CloudDataCompiler
     
-   // @Published var currentUserRoleModel:UserRoleModel
-   // @Published var currentPropertyRef:PropertyModel? // non salvata nel cloudData ma fetchata dalla property collection e se modificata risalvata li
-   // private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
+    @Published public var currentUser:UserCloudData?
     
-   // private var loadingCount:Int = 0
-
+    /// Andrebbe in superClasse, ma contiene una proprietà che è tipica del firestore, e non riusciamo ad importare il firestore nel framework e dunque l'abbiamo spostata in sottoClasse
+    @Published public var allMyPropertiesImage:[PropertyLocalImage]
+    @Published public var stepView:SubViewStep?
+    @Published public var mainViewMustDeinit:Bool? // deprecato
+     var cancellables = Set<AnyCancellable>()
+    
+    
+    // @Published var currentUserRoleModel:UserRoleModel
+    // @Published var currentPropertyRef:PropertyModel? // non salvata nel cloudData ma fetchata dalla property collection e se modificata risalvata li
+    // private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
+    
+    // private var loadingCount:Int = 0
+    
     @Published var isLoading: Bool = false // 28.07.23 Possibile deprecazione per trasferimento a State nel ContentView - necessita verifica di funzionamento
-
+    
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
     
@@ -138,8 +152,8 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     @Published var dishListPath = NavigationPath()
     @Published var ingredientListPath = NavigationPath()
     
-    @Published var resetScroll:Bool = false 
-   
+    @Published var resetScroll:Bool = false
+    
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // necessario al selettore Allergeni
     
     @Published var remoteStorage:RemoteChangeStorage = RemoteChangeStorage()
@@ -149,23 +163,194 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     //@Published var onProperty:PropertyDataModel // da spostare in superClasse
     
     var allDishFormatLabel:Set<String> {
-    
+        
         let allFormat:[DishFormat] = self.currentProperty.db.allMyDish.flatMap({$0.pricingPiatto})
         let allLabel = allFormat.compactMap({$0.label})
         return Set(allLabel)
     }
     
     //10.02.23
+     deinit {
+         print("ACCOUNTERVM_DEINIT/Image In:\(self.allMyPropertiesImage.count)")
+        // print("ACCOUNTERVM_DEINIT")
+    }
     
     public init(from serviceObject:InitServiceObjet) {
         
        // self.dbCompiler = CloudDataCompiler(userAuthUID: "Deprecato")
+        self.currentUser = UserCloudData(isPremium: false, propertiesRef: [])
         self.allMyPropertiesImage = serviceObject.allPropertiesImage
+            
         super.init(currentProperty: serviceObject.currentProperty)
+        print("Init ACCOUNTERVM_propIMagesCount:\(self.allMyPropertiesImage.count)")
         
         
+    }// deprecato
+    
+    public init(fromUser userCloudData:UserCloudData) {
+        
+        self.currentUser = userCloudData
+        
+        self.allMyPropertiesImage = []
+        super.init(currentProperty: initServiceObject.currentProperty)
+        print("Init ACCOUNTERVM")
+        
+    } // deprecato
+    
+    public init() {
+        
+        print("[START] ACCOUNTERVM_INIT()")
+       // self.currentUser = UserCloudData(isPremium: false, propertiesRef: [])
+        self.allMyPropertiesImage = []
+        super.init(currentProperty: initServiceObject.currentProperty)
+        
+       // retrieveDataWithListener()
+       // self.stepView = .mainView
+        print("[CHANGE VALUE] STEP_VIEW in ACCOUNTERVM_INIT")
+        addUserDataSubscriber()
+      //  addUserSubscriber()
+        print("[END] ACCOUNTERVM_INI()T")
     }
     
+    private func addCurrentPropertySubscriber(from images:[PropertyLocalImage]) {
+        
+        GlobalDataManager
+            .property
+            .fetchCurrentPropertyPublisher(from: images)
+            .sink { error in
+                //
+            } receiveValue: { [weak self] propertyCurrentData in
+                
+                guard let self,
+                      let propertyCurrentData else {
+                    print("[ERROR]_CurrentDATA FAIL")
+                    withAnimation {
+                        self?.stepView = .openLandingPage
+                    }
+                    return
+                }
+                // currentData in
+                print("[DONE]_CurrentDATA SUCCESS")
+                
+                // eliminiamo l'opacità della waiting
+                DispatchQueue.main.async {
+                    self.currentProperty = propertyCurrentData
+                    self.stepView = .mainView(loading: false)
+                }
+                
+            }.store(in: &cancellables)
+    }
+    
+    private func addPropertyImageSubscriber(ref:[String]) {
+        
+        GlobalDataManager
+            .property
+            .fetchAndListenPropertyImagesPublisher(from: ref)
+            .sink { error in
+                //
+            } receiveValue: { [weak self] images in
+                // sul listener si dovrebbe far partire il loading come accade nei ref perchè li viene inizializzata per la prima volta la main view, che qui si da come acquisita
+                guard let self,
+                      let images,
+                      !images.isEmpty else {
+                    print("[Error]Prop_Images == nil or empty")
+                    withAnimation {
+                        self?.stepView = .openLandingPage
+                    }
+                    return
+                }
+                
+                // diminuiremo la trasparenza della waiting
+                // manderemo dei check a schermi
+                print("[DONE]_IMAGES_PROP_SUCCESS")
+                self.allMyPropertiesImage = images
+
+                // recuperiamo la current Property
+                addCurrentPropertySubscriber(from: images)
+            
+            }
+            .store(in: &cancellables)
+
+    }
+    
+    private func addUserSubscriber() {
+        
+        $currentUser
+            .sink { [weak self] userData in
+            
+                guard let self,
+                      let userData,
+                !userData.propertiesRef.isEmpty else {
+                    print("[ERROR]_USERDATA == nil")
+                    withAnimation {
+                        self?.stepView = .openLandingPage
+                    }
+                    return
+                }
+ 
+                withAnimation {
+                    self.stepView = .mainView(loading: true)
+                }
+                // add images subscriber
+                addPropertyImageSubscriber(ref:userData.propertiesRef)
+
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func addUserDataSubscriber() {
+        
+        print("[START FETCHING DATA_USER]")
+        // recuperiamo i dati dello user nel database
+        let authUID = AuthPasswordLess.userAuthData.id
+        
+        GlobalDataManager.user.fetchAndListenUserDataPublisher(from: authUID)
+            .sink { error in
+                //
+            } receiveValue: { [weak self] userData in
+                guard let self else {
+                    // non è stato registrato su db nessun user e quindi bisogna far partire il processo di registrazione proprietà
+                    self?.stepView = .openLandingPage
+                    print("WEAK SELF OR VALUE NIL")
+                    return }
+                // user registrato su db
+                self.currentUser = userData
+                addUserSubscriber()
+  
+            }
+            .store(in: &cancellables)
+
+    }
+    
+  /* private func retrieveDataWithListener(){
+        
+      
+        GlobalDataManager.property.fetchCurrentProperty(from: currentUser.propertiesRef)
+            .sink { completion in
+               
+                print("[ERROR PUBLISHER]_\(completion)_cancellablesCount:\(self.cancellables.count)")
+                
+            } receiveValue: { [weak self] (allImages,propertyCurrent) in
+                
+                guard let self = self,
+                let propertyCurrent else {
+                    print("SELF is WEAK")
+                    self?.allMyPropertiesImage = allImages
+                    self?.mainViewMustDeinit = true
+                    return }
+                
+                print("RECEIVE_VALUE_CANCELLABLE_COUNT:\(self.cancellables.count)")
+                
+                DispatchQueue.main.async {
+                    self.allMyPropertiesImage = allImages
+                    self.currentProperty = propertyCurrent
+                }
+                
+            }
+            .store(in: &cancellables)
+        
+
+    } */
     
    /* public init(from propertiesImages:[PropertyLocalImage]?) {
         print("[START]INIT ACCOUNTERVM")
@@ -282,8 +467,8 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
 
     } */
     
-    /*
-    func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
+    
+   /* func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
         
         if propertyImage.snapShot != nil {
             // compiliamo la property dallo snap
@@ -296,24 +481,29 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         
     }*/
     
-    /*
-   private func estrapolaSnapFromPropertyImage(propertyImage:PropertyLocalImage) {
-        
-        // 06-08-23 lo snap potrebbe essere obsoleto. Risulta fondamentale introdurre i listener
-        
-        let snap = try? propertyImage.snapShot?.data(as: PropertyDataObject.self)
-        if let prop = snap {
+    
+   /* func estrapolaSnapFromPropertyImage(propertyImage:PropertyLocalImage,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
+
+        let snap = try? propertyImage.snapShot?.data(as: PropertyTransitionData.self)
+       
+        if var prop = snap {
             // update current property
+            prop.userRole = propertyImage.userRuolo
+            
             self.updateCurrentProperty(
                 propertyImage:propertyImage,
-                propertyData: prop)
+                propertyData: prop) { propertyCurrentData in
+                    
+                   handle(propertyCurrentData)
+                    
+                }
 
         }
         
         print("Dentro GO.Action - Snap Valido:\(snap != nil) ")
         
-    }
-    
+    }*/
+    /*
    private func fetchFromPropertyImage(propertyImage:PropertyLocalImage) {
         print("fetch da propertyImage / Probabile primo ingresso dopo registrazione")
        
@@ -329,16 +519,25 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                 propertyData: property)
             
         }
-    }
+    }*/
     
-    private func updateCurrentProperty(propertyImage:PropertyLocalImage,propertyData:PropertyDataObject) {
+   /* private func updateCurrentProperty(propertyImage:PropertyLocalImage,propertyData:PropertyTransitionData,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
         // salviamo il ref nello userDefault e aggiorniamo la current Property
-        UserDefaults.standard.set(propertyImage.propertyID,forKey: "DefaultProperty")
+        let propertyID = propertyImage.propertyID
+        UserDefaults.standard.set(propertyID,forKey: "DefaultProperty")
+        
         print("UserDefaultKey is fill:\(UserDefaults.standard.dictionaryRepresentation().filter({$0.key == "DefaultProperty"}))")
 
-       // (self.currentProperty.user,self.currentProperty.cloudData) = (propertyImage.userRuolo,propertyData)
-        (self.currentProperty.userRole,self.currentProperty.db) = (propertyImage.userRuolo,propertyData.db)
+        guard let propertySnap = propertyImage.snapShot else { return }
         
+        GlobalDataManager.cloudData.retrieveCloudData(from:propertySnap ) { cloudData in
+            
+             let propertyCurrentData =  GlobalDataManager.property.compilaPropertyCurrentData(from: cloudData, andProperty: propertyData)
+                // se nil resta dov'è
+                handle(propertyCurrentData)
+
+        }
+ 
     }*/
     
     /*

@@ -41,7 +41,7 @@ struct TopBar_3BoolPlusDismiss: View {
             Text(title)
                 .bold()
                 .font(.largeTitle)
-                .foregroundColor(Color.black)
+                .foregroundStyle(Color.black)
             
             Spacer()
             

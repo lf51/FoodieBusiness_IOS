@@ -117,7 +117,7 @@ struct VistaEspansaMenuPerAnteprima: View {
         label: label,
         backgroundColorView: backgroundColorView)
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                
                 Button {
                     self.viewModel.addToThePath(
@@ -129,7 +129,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                 } label: {
                     Text("Anteprima")
                         .fontWeight(.semibold)
-                        .foregroundColor(.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                 }
 
 
@@ -228,7 +228,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                                     } label: {
                                         Image(systemName:"gearshape")
                                             .imageScale(.large)
-                                            .foregroundColor(.seaTurtle_3)
+                                            .foregroundStyle(Color.seaTurtle_3)
                                             .padding(5)
                                             .background {
                                                 Color.seaTurtle_2.opacity(0.2)
@@ -251,7 +251,7 @@ struct VistaEspansaMenuPerAnteprima: View {
             .padding(.horizontal,10)
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
                 
                 Button {
                
@@ -266,7 +266,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                     
                     Text(value.label)
                         .fontWeight(.semibold)
-                        .foregroundColor(value.color)
+                        .foregroundStyle(value.color)
                 }
             }
         }

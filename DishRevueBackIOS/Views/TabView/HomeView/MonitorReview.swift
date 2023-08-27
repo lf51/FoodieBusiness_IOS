@@ -18,7 +18,7 @@ struct MonitorReview: View {
             Group {
                 Text("Recensioni")
                     .font(.system(.headline, design: .monospaced, weight: .black))
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
                 
                 CSInfoAlertView(title: "Legenda", message: .monitorRecensioni)
                    Spacer()
@@ -60,7 +60,7 @@ struct MonitorReview: View {
                             Image(systemName: "arrow.up.right")
                                 .imageScale(.medium)
                                 .bold()
-                                .foregroundColor(Color.seaTurtle_3)
+                                .foregroundStyle(Color.seaTurtle_3)
                         }
                         
                     }
@@ -98,7 +98,7 @@ struct MonitorReview: View {
                 }
  
         }
-        .foregroundColor(Color.black)
+        .foregroundStyle(Color.black)
 
         
         

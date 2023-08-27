@@ -102,7 +102,7 @@ struct IngredientModel_SmallRowView: View {
                     }
                     
                 }
-            }.foregroundColor(sostituto != nil ? Color.seaTurtle_3 : Color.black)
+            }.foregroundStyle(sostituto != nil ? Color.seaTurtle_3 : Color.black)
         }
         .onTapGesture {
             if sostituto != nil {
@@ -126,14 +126,14 @@ struct IngredientModel_SmallRowView: View {
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
                 .overlay(alignment:.topTrailing) {
                     
                     if self.currentModel.produzione == .biologico {
                         
                         Text("Bio")
                             .font(.system(.caption2, design: .monospaced, weight: .black))
-                            .foregroundColor(Color.green)
+                            .foregroundStyle(Color.green)
                             .offset(x: 10, y: -4)
                     }
                 }
@@ -151,7 +151,7 @@ struct IngredientModel_SmallRowView: View {
             else {
                 Image(systemName: "arrow.left.arrow.right.circle.fill")
                     .imageScale(.large)
-                    .foregroundColor(Color.seaTurtle_3)
+                    .foregroundStyle(Color.seaTurtle_3)
             }
             
             

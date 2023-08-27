@@ -79,7 +79,7 @@ struct ListaDellaSpesa_MainView: View {
             .csHpadding()
         }
         .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItem(placement: .topBarTrailing) {
 
                 Button {
                     withAnimation {
@@ -94,7 +94,7 @@ struct ListaDellaSpesa_MainView: View {
                         Text(value.title)
                         
                     }
-                    .foregroundColor(value.color)
+                    .foregroundStyle(value.color)
                     
                 }
 
@@ -260,27 +260,27 @@ struct SpesaRowIngredientView: View {
 
                             Text("\(position + 1).")
                                 .font(.system(.subheadline, design: .monospaced, weight: .bold))
-                                .foregroundColor(Color.white.opacity(0.8))
+                                .foregroundStyle(Color.white.opacity(0.8))
 
                         HStack(spacing:5) {
      
                            RoundedRectangle(cornerRadius: 2.0)
                                         .frame(width: 5)
-                                        .foregroundColor(element.status.transitionStateColor())
+                                        .foregroundStyle(element.status.transitionStateColor())
         
                             VStack(alignment:.leading,spacing:0) {
                                 Text(element.intestazione)
                                     .italic()
                                     .font(.title3)
                                     .strikethrough(isStatoInArrivo, color: .seaTurtle_3)
-                                    .foregroundColor(Color.black)
+                                    .foregroundStyle(Color.black)
                                     .lineLimit(1)
                                     .brightness(0.1)
                                     .opacity(isStatoInArrivo ? 0.5 : 1.0)
                                 
                                 Text(moreInfo.isEmpty ? "--" : "\(moreInfo)")
                                     .font(.system(.caption, design: .monospaced, weight: .semibold))
-                                    .foregroundColor(.seaTurtle_4)
+                                    .foregroundStyle(Color.seaTurtle_4)
                             } // vstack intestazione
                         }
                     }
@@ -288,7 +288,7 @@ struct SpesaRowIngredientView: View {
                   //  Spacer()
                   /*  Text(moreInfo.isEmpty ? "--" : "\(moreInfo)")
                         .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                        .foregroundColor(.seaTurtle_4) */
+                        .foregroundStyle(Color.seaTurtle_4) */
            
                 Spacer()
 
@@ -307,7 +307,7 @@ struct SpesaRowIngredientView: View {
                     Image(systemName:self.showNote ? "chevron.compact.up" : "chevron.compact.down")
                         //.bold()
                         .imageScale(.large)
-                        .foregroundColor(Color.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                         .onTapGesture {
                             withAnimation {
                                // self.showNote.toggle()
@@ -318,7 +318,7 @@ struct SpesaRowIngredientView: View {
                         
                         Image(systemName: self.openNoteUpdate ? "pencil.slash" : "pencil.line")
                             .imageScale(.medium)
-                            .foregroundColor(self.openNoteUpdate ? Color.seaTurtle_4 : Color.seaTurtle_2)
+                            .foregroundStyle(self.openNoteUpdate ? Color.seaTurtle_4 : Color.seaTurtle_2)
                             .opacity(isStatoInArrivo ? 0.4 : 1.0)
                             .offset(x: 40)
                             .onTapGesture {
@@ -345,7 +345,7 @@ struct SpesaRowIngredientView: View {
                 .opacity(0.4)
                 .cornerRadius(4)
         }
-        .onChange(of: self.statoInventario) { newValue in
+        .onChange(of: self.statoInventario) { _, newValue in
             if newValue == .inArrivo {
                 self.openNoteUpdate = false
             }
@@ -388,7 +388,7 @@ struct SpesaRowIngredientView: View {
                 Text(value.note)
                     .italic()
                    //.font(.subheadline)
-                    .foregroundColor(Color.black)
+                    .foregroundStyle(Color.black)
                     .opacity(value.opacity)
                     .multilineTextAlignment(.leading)
             }
@@ -467,25 +467,25 @@ struct SpesaRowIngredientView: View {
                 
                 Image(systemName: self.statoInventario.imageAssociata())
                     .imageScale(.medium)
-                    .foregroundColor(self.statoInventario.coloreAssociato())
+                    .foregroundStyle(self.statoInventario.coloreAssociato())
                 
             } else {
                 
                 Image(systemName: "triangle")
                     .imageScale(.medium)
-                    .foregroundColor(.seaTurtle_2)
+                    .foregroundStyle(Color.seaTurtle_2)
             }
 
             Image(systemName: "square")
                   .imageScale(.large)
-                  .foregroundColor(Color.black)
+                  .foregroundStyle(Color.black)
                   .brightness(0.3)
                   .overlay {
                       if isInArrivo {
                           Image(systemName: "checkmark")
                               .bold()
                               .imageScale(.large)
-                              .foregroundColor(value.checkColor)
+                              .foregroundStyle(value.checkColor)
                       }
                   }
                   .onTapGesture {

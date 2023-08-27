@@ -59,7 +59,7 @@ struct VistaMenuEspansa: View {
                     }
                     
                 .font(.system(.headline, design: .rounded, weight: .semibold))
-                .foregroundColor(Color.seaTurtle_2)
+                .foregroundStyle(Color.seaTurtle_2)
                 
                 ScrollView(showsIndicators:false) {
                     

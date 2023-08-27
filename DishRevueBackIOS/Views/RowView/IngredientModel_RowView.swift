@@ -165,7 +165,7 @@ struct IngredientModel_RowView: View {
                     .imageScale(.medium)
                 
             }
-            .foregroundColor(statoScorte.coloreAssociato())
+            .foregroundStyle(statoScorte.coloreAssociato())
             
         }
         
@@ -179,14 +179,14 @@ struct IngredientModel_RowView: View {
         HStack(spacing: 4.0) {
             
             csVbSwitchImageText(string: self.item.produzione.imageAssociated(), size: .large)
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 
                 Text(self.item.produzione.extendedDescription())
                     .font(.caption)
                     .fontWeight(.black)
-                    .foregroundColor(Color.white)
+                    .foregroundStyle(Color.white)
                     .italic()
             }
             
@@ -200,14 +200,14 @@ struct IngredientModel_RowView: View {
         HStack(spacing: 4.0) {
             
             csVbSwitchImageText(string: self.item.conservazione.imageAssociated(), size: .large)
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 
                 Text(self.item.conservazione.extendedDescription())
                     .font(.caption)
                     .fontWeight(.black)
-                    .foregroundColor(Color.white)
+                    .foregroundStyle(Color.white)
                     .italic()
             }
             
@@ -227,14 +227,14 @@ struct IngredientModel_RowView: View {
                 .fontWeight(.semibold)
                 .lineLimit(1)
                 .allowsTightening(true)
-                .foregroundColor(Color.white)
+                .foregroundStyle(Color.white)
                 .overlay(alignment:.topTrailing) {
                     
                     if self.item.produzione == .biologico {
                         
                         Text("Bio")
                             .font(.system(.caption2, design: .monospaced, weight: .black))
-                            .foregroundColor(Color.green)
+                            .foregroundStyle(Color.green)
                             .offset(x: 10, y: -4)
                     }
                 }
@@ -254,14 +254,14 @@ struct IngredientModel_RowView: View {
              Text("\(dishCount)")
              Image(systemName: "arrow.left.arrow.right.circle")
              .imageScale(.medium)
-             .foregroundColor(isRiservaActive ? Color.seaTurtle_3 : Color.seaTurtle_1 )
+             .foregroundStyle(isRiservaActive ? Color.seaTurtle_3 : Color.seaTurtle_1 )
              .overlay {
              
              if !isRiservaActive {
              
              Image(systemName: "circle.slash")
              .imageScale(.medium)
-             .foregroundColor(Color.seaTurtle_1)
+             .foregroundStyle(Color.seaTurtle_1)
              .rotationEffect(Angle(degrees: 90.0))
              
              }

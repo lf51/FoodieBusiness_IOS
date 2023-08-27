@@ -24,6 +24,7 @@ struct HomeView: View {
     @State private var wannaAddNewProperty:Bool = false
     
     var screenHeight: CGFloat = UIScreen.main.bounds.height
+    @State private var scrollPosition:Int?
     
    // @Binding var controlProxyReset:Bool
     
@@ -48,7 +49,7 @@ struct HomeView: View {
                 VStack(alignment: .leading,spacing:.vStackBoxSpacing) {
                   //  VStack(spacing:.vStackBoxSpacing) {
 
-                    ScrollViewReader { proxy in
+                   // ScrollViewReader { proxy in
                         
                    //     VStack(alignment:.leading) {
                    
@@ -57,7 +58,7 @@ struct HomeView: View {
                             Text("\(userValue.role): \(userValue.currentProperty)")
                                 .italic()
                                 .font(.caption2)
-                                .foregroundColor(.black)
+                                .foregroundStyle(Color.black)
                                 .opacity(0.75)
                             vbTopView()
                                 .padding(10)
@@ -91,6 +92,7 @@ struct HomeView: View {
                                 }.background {
                                     //  Color.red
                                 }
+                                .id(1)
                                 
                                 //  MonitorServizioGlobale()//Global
                                 
@@ -128,23 +130,32 @@ struct HomeView: View {
                                     linkTitle: "Tutti")
                                 .padding(.bottom,5)
                             } // VStack End
-                            
+                            .scrollTargetLayout()
                         } // chiusa scrollView
+                        .scrollPosition(id: $scrollPosition, anchor: .top)
                         //.id(1)
                         .coordinateSpace(name: "HomeViewMainScroll")
-                        .onChange(of: self.viewModel.resetScroll) { _ in
+                       /* .onChange(of: self.viewModel.resetScroll) { _ in
                             if self.tabSelection == .homeView {
                                 withAnimation {
                                     proxy.scrollTo(0,anchor: .top)
                                 }
                             }
+                        }*/
+                        .onChange(of: self.viewModel.resetScroll) {
+                            if self.tabSelection == .homeView {
+                                withAnimation {
+                                    self.scrollPosition = 0
+                                  // proxy.scrollTo(0,anchor: .top)
+                                }
+                            }
                         }
                         
                 //    } // vstack Interno ScrollReader
-                        
-                    } // chiusa scrollViewReader
+                      //  Text("STOP OVERFLOW")
+                   // } // chiusa scrollViewReader
                    
-                    CSDivider()
+                   // CSDivider()
                     
                 }  //.padding(.horizontal)
                 .csHpadding()
@@ -156,12 +167,12 @@ struct HomeView: View {
                 EditingPropertyModel(itemModel: property, backgroundColorView: backgroundColorView)
             }) */
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
    
     
                    /* NavigationLink(value: DestinationPathView.accountSetup(authProcess)) {
                         Image(systemName: "person.fill")
-                            .foregroundColor(Color.seaTurtle_2)
+                            .foregroundStyle(Color.seaTurtle_2)
                     }*/
                     
                    /* CSButton_image(frontImage: "person.fill", imageScale: .large, frontColor: .seaTurtle_2) {
@@ -229,12 +240,12 @@ struct HomeView: View {
                         
                         Image(systemName: "person.fill")
                             .imageScale(.large)
-                            .foregroundColor(.seaTurtle_2)
+                            .foregroundStyle(Color.seaTurtle_2)
                         
                     }
                 }
                 
-                ToolbarItem(placement: .navigationBarTrailing) {
+                ToolbarItem(placement: .topBarTrailing) {
                     
                     NavigationLink(value: DestinationPathView.propertyList) {
                         
@@ -246,7 +257,8 @@ struct HomeView: View {
                           //  Image(systemName: "rectangle.portrait.and.arrow.right")
                            
                         }
-                        .foregroundColor(.seaTurtle_4)
+                        //.foregroundStyle(Color.seaTurtle_4)
+                        .foregroundStyle(Color.seaTurtle_4)
                     }
                     
                     
@@ -335,7 +347,7 @@ struct HomeView: View {
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                         
                     }
-                    .foregroundColor(.seaTurtle_3)
+                    .foregroundStyle(Color.seaTurtle_3)
                       //  .padding(5)
                        /* .background {
                             Color.seaTurtle_1
@@ -361,7 +373,7 @@ struct HomeView: View {
                         //    .font(.subheadline)
                         
                  //   }
-                            .foregroundColor(.seaTurtle_3)
+                            .foregroundStyle(Color.seaTurtle_3)
                    /* .padding(5)
                     .background {
                         Color.seaTurtle_1
@@ -390,11 +402,11 @@ struct HomeView: View {
                     HStack(alignment:.lastTextBaseline,spacing:2) {
                         Image(systemName: "cart")
                             .imageScale(.medium)
-                            .foregroundColor(.seaTurtle_3)
+                            .foregroundStyle(Color.seaTurtle_3)
                         Text("Lista della Spesa")
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                     }
-                    .foregroundColor(.seaTurtle_3)
+                    .foregroundStyle(Color.seaTurtle_3)
                   /*  .padding(5)
                     .background {
                         Color.seaTurtle_1
@@ -428,7 +440,7 @@ struct HomeView: View {
                             Text("Edit")
                                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                         }
-                        .foregroundColor(.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                     }
                     .opacity(propertyDestination == nil ? 0.5 : 1.0)
               
@@ -450,7 +462,7 @@ struct HomeView: View {
                 NavigationLink(value: trashDestination) {
                     Image(systemName: "trash")
                           .imageScale(.medium)
-                          .foregroundColor(.seaTurtle_4)
+                          .foregroundStyle(Color.seaTurtle_4)
                 }
                 .opacity(trashDestination == nil ? 0.5 : 1.0)
                 
@@ -494,7 +506,7 @@ struct HomeView: View {
         } label: {
             Text("[+] Aggiungi")
                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                .foregroundColor(.seaTurtle_3)
+                .foregroundStyle(Color.seaTurtle_3)
         }
        /* .padding(5)
         .background {
@@ -579,7 +591,7 @@ struct MenuDiSistema_BoxView:View {
                             } label: {
                                 Text("Abilita")
                                     .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                                    .foregroundColor(.seaTurtle_3)
+                                    .foregroundStyle(Color.seaTurtle_3)
                                     .shadow(radius: 5.0)
                             }
                             
@@ -598,7 +610,7 @@ struct MenuDiSistema_BoxView:View {
                                         .imageScale(.medium)
                                     
                                 }
-                                .foregroundColor(.seaTurtle_3)
+                                .foregroundStyle(Color.seaTurtle_3)
                                 .shadow(radius: 5.0)
                                 .opacity(allDish == 0 ? 0.4 : 1.0)
                                     
@@ -634,7 +646,7 @@ struct MenuDiSistema_BoxView:View {
                             Text("\(menuDiSistema.shortDescription()) Vuoto")
                                 .italic()
                                 .font(.headline)
-                                .foregroundColor(.seaTurtle_2)
+                                .foregroundStyle(Color.seaTurtle_2)
                             
                         } else {
                             
@@ -762,7 +774,7 @@ struct TopRated_SubView<M:MyProVisualPack_L1>:View where M.RS == RowSize, M.VM =
                                 .imageScale(.medium)
                             
                         }
-                        .foregroundColor(.seaTurtle_3)
+                        .foregroundStyle(Color.seaTurtle_3)
                         .shadow(radius: 5.0)
                         .opacity(disabled ? 0.4 : 1.0)
                             
