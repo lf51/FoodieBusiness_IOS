@@ -135,7 +135,9 @@ struct PropertyListView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 
-                let isPremium = AuthPasswordLess.userAuthData.isPremium
+               // let isPremium = AuthenticationManager.userAuthData.isPremium
+                let isPremium = self.viewModel.currentUser?.isPremium ?? false
+                
                 
                 HStack(spacing:0) {
                 
@@ -147,7 +149,7 @@ struct PropertyListView: View {
                         
                         withAnimation {
                           
-                            self.addCollaboration()
+                            self.addCollaboration(isPremium: isPremium)
                         }
                     }
                     
@@ -159,7 +161,7 @@ struct PropertyListView: View {
                         
                         withAnimation {
                           
-                            self.addNewPropertyCheck() // Abbiamo scelto di sviluppare come SingleProperty, manteniamo però una impostazione da "MultiProprietà" per eventuali sviluppi futuri. Ci limitiamo quindi a bloccare la possibilità di aggiungere altre proprietà dopo la prima.
+                            self.addNewPropertyCheck(isPremium: isPremium) // Abbiamo scelto di sviluppare come SingleProperty, manteniamo però una impostazione da "MultiProprietà" per eventuali sviluppi futuri. Ci limitiamo quindi a bloccare la possibilità di aggiungere altre proprietà dopo la prima.
                         }
                     } // Chiusa LargeButton
  
@@ -181,8 +183,6 @@ struct PropertyListView: View {
             content: {
            // NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
                 AddPropertyMainView(
-                    showLocalAlert: self.$viewModel.showAlert,
-                    localAlert: self.$viewModel.alertItem,
                     addTopPadding: true,
                     registrationAction: { mapItem in
                         // codice registrazione in multiproprietà
@@ -222,9 +222,9 @@ struct PropertyListView: View {
          
      }*/ // l'handle dell'app client per compilare i menu. Adattare alla business. Dovrà anche inserire la proprietà in allMyProperties e questo garantirà poi il blocco di futuri click su collabora e proprietà. Dovraà accedere al database dell'admin e verificare la presenza della propria mail e scaricare le autorizzazioni
     
-    private func addCollaboration() {
+    private func addCollaboration(isPremium:Bool ) {
         
-        guard AuthPasswordLess.userAuthData.isPremium else  {
+        guard isPremium else  {
             
             viewModel.alertItem = AlertModel(
                 title: "⛔️ Restrizioni Account",
@@ -245,9 +245,9 @@ struct PropertyListView: View {
        
     }
     
-    private func addNewPropertyCheck() {
+    private func addNewPropertyCheck(isPremium:Bool) {
         
-        guard AuthPasswordLess.userAuthData.isPremium else  {
+        guard isPremium else  {
             
             viewModel.alertItem = AlertModel(
                 title: "⛔️ Restrizioni Account",

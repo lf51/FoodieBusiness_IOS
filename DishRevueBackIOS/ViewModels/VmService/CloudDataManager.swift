@@ -6,14 +6,15 @@
 //
 
 import Foundation
+import Combine
 import SwiftUI
+
 import MyFoodiePackage
 import Firebase
 import FirebaseFirestore
 import FirebaseFirestoreSwift
 import MyFilterPackage
 import MyPackView_L0
-
 
 @MainActor
 public class GlobalDataManager {
@@ -84,10 +85,12 @@ public class UserManager {
         collectionManaged = self.db_base.collection("user_business")
     }
     
-    func fetchAndListenUserDataPublisher(from id:String) -> AnyPublisher<UserCloudData?,Error> {
+    let userPublisher = PassthroughSubject<UserCloudData?,Error>()
+    
+    func fetchAndListenUserDataPublisher(from id:String) {
         
-        let userPublisher = PassthroughSubject<UserCloudData?,Error>()
-        print("[START]_RetrieveUserDATA")
+       // let userPublisher = PassthroughSubject<UserCloudData?,Error>()
+        print("[CALL]-fetchAndListenUserDataPublisher")
         
         let docRef = collectionManaged.document(id)
         
@@ -97,7 +100,7 @@ public class UserManager {
                 
                 guard let document = querySnapshot else {
                     print("[USER_DATA LISTENER FAIL]")
-                    userPublisher.send(nil)
+                    self.userPublisher.send(nil)
                     return
                 }
                 print("[START USER_DATA LISTENER]")
@@ -105,15 +108,15 @@ public class UserManager {
                 
                 guard let userData else {
                     print("[USER_DATA(as:) FAIL")
-                    userPublisher.send(nil)
+                    self.userPublisher.send(nil)
                     return
                 }
-                print("[UserDATA(as:) SUCCESS]")
-                userPublisher.send(userData)
+                print("[SUCCESS DATA SEND]_fetchAndListenUserDataPublisher")
+                self.userPublisher.send(userData)
                
             }
 
-        return userPublisher.eraseToAnyPublisher()
+       // return userPublisher.eraseToAnyPublisher()
         
     }
     
@@ -134,9 +137,17 @@ public class UserManager {
         print("[3]Out Publish UserCloudData")
     }
     
+    func updatePropertiesRef(ref:String,userId:String) {
+        
+        let docRef = collectionManaged.document(userId)
+        docRef
+            .setData(["properties_ref":[ref]], mergeFields: ["properties_ref"])
+          //  .setValue(ref, forKey: "properties_ref")
+            
+    }
     
 }
-import Combine
+
 
 public class PropertyManager {
 
@@ -155,22 +166,25 @@ public class PropertyManager {
         collectionManaged = self.db_base.collection("properties_registered")
         
     }
+    let propertyImagesPublisher = PassthroughSubject<[PropertyLocalImage]?,Error>()
+    let currentPropertyPublisher = PassthroughSubject<PropertyCurrentData?,Error>()
     
-    func fetchAndListenPropertyImagesPublisher(from ref:[String]) -> AnyPublisher<[PropertyLocalImage]?,Error>  {
-        print("[IN]_IMAGES-PROP PUBLISHER")
+    func fetchAndListenPropertyImagesPublisher(from ref:[String]) {
+        print("[CALL]_fetchAndListenPropertyImagesPublisher")
         
-        let publisher = PassthroughSubject<[PropertyLocalImage]?,Error>()
+        //let publisher = PassthroughSubject<[PropertyLocalImage]?,Error>()
     
         collectionManaged
             .whereField(.documentID(), in: ref)
             .addSnapshotListener({ querySnapshot, error in
                 
-                print("[START]_LISTENER_PROP_IMAGES/startingRef:\(ref.count)")
+                print("[START]_LISTENER_PROP_IMAGES/startingRef:\(ref.count)/querCount:\(String(describing: querySnapshot?.documents.count))")
                 
             guard let documents = querySnapshot?.documents else {
                     
                 print("Errore nel listener:\(error?.localizedDescription ?? "")")
-                publisher.send(nil)
+               // publisher.send(nil)
+                self.propertyImagesPublisher.send(nil)
                 return
                     
                 }
@@ -189,17 +203,26 @@ public class PropertyManager {
 
                 })
                 
-                print("[END]_LISTENER_PROP_IMAGES_endingCount:\(allImages.count) ")
-                publisher.send(allImages)
+                if !allImages.isEmpty {
+                    print("[SUCCESS DATA SEND]_fetchAndListenPropertyImagesPublisher")
+                    self.propertyImagesPublisher.send(allImages)
+                } else {
+                    self.propertyImagesPublisher.send(nil)
+                }
+                
+                //print("[END]_LISTENER_PROP_IMAGES_endingCount:\(allImages.count) ")
+               // publisher.send(allImages)
+                
             })
         
-        return publisher.eraseToAnyPublisher()
+       // return publisher.eraseToAnyPublisher()
+       // return Self.propertyPublisher.eraseToAnyPublisher()
         
     }
     
-    func fetchCurrentPropertyPublisher(from images:[PropertyLocalImage]) -> AnyPublisher<PropertyCurrentData?,Error> {
+    func fetchCurrentPropertyPublisher(from images:[PropertyLocalImage]) {
 
-       let publisher = PassthroughSubject<PropertyCurrentData?,Error>()
+       print("[CALL]_fetchCurrentPropertyPublisher")
         
         self.retrievePropertyTransitionData(from: images) { currentPropTransitionData, propertyDocRef in
             // dati in: setup/inventario/info/userRole
@@ -207,7 +230,8 @@ public class PropertyManager {
             guard let propertyDocRef,
             let currentPropTransitionData else {
                 print("[ERROR]_Retrieve transitionData FAIL")
-                publisher.send(nil)
+               // publisher.send(nil)
+                self.currentPropertyPublisher.send(nil)
                 return
             }
             
@@ -217,18 +241,21 @@ public class PropertyManager {
                 
                 guard let propertyCurrentData else {
                     print("[ERROR] - NoCloudData or No UserRole")
-                    publisher.send(nil)
+                    //publisher.send(nil)
+                    self.currentPropertyPublisher.send(nil)
                     return
                 }
-                print("PRE_CURRENT_PROPERTY_PUBLISHER.send")
+                print("PRE_CURRENT_PROPERTY_PUBLISHER.send/ID:\(propertyCurrentData.info?.intestazione ?? "NO NAME")")
 
-                publisher.send(propertyCurrentData)
+               // publisher.send(propertyCurrentData)
+                print("[SUCCESS DATA SEND]_fetchCurrentPropertyPublisher)")
+                self.currentPropertyPublisher.send(propertyCurrentData)
 
             } // chiuda cloudData
             
         }
 
-        return publisher.eraseToAnyPublisher()
+       // return publisher.eraseToAnyPublisher()
     }
         
    /* func fetchCurrentProperty(from ref:[String]?) -> AnyPublisher<([PropertyLocalImage],PropertyCurrentData?),Error> {
@@ -414,6 +441,7 @@ public class PropertyManager {
     }
     
     func publishPropertyData<Element:Codable>(propertyRef id: String, element propertyData:Element) async throws {
+        
         print("[2]IN Pubblicazione su firebase propertyData")
         let document = collectionManaged.document(id)
         try document.setData(from: propertyData, merge: true)

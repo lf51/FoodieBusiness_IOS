@@ -11,7 +11,7 @@ import Firebase
 
 struct LinkSignInSheetView: View {
    
-    @ObservedObject var authProcess: AuthPasswordLess
+    @ObservedObject var authProcess: AuthenticationManager
     @State private var email:String = ""
     let backgroundColorView = Color.seaTurtle_1
     
@@ -104,7 +104,6 @@ struct LinkSignInSheetView: View {
               case let .success(user):
 
                   self.authProcess.sendDispatchAlert(
-                    openSignInView: false,
                     alertModel: AlertModel(
                         title: "Authentication Complete",
                         message: "Utente \(user?.displayName ?? "") Autenticato correttamente"))
@@ -112,7 +111,6 @@ struct LinkSignInSheetView: View {
               case let .failure(error):
                   
                   self.authProcess.sendDispatchAlert(
-                    openSignInView: true,
                     alertModel: AlertModel(
                         title: "Authentication Failed",
                         message: error.localizedDescription))
@@ -133,7 +131,7 @@ struct LinkSignInSheetView_Previews: PreviewProvider {
   static var previews: some View {
       
       NavigationStack {
-          LinkSignInSheetView(authProcess: AuthPasswordLess())
+          LinkSignInSheetView(authProcess: AuthenticationManager())
       }
     
   }

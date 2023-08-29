@@ -247,7 +247,7 @@ public struct PropertyLocalImage:Decodable,Hashable {
         // verifichiamo in decodifica che lo user è autorizzato
         let organigramma = try road.decode([UserRoleModel].self, forKey: .organigramma)//.first(where: { $0.id == CloudDataCompiler.userAuthUid})
         
-        guard let user = organigramma.first(where: {$0.id == AuthPasswordLess.userAuthData.id}) else {
+        guard let user = organigramma.first(where: {$0.id == AuthenticationManager.userAuthData.id}) else {
             // User Non Autorizzato
             let context = DecodingError.Context(codingPath: [Self.PropertyModelKeys.organigramma], debugDescription: "User Non Autorizzato")
             print("errore di decoding di una ref: \(context.debugDescription)")
@@ -302,16 +302,21 @@ public struct PropertyLocalImage:Decodable,Hashable {
 /// oggetto di servizio per salvare i riferimenti delle proprietà dello User
 public struct UserCloudData:Codable {
     
-  //  public var id:String
-  //  public var email:String
-  //  public var userName:String
+    public var id:String
+    public var email:String
+    public var userName:String
     
     public var isPremium:Bool
-    public var propertiesRef:[String]
+    public var propertiesRef:[String]?
 
     public enum CodingKeys:String,CodingKey {
-        case isPremium = "is_premium"
-        case propertiesRef = "properties_ref"
+        
+        case id = "user_id"
+        case email = "user_email"
+        case userName = "user_name"
+        
+        case isPremium = "user_is_premium"
+        case propertiesRef = "user_properties_ref"
     }
 }
 

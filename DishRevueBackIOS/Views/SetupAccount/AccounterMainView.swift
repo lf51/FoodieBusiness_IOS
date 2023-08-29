@@ -11,7 +11,7 @@ import MyFoodiePackage
 
 struct AccounterMainView: View {
     
-    @ObservedObject var authProcess: AuthPasswordLess
+    @ObservedObject var authProcess: AuthenticationManager
     let backgroundColorView: Color
     
     var body: some View {
@@ -1671,7 +1671,7 @@ struct AccounterMainView: View {
 
 struct AccounterMainView_Previews: PreviewProvider {
     static var user:UserRoleModel = UserRoleModel()
-    @ObservedObject static var auth:AuthPasswordLess = AuthPasswordLess()
+    @ObservedObject static var auth:AuthenticationManager = AuthenticationManager()
     
     static var previews: some View {
         NavigationStack {

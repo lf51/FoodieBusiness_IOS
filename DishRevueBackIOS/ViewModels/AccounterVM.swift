@@ -116,8 +116,9 @@ public struct InitServiceObjet { // deprecato
 
 public enum SubViewStep {
     
-    case mainView(loading:Bool)
+    case mainView
     case openLandingPage
+    case backToAuthentication
    // case openWaitingView
     
 }
@@ -127,13 +128,14 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     // public typealias DBCompiler = CloudDataCompiler
     // public var dbCompiler: CloudDataCompiler
     
-    @Published public var currentUser:UserCloudData?
+    @Published public var stepView:SubViewStep?
+    @Published var isLoading: Bool?
+    var cancellables = Set<AnyCancellable>()
     
+    @Published public var currentUser:UserCloudData?
     /// Andrebbe in superClasse, ma contiene una proprietà che è tipica del firestore, e non riusciamo ad importare il firestore nel framework e dunque l'abbiamo spostata in sottoClasse
     @Published public var allMyPropertiesImage:[PropertyLocalImage]
-    @Published public var stepView:SubViewStep?
-    @Published public var mainViewMustDeinit:Bool? // deprecato
-     var cancellables = Set<AnyCancellable>()
+  
     
     
     // @Published var currentUserRoleModel:UserRoleModel
@@ -142,7 +144,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     
     // private var loadingCount:Int = 0
     
-    @Published var isLoading: Bool = false // 28.07.23 Possibile deprecazione per trasferimento a State nel ContentView - necessita verifica di funzionamento
+   
     
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
@@ -175,10 +177,167 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         // print("ACCOUNTERVM_DEINIT")
     }
     
-    public init(from serviceObject:InitServiceObjet) {
+
+    
+    public init() {
         
+        print("[START] ACCOUNTERVM_INIT()")
+       // print("[1_STORE CANCELLABLE]:\(self.cancellables.count)")
+       // self.currentUser = UserCloudData(isPremium: false, propertiesRef: [])
+       // self.isLoading = true
+       // self.stepView = .mainView
+        
+        self.allMyPropertiesImage = [] // Da valutare optiona
+        super.init(currentProperty: initServiceObject.currentProperty) // da valutare optional
+   
+        // let's start subscriber
+        addCurrentUserSubscriber()
+        addPropertyImagesSubscriber()
+        addCurrentPropertySubscriber()
+        // start data train fetch
+        fetchAndListenCurrentUserData()
+        // vedi Nota 28.08.23
+        print("[END] ACCOUNTERVM_INI()T")
+    }
+    
+    private func addCurrentUserSubscriber() {
+        
+        print("[CALL]_addCurrentUserSubscriber")
+        // alla prima chiama nell'init i subscriber non ricevono alcun valore per cui non viene eseguito alcun sink. Se dopo il fetch dei dati il valore ricevuto non è valido partiraà la landing
+        
+        GlobalDataManager
+            .user
+            .userPublisher
+            .sink { error in
+                //
+                print("ERRROR IN SINK_")
+            } receiveValue: { [weak self] userData in
+               
+                guard let self else {
+                    print("[SELF_is_WEAK]_addCurrentUserSubscriber")
+                    return
+                }
+                guard let userData else {
+                    // qui fallisce non tanto quando il documento non esiste, li va oltre, fallisce nel decodificare. In teoria se lo user è stato registrato non dovrebbe fallire. Proviamo a rimandarlo indietro e fargli reimpostare lo username e dunque tutto lo user nel firestore
+                    print("[EPIC FAIL]_addCurrentUserSubscriber_USERDATA is NIL")
+                   
+                    self.stepView = .backToAuthentication
+                    self.isLoading = nil
+                    return
+                }
+                
+                self.currentUser = userData
+                
+                guard let ref = userData.propertiesRef else {
+                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL")
+                    self.stepView = .openLandingPage
+                    self.isLoading = nil
+                    return
+                }
+                
+                withAnimation {
+                    self.stepView = .mainView
+                    self.isLoading = true
+                }
+                             
+               // DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    GlobalDataManager
+                        .property
+                        .fetchAndListenPropertyImagesPublisher(from: ref)
+               // }
+                
+                print("[VALUE RECEIVER]_addCurrentUserSubscriber")
+                
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addPropertyImagesSubscriber() {
+        print("[CALL]_addPropertyImagesSubscriber")
+        
+        GlobalDataManager
+            .property
+            .propertyImagesPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] allPropImages in
+                
+                guard let self,
+                      let allPropImages else {
+                    
+                    print("[ERROR SINK]_PropIMAGES not VALID")
+                    self?.stepView = .openLandingPage
+                    self?.isLoading = false
+
+                    return
+                }
+                
+                self.allMyPropertiesImage = allPropImages
+                withAnimation {
+                    self.isLoading = true
+                }
+                // fetch currenProperty
+                
+             //   DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    GlobalDataManager
+                        .property
+                        .fetchCurrentPropertyPublisher(from: allPropImages)
+               // }
+   
+                print("[RECEIVE VALUE]_addPropertyImagesSubscriber")
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addCurrentPropertySubscriber() {
+        print("[CALL]_addCurrentPropertySubscriber")
+        
+        GlobalDataManager
+            .property
+            .currentPropertyPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] currentPropData in
+                //
+                guard let self,
+                      let currentPropData else {
+                    print("[ERROR_SINK] Property Current Data not VALID")
+                    self?.stepView = .openLandingPage
+                    self?.isLoading = false
+                    
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    
+                    self.currentProperty = currentPropData
+                    withAnimation {
+                        self.isLoading = false
+                    }
+                }
+                print("[RECEIVE VALUE]_addCurrentPropertySubscriber")
+            }.store(in: &cancellables)
+
+    }
+    
+    private func fetchAndListenCurrentUserData() {
+        
+        print("[CALL]_fetchAndListenCurrentUserData")
+        // fa partire il treno dei dati grazie ai subscriber
+        let userAuthUID = AuthenticationManager.userAuthData.id
+        GlobalDataManager.user.fetchAndListenUserDataPublisher(from: userAuthUID)
+        
+    }
+    
+   
+
+    
+    
+    public init(from serviceObject:InitServiceObjet) {
+        self.isLoading = true
+        self.stepView = .mainView
        // self.dbCompiler = CloudDataCompiler(userAuthUID: "Deprecato")
-        self.currentUser = UserCloudData(isPremium: false, propertiesRef: [])
+        self.currentUser = UserCloudData(id: "", email: "", userName: "", isPremium: false)
         self.allMyPropertiesImage = serviceObject.allPropertiesImage
             
         super.init(currentProperty: serviceObject.currentProperty)
@@ -188,7 +347,8 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     }// deprecato
     
     public init(fromUser userCloudData:UserCloudData) {
-        
+        self.isLoading = true
+        self.stepView = .mainView
         self.currentUser = userCloudData
         
         self.allMyPropertiesImage = []
@@ -196,132 +356,6 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         print("Init ACCOUNTERVM")
         
     } // deprecato
-    
-    public init() {
-        
-        print("[START] ACCOUNTERVM_INIT()")
-       // self.currentUser = UserCloudData(isPremium: false, propertiesRef: [])
-        self.allMyPropertiesImage = []
-        super.init(currentProperty: initServiceObject.currentProperty)
-        
-       // retrieveDataWithListener()
-       // self.stepView = .mainView
-        print("[CHANGE VALUE] STEP_VIEW in ACCOUNTERVM_INIT")
-        addUserDataSubscriber()
-      //  addUserSubscriber()
-        print("[END] ACCOUNTERVM_INI()T")
-    }
-    
-    private func addCurrentPropertySubscriber(from images:[PropertyLocalImage]) {
-        
-        GlobalDataManager
-            .property
-            .fetchCurrentPropertyPublisher(from: images)
-            .sink { error in
-                //
-            } receiveValue: { [weak self] propertyCurrentData in
-                
-                guard let self,
-                      let propertyCurrentData else {
-                    print("[ERROR]_CurrentDATA FAIL")
-                    withAnimation {
-                        self?.stepView = .openLandingPage
-                    }
-                    return
-                }
-                // currentData in
-                print("[DONE]_CurrentDATA SUCCESS")
-                
-                // eliminiamo l'opacità della waiting
-                DispatchQueue.main.async {
-                    self.currentProperty = propertyCurrentData
-                    self.stepView = .mainView(loading: false)
-                }
-                
-            }.store(in: &cancellables)
-    }
-    
-    private func addPropertyImageSubscriber(ref:[String]) {
-        
-        GlobalDataManager
-            .property
-            .fetchAndListenPropertyImagesPublisher(from: ref)
-            .sink { error in
-                //
-            } receiveValue: { [weak self] images in
-                // sul listener si dovrebbe far partire il loading come accade nei ref perchè li viene inizializzata per la prima volta la main view, che qui si da come acquisita
-                guard let self,
-                      let images,
-                      !images.isEmpty else {
-                    print("[Error]Prop_Images == nil or empty")
-                    withAnimation {
-                        self?.stepView = .openLandingPage
-                    }
-                    return
-                }
-                
-                // diminuiremo la trasparenza della waiting
-                // manderemo dei check a schermi
-                print("[DONE]_IMAGES_PROP_SUCCESS")
-                self.allMyPropertiesImage = images
-
-                // recuperiamo la current Property
-                addCurrentPropertySubscriber(from: images)
-            
-            }
-            .store(in: &cancellables)
-
-    }
-    
-    private func addUserSubscriber() {
-        
-        $currentUser
-            .sink { [weak self] userData in
-            
-                guard let self,
-                      let userData,
-                !userData.propertiesRef.isEmpty else {
-                    print("[ERROR]_USERDATA == nil")
-                    withAnimation {
-                        self?.stepView = .openLandingPage
-                    }
-                    return
-                }
- 
-                withAnimation {
-                    self.stepView = .mainView(loading: true)
-                }
-                // add images subscriber
-                addPropertyImageSubscriber(ref:userData.propertiesRef)
-
-            }
-            .store(in: &cancellables)
-    }
-    
-    private func addUserDataSubscriber() {
-        
-        print("[START FETCHING DATA_USER]")
-        // recuperiamo i dati dello user nel database
-        let authUID = AuthPasswordLess.userAuthData.id
-        
-        GlobalDataManager.user.fetchAndListenUserDataPublisher(from: authUID)
-            .sink { error in
-                //
-            } receiveValue: { [weak self] userData in
-                guard let self else {
-                    // non è stato registrato su db nessun user e quindi bisogna far partire il processo di registrazione proprietà
-                    self?.stepView = .openLandingPage
-                    print("WEAK SELF OR VALUE NIL")
-                    return }
-                // user registrato su db
-                self.currentUser = userData
-                addUserSubscriber()
-  
-            }
-            .store(in: &cancellables)
-
-    }
-    
   /* private func retrieveDataWithListener(){
         
       

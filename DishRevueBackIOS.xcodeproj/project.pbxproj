@@ -88,6 +88,8 @@
 		3FD342632904079000C06441 /* ReviewStatMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD342622904079000C06441 /* ReviewStatMonitor.swift */; };
 		3FD854112941FE6500F7CC98 /* CompilerCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */; };
 		3FD85437294254D800F7CC98 /* MyFoodiePackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3FD85436294254D800F7CC98 /* MyFoodiePackage */; };
+		3FE823252A9E34B200366A1E /* UserNameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE823242A9E34B200366A1E /* UserNameSettingView.swift */; };
+		3FE823272A9E356700366A1E /* WelcomeLandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE823262A9E356700366A1E /* WelcomeLandingPage.swift */; };
 		3FFECF2F2A863A960089D759 /* CloudDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFECF2E2A863A960089D759 /* CloudDataManager.swift */; };
 		4D04E28427C7A2BD002F0486 /* SelettoreMyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */; };
 		4D14238227CE7F0C00CFF4AE /* NewDishMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D14238127CE7F0C00CFF4AE /* NewDishMainView.swift */; };
@@ -123,7 +125,7 @@
 		4D403BA62798212600EB4E1B /* FirebaseDynamicLinks in Frameworks */ = {isa = PBXBuildFile; productRef = 4D403BA52798212600EB4E1B /* FirebaseDynamicLinks */; };
 		4D403BA82798212600EB4E1B /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 4D403BA72798212600EB4E1B /* FirebaseFirestore */; };
 		4D403BAA279821D500EB4E1B /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */; };
-		4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */; };
+		4D403BAD2798790800EB4E1B /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D403BAC2798790800EB4E1B /* AuthenticationManager.swift */; };
 		4D43CA9F28630F07002D6B46 /* ListTEST.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D43CA9E28630F07002D6B46 /* ListTEST.swift */; };
 		4D45241D282683A6009E6128 /* EditingPropertyModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D45241C282683A6009E6128 /* EditingPropertyModel.swift */; };
 		4D49470028213C880093AFD6 /* SwipeActions in Frameworks */ = {isa = PBXBuildFile; productRef = 4D4946FF28213C880093AFD6 /* SwipeActions */; };
@@ -236,6 +238,8 @@
 		3FD342622904079000C06441 /* ReviewStatMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewStatMonitor.swift; sourceTree = "<group>"; };
 		3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerCloudData.swift; sourceTree = "<group>"; };
 		3FD854352942549300F7CC98 /* MyFoodiePackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MyFoodiePackage; path = ../MyFoodiePackage; sourceTree = "<group>"; };
+		3FE823242A9E34B200366A1E /* UserNameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNameSettingView.swift; sourceTree = "<group>"; };
+		3FE823262A9E356700366A1E /* WelcomeLandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeLandingPage.swift; sourceTree = "<group>"; };
 		3FFECF2E2A863A960089D759 /* CloudDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudDataManager.swift; sourceTree = "<group>"; };
 		4D04E28327C7A2BD002F0486 /* SelettoreMyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelettoreMyModel.swift; sourceTree = "<group>"; };
 		4D14238127CE7F0C00CFF4AE /* NewDishMainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDishMainView.swift; sourceTree = "<group>"; };
@@ -270,7 +274,7 @@
 		4D403B9F27981EA700EB4E1B /* KotlinJunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KotlinJunction.swift; sourceTree = "<group>"; };
 		4D403BA9279821D500EB4E1B /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		4D403BAB2798269200EB4E1B /* DishRevueBackIOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = DishRevueBackIOS.entitlements; sourceTree = "<group>"; };
-		4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPasswordLess.swift; sourceTree = "<group>"; };
+		4D403BAC2798790800EB4E1B /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		4D43CA9E28630F07002D6B46 /* ListTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListTEST.swift; sourceTree = "<group>"; };
 		4D45241C282683A6009E6128 /* EditingPropertyModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditingPropertyModel.swift; sourceTree = "<group>"; };
 		4D4FE6E927FD9F4300AC0190 /* COLORTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = COLORTEST.swift; sourceTree = "<group>"; };
@@ -475,17 +479,19 @@
 			children = (
 				3FC5B0DA292D2A320000A1BB /* WaitLoadingView.swift */,
 				4D1BC73F2799A746000B463C /* LinkSignInSheetView.swift */,
+				3FE823242A9E34B200366A1E /* UserNameSettingView.swift */,
 			);
 			path = Authentication;
 			sourceTree = "<group>";
 		};
-		3FC5B0D9292D29430000A1BB /* MainView */ = {
+		3FC5B0D9292D29430000A1BB /* StartingView */ = {
 			isa = PBXGroup;
 			children = (
 				4D403B9127981BC200EB4E1B /* ContentView.swift */,
 				4D1BC746279C1FED000B463C /* MainView.swift */,
+				3FE823262A9E356700366A1E /* WelcomeLandingPage.swift */,
 			);
-			path = MainView;
+			path = StartingView;
 			sourceTree = "<group>";
 		};
 		4D34D54A283289C200A57747 /* MenuList */ = {
@@ -531,7 +537,8 @@
 			isa = PBXGroup;
 			children = (
 				4D403B8F27981BC200EB4E1B /* DishRevueBackIOSApp.swift */,
-				3FC5B0D9292D29430000A1BB /* MainView */,
+				3FC5B0D9292D29430000A1BB /* StartingView */,
+				3FC5B0D8292D290C0000A1BB /* Authentication */,
 				4DF7D9D627A45097001DB949 /* Views */,
 				4DF7D9D727A450A2001DB949 /* ViewModels */,
 				3F2F7F7A291561E0002A1CE6 /* FilterPackageExtension */,
@@ -824,7 +831,6 @@
 		4DF7D9D627A45097001DB949 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3FC5B0D8292D290C0000A1BB /* Authentication */,
 				3FC5B0D7292D28F20000A1BB /* SetupAccount */,
 				4D34D54F2838DABD00A57747 /* ImportazioneVelocePiatto */,
 				4D4FE6ED27FEEC0100AC0190 /* RowView */,
@@ -848,7 +854,7 @@
 		4DF7D9D727A450A2001DB949 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				4D403BAC2798790800EB4E1B /* AuthPasswordLess.swift */,
+				4D403BAC2798790800EB4E1B /* AuthenticationManager.swift */,
 				4DC94A1C27E4FB220080264C /* AccounterVM.swift */,
 				3F300F38293A15E3003E5861 /* VmService */,
 			);
@@ -1006,6 +1012,7 @@
 				3F3957FB28C9DCD6004937D2 /* DestinationPath.swift in Sources */,
 				4D9AC1FE28704E2900742936 /* BoxDescriptionModel_Generic.swift in Sources */,
 				4D56A62428018D1000A43E80 /* IngredientModel_RowView.swift in Sources */,
+				3FE823272A9E356700366A1E /* WelcomeLandingPage.swift in Sources */,
 				3F66D6582905474100FF2751 /* VistaEspansaGenerica.swift in Sources */,
 				4D7985F127D8BB9D0012FE23 /* CommunityIngredientModel.swift in Sources */,
 				4D79860027E1EDB20012FE23 /* CorpoProgrammazioneMenu_SubView.swift in Sources */,
@@ -1041,7 +1048,7 @@
 				4D83CEA128194EF600FA2EB5 /* Extension.swift in Sources */,
 				3F180D7B28C1030E00AF67D7 /* DishChangingIngredient_RowSubView.swift in Sources */,
 				3FB15A1329AA3E03005D0526 /* VistaRecensioniEspansa_SingleDish.swift in Sources */,
-				4D403BAD2798790800EB4E1B /* AuthPasswordLess.swift in Sources */,
+				4D403BAD2798790800EB4E1B /* AuthenticationManager.swift in Sources */,
 				3F7D3BD328B6384300177CA6 /* SystemMessage.swift in Sources */,
 				4DCCD6D127BAB4A400F387B2 /* DietScrollView_NewDishSub.swift in Sources */,
 				4D9257AA27D7CB7200D71B9C /* SwitchItemModelContainer.swift in Sources */,
@@ -1093,6 +1100,7 @@
 				4DCCD6D327BAB54300F387B2 /* DishSpecific_NewDishSubView.swift in Sources */,
 				4DCB316628466D0100464308 /* CS_IconaRomboidale.swift in Sources */,
 				4D29C05B27CD33E000E3037C /* TopBar_3BoolPlusDismiss.swift in Sources */,
+				3FE823252A9E34B200366A1E /* UserNameSettingView.swift in Sources */,
 				3FFECF2F2A863A960089D759 /* CloudDataManager.swift in Sources */,
 				4D3C72852887F50D00BAFE0B /* OrigineScrollView_NewIngredientSubView.swift in Sources */,
 				4D8A1DCE283CDBEF0016EE27 /* CheckTestoTextField.swift in Sources */,
@@ -1260,7 +1268,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 121;
+				CURRENT_PROJECT_VERSION = 122;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1291,7 +1299,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 121;
+				CURRENT_PROJECT_VERSION = 122;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

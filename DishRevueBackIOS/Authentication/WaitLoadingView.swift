@@ -27,7 +27,7 @@ public enum LoadingVisualEffect {
     }
     
 }*/
-
+// da traslocare in un frameWorlk
 struct WaitLoadingView<Info:View>: View {
     
     let backgroundColorView:Color

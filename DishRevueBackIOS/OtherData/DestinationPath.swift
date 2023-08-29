@@ -28,7 +28,7 @@ public struct WrapLabelAction:Hashable {
 */
 public enum DestinationPathView: Hashable {
  
-    case accountSetup(_ :AuthPasswordLess)
+    case accountSetup/*(_ :AuthenticationManager)*/
     case propertyList
     case property(_ :PropertyModel)
     
@@ -68,8 +68,9 @@ public enum DestinationPathView: Hashable {
         
         switch self {
 
-        case .accountSetup(let authProcess):
-            AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
+        case .accountSetup/*(let authProcess)*/:
+            EmptyView()
+          //  AccounterMainView(authProcess: authProcess, backgroundColorView: backgroundColorView)
             
         case .propertyList:
             PropertyListView(backgroundColorView: backgroundColorView)

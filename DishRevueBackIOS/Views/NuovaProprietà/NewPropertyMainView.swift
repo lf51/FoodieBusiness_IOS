@@ -14,9 +14,10 @@ import MyPackView_L0
 // 17/06/2023 Maps di Apple -> tentiamo di scriverne un altra con maps di Google. TENTATIVO FALLITO
 struct AddPropertyMainView: View {
     
-    @Binding var showLocalAlert:Bool
-    @Binding var localAlert:AlertModel? {didSet { showLocalAlert = true} }
-    var addTopPadding:Bool = false 
+    @EnvironmentObject var viewModel:AccounterVM
+   // @Binding var showLocalAlert:Bool
+   // @Binding var localAlert:AlertModel? {didSet { showLocalAlert = true} }
+    var addTopPadding:Bool = false
     let registrationAction:(_ :MKMapItem) async throws -> ()
     
     let screenHeight: CGFloat = UIScreen.main.bounds.height
@@ -88,7 +89,7 @@ struct AddPropertyMainView: View {
             }
             
         }
-        .onChange(of: queryRequest) { newValue in
+        .onChange(of: queryRequest) { _, newValue in
             // Searching Place...
             let delay = 0.3
             
@@ -112,13 +113,13 @@ struct AddPropertyMainView: View {
         let mkCity = mkItem.placemark.locality ?? "NOLOCALITY"
         let idToCheck = PropertyModel.creaID(coordinates: mkItemCoordinate, cityName: mkCity)
         
-        print("[1]Procediamo al check della unicità della proprietà")
+        // check Unicità
         let alreadyExist = try await GlobalDataManager.property.checkPropertyExist(for: idToCheck)
         
         guard !alreadyExist else {
             // proprietà già esistente / mandiamo un alert
             
-            self.localAlert = AlertModel(
+            self.viewModel.alertItem = AlertModel(
                 title: "Proprietà già registrata",
                 message: "Per reclami e/o errori contattare info@foodies.com.")
 
@@ -128,6 +129,7 @@ struct AddPropertyMainView: View {
         
        // do {
             try await registrationAction(mkItem)
+        
             print("[7]Registrazione terminata. Chiudiamo lo sheet della mappa")
        /* } catch {
             self.localAlert = AlertModel(

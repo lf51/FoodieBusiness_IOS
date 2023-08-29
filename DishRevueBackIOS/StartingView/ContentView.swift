@@ -7,15 +7,16 @@
 
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 struct ContentView: View {
     
-    @StateObject var authProcess: AuthPasswordLess = AuthPasswordLess()
+    @StateObject var authProcess: AuthenticationManager = AuthenticationManager()
     
     var body: some View {
 
         switchAuthCase()
-        .id(authProcess.hashValue)
+       // .id(authProcess.hashValue)
         .csAlertModifier(isPresented: $authProcess.showAlert, item: authProcess.alertItem)
 
     }
@@ -75,7 +76,7 @@ struct SubContentView:View {
                         backgroundColorView: .seaTurtle_1) {
                             
                             VStack(alignment:.leading,spacing:10) {
-                                let refIn = self.viewModel.currentUser?.propertiesRef.count
+                                let refIn = self.viewModel.currentUser?.propertiesRef?.count
                                 let autHIn = self.viewModel.allMyPropertiesImage.count
                                 
                                 Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
@@ -97,7 +98,7 @@ struct SubContentView:View {
                                     Spacer()
                                     Image(systemName: "checkmark")
                                         .bold()
-                                        .foregroundStyle(self.viewModel.currentUser?.propertiesRef.isEmpty ?? true ? Color.gray : Color.green)
+                                        .foregroundStyle(self.viewModel.currentUser?.propertiesRef?.isEmpty ?? true ? Color.gray : Color.green)
                                 }
                                 HStack {
                                     Text("Autorization In... \(autHIn)/\(refIn ?? 0)")
@@ -170,7 +171,20 @@ struct SubContentView:View {
             }.onDisappear {
                 print("SUB_CONTENT DISAPPEAR")
             }
-            
+            .onReceive(self.viewModel.$stepView) { view in
+                
+                if view == .backToAuthentication {
+                    
+                    withAnimation {
+                        self.authProcess.authCase = .auth_noUserName
+                        
+                    }
+                    
+                    self.authProcess.alertItem = AlertModel(
+                        title: "⚠️ Dati Corrotti ⚠️", message: "Collegamento al Database fallito. Necessario reimpostare lo userName per ricreare un collegamento valido. E' possibile la perdita dei vecchi dati, proprietà, piatti, menu ecc...\n Per evitare la perdita dei dati, non procedere al submit, controllare la connessione e riavviare l'app.\nSe il problema non si risolve contattare info@foodies.com")
+                }
+                
+            }
           
         
     }

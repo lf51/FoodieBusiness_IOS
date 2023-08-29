@@ -111,9 +111,11 @@ struct UserNameSettingView: View {
     
     private func submitAction() async throws {
         // salva lo username nell'autentication
+        print("OLD USERNAME:\(AuthenticationManager.userAuthData.userName)")
       try await self.authProcess.updateDisplayName(newDisplayName: self.newDisplayName)
         // salva l'utente su firestore
         let userAuthData = AuthenticationManager.userAuthData
+        print("NEW USERNAME:\(AuthenticationManager.userAuthData.userName)")
         
         let userData = UserCloudData(
             id: userAuthData.id,

@@ -15,7 +15,7 @@ struct HomeView: View {
     
     @Environment(\.horizontalSizeClass) var horizontalSizeClass // gli ipad e il macOS hanno una regularWidth, mentre gli iphone una compactWidth // vedi Nota 23.06.23
     
-    @ObservedObject var authProcess: AuthPasswordLess
+    @ObservedObject var authProcess: AuthenticationManager
     @EnvironmentObject var viewModel: AccounterVM
     
     let tabSelection: DestinationPath
@@ -33,6 +33,9 @@ struct HomeView: View {
         NavigationStack(path:$viewModel.homeViewPath) {
       
         let userValue:(name:String,role:String,currentProperty:String) = {
+            // implementare info dal current user
+            // segnalare utente premium
+          //  let userPremium = self.viewModel.currentUser?.isPremium ?? false ? "checkmark.seal.fill" : ""
             
             let propertyData = self.viewModel.currentProperty
             let role = propertyData.userRole.ruolo.rawValue
@@ -190,7 +193,7 @@ struct HomeView: View {
                             }
                         } */
 
-                        NavigationLink(value: DestinationPathView.accountSetup(self.authProcess)) {
+                        NavigationLink(value: DestinationPathView.accountSetup/*(self.authProcess)*/) {
                             
                             HStack {
                                 Image(systemName: "circle")
@@ -531,7 +534,7 @@ struct HomeView_Previews: PreviewProvider {
         NavigationStack {
             
             HomeView(
-                authProcess: AuthPasswordLess(),
+                authProcess: AuthenticationManager(),
                 tabSelection: .homeView,
                 backgroundColorView: .seaTurtle_1)
           //  .previewDevice(PreviewDevice(rawValue: "Mac"))
@@ -544,7 +547,7 @@ struct HomeView_Previews: PreviewProvider {
         NavigationStack {
             
             HomeView(
-                authProcess: AuthPasswordLess(),
+                authProcess: AuthenticationManager(),
                 tabSelection: .homeView,
                 backgroundColorView: .seaTurtle_1)
           //  .previewDevice(PreviewDevice(rawValue: "Mac"))

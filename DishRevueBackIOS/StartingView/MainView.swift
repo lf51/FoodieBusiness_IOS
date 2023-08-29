@@ -12,12 +12,12 @@ struct MainView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
-    @ObservedObject var authProcess: AuthPasswordLess
+    @ObservedObject var authProcess: AuthenticationManager
     
-    init(authProcess: AuthPasswordLess) {
+    init(authProcess: AuthenticationManager) {
         print("[START]INIT MAIN_VIEW")
         self.authProcess = authProcess
-        print("[END] INIT MainView - for userUID:\(authProcess.utenteCorrente?.id ?? "nil")")
+        print("[END] INIT MainView - for userUID:\(AuthenticationManager.userAuthData.id)")
     }
     
     

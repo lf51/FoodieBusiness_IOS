@@ -113,27 +113,35 @@ public class AuthenticationManager: ObservableObject {
             
             Auth.auth().signIn(withEmail: email, link: link) { result, error in
               
-            if let error = error {
-              print("ⓧ Authentication error: \(error.localizedDescription).")
-              self.authCase = .noAuth
-              completion(.failure(error))
-              //  self.openSignInView = true
-                
-            } else {
-              print("✔ Authentication was successful.")
-                
-                if let userName = result?.user.displayName {
+                guard error != nil,
+                      let result,
+                      let mail = result.user.email else {
                     
-                    self.authCase = .auth
-
-                } else {
+                    print("ⓧ Authentication error: \(String(describing: error?.localizedDescription)).")
                     
-                    self.authCase = .auth_noUserName
+                    self.authCase = .noAuth
+                    completion(.failure(error!))
+                    return
+                    
                 }
-
-              completion(.success(result?.user))
-
-            }
+                
+                Self.userAuthData.id = result.user.uid
+                Self.userAuthData.email = mail
+                
+                guard let userName = result.user.displayName else {
+                    print("[SUCCESS_AUTH]_NO USERNAME-BACK TO UserNAmeSettingView")
+                    self.authCase = .auth_noUserName
+                    completion(.success(result.user))
+                    return
+                    
+                }
+                
+                print("[SUCCESS_AUTH]")
+                Self.userAuthData.userName = userName
+                self.authCase = .auth
+                completion(.success(result.user))
+            
+                
           }
             
         }
@@ -213,7 +221,7 @@ public class AuthenticationManager: ObservableObject {
                     return
                 }
                 
-                self.sendDispatchAlert(openSignInView: true, alertModel: AlertModel(
+                self.sendDispatchAlert(alertModel: AlertModel(
                     title: "Dispiace Salutarti :-(",
                     message: "Il tuo Account è stato correttamente eliminato."))
 
@@ -281,6 +289,7 @@ public class AuthenticationManager: ObservableObject {
         do {
             try await changeRequest?.commitChanges()
             
+            Self.userAuthData.userName = username
             print("[DONE]_UserName UPDATE SUCCESSFULLY")
            // self.authCase = .auth
             
@@ -332,9 +341,9 @@ public class AuthenticationManager: ObservableObject {
     }
     
     /// Open/Close SignInView e send alert with Dispatch(0.5'')
-    func sendDispatchAlert(openSignInView: Bool, alertModel: AlertModel) {
+    func sendDispatchAlert(alertModel: AlertModel) {
         
-        self.openSignInView = openSignInView
+     //   self.openSignInView = openSignInView
     
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.alertItem = alertModel
