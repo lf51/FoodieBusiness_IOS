@@ -45,15 +45,14 @@ struct ContentView: View {
     }
 }
 
-
-
 struct SubContentView:View {
     
-    @ObservedObject var authProcess: AuthPasswordLess
+    @ObservedObject var authProcess: AuthenticationManager
     @StateObject var viewModel:AccounterVM
     
-    init(authProcess: AuthPasswordLess) {
+    init(authProcess: AuthenticationManager) {
         
+        print("[INIT]_SubContentView")
        // let userUID = AuthPasswordLess.userAuthData.id
         let viewModel = AccounterVM()
         
@@ -68,6 +67,98 @@ struct SubContentView:View {
     var body: some View {
         
         switchSubView()
+            .environmentObject(self.viewModel)
+            .overlay(content: {
+                if let isLoading = self.viewModel.isLoading,
+                isLoading {
+                    WaitLoadingView(
+                        backgroundColorView: .seaTurtle_1) {
+                            
+                            VStack(alignment:.leading,spacing:10) {
+                                let refIn = self.viewModel.currentUser?.propertiesRef.count
+                                let autHIn = self.viewModel.allMyPropertiesImage.count
+                                
+                                Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
+                                    .font(.largeTitle)
+                                
+                                HStack {
+
+                                    Text("Loading User data...")
+                                        .fontDesign(.monospaced)
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                        .bold()
+                                        .foregroundStyle(self.viewModel.currentUser != nil ? Color.green : Color.gray)
+                                       
+                                }
+                                HStack {
+                                    Text("Properties In... \(refIn ?? 0)")
+                                        .fontDesign(.monospaced)
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                        .bold()
+                                        .foregroundStyle(self.viewModel.currentUser?.propertiesRef.isEmpty ?? true ? Color.gray : Color.green)
+                                }
+                                HStack {
+                                    Text("Autorization In... \(autHIn)/\(refIn ?? 0)")
+                                        .fontDesign(.monospaced)
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                        .bold()
+                                        .foregroundStyle(self.viewModel.allMyPropertiesImage.isEmpty ? Color.gray : Color.green)
+                                }
+                                HStack {
+                                    Text("Loading default Property...")
+                                        .fontDesign(.monospaced)
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                        .bold()
+                                        .foregroundStyle(self.viewModel.currentProperty.info?.cityName != "TEST" ? Color.green : Color.gray)
+                                }
+
+                            }    
+                            .padding()
+                            .background {
+                                Color.seaTurtle_2
+                                    .cornerRadius(5.0)
+                                    .opacity(0.8)
+                                    
+                            }
+                        }
+                    .opacity(0.6)
+                } else {
+                    
+                    Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
+                        .font(.largeTitle)
+
+                }
+            })
+            /*.csModifier(self.viewModel.isLoading) { view in
+                view
+                    .overlay {
+                        WaitLoadingView(
+                            backgroundColorView: .seaTurtle_1) {
+                                
+                            VStack(alignment:.leading) {
+                                
+                                if let user = self.viewModel.currentUser {
+                                    
+                                    Text("Properties_Ref:\(user.propertiesRef.count)")
+                                    Text("PremiumUser:\(user.isPremium.description)")
+                                    
+                                    Text("Prop_Images:\(self.viewModel.allMyPropertiesImage.count)")
+                                    Text("Property_IN:\(self.viewModel.currentProperty.info?.intestazione ?? "DEFAULT PROPERTY")")
+                                    
+                                } else {
+                                    
+                                    Text("NO USER IN")
+                                }
+
+                            }
+                        }
+                            .opacity(0.6)
+                    }
+            }*/
             .onAppear {
             // fuori il task va in asincrono. Mettiamo tutte le funzioni in ordine dentro il task. La view della registrazione va diretta in quanto il primo valore dei dati è nil, possiamo coprirla con una loading fin quando il task non ha terminato
             print("[1]Start OnAppear in SubContentView")
@@ -92,50 +183,14 @@ struct SubContentView:View {
          
         switch self.viewModel.stepView {
             
-        case .mainView(let loading):
-            
+        case .mainView:
             MainView(authProcess: self.authProcess)
-                .csModifier(loading) { mainView in
-                    
-                    mainView
-                        .overlay {
-                            WaitLoadingView(
-                                backgroundColorView: .seaTurtle_1) {
-                                    
-                                VStack(alignment:.leading) {
-                                    
-                                    if let user = self.viewModel.currentUser {
-                                        
-                                        Text("Properties_Ref:\(user.propertiesRef.count)")
-                                        Text("PremiumUser:\(user.isPremium.description)")
-                                        
-                                        Text("Prop_Images:\(self.viewModel.allMyPropertiesImage.count)")
-                                        Text("Property_IN:\(self.viewModel.currentProperty.info?.intestazione ?? "DEFAULT PROPERTY")")
-                                        
-                                    } else {
-                                        
-                                        Text("NO USER IN")
-                                    }
-
-                                }
-                            }
-                                .opacity(0.6)
-                        }
-                    
-                }
-                .environmentObject(self.viewModel)
             
         case .openLandingPage:
-            WelcomeLandingPage { serviceObject in
-                //self.vmServiceObject = serviceObject
-                /* if let serviceObject {
-                 self.viewStep = .mainView(serviceObject)
-                 }*/
-            }
+            WelcomeLandingPage(authProcess:self.authProcess)
             
         default:
-            WaitLoadingView(
-                backgroundColorView: .red)
+            WaitLoadingView(backgroundColorView: .red)
             
         }
      }

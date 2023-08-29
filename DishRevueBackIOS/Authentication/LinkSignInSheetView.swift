@@ -12,21 +12,18 @@ import Firebase
 struct LinkSignInSheetView: View {
    
     @ObservedObject var authProcess: AuthPasswordLess
+    @State private var email:String = ""
     let backgroundColorView = Color.seaTurtle_1
     
     var body: some View {
-      
-  //  NavigationView {
-        
+
         ZStack {
             
             Rectangle()
                 .fill(backgroundColorView.gradient)
                 .edgesIgnoringSafeArea(.all)
                 .zIndex(0)
-          //  backgroundColorView
-            //  .edgesIgnoringSafeArea(.all)
-          
+  
           VStack(alignment: .center) {
               
               HStack(alignment:.top) {
@@ -35,7 +32,6 @@ struct LinkSignInSheetView: View {
                       
                       Text("Foodies!") // foodies // foodist // foodz / foodish / weFoodies / Foodies! / WeeFoodies / foodie
                             .font(.system(.largeTitle, design: .rounded,weight: .bold))
-                         // .font(.system(size: 120, weight: .bold, design: .rounded))
                             .foregroundStyle(Color.black)
                       Text("for business")
                             .font(.system(.caption, design: .monospaced))
@@ -44,16 +40,7 @@ struct LinkSignInSheetView: View {
                   }
                   
                   Spacer()
-                  
-                 /* Text("Skip")
-                      .font(.caption)
-                      .foregroundStyle(Color.seaTurtle_4)
-                      .onTapGesture {
-                          withAnimation {
-                              self.authProcess.openSignInView = false
-                          }
-                      } */
-                  
+ 
               }
 
               VStack {
@@ -70,7 +57,7 @@ struct LinkSignInSheetView: View {
                   Spacer()
                   
                   CSTextField_1(
-                      text: $authProcess.email,
+                      text: $email,
                       placeholder: "Email",
                       symbolName: "person.circle.fill",
                       keyboardType: .emailAddress
@@ -82,10 +69,11 @@ struct LinkSignInSheetView: View {
                     backgroundColor: .seaTurtle_2,
                     cornerRadius: 16.0,
                     action: {
-                        self.authProcess.sendSignInLink()
+                        self.authProcess.sendSignInLink(to:email)
+                        self.email = ""
                      
                     })
-                  .disabled(self.authProcess.email.isEmpty)
+                  .disabled(email.isEmpty)
             
                    Text("Accesso e Registrazione senza password. ")
                           .font(.caption)
@@ -114,7 +102,7 @@ struct LinkSignInSheetView: View {
               switch result {
                   
               case let .success(user):
-                
+
                   self.authProcess.sendDispatchAlert(
                     openSignInView: false,
                     alertModel: AlertModel(
@@ -135,8 +123,7 @@ struct LinkSignInSheetView: View {
         }
       }
         .csAlertModifier(isPresented: $authProcess.showAlert, item: self.authProcess.alertItem)
-      // Lo Sheet e l'Alert vanno in conflitto. Lo Sheet può essere una bella proposta come prima autenticazione per mostrare un carrello di slide e tips su come settare l'account o mostrare un primo settaggio in stile FantaBid
-      //L'Alert mi piace per comunicare nei rientri che l'utente xxxx è autenticato. Però voglio che appaia per qualche secondo e si dissolva da solo. IN QUESTA FASE, comunque, sia lo SHEET che l'ALERT servivano a testare l'avvenuto signIN
+
   }
     
 }
