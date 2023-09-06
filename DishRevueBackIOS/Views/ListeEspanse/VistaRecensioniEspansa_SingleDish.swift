@@ -102,7 +102,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
             
             VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
                 
-                if let currentDish = self.viewModel.modelFromId(id: rifDish, modelPath: \.currentProperty.db.allMyDish) {
+                if let currentDish = self.viewModel.modelFromId(id: rifDish, modelPath: \.db.allMyDish) {
                     
                     let rifReviews = currentDish.rifReviews
                    //let allDishrev = self.viewModel.reviewValue(rifReviews: rifReviews)

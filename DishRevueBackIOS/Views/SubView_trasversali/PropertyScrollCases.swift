@@ -75,7 +75,7 @@ struct PropertyScrollCases_Rif<T:MyProEnumPack_L2>: View {
          //   if let extendedDescription = newDishSingleProperty.extendedDescription() {
             
            /* if let model = self.viewModel.myEnumFromId(id: newDishSingleProperty, modelPath: \.categoriaMenuAllCases){*/
-            if let model = self.viewModel.modelFromId(id: newDishSingleProperty, modelPath: \.currentProperty.db.allMyCategories)  {
+            if let model = self.viewModel.modelFromId(id: newDishSingleProperty, modelPath: \.db.allMyCategories)  {
                 Text(model.extendedDescription())
                     .font(.caption)
                     .fontWeight(.light)

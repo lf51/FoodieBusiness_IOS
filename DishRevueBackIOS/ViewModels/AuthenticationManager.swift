@@ -66,6 +66,7 @@ public class AuthenticationManager: ObservableObject {
         
         if let username = user.displayName {
             print("[AUTH]_USER_name_IN")
+           // self.eliminaAccount()
             Self.userAuthData.userName = username
             self.authCase = .auth
 
@@ -75,6 +76,8 @@ public class AuthenticationManager: ObservableObject {
             self.authCase = .auth_noUserName
             
         }
+       
+      
     }
 
     
@@ -113,7 +116,7 @@ public class AuthenticationManager: ObservableObject {
             
             Auth.auth().signIn(withEmail: email, link: link) { result, error in
               
-                guard error != nil,
+                guard error == nil,
                       let result,
                       let mail = result.user.email else {
                     

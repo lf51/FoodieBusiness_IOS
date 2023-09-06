@@ -183,10 +183,10 @@ struct PropertyListView: View {
             content: {
            // NewPropertyMainView(isShowingSheet: self.$wannaAddNewProperty)
                 AddPropertyMainView(
-                    addTopPadding: true,
+                    addTopPadding: true)/*,
                     registrationAction: { mapItem in
                         // codice registrazione in multiproprietà
-                    })
+                    })*/
                     .presentationDetents([.large])
         })
         .popover(isPresented: $wannaCollaborate) {
@@ -285,7 +285,7 @@ struct InactivePropertyRow:View {
             
             HStack {
                 
-                Text(propImage.userRuolo.ruolo.rawValue)
+                Text(propImage.currentUserRole.ruolo.rawValue)
                     .italic()
                     .font(.callout)
                     .foregroundStyle(Color.black)
@@ -309,8 +309,8 @@ struct InactivePropertyRow:View {
                 Spacer()
                 
                 Button {
-                    
-                    GlobalDataManager.property.estrapolaPropertyData(from: propImage) { propertyCurrentData in
+                    print("[DATA MISSED]_switch action not setted")
+                  /*  GlobalDataManager.shared.propertiesManager.estrapolaPropertyData(from: propImage) { propertyCurrentData in
                         
                         DispatchQueue.main.async {
                             // Soluzione errore: make sure to publish values from the main thread (via operators like receive(on:)) on model updates
@@ -319,7 +319,8 @@ struct InactivePropertyRow:View {
                             }
                         }
 
-                    }
+                    }*/
+                    
                 } label: {
                     HStack {
                         Image(systemName: value.image)

@@ -43,7 +43,7 @@ extension IngredientModel:
     } */
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
-        return \.currentProperty.db.allMyIngredients
+        return \.db.allMyIngredients
       }
     
     public func dishWhereIn(readOnlyVM:AccounterVM) -> (dishCount:Int,Substitution:Int) {
@@ -51,7 +51,7 @@ extension IngredientModel:
         var dishCount: Int = 0
         var dishWhereHasSubstitute: Int = 0
         
-        for dish in readOnlyVM.currentProperty.db.allMyDish {
+        for dish in readOnlyVM.db.allMyDish {
             
             if dish.checkIngredientsInPlain(idIngrediente: self.id) {
                 dishCount += 1
@@ -148,7 +148,7 @@ extension IngredientModel:
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String) {
         
-        return (\.currentProperty.db.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
+        return (\.db.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
     }
 
     public func pathDestination() -> DestinationPathView {

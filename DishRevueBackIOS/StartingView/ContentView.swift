@@ -54,26 +54,24 @@ struct SubContentView:View {
     init(authProcess: AuthenticationManager) {
         
         print("[INIT]_SubContentView")
-       // let userUID = AuthPasswordLess.userAuthData.id
-        let viewModel = AccounterVM()
+        let userUID = AuthenticationManager.userAuthData.id
+        let viewModel = AccounterVM(userAuthUID: userUID)
         
         self.authProcess = authProcess
         _viewModel = StateObject(wrappedValue: viewModel)
        
     }
 
-  // @State private var viewStep:SubViewStep = .openWaitingView
-   // @State private var vmServiceObject:InitServiceObjet?
-    
     var body: some View {
         
         switchSubView()
             .environmentObject(self.viewModel)
             .overlay(content: {
+                
                 if let isLoading = self.viewModel.isLoading,
                 isLoading {
-                    WaitLoadingView(
-                        backgroundColorView: .seaTurtle_1) {
+
+                    WaitLoadingView(backgroundColorView: .seaTurtle_1) {
                             
                             VStack(alignment:.leading,spacing:10) {
                                 let refIn = self.viewModel.currentUser?.propertiesRef?.count
@@ -129,68 +127,72 @@ struct SubContentView:View {
                     .opacity(0.6)
                 } else {
                     
-                    Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
-                        .font(.largeTitle)
+                    VStack {
+                        Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
+                        Text("Reference ViewModel:\(CFGetRetainCount(self.viewModel))")
+                        
+                        Button("TEST ACTION") {
+                            print("[ACTION]_testChangeuserName()")
+                            self.viewModel.currentUser?.userName = "TEST" + UUID().uuidString
+                            
+                        }
+                            
+                    }.font(.largeTitle)
 
                 }
             })
-            /*.csModifier(self.viewModel.isLoading) { view in
-                view
-                    .overlay {
-                        WaitLoadingView(
-                            backgroundColorView: .seaTurtle_1) {
-                                
-                            VStack(alignment:.leading) {
-                                
-                                if let user = self.viewModel.currentUser {
-                                    
-                                    Text("Properties_Ref:\(user.propertiesRef.count)")
-                                    Text("PremiumUser:\(user.isPremium.description)")
-                                    
-                                    Text("Prop_Images:\(self.viewModel.allMyPropertiesImage.count)")
-                                    Text("Property_IN:\(self.viewModel.currentProperty.info?.intestazione ?? "DEFAULT PROPERTY")")
-                                    
-                                } else {
-                                    
-                                    Text("NO USER IN")
-                                }
-
-                            }
-                        }
-                            .opacity(0.6)
-                    }
-            }*/
             .onAppear {
-            // fuori il task va in asincrono. Mettiamo tutte le funzioni in ordine dentro il task. La view della registrazione va diretta in quanto il primo valore dei dati è nil, possiamo coprirla con una loading fin quando il task non ha terminato
-            print("[1]Start OnAppear in SubContentView")
-                Task {
-                  // try await retrieveTask()
-                }
-       
-            print("[6]END OnAppear in SubContentView")
+                print("[APPEAR]_SubContentView")
             }.onDisappear {
-                print("SUB_CONTENT DISAPPEAR")
-            }
-            .onReceive(self.viewModel.$stepView) { view in
+                print("[DISAPPEAR]_SubContentView")
                 
-                if view == .backToAuthentication {
-                    
-                    withAnimation {
-                        self.authProcess.authCase = .auth_noUserName
-                        
-                    }
-                    
-                    self.authProcess.alertItem = AlertModel(
-                        title: "⚠️ Dati Corrotti ⚠️", message: "Collegamento al Database fallito. Necessario reimpostare lo userName per ricreare un collegamento valido. E' possibile la perdita dei vecchi dati, proprietà, piatti, menu ecc...\n Per evitare la perdita dei dati, non procedere al submit, controllare la connessione e riavviare l'app.\nSe il problema non si risolve contattare info@foodies.com")
-                }
+                print("""
                 
-            }
-          
+        Are Listener active when call [DISAPPEAR]_SubContentView :
+
+        UserListener is active: \(GlobalDataManager.shared.userManager.userListener != nil),
+        PropertyImagesListener is active: \(GlobalDataManager.shared.propertiesManager.propertyImagesListener != nil)
         
+        Active ref when call [DISAPPEAR]_SubContentView :
+        
+        ViewModel reference Count: \(CFGetRetainCount(self.viewModel))
+        PropertyManager refCount:\(CFGetRetainCount(GlobalDataManager.shared.propertiesManager))
+        UserManager refCount:\(CFGetRetainCount(GlobalDataManager.shared.userManager))
+        CloudDataManager refCount:\(CFGetRetainCount(GlobalDataManager.shared.cloudDataManager))
+
+        """)
+            }
+ 
     }
     
     // Method
-    
+        
+
+    private func manageBackToAutentication() {
+        
+        print("""
+        
+Are Listener active when call manageBackToAutentication :
+
+UserListener is active: \(GlobalDataManager.shared.userManager.userListener != nil),
+
+PropertyImagesListener is active: \(GlobalDataManager.shared.propertiesManager.propertyImagesListener != nil)
+
+ViewModel reference Count: \(CFGetRetainCount(self.viewModel))
+
+""")
+        
+        withAnimation {
+            self.authProcess.authCase = .auth_noUserName
+        }
+        
+        self.authProcess.alertItem = AlertModel(
+            title: "⚠️ Dati Corrotti ⚠️", message: "Collegamento al Database fallito. Inserire lo userName per ricreare un collegamento valido. E' possibile la perdita dei vecchi dati, proprietà, piatti, menu ecc...\n Per evitare la perdita dei dati, non procedere al submit, controllare la connessione e riavviare l'app.\nSe il problema non si risolve contattare info@foodies.com")
+        
+
+        
+        
+    }
    
     
     @ViewBuilder private func switchSubView() -> some View {
@@ -203,9 +205,19 @@ struct SubContentView:View {
         case .openLandingPage:
             WelcomeLandingPage(authProcess:self.authProcess)
             
-        default:
-            WaitLoadingView(backgroundColorView: .red)
+        case .backToAuthentication:
             
+            WaitLoadingView(
+                backgroundColorView: .green,
+                onAppearAction:  {
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { // il delay da togliere
+                        self.manageBackToAutentication()
+                    }
+            })
+ 
+        default: WaitLoadingView(backgroundColorView: .red)
+                
         }
      }
     /*

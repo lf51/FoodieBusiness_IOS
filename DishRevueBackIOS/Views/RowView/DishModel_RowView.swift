@@ -277,7 +277,7 @@ struct DishModel_RowView: View {
     /// solo per viewRow ibride
     @ViewBuilder private func vbIngredientQuality() -> some View {
         
-        if let modelDS = self.viewModel.modelFromId(id: self.item.id, modelPath: \.currentProperty.db.allMyIngredients) {
+        if let modelDS = self.viewModel.modelFromId(id: self.item.id, modelPath: \.db.allMyIngredients) {
             
             let conservazione = modelDS.conservazione
             let origine = modelDS.origine
@@ -764,7 +764,7 @@ struct DishModel_RowView: View {
 
                                    if idSostituto != nil {
                                         
-                                       let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.currentProperty.db.allMyIngredients)
+                                       let (isActive,name,allergeniIn) = self.viewModel.infoFromId(id: idSostituto!, modelPath: \.db.allMyIngredients)
                                        
                                        if isActive {
                                            
@@ -1242,7 +1242,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
             
         }
         .onAppear{
-            viewModel.currentProperty.db.allMyIngredients = [ing1,ing2,ing3,ing4]
+            viewModel.db.allMyIngredients = [ing1,ing2,ing3,ing4]
         }
         .environmentObject(viewModel)
         

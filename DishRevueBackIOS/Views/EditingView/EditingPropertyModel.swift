@@ -49,9 +49,9 @@ struct EditingPropertyModel: View {
                     .focused($modelField, equals: .descrizione)
                     
                     VStack(spacing:10) {
-                        let allMenuActive = self.viewModel.currentProperty.db.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
+                        let allMenuActive = self.viewModel.db.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
                         
-                        let allMenuDeActive = self.viewModel.currentProperty.db.allMyMenu.filter({
+                        let allMenuDeActive = self.viewModel.db.allMyMenu.filter({
                             $0.status.checkStatusTransition(check: .inPausa) ||
                             $0.status.checkStatusTransition(check: .archiviato)
                         })
@@ -75,7 +75,7 @@ struct EditingPropertyModel: View {
                                 HStack {
                                     
                                     /* let todayClose = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: false)}).isEmpty */ // deprecata 03.07.23
-                                    let todayClose = self.viewModel.currentProperty.db.allMyMenu.filter({$0.isOnAirValue().today}).isEmpty
+                                    let todayClose = self.viewModel.db.allMyMenu.filter({$0.isOnAirValue().today}).isEmpty
                                     
                                     Text("Oggi")
                                     
@@ -347,7 +347,7 @@ struct EditingPropertyModel_Previews: PreviewProvider {
         phoneNumber: "3337213895",
         streetAdress: "via roma",
         numeroCivico: "21",
-        admin: UserRoleModel(ruolo: .guest) )
+        admin: UserCloudData(id: "test", email: "test@", userName: "@test", isPremium: false) )
     
     static var previews: some View {
 

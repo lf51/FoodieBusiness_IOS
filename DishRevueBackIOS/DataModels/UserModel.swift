@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import MyFoodiePackage
 
 public struct UserModel:Equatable,Hashable {
 
@@ -23,4 +25,17 @@ public struct UserModel:Equatable,Hashable {
         self.userEmailVerified = userEmailVerified
     }
 
+}
+
+
+extension UserCloudData {
+    
+    func customEncoding(forBusiness:Bool) -> Firestore.Encoder {
+        
+        let encoder = Firestore.Encoder()
+        encoder.userInfo[self.codeForBusinessCollection] = forBusiness
+        
+        return encoder
+    }
+    
 }

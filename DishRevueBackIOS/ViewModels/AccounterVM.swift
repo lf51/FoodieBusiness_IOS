@@ -122,30 +122,18 @@ public enum SubViewStep {
    // case openWaitingView
     
 }
-
+// final means that no other class can be inherit from this
+//@MainActor
 public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
-    
-    // public typealias DBCompiler = CloudDataCompiler
-    // public var dbCompiler: CloudDataCompiler
-    
+
     @Published public var stepView:SubViewStep?
     @Published var isLoading: Bool?
     var cancellables = Set<AnyCancellable>()
     
-    @Published public var currentUser:UserCloudData?
+   // @Published public var currentUser:UserCloudData?
     /// Andrebbe in superClasse, ma contiene una proprietà che è tipica del firestore, e non riusciamo ad importare il firestore nel framework e dunque l'abbiamo spostata in sottoClasse
     @Published public var allMyPropertiesImage:[PropertyLocalImage]
   
-    
-    
-    // @Published var currentUserRoleModel:UserRoleModel
-    // @Published var currentPropertyRef:PropertyModel? // non salvata nel cloudData ma fetchata dalla property collection e se modificata risalvata li
-    // private let instanceDBCompiler: CloudDataCompiler // pensare ad un ricollocamento in superClasse
-    
-    // private var loadingCount:Int = 0
-    
-   
-    
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
     
@@ -160,28 +148,34 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     
     @Published var remoteStorage:RemoteChangeStorage = RemoteChangeStorage()
     
-    //10.02.23 Upgrade DishFormat
-    
-    //@Published var onProperty:PropertyDataModel // da spostare in superClasse
-    
     var allDishFormatLabel:Set<String> {
         
-        let allFormat:[DishFormat] = self.currentProperty.db.allMyDish.flatMap({$0.pricingPiatto})
+        let allFormat:[DishFormat] = self.db.allMyDish.flatMap({$0.pricingPiatto})
         let allLabel = allFormat.compactMap({$0.label})
         return Set(allLabel)
     }
     
-    //10.02.23
+    
      deinit {
-         print("ACCOUNTERVM_DEINIT/Image In:\(self.allMyPropertiesImage.count)")
-        // print("ACCOUNTERVM_DEINIT")
+         print("ACCOUNTERVM_DEINIT")
+       // GlobalDataManager.user.userListener?.remove()
+       //  GlobalDataManager.property.propertyImagesListener?.remove()
+         
+         print("""
+         
+ Are Listener active when call ACCOUNTERVM_DEINIT :
+
+ UserListener is active: \(GlobalDataManager.shared.userManager.userListener != nil),
+
+ PropertyImagesListener is active: \(GlobalDataManager.shared.propertiesManager.propertyImagesListener != nil)
+
+ """)
+     
     }
     
-
-    
-    public init() {
+    public init(userAuthUID:String) {
         
-        print("[START] ACCOUNTERVM_INIT()")
+        print("[START] ACCOUNTERVM_INIT(id:\(userAuthUID)")
        // print("[1_STORE CANCELLABLE]:\(self.cancellables.count)")
        // self.currentUser = UserCloudData(isPremium: false, propertiesRef: [])
        // self.isLoading = true
@@ -190,23 +184,33 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         self.allMyPropertiesImage = [] // Da valutare optiona
         super.init(currentProperty: initServiceObject.currentProperty) // da valutare optional
    
-        // let's start subscriber
-        addCurrentUserSubscriber()
-        addPropertyImagesSubscriber()
-        addCurrentPropertySubscriber()
-        // start data train fetch
-        fetchAndListenCurrentUserData()
+   
+            // let's start subscriber
+        addUserManagerSubscriber()
+        addPropertyManagerImagesSubscriber()
+        addPropertyManagerCurrentPropSubscriber()
+        addCloudDataManagerSubscriber()
+      //  addCurrentUserSubscriber()
+      //  addPropertyImagesSubscriber()
+      //  addCurrentPropertySubscriber()
+            
+           // testUpdateUserDATA()
+            // start data train fetch
+        fetchAndListenCurrentUserData(userAuthUID: userAuthUID)
+        
+
         // vedi Nota 28.08.23
         print("[END] ACCOUNTERVM_INI()T")
-    }
-    
-    private func addCurrentUserSubscriber() {
         
+    }
+
+    private func addUserManagerSubscriber()  {
+       // 1° Publisher
         print("[CALL]_addCurrentUserSubscriber")
         // alla prima chiama nell'init i subscriber non ricevono alcun valore per cui non viene eseguito alcun sink. Se dopo il fetch dei dati il valore ricevuto non è valido partiraà la landing
-        
         GlobalDataManager
-            .user
+            .shared
+            .userManager
             .userPublisher
             .sink { error in
                 //
@@ -219,17 +223,223 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                 }
                 guard let userData else {
                     // qui fallisce non tanto quando il documento non esiste, li va oltre, fallisce nel decodificare. In teoria se lo user è stato registrato non dovrebbe fallire. Proviamo a rimandarlo indietro e fargli reimpostare lo username e dunque tutto lo user nel firestore
-                    print("[EPIC FAIL]_addCurrentUserSubscriber_USERDATA is NIL")
+                    print("""
+
+                          [EPIC FAIL]_addCurrentUserSubscriber_USERDATA is NIL
                    
-                    self.stepView = .backToAuthentication
+                           ViewModel reference Count: \(CFGetRetainCount(self))
+
+                   """)
+
                     self.isLoading = nil
+                    self.stepView = .backToAuthentication
+                    
                     return
                 }
                 
                 self.currentUser = userData
                 
-                guard let ref = userData.propertiesRef else {
-                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL")
+                guard let ref = userData.propertiesRef,
+                      !ref.isEmpty else {
+                    
+                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL or empty")
+                    self.stepView = .openLandingPage
+                    self.isLoading = nil
+                    return
+                }
+                
+                withAnimation {
+                    self.stepView = .mainView
+                    self.isLoading = true // in attesa di caricare i dati della proprietà
+                }
+
+                    GlobalDataManager
+                    .shared
+                    .propertiesManager
+                    .fetchAndListenPropertyImagesPublisher(
+                        from: ref,
+                        for: userData.id)
+                
+            }.store(in: &cancellables)
+
+    }
+
+    private func addPropertyManagerImagesSubscriber()  {
+        
+        // 2°Publisher
+        
+        print("[CALL]_addPropertyImagesSubscriber")
+        
+        GlobalDataManager
+            .shared
+            .propertiesManager
+            .propertyImagesPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] allPropImages in
+                
+                guard let self,
+                      let allPropImages else {
+                    
+                    print("[ERROR SINK]_PropIMAGES not VALID")
+                    self?.isLoading = false
+                    self?.stepView = .openLandingPage
+                    
+                    return
+                }
+                
+                self.allMyPropertiesImage = allPropImages
+                withAnimation {
+                    self.isLoading = true
+                }
+                // fetch currenProperty
+
+                    GlobalDataManager
+                    .shared
+                    .propertiesManager
+                    .fetchCurrentPropertyPublisher(from: allPropImages)
+
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addPropertyManagerCurrentPropSubscriber()  {
+        // 3° Publisher
+        print("[CALL]_addCurrentPropertySubscriber")
+       
+        GlobalDataManager
+            .shared
+            .propertiesManager
+            .currentPropertyPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] currentPropData, currentUserRole,propertyDocRef in
+                //
+                guard let self,
+                      let currentPropData,
+                      let currentUserRole,
+                      let propertyDocRef else {
+                    print("[ERROR_SINK] Property Current Data not VALID")
+                    self?.stepView = .openLandingPage
+                    self?.isLoading = false
+                    
+                    return
+                }
+
+                DispatchQueue.main.async {
+                    
+                    self.currentUser?.propertyRole = currentUserRole
+                    self.currentProperty = currentPropData
+       
+               }
+                
+               // fetch cloudDataStore
+                GlobalDataManager
+                    .shared
+                    .cloudDataManager
+                    .retrieveCloudData(from: propertyDocRef)
+                
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addCloudDataManagerSubscriber() {
+        
+        // 4° Publisher
+        
+        GlobalDataManager
+            .shared
+            .cloudDataManager
+            .cloudDataPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] cloudData in
+            
+                guard let self,
+                      let cloudData else {
+                    
+                    return
+                }
+                
+                DispatchQueue.main.async {
+                    self.db = cloudData
+                    self.isLoading = false 
+                }
+                
+                
+            }.store(in: &cancellables)
+
+        
+        
+    }
+    
+    private func fetchAndListenCurrentUserData(userAuthUID:String)  {
+        
+        print("[START TRAIN FETCH DATA]_fetchAndListenCurrentUserData")
+        // fa partire il treno dei dati grazie ai subscriber
+        GlobalDataManager
+            .shared
+            .userManager
+            .fetchAndListenUserDataPublisher(from: userAuthUID)
+        
+    }
+    
+    
+    /* private func addLocalUserSubscriber() {
+
+         $currentUser
+             .sink { [weak self] userData in
+                 
+                 guard let self,
+                       let userData else { return }
+    
+                 // logica di salvataggio su firebase
+                 
+             }.store(in: &cancellables)
+         
+     }*/
+    
+   /* private func addCurrentUserSubscriber() async {
+        
+        print("[CALL]_addCurrentUserSubscriber")
+        // alla prima chiama nell'init i subscriber non ricevono alcun valore per cui non viene eseguito alcun sink. Se dopo il fetch dei dati il valore ricevuto non è valido partiraà la landing
+        GlobalDataManager
+            .shared
+            .userManager
+            .userPublisher
+            .sink { error in
+                //
+                print("ERRROR IN SINK_")
+            } receiveValue: { [weak self] userData in
+               
+                guard let self else {
+                    print("[SELF_is_WEAK]_addCurrentUserSubscriber")
+                    return
+                }
+                guard let userData else {
+                    // qui fallisce non tanto quando il documento non esiste, li va oltre, fallisce nel decodificare. In teoria se lo user è stato registrato non dovrebbe fallire. Proviamo a rimandarlo indietro e fargli reimpostare lo username e dunque tutto lo user nel firestore
+                    print("""
+
+                          [EPIC FAIL]_addCurrentUserSubscriber_USERDATA is NIL
+                   
+                           ViewModel reference Count: \(CFGetRetainCount(self))
+
+                   """)
+                   
+                    // Blocchiamo tutti i listener
+                   // GlobalDataManager.user.userListener?.remove()
+                   // GlobalDataManager.property.propertyImagesListener?.remove()
+                    self.isLoading = nil
+                    self.stepView = .backToAuthentication
+                    
+                    return
+                }
+                
+                self.currentUser = userData
+                
+                guard let ref = userData.propertiesRef,
+                      !ref.isEmpty else {
+                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL or empty")
                     self.stepView = .openLandingPage
                     self.isLoading = nil
                     return
@@ -240,23 +450,31 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                     self.isLoading = true
                 }
                              
+                print("userData_ID:\(userData.id)")
+                print("userData_MAIL:\(userData.email)")
+                print("userData_USERNAME:\(userData.userName)")
+                print("userData_properties:\(String(describing: userData.propertiesRef?.count))")
                // DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                
                     GlobalDataManager
-                        .property
-                        .fetchAndListenPropertyImagesPublisher(from: ref)
+                    .shared
+                    .propertiesManager
+                    .fetchAndListenPropertyImagesPublisher(from: ref)
+                
                // }
                 
-                print("[VALUE RECEIVER]_addCurrentUserSubscriber")
+               // print("[VALUE RECEIVER]_addCurrentUserSubscriber")
                 
             }.store(in: &cancellables)
 
     }
     
-    private func addPropertyImagesSubscriber() {
+    private func addPropertyImagesSubscriber() async {
         print("[CALL]_addPropertyImagesSubscriber")
         
         GlobalDataManager
-            .property
+            .shared
+            .propertiesManager
             .propertyImagesPublisher
             .sink { error in
                 //
@@ -266,9 +484,9 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                       let allPropImages else {
                     
                     print("[ERROR SINK]_PropIMAGES not VALID")
-                    self?.stepView = .openLandingPage
                     self?.isLoading = false
-
+                    self?.stepView = .openLandingPage
+                    
                     return
                 }
                 
@@ -280,20 +498,22 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                 
              //   DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                     GlobalDataManager
-                        .property
-                        .fetchCurrentPropertyPublisher(from: allPropImages)
+                    .shared
+                    .propertiesManager
+                    .fetchCurrentPropertyPublisher(from: allPropImages)
                // }
-   
+
                 print("[RECEIVE VALUE]_addPropertyImagesSubscriber")
             }.store(in: &cancellables)
 
-    }
+    } // Deprecata
     
-    private func addCurrentPropertySubscriber() {
+    private func addCurrentPropertySubscriber() async {
         print("[CALL]_addCurrentPropertySubscriber")
-        
+       
         GlobalDataManager
-            .property
+            .shared
+            .propertiesManager
             .currentPropertyPublisher
             .sink { error in
                 //
@@ -314,30 +534,29 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                     withAnimation {
                         self.isLoading = false
                     }
-                }
+               }
                 print("[RECEIVE VALUE]_addCurrentPropertySubscriber")
             }.store(in: &cancellables)
 
     }
     
-    private func fetchAndListenCurrentUserData() {
+    private func fetchAndListenCurrentUserData(userAuthUID:String) async {
         
         print("[CALL]_fetchAndListenCurrentUserData")
         // fa partire il treno dei dati grazie ai subscriber
-        let userAuthUID = AuthenticationManager.userAuthData.id
-        GlobalDataManager.user.fetchAndListenUserDataPublisher(from: userAuthUID)
+       // let userAuthUID = AuthenticationManager.userAuthData.id
+       await GlobalDataManager
+            .shared
+            .userManager
+            .fetchAndListenUserDataPublisher(from: userAuthUID)
         
-    }
-    
-   
-
-    
+    }*/
     
     public init(from serviceObject:InitServiceObjet) {
         self.isLoading = true
         self.stepView = .mainView
        // self.dbCompiler = CloudDataCompiler(userAuthUID: "Deprecato")
-        self.currentUser = UserCloudData(id: "", email: "", userName: "", isPremium: false)
+      //  self.currentUser = nil
         self.allMyPropertiesImage = serviceObject.allPropertiesImage
             
         super.init(currentProperty: serviceObject.currentProperty)
@@ -349,7 +568,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     public init(fromUser userCloudData:UserCloudData) {
         self.isLoading = true
         self.stepView = .mainView
-        self.currentUser = userCloudData
+       // self.currentUser = nil
         
         self.allMyPropertiesImage = []
         super.init(currentProperty: initServiceObject.currentProperty)
@@ -1080,7 +1299,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     /// ritorna un array con i piatti contenenti l'ingrediente passato. La presenza dell'ing è controllata fra i principali, i secondari, e i sosituti.
     func allDishContainingIngredient(idIng:String) -> [DishModel] {
         
-        let allDishFiltered = self.currentProperty.db.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
+        let allDishFiltered = self.db.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
         return allDishFiltered
         
     }
@@ -1090,7 +1309,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     /// Ritorna una tupla contenente le seguenti Info: Un array con tutti i menuModel ad accezzione di quelli di Sistema, il count dell'array, e il count dei menu (meno quelli di Sistema) contenenti l'id del piatto
     func allMenuMinusDiSistemaPlusContain(idPiatto:String) -> (allModelMinusDS:[MenuModel], allModelMinusDScount:Int,countWhereDishIsIn:Int) {
         
-        let allMinusSistema = self.currentProperty.db.allMyMenu.filter({
+        let allMinusSistema = self.db.allMyMenu.filter({
             $0.tipologia != .allaCarta(.delGiorno) &&
             $0.tipologia != .allaCarta(.delloChef)
         })
@@ -1108,11 +1327,11 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     /// Ritorna una Tupla gemella dell'AllMenuMinusDiSistemaPlusContain ma senza escludere i menu di sistema
     func allMenuContaining(idPiatto:String) -> (allModelWithDish:[MenuModel], allMyMenuCount:Int,countWhereDishIsIn:Int) {
                 
-        let witchContain = self.currentProperty.db.allMyMenu.filter({
+        let witchContain = self.db.allMyMenu.filter({
             $0.rifDishIn.contains(idPiatto)
         })
         
-        let allMenuCount = self.currentProperty.db.allMyMenu.count
+        let allMenuCount = self.db.allMyMenu.count
         let witchContainCount = witchContain.count
         
         return (witchContain,allMenuCount,witchContainCount)
@@ -1174,7 +1393,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti
         
-        let filteredDish = self.currentProperty.db.allMyDish.filter { dish in
+        let filteredDish = self.db.allMyDish.filter { dish in
             dish.ingredientiPrincipali.contains(where: { $0 == idIngredient }) ||
             dish.ingredientiSecondari.contains(where: { $0 == idIngredient })
         }
@@ -1186,7 +1405,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     /// filtra tutti gli ingredient Model presenti nel viewModel per status, escludendo quello con l'idIngredient passato.
     func ingredientListFilteredBy(idIngredient:String,ingredientStatus:StatusTransition) ->[IngredientModel] {
 
-        let filterArray = self.currentProperty.db.allMyIngredients.filter({
+        let filterArray = self.db.allMyIngredients.filter({
             $0.id != idIngredient &&
             $0.status.checkStatusTransition(check: ingredientStatus)
             
@@ -1267,7 +1486,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                 // copia il modello solo se già non esiste
             } */
             
-            if !isTheModelAlreadyExist(modelID: ingredient.id,path: \.currentProperty.db.allMyIngredients) {
+            if !isTheModelAlreadyExist(modelID: ingredient.id,path: \.db.allMyIngredients) {
              
                  modelIngredients.append(ingredient)
                  // copia il modello solo se già non esiste
@@ -1294,8 +1513,8 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
             
         }()
  
-        self.currentProperty.db.allMyDish.append(dish)
-        self.currentProperty.db.allMyIngredients.append(contentsOf: modelIngredients)
+        self.db.allMyDish.append(dish)
+        self.db.allMyIngredients.append(contentsOf: modelIngredients)
 
     }
 
@@ -1308,7 +1527,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     func inventarioIngredienti() -> [IngredientModel] {
          
          let allIDing = self.currentProperty.inventario.allInventario()
-         let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.currentProperty.db.allMyIngredients)
+         let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.db.allMyIngredients)
            
          let allVegetable = allING.filter({
              $0.origine.returnTypeCase() == .vegetale
@@ -1402,7 +1621,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         let cleanDish = Set(allDishId)
         let allDishIdCleaned = Array(cleanDish)
         
-        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.currentProperty.db.allMyDish)
+        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.db.allMyDish)
         
         let allDishAvaible = allDishModel.filter({
             $0.status.checkStatusTransition(check: .disponibile) ||
@@ -1439,7 +1658,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         let cleanAllIngreArray = Array(cleanAllIngredient)
         //
         
-        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.currentProperty.db.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
+        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.db.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
         
         //
         
@@ -1463,12 +1682,12 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         let allModel:[DishModel] = {
             
             guard let allDishes = dishes else {
-                return self.currentProperty.db.allMyDish
+                return self.db.allMyDish
             }
             
           let allModelDishes = self.modelCollectionFromCollectionID(
             collectionId: allDishes,
-            modelPath: \.currentProperty.db.allMyDish)
+            modelPath: \.db.allMyDish)
         
             return allModelDishes
         }()
@@ -1579,11 +1798,11 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         
         if rifReview == nil {
             
-            allRev = self.currentProperty.db.allMyReviews
+            allRev = self.db.allMyReviews
             
         } else {
             
-            allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.currentProperty.db.allMyReviews)
+            allRev = self.modelCollectionFromCollectionID(collectionId: rifReview!, modelPath: \.db.allMyReviews)
         }
     
         let allVote = allRev.compactMap({$0.voto.generale})
@@ -1643,10 +1862,10 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     /// Ritorna il numero di preparazioni (esclude i prodotti finit) con recensioni, il totale delle preparazioni, il numero di preparazioni con media sotto il 6, sopra il 6, sopra il 9.
     func monitorRecensioniMoreInfo() -> (preparazioniConRev:Int,totPrep:Int,negCount:Int,posCount:Int,topCount:Int) {
         
-        let dishReviewed = self.currentProperty.db.allMyDish.filter({
+        let dishReviewed = self.db.allMyDish.filter({
             !$0.rifReviews.isEmpty
         })
-        let soloLePreparazioni = self.currentProperty.db.allMyDish.filter({
+        let soloLePreparazioni = self.db.allMyDish.filter({
             $0.percorsoProdotto != .prodottoFinito
         })
         
@@ -1672,7 +1891,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     func reviewValue(rifReviews:[String]) -> [DishRatingModel] {
         
       //  let allRif = dish.rifReviews
-        let allRev = self.modelCollectionFromCollectionID(collectionId: rifReviews, modelPath: \.currentProperty.db.allMyReviews)
+        let allRev = self.modelCollectionFromCollectionID(collectionId: rifReviews, modelPath: \.db.allMyReviews)
         let sortElement = allRev.sorted(by: {$0.dataRilascio > $1.dataRilascio})
         
         return sortElement

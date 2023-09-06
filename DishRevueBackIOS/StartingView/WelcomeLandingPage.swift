@@ -9,6 +9,7 @@ import SwiftUI
 import MyPackView_L0
 import MapKit
 import MyFoodiePackage
+import FirebaseFirestore
 
 struct WelcomeLandingPage: View {
     
@@ -111,22 +112,22 @@ struct WelcomeLandingPage: View {
             
         case .addProperty:
             
-            AddPropertyMainView { mapItem in
-
+            AddPropertyMainView() //{ mapItem in
+/*
                 do {
-                     try await registrazioneProperty(mkItem: mapItem)
+                    try await registrazioneProperty(mkItem: mapItem)
                     // registrazione andata a buon fine
-                    self.localNavigationPath.removeLast()
-                    self.viewModel.stepView = .mainView
+                   // self.localNavigationPath.removeLast()
+                   // self.viewModel.stepView = .mainView // non necessario
                     
                 } catch {
                     
                     self.viewModel.alertItem = AlertModel(
                         title: "Server Error",
                         message: "Controllare la connessione dati e riprovare.\nIn caso di mancata risoluzione del problema contattare info@foodies.com ")
-                }
+                } */
 
-            }
+          //  }
 
         case .addCollaboration:
             ZStack {
@@ -137,12 +138,9 @@ struct WelcomeLandingPage: View {
         
     }
     
-    private func registrazioneProperty(mkItem:MKMapItem) async throws {
+   /* private func registrazioneProperty(mkItem:MKMapItem) async throws {
         
-        // userRoleModel derivato da quello corrente
-       // let authData = AuthPasswordLess.userAuthData
-
-        let userRole = self.viewModel.currentUser.map { user -> UserRoleModel in
+       /* let userRole = self.viewModel.currentUser.map { user -> UserRoleModel in
             
             var local = UserRoleModel(uid: user.id, userName: user.userName, mail: user.email)
             local.ruolo = .admin
@@ -150,15 +148,26 @@ struct WelcomeLandingPage: View {
             local.restrictionLevel = nil
             
             return local
-        }
+        } */
         
-        guard let userRole else {
+      /*  guard let userRole else {
             print("[EPIC_FAIL]_NO CURRENT USER IN VIEWMODEL, WHILE SUPPOSING SHOULD BE")
             // throw error
           //  throw URLError(.badServerResponse)
             return
-        }
+        } */
         
+        guard var user = self.viewModel.currentUser else {
+            
+              print("[EPIC_FAIL]_NO CURRENT USER IN VIEWMODEL, WHILE SUPPOSING SHOULD BE")
+              // throw error
+            //  throw URLError(.badServerResponse)
+           // fatalError()
+              return
+          }
+        
+        user.propertyRole = CurrentUserRoleModel(ruolo: .admin)
+    
         let mkCity = mkItem.placemark.locality ?? "NOLOCALITY"
         let mkCoordinate = mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
 
@@ -171,17 +180,43 @@ struct WelcomeLandingPage: View {
          phoneNumber: mkItem.phoneNumber ?? "",
          streetAdress: mkItem.placemark.thoroughfare ?? "",
          numeroCivico: mkItem.placemark.subThoroughfare ?? "",
-         admin: userRole )
-
+         admin: user )
+        
+      //  let uuidFromMap = mkItem.placemark
         // salvare solo il field dei ref
         let ref = modelProperty.id
         
-        GlobalDataManager.user.updatePropertiesRef(ref: ref, userId: userRole.id)
+       /* let customEncoder:Firestore.Encoder = {
+            // creiamo un custom Encode per codificare lo UserCloudData nell'organigramma
+            let encoder = Firestore.Encoder()
+            encoder.userInfo[user.codeForBusinessCollection] = false
+            return encoder
+        }() */
         
-        // publish property
-        try await GlobalDataManager.property.publishPropertyData(propertyRef: modelProperty.id, element: modelProperty)
+        // publish property first registration
+        
+        let userEncoder = user.customEncoding(forBusiness: false)
+        
+        try await GlobalDataManager
+            .shared
+            .propertiesManager
+            .propertyFirstRegistration(
+                property: modelProperty,
+                userEncoder: userEncoder)
+        
+      /*  try await GlobalDataManager
+                    .shared
+                    .propertiesManager
+                    .publishPropertyData(propertyRef: ref, element: modelProperty, to: customEncoder) */
+        
+        print("[DATA_SETTED]_registrazioneProperty_propertyModel")
+        
+        // salviamo il ref nello user che fa partire ul subscriber nel viewModel
+        try await GlobalDataManager.shared.userManager.updatePropertiesRef(ref: ref, userId: user.id)
+        
+       
 
-    }
+    }*/
     
     /*
     private func registrazioneProperty(mkItem:MKMapItem) async throws -> InitServiceObjet? {

@@ -33,13 +33,16 @@ struct WaitLoadingView<Info:View>: View {
     let backgroundColorView:Color
    // var loadingEffect:LoadingVisualEffect
     @ViewBuilder var loadingInfo:() -> Info
+    let onAppearAction: (() -> Void)?
     
     init(
         backgroundColorView: Color,
+        onAppearAction:(() -> Void)? = nil,
         loadingInfo: @escaping () -> Info = { EmptyView() }) {
         self.backgroundColorView = backgroundColorView
        // self.loadingEffect = loadingEffect
         self.loadingInfo = loadingInfo
+        self.onAppearAction = onAppearAction
            
     }
     
@@ -76,6 +79,9 @@ struct WaitLoadingView<Info:View>: View {
         .onReceive(timer, perform: { _ in
             self.rotation += 5.0
         })
+        .onAppear {
+            if let onAppearAction { onAppearAction() }
+        }
        // .background(backgroundColorView.opacity(0.6))
     }
     

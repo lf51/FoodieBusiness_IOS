@@ -26,11 +26,11 @@ let otherDateString2 = csTimeFormatter().data.string(from: otherDate2)
 let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 26 € prezzo concordato con il titolare in data 11.09.2022"
 
  let testCurrentProperty = PropertyCurrentData(
-    userRole: UserRoleModel(),
-    info: PropertyModel(intestazione: "", cityName: "TEST", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "", phoneNumber: "", streetAdress: "", numeroCivico: "", admin: UserRoleModel()),
+   // userRole: UserRoleModel(),
+    info: PropertyModel(intestazione: "", cityName: "TEST", coordinates: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434), webSite: "", phoneNumber: "", streetAdress: "", numeroCivico: "", admin: UserCloudData(id: "test", email: "test@", userName: "@test", isPremium: false) ),
     inventario: Inventario(),
-    setup: AccountSetup(),
-    db: CloudDataStore())
+    setup: AccountSetup()/*,
+    db: CloudDataStore()*/)
 
  let initServiceObject = InitServiceObjet(allPropertiesImage: [], currentProperty: testCurrentProperty)
 
@@ -42,9 +42,9 @@ var testAccount: AccounterVM = {
     
     vm.currentProperty.info = property_Test
     
-     vm.currentProperty.db.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
-     vm.currentProperty.db.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
-     vm.currentProperty.db.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
+     vm.db.allMyMenu = [menuSample_Test,menuSample2_Test,menuSample3_Test,menuDelGiorno_Test,menuDelloChef_Test]
+     vm.db.allMyDish = [dishItem2_Test,dishItem3_Test,dishItem4_Test,dishItem5_Test,prodottoFinito]
+     vm.db.allMyIngredients = [ingredientSample_Test,ingredientSample2_Test,ingredientSample3_Test,ingredientSample4_Test,ingredientSample5_Test,ingredientSample6_Test,ingredientSample7_Test,ingredientSample8_Test,ingredienteFinito]
     vm.currentProperty.inventario.ingInEsaurimento = [/*ingredientSample5_Test.id,*/ingredientSample6_Test.id,ingredientSample7_Test.id,ingredientSample8_Test.id]
     vm.currentProperty.inventario.ingEsauriti = [/*ingredientSample_Test.id,*//*ingredientSample2_Test.id,*/ingredientSample3_Test.id,ingredientSample4_Test.id]
     vm.currentProperty.inventario.cronologiaAcquisti = [
@@ -52,8 +52,8 @@ var testAccount: AccounterVM = {
     
     ]
     vm.currentProperty.inventario.archivioIngInEsaurimento = [todayString:[ingredientSample5_Test.id]]
-    vm.currentProperty.db.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
-    vm.currentProperty.db.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
+    vm.db.allMyReviews = [rate1,rate2,rate3,rate4,rate5,rate6,rate7,rate8,rate9,rate10,rate11,rate12]
+    vm.db.allMyCategories = [cat1,cat2,cat3,cat4,cat5,cat6,cat7]
     
     vm.remoteStorage.modelRif_deleted = [ingredientSample_Test.id:ingredientSample_Test.intestazione]
     vm.remoteStorage.modelRif_newOne = [menuSample_Test.id,dishItem3_Test.id]
@@ -72,7 +72,7 @@ var testAccount: AccounterVM = {
         phoneNumber: "340 67 13 777",
         streetAdress: "vicolo San Martino",
         numeroCivico: "22",
-        admin: UserRoleModel() )
+        admin: UserCloudData(id: "test", email: "test@", userName: "@test", isPremium: false))
   /*  prp.intestazione = "Osteria del Vicolo"
     prp.cityName = "Sciacca"
     prp.streetAdress = "vicolo San Martino"

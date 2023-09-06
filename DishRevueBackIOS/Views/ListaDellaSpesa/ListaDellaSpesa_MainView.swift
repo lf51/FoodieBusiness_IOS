@@ -151,7 +151,7 @@ struct ListaDellaSpesa_MainView: View {
     private func filtraInventarioInArrivo(soloAdUnTipo:StatusTransition? = nil) -> [IngredientModel] {
         
         let allIDInArrivo = self.viewModel.currentProperty.inventario.allInArrivo()
-        let allModelInArrivo = self.viewModel.modelCollectionFromCollectionID(collectionId: allIDInArrivo, modelPath: \.currentProperty.db.allMyIngredients)
+        let allModelInArrivo = self.viewModel.modelCollectionFromCollectionID(collectionId: allIDInArrivo, modelPath: \.db.allMyIngredients)
 
         let allFilteredModel = allModelInArrivo.filter({
             

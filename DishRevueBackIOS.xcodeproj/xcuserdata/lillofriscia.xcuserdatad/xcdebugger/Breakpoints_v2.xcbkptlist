@@ -18,6 +18,38 @@
             endingLineNumber = "19"
             landmarkName = "basicModelInfoTypeAccess()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DF1C40A2-16AA-49DA-A972-D33DCC2B87AA - 84e987cdb32fffbc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static MyFoodiePackage.CategoriaMenu.basicModelInfoTypeAccess() -&gt; Swift.ReferenceWritableKeyPath&lt;DishRevueBackIOS.AccounterVM, Swift.Array&lt;MyFoodiePackage.CategoriaMenu&gt;&gt;"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofriscia/Documents/H_App/2_OnBOARD/2_Foodie/%5BA%5DBackEnd/FoodieBusiness_IOS/DishRevueBackIOS/DataModels/CloudDataModelExtension/CategoriaMenuExt.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "19"
+                  endingLineNumber = "19"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  uuid = "DF1C40A2-16AA-49DA-A972-D33DCC2B87AA - 84e987cdb32fffdf"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "static MyFoodiePackage.CategoriaMenu.basicModelInfoTypeAccess() -&gt; Swift.ReferenceWritableKeyPath&lt;DishRevueBackIOS.AccounterVM, Swift.Array&lt;MyFoodiePackage.CategoriaMenu&gt;&gt;"
+                  moduleName = "DishRevueBackIOS"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/lillofriscia/Documents/H_App/2_OnBOARD/2_Foodie/%5BA%5DBackEnd/FoodieBusiness_IOS/DishRevueBackIOS/DataModels/CloudDataModelExtension/CategoriaMenuExt.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "20"
+                  endingLineNumber = "20"
+                  offsetFromSymbolStart = "16">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

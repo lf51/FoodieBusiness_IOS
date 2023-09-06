@@ -247,7 +247,7 @@ struct CSTextField_6: View {
             
         }
             .onSubmit(self.action)
-            .onChange(of: textFieldItem) { newValue in
+            .onChange(of: textFieldItem) { _, newValue in
                 
                 let delay = 2.0
                 

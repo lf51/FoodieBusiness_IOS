@@ -53,7 +53,7 @@ struct NuovaCategoriaMenu: View {
                 VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
                     
                     CSLabel_conVB(
-                        placeHolder: "Elenco Categorie (\(self.viewModel.currentProperty.db.allMyCategories.count)):",
+                        placeHolder: "Elenco Categorie (\(self.viewModel.db.allMyCategories.count)):",
                         imageNameOrEmojy: "list.bullet.circle",
                         backgroundColor: Color.seaTurtle_3) {
                            
@@ -84,7 +84,7 @@ struct NuovaCategoriaMenu: View {
 
                         List {
           
-                                ForEach(viewModel.currentProperty.db.allMyCategories) { categoria in
+                                ForEach(viewModel.db.allMyCategories) { categoria in
                                     
                                     let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
                                     
@@ -152,12 +152,12 @@ struct NuovaCategoriaMenu: View {
     
     private func removeFromList(index:IndexSet) {
 
-        self.viewModel.currentProperty.db.allMyCategories.remove(atOffsets: index)
+        self.viewModel.db.allMyCategories.remove(atOffsets: index)
     }
 
     private func makeOrder(from:IndexSet, to:Int) {
         
-        self.viewModel.currentProperty.db.allMyCategories.move(fromOffsets: from, toOffset: to)
+        self.viewModel.db.allMyCategories.move(fromOffsets: from, toOffset: to)
     }
     
     private func pencilButton(categoria:CategoriaMenu) {
@@ -182,7 +182,7 @@ struct NuovaCategoriaMenu: View {
             return cat
         }()
         
-        if self.viewModel.isTheModelAlreadyExist(modelID: self.nuovaCategoria.id,path: \.currentProperty.db.allMyCategories) {  // Update
+        if self.viewModel.isTheModelAlreadyExist(modelID: self.nuovaCategoria.id,path: \.db.allMyCategories) {  // Update
             
             self.viewModel.updateItemModel(itemModel:categoriaFinale)
             

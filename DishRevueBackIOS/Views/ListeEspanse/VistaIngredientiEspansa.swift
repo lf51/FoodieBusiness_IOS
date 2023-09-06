@@ -72,7 +72,7 @@ struct VistaIngredientiEspansa: View {
                         
                         ForEach(container,id:\.self) { rif in
     
-                            if let model = self.viewModel.modelFromId(id: rif, modelPath: \.currentProperty.db.allMyIngredients) {
+                            if let model = self.viewModel.modelFromId(id: rif, modelPath: \.db.allMyIngredients) {
                                 
                                 let isDisponibile = model.status.checkStatusTransition(check: .disponibile)
  
@@ -112,7 +112,7 @@ struct VistaIngredientiEspansa: View {
         
         if let sostituto = currentDish.elencoIngredientiOff[rif] {
            
-            if let modelSostituto = self.viewModel.modelFromId(id: sostituto, modelPath: \.currentProperty.db.allMyIngredients) {
+            if let modelSostituto = self.viewModel.modelFromId(id: sostituto, modelPath: \.db.allMyIngredients) {
                 
                 let isActive = modelSostituto.status.checkStatusTransition(check: .disponibile)
                 
@@ -175,7 +175,7 @@ struct VistaIngredientiEspansa_Selectable: View {
         
                 VStack(alignment:.leading) {
                     
-                    let container_0 = self.viewModel.ricercaFiltra(containerPath: \.currentProperty.db.allMyIngredients, coreFilter: filterCore)
+                    let container_0 = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
                     let container = container_0.filter({$0.status != .bozza()})
                     
                     HStack {
@@ -386,8 +386,8 @@ struct VistaIngredientiEspansa_Previews: PreviewProvider {
     @State static var viewModel: AccounterVM = {
          let user = UserRoleModel()
         var vm = AccounterVM(from: initServiceObject)
-         vm.currentProperty.db.allMyDish = [dishItem3]
-         vm.currentProperty.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+         vm.db.allMyDish = [dishItem3]
+         vm.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
          return vm
      }()
     static var previews: some View {

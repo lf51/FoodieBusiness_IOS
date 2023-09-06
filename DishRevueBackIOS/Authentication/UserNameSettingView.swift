@@ -8,6 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
+//import FirebaseFirestore
 
 struct UserNameSettingView: View {
     
@@ -16,8 +17,17 @@ struct UserNameSettingView: View {
     
     var body: some View {
         
+        let userName:String = {
+            // Utile in caso di Epic fail e .backToauthentication nel retrieve dello UserData dal firebase.
+            let authUserName =  AuthenticationManager.userAuthData.userName
+           
+            let showName = authUserName == "" ? "Imposta Nome Utente" : authUserName
+            return showName
+
+        }()
+       
         CSZStackVB(
-            title: "Imposta Nome Utente",
+            title: userName,
             titlePosition:.bodyEmbed([.horizontal], 10) ,
             backgroundColorView: .seaTurtle_1) {
 
@@ -45,11 +55,23 @@ struct UserNameSettingView: View {
                         }
                     }()
       
-                    let disableButton:Bool = self.newDisplayName == ""
+                    let disableButton:Bool = {
+                        
+                        let authUserName = AuthenticationManager.userAuthData.userName
+                        
+                        if authUserName == "" {
+                           return self.newDisplayName == ""
+                        } else {
+                            let value = "@" + self.newDisplayName
+                            return value != authUserName
+                        }
+  
+                    }()
                     
                     let userNamePreview:String = self.authProcess.normalizzaUserNameString(newDisplayName: self.newDisplayName)
                     
                     VStack(alignment:.leading) {
+                        
                         CSTextField_1(
                             text: $newDisplayName,
                             placeholder: placeHolder,
@@ -57,8 +79,7 @@ struct UserNameSettingView: View {
                             cornerRadius: 10,
                             keyboardType: .namePhonePad)
                         
-                       
-                            Text("preview: \(userNamePreview)")
+                        Text("preview: \(userNamePreview)")
                                 .italic()
                                 .font(.caption)
                                 .foregroundStyle(Color.black)
@@ -111,8 +132,10 @@ struct UserNameSettingView: View {
     
     private func submitAction() async throws {
         // salva lo username nell'autentication
-        print("OLD USERNAME:\(AuthenticationManager.userAuthData.userName)")
-      try await self.authProcess.updateDisplayName(newDisplayName: self.newDisplayName)
+        print("[CALL]_submitAction/OLD USERNAME:\(AuthenticationManager.userAuthData.userName)")
+        
+       try await self.authProcess.updateDisplayName(newDisplayName: self.newDisplayName)
+        
         // salva l'utente su firestore
         let userAuthData = AuthenticationManager.userAuthData
         print("NEW USERNAME:\(AuthenticationManager.userAuthData.userName)")
@@ -123,11 +146,14 @@ struct UserNameSettingView: View {
             userName: userAuthData.userName,
             isPremium: false)
         
-      try await GlobalDataManager.user.publishUserCloudData(
-        forUser: userAuthData.id,
-        from: userData)
+        try await GlobalDataManager
+                    .shared
+                    .userManager
+                    .publishUserCloudData(
+                        forUser: userAuthData.id,
+                        from: userData)
         
-        print("DOPO AWAIT PUBLISH USER_SEND CHANGE AUTHCASE TO .auth")
+      //  print("DOPO AWAIT PUBLISH USER_SEND CHANGE AUTHCASE TO .auth")
         
         self.authProcess.authCase = .auth
 

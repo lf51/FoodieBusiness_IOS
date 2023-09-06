@@ -78,7 +78,7 @@ struct MonitorServizio: View {
         case .adesso:
             
            //let allMenuToAnalize = self.viewModel.allMyMenu.filter({$0.isOnAir(checkTimeRange: true)})
-            let allMenuToAnalize = self.viewModel.currentProperty.db.allMyMenu.filter({$0.isOnAirValue().now})
+            let allMenuToAnalize = self.viewModel.db.allMyMenu.filter({$0.isOnAirValue().now})
           /*  vbServizioStat("Menu Online:",
                            allMenuToAnalize: allMenuToAnalize) { serviceOff in
             vbTopStackNowOnline(
@@ -102,7 +102,7 @@ struct MonitorServizio: View {
             
         case .oggi:
             
-            let allMenuToAnalize = self.viewModel.currentProperty.db.allMyMenu.filter({$0.isOnAirValue().today})
+            let allMenuToAnalize = self.viewModel.db.allMyMenu.filter({$0.isOnAirValue().today})
             
             MonitorServizio_SubLogic(
                 viewModel: self.viewModel,
@@ -116,7 +116,7 @@ struct MonitorServizio: View {
             
         case .generale:
             
-            let allMenuToAnalize = self.viewModel.currentProperty.db.allMyMenu.filter({
+            let allMenuToAnalize = self.viewModel.db.allMyMenu.filter({
                 $0.status.checkStatusTransition(check: .disponibile) ||
                 $0.status.checkStatusTransition(check: .inPausa)
             })
@@ -600,13 +600,13 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                             vbSingleStatusRow(
                                 rifToCheck: foodB,
                                 statusCheck: .disponibile,
-                                path: \.currentProperty.db.allMyDish,
+                                path: \.db.allMyDish,
                                 label: "in Vendita")
                             
                             vbSingleStatusRow(
                                 rifToCheck: foodB,
                                 statusCheck: .inPausa,
-                                path: \.currentProperty.db.allMyDish)
+                                path: \.db.allMyDish)
                             
                         }
                 }
@@ -663,12 +663,12 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         vbSingleStatusRow(
                             rifToCheck: self.ingredientsNeeded,
                             statusCheck: .disponibile,
-                            path: \.currentProperty.db.allMyIngredients)
+                            path: \.db.allMyIngredients)
                         
                         vbSingleStatusRow(
                             rifToCheck: self.ingredientsNeeded,
                             statusCheck: .inPausa,
-                            path: \.currentProperty.db.allMyIngredients)
+                            path: \.db.allMyIngredients)
                         
                     }
                 }
@@ -791,12 +791,12 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                         vbSingleStatusRow(
                             rifToCheck: self.readyProduct,
                             statusCheck: .disponibile,
-                            path: \.currentProperty.db.allMyDish)
+                            path: \.db.allMyDish)
                         
                         vbSingleStatusRow(
                             rifToCheck: self.readyProduct,
                             statusCheck: .inPausa,
-                            path: \.currentProperty.db.allMyDish)
+                            path: \.db.allMyDish)
                         
                         
                     }
@@ -1304,7 +1304,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
 }
 
 struct MonitorModelView_Previews: PreviewProvider {
-    static let allDish = testAccount.currentProperty.db.allMyDish.map({$0.id})
+    static let allDish = testAccount.db.allMyDish.map({$0.id})
     static var previews: some View {
         
        /* NavigationStack {

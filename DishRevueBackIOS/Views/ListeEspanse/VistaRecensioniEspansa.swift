@@ -68,11 +68,11 @@ struct VistaRecensioniEspansa: View {
     
     private func mapValue() -> [DishModel] {
         
-        let element = self.viewModel.currentProperty.db.allMyReviews
+        let element = self.viewModel.db.allMyReviews
         
         let mapElement = element.map({$0.rifPiatto})
         let uniqueMapEl = Array(Set(mapElement))
-        let allDishUsed = self.viewModel.modelCollectionFromCollectionID(collectionId: uniqueMapEl, modelPath: \.currentProperty.db.allMyDish)
+        let allDishUsed = self.viewModel.modelCollectionFromCollectionID(collectionId: uniqueMapEl, modelPath: \.db.allMyDish)
         
         let sortElement = allDishUsed.sorted(by: {
 

@@ -296,7 +296,7 @@ struct DishListByIngredientView: View {
         }
         
       if let currentIngredientModel = {
-          let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.currentProperty.db.allMyIngredients)
+          let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.db.allMyIngredients)
           var cleanCopy = current
           cleanCopy?.status = current?.status.changeStatusTransition(changeIn: .inPausa) ?? .bozza()
          
@@ -346,7 +346,7 @@ struct DishListByIngredientView: View {
         
         if let currentIngredientModel = {
             
-            let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.currentProperty.db.allMyIngredients)
+            let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.db.allMyIngredients)
             var cleanCopy = current
             cleanCopy?.status = current?.status.changeStatusTransition(changeIn: .archiviato) ?? .bozza()
             return cleanCopy
@@ -493,8 +493,8 @@ struct DishListByIngredientView_Previews: PreviewProvider {
     @StateObject static var viewModel:AccounterVM = {
         let user = UserRoleModel()
         var viewM = AccounterVM(from: initServiceObject)
-        viewM.currentProperty.db.allMyDish = [dishItem,dishItem2,dishItem3]
-        viewM.currentProperty.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4,ingredientSample5 ]
+        viewM.db.allMyDish = [dishItem,dishItem2,dishItem3]
+        viewM.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4,ingredientSample5 ]
         return viewM
     }()
     

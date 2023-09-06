@@ -32,17 +32,23 @@ struct HomeView: View {
 
         NavigationStack(path:$viewModel.homeViewPath) {
       
-        let userValue:(name:String,role:String,currentProperty:String) = {
+            let userValue:(name:String,role:String,currentProperty:String) = {
             // implementare info dal current user
             // segnalare utente premium
           //  let userPremium = self.viewModel.currentUser?.isPremium ?? false ? "checkmark.seal.fill" : ""
             
             let propertyData = self.viewModel.currentProperty
-            let role = propertyData.userRole.ruolo.rawValue
-            let userName = propertyData.userRole.userName
-            let prop = propertyData.info?.intestazione ?? "no property in"
+            let user = self.viewModel.currentUser
+            
+           // let isPremium = user?.isPremium ?? false
+            let userName = (user?.userName ?? "No Username") + "___" + AuthenticationManager.userAuthData.userName
+          //  let name = "\(userName) "
+            
+                let role = self.viewModel.currentUser?.propertyRole?.ruolo.rawValue ?? "no role"
+           // let userName = propertyData.userRole.userName
+                let prop = (propertyData.info?.intestazione ?? "no property in") + "___" + (self.viewModel.currentUser?.userName ?? "No UserName")
                 
-                return (userName,role,prop)
+            return (userName,role,prop)
                 
             }()
            /* CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {*/
@@ -293,7 +299,7 @@ struct HomeView: View {
         
         //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
         //update 09.07.23
-        let tutteLePreparazioni = self.viewModel.currentProperty.db.allMyDish.filter({
+        let tutteLePreparazioni = self.viewModel.db.allMyDish.filter({
             !$0.rifReviews.isEmpty &&
             $0.percorsoProdotto != .prodottoFinito
             
@@ -309,7 +315,7 @@ struct HomeView: View {
     
     private func compilaArrayMenu() -> (model:[MenuModel],rif:[String]) {
         
-        let allMenu = self.viewModel.currentProperty.db.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
+        let allMenu = self.viewModel.db.allMyMenu.filter({$0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > 0.0 })
         
         let allSorted = allMenu.sorted(by: {
             $0.mediaValorePiattiInMenu(readOnlyVM: self.viewModel) > $1.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
@@ -601,7 +607,7 @@ struct MenuDiSistema_BoxView:View {
                         } else {
                             
                             let dishIn = menuDS!.rifDishIn.count
-                            let allDish = viewModel.currentProperty.db.allMyDish.count
+                            let allDish = viewModel.db.allMyDish.count
                             
                             NavigationLink(value: DestinationPathView.vistaPiattiEspansa(menuDS!)) {
                                 
@@ -659,7 +665,7 @@ struct MenuDiSistema_BoxView:View {
                                     
                                     ForEach(menuDS!.rifDishIn,id:\.self) { idPiatto in
                                            
-                                        if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.currentProperty.db.allMyDish) {
+                                        if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.db.allMyDish) {
                                                
                                              //  DishModel_RowView(item: piatto, rowSize: .sintetico)
                                                GenericItemModel_RowViewMask(

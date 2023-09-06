@@ -168,7 +168,7 @@ struct IngredientModel_SmallRowView_Previews: PreviewProvider {
    @State static var vm = {
        let user = UserRoleModel()
        var viewM = AccounterVM(from: initServiceObject)
-       viewM.currentProperty.db.allMyIngredients = [ ing1]
+       viewM.db.allMyIngredients = [ ing1]
         return viewM
     }()
     static var ing1 = {

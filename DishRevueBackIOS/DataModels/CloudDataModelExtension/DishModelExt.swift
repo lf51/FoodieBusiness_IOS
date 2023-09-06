@@ -50,13 +50,13 @@ extension DishModel:
     } */
     
     public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
-        return \.currentProperty.db.allMyDish
+        return \.db.allMyDish
     }
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
          return (
-            \.currentProperty.db.allMyDish, "Lista Piatti",
+            \.db.allMyDish, "Lista Piatti",
              self.percorsoProdotto.simpleDescription(),
              self.percorsoProdotto.imageAssociated().system
          )
@@ -203,7 +203,7 @@ extension DishModel:
                   
                   Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
                   
-                  if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.currentProperty.db.allMyIngredients) {
+                  if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.db.allMyIngredients) {
                       
                       Button("Cronologia Acquisti") {
                           viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(ingDS))
@@ -374,7 +374,7 @@ extension DishModel:
     func allMinusArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
         
         let allIngredientsID = self.ingredientiPrincipali + self.ingredientiSecondari
-        let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.currentProperty.db.allMyIngredients)
+        let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.db.allMyIngredients)
         let allMinusBozzeEArchiviati = allTheIngredients.filter({
           // !$0.status.checkStatusTransition(check: .archiviato)
             !$0.status.checkStatusTransition(check: .archiviato)
@@ -391,7 +391,7 @@ extension DishModel:
         // Innesto 06.10
         guard !self.ingredientiPrincipali.contains(self.id) else {
            // Trattasi di ibrido
-            if let model = viewModel.modelFromId(id: self.id, modelPath: \.currentProperty.db.allMyIngredients) { return [model] }
+            if let model = viewModel.modelFromId(id: self.id, modelPath: \.db.allMyIngredients) { return [model] }
             else { return [] }
         }
         
@@ -417,7 +417,7 @@ extension DishModel:
             
             if let sostituto = self.elencoIngredientiOff[ingredient.id] {
                 
-                let(isActive,_,_) = viewModel.infoFromId(id: sostituto, modelPath: \.currentProperty.db.allMyIngredients)
+                let(isActive,_,_) = viewModel.infoFromId(id: sostituto, modelPath: \.db.allMyIngredients)
                 
                 if isActive {
                     allActiveIDs[position!] = sostituto
@@ -427,7 +427,7 @@ extension DishModel:
             
         }
         
-        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.currentProperty.db.allMyIngredients)
+        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.db.allMyIngredients)
         
         return allActiveModels
     } //02.01.23 ricollocata in MyFoodiePackage
@@ -544,7 +544,7 @@ extension DishModel:
         
         // Nota 13.09
 
-        let allLocalReviews:[DishRatingModel] = readOnlyViewModel.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.currentProperty.db.allMyReviews)
+        let allLocalReviews:[DishRatingModel] = readOnlyViewModel.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.db.allMyReviews)
         
         guard !allLocalReviews.isEmpty else {
             

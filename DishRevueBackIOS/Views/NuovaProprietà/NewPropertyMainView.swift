@@ -18,7 +18,7 @@ struct AddPropertyMainView: View {
    // @Binding var showLocalAlert:Bool
    // @Binding var localAlert:AlertModel? {didSet { showLocalAlert = true} }
     var addTopPadding:Bool = false
-    let registrationAction:(_ :MKMapItem) async throws -> ()
+  //  let registrationAction:(_ :MKMapItem) async throws -> ()
     
     let screenHeight: CGFloat = UIScreen.main.bounds.height
     let screenWidth: CGFloat = UIScreen.main.bounds.width
@@ -114,7 +114,7 @@ struct AddPropertyMainView: View {
         let idToCheck = PropertyModel.creaID(coordinates: mkItemCoordinate, cityName: mkCity)
         
         // check Unicità
-        let alreadyExist = try await GlobalDataManager.property.checkPropertyExist(for: idToCheck)
+        let alreadyExist = try await GlobalDataManager.shared.propertiesManager.checkPropertyExist(for: idToCheck)
         
         guard !alreadyExist else {
             // proprietà già esistente / mandiamo un alert
@@ -127,24 +127,73 @@ struct AddPropertyMainView: View {
         }
         print("[3]PropertyDoesNot exist. Procediamo alla registrazione")
         
-       // do {
-            try await registrationAction(mkItem)
+          //  try await registrationAction(mkItem)
+        try await registrazioneProperty(mkItem: mkItem)
         
-            print("[7]Registrazione terminata. Chiudiamo lo sheet della mappa")
-       /* } catch {
-            self.localAlert = AlertModel(
-                title: "Server Error",
-                message: "Controllare la connessione dati e riprovare.\nIn caso di mancata risoluzione del problema contattare info@foodies.com ")
-        }*/
-       /* try await registrazioneProperty(
-                mkItem: mkItem,
-                mkCity: mkCity,
-                mkCoordinate: mkItemCoordinate) */
-        
-        
-        //self.isShowingSheet.toggle()
+        print("[7]Registrazione terminata. Chiudiamo lo sheet della mappa")
+
 
         
+    }
+    
+    private func registrazioneProperty(mkItem:MKMapItem) async throws {
+        
+        guard var user = self.viewModel.currentUser else {
+            
+              print("[EPIC_FAIL]_NO CURRENT USER IN VIEWMODEL, WHILE SUPPOSING SHOULD BE")
+              // throw error
+            //  throw URLError(.badServerResponse)
+           // fatalError()
+              return
+          }
+        
+        user.propertyRole = CurrentUserRoleModel(ruolo: .admin)
+    
+        let mkCity = mkItem.placemark.locality ?? "NOLOCALITY"
+        let mkCoordinate = mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
+
+        // genera un propertyModel
+       let modelProperty = PropertyModel(
+         intestazione: mkItem.name ?? "",
+         cityName: mkCity,
+         coordinates: mkCoordinate,
+         webSite: mkItem.url?.absoluteString ?? "",
+         phoneNumber: mkItem.phoneNumber ?? "",
+         streetAdress: mkItem.placemark.thoroughfare ?? "",
+         numeroCivico: mkItem.placemark.subThoroughfare ?? "",
+         admin: user )
+
+        // salvare solo il field dei ref
+        let ref = modelProperty.id
+
+        // publish property first registration
+        
+        let userEncoder = user.customEncoding(forBusiness: false)
+        
+        try await GlobalDataManager
+            .shared
+            .propertiesManager
+            .propertyFirstRegistration(
+                property: modelProperty,
+                userEncoder: userEncoder)
+
+        
+        print("[DATA_SETTED]_registrazioneProperty_propertyModel")
+        
+        // salviamo il ref nello user che fa partire ul subscriber nel viewModel
+        
+        if user.propertiesRef != nil,
+           !user.propertiesRef!.isEmpty {
+            
+            user.propertiesRef?.append(ref)
+        } else {
+            user.propertiesRef = [ref]
+        }
+        
+        try await GlobalDataManager.shared.userManager.updatePropertiesRef(user: user)
+        
+        print("[END_AWAIT]_updatePropertiesRef")
+
     }
     
    /* private func registrazioneProperty(mkItem:MKMapItem,mkCity:String,mkCoordinate:CLLocationCoordinate2D) async throws {

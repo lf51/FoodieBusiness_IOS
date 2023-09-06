@@ -208,7 +208,8 @@ public struct PropertyLocalImage:Decodable,Hashable {
 
    public let propertyID:String
   //public let userRuolo:String
-   public let userRuolo:UserRoleModel
+  // public let userRuolo:UserRoleModel
+   public let currentUserRole:CurrentUserRoleModel
    public let propertyName:String
    public let adress:String
     
@@ -231,9 +232,9 @@ public struct PropertyLocalImage:Decodable,Hashable {
         
     }
     
-    public init(userRuolo:UserRoleModel,propertyName:String,propertyRef:String,propertyAdress:String) {
+    public init(userRuolo:CurrentUserRoleModel,propertyName:String,propertyRef:String,propertyAdress:String) {
         
-        self.userRuolo = userRuolo
+        self.currentUserRole = userRuolo
         self.propertyID = propertyRef
         self.propertyName = propertyName
         self.adress = propertyAdress
@@ -245,14 +246,29 @@ public struct PropertyLocalImage:Decodable,Hashable {
         let road = try container.nestedContainer(keyedBy: PropertyModelKeys.self, forKey: .propertyInfo)
         
         // verifichiamo in decodifica che lo user è autorizzato
-        let organigramma = try road.decode([UserRoleModel].self, forKey: .organigramma)//.first(where: { $0.id == CloudDataCompiler.userAuthUid})
         
-        guard let user = organigramma.first(where: {$0.id == AuthenticationManager.userAuthData.id}) else {
+        let organigramma = try road.decode([UserCloudData].self, forKey: .organigramma)//.first(where: { $0.id == CloudDataCompiler.userAuthUid})
+        
+        print("[ORGANIGRAMMA]_count:\(organigramma.count)_MUST BE ONE")
+        
+        guard let user = organigramma.first,
+              let propertyRole = user.propertyRole else {
+            // questo guard in teoria non è mai eseguito. L'organigramma della proprietà, decodificato sopra, avrà sempre un solo user autorizzato. A differenza della vecchia impostazione, se lo user non è autorizzato l'organigramma soprà sarà vuoto e in realtà farà il throw di un errore. Quindi qui non si arriverà mai, ne in caso di mancata autorizzazione, ne in presenza di autorizzazione
+            let context = DecodingError.Context(codingPath: [Self.PropertyModelKeys.organigramma], debugDescription: "User Non Trovato in Organigramma")
+            print("errore di decoding di una ref: \(context.debugDescription)")
+            throw DecodingError.valueNotFound(String.self, context)
+        }
+        
+        /*
+        print("[DECODE ORGANIGRAMMA]_isEmpty:\(organigramma.isEmpty)")
+        
+        guard let user = organigramma.first(where: {$0.id == AuthenticationManager.userAuthData.id}),
+              let role = user.propertyRole else {
             // User Non Autorizzato
             let context = DecodingError.Context(codingPath: [Self.PropertyModelKeys.organigramma], debugDescription: "User Non Autorizzato")
             print("errore di decoding di una ref: \(context.debugDescription)")
             throw DecodingError.valueNotFound(String.self, context)
-        }
+        } */
 
         // user Autorizzato
         let city = try road.decode(String.self, forKey: .cityName)
@@ -262,7 +278,8 @@ public struct PropertyLocalImage:Decodable,Hashable {
         self.propertyID = try road.decode(String.self, forKey: .id)
         self.propertyName = try road.decode(String.self, forKey: .intestazione)
         self.adress = street + " " + numeroCivico + "," + " " + city
-        self.userRuolo = user
+        
+        self.currentUserRole = propertyRole
 
     }
 
@@ -300,7 +317,7 @@ public struct PropertyLocalImage:Decodable,Hashable {
     
 }
 /// oggetto di servizio per salvare i riferimenti delle proprietà dello User
-public struct UserCloudData:Codable {
+/*public struct UserCloudData:Codable {
     
     public var id:String
     public var email:String
@@ -318,9 +335,9 @@ public struct UserCloudData:Codable {
         case isPremium = "user_is_premium"
         case propertiesRef = "user_properties_ref"
     }
-}
+}*/ // spostata in MyFoodiePackage
 
-public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudDataManager
+/*public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudDataManager
     
    private let db_base = Firestore.firestore()
  // private var ref_db: DocumentReference // probabile deprecazione
@@ -988,7 +1005,7 @@ public class CloudDataCompiler { // 11.08.23 in deprecazione in favore di CloudD
     
     
     
-} // deprecata
+}*/ // deprecata
 
 
 /*

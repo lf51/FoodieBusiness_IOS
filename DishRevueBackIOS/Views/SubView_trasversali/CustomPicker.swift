@@ -48,7 +48,7 @@ struct CS_Picker<E:MyProEnumPack_L1>: View {
                             .shadow(radius: 1.0)
                     )
                     
-                          .onChange(of: selection) { _ in
+                          .onChange(of: selection) {
                                self.showCustomLabel = false
                                     }
 
@@ -97,7 +97,7 @@ struct CS_PickerWithDefault<E:MyProEnumPack_L1>: View {
                             .shadow(radius: 1.0)
                     )
                     
-                          .onChange(of: selection) { _ in
+                          .onChange(of: selection) {
                                
                               self.showCustomLabel = selection != .defaultValue
                               
@@ -120,7 +120,7 @@ struct CS_PickerDoubleState<E:MyProEnumPack_L1>: View {
     var body: some View {
         
         CS_Picker(selection: $selection,customLabel: customLabel, dataContainer: dataContainer)
-        .onChange(of: selection) { newValue in
+        .onChange(of: selection) { _, newValue in
             action(newValue)
         }
     }

@@ -293,7 +293,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
     
     @StateObject static var viewModel: AccounterVM = {
         var viewM = AccounterVM(from: initServiceObject)
-        viewM.currentProperty.db.allMyIngredients = [ ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4
+        viewM.db.allMyIngredients = [ ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4
         
         ]
         return viewM

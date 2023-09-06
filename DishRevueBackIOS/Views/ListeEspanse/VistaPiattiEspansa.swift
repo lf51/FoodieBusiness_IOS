@@ -147,10 +147,10 @@ struct PreCallVistaPiattiEspansa: View {
                         var allDish:[DishModel] = []
                         
                         if self.filterCategoria == .defaultValue {
-                            allDish = self.viewModel.currentProperty.db.allMyDish
+                            allDish = self.viewModel.db.allMyDish
                         } else {
                             
-                            allDish = self.viewModel.currentProperty.db.allMyDish.filter({
+                            allDish = self.viewModel.db.allMyDish.filter({
                                 $0.categoriaMenu == self.filterCategoria.id
                                 })
                         }
@@ -177,7 +177,7 @@ struct PreCallVistaPiattiEspansa: View {
                                 backgroundColor: Color.white, backgroundOpacity: 0.2).fixedSize()
                             Spacer()
                             
-                            CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.currentProperty.db.allMyCategories)
+                            CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.db.allMyCategories)
 
                         }
 
@@ -268,7 +268,7 @@ struct PreCallVistaPiattiEspansa: View {
         
         private func description() -> (breve:Text,estesa:Text) {
             
-            let allDishCount = self.viewModel.currentProperty.db.allMyDish.count
+            let allDishCount = self.viewModel.db.allMyDish.count
             let dishInAtTheBeginning = valoreArchiviato.count
             
             let currentDishIn = currentMenu.rifDishIn.count
@@ -511,9 +511,9 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
          
         let user = UserRoleModel()
        var vm = AccounterVM(from: initServiceObject)//AccounterVM(userAuth: user)
-         vm.currentProperty.db.allMyDish = [dishItem3,dishItem4,dishItem5,dishItem6]
-         vm.currentProperty.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
-         vm.currentProperty.db.allMyMenu = [menuDelloChef,menuDelGiorno,menuSample,menuSample3,menuSample2]
+         vm.db.allMyDish = [dishItem3,dishItem4,dishItem5,dishItem6]
+         vm.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
+         vm.db.allMyMenu = [menuDelloChef,menuDelGiorno,menuSample,menuSample3,menuSample2]
          return vm
      }()
     

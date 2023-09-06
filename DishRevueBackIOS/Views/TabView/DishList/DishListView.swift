@@ -28,7 +28,7 @@ struct DishListView: View {
         
         NavigationStack(path:$viewModel.dishListPath) {
             
-            let container = self.viewModel.ricercaFiltra(containerPath: \.currentProperty.db.allMyDish, coreFilter: filterCore)
+            let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyDish, coreFilter: filterCore)
             
             let generalDisable:Bool = {
                 
@@ -143,7 +143,7 @@ struct DishListView: View {
         if mapTree == nil {
             
             self.mapTree = MapTree(
-                mapProperties: self.viewModel.currentProperty.db.allMyCategories,
+                mapProperties: self.viewModel.db.allMyCategories,
                 kpPropertyInObject: \DishModel.categoriaMenu,
                 labelColor: .seaTurtle_3)
             
@@ -203,7 +203,7 @@ struct DishListView: View {
             }
      
         MyFilterRow(
-            allCases: self.viewModel.currentProperty.db.allMyCategories,
+            allCases: self.viewModel.db.allMyCategories,
             filterCollection: $filterCore.filterProperties.categorieMenu,
             selectionColor: Color.yellow.opacity(0.7),
             imageOrEmoji: "list.bullet.indent",
