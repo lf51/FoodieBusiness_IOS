@@ -78,7 +78,7 @@ struct Switch_ImportObject_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             Switch_ImportObject(backgroundColorView: .seaTurtle_1)
-                .environmentObject(AccounterVM(from:initServiceObject ))
+                .environmentObject(AccounterVM(userAuthUID: "TEST_USER_UID"))
         }
     }
 }

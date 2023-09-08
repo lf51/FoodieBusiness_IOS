@@ -242,7 +242,7 @@ struct FastImport_Categorie_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             FastImport_Categorie(backgroundColorView: .seaTurtle_1, disabilitaPicker: .constant(true))
-                .environmentObject(AccounterVM(from: initServiceObject))//(AccounterVM(userAuth: user))
+                .environmentObject(AccounterVM(userAuthUID: "TEST_USER_UID"))//(AccounterVM(userAuth: user))
         }
     }
 }

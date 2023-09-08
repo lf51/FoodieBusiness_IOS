@@ -307,7 +307,7 @@ struct FastImportMainView_Previews: PreviewProvider {
           //  FastImport_MainView(backgroundColorView: Color.seaTurtle_1)
             TemporaryModelRow(allFastDish: $allDish,tabViewHeight: 200,localScrollPosition: .constant(""))
                 
-        }.environmentObject(AccounterVM(from:initServiceObject))
+        }.environmentObject(AccounterVM(userAuthUID: "TEST_USER_UID"))
          //   Color.cyan
     
     }
