@@ -11,14 +11,14 @@ import SwiftUI
 import MapKit
 import MyFoodiePackage
 import MyPackView_L0
+
 // 17/06/2023 Maps di Apple -> tentiamo di scriverne un altra con maps di Google. TENTATIVO FALLITO
 struct AddPropertyMainView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-   // @Binding var showLocalAlert:Bool
-   // @Binding var localAlert:AlertModel? {didSet { showLocalAlert = true} }
+
     var addTopPadding:Bool = false
-  //  let registrationAction:(_ :MKMapItem) async throws -> ()
+    let dismiss: () -> ()
     
     let screenHeight: CGFloat = UIScreen.main.bounds.height
     let screenWidth: CGFloat = UIScreen.main.bounds.width
@@ -27,26 +27,38 @@ struct AddPropertyMainView: View {
     
     @State private var queryRequest: String = ""
     @State private var queryResults: [MKMapItem] = [] // viene riempita dalla query di ricerca
-    
-    @State private var currentRegion: MKCoordinateRegion = MKCoordinateRegion(
+
+    @State private var mapPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434),
-        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1))
+        span: MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)))
     
-  //  @State private var showActivityInfo:Bool = false // deprecata
-   // @State private var showLocalAlert:Bool = false
-   // @State private var localAlert:AlertModel? {didSet { showLocalAlert = true } }
-    
+    @State private var showLocalAlert: Bool = false
+    @State private var localAlert: AlertModel? {didSet { showLocalAlert = true} }
+
     var body: some View {
         
         ZStack {
-                
-            MapView(currentRegion: $currentRegion, queryResults: queryResults)
+            
+            let horizontalAlign:HorizontalAlignment = addTopPadding ? .trailing : .center
+            
+            MapView(
+                mapPosition: $mapPosition,
+                queryResults: queryResults,
+                mapSelection: $newProperty)
                 .ignoresSafeArea()
                 .zIndex(0)
                 
           //  VStack(alignment: .trailing) {
-            VStack {
-    
+            VStack(alignment:horizontalAlign) {
+
+                if addTopPadding {
+                    
+                    Button("Dismiss") {
+                        self.dismiss()
+                    }.padding(.trailing)
+                     .padding(.top,30)
+                }
+                
                 CSTextField_2(
                     text: $queryRequest,
                     placeholder: "nome attività, indirizzo, città",
@@ -56,9 +68,9 @@ struct AddPropertyMainView: View {
                     autoCap:.words,
                     cornerRadius: 5.0)
                     .padding(.horizontal,5)
-                    .csModifier(addTopPadding) { view in
+                  /*  .csModifier(addTopPadding) { view in
                         view.padding(.top,30)
-                    }
+                    }*/
                 
                 QueryScrollView_NewPropertySubView(
                     queryResults: queryResults,
@@ -67,8 +79,7 @@ struct AddPropertyMainView: View {
                    
                         self.showPlaceData(mkItem: propertyItem)
                     
-                }
-                    .zIndex(1)
+                }//.zIndex(1)
                 
                 Spacer()
                 
@@ -80,13 +91,15 @@ struct AddPropertyMainView: View {
                         frameHeight: screenHeight * 0.20) {
                             
                         //self.registrazioneProperty(mkItem: property)
-                        try await checkProperty(mkItem: property)
+                       // try await checkProperty(mkItem: property)
+                          try await registration(mkItem: property)
                     }
                         .padding(.vertical, screenHeight * 0.05 )
                     
                 }
       
-            }
+            }.zIndex(1)
+               
             
         }
         .onChange(of: queryRequest) { _, newValue in
@@ -98,15 +111,48 @@ struct AddPropertyMainView: View {
                 if newValue == queryRequest { queryResearch() }
             }
         }
-       // .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
-       // .csAlertModifier(isPresented: $showLocalAlert, item: localAlert)
+      //  .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
+        .csAlertModifier(isPresented: $showLocalAlert, item: localAlert)
 
     }
     
     // Method
     
-    private func checkProperty(mkItem:MKMapItem) async throws {
+    private func registration(mkItem:MKMapItem) async throws {
         
+        do {
+            
+            try await checkProperty(mkItem: mkItem)
+            try await registrazioneProperty(mkItem: mkItem)
+            print("[END]_registrazione_dismissAction()")
+            self.dismiss()
+            
+           /* self.viewModel.alertItem = AlertModel(
+                title: "Congratulation!",
+                message:"Proprietà registrata con Successo!")*/
+            
+        } catch let error as CSError {
+           // print("[CATCH_CSError]_registration")
+           // self.dismiss()
+           self.localAlert = AlertModel(
+                title: "Proprietà già registrata",
+                message: error.localizedDescription)
+
+        } catch {
+            
+            print("[CATCH_Error]_registration")
+           // self.dismiss()
+            self.localAlert = AlertModel(
+                 title: "⚠️Errore non identificato⚠️",
+                 message: "Controllare la connessione dati e riprovare. Se il problema persiste riavviare l'applicazione e riprovare. Se il problema non è risolto contattare info@foodies.com :(")
+            
+        }
+        
+    }
+    
+
+    private func checkProperty(mkItem:MKMapItem) async throws {
+        print("[CALL]_checkProperty")
         // verifichiamo che la prop non esiste
         let mkItemCoordinate = mkItem.placemark.location?.coordinate ?? CLLocationCoordinate2D(latitude: 37.510977, longitude: 13.041434)
         
@@ -116,35 +162,49 @@ struct AddPropertyMainView: View {
         // check Unicità
         let alreadyExist = try await GlobalDataManager.shared.propertiesManager.checkPropertyExist(for: idToCheck)
         
-        guard !alreadyExist else {
-            // proprietà già esistente / mandiamo un alert
+        if alreadyExist {
             
-            self.viewModel.alertItem = AlertModel(
-                title: "Proprietà già registrata",
-                message: "Per reclami e/o errori contattare info@foodies.com.")
+            let error = CSError.propertyAlreadyRegistered
+            
+            throw error
+        }/* else {
+            // test 07.09.23 andato a buon fine
+           // throw URLError(.badURL)
+           // fatalError("FATAL ERROR UPPEN _ TEST")
+        }*/
+        
+        
+      /*  guard !alreadyExist else {
+            // proprietà già esistente / mandiamo un alert
+            print("[PROPRIETA' ESISTENTE]")
+          //  DispatchQueue.main.async {
+                self.viewModel.alertItem = AlertModel(
+                    title: "Proprietà già registrata",
+                    message: "Per reclami e/o errori contattare info@foodies.com.")
+          //  }
 
             return
-        }
-        print("[3]PropertyDoesNot exist. Procediamo alla registrazione")
+        } */
+      //  print("[3]PropertyDoesNot exist. Procediamo alla registrazione")
         
           //  try await registrationAction(mkItem)
-        try await registrazioneProperty(mkItem: mkItem)
+     //   try await registrazioneProperty(mkItem: mkItem)
         
-        print("[7]Registrazione terminata. Chiudiamo lo sheet della mappa")
+       // print("[7]Registrazione terminata. Chiudiamo lo sheet della mappa")
 
-
-        
     }
     
     private func registrazioneProperty(mkItem:MKMapItem) async throws {
-        
+        print("[CALL]_registrazioneProperty"
+        )
         guard var user = self.viewModel.currentUser else {
             
               print("[EPIC_FAIL]_NO CURRENT USER IN VIEWMODEL, WHILE SUPPOSING SHOULD BE")
               // throw error
             //  throw URLError(.badServerResponse)
-           // fatalError()
-              return
+              fatalError()
+           // throw URLError(.unknown)
+             // return
           }
         
         user.propertyRole = CurrentUserRoleModel(ruolo: .admin)
@@ -192,76 +252,17 @@ struct AddPropertyMainView: View {
         
         try await GlobalDataManager.shared.userManager.updatePropertiesRef(user: user)
         
-        print("[END_AWAIT]_updatePropertiesRef")
+       // print("[END_AWAIT]_updatePropertiesRef")
+       // self.dismiss()
 
     }
-    
-   /* private func registrazioneProperty(mkItem:MKMapItem,mkCity:String,mkCoordinate:CLLocationCoordinate2D) async throws {
-        
-        // userRoleModel derivato da quello corrente
-        let authData = AuthPasswordLess.userAuthData
-        
-        let localUser:UserRoleModel = {
-  
-            var user = UserRoleModel(
-                uid: authData.id,
-                userName: authData.userName,
-                mail: authData.mail)
-             
-             user.ruolo = .admin
-             user.inizioCollaborazione = Date.now
-             user.restrictionLevel = nil
-             
-             return user
-         }()
-        
-        // genera un propertyModel
-       let modelProperty = PropertyModel(
-         intestazione: mkItem.name ?? "",
-         cityName: mkCity,
-         coordinates: mkCoordinate,
-         webSite: mkItem.url?.absoluteString ?? "",
-         phoneNumber: mkItem.phoneNumber ?? "",
-         streetAdress: mkItem.placemark.thoroughfare ?? "",
-         numeroCivico: mkItem.placemark.subThoroughfare ?? "",
-         admin: localUser )
-
-        let adress = modelProperty.streetAdress + " " + modelProperty.numeroCivico + "," + " " + modelProperty.cityName
-        // crea Immagine proprietà
-        let propertyImage = PropertyLocalImage(
-            userRuolo: localUser,
-            propertyName: modelProperty.intestazione,
-            propertyRef: modelProperty.id,
-            propertyAdress: adress)
-        
-        // Init array allImages per init ViewModel
-        let allPropImages = [propertyImage] // 1/initServiceObject
- 
-        // Init Properties ref per l'utenteCorrente
-        let allRef = [modelProperty.id]
-        let userCloud = UserCloudData(propertiesRef: allRef)
-        
-        print("[1]Pre Publish UserCloudData")
-       try await GlobalDataManager.user.publishUserCloudData(forUser: authData.id, from: userCloud)
-        print("[4]Post Publish UserCloudData")
-        
-        print("[1]PRE Pubblicazione su firebase del PropertyModel")
-        try await GlobalDataManager.property.publishPropertyData(propertyRef: modelProperty.id, element: modelProperty)
-        print("[4]POST Pubblicazione su firebase del PropertyModel")
-    
-        // creiamo un propertyCurrentData
-        let propCurrentData = PropertyCurrentData(userRole: localUser, propertyModel: modelProperty) // 2/initServiceObject
-        // creiamo un initServiceObject
-        let serviceObject = InitServiceObjet(allPropertiesImage: allPropImages, currentProperty: propCurrentData)
-        
- 
-    } */
 
    private func showPlaceData(mkItem:MKMapItem) {
         
-       self.currentRegion = MKCoordinateRegion(center: mkItem.placemark.coordinate , span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        
-        self.newProperty = mkItem
+       let currentRegion = MKCoordinateRegion(center: mkItem.placemark.coordinate , span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+       
+       self.mapPosition = .region(currentRegion)
+       self.newProperty = mkItem
 
     }
     

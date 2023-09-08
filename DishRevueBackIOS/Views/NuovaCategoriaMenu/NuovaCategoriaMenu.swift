@@ -221,7 +221,7 @@ struct NuovaCategoriaMenu_Previews: PreviewProvider {
             
             NuovaCategoriaMenu(backgroundColorView: Color.seaTurtle_1)
               //  .environmentObject(AccounterVM(userAuth:user))
-                .environmentObject(AccounterVM(from: initServiceObject))
+                .environmentObject(AccounterVM(userAuthUID: "TEST_USER_UID"))
         }
         
        

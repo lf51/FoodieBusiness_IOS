@@ -127,7 +127,7 @@ struct SubContentView:View {
                     .opacity(0.6)
                 } else {
                     
-                    VStack {
+                  /*  VStack {
                         Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
                         Text("Reference ViewModel:\(CFGetRetainCount(self.viewModel))")
                         
@@ -137,7 +137,7 @@ struct SubContentView:View {
                             
                         }
                             
-                    }.font(.largeTitle)
+                    }.font(.largeTitle) */
 
                 }
             })

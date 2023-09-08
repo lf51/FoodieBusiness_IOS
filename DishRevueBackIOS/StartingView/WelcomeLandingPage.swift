@@ -112,7 +112,15 @@ struct WelcomeLandingPage: View {
             
         case .addProperty:
             
-            AddPropertyMainView() //{ mapItem in
+            AddPropertyMainView(dismiss: {
+                withAnimation {
+                    self.localNavigationPath.removeLast()
+                }
+            })
+            
+            /*AddPropertyMainView {
+               
+            }*/ //{ mapItem in
 /*
                 do {
                     try await registrazioneProperty(mkItem: mapItem)

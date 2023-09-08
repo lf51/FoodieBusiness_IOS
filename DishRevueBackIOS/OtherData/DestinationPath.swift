@@ -97,7 +97,8 @@ public enum DestinationPathView: Hashable {
             NuovoIngredienteGeneralView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
             
         case .categoriaMenu:
-            NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
+           // NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
+            CloudImportCategoriesView(backgroundColor: backgroundColorView)
             
         case .moduloImportazioneVeloce:
           //  FastImport_MainView(backgroundColorView: backgroundColorView)

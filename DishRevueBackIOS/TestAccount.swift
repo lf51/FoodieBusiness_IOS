@@ -32,13 +32,13 @@ let otherDateString3 = "\(otherDateString2)|Casa Dolce casa del sapore 56 kg a 2
     setup: AccountSetup()/*,
     db: CloudDataStore()*/)
 
- let initServiceObject = InitServiceObjet(allPropertiesImage: [], currentProperty: testCurrentProperty)
+/*let initServiceObject = InitServiceObjet(allPropertiesImage: [], currentProperty: testCurrentProperty)*/
 
 var testAccount: AccounterVM = {
 
     let user = UserRoleModel()
     
-    var vm = AccounterVM(from: initServiceObject)
+    var vm = AccounterVM(userAuthUID: "TEST_USER_UID")
     
     vm.currentProperty.info = property_Test
     

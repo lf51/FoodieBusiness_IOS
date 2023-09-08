@@ -10,6 +10,34 @@ import MapKit
 import MyFoodiePackage
 
 //SubView di NewPropertySheetView
+
+struct MapView: View {
+
+    @Binding var mapPosition: MapCameraPosition
+    let queryResults: [MKMapItem]
+    
+    @Binding var mapSelection:MKMapItem?
+    
+    var body: some View {
+          
+        Map(position: $mapPosition, selection: $mapSelection) {
+            
+            ForEach(queryResults,id: \.self) { query in
+                
+                Marker(
+                    query.name ?? "",
+                    systemImage: "circle.fill",
+                    coordinate: query.placemark.coordinate)
+                    .tag(query)
+            }
+            
+        }
+
+
+    }
+}
+
+/*
 struct MapView: View {
     
    // @ObservedObject var vm:PropertyVM
@@ -22,6 +50,7 @@ struct MapView: View {
             
             return ItemCoordinate(coordinate: item.placemark.coordinate)
         }
+        
         
         Map(coordinateRegion: $currentRegion,
             annotationItems: allResult) { item in
@@ -40,23 +69,8 @@ struct MapView: View {
             self.coordinate = coordinate
         }
     }
-}
-/*struct MapView: View {
-    
-   // @ObservedObject var vm:PropertyVM
-    @Binding var currentRegion: MKCoordinateRegion
-    @Binding var queryResults: [PropertyModel]
-    
-    var body: some View {
-          
-            Map(coordinateRegion: $currentRegion,
-                annotationItems: queryResults) { property in
-                
-                MapMarker(coordinate: property.coordinates , tint: .cyan)
-            
-            }
-    }
-} */ // 29.07.23 deprecata
+}*/ // 07.09.23 deprecata
+
 
 /*
 struct MapView_Previews: PreviewProvider {

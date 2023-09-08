@@ -29,16 +29,68 @@ public class GlobalDataManager {
 
     static let shared = GlobalDataManager()
     
+   // let gdmQueue:DispatchQueue = DispatchQueue(label: "com.foodiesBusiness.globalDataManager")
+    
     let userManager:UserManager = UserManager()
     let propertiesManager:PropertyManager = PropertyManager()
     let cloudDataManager:CloudDataManager = CloudDataManager()
     let ingredientsManager:IngredientManager = IngredientManager()
+    let categoriesManager:CategoriesManager = CategoriesManager()
     
     public init() {
         print("[INIT]_GlobalDataManager")
     }
     
 } // close GlobalDataManager
+
+public class CategoriesManager {
+    
+    private let db_base = Firestore.firestore()
+    private let collectionManaged:CollectionReference
+    
+    public init() {
+        collectionManaged = self.db_base.collection("dish_categories")
+        print("[INIT]_CategoriesManager")
+    }
+    
+    let sharedCategoriesPublisher = PassthroughSubject<[CategoriaMenu]?,Error>()
+    
+    func retrieveCategoriesFromSharedCollection(filterBy:String?) {
+        
+        let customDecoder:Firestore.Decoder = {
+           
+            let decoder = Firestore.Decoder()
+            decoder.userInfo[CategoriaMenu.decodingInfo] = CategoriaMenu.DecodingCase.categoriesMainCollection
+            return decoder
+        }()
+        
+        collectionManaged
+           // .whereField("intestazione", isLessThanOrEqualTo: filterBy)
+            .getDocuments { querySnap, error in
+                
+                guard let querySnap else {
+                    // no value to push
+                    self.sharedCategoriesPublisher.send(nil)
+                    return
+                }
+                
+                let docs = querySnap.documents
+                
+                let categories = docs.compactMap { snap -> CategoriaMenu? in
+                    
+                    let categoria = try? snap.data(as: CategoriaMenu.self,decoder: customDecoder)
+                    return categoria
+                    
+                }
+                
+            // categories shoul be optional ?
+                self.sharedCategoriesPublisher.send(categories)
+
+            }
+        
+    }
+    
+}
 
 public class IngredientManager {
 
@@ -116,7 +168,7 @@ public class UserManager {
     func fetchAndListenUserDataPublisher(from id:String) {
         
        // let userPublisher = PassthroughSubject<UserCloudData?,Error>()
-        print("[CALL]-fetchAndListenUserDataPublisher")
+        print("[CALL]-fetchAndListenUserDataPublisher_THREAD:\(Thread.current)")
         
         let docRef = collectionManaged.document(id)
         
@@ -148,15 +200,6 @@ public class UserManager {
         
     }
     
-    func retrieveUserPropertyRef(forUser id:String) async throws -> UserCloudData? {
-        print("[3]Start retrieveUserPropertyRef")
-        let docRef = collectionManaged.document(id)
-        let userData = try? await docRef.getDocument(as: UserCloudData.self)
-        print("[4]End retrieveUserPropertyRef")
-        return userData
-        
-    }// deprecata
-    
     func publishUserCloudData(forUser id:String, from userData:UserCloudData, to customEncoder: Firestore.Encoder = Firestore.Encoder()) async throws {
         print("[CALL]_publishUserCloudData")
         
@@ -175,11 +218,6 @@ public class UserManager {
         try docRef
             .setData(from: user, mergeFields: ["user_properties_ref"])
       
-        
-        /*try await docRef
-            .setData(["user_properties_ref":[ref]], mergeFields: ["user_properties_ref"])*/
-          //  .setValue(ref, forKey: "properties_ref")
-            
     }
     
 } // close UserManager
@@ -194,7 +232,7 @@ public enum PropertyMainCodingKeys:String,CodingKey {
     case propertyInventario = "property_inventario"
     case propertySetup = "property_setup"
     case propertyInfo = "property_info"
-   // case organigramma = "property_organigramma"
+
 }
 
 
@@ -216,14 +254,9 @@ let propertyAllDataChanges = PassthroughSubject<Int?,Error>()
     
 let currentPropertyPublisher = PassthroughSubject<(PropertyCurrentData?,CurrentUserRoleModel?,QueryDocumentSnapshot?),Error>() // deprecata
 
-//let currentPropertyUserRolePublisher = PassthroughSubject<CurrentUserRoleModel?,Error>()
-//let currentPropertyModelPublisher = PassthroughSubject<PropertyModel?,Error>()
-//let currentPropertySetupPublisher = PassthroughSubject<AccountSetup?,Error>()
-//let currentPropertyInventarioPublihser = PassthroughSubject<Inventario?,Error>()
-
-    func fetchAndListenPropertyImagesPublisher(from ref:[String],for userUID:String) {
+func fetchAndListenPropertyImagesPublisher(from ref:[String],for userUID:String) {
     
-        print("[SECOND TRAIN FETCH]_fetchAndListenPropertyImagesPublisher/removeListener before listen again")
+    print("[CALL]_fetchAndListenPropertyImagesPublisher/removeListener before listen again_thread:\(Thread.current)")
         
         self.propertyImagesListener?.remove()
         
@@ -290,73 +323,12 @@ let currentPropertyPublisher = PassthroughSubject<(PropertyCurrentData?,CurrentU
         
     }
     
-  /*
-func fetchAndListenPropertyImagesPublisherDEPRECATA(from ref:[String]) {
-    print("[CALL]_fetchAndListenPropertyImagesPublisher/removeListener before listen again")
-    
-    //let publisher = PassthroughSubject<[PropertyLocalImage]?,Error>()
-    self.propertyImagesListener?.remove()
-    
-    self.propertyImagesListener = collectionManaged
-        .whereField(.documentID(), in: ref)
-        .addSnapshotListener({ [weak self] querySnapshot, error in
-            
-            print("[START]_LISTENER_PROP_IMAGES/startingRef:\(ref.count)/querCount:\(String(describing: querySnapshot?.documents.count))")
-            
-        guard let documents = querySnapshot?.documents else {
-                
-            print("Errore nel listener:\(error?.localizedDescription ?? "")")
-            // publisher.send(nil)
-            self?.propertyImagesPublisher.send(nil)
-            return
-                
-            }
-            
-            let decoder = {
-                let dec = Firestore.Decoder()
-                dec.userInfo[UserCloudData.decoderCase] = UserCloudData.DecodingCase.organigramma
-                return dec
-            }()
+func fetchCurrentPropertyPublisher(from images:[PropertyLocalImage]) {
 
-              
-        let allImages:[PropertyLocalImage] = documents.compactMap({ snap -> PropertyLocalImage? in
-                
-            let image = try? snap.data(as: PropertyLocalImage.self,decoder: decoder)
-            
-            guard var propImage = image else {
-                    
-                return nil
-                            }
-        
-                propImage.snapShot = snap
-                return propImage
-
-            })
-            
-            if !allImages.isEmpty {
-                print("[SUCCESS DATA SEND]_fetchAndListenPropertyImagesPublisher")
-                self?.propertyImagesPublisher.send(allImages)
-            } else {
-                self?.propertyImagesPublisher.send(nil)
-            }
-            
-            //print("[END]_LISTENER_PROP_IMAGES_endingCount:\(allImages.count) ")
-            // publisher.send(allImages)
-            
-        })
-    
-    // return publisher.eraseToAnyPublisher()
-    // return Self.propertyPublisher.eraseToAnyPublisher()
-    
-}*/
-
-    func fetchCurrentPropertyPublisher(from images:[PropertyLocalImage]) {
-
-        print("[CALL]_fetchCurrentPropertyPublisher")
+    print("[CALL]_fetchCurrentPropertyPublisher_thread:\(Thread.current)")
         
         self.retrievePropertyTransitionData(from: images) { [weak self] currentProperty, currentUserRole, propertyDocRef in
-            // dati in: setup/inventario/info/userRole
-            // dato mancante: cloudData
+
             guard let propertyDocRef,
             let currentProperty,
             let currentUserRole else {
@@ -367,70 +339,12 @@ func fetchAndListenPropertyImagesPublisherDEPRECATA(from ref:[String]) {
             }
             
             self?.currentPropertyPublisher.send((currentProperty,currentUserRole,propertyDocRef))
-          /*  GlobalDataManager.shared.cloudDataManager.retrieveCloudData(from: propertyDocRef) { [weak self] cloudData in
 
-                let propertyCurrentData = self?.compilaPropertyCurrentData(from: cloudData, andProperty: currentPropTransitionData)
-                
-                guard let propertyCurrentData else {
-                    print("[ERROR] - NoCloudData or No UserRole")
-                    //publisher.send(nil)
-                    self?.currentPropertyPublisher.send(nil)
-                    return
-                }
-                print("PRE_CURRENT_PROPERTY_PUBLISHER.send/ID:\(propertyCurrentData.info?.intestazione ?? "NO NAME")")
-
-                // publisher.send(propertyCurrentData)
-                print("[SUCCESS DATA SEND]_fetchCurrentPropertyPublisher)")
-                self?.currentPropertyPublisher.send(propertyCurrentData)
-
-            }*/ // chiuda cloudData
-            
         }
 
-        // return publisher.eraseToAnyPublisher()
     }
     
-    
-    
-/*func fetchCurrentPropertyPublisherDEPRECATA(from images:[PropertyLocalImage]) {
-
-    print("[CALL]_fetchCurrentPropertyPublisher")
-    
-    self.retrievePropertyTransitionData(from: images) { [weak self] currentPropTransitionData, propertyDocRef in
-        // dati in: setup/inventario/info/userRole
-        // dato mancante: cloudData
-        guard let propertyDocRef,
-        let currentPropTransitionData else {
-            print("[ERROR]_Retrieve transitionData FAIL")
-            // publisher.send(nil)
-            self?.currentPropertyPublisher.send(nil)
-            return
-        }
-        
-        GlobalDataManager.shared.cloudDataManager.retrieveCloudData(from: propertyDocRef) { [weak self] cloudData in
-
-            let propertyCurrentData = self?.compilaPropertyCurrentData(from: cloudData, andProperty: currentPropTransitionData)
-            
-            guard let propertyCurrentData else {
-                print("[ERROR] - NoCloudData or No UserRole")
-                //publisher.send(nil)
-                self?.currentPropertyPublisher.send(nil)
-                return
-            }
-            print("PRE_CURRENT_PROPERTY_PUBLISHER.send/ID:\(propertyCurrentData.info?.intestazione ?? "NO NAME")")
-
-            // publisher.send(propertyCurrentData)
-            print("[SUCCESS DATA SEND]_fetchCurrentPropertyPublisher)")
-            self?.currentPropertyPublisher.send(propertyCurrentData)
-
-        } // chiuda cloudData
-        
-    }
-
-    // return publisher.eraseToAnyPublisher()
-}*/
-    
-    private func retrievePropertyTransitionData(from images:[PropertyLocalImage],handle:@escaping(_ currentProperty:PropertyCurrentData?,_ currentUserRole:CurrentUserRoleModel?,_ propertyDocRef:QueryDocumentSnapshot?) -> ()) {
+private func retrievePropertyTransitionData(from images:[PropertyLocalImage],handle:@escaping(_ currentProperty:PropertyCurrentData?,_ currentUserRole:CurrentUserRoleModel?,_ propertyDocRef:QueryDocumentSnapshot?) -> ()) {
         
         let userDecoder = {
             let decoder = Firestore.Decoder()
@@ -444,7 +358,7 @@ func fetchAndListenPropertyImagesPublisherDEPRECATA(from ref:[String]) {
             // case default
             print("Recuperiamo l'immagine di default dell'ultima prop usata")
             
-            if let propertyData = try? associatedImage.snapShot?.data(as: PropertyCurrentData.self) {
+            if let propertyData = try? associatedImage.snapShot?.data(as: PropertyCurrentData.self,decoder: userDecoder) {
 
                 handle(propertyData,associatedImage.currentUserRole,associatedImage.snapShot)
                 
@@ -472,179 +386,6 @@ func fetchAndListenPropertyImagesPublisherDEPRECATA(from ref:[String]) {
             handle(nil,nil,nil)
         }
     }
-    
-/* func fetchCurrentProperty(from ref:[String]?) -> AnyPublisher<([PropertyLocalImage],PropertyCurrentData?),Error> {
-    
-    // let imagesPublisher = PassthroughSubject<[PropertyLocalImage],Error>()
-    let dataPublisher = PassthroughSubject<([PropertyLocalImage],PropertyCurrentData?),Error>()
-    
-    self.retrievePropertiesLocalImages(from: ref) { allImages in
-        
-        guard let allImages,
-        !allImages.isEmpty else {
-            print("[ERROR]_Retrieve property Images FAIL")
-            
-            // dataPublisher.send(completion: .failure(PropertyError.noImages))
-            dataPublisher.send(([],nil))
-            return
-        }
-        
-        // le allImages hanno il listener
-        // [15.08.23]Problema da risolvere: il listener è applicato al ref della proprietà a prescindere se lo user è autorizzato o meno
-        
-        // selezioniamo l'image di default
-        
-        self.retrievePropertyTransitionData(from: allImages) { currentPropTransitionData, propertyDocRef in
-            // dati in: setup/inventario/info/userRole
-            // dato mancante: cloudData
-            
-            guard let propertyDocRef,
-            let currentPropTransitionData else {
-                print("[ERROR]_Retrieve transitionData FAIL")
-                dataPublisher.send((allImages,nil))
-                return
-            }
-            
-            GlobalDataManager.cloudData.retrieveCloudData(from: propertyDocRef) { cloudData in
-
-                let propertyCurrentData = self.compilaPropertyCurrentData(from: cloudData, andProperty: currentPropTransitionData)
-                
-                guard let propertyCurrentData else {
-                    print("[ERROR] - NoCloudData or No UserRole")
-                    dataPublisher.send((allImages,nil))
-                    return
-                }
-                print("PRE DATA_PUBLISHER.send")
-                // handle(allImages,propertyCurrentData)
-                //imagesPublisher.send(allImages)
-                //  publisher.send((allImages,propertyCurrentData))
-                dataPublisher.send((allImages,propertyCurrentData))
-
-            } // chiuda cloudData
-            
-        }//chiusa TransitionObject
-
-    }// chiusa localImages
-    return dataPublisher.eraseToAnyPublisher()
-    // return (imagesPublisher.eraseToAnyPublisher(),currentPropertyPublisher.eraseToAnyPublisher())
-}*/ // deprecata 27.08.23
-/// Usata sia dentro che fuori il PropertyManager. Compila un propertyCurrentData da un transiotion data e un database
-func compilaPropertyCurrentData(from cloudData:CloudDataStore?,andProperty transitionData:PropertyTransitionData) -> PropertyCurrentData? {
-    
-    // controlliamo lo userRole perchè è impostato come optional nel transitionData
-    
-    guard let cloudData,
-            let property = transitionData.info,
-            let userRole = transitionData.userRole else {
-        print("[ERROR] - NoCloudData or No UserRole")
-        return nil
-        }
-    // dato in:CloudData
-
-    let propertyCurrentData = PropertyCurrentData(
-       // userRole: userRole,
-        info: property,
-        inventario: transitionData.inventario ?? Inventario(),
-        setup: transitionData.setup ?? AccountSetup()/*,
-        db: cloudData*/)
-    
-    return propertyCurrentData
-}
-
-    /*
-private func retrievePropertyTransitionDataDEPRECATA(from images:[PropertyLocalImage],handle:@escaping(_ currentPropTransitionData:PropertyTransitionData?,_ propertyDocRef:QueryDocumentSnapshot?) -> ()) {
-    
-    if let lastRef = UserDefaults.standard.string(forKey: "DefaultProperty"),
-        let associatedImage = images.first(where: {$0.propertyID == lastRef}) {
-        // case default
-        print("Recuperiamo l'immagine di default dell'ultima prop usata")
-        
-        if var propertyTransitionData = try? associatedImage.snapShot?.data(as: PropertyTransitionData.self) {
-            
-            propertyTransitionData.userRole = associatedImage.userRuolo
-            handle(propertyTransitionData,associatedImage.snapShot)
-            
-        } else { handle(nil,nil) }
-        
-
-    } else if let first = images.first {
-        // case nodDefault - pick first
-        print("Recuperiamo la prima Immagine delle prop")
-        if var propertyTransitionData = try? first.snapShot?.data(as: PropertyTransitionData.self) {
-            
-            print("Decodificata la prop: \(String(describing: propertyTransitionData.info?.intestazione))")
-            
-            propertyTransitionData.userRole = first.userRuolo
-            handle(propertyTransitionData,first.snapShot)
-        } else {
-            print("Prop NON Decodificata")
-            handle(nil,nil)
-        }
-        
-        
-    } else {
-        // Caso raro.
-        print("No DefaultProp - Error to pik the first - No Value handle")
-        handle(nil,nil)
-    }
-}*/
-
-private func retrievePropertiesLocalImages(from ref:[String]?,handle:@escaping(_ allImages:[PropertyLocalImage]?) -> ())  {
-    print("[6]Dentro retrievePropertyImages")
-    
-    guard let ref,
-        !ref.isEmpty else {
-        
-        print("[Error]_No ref properties")
-        /*  let context = DecodingError.Context(
-            codingPath: [UserCloudData.CodingKeys.propertiesRef],
-            debugDescription: "Nessuna proprietà registrata o nessuna collaborazione avviata")*/
-        handle(nil)
-        //  throw DecodingError.valueNotFound(String.self, context)
-        return
-    }
-    
-    print("[7]PreCall_Listener/allRef count:\(ref.count)")
-
-    collectionManaged
-        .whereField(.documentID(), in: ref)
-        .addSnapshotListener({ querySnapshot, error in
-            
-            print("[START]_Retrieve images")
-            
-        guard let documents = querySnapshot?.documents else {
-                
-            print("Errore nel listener:\(error?.localizedDescription ?? "")")
-        
-            handle(nil)
-            return
-                
-            }
-            
-        let allImages:[PropertyLocalImage] = documents.compactMap({ snap -> PropertyLocalImage? in
-                
-            let image = try? snap.data(as: PropertyLocalImage.self)
-            
-            guard var propImage = image else {
-                    
-                return nil
-                            }
-        
-                propImage.snapShot = snap
-                return propImage
-
-            })
-            
-            print("[END]_Retrieve images.ImagesCount:\(allImages.count) ")
-            handle(allImages)
-            
-            
-
-        })
-    
-    print("[8]AfterCall_Listener")
-
-}
 
 func checkPropertyExist(for id:String) async throws -> Bool {
     
@@ -655,21 +396,6 @@ func checkPropertyExist(for id:String) async throws -> Bool {
     return alreadyExist
     
 }
-
-/*func publishPropertyData<Element:Codable>(
-    propertyRef id: String,
-    element propertyData:Element,
-    to encoder:Firestore.Encoder = Firestore.Encoder()) async throws {
-    
-    print("[CALL]_publishPropertyData")
-        
-    let document = collectionManaged.document(id)
-        try document.setData(
-            from: propertyData,
-            merge: true,
-            encoder: encoder)
-    
-}*/ // deprecata
 
 func propertyFirstRegistration(
     property:PropertyModel,
@@ -687,51 +413,36 @@ func propertyFirstRegistration(
     
 // Multi Property
 
-    /*
 /// Utile nella goAction per estrapolare una currentProperty da uno Snap
-func estrapolaPropertyData(from propertyImage:PropertyLocalImage,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
+func estrapolaPropertyData(from propertyImage:PropertyLocalImage) {
 
-    let snap = try? propertyImage.snapShot?.data(as: PropertyTransitionData.self)
+    guard let snap = propertyImage.snapShot else {
+        self.currentPropertyPublisher.send((nil,nil,nil))
+        return
+    }
     
-    if var prop = snap {
-        // update current property
-        prop.userRole = propertyImage.userRuolo
-        
-        self.updateCurrentProperty(
-            propertyImage:propertyImage,
-            propertyData: prop) { propertyCurrentData in
-                
-                handle(propertyCurrentData)
-                
-            }
-
-    } else { handle(nil) }
+    let userDecoder = {
+        let decoder = Firestore.Decoder()
+        decoder.userInfo[UserCloudData.decoderCase] = UserCloudData.DecodingCase.organigramma
+        return decoder
+    }()
     
-    print("Dentro GO.Action - Snap Valido:\(snap != nil) ")
+    print("[CALL]_estrapolaPropertyData_from:Snap_Valido")
     
-}
-
-
-private func updateCurrentProperty(propertyImage:PropertyLocalImage,propertyData:PropertyTransitionData,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
-    // salviamo il ref nello userDefault e aggiorniamo la current Property
+    let propertyData = try? snap.data(as: PropertyCurrentData.self,decoder: userDecoder)
+    
+    guard let propertyData else { 
+        self.currentPropertyPublisher.send((nil,nil,nil))
+        return }
+    
+    let currentUserRole = propertyImage.currentUserRole
+    
     let propertyID = propertyImage.propertyID
     UserDefaults.standard.set(propertyID,forKey: "DefaultProperty")
     
-    print("UserDefaultKey is fill:\(UserDefaults.standard.dictionaryRepresentation().filter({$0.key == "DefaultProperty"}))")
+    self.currentPropertyPublisher.send((propertyData,currentUserRole,snap))
 
-    guard let propertySnap = propertyImage.snapShot else { return }
-    
-    GlobalDataManager.shared.cloudDataManager.retrieveCloudData(from:propertySnap ) { cloudData in
-        
-        let propertyCurrentData = self.compilaPropertyCurrentData(from: cloudData, andProperty: propertyData)
-            // se nil resta dov'è
-            handle(propertyCurrentData)
-
-    }
-
-}*/
-
-
+}
 
 } // close propertyManager
 
@@ -756,10 +467,13 @@ public class CloudDataManager {
     
     func retrieveCloudData(from propertyDocSnap:QueryDocumentSnapshot) {
         
+        print("[CALL]_retrieveCloudData_thread:\(Thread.current)")
+        
         let mainRef = propertyDocSnap.reference
         
-        Task {
+        Task { // Nota 07.09.23
             
+           // print("[TASK]_retrieveCloudData_thread:\(Thread.current)")
             var currentData = CloudDataStore()
             
             print("PreINGimages Count")
@@ -803,33 +517,14 @@ public class CloudDataManager {
             
             print("Pre handle-After Categories:Count:\(currentData.allMyCategories.count)")
             
-            cloudDataPublisher.send(currentData)
+            self.cloudDataPublisher.send(currentData)
         }
  
     }
     
-   /* func retrieveCloudDataStore(from propertyRef:String) async throws -> CloudDataStore {
-        
-        let mainRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(propertyRef)
-                
-       // var emptyData = CloudDataStore()
-        
-        let allMyDish = try await retrieveSubCollection(
-            from: mainRef,
-            for: .allMyDish,
-            type: DishModel.self)
-       // emptyData.allMyMenu = //
-       // emptyData.allMyCategories = //
-       // emptyData.allMyReviews = //
-       // emptyData.allMyIngredients = //
-        
-    
-        
-        
-        return CloudDataStore()
-    } */
-    
     func retrieveSubCollection<Item:MyProStarterPack_L0 & Codable>(from propertyRef:DocumentReference, for subKey:CloudDataStore.SubCollectionKey,type:Item.Type) async -> [Item] {
+     
+     //   print("[CALL]_retrieveSubCollection_thread:\(Thread.current)")
         
         let subCollection = propertyRef.collection(subKey.rawValue)
         
@@ -853,8 +548,6 @@ public class CloudDataManager {
         
     }
     
-    
-    
     func publishIngOnLibrary(model:[IngredientModel]) async throws {
         
         // filtra gli ingredient per quelli che hanno modifiche significative
@@ -870,34 +563,6 @@ public class CloudDataManager {
 
         print("[] End publishIngOnLibrary")
     }
-    /*
-    func publishCloudData(from currentProperty:PropertyDataObject) async throws {
-        
-        guard let propertyId = currentProperty.info?.id else {
-            print("No Property IN")
-            return }
-
-        // end test area
-        
-        // salvataggio ingredienti nella library (se vi sono di nuovi)
-        let allIngredients = currentProperty.db.allMyIngredients
-        try await publishIngOnLibrary(model: allIngredients)
-        
-        print("[4] After publishIngOnLibrary - Prepublish cloudData")
-        
-        let collection = self.db_base.collection(CollectionKey.propertyCollection.rawValue)
-        
-        // Salviamo info e setting
-        let propertyDocRef = collection.document(propertyId)
-        
-        try propertyDocRef
-            .setData(from: currentProperty)
-        
-        // salviamo subCollection
-        try await publishMultipleSubCollection(in: propertyDocRef,from: currentProperty.db)
-
-        print("[5]End publishCloudData")
-    } */
     
     func publishCloudData(for propertyId:String,from data:CloudDataStore) async throws {
         
@@ -933,41 +598,14 @@ public class CloudDataManager {
             
         }
     }
-    
-    func publishMainCollection<Element:Codable>(in collection:CollectionKey,idDoc ref:String,as element:Element) async throws {
-        
-        let document = self.db_base.collection(collection.rawValue).document(ref)
-        
-        try document.setData(from: element,merge: true)
- 
-    } // 21.08.23 Generica deprecata
-    
-  /*  func firstPropertyRegistration(idDoc ref:String,as element:PropertyDataObject) async throws {
-        
-        let document = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(ref)
 
-        try await publishMainCollection(in: .propertyCollection, idDoc: ref, as: element)
-        
-    }*/
-    
-    func checkPropertyExist(for id:String) async throws -> Bool {
-        
-        let document = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(id)
-        
-        let alreadyExist = try await document.getDocument().exists
-        print("[2]Verifica unicità. Property exist?:\(alreadyExist.description)")
-        return alreadyExist
-        
-    } // 21.08.23 Deprecata/Spostata su PropertyManager
-    
-  
 
 } // close cloudDataManager
 
 // service struct
 
 /// oggetto per transitare i dati salvati su firebase nel PropertyCurrentData che non è codable per via del CloudDataStore, il quale non è più conforme in quanto contenitore di subCollection
-public struct PropertyTransitionData:Codable {
+/*public struct PropertyTransitionData:Codable {
     
   /*  public var userRole:UserRoleModel?
     public var info:PropertyModel
@@ -1009,270 +647,7 @@ public struct PropertyTransitionData:Codable {
       //  self.setup = try subContainer.decode(AccountSetup.self, forKey: .propertySetup)
     }
     
-}
-/*
-public class PropertyManager {
-    
-   // static var main:PropertyManager = PropertyManager()
-    private let db_base = Firestore.firestore()
-    private let collectionManaged:CollectionReference
-    
-    public enum PropertyMainCodingKeys:String,CodingKey {
-        
-        case propertyInventario = "property_inventario"
-        case propertySetup = "property_setup"
-        case propertyInfo = "property_info"
-    }
-    
-    
-    public init() {
-        collectionManaged = self.db_base.collection("properties_registered")
-        
-    }
-    
-    func fetchCurrentProperty(from ref:[String]?,handle:@escaping(_ propImages:[PropertyLocalImage]?,_ currentProperty:PropertyCurrentData?) -> () ) {
-        
-        self.retrievePropertiesLocalImages(from: ref) { allImages in
-            
-            guard let allImages,
-            !allImages.isEmpty else {
-                print("Nessuna immagine di proprietà")
-                handle(nil,nil)
-                return
-            }
-            
-            // le allImages hanno il listener
-            // [15.08.23]Problema da risolvere: il listener è applicato al ref della proprietà a prescindere se lo user è autorizzato o meno
-            
-            // selezioniamo l'image di default
-            
-            self.retrievePropertyTransitionData(from: allImages) { currentPropTransitionData, propertyDocRef in
-                // dati in: setup/inventario/info/userRole
-                // dato mancante: cloudData
-                
-                guard let propertyDocRef,
-                let currentPropTransitionData else {
-                    handle(nil,nil)
-                    return
-                }
-                
-                GlobalDataManager.cloudData.retrieveCloudData(from: propertyDocRef) { cloudData in
-
-                   
-                   /* guard let cloudData,
-                          let property = currentPropTransitionData.info,
-                          let userRole = currentPropTransitionData.userRole else {
-                        print("[ERROR] - NoCloudData or No UserRole")
-                        handle(nil,nil)
-                        return}
-                    // dato in:CloudData
-    
-                    let propertyCurrentData = PropertyCurrentData(
-                        userRole: userRole,
-                        info: property,
-                        inventario: currentPropTransitionData.inventario ?? Inventario(),
-                        setup: currentPropTransitionData.setup ?? AccountSetup(),
-                        db: cloudData) */
-                    
-                    let propertyCurrentData = self.compilaPropertyCurrentData(from: cloudData, andProperty: currentPropTransitionData)
-                    
-                    guard let propertyCurrentData else {
-                        print("[ERROR] - NoCloudData or No UserRole")
-                        handle(nil,nil)
-                        return
-                    }
-                    
-                    handle(allImages,propertyCurrentData)
-   
-                } // chiuda cloudData
-                
-            }//chiusa TransitionObject
-  
-        }// chiusa localImages
-    } // chiusa retrieve
-    
-    /// Usata sia dentro che fuori il PropertyManager. Compila un propertyCurrentData da un transiotion data e un database
-    func compilaPropertyCurrentData(from cloudData:CloudDataStore?,andProperty transitionData:PropertyTransitionData) -> PropertyCurrentData? {
-        
-        // controlliamo lo userRole perchè è impostato come optional nel transitionData
-        
-        guard let cloudData,
-              let property = transitionData.info,
-              let userRole = transitionData.userRole else {
-            print("[ERROR] - NoCloudData or No UserRole")
-            return nil
-            }
-        // dato in:CloudData
-
-        let propertyCurrentData = PropertyCurrentData(
-            userRole: userRole,
-            info: property,
-            inventario: transitionData.inventario ?? Inventario(),
-            setup: transitionData.setup ?? AccountSetup(),
-            db: cloudData)
-        
-        return propertyCurrentData
-    }
-    
-    private func retrievePropertyTransitionData(from images:[PropertyLocalImage],handle:@escaping(_ currentPropTransitionData:PropertyTransitionData?,_ propertyDocRef:QueryDocumentSnapshot?) -> ()) {
-        
-        if let lastRef = UserDefaults.standard.string(forKey: "DefaultProperty"),
-           let associatedImage = images.first(where: {$0.propertyID == lastRef}) {
-            // case default
-            print("Recuperiamo l'immagine di default dell'ultima prop usata")
-            
-            if var propertyTransitionData = try? associatedImage.snapShot?.data(as: PropertyTransitionData.self) {
-                
-                propertyTransitionData.userRole = associatedImage.userRuolo
-                handle(propertyTransitionData,associatedImage.snapShot)
-                
-            } else { handle(nil,nil) }
-            
-    
-        } else if let first = images.first {
-            // case nodDefault - pick first
-            print("Recuperiamo la prima Immagine delle prop")
-            if var propertyTransitionData = try? first.snapShot?.data(as: PropertyTransitionData.self) {
-                
-                print("Decodificata la prop: \(String(describing: propertyTransitionData.info?.intestazione))")
-                
-                propertyTransitionData.userRole = first.userRuolo
-                handle(propertyTransitionData,first.snapShot)
-            } else {
-                print("Prop NON Decodificata")
-                handle(nil,nil)
-            }
-           
-            
-        } else {
-            // Caso raro.
-            print("No DefaultProp - Error to pik the first - No Value handle")
-            handle(nil,nil)
-        }
-    }
-    
-    private func retrievePropertiesLocalImages(from ref:[String]?,handle:@escaping(_ allImages:[PropertyLocalImage]?) -> ())  {
-        print("[6]Dentro retrievePropertyImages")
-        
-        guard let ref,
-            !ref.isEmpty else {
-            
-            print("[Error]_No ref properties")
-          /*  let context = DecodingError.Context(
-                codingPath: [UserCloudData.CodingKeys.propertiesRef],
-                debugDescription: "Nessuna proprietà registrata o nessuna collaborazione avviata")*/
-            handle(nil)
-         //  throw DecodingError.valueNotFound(String.self, context)
-            return
-        }
-        
-        print("[7]PreCall_Listener/allRef count:\(ref.count)")
-
-        collectionManaged
-            .whereField(.documentID(), in: ref)
-            .addSnapshotListener({ querySnapshot, error in
-                
-                print("[START]_Retrieve images")
-                
-            guard let documents = querySnapshot?.documents else {
-                    
-                print("Errore nel listener:\(error?.localizedDescription ?? "")")
-            
-                handle(nil)
-                return
-                    
-                }
-                
-            let allImages:[PropertyLocalImage] = documents.compactMap({ snap -> PropertyLocalImage? in
-                    
-                let image = try? snap.data(as: PropertyLocalImage.self)
-                
-                guard var propImage = image else {
-                        
-                    return nil
-                                }
-            
-                    propImage.snapShot = snap
-                    return propImage
-
-                })
-                
-                print("[END]_Retrieve images.ImagesCount:\(allImages.count) ")
-                handle(allImages)
-                
-                
- 
-            })
-        
-        print("[8]AfterCall_Listener")
-  
-    }
-
-    func checkPropertyExist(for id:String) async throws -> Bool {
-        
-        let document = collectionManaged.document(id)
-        
-        let alreadyExist = try await document.getDocument().exists
-        print("[2]Verifica unicità. Property exist?:\(alreadyExist.description)")
-        return alreadyExist
-        
-    }
-    
-    func publishPropertyData<Element:Codable>(propertyRef id: String, element propertyData:Element) async throws {
-        print("[2]IN Pubblicazione su firebase propertyData")
-        let document = collectionManaged.document(id)
-        try document.setData(from: propertyData, merge: true)
-        print("[3]OUT Pubblicazione su firebase propertyData")
-    }
-    
-    // Multi Property
-    
-    /// Utile nella goAction per estrapolare una currentProperty da uno Snap
-    func estrapolaPropertyData(from propertyImage:PropertyLocalImage,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
-
-        let snap = try? propertyImage.snapShot?.data(as: PropertyTransitionData.self)
-       
-        if var prop = snap {
-            // update current property
-            prop.userRole = propertyImage.userRuolo
-            
-            self.updateCurrentProperty(
-                propertyImage:propertyImage,
-                propertyData: prop) { propertyCurrentData in
-                    
-                   handle(propertyCurrentData)
-                    
-                }
-
-        } else { handle(nil) }
-        
-        print("Dentro GO.Action - Snap Valido:\(snap != nil) ")
-        
-    }
-
-    
-    private func updateCurrentProperty(propertyImage:PropertyLocalImage,propertyData:PropertyTransitionData,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
-        // salviamo il ref nello userDefault e aggiorniamo la current Property
-        let propertyID = propertyImage.propertyID
-        UserDefaults.standard.set(propertyID,forKey: "DefaultProperty")
-        
-        print("UserDefaultKey is fill:\(UserDefaults.standard.dictionaryRepresentation().filter({$0.key == "DefaultProperty"}))")
-
-        guard let propertySnap = propertyImage.snapShot else { return }
-        
-        GlobalDataManager.cloudData.retrieveCloudData(from:propertySnap ) { cloudData in
-            
-            let propertyCurrentData = self.compilaPropertyCurrentData(from: cloudData, andProperty: propertyData)
-                // se nil resta dov'è
-                handle(propertyCurrentData)
-
-        }
- 
-    }
-    
-    
-    
-}*/ // 26.08.23 backup Pre Applicazione COmbine
+}*/
 
 
 

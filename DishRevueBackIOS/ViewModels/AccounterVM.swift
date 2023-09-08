@@ -13,106 +13,12 @@ import MyPackView_L0
 import MyFilterPackage
 import Combine
 
-
-/*struct CollaboratorModel:Codable,Hashable,Identifiable {
-
-    var id: String
-    let inizioCollaborazione:Date
-
-    var mail:String
-    var userName:String
-    let db_uidRef:String
-    var restrictionLevel:[RestrictionLevel]
-    
-    init(uidAmministratore db_uidRef:String) {
-        
-        self.id = "NON_ACCOPPIATO" + UUID().uuidString
-        self.inizioCollaborazione = Date.now
-        self.mail = ""
-        self.userName = ""
-        self.db_uidRef = db_uidRef
-        self.restrictionLevel = RestrictionLevel.level_1
-        
-    }
-  
-}
-
-struct ProfiloUtente:Codable {
-  
-    var datiUtente:CollaboratorModel? // per l'admin sarà nil
-    var allMyCollabs:[CollaboratorModel]?
-    
-} */
-/// Oggetto per far transitare i dati in entrata e uscita dal firestore in un unica chiamata della proprietà. Contiene le info (dove vi è anche l'otganigramma) e il database
-/*struct PropertyDataModelTransitionObjectDEPRECATA:Codable {
-    
-    let propertyInfo:PropertyModel
-    let propertyData:CloudDataStore?
-    
-}
-
-public struct PropertyDataModelDEPRECATA:Codable { // da spostare nel framework myfoodie
-
-    public static var userAuth:(id:String,userName:String,mail:String) = ("","","")
-    
-    public var currentUser:UserRoleModel // viene estrapolato dall'organigramma
-    public var propertyInfo:PropertyModel? // viene salvato su firebase
-    public var propertyData:CloudDataStore // viene salvato su firebase
-  
-    public enum CodingKeys:String,CodingKey {
-        
-        case currentUser // da decodificare e non salvare
-        case propertyInfo
-        case propertyData
-        
-    }
-    
-    public init(userAuth:UserRoleModel) { // inutile ?
-        
-        Self.userAuth = (userAuth.id,userAuth.userName,userAuth.mail)
-        
-        self.currentUser = userAuth
-        self.propertyInfo = nil
-        self.propertyData = CloudDataStore()
-    }
-    
-    public init(from decoder: Decoder) throws {
-        
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        let property = try container.decodeIfPresent(PropertyModel.self, forKey: .propertyInfo)
-        
-        guard let organigramma = property?.organigramma,
-              let user = organigramma.first(where: {$0.id == CloudDataCompiler.userAuthUid}) else {
-            // lo user NON è autenticato / verifica superflua in quanto già effettuata nella PropertyLocalImage ma necessaria per tirare fuori lo userRoleModel. Da valutare meccanismi più efficienti
-            let context = DecodingError.Context(codingPath: [Self.CodingKeys.propertyInfo], debugDescription: "Organigramma non trovato o User Non Autorizzato")
-            throw DecodingError.valueNotFound(String.self, context)
-        }
-        
-        self.propertyData = try container.decode(CloudDataStore.self, forKey: .propertyData)
-        self.currentUser = user
-        self.propertyInfo = property
- 
-    }
-    
-    public func encode(to encoder: Encoder) throws {
-        
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(propertyInfo, forKey: .propertyInfo)
-        try container.encode(propertyData, forKey: .propertyData)
-        
-        
-    }
-    
-} */
-
-public struct InitServiceObjet { // deprecato
+/*public struct InitServiceObjet { // deprecato
     
     public let allPropertiesImage:[PropertyLocalImage]
     public let currentProperty:PropertyCurrentData
     
-}
+}*/
 
 public enum SubViewStep {
     
@@ -182,7 +88,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
        // self.stepView = .mainView
         
         self.allMyPropertiesImage = [] // Da valutare optiona
-        super.init(currentProperty: initServiceObject.currentProperty) // da valutare optional
+        super.init(currentProperty: PropertyCurrentData()) // da valutare optional
    
    
             // let's start subscriber
@@ -289,9 +195,14 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                 }
                 
                 self.allMyPropertiesImage = allPropImages
-                withAnimation {
-                    self.isLoading = true
+                
+                if self.isLoading != true {
+                    
+                    withAnimation {
+                        self.isLoading = true
+                    }
                 }
+               
                 // fetch currenProperty
 
                     GlobalDataManager
@@ -313,26 +224,36 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
             .currentPropertyPublisher
             .sink { error in
                 //
-            } receiveValue: { [weak self] currentPropData, currentUserRole,propertyDocRef in
+            } receiveValue: { [weak self] currentPropData, currentUserRole, propertyDocRef in
                 //
                 guard let self,
                       let currentPropData,
                       let currentUserRole,
                       let propertyDocRef else {
                     print("[ERROR_SINK] Property Current Data not VALID")
-                    self?.stepView = .openLandingPage
-                    self?.isLoading = false
+                   
+                    withAnimation {
+                        self?.stepView = .openLandingPage
+                        self?.isLoading = false
+                    }
                     
                     return
                 }
 
-                DispatchQueue.main.async {
+                if self.isLoading != true {
+                    
+                    withAnimation {
+                        self.isLoading = true
+                    }
+                }
+                print("[RECEIVE]_currentPropertyData_thread:\(Thread.current)")
+              //  DispatchQueue.main.async {
                     
                     self.currentUser?.propertyRole = currentUserRole
                     self.currentProperty = currentPropData
        
-               }
-                
+             //  }
+            
                // fetch cloudDataStore
                 GlobalDataManager
                     .shared
@@ -358,10 +279,15 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                 guard let self,
                       let cloudData else {
                     
+                    print("[ERROR_SINK]_cloudData_Fail")
+                   
+                    // decidere cosa fare con l'errore
+
                     return
                 }
-                
+                print("[RECEIVE]_cloudData_thread:\(Thread.current)")
                 DispatchQueue.main.async {
+                    // necessario perchè i dati arrivano da un thread di background
                     self.db = cloudData
                     self.isLoading = false 
                 }
@@ -369,8 +295,6 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
                 
             }.store(in: &cancellables)
 
-        
-        
     }
     
     private func fetchAndListenCurrentUserData(userAuthUID:String)  {
@@ -383,176 +307,10 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
             .fetchAndListenUserDataPublisher(from: userAuthUID)
         
     }
+ 
+   
     
-    
-    /* private func addLocalUserSubscriber() {
-
-         $currentUser
-             .sink { [weak self] userData in
-                 
-                 guard let self,
-                       let userData else { return }
-    
-                 // logica di salvataggio su firebase
-                 
-             }.store(in: &cancellables)
-         
-     }*/
-    
-   /* private func addCurrentUserSubscriber() async {
-        
-        print("[CALL]_addCurrentUserSubscriber")
-        // alla prima chiama nell'init i subscriber non ricevono alcun valore per cui non viene eseguito alcun sink. Se dopo il fetch dei dati il valore ricevuto non è valido partiraà la landing
-        GlobalDataManager
-            .shared
-            .userManager
-            .userPublisher
-            .sink { error in
-                //
-                print("ERRROR IN SINK_")
-            } receiveValue: { [weak self] userData in
-               
-                guard let self else {
-                    print("[SELF_is_WEAK]_addCurrentUserSubscriber")
-                    return
-                }
-                guard let userData else {
-                    // qui fallisce non tanto quando il documento non esiste, li va oltre, fallisce nel decodificare. In teoria se lo user è stato registrato non dovrebbe fallire. Proviamo a rimandarlo indietro e fargli reimpostare lo username e dunque tutto lo user nel firestore
-                    print("""
-
-                          [EPIC FAIL]_addCurrentUserSubscriber_USERDATA is NIL
-                   
-                           ViewModel reference Count: \(CFGetRetainCount(self))
-
-                   """)
-                   
-                    // Blocchiamo tutti i listener
-                   // GlobalDataManager.user.userListener?.remove()
-                   // GlobalDataManager.property.propertyImagesListener?.remove()
-                    self.isLoading = nil
-                    self.stepView = .backToAuthentication
-                    
-                    return
-                }
-                
-                self.currentUser = userData
-                
-                guard let ref = userData.propertiesRef,
-                      !ref.isEmpty else {
-                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL or empty")
-                    self.stepView = .openLandingPage
-                    self.isLoading = nil
-                    return
-                }
-                
-                withAnimation {
-                    self.stepView = .mainView
-                    self.isLoading = true
-                }
-                             
-                print("userData_ID:\(userData.id)")
-                print("userData_MAIL:\(userData.email)")
-                print("userData_USERNAME:\(userData.userName)")
-                print("userData_properties:\(String(describing: userData.propertiesRef?.count))")
-               // DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                
-                    GlobalDataManager
-                    .shared
-                    .propertiesManager
-                    .fetchAndListenPropertyImagesPublisher(from: ref)
-                
-               // }
-                
-               // print("[VALUE RECEIVER]_addCurrentUserSubscriber")
-                
-            }.store(in: &cancellables)
-
-    }
-    
-    private func addPropertyImagesSubscriber() async {
-        print("[CALL]_addPropertyImagesSubscriber")
-        
-        GlobalDataManager
-            .shared
-            .propertiesManager
-            .propertyImagesPublisher
-            .sink { error in
-                //
-            } receiveValue: { [weak self] allPropImages in
-                
-                guard let self,
-                      let allPropImages else {
-                    
-                    print("[ERROR SINK]_PropIMAGES not VALID")
-                    self?.isLoading = false
-                    self?.stepView = .openLandingPage
-                    
-                    return
-                }
-                
-                self.allMyPropertiesImage = allPropImages
-                withAnimation {
-                    self.isLoading = true
-                }
-                // fetch currenProperty
-                
-             //   DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                    GlobalDataManager
-                    .shared
-                    .propertiesManager
-                    .fetchCurrentPropertyPublisher(from: allPropImages)
-               // }
-
-                print("[RECEIVE VALUE]_addPropertyImagesSubscriber")
-            }.store(in: &cancellables)
-
-    } // Deprecata
-    
-    private func addCurrentPropertySubscriber() async {
-        print("[CALL]_addCurrentPropertySubscriber")
-       
-        GlobalDataManager
-            .shared
-            .propertiesManager
-            .currentPropertyPublisher
-            .sink { error in
-                //
-            } receiveValue: { [weak self] currentPropData in
-                //
-                guard let self,
-                      let currentPropData else {
-                    print("[ERROR_SINK] Property Current Data not VALID")
-                    self?.stepView = .openLandingPage
-                    self?.isLoading = false
-                    
-                    return
-                }
-                
-                DispatchQueue.main.async {
-                    
-                    self.currentProperty = currentPropData
-                    withAnimation {
-                        self.isLoading = false
-                    }
-               }
-                print("[RECEIVE VALUE]_addCurrentPropertySubscriber")
-            }.store(in: &cancellables)
-
-    }
-    
-    private func fetchAndListenCurrentUserData(userAuthUID:String) async {
-        
-        print("[CALL]_fetchAndListenCurrentUserData")
-        // fa partire il treno dei dati grazie ai subscriber
-       // let userAuthUID = AuthenticationManager.userAuthData.id
-       await GlobalDataManager
-            .shared
-            .userManager
-            .fetchAndListenUserDataPublisher(from: userAuthUID)
-        
-    }*/
-    
-    public init(from serviceObject:InitServiceObjet) {
+   /* public init(from serviceObject:InitServiceObjet) {
         self.isLoading = true
         self.stepView = .mainView
        // self.dbCompiler = CloudDataCompiler(userAuthUID: "Deprecato")
@@ -563,7 +321,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         print("Init ACCOUNTERVM_propIMagesCount:\(self.allMyPropertiesImage.count)")
         
         
-    }// deprecato
+    }*/// deprecato
     
     public init(fromUser userCloudData:UserCloudData) {
         self.isLoading = true
@@ -571,357 +329,11 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
        // self.currentUser = nil
         
         self.allMyPropertiesImage = []
-        super.init(currentProperty: initServiceObject.currentProperty)
+        super.init(currentProperty: PropertyCurrentData())
         print("Init ACCOUNTERVM")
         
     } // deprecato
-  /* private func retrieveDataWithListener(){
-        
-      
-        GlobalDataManager.property.fetchCurrentProperty(from: currentUser.propertiesRef)
-            .sink { completion in
-               
-                print("[ERROR PUBLISHER]_\(completion)_cancellablesCount:\(self.cancellables.count)")
-                
-            } receiveValue: { [weak self] (allImages,propertyCurrent) in
-                
-                guard let self = self,
-                let propertyCurrent else {
-                    print("SELF is WEAK")
-                    self?.allMyPropertiesImage = allImages
-                    self?.mainViewMustDeinit = true
-                    return }
-                
-                print("RECEIVE_VALUE_CANCELLABLE_COUNT:\(self.cancellables.count)")
-                
-                DispatchQueue.main.async {
-                    self.allMyPropertiesImage = allImages
-                    self.currentProperty = propertyCurrent
-                }
-                
-            }
-            .store(in: &cancellables)
-        
 
-    } */
-    
-   /* public init(from propertiesImages:[PropertyLocalImage]?) {
-        print("[START]INIT ACCOUNTERVM")
-        self.dbCompiler = CloudDataCompiler(userAuthUID: "Deprecato")
-        
-        if let propertiesImages { self.allMyPropertiesImage = propertiesImages }
-        
-        super.init(userAuth: nil)
-        print("[END]INIT ACCOUNTERVM")
-        
-        
-    }
-    
-    public init(userAuth:UserRoleModel) {
-        
-        // self.currentUserRoleModel = userAuth
-        //  self.isLoading = userModel != nil // Nota 16.07.23 isLoading
-        self.dbCompiler = CloudDataCompiler(userAuthUID: userAuth.id)
-       // self.onProperty = PropertyDataModel(userAuth: userAuth)
-        super.init(userAuth: userAuth)// contiene il db,la currentProp,lo userRoleModel per la currentProp
-
-       /* self.dbCompiler.firstFetch { propertiesImage, propertyDataModel, userRoleModel, isLoading in
-            
-            if let images = propertiesImage {
-                self.allMyPropertiesImage = images
-            }
-            
-            if let propertyData = propertyDataModel,
-               let user = userRoleModel {
-                // aggiorniamo la currentProperty di autentica
-                self.currentProperty = PropertyDataModel(user: user, propertyData: propertyData)
-                
-            } else {
-                // in assenza di property nel cloud apriamo diretto la propertyList
-                self.homeViewPath.append(DestinationPathView.propertyList)
-            }
-            
-            self.isLoading = isLoading
-        } */
-        
-        
-        
-        
-       /* self.dbCompiler.firstFetch { propertiesImage, propertyDataModel, isLoading in
-            if let images = propertiesImage {
-                self.allMyPropertiesImage = images
-            }
-            if let property = propertyDataModel {
-                self.onProperty = property
-            }
-            self.isLoading = isLoading
-            
-            if self.onProperty.propertyInfo == nil {
-                // se non ci sono proprietà portiamo lo user direttamente nella propertyList
-                self.homeViewPath.append(DestinationPathView.propertyList)
-            }
-            
-        } */
-        
-       /* self.dbCompiler.firstFetch { propertiesImage, propUserRole, currentProp, propDB, isLoading in
-            
-            self.allMyPropertiesImage = propertiesImage
-            self.currentProperty = currentProp
-            
-            if let user = propUserRole {
-                self.currentUserRoleModel = user
-            } else {
-                self.currentUserRoleModel = userAuth // deve avvenire di default nell'init
-            }
-            
-            if let dataCloud = propDB {
-                self.cloudData = dataCloud
-            } else {
-                self.cloudData = CloudDataStore() // deve avvenire di default nell'init
-            }
-            
-            if currentProp == nil {
-                // se non c'è una proprietà singola popoliamo la homeViewPath per visualizzare la propertyList
-                self.homeViewPath.append(DestinationPathView.propertyList)
-            }
-            
-            self.isLoading = isLoading // di default sarà true e qui andrà su false al termine dell'handle
-         
-            
-        } */
-        
-        
-        
-       /* self.dbCompiler.firstFetch { propUserRole, currentProp, propDB, isLoading in
-            
-            if let user = propUserRole {
-                self.currentUserRoleModel = user
-            } else {
-                self.currentUserRoleModel = userAuth
-            }
-            
-            if let dataCloud = propDB {
-                self.cloudData = dataCloud
-            } else {
-                self.cloudData = CloudDataStore()
-            }
-            
-            if currentProp == nil {
-                // se non c'è una proprietà singola popoliamo la homeViewPath per visualizzare la propertyList
-                self.homeViewPath.append(DestinationPathView.propertyList)
-            }
-            
-            self.currentProperty = currentProp
-            self.isLoading = isLoading // da valutare
-            handle(isLoading) // da valutare
-            
-        }*/
-     
-
-    } */
-    
-    
-   /* func compilaFromPropertyImage(propertyImage:PropertyLocalImage) {
-        
-        if propertyImage.snapShot != nil {
-            // compiliamo la property dallo snap
-            self.estrapolaSnapFromPropertyImage(propertyImage: propertyImage)
-            
-        } else {
-            // la property è probabilmente un primo accesso dopo la registrazione
-            self.fetchFromPropertyImage(propertyImage: propertyImage)
-        }
-        
-    }*/
-    
-    
-   /* func estrapolaSnapFromPropertyImage(propertyImage:PropertyLocalImage,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
-
-        let snap = try? propertyImage.snapShot?.data(as: PropertyTransitionData.self)
-       
-        if var prop = snap {
-            // update current property
-            prop.userRole = propertyImage.userRuolo
-            
-            self.updateCurrentProperty(
-                propertyImage:propertyImage,
-                propertyData: prop) { propertyCurrentData in
-                    
-                   handle(propertyCurrentData)
-                    
-                }
-
-        }
-        
-        print("Dentro GO.Action - Snap Valido:\(snap != nil) ")
-        
-    }*/
-    /*
-   private func fetchFromPropertyImage(propertyImage:PropertyLocalImage) {
-        print("fetch da propertyImage / Probabile primo ingresso dopo registrazione")
-       
-        self.dbCompiler.estrapolaDatiFromPropImage(propertyImage: propertyImage) { propertyData in
-            
-            guard let property = propertyData else {
-                return
-            }
-            // update current Propery
-            
-            self.updateCurrentProperty(
-                propertyImage:propertyImage,
-                propertyData: property)
-            
-        }
-    }*/
-    
-   /* private func updateCurrentProperty(propertyImage:PropertyLocalImage,propertyData:PropertyTransitionData,handle:@escaping(_ propertyCurrentData:PropertyCurrentData?) -> ()) {
-        // salviamo il ref nello userDefault e aggiorniamo la current Property
-        let propertyID = propertyImage.propertyID
-        UserDefaults.standard.set(propertyID,forKey: "DefaultProperty")
-        
-        print("UserDefaultKey is fill:\(UserDefaults.standard.dictionaryRepresentation().filter({$0.key == "DefaultProperty"}))")
-
-        guard let propertySnap = propertyImage.snapShot else { return }
-        
-        GlobalDataManager.cloudData.retrieveCloudData(from:propertySnap ) { cloudData in
-            
-             let propertyCurrentData =  GlobalDataManager.property.compilaPropertyCurrentData(from: cloudData, andProperty: propertyData)
-                // se nil resta dov'è
-                handle(propertyCurrentData)
-
-        }
- 
-    }*/
-    
-    /*
-    func publishOnFirebase(handle:@escaping(_ errorIn:Bool) ->()) {
-        
-        // admin salva entrambi gli oggetti
-        // collab salva solo il cloudData
-
-        if let extRef = self.profiloUtente.datiUtente?.db_uidRef {
-            // collab
-            self.dbCompiler.publishOnFirebase(dbRef:extRef, saveData: self.cloudData) { errorIn in
-                
-              handle(errorIn)
-            }
-            
-        } else {
-            // admin
-            self.dbCompiler.publishOnFirebase(saveData: self.profiloUtente) { errorIn in
-               
-                if errorIn {
-                    handle(errorIn)
-                } else {
-                    
-                    self.dbCompiler.publishOnFirebase(saveData: self.cloudData) { errorIn in
-                        handle(errorIn)
-                    }
-                    
-                }
-                
-                
-            }
-            
-        }
-    }*/
-    
-   /* func fetchPropertyData() {
-        // valida solo per admin
-        // i collab popolano la property nel fetchAllData
-        guard self.currentProperty == nil else { return }
-        
-        let propertyRef:String? = {
-            
-            let allRef = self.cloudData.allMyPropertiesRef.first(where: {$0.key == .admin})
-            return allRef?.value
-        }()
-        
-        guard let ref = propertyRef else { return }
-        
-        self.dbCompiler.fetchDocument(collection: .propertyCollection, docRef: ref, modelSelf: PropertyModel.self) { modelData in
-            
-            if let data = modelData {
-                self.currentUserRoleModel = data.organigramma.admin
-                self.currentProperty = data
-            }
-
-            
-        }
-    } */
-    
-  
-    
-   /* func fetchDataFromFirebase() { // deprecata passata al compiler
-        
-        // Deve scaricare i dati dal firebase
-        
-      /*  self.allMyIngredients = fakeCloudData.allMyIngredients
-        self.allMyDish = fakeCloudData.allMyDish
-        self.allMyMenu = fakeCloudData.allMyMenu
-        self.allMyProperties = fakeCloudData.allMyProperties
-        
-        self.setupAccount = fakeCloudData.setupAccount
-        self.inventarioScorte = fakeCloudData.inventarioScorte
-        
-        self.allMyReviews = fakeCloudData.allMyReviews
-        self.allMyCategories = fakeCloudData.allMyCategories */
-        
-       // self.loadingCount = 8 // Questo valore permette di togliere la schermata di loading
-        
-    }*/
-
-    
-    // Method
-    
-   /* func saveDataOnFirebase() { // deprecata passata al compiler
-        
-       /* var cloudData = CloudDataStore()
-        
-        cloudData.allMyIngredients = self.allMyIngredients
-        cloudData.allMyMenu = self.allMyMenu
-        cloudData.allMyDish = self.allMyDish
-        cloudData.allMyProperties = self.allMyProperties
-        
-        cloudData.allMyCategories = self.allMyCategories
-        cloudData.allMyReviews = self.allMyReviews
-        
-        cloudData.setupAccount = self.setupAccount
-        cloudData.inventarioScorte = self.inventarioScorte
-        
-        self.dbCompiler.publishOnFirebase(dataCloud: cloudData) */
-        
-    } */
-    
-    // Modifiche 25.08 / 30.08 - Metodi di compilazione per trasformazione da Oggetto a riferimento degli ingredienti nei Dish
-    
-    // Riorganizzazione per conformità ai protocolli 15.09
-    
-    // MyProStarterPack_L0
-    
-    
-    /// ritorna un modello da un riferimento.
-  /*   func modelFromId<M:MyProStarterPack_L0>(id:String,modelPath:KeyPath<AccounterVM,[M]>) -> M? {
-        
-        let containerM = self[keyPath: modelPath]
-        return containerM.first(where: {$0.id == id})
-    } // 31.12.22 Spostata in superClasse
-    
-    /// ritorna un array di modelli  da un array di riferimenti
-    func modelCollectionFromCollectionID<M:MyProStarterPack_L0>(collectionId:[String],modelPath:KeyPath<AccounterVM,[M]>) -> [M] {
-         
-         var modelCollection:[M] = []
-        
-         for id in collectionId {
-             
-             if let model = modelFromId(id: id, modelPath: modelPath) {modelCollection.append(model)}
-         }
-
-        return modelCollection
-
-     }*/ // 31.12.22 Spostata in superClasse
-
-    
     // MyProStarterPack_L1
     
     /// Controlla se un modello esiste già nel viewModel controllando la presenza del sui ID

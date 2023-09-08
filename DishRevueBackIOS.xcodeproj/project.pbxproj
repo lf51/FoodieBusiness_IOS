@@ -86,8 +86,10 @@
 		3FCC71B828E9D1D600F105A2 /* MonitorServizio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */; };
 		3FCD464329A6345E00E357CD /* MapLabelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FCD464229A6345E00E357CD /* MapLabelTest.swift */; };
 		3FD342632904079000C06441 /* ReviewStatMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD342622904079000C06441 /* ReviewStatMonitor.swift */; };
-		3FD854112941FE6500F7CC98 /* CompilerCloudData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */; };
+		3FD854112941FE6500F7CC98 /* PropertyLocalImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD854102941FE6500F7CC98 /* PropertyLocalImage.swift */; };
 		3FD85437294254D800F7CC98 /* MyFoodiePackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3FD85436294254D800F7CC98 /* MyFoodiePackage */; };
+		3FDEE80F2AAB61BD004B3402 /* CloudImportCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDEE80E2AAB61BD004B3402 /* CloudImportCategoriesView.swift */; };
+		3FE7D2F92AAA0A7500C67D02 /* CSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE7D2F82AAA0A7500C67D02 /* CSError.swift */; };
 		3FE823252A9E34B200366A1E /* UserNameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE823242A9E34B200366A1E /* UserNameSettingView.swift */; };
 		3FE823272A9E356700366A1E /* WelcomeLandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE823262A9E356700366A1E /* WelcomeLandingPage.swift */; };
 		3FFECF2F2A863A960089D759 /* CloudDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFECF2E2A863A960089D759 /* CloudDataManager.swift */; };
@@ -236,8 +238,10 @@
 		3FCC71B728E9D1D600F105A2 /* MonitorServizio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorServizio.swift; sourceTree = "<group>"; };
 		3FCD464229A6345E00E357CD /* MapLabelTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLabelTest.swift; sourceTree = "<group>"; };
 		3FD342622904079000C06441 /* ReviewStatMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewStatMonitor.swift; sourceTree = "<group>"; };
-		3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompilerCloudData.swift; sourceTree = "<group>"; };
+		3FD854102941FE6500F7CC98 /* PropertyLocalImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyLocalImage.swift; sourceTree = "<group>"; };
 		3FD854352942549300F7CC98 /* MyFoodiePackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MyFoodiePackage; path = ../MyFoodiePackage; sourceTree = "<group>"; };
+		3FDEE80E2AAB61BD004B3402 /* CloudImportCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudImportCategoriesView.swift; sourceTree = "<group>"; };
+		3FE7D2F82AAA0A7500C67D02 /* CSError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSError.swift; sourceTree = "<group>"; };
 		3FE823242A9E34B200366A1E /* UserNameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNameSettingView.swift; sourceTree = "<group>"; };
 		3FE823262A9E356700366A1E /* WelcomeLandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeLandingPage.swift; sourceTree = "<group>"; };
 		3FFECF2E2A863A960089D759 /* CloudDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudDataManager.swift; sourceTree = "<group>"; };
@@ -404,8 +408,9 @@
 			isa = PBXGroup;
 			children = (
 				3F300F39293A164D003E5861 /* RemoteChangeStorage.swift */,
-				3FD854102941FE6500F7CC98 /* CompilerCloudData.swift */,
+				3FD854102941FE6500F7CC98 /* PropertyLocalImage.swift */,
 				3FFECF2E2A863A960089D759 /* CloudDataManager.swift */,
+				3FE7D2F82AAA0A7500C67D02 /* CSError.swift */,
 			);
 			path = VmService;
 			sourceTree = "<group>";
@@ -494,15 +499,7 @@
 			path = StartingView;
 			sourceTree = "<group>";
 		};
-		4D34D54A283289C200A57747 /* MenuList */ = {
-			isa = PBXGroup;
-			children = (
-				4D34D548283289B300A57747 /* MenuListView.swift */,
-			);
-			path = MenuList;
-			sourceTree = "<group>";
-		};
-		4D34D54F2838DABD00A57747 /* ImportazioneVelocePiatto */ = {
+		3FDEE80C2AAB613C004B3402 /* ImportManuale */ = {
 			isa = PBXGroup;
 			children = (
 				4D34D5502838DBB800A57747 /* FastImport_MainView.swift */,
@@ -511,7 +508,32 @@
 				3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */,
 				3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */,
 			);
-			path = ImportazioneVelocePiatto;
+			path = ImportManuale;
+			sourceTree = "<group>";
+		};
+		3FDEE80D2AAB6159004B3402 /* ImportDalCloud */ = {
+			isa = PBXGroup;
+			children = (
+				3FDEE80E2AAB61BD004B3402 /* CloudImportCategoriesView.swift */,
+			);
+			path = ImportDalCloud;
+			sourceTree = "<group>";
+		};
+		4D34D54A283289C200A57747 /* MenuList */ = {
+			isa = PBXGroup;
+			children = (
+				4D34D548283289B300A57747 /* MenuListView.swift */,
+			);
+			path = MenuList;
+			sourceTree = "<group>";
+		};
+		4D34D54F2838DABD00A57747 /* ImportazioneVeloce */ = {
+			isa = PBXGroup;
+			children = (
+				3FDEE80D2AAB6159004B3402 /* ImportDalCloud */,
+				3FDEE80C2AAB613C004B3402 /* ImportManuale */,
+			);
+			path = ImportazioneVeloce;
 			sourceTree = "<group>";
 		};
 		4D403B8327981BC200EB4E1B = {
@@ -832,7 +854,7 @@
 			isa = PBXGroup;
 			children = (
 				3FC5B0D7292D28F20000A1BB /* SetupAccount */,
-				4D34D54F2838DABD00A57747 /* ImportazioneVelocePiatto */,
+				4D34D54F2838DABD00A57747 /* ImportazioneVeloce */,
 				4D4FE6ED27FEEC0100AC0190 /* RowView */,
 				3F62DDFF289E5712008F17A4 /* ModuloSostituzioneIngrediente */,
 				4D45241B28268385009E6128 /* EditingView */,
@@ -1038,6 +1060,7 @@
 				4D3C72832887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift in Sources */,
 				4D3C728128871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift in Sources */,
 				3FD342632904079000C06441 /* ReviewStatMonitor.swift in Sources */,
+				3FDEE80F2AAB61BD004B3402 /* CloudImportCategoriesView.swift in Sources */,
 				4DD25B55283FBAE200582DCC /* CSMenuAllergeni_MultiSelection.swift in Sources */,
 				4DCB316A2847466E00464308 /* NuovaCategoriaMenu.swift in Sources */,
 				4D61A3CF28576E0500C0B810 /* NavStackTest.swift in Sources */,
@@ -1056,7 +1079,7 @@
 				4D9257A427D7C99B00D71B9C /* SwitchViewModelContainer.swift in Sources */,
 				4D4FE6EA27FD9F4300AC0190 /* COLORTEST.swift in Sources */,
 				4DC94A2527E9EC370080264C /* QueryScrollView_NewPropertySubView.swift in Sources */,
-				3FD854112941FE6500F7CC98 /* CompilerCloudData.swift in Sources */,
+				3FD854112941FE6500F7CC98 /* PropertyLocalImage.swift in Sources */,
 				4D7985F427DB62160012FE23 /* LargeBar_TextPlusButton.swift in Sources */,
 				3FC9613428BD0422009FBCF8 /* TemporaryModel.swift in Sources */,
 				4DC94A2B27EC7BF50080264C /* MapCategoryContainer.swift in Sources */,
@@ -1109,6 +1132,7 @@
 				4D14238227CE7F0C00CFF4AE /* NewDishMainView.swift in Sources */,
 				3FBE221F292FCB150096F11B /* PopNewCollab.swift in Sources */,
 				3F300F3C293A5757003E5861 /* ElencoModelDeleted.swift in Sources */,
+				3FE7D2F92AAA0A7500C67D02 /* CSError.swift in Sources */,
 				3FA965F729A0F120006B2002 /* ModelField.swift in Sources */,
 				4D34D549283289B300A57747 /* MenuListView.swift in Sources */,
 				4DC94A2327E9EBB80080264C /* QueryRow_NewPropertySubView.swift in Sources */,
@@ -1268,7 +1292,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 123;
+				CURRENT_PROJECT_VERSION = 124;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1299,7 +1323,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 123;
+				CURRENT_PROJECT_VERSION = 124;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

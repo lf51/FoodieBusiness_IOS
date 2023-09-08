@@ -32,23 +32,24 @@ struct HomeView: View {
 
         NavigationStack(path:$viewModel.homeViewPath) {
       
-            let userValue:(name:String,role:String,currentProperty:String) = {
+            let userValue:(name:String,role:String,currentProperty:String,isPremium:Bool) = {
             // implementare info dal current user
             // segnalare utente premium
           //  let userPremium = self.viewModel.currentUser?.isPremium ?? false ? "checkmark.seal.fill" : ""
-            
-            let propertyData = self.viewModel.currentProperty
-            let user = self.viewModel.currentUser
-            
-           // let isPremium = user?.isPremium ?? false
-            let userName = (user?.userName ?? "No Username") + "___" + AuthenticationManager.userAuthData.userName
-          //  let name = "\(userName) "
-            
-                let role = self.viewModel.currentUser?.propertyRole?.ruolo.rawValue ?? "no role"
-           // let userName = propertyData.userRole.userName
-                let prop = (propertyData.info?.intestazione ?? "no property in") + "___" + (self.viewModel.currentUser?.userName ?? "No UserName")
+            guard let propertyInfo = self.viewModel.currentProperty.info,
+                  let user = self.viewModel.currentUser else {
                 
-            return (userName,role,prop)
+                return ("noUserIn","noAuth","noProperty",false)
+            }
+            
+            let isPremium = user.isPremium ?? false
+            let userName = user.userName
+            
+            let role = user.propertyRole?.ruolo.rawValue ?? "no role"
+           // let userName = propertyData.userRole.userName
+            let prop = propertyInfo.intestazione
+                
+            return (userName,role,prop,isPremium)
                 
             }()
            /* CSZStackVB(title:authProcess.currentUser?.userDisplayName ?? "Home", backgroundColorView: backgroundColorView) {*/
@@ -56,13 +57,7 @@ struct HomeView: View {
             CSZStackVB(title: userValue.name, backgroundColorView: backgroundColorView) {
 
                 VStack(alignment: .leading,spacing:.vStackBoxSpacing) {
-                  //  VStack(spacing:.vStackBoxSpacing) {
-
-                   // ScrollViewReader { proxy in
-                        
-                   //     VStack(alignment:.leading) {
-                   
-    
+  
                         VStack(alignment:.leading) {
                             Text("\(userValue.role): \(userValue.currentProperty)")
                                 .italic()
@@ -247,9 +242,31 @@ struct HomeView: View {
                         
                     } label: {
                         
-                        Image(systemName: "person.fill")
-                            .imageScale(.large)
-                            .foregroundStyle(Color.seaTurtle_2)
+                        let premiumValue:(image:String,color:Color) = {
+                            
+                            if userValue.isPremium {
+                                
+                                return ("person.badge.shield.checkmark.fill",Color.yellow)
+                                
+                            } else {
+                                return ("person.fill",Color.seaTurtle_2)
+                            }
+                            
+                        }()
+                        
+                        HStack(alignment:.lastTextBaseline) {
+                            
+                            Image(systemName: premiumValue.image)
+                                .imageScale(.large)
+                                .foregroundStyle(premiumValue.color)
+                            
+                            if userValue.isPremium {
+                                Text("premium account")
+                                    .italic()
+                                    .font(.caption)
+                                    .foregroundStyle(Color.seaTurtle_2)
+                            }
+                        }
                         
                     }
                 }
