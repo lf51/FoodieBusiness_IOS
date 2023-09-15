@@ -71,6 +71,8 @@
 		3F8FC97D2943791D002F8208 /* DishModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8FC97C2943791D002F8208 /* DishModelExt.swift */; };
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
 		3FA965F729A0F120006B2002 /* ModelField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA965F629A0F120006B2002 /* ModelField.swift */; };
+		3FA98A3D2AAEFBD80036D302 /* Switch_CloudImportObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA98A3C2AAEFBD80036D302 /* Switch_CloudImportObject.swift */; };
+		3FA98A3F2AAF093A0036D302 /* ImportCategoryRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA98A3E2AAF093A0036D302 /* ImportCategoryRow.swift */; };
 		3FB15A1329AA3E03005D0526 /* VistaRecensioniEspansa_SingleDish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FB15A1229AA3E03005D0526 /* VistaRecensioniEspansa_SingleDish.swift */; };
 		3FB98CF329509E6600B6DE1B /* MyFilterPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3FB98CF229509E6600B6DE1B /* MyFilterPackage */; };
 		3FBA5BD528DDADD6009AA124 /* VistaIngredientiEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */; };
@@ -224,6 +226,8 @@
 		3F8FC97C2943791D002F8208 /* DishModelExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishModelExt.swift; sourceTree = "<group>"; };
 		3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel_SmallRowView.swift; sourceTree = "<group>"; };
 		3FA965F629A0F120006B2002 /* ModelField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelField.swift; sourceTree = "<group>"; };
+		3FA98A3C2AAEFBD80036D302 /* Switch_CloudImportObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_CloudImportObject.swift; sourceTree = "<group>"; };
+		3FA98A3E2AAF093A0036D302 /* ImportCategoryRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImportCategoryRow.swift; path = DishRevueBackIOS/Views/ImportazioneVeloce/ImportDalCloud/ImportCategoryRow.swift; sourceTree = SOURCE_ROOT; };
 		3FB15A1229AA3E03005D0526 /* VistaRecensioniEspansa_SingleDish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaRecensioniEspansa_SingleDish.swift; sourceTree = "<group>"; };
 		3FBA5BD428DDADD6009AA124 /* VistaIngredientiEspansa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaIngredientiEspansa.swift; sourceTree = "<group>"; };
 		3FBB215528A29DA6002A721C /* OverradeStateTEST.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverradeStateTEST.swift; sourceTree = "<group>"; };
@@ -514,7 +518,9 @@
 		3FDEE80D2AAB6159004B3402 /* ImportDalCloud */ = {
 			isa = PBXGroup;
 			children = (
+				3FA98A3E2AAF093A0036D302 /* ImportCategoryRow.swift */,
 				3FDEE80E2AAB61BD004B3402 /* CloudImportCategoriesView.swift */,
+				3FA98A3C2AAEFBD80036D302 /* Switch_CloudImportObject.swift */,
 			);
 			path = ImportDalCloud;
 			sourceTree = "<group>";
@@ -1058,6 +1064,7 @@
 				4DA089A4287862F300167298 /* BottomViewGeneric_NewModelSubView.swift in Sources */,
 				4D34D5512838DBB800A57747 /* FastImport_MainView.swift in Sources */,
 				4D3C72832887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift in Sources */,
+				3FA98A3F2AAF093A0036D302 /* ImportCategoryRow.swift in Sources */,
 				4D3C728128871EEE00BAFE0B /* AllergeniScrollView_NewIngredientSubView.swift in Sources */,
 				3FD342632904079000C06441 /* ReviewStatMonitor.swift in Sources */,
 				3FDEE80F2AAB61BD004B3402 /* CloudImportCategoriesView.swift in Sources */,
@@ -1065,6 +1072,7 @@
 				4DCB316A2847466E00464308 /* NuovaCategoriaMenu.swift in Sources */,
 				4D61A3CF28576E0500C0B810 /* NavStackTest.swift in Sources */,
 				3F17818E2944A4FA00AA1474 /* IngredientModelExt.swift in Sources */,
+				3FA98A3D2AAEFBD80036D302 /* Switch_CloudImportObject.swift in Sources */,
 				3FC5B0DB292D2A320000A1BB /* WaitLoadingView.swift in Sources */,
 				4DAD4FBD279EF44100C0EAE8 /* StyledButton.swift in Sources */,
 				4D168C1E285251E7000B137E /* ColoreTabViewTest.swift in Sources */,
@@ -1292,7 +1300,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 124;
+				CURRENT_PROJECT_VERSION = 125;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1323,7 +1331,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 124;
+				CURRENT_PROJECT_VERSION = 125;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

@@ -12,9 +12,10 @@ import MyFoodiePackage
 
 struct UserNameSettingView: View {
     
+   // private var userManager:UserManager
     @ObservedObject var authProcess:AuthenticationManager
     @State private var newDisplayName:String = ""
-    
+        
     var body: some View {
         
         let userName:String = {
@@ -146,12 +147,18 @@ struct UserNameSettingView: View {
             userName: userAuthData.userName,
             isPremium: false)
         
-        try await GlobalDataManager
+        /*try await GlobalDataManager
                     .shared
                     .userManager
                     .publishUserCloudData(
                         forUser: userAuthData.id,
-                        from: userData)
+                        from: userData) */
+    // se siamo qui lo userManager è stato inizializzato
+       try await self.authProcess
+                 .userManager!
+                 .publishUserCloudData(
+                    from: userData)
+            
         
       //  print("DOPO AWAIT PUBLISH USER_SEND CHANGE AUTHCASE TO .auth")
         

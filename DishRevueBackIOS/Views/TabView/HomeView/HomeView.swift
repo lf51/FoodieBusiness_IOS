@@ -350,16 +350,13 @@ struct HomeView: View {
         let isCompactWidth = self.horizontalSizeClass == .compact
         
         let layout = isCompactWidth ? AnyLayout(VStackLayout(alignment:.leading,spacing:10)) : AnyLayout(HStackLayout(alignment:.center))
-       
-       // VStack(alignment:.leading) {
-       // HStack(alignment:.center) {
+
         layout {
             
             HStack {
                 
                 addNewModel()
                 
-             //   Spacer()
                 Divider()
                     .fixedSize()
                 
@@ -374,47 +371,54 @@ struct HomeView: View {
                         
                     }
                     .foregroundStyle(Color.seaTurtle_3)
-                      //  .padding(5)
-                       /* .background {
-                            Color.seaTurtle_1
-                                .opacity(0.9)
-                                .blur(radius: 10.0)
-                                .cornerRadius(5.0)
-                        } */
                      
                 }
-                
-              //  Spacer()
-                
+
                 Divider()
                     .fixedSize()
                 
-                NavigationLink(value: DestinationPathView.moduloImportazioneVeloce) {
-                    
-                //    HStack(spacing:2) {
-                        
+               /* NavigationLink(value: DestinationPathView.moduloImportazioneVeloce) {
+
                         Text("⚡️Import⚡️")
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                      //  Text("[🍽🧂]")
-                        //    .font(.subheadline)
-                        
-                 //   }
                             .foregroundStyle(Color.seaTurtle_3)
-                   /* .padding(5)
-                    .background {
-                        Color.seaTurtle_1
-                            .opacity(0.9)
-                            .blur(radius: 10.0)
-                            .cornerRadius(5.0)
-                    }*/
+
+                } */
+                
+                Menu {
+                    
+                    Button {
+                        viewModel.addToThePath(destinationPath: .homeView, destinationView:DestinationPathView.moduloImportazioneVeloce)
+                    } label: {
+                        HStack {
+                            Text("Manuale")
+                            Image(systemName: "square.and.pencil")
+                         
+                        }
+                    }
+                    
+                    Button {
+                        viewModel.addToThePath(destinationPath: .homeView, destinationView: DestinationPathView.moduloImportazioneWeb)
+                    } label: {
+                        HStack {
+                            Text("Cloud")
+                            Image(systemName: "cloud")
+                         
+                        }
+                    }
+                    
+                    
+                } label: {
+                    Text("⚡️Import⚡️")
+                        .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                        .foregroundStyle(Color.seaTurtle_3)
                 }
+
+                
+                
                 
             }
-            //.lineLimit(1)
-            //.padding(.bottom,5)
-           // .padding(.vertical,5)
-           // .padding(.horizontal,5)
-            
+
             if !isCompactWidth {
                 Divider()
                     .fixedSize()
@@ -433,13 +437,6 @@ struct HomeView: View {
                             .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                     }
                     .foregroundStyle(Color.seaTurtle_3)
-                  /*  .padding(5)
-                    .background {
-                        Color.seaTurtle_1
-                            .opacity(0.9)
-                            .blur(radius: 10.0)
-                            .cornerRadius(5.0)
-                    } */
                 }
                 
               //  Spacer()
@@ -494,8 +491,6 @@ struct HomeView: View {
                 
             
             }
-           // .lineLimit(1)
-            //.frame(width:UIScreen.main.bounds.width - 40)
         }
     }
     
@@ -534,16 +529,7 @@ struct HomeView: View {
                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                 .foregroundStyle(Color.seaTurtle_3)
         }
-       /* .padding(5)
-        .background {
-            Color.seaTurtle_1
-                .opacity(0.9)
-                .blur(radius: 10.0)
-                .cornerRadius(5.0)
-        } */
-
-        
-        
+  
     }
 
 }

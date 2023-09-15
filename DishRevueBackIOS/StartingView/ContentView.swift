@@ -53,13 +53,24 @@ struct SubContentView:View {
     
     init(authProcess: AuthenticationManager) {
         
-        print("[INIT]_SubContentView")
-        let userUID = AuthenticationManager.userAuthData.id
-        let viewModel = AccounterVM(userAuthUID: userUID)
+        print("""
+              [START_INIT]_SubContentView
+              
+              UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
+              
+              """)
+       // let userUID = AuthenticationManager.userAuthData.id
+        // se siamo qui lo userManager è stato inizializzato
+        let viewModel = AccounterVM(userManager: authProcess.userManager!)
         
         self.authProcess = authProcess
         _viewModel = StateObject(wrappedValue: viewModel)
        
+        print("""
+[END_INIT]_SubContentView
+
+UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
+""")
     }
 
     var body: some View {
@@ -127,17 +138,18 @@ struct SubContentView:View {
                     .opacity(0.6)
                 } else {
                     
-                  /*  VStack {
+                    VStack {
+                        Spacer()
                         Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
                         Text("Reference ViewModel:\(CFGetRetainCount(self.viewModel))")
                         
-                        Button("TEST ACTION") {
+                       /* Button("TEST ACTION") {
                             print("[ACTION]_testChangeuserName()")
                             self.viewModel.currentUser?.userName = "TEST" + UUID().uuidString
                             
-                        }
+                        }*/
                             
-                    }.font(.largeTitle) */
+                    }.font(.largeTitle)
 
                 }
             })
@@ -146,7 +158,7 @@ struct SubContentView:View {
             }.onDisappear {
                 print("[DISAPPEAR]_SubContentView")
                 
-                print("""
+            /*    print("""
                 
         Are Listener active when call [DISAPPEAR]_SubContentView :
 
@@ -160,7 +172,7 @@ struct SubContentView:View {
         UserManager refCount:\(CFGetRetainCount(GlobalDataManager.shared.userManager))
         CloudDataManager refCount:\(CFGetRetainCount(GlobalDataManager.shared.cloudDataManager))
 
-        """)
+        """)*/
             }
  
     }
@@ -170,7 +182,7 @@ struct SubContentView:View {
 
     private func manageBackToAutentication() {
         
-        print("""
+       /* print("""
         
 Are Listener active when call manageBackToAutentication :
 
@@ -180,7 +192,7 @@ PropertyImagesListener is active: \(GlobalDataManager.shared.propertiesManager.p
 
 ViewModel reference Count: \(CFGetRetainCount(self.viewModel))
 
-""")
+""")*/
         
         withAnimation {
             self.authProcess.authCase = .auth_noUserName

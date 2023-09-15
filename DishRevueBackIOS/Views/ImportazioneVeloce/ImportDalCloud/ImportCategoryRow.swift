@@ -13,59 +13,58 @@ import MyPackView_L0
 struct ImportCategoryRow: View {
     
     @EnvironmentObject var viewModel:AccounterVM
+    @ObservedObject var importVM:CloudImportViewModel
     
     let category:CategoriaMenu
-    let importImage:String
-    @Binding var focusCategory:CategoriaMenu?
-    let addingAction:() -> ()
+    let selectingAction:(_ isSelected:Bool) -> ()
     
     var body: some View {
         
-        let focusCheck:Bool = self.focusCategory?.id == category.id
-        let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
+        let isAlreadySelected:Bool = {
+            self.importVM.selectedCategory?.contains(category) ?? false
+        }()
+        let alreadyImported = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
         
-        VStack(alignment:.leading) {
+        let image:(name:String,color:Color) = {
+           
+            if isAlreadySelected || alreadyImported {
+                return ("checkmark.circle.fill",Color.seaTurtle_1)
+            } else {
+                return ("icloud.and.arrow.down",Color.seaTurtle_4)
+            }
             
+        }()
+
             HStack(spacing:10) {
                 
-                Text(focusCheck ? focusCategory?.image ?? category.image : category.image)
+                Text(category.image)
                     .font(.largeTitle)
-                    .opacity(alreadyExist ? 0.3 : 1.0)
+                    .opacity(alreadyImported ? 0.3 : 1.0)
                 Text(category.intestazione)
                     .font(.largeTitle)
                     .foregroundStyle(Color.seaTurtle_4)
-                    .opacity(alreadyExist ? 0.3 : 1.0)
+                    .opacity(alreadyImported ? 0.3 : 1.0)
+                
                 Spacer()
                 
-                if focusCheck {
-                    
-                    CSButton_image(
-                        frontImage: importImage,
-                        imageScale: .large,
-                        frontColor: .seaTurtle_4
-                        ) {
-                          // addNewCategory()
-                            
-                                addingAction()
-                            
-                        }
-                }
-                    
+                Image(systemName: image.name)
+                    .imageScale(.large)
+                    .foregroundStyle(image.color)
+                    .opacity(alreadyImported ? 0.3 : 1.0)
+
             }
-        }
-        .padding(.vertical,10)
-        .csHpadding()
-        .background {
+            .padding(.vertical,10)
+            .csHpadding()
+            .background {
             Color.seaTurtle_3
                 .cornerRadius(5.0)
-                .opacity(focusCheck ? 0.6 : 0.1)
-        }
-        .onTapGesture {
-            withAnimation{
-                self.focusCategory = category
+                .opacity(isAlreadySelected ? 0.6 : 0.1)
             }
-        }
-        .disabled(alreadyExist)
+            .onTapGesture {
+                selectingAction(isAlreadySelected)
+            }
+            .disabled(alreadyImported)
+    
         
         
         

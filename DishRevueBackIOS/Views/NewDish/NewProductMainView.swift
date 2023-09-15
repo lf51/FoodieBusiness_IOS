@@ -177,7 +177,7 @@ struct NewProductMainView_Previews: PreviewProvider {
    
         let user = UserRoleModel()
         
-        var viewM = AccounterVM(userAuthUID: "USER_TEST_UID")
+        var viewM = AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))
         viewM.db.allMyDish = [dishSample]
         viewM.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
         return viewM

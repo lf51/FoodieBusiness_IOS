@@ -160,7 +160,10 @@ struct AddPropertyMainView: View {
         let idToCheck = PropertyModel.creaID(coordinates: mkItemCoordinate, cityName: mkCity)
         
         // check Unicità
-        let alreadyExist = try await GlobalDataManager.shared.propertiesManager.checkPropertyExist(for: idToCheck)
+       /* let alreadyExist = try await GlobalDataManager.shared.propertiesManager.checkPropertyExist(for: idToCheck)*/
+        let alreadyExist = try await self.viewModel
+            .propertiesManager
+            .checkPropertyExist(for: idToCheck)
         
         if alreadyExist {
             
@@ -230,8 +233,13 @@ struct AddPropertyMainView: View {
         
         let userEncoder = user.customEncoding(forBusiness: false)
         
-        try await GlobalDataManager
+       /* try await GlobalDataManager
             .shared
+            .propertiesManager
+            .propertyFirstRegistration(
+                property: modelProperty,
+                userEncoder: userEncoder) */
+        try await self.viewModel
             .propertiesManager
             .propertyFirstRegistration(
                 property: modelProperty,
@@ -250,7 +258,10 @@ struct AddPropertyMainView: View {
             user.propertiesRef = [ref]
         }
         
-        try await GlobalDataManager.shared.userManager.updatePropertiesRef(user: user)
+       /* try await GlobalDataManager.shared.userManager.updatePropertiesRef(user: user) */
+      try await self.viewModel
+            .userManager
+            .updatePropertiesRef(user: user)
         
        // print("[END_AWAIT]_updatePropertiesRef")
        // self.dismiss()

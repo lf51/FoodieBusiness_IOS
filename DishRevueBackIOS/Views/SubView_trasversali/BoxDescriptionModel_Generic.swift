@@ -88,7 +88,7 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
                                             
             } else {
                 
-                Text(itemModel.descrizione == "" ? "Nessuna descrizione inserita. Press [+] " : itemModel.descrizione)
+                Text(itemModel.descrizione == nil ? "Nessuna descrizione inserita. Press [+] " : itemModel.descrizione!)
                     .italic()
                     .fontWeight(.light)
             }

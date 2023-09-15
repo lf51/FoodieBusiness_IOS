@@ -255,10 +255,14 @@ struct InactivePropertyRow:View {
                 
                 Button {
                     print("[SWITCH_PROPERTY]")
-                    GlobalDataManager
-                        .shared
+                    self.viewModel
                         .propertiesManager
                         .estrapolaPropertyData(from: propImage)
+                        
+                   /* GlobalDataManager
+                        .shared
+                        .propertiesManager
+                        .estrapolaPropertyData(from: propImage)*/
 
                     
                 } label: {
@@ -445,7 +449,7 @@ struct PropertyListView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             PropertyListView(backgroundColorView: Color.seaTurtle_1)
-                .environmentObject(AccounterVM(userAuthUID: "TEST_USER_UID"))
+                .environmentObject(AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID")))
         }
     }
 }

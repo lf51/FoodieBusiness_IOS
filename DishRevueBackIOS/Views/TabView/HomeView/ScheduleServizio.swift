@@ -446,7 +446,7 @@ private struct ExactDateSchedule:View {
                             
                         }
                         
-                        Text("\(menuModel.descrizione)")
+                        Text("\(menuModel.descrizione ?? "")")
                             .italic()
                             .font(.subheadline)
                             .multilineTextAlignment(.leading)
@@ -610,9 +610,10 @@ private struct DayWeekTimeRow:View {
                     
                     }
 
-                if value.descrizione != "" {
+                if let descrizione = value.descrizione,
+                   descrizione != "" {
 
-                        Text(value.descrizione)
+                        Text(descrizione)
                             .italic()
                             .font(.caption)
                             .multilineTextAlignment(.leading)

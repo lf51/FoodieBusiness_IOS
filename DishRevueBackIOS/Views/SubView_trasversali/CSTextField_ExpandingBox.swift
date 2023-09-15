@@ -34,7 +34,7 @@ import MyPackView_L0
         
         _itemModel = itemModel
         _dismissButton = dismissButton
-        let newDescription = itemModel.descrizione.wrappedValue
+        let newDescription = itemModel.descrizione.wrappedValue ?? ""
         _description = State(wrappedValue: newDescription)
         self.maxDescriptionLenght = maxDescriptionLenght
             _modelField = modelField
@@ -176,7 +176,7 @@ import MyPackView_L0
                       
                       Button {
                           withAnimation {
-                              self.description = itemModel.descrizione
+                              self.description = itemModel.descrizione ?? ""
                           }
                       } label: {
                           Text("Undo")

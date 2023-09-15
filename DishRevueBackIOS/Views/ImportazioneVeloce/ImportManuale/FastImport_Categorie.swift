@@ -132,7 +132,7 @@ struct CorpoCompilazioneCategorie:View {
     @EnvironmentObject var viewModel:AccounterVM
     
     @Binding var allFastCategories:[CategoriaMenu]
-    @State private var focusCategory:CategoriaMenu = CategoriaMenu()
+    @State private var focusCategory:CategoriaMenu?
     @Binding var disabilitaPicker:Bool
         
     var body: some View {
@@ -148,7 +148,7 @@ struct CorpoCompilazioneCategorie:View {
                         Text(emojy)
                             .font(.title)
                             .onTapGesture {
-                                    self.focusCategory.image = emojy
+                                    self.focusCategory?.image = emojy
                             }
                     }
                 }
@@ -159,14 +159,14 @@ struct CorpoCompilazioneCategorie:View {
             
             ForEach(allFastCategories) { category in
                 
-                let focusCheck:Bool = self.focusCategory.id == category.id
+                let focusCheck:Bool = self.focusCategory?.id == category.id
                 let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
                 
                 VStack(alignment:.leading) {
                     
                     HStack(spacing:10) {
                         
-                        Text(focusCheck ? focusCategory.image : category.image)
+                        Text(focusCheck ? focusCategory?.image ?? category.image : category.image)
                             .font(.largeTitle)
                             .opacity(alreadyExist ? 0.3 : 1.0)
                         Text(category.intestazione)
@@ -218,9 +218,11 @@ struct CorpoCompilazioneCategorie:View {
     
     private func addNewCategory() {
         
-        self.viewModel.createItemModel(itemModel: self.focusCategory)
-        self.allFastCategories.removeAll(where: {$0.id == self.focusCategory.id})
-        self.allFastCategories.append(self.focusCategory)//perchè modifichiamo la state focus e dunque va rimossa quella nell'array allfast e va sostituita con quella nel focus che ha la nuova immagine
+        guard let focusCategory = self.focusCategory else { return }
+        
+        self.viewModel.createItemModel(itemModel: focusCategory)
+        self.allFastCategories.removeAll(where: {$0.id == focusCategory.id})
+        self.allFastCategories.append(focusCategory)//perchè modifichiamo la state focus e dunque va rimossa quella nell'array allfast e va sostituita con quella nel focus che ha la nuova immagine
         
         if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyCategories)}) {
             self.focusCategory = newFocus
@@ -242,7 +244,7 @@ struct FastImport_Categorie_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             FastImport_Categorie(backgroundColorView: .seaTurtle_1, disabilitaPicker: .constant(true))
-                .environmentObject(AccounterVM(userAuthUID: "TEST_USER_UID"))//(AccounterVM(userAuth: user))
+                .environmentObject(AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID")))//(AccounterVM(userAuth: user))
         }
     }
 }

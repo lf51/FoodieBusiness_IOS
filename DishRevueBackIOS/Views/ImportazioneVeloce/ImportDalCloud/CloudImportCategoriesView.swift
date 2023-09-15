@@ -10,25 +10,33 @@ import MyFoodiePackage
 import MyPackView_L0
 import Combine
 
-class CloudImportCategoriesViewModel:ObservableObject {
+/// per gesire gli import di categorie e ingredienti dal web, dando persistenza in caso di switch del pickerView
+final class CloudImportViewModel:ObservableObject {
+    
+    let viewModel:AccounterVM
     
     @Published var cloudCategories:[CategoriaMenu]?
+    @Published var selectedCategory:[CategoriaMenu]?
     var cancellables = Set<AnyCancellable>()
-    
-    public init() {
+
+    public init(viewModel:AccounterVM) {
         
+        self.viewModel = viewModel
+        print("[INIT]_CloudImportCategoriesViewModel_cancellables:\(self.cancellables.count)")
         addCloudCategoriesSubscriber()
     }
     
     deinit {
         
-        print("[DEINIT]_CloudImportCategoriesViewModel")
+        print("[DEINIT]_CloudImportCategoriesViewModel_cancellables:\(self.cancellables.count)")
     }
     
-   private func addCloudCategoriesSubscriber() {
+    func addCloudCategoriesSubscriber() {
         
-        GlobalDataManager
-            .shared
+     //  GlobalDataManager
+       //     .shared
+        self.viewModel
+            .cloudDataManager
             .categoriesManager
             .sharedCategoriesPublisher
             .sink { error in
@@ -47,73 +55,216 @@ class CloudImportCategoriesViewModel:ObservableObject {
                 
             }.store(in: &cancellables)
 
+    }
+    
+    func publishSubCollection(propertyID:String) async throws {
+        
+        guard let selectedCategory else { return }
+        
+        try await self.viewModel
+                      .cloudDataManager
+                      .publishSubCollection(
+                        forPropID: propertyID,
+                        sub: .allMyCategories,
+                        as: selectedCategory)
         
     }
+    
 }
 
 
 struct CloudImportCategoriesView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-    @StateObject var specificVM:CloudImportCategoriesViewModel = CloudImportCategoriesViewModel()
+    @ObservedObject var importVM:CloudImportViewModel
+        
+    @State private var searchLetter:String = "A"
     let backgroundColor:Color
 
     var body: some View {
         
-        CSZStackVB(
-            title: "Import Categories",
-            backgroundColorView: backgroundColor) {
-            
-                LazyVStack(alignment:.trailing) {
+                VStack(alignment:.trailing) {
                     
                     // barra di ricerca
                     
                     HStack {
-                      Spacer()
+ 
+                        Text("selected:")
+                            .italic()
+                            .foregroundStyle(Color.black)
+                            .opacity(0.8)
+                        Text("\(importVM.selectedCategory?.count ?? 0)")
+                            .bold()
+                            .foregroundStyle(Color.seaTurtle_4)
                         
-                        Button("Cerca") {
+                        Spacer()
+                        
+                        Text("from:")
+                            .italic()
+                            .foregroundStyle(Color.black)
+                            .opacity(0.8)
+                        
+                        Picker("", selection: $searchLetter) {
                             
-                            GlobalDataManager
-                                .shared
-                                .categoriesManager
-                                .retrieveCategoriesFromSharedCollection(filterBy: nil)
+                            ForEach(csLanguageAlphabet(),id:\.self) { letter in
+                                
+                                Text(letter)
+                                
+                            }
+                            
+                        }
+                        .background {
+                            Color.seaTurtle_4.opacity(0.1)
+                                .clipShape(.buttonBorder)
                         }
                         
+                        Button("Cerca") {
+                            let string = searchLetter.lowercased()
+                          //  GlobalDataManager
+                            //    .shared
+                            self.viewModel
+                                .cloudDataManager
+                                .categoriesManager
+                                .publishCategoriesFromSharedCollection(filterBy: string)
+                        }
                         
-                    }.padding(.trailing)
 
-                        
+                    }
+
                         ScrollView(showsIndicators:false) {
                             
                             VStack(alignment:.leading) {
                                 
-                                ForEach(specificVM.cloudCategories ?? []) { category in
-                                    
-                                    HStack {
-                                        
-                                        Text(category.image)
-                                        Text(category.intestazione)
-                                    }
-                                    
+                                ForEach(importVM.cloudCategories ?? []) { category in
+ 
+                                    ImportCategoryRow(
+                                        importVM: importVM,
+                                        category: category) { isSelected in
+                                            
+                                            withAnimation {
+                                                self.selectingLogic(isAlreadySelect: isSelected, selected: category)
+                                            }
+                                            
+                                        }
+
                                 }
                             }
                             
                         }
-                    
-                    
+                        
                     Spacer()
+                    
+                    HStack(spacing:20) {
+                        
+                        Button("Reset",role: .destructive) {
+                            self.importVM.selectedCategory = nil
+                        }
+                        .disabled(self.importVM.selectedCategory == nil)
+                   
+                        Button {
+                            
+                            Task {
+                                if let propertyID = self.viewModel.currentProperty.info?.id {
+                                    
+                                   try await self.importVM.publishSubCollection(propertyID: propertyID)
+                                    
+                                } else {
+                                    
+                                    self.viewModel.alertItem = AlertModel(title: "Errore", message: "Ref alla proprietà corrotto. Riprovare")
+                                }
+                            }
+                            
+                           
+                        } label: {
+                            Text("Scarica e Salva")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(Color.blue)
+                        .disabled(self.importVM.selectedCategory == nil || self.importVM.selectedCategory?.isEmpty ?? true)
+                     
+                    }
+
                     
                     
                 }
-                
+                .csHpadding()
+                .onAppear {
+                    print("[ON_APPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
+                    
+                   /* self.importVM.addCloudCategoriesSubscriber(viewModel: self.viewModel)*/
+                   
+                }
+                .onDisappear {
+                    print("[ON_DISAPPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
+                   // self.importVM.cancellables.removeAll()
+                }
+    }
+    
+    // method
+    
+    private func selectingLogic(isAlreadySelect:Bool,selected categoria:CategoriaMenu) {
+        
+        if isAlreadySelect { self.deSelectCategory(selected: categoria) }
+        else { self.selectCategory(selected: categoria) }
+        
+    }
+    
+    private func deSelectCategory(selected categoria:CategoriaMenu) {
+
+        self.importVM.selectedCategory?.removeAll{ $0 == categoria }
+
+    }
+    
+    private func selectCategory(selected categoria:CategoriaMenu) {
+        
+        if self.importVM.selectedCategory == nil {
+            
+            self.importVM.selectedCategory = [categoria]
+            
+        } else {
+            
+            self.importVM.selectedCategory!.append(categoria)
+        }
+    }
+    
+    private func addNewCategory() async throws {
+        print("[CALL]_addNewCategoryFromCloud_name")
+       /* self.viewModel.alertItem = AlertModel(title: "DATA MISSED", message: "Inserire logica salvataggio su firebase con listener che ritorna i dati nel viewModel")*/
+        guard let propertyID = self.viewModel.currentProperty.info?.id else {
+            
+            self.viewModel.alertItem = AlertModel(title: "DATA MISSED", message: "Inserire logica salvataggio su firebase con listener che ritorna i dati nel viewModel")
+            return
         }
         
+      /* try await GlobalDataManager
+            .shared
+            .categoriesManager
+            .publishCategoryInPropertySubCollection(propertyID: propertyID, categoria: focusCategory) */
+        
+      /* try await GlobalDataManager
+            .shared
+            .cloudDataManager
+            .publishSubCollection(forPropID: propertyID, sub: .allMyCategories, as: [Any])*/
+        
+        
+        
+       /* self.viewModel.createItemModel(itemModel: self.focusCategory)
+        self.allFastCategories.removeAll(where: {$0.id == self.focusCategory.id})
+        self.allFastCategories.append(self.focusCategory)//perchè modifichiamo la state focus e dunque va rimossa quella nell'array allfast e va sostituita con quella nel focus che ha la nuova immagine
+        
+        if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyCategories)}) {
+            self.focusCategory = newFocus
+        } else {
+            self.focusCategory = CategoriaMenu()
+            self.disabilitaPicker = false
+        } */
+       
         
     }
 }
 
 
 #Preview {
-    CloudImportCategoriesView(backgroundColor: .seaTurtle_1)
-        .environmentObject(AccounterVM(userAuthUID: "USER_TEST_UID"))
+    CloudImportCategoriesView(importVM: CloudImportViewModel(viewModel: AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))), backgroundColor: .seaTurtle_1)
+        .environmentObject(AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID")))
 }

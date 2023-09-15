@@ -9,8 +9,6 @@ import Foundation
 import SwiftUI
 import MyFoodiePackage
 
-
-
 func csValidateValue(value: String, convalidaAsDouble: Bool) -> Bool {
    
    if convalidaAsDouble {
@@ -45,6 +43,13 @@ func csReturnEmojyCollection() -> [String] {
         
         
     }
+
+/// dovrà essere derivata dalla lingua del device
+func csLanguageAlphabet() -> [String] {
+    
+  ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    
+}
 
 func csSwitchSingolarePlurale(checkNumber:Int,wordSingolare:String,wordPlurale:String) -> String {
     

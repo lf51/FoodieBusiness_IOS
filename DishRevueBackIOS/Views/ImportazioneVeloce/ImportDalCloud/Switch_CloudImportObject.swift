@@ -6,13 +6,71 @@
 //
 
 import SwiftUI
+import MyPackView_L0
 
 struct Switch_CloudImportObject: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    
+    @StateObject var importVM:CloudImportViewModel
+    let backgroundColorView: Color
+    
+    @State private var localChoice:SwitcherImport = .moduloA
+    @State private var disabilitaPicker:Bool = false
+    
+    init(backgroundColorView: Color, viewModel:AccounterVM) {
+        print("[INIT]_Switch_CloudImportObject")
+        _importVM = StateObject(wrappedValue: CloudImportViewModel(viewModel: viewModel))
+        self.backgroundColorView = backgroundColorView
+       
     }
+
+    var body: some View {
+        
+        CSZStackVB(title: "Libreria Condivisa", backgroundColorView: backgroundColorView) {
+            
+            VStack(alignment:.leading) {
+                
+                Picker(selection: $localChoice) {
+                    Text("Ingredienti")
+                        .tag(SwitcherImport.moduloA)
+                      
+                    Text("Categorie")
+                        .tag(SwitcherImport.moduloB)
+                } label: {
+                    Text("")
+                }
+                .disabled(disabilitaPicker)
+                .pickerStyle(.segmented)
+                .csHpadding()
+                
+                vbImportSwitch()
+                CSDivider()
+              //  Spacer()
+            }
+            
+        }
+
+    }
+    
+    @ViewBuilder private func vbImportSwitch() -> some View {
+        
+        switch localChoice {
+            
+        case .moduloA:
+            Color.red
+        case .moduloB:
+            CloudImportCategoriesView(importVM:importVM,backgroundColor: backgroundColorView)
+            
+        }
+    }
+    
+    private enum SwitcherImport {
+        
+        case moduloA
+        case moduloB
+    }
+    
 }
 
 #Preview {
-    Switch_CloudImportObject()
+    Switch_CloudImportObject(backgroundColorView: .seaTurtle_1, viewModel: AccounterVM(userManager: UserManager(userAuthUID: "TEST")))
 }

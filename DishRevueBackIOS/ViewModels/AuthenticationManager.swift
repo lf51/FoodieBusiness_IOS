@@ -20,6 +20,8 @@ public class AuthenticationManager: ObservableObject {
     
     public static var userAuthData:(id:String,userName:String,email:String) = ("","","")
     
+    private(set) var userManager:UserManager? // da mettere nil nei logOut
+    
    /*public static func == (lhs: AuthenticationManager, rhs: AuthenticationManager) -> Bool {
        
        //
@@ -63,10 +65,12 @@ public class AuthenticationManager: ObservableObject {
        
        Self.userAuthData.id = user.uid
        Self.userAuthData.email = user.email ?? "No_Mail"
+       self.userManager = UserManager(userAuthUID: user.uid)
         
         if let username = user.displayName {
             print("[AUTH]_USER_name_IN")
            // self.eliminaAccount()
+            
             Self.userAuthData.userName = username
             self.authCase = .auth
 
@@ -130,6 +134,7 @@ public class AuthenticationManager: ObservableObject {
                 
                 Self.userAuthData.id = result.user.uid
                 Self.userAuthData.email = mail
+                self.userManager = UserManager(userAuthUID: result.user.uid)
                 
                 guard let userName = result.user.displayName else {
                     print("[SUCCESS_AUTH]_NO USERNAME-BACK TO UserNAmeSettingView")
@@ -140,6 +145,7 @@ public class AuthenticationManager: ObservableObject {
                 }
                 
                 print("[SUCCESS_AUTH]")
+
                 Self.userAuthData.userName = userName
                 self.authCase = .auth
                 completion(.success(result.user))

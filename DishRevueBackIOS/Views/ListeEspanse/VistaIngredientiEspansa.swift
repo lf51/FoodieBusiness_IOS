@@ -385,7 +385,7 @@ struct VistaIngredientiEspansa_Previews: PreviewProvider {
     
     @State static var viewModel: AccounterVM = {
          let user = UserRoleModel()
-        var vm = AccounterVM(userAuthUID: "USER_TEST_UID")
+        var vm = AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))
          vm.db.allMyDish = [dishItem3]
          vm.db.allMyIngredients = [ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4]
          return vm

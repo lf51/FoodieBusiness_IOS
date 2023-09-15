@@ -32,9 +32,15 @@ public enum SubViewStep {
 //@MainActor
 public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
 
+    // manager
+    let userManager:UserManager
+    private(set) var propertiesManager:PropertyManager
+    private(set) var cloudDataManager:CloudDataManager
+    
+    
     @Published public var stepView:SubViewStep?
     @Published var isLoading: Bool?
-    var cancellables = Set<AnyCancellable>()
+     var cancellables = Set<AnyCancellable>()
     
    // @Published public var currentUser:UserCloudData?
     /// Andrebbe in superClasse, ma contiene una proprietà che è tipica del firestore, e non riusciamo ad importare il firestore nel framework e dunque l'abbiamo spostata in sottoClasse
@@ -67,7 +73,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
        // GlobalDataManager.user.userListener?.remove()
        //  GlobalDataManager.property.propertyImagesListener?.remove()
          
-         print("""
+        /* print("""
          
  Are Listener active when call ACCOUNTERVM_DEINIT :
 
@@ -75,239 +81,41 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
 
  PropertyImagesListener is active: \(GlobalDataManager.shared.propertiesManager.propertyImagesListener != nil)
 
- """)
+ """)*/
      
     }
     
-    public init(userAuthUID:String) {
+    public init(userManager:UserManager) {
         
-        print("[START] ACCOUNTERVM_INIT(id:\(userAuthUID)")
-       // print("[1_STORE CANCELLABLE]:\(self.cancellables.count)")
-       // self.currentUser = UserCloudData(isPremium: false, propertiesRef: [])
-       // self.isLoading = true
-       // self.stepView = .mainView
+        print("""
+[START] ACCOUNTERVM_INIT(id:\(userManager.currentUserUID)
+UserManager refCount:\(CFGetRetainCount(userManager))
+""")
+        self.userManager = userManager
+        self.propertiesManager = PropertyManager(userAuthUID: userManager.currentUserUID)
+        self.cloudDataManager = CloudDataManager()
         
         self.allMyPropertiesImage = [] // Da valutare optiona
         super.init(currentProperty: PropertyCurrentData()) // da valutare optional
-   
-   
             // let's start subscriber
         addUserManagerSubscriber()
         addPropertyManagerImagesSubscriber()
         addPropertyManagerCurrentPropSubscriber()
         addCloudDataManagerSubscriber()
-      //  addCurrentUserSubscriber()
-      //  addPropertyImagesSubscriber()
-      //  addCurrentPropertySubscriber()
-            
-           // testUpdateUserDATA()
-            // start data train fetch
-        fetchAndListenCurrentUserData(userAuthUID: userAuthUID)
-        
-
-        // vedi Nota 28.08.23
-        print("[END] ACCOUNTERVM_INI()T")
-        
-    }
-
-    private func addUserManagerSubscriber()  {
-       // 1° Publisher
-        print("[CALL]_addCurrentUserSubscriber")
-        // alla prima chiama nell'init i subscriber non ricevono alcun valore per cui non viene eseguito alcun sink. Se dopo il fetch dei dati il valore ricevuto non è valido partiraà la landing
-        GlobalDataManager
-            .shared
-            .userManager
-            .userPublisher
-            .sink { error in
-                //
-                print("ERRROR IN SINK_")
-            } receiveValue: { [weak self] userData in
-               
-                guard let self else {
-                    print("[SELF_is_WEAK]_addCurrentUserSubscriber")
-                    return
-                }
-                guard let userData else {
-                    // qui fallisce non tanto quando il documento non esiste, li va oltre, fallisce nel decodificare. In teoria se lo user è stato registrato non dovrebbe fallire. Proviamo a rimandarlo indietro e fargli reimpostare lo username e dunque tutto lo user nel firestore
-                    print("""
-
-                          [EPIC FAIL]_addCurrentUserSubscriber_USERDATA is NIL
-                   
-                           ViewModel reference Count: \(CFGetRetainCount(self))
-
-                   """)
-
-                    self.isLoading = nil
-                    self.stepView = .backToAuthentication
-                    
-                    return
-                }
-                
-                self.currentUser = userData
-                
-                guard let ref = userData.propertiesRef,
-                      !ref.isEmpty else {
-                    
-                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL or empty")
-                    self.stepView = .openLandingPage
-                    self.isLoading = nil
-                    return
-                }
-                
-                withAnimation {
-                    self.stepView = .mainView
-                    self.isLoading = true // in attesa di caricare i dati della proprietà
-                }
-
-                    GlobalDataManager
-                    .shared
-                    .propertiesManager
-                    .fetchAndListenPropertyImagesPublisher(
-                        from: ref,
-                        for: userData.id)
-                
-            }.store(in: &cancellables)
-
-    }
-
-    private func addPropertyManagerImagesSubscriber()  {
-        
-        // 2°Publisher
-        
-        print("[CALL]_addPropertyImagesSubscriber")
-        
-        GlobalDataManager
-            .shared
-            .propertiesManager
-            .propertyImagesPublisher
-            .sink { error in
-                //
-            } receiveValue: { [weak self] allPropImages in
-                
-                guard let self,
-                      let allPropImages else {
-                    
-                    print("[ERROR SINK]_PropIMAGES not VALID")
-                    self?.isLoading = false
-                    self?.stepView = .openLandingPage
-                    
-                    return
-                }
-                
-                self.allMyPropertiesImage = allPropImages
-                
-                if self.isLoading != true {
-                    
-                    withAnimation {
-                        self.isLoading = true
-                    }
-                }
-               
-                // fetch currenProperty
-
-                    GlobalDataManager
-                    .shared
-                    .propertiesManager
-                    .fetchCurrentPropertyPublisher(from: allPropImages)
-
-            }.store(in: &cancellables)
-
-    }
-    
-    private func addPropertyManagerCurrentPropSubscriber()  {
-        // 3° Publisher
-        print("[CALL]_addCurrentPropertySubscriber")
-       
-        GlobalDataManager
-            .shared
-            .propertiesManager
-            .currentPropertyPublisher
-            .sink { error in
-                //
-            } receiveValue: { [weak self] currentPropData, currentUserRole, propertyDocRef in
-                //
-                guard let self,
-                      let currentPropData,
-                      let currentUserRole,
-                      let propertyDocRef else {
-                    print("[ERROR_SINK] Property Current Data not VALID")
-                   
-                    withAnimation {
-                        self?.stepView = .openLandingPage
-                        self?.isLoading = false
-                    }
-                    
-                    return
-                }
-
-                if self.isLoading != true {
-                    
-                    withAnimation {
-                        self.isLoading = true
-                    }
-                }
-                print("[RECEIVE]_currentPropertyData_thread:\(Thread.current)")
-              //  DispatchQueue.main.async {
-                    
-                    self.currentUser?.propertyRole = currentUserRole
-                    self.currentProperty = currentPropData
-       
-             //  }
-            
-               // fetch cloudDataStore
-                GlobalDataManager
-                    .shared
-                    .cloudDataManager
-                    .retrieveCloudData(from: propertyDocRef)
-                
-            }.store(in: &cancellables)
-
-    }
-    
-    private func addCloudDataManagerSubscriber() {
-        
-        // 4° Publisher
-        
-        GlobalDataManager
-            .shared
-            .cloudDataManager
-            .cloudDataPublisher
-            .sink { error in
-                //
-            } receiveValue: { [weak self] cloudData in
-            
-                guard let self,
-                      let cloudData else {
-                    
-                    print("[ERROR_SINK]_cloudData_Fail")
-                   
-                    // decidere cosa fare con l'errore
-
-                    return
-                }
-                print("[RECEIVE]_cloudData_thread:\(Thread.current)")
-                DispatchQueue.main.async {
-                    // necessario perchè i dati arrivano da un thread di background
-                    self.db = cloudData
-                    self.isLoading = false 
-                }
-                
-                
-            }.store(in: &cancellables)
-
-    }
-    
-    private func fetchAndListenCurrentUserData(userAuthUID:String)  {
-        
-        print("[START TRAIN FETCH DATA]_fetchAndListenCurrentUserData")
-        // fa partire il treno dei dati grazie ai subscriber
-        GlobalDataManager
-            .shared
-            .userManager
-            .fetchAndListenUserDataPublisher(from: userAuthUID)
-        
-    }
+        addAllMyCategoriesSubscriber()
  
+        // start data train fetch
+        fetchAndListenCurrentUserData()
+        // vedi Nota 28.08.23
+        
+        print("""
+[END_INIT]_AccounterVM
+
+UserManager refCount:\(CFGetRetainCount(userManager))
+""")
+        
+    }
+
    
     
    /* public init(from serviceObject:InitServiceObjet) {
@@ -327,7 +135,9 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
         self.isLoading = true
         self.stepView = .mainView
        // self.currentUser = nil
-        
+        self.userManager = UserManager(userAuthUID: "")
+        self.propertiesManager = PropertyManager(userAuthUID: "")
+        self.cloudDataManager = CloudDataManager()
         self.allMyPropertiesImage = []
         super.init(currentProperty: PropertyCurrentData())
         print("Init ACCOUNTERVM")
@@ -1408,4 +1218,420 @@ extension AccounterVM:VM_FPC {
            return containerOrdinato
             
         }
+}
+
+extension AccounterVM {
+    // fetch & save on Firebase
+    private func fetchAndListenCurrentUserData()  {
+        
+        print("[START TRAIN FETCH DATA]_fetchAndListenCurrentUserData")
+        // fa partire il treno dei dati grazie ai subscriber
+       /* GlobalDataManager
+            .shared
+            .userManager
+            .fetchAndListenUserDataPublisher(from: userAuthUID) */
+        self.userManager
+            .fetchAndListenUserDataPublisher()
+        
+    }
+    
+    func saveCategoriaMenu(item:CategoriaMenu) async throws {
+            
+        let propertyID = self.currentProperty.info?.id ?? ""
+        
+        if let oldItem = self.db.allMyCategories.first(where: {$0.id == item.id}) {
+                
+            if oldItem.isStrictlyEqual(to: item) {
+                
+                // update del vecchio solo nella subCollection
+              // try await GlobalDataManager
+                //    .shared
+            try await self.cloudDataManager
+                        .setDataSubCollectionSingleDocument(
+                        forPropID: propertyID,
+                        sub: .allMyCategories,
+                        save: item)
+                
+                self.alertItem = AlertModel(title: "SUCCESS", message: "UPDATE DEL VECCHIO ITEM NELLA SUBCOLLECTION")
+                
+            } else {
+                
+                // salvare come nuovo nella library e sostituire il vecchio nella sub
+                
+                let newID = UUID().uuidString
+                
+                let newCategoria = CategoriaMenu(
+                    id: newID,
+                    intestazione: item.intestazione,
+                    image: item.image,
+                    descrizione: item.descrizione )
+                // salviamo nella library
+            //  try await GlobalDataManager
+              //      .shared
+                 try await self.cloudDataManager
+                    .categoriesManager
+                    .publishSingleCategoryInSharedLibrary(categoria: newCategoria)
+                // eliminiamo il vecchio e salviamo il nuovo nella subCollection
+              // try await GlobalDataManager
+                //    .shared
+                try await self.cloudDataManager
+                    .setDataSubCollectionSingleDocument(
+                        forPropID: propertyID,
+                        sub: .allMyCategories,
+                        delete: item.id,
+                        save: newCategoria)
+                
+                
+                self.alertItem = AlertModel(title: "CODE MISSED", message: "QUI SALVIAMO COME NUOVO NELLA LIBRARY E SOSTITUIAMO IL VECCHIO NELLA SUB")
+                
+                
+                }
+   
+            } else {
+                
+                // salva come nuovo nella library e nella sub
+                // controlliamo che non esista
+                
+              //  GlobalDataManager
+                //    .shared
+                    self.cloudDataManager
+                    .categoriesManager
+                    .checkCategoryAlreadyExistInLibrary(categoria: item) { exist,documentID in
+                        
+                        Task {
+                            if let documentID,
+                            exist {
+                                // lo salviamo soltanto fra le user Categories
+                                // assegnandogli l'id della categoria già esistente
+                                let newItem:CategoriaMenu = {
+                                   
+                                    var newOld = item
+                                    newOld.id = documentID
+                                    return newOld
+                                    
+                                }()
+                                
+                             //   try await GlobalDataManager
+                               //      .shared
+                                 try await self.cloudDataManager
+                                     .setDataSubCollectionSingleDocument(forPropID: propertyID, sub: .allMyCategories, save: newItem)
+                                
+                            } else {
+                                
+                                // salviamo nella library
+                            //  try await GlobalDataManager
+                              //      .shared
+                                try await self.cloudDataManager
+                                    .categoriesManager
+                                    .publishSingleCategoryInSharedLibrary(categoria: item)
+                                // salviamo nella subCollection
+                              //try await GlobalDataManager
+                                //    .shared
+                                  try await self.cloudDataManager
+                                    .setDataSubCollectionSingleDocument(
+                                        forPropID: propertyID,
+                                        sub: .allMyCategories,
+                                        save: item)
+                                
+                                
+                                
+                            }
+
+                        }
+                    }
+                
+                
+                self.alertItem = AlertModel(title: "CODE MISSED", message: "QUI SALVIAMO COME NUOVO NELLA LIBRARY E NELLA SUB")
+                
+            }
+            
+        
+        
+    }
+    
+    
+    
+    /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
+    func updateSubCollectionItem<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM  {
+        print("[CALL]_updateSubCollectionItem()")
+        
+        if !showAlert {
+            
+            self.updateItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)
+       
+        } else {
+            
+            self.alertItem = AlertModel(
+                title: "Confermare Modifiche",
+                message: messaggio,
+                actionPlus: ActionModel(
+                    title: .conferma,
+                    action: {
+        
+                        self.updateItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)
+                    
+                                        }))
+        }
+       
+        
+    }
+    
+    private func updateSubCollectionItemExecutive<T:MyProStarterPack_L1>(itemModel: T, destinationPath: DestinationPath? = nil) where T.VM == AccounterVM {
+        
+        var containerT = assegnaContainer(itemModel: itemModel)
+  
+        guard let oldItemIndex = containerT.firstIndex(where: {$0.id == itemModel.id}) else {
+            self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
+            return}
+
+        print("elementi nel Container Pre-Update: \(containerT.count)")
+        
+            containerT[oldItemIndex] = itemModel
+            aggiornaContainer(containerT: containerT, modelT: itemModel)
+        // Innesto 02.12.22
+        self.remoteStorage.modelRif_modified.insert(itemModel.id)
+        
+        if let path = destinationPath {
+            
+            self.refreshPath(destinationPath: path)
+            
+        }
+        
+        print("elementi nel Container POST-Update: \(containerT.count)")
+        print("updateItemModelExecutive executed")
+    }
+}
+
+extension AccounterVM {
+    // subscriber
+    
+    private func addAllMyCategoriesSubscriber() {
+        
+      //  GlobalDataManager
+        //    .shared
+        self.cloudDataManager
+            .allMyCategoriesPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] allMyCategories in
+                
+                guard let self,
+                      let allMyCategories else {
+                    return
+                }
+                
+                Task {
+                    
+                  /*  let joinedCategories = try await GlobalDataManager
+                         .shared
+                         .cloudDataManager
+                         .categoriesManager
+                         .joinCategories(from: allMyCategories)*/
+                    let joinedCategories = try await self.cloudDataManager
+                            .categoriesManager
+                            .joinCategories(from: allMyCategories)
+                    
+                    DispatchQueue.main.async {
+                        self.db.allMyCategories = joinedCategories
+                    }
+                }
+                
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addUserManagerSubscriber()  {
+       // 1° Publisher
+        print("[CALL]_addCurrentUserSubscriber")
+        // alla prima chiama nell'init i subscriber non ricevono alcun valore per cui non viene eseguito alcun sink. Se dopo il fetch dei dati il valore ricevuto non è valido partiraà la landing
+       // GlobalDataManager
+         //   .shared
+            self.userManager
+            .userPublisher
+            .sink { error in
+                //
+                print("ERRROR IN SINK_")
+            } receiveValue: { [weak self] userData in
+               
+                guard let self else {
+                    print("[SELF_is_WEAK]_addCurrentUserSubscriber")
+                    return
+                }
+                guard let userData else {
+                    // qui fallisce non tanto quando il documento non esiste, li va oltre, fallisce nel decodificare. In teoria se lo user è stato registrato non dovrebbe fallire. Proviamo a rimandarlo indietro e fargli reimpostare lo username e dunque tutto lo user nel firestore
+                    print("""
+
+                          [EPIC FAIL]_addCurrentUserSubscriber_USERDATA is NIL
+                   
+                           ViewModel reference Count: \(CFGetRetainCount(self))
+
+                   """)
+
+                    self.isLoading = nil
+                    self.stepView = .backToAuthentication
+                    
+                    return
+                }
+                
+                self.currentUser = userData
+                
+                guard let ref = userData.propertiesRef,
+                      !ref.isEmpty else {
+                    
+                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL or empty")
+                    self.stepView = .openLandingPage
+                    self.isLoading = nil
+                    return
+                }
+                
+                withAnimation {
+                    self.stepView = .mainView
+                    self.isLoading = true // in attesa di caricare i dati della proprietà
+                }
+
+                self.propertiesManager
+                    .fetchAndListenPropertyImagesPublisher(from: ref)
+                
+                  /*  GlobalDataManager
+                    .shared
+                    .propertiesManager
+                    .fetchAndListenPropertyImagesPublisher(
+                        from: ref,
+                        for: userData.id) */
+                
+            }.store(in: &cancellables)
+
+    }
+
+    private func addPropertyManagerImagesSubscriber()  {
+        
+        // 2°Publisher
+        
+        print("[CALL]_addPropertyImagesSubscriber")
+
+        // GlobalDataManager
+          //  .shared
+        self.propertiesManager
+            .propertyImagesPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] allPropImages in
+                
+                guard let self,
+                      let allPropImages else {
+                    
+                    print("[ERROR SINK]_PropIMAGES not VALID")
+                    self?.isLoading = false
+                    self?.stepView = .openLandingPage
+                    
+                    return
+                }
+                
+                self.allMyPropertiesImage = allPropImages
+                
+                if self.isLoading != true {
+                    
+                    withAnimation {
+                        self.isLoading = true
+                    }
+                }
+               
+                // fetch currenProperty
+
+                   // GlobalDataManager
+                   // .shared
+                self.propertiesManager
+                    .fetchCurrentPropertyPublisher(from: allPropImages)
+
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addPropertyManagerCurrentPropSubscriber()  {
+        // 3° Publisher
+        print("[CALL]_addCurrentPropertySubscriber")
+       
+       // GlobalDataManager
+         //   .shared
+        self.propertiesManager
+            .currentPropertyPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] currentPropData, currentUserRole, propertyDocRef in
+                //
+                guard let self,
+                      let currentPropData,
+                      let currentUserRole,
+                      let propertyDocRef else {
+                    
+                    print("[ERROR_SINK] Property Current Data not VALID")
+                   
+                    withAnimation {
+                        self?.stepView = .openLandingPage
+                        self?.isLoading = false
+                    }
+                    
+                    return
+                }
+
+                if self.isLoading != true {
+                    
+                    withAnimation {
+                        self.isLoading = true
+                    }
+                }
+                print("[RECEIVE]_currentPropertyData_thread:\(Thread.current)")
+              //  DispatchQueue.main.async {
+                   // self.allMyPropertiesImage = propertiesImages
+                    self.currentUser?.propertyRole = currentUserRole
+                    self.currentProperty = currentPropData
+       
+             //  }
+                self.cloudDataManager.currentProperySnap = propertyDocRef
+                self.cloudDataManager
+                    .retrieveCloudData()
+               // fetch cloudDataStore
+               /* GlobalDataManager
+                    .shared
+                    .cloudDataManager
+                    .retrieveCloudData(from: propertyDocRef)*/
+                
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addCloudDataManagerSubscriber() {
+        
+        // 4° Publisher // deprecato in futuro
+        
+      //  GlobalDataManager
+        //    .shared
+        self.cloudDataManager
+            .cloudDataPublisher
+            .sink { error in
+                //
+            } receiveValue: { [weak self] cloudData in
+            
+                guard let self,
+                      let cloudData else {
+                    
+                    print("[ERROR_SINK]_cloudData_Fail")
+                   
+                    // decidere cosa fare con l'errore
+
+                    return
+                }
+                print("[RECEIVE]_cloudData_thread:\(Thread.current)")
+                DispatchQueue.main.async/*"After(deadline:.now() + 3.0)"*/ {
+                    // necessario perchè i dati arrivano da un thread di background
+                    self.db = cloudData
+                    self.isLoading = false
+                }
+                
+                
+            }.store(in: &cancellables)
+
+    }
+    
+    
 }

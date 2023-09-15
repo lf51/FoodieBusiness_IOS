@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RemoteChangeStorage:Equatable {
+struct RemoteChangeStorage:Equatable { // possibile deprecazione causa modifica architettura_ crea locale -> salva firebase -> importa locale
     
     // Nota 02.12.22 su cronologia Modifiche
     

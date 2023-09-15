@@ -44,7 +44,9 @@ struct NuovaCategoriaMenu: View {
                         CorpoNuovaCategoria(
                             nuovaCategoria: $nuovaCategoria,
                             categoriaArchiviata: categoriaArchiviata) {
-                                self.aggiungiButton()
+                                Task {
+                                    await self.aggiungiButton()
+                                }
                             }
 
                     }
@@ -118,7 +120,17 @@ struct NuovaCategoriaMenu: View {
                                             
                                         }
                                         
-                                        let description = categoria.descrizione == "" ? "No description yet" : categoria.descrizione
+                                       /* let description = categoria.descrizione == "" ? "No description yet" : categoria.descrizione */
+                                        let description:String = {
+                                            
+                                            if let descrizione = categoria.descrizione,
+                                               descrizione != "" {
+                                                return descrizione
+                                            } else {
+                                                return "No description yet"
+                                            }
+
+                                        }()
                                         
                                         Text(description)
                                             .font(.callout)
@@ -169,7 +181,38 @@ struct NuovaCategoriaMenu: View {
         }
     }
     
-    private func aggiungiButton() {
+    private func aggiungiButton() async {
+           
+        csHideKeyboard()
+        
+        let name = csStringCleaner(string: self.nuovaCategoria.intestazione.lowercased())
+       // let finalName = name.capitalized
+        
+        let categoriaFinale = {
+            var cat = self.nuovaCategoria
+            cat.intestazione = name
+            return cat
+        }()
+        
+        do {
+           try await self.viewModel.saveCategoriaMenu(item: categoriaFinale)
+        } catch {
+            // mettere alert
+        }
+        /*if self.viewModel.isTheModelAlreadyExist(modelID: self.nuovaCategoria.id,path: \.db.allMyCategories) {  // Update
+            
+         //   self.viewModel.updateItemModel(itemModel:categoriaFinale)
+            
+        } else {  // Create
+          
+         //   self.viewModel.createItemModel(itemModel: categoriaFinale)
+            } */
+        
+        self.nuovaCategoria = CategoriaMenu()
+      
+       }
+    
+    private func aggiungiButtonDEPRECATA() {
            
         csHideKeyboard()
         
@@ -221,7 +264,7 @@ struct NuovaCategoriaMenu_Previews: PreviewProvider {
             
             NuovaCategoriaMenu(backgroundColorView: Color.seaTurtle_1)
               //  .environmentObject(AccounterVM(userAuth:user))
-                .environmentObject(AccounterVM(userAuthUID: "TEST_USER_UID"))
+                .environmentObject(AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID")))
         }
         
        

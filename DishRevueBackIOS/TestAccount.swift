@@ -38,7 +38,7 @@ var testAccount: AccounterVM = {
 
     let user = UserRoleModel()
     
-    var vm = AccounterVM(userAuthUID: "TEST_USER_UID")
+    var vm = AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))
     
     vm.currentProperty.info = property_Test
     

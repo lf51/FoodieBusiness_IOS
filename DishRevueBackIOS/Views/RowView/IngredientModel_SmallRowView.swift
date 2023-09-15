@@ -167,7 +167,7 @@ struct IngredientModel_SmallRowView: View {
 struct IngredientModel_SmallRowView_Previews: PreviewProvider {
    @State static var vm = {
        let user = UserRoleModel()
-       var viewM = AccounterVM(userAuthUID: "USER_TEST_UID")
+       var viewM = AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))
        viewM.db.allMyIngredients = [ ing1]
         return viewM
     }()

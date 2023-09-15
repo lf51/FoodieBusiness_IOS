@@ -718,7 +718,7 @@ struct DishModel_RowView: View {
                 .foregroundStyle(Color.seaTurtle_3)
             
             ScrollView(.horizontal,showsIndicators: false) {
-                Text(self.item.descrizione)
+                Text(self.item.descrizione ?? "")
                     .font(.headline)
                     .italic()
                     .foregroundStyle(Color.black)
@@ -1045,7 +1045,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
     
    static let user = UserRoleModel(ruolo: .admin)
     
-    static var viewModel:AccounterVM = AccounterVM(userAuthUID: "USER_TEST_UID")//AccounterVM(userAuth: user)
+    static var viewModel:AccounterVM = AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))//AccounterVM(userAuth: user)
         
     static let ing1 = IngredientModel(intestazione: "Guanciale", descrizione: "", conservazione: .congelato, produzione: .biologico, provenienza: .italia, allergeni: [], origine: .animale, status: .completo(.disponibile))
         

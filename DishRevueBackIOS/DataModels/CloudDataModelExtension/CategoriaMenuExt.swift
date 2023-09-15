@@ -12,7 +12,7 @@ extension CategoriaMenu:
     MyProStarterPack_L1,
     MyProEnumPack_L2,
     MyProDescriptionPack_L0 {
-    
+
     public typealias VM = AccounterVM
     
     

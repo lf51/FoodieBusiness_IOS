@@ -292,7 +292,7 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
    static let user = UserRoleModel()
     
     @StateObject static var viewModel: AccounterVM = {
-        var viewM = AccounterVM(userAuthUID: "USER_TEST_UID")
+        var viewM = AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))
         viewM.db.allMyIngredients = [ ingredientSample,ingredientSample2,ingredientSample3,ingredientSample4
         
         ]
