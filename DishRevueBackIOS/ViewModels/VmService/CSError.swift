@@ -10,6 +10,7 @@ import Foundation
 enum CSError:Error,LocalizedError {
     
     case propertyAlreadyRegistered
+    case propertyDataCorrotti
     
     var errorDescription: String? {
         
@@ -17,6 +18,9 @@ enum CSError:Error,LocalizedError {
             
         case .propertyAlreadyRegistered:
         return NSLocalizedString("Per reclami e/o errori contattare info@foodies.com.", comment: "Proprietà già registrata")
+            
+        case .propertyDataCorrotti:
+        return NSLocalizedString("Provare a riavviare.\nPer reclami e/o errori contattare info@foodies.com.", comment: "Collegamento ai dati corrotto")
             
         }
         

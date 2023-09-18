@@ -1226,130 +1226,114 @@ extension AccounterVM {
         
         print("[START TRAIN FETCH DATA]_fetchAndListenCurrentUserData")
         // fa partire il treno dei dati grazie ai subscriber
-       /* GlobalDataManager
-            .shared
-            .userManager
-            .fetchAndListenUserDataPublisher(from: userAuthUID) */
+
         self.userManager
             .fetchAndListenUserDataPublisher()
         
     }
     
-    func saveCategoriaMenu(item:CategoriaMenu) async throws {
-            
-        let propertyID = self.currentProperty.info?.id ?? ""
+    func saveCategoriesMenu(localCache:[CategoriaMenu]) async throws {
         
-        if let oldItem = self.db.allMyCategories.first(where: {$0.id == item.id}) {
-                
-            if oldItem.isStrictlyEqual(to: item) {
-                
-                // update del vecchio solo nella subCollection
-              // try await GlobalDataManager
-                //    .shared
-            try await self.cloudDataManager
-                        .setDataSubCollectionSingleDocument(
-                        forPropID: propertyID,
-                        sub: .allMyCategories,
-                        save: item)
-                
-                self.alertItem = AlertModel(title: "SUCCESS", message: "UPDATE DEL VECCHIO ITEM NELLA SUBCOLLECTION")
-                
-            } else {
-                
-                // salvare come nuovo nella library e sostituire il vecchio nella sub
-                
-                let newID = UUID().uuidString
-                
-                let newCategoria = CategoriaMenu(
-                    id: newID,
-                    intestazione: item.intestazione,
-                    image: item.image,
-                    descrizione: item.descrizione )
-                // salviamo nella library
-            //  try await GlobalDataManager
-              //      .shared
-                 try await self.cloudDataManager
-                    .categoriesManager
-                    .publishSingleCategoryInSharedLibrary(categoria: newCategoria)
-                // eliminiamo il vecchio e salviamo il nuovo nella subCollection
-              // try await GlobalDataManager
-                //    .shared
-                try await self.cloudDataManager
-                    .setDataSubCollectionSingleDocument(
-                        forPropID: propertyID,
-                        sub: .allMyCategories,
-                        delete: item.id,
-                        save: newCategoria)
-                
-                
-                self.alertItem = AlertModel(title: "CODE MISSED", message: "QUI SALVIAMO COME NUOVO NELLA LIBRARY E SOSTITUIAMO IL VECCHIO NELLA SUB")
-                
-                
-                }
-   
-            } else {
-                
-                // salva come nuovo nella library e nella sub
-                // controlliamo che non esista
-                
-              //  GlobalDataManager
-                //    .shared
-                    self.cloudDataManager
-                    .categoriesManager
-                    .checkCategoryAlreadyExistInLibrary(categoria: item) { exist,documentID in
-                        
-                        Task {
-                            if let documentID,
-                            exist {
-                                // lo salviamo soltanto fra le user Categories
-                                // assegnandogli l'id della categoria già esistente
-                                let newItem:CategoriaMenu = {
-                                   
-                                    var newOld = item
-                                    newOld.id = documentID
-                                    return newOld
-                                    
-                                }()
-                                
-                             //   try await GlobalDataManager
-                               //      .shared
-                                 try await self.cloudDataManager
-                                     .setDataSubCollectionSingleDocument(forPropID: propertyID, sub: .allMyCategories, save: newItem)
-                                
-                            } else {
-                                
-                                // salviamo nella library
-                            //  try await GlobalDataManager
-                              //      .shared
-                                try await self.cloudDataManager
-                                    .categoriesManager
-                                    .publishSingleCategoryInSharedLibrary(categoria: item)
-                                // salviamo nella subCollection
-                              //try await GlobalDataManager
-                                //    .shared
-                                  try await self.cloudDataManager
-                                    .setDataSubCollectionSingleDocument(
-                                        forPropID: propertyID,
-                                        sub: .allMyCategories,
-                                        save: item)
-                                
-                                
-                                
-                            }
-
-                        }
-                    }
-                
-                
-                self.alertItem = AlertModel(title: "CODE MISSED", message: "QUI SALVIAMO COME NUOVO NELLA LIBRARY E NELLA SUB")
-                
-            }
-            
+        guard let propertyID = self.currentProperty.info?.id else { return }
         
+       try await self.cloudDataManager
+            .publishSubCollection(
+                forPropID: propertyID,
+                sub: .allMyCategories,
+                as: localCache)
         
     }
     
+    func removeCategoriaMenu(localIDCache:[String]) async throws {
+        guard let propertyID = self.currentProperty.info?.id else { return }
+        
+       try await self.cloudDataManager
+            .deleteDataFromSubCollection(
+                forPropID: propertyID,
+                sub: .allMyCategories,
+                delete: localIDCache)
+    }
     
+    /*func saveCategoriaMenu(item:CategoriaMenu) async throws {
+            
+        guard let propertyID = self.currentProperty.info?.id else {
+            // throw error
+            throw CSError.propertyDataCorrotti
+            
+        }
+        
+        if self.db.allMyCategories.first(where: {$0.id == item.id}) != nil {
+            
+            // Case 2. Modifica Categoria
+          try await self.updateOldCategoria(item: item,for: propertyID)
+            
+            
+        } else {
+            
+            // Case 1. Nuova Categoria
+           try await self.saveNewCategoria(item: item, for: propertyID)
+
+        }
+  
+    }*/
+    
+    func saveNewAfterCheckLibrary(news:[CategoriaMenu]) async throws {
+        // Controllare se esiste nella library
+        // Se esiste recupera l'id e salvare nella subCollection
+        // Se non esiste salvare nella library e nella subCollection
+        guard let propertyID = self.currentProperty.info?.id else { return }
+        
+        for item in news {
+            
+            let rigenerateItem:CategoriaMenu?
+            
+            if let existingID = try await self.cloudDataManager
+                .categoriesManager
+                .checkCategoryAlreadyExistInLibrary(categoria: item) {
+                // item esiste
+                // rigeneriamo l'item
+                print("[CHECK]_saveNewAfterCheckLibrary()_idExist")
+                let rigenerate:CategoriaMenu = {
+                    var new = item
+                    new.id = existingID
+                    return new
+                }()
+                rigenerateItem = rigenerate
+                
+            } else {
+                // item non esiste
+                // salviamo nella main
+                print("[CHECK]_saveNewAfterCheckLibrary()_id_NOT_Exist")
+                rigenerateItem = item
+                try await self.cloudDataManager
+                   .categoriesManager
+                   .publishSingleCategoryInSharedLibrary(categoria: rigenerateItem!)
+                
+            }
+            
+            // salviamo nella sub
+            try await self.cloudDataManager
+                 .setDataSubCollectionSingleDocument(
+                     forPropID: propertyID,
+                     sub: .allMyCategories,
+                     save: rigenerateItem!)
+            
+        }
+        
+    }
+
+    private func updateOldCategoria(item:CategoriaMenu,for propertyID:String) async throws {
+        
+        // La modifica riguarda solo la descrizione e l'index nei menu
+        // salvare nella subCollection
+        
+       try await self.cloudDataManager
+            .setDataSubCollectionSingleDocument(
+                forPropID: propertyID,
+                sub: .allMyCategories,
+                save: item)
+        
+    }
     
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
     func updateSubCollectionItem<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM  {
@@ -1406,7 +1390,7 @@ extension AccounterVM {
     // subscriber
     
     private func addAllMyCategoriesSubscriber() {
-        
+        // 5° Publisher
       //  GlobalDataManager
         //    .shared
         self.cloudDataManager

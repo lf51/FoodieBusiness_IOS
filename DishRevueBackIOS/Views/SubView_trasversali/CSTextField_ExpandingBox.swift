@@ -67,65 +67,12 @@ import MyPackView_L0
                         .disabled(description == "")
                         .padding(.trailing)
                     }
-                    
-                   /* .onTapGesture {
-                        
-                        withAnimation {
-                            isEditorActive = true
-                        }
-                        
-                    } */
                     .onChange(of: description) { _, newValue in
                         
                         if newValue != itemModel.descrizione {
                             isTextChanged = true }
                         else { isTextChanged = false}
                         }
-                
-               /*if isEditorActive {
-                        
-                        HStack {
-                                CSButton_tight(
-                                    title: "Undo",
-                                    fontWeight: .heavy,
-                                    titleColor: .red,
-                                    fillColor: .clear) {
-                                        
-                                        withAnimation {
-                                            self.description = itemModel.descrizione
-                                        }
-                                    }
-                          
-                            Spacer()
-                            
-                            HStack(spacing:0) {
-                                
-                                Text("\(description.count)")
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(description.count <= maxDescriptionLenght ? Color.blue : Color.red)
-                                Text("/\(maxDescriptionLenght)")
-                                    .fontWeight(.light)
-                                
-                            }
-                            
-                            CSButton_tight(
-                                title: "Salva",
-                                fontWeight: .heavy,
-                                titleColor: .green,
-                                fillColor: .clear) {
-
-                                    self.saveAction()
-                                   /* self.isEditorActive = false
-                                    csHideKeyboard()
-                                    self.itemModel.descrizione = description */
-                                  //  self.dismissButton.toggle()
-                                    
-                                }
-                        }
-                        .opacity(isTextChanged ? 1.0 : 0.6)
-                        .disabled(!isTextChanged)
-                    
-                    } */
  
                 }
             .toolbar {
@@ -142,37 +89,12 @@ import MyPackView_L0
         }
     
     // Method
-    
-   /* private func saveText() {
-        
-        self.isEditorActive = false
-        csHideKeyboard()
-
-        viewModel.updateItemModel(messaggio: "Test") { () -> M in
-            
-            var varianteProperty = itemModel
-            varianteProperty.descrizione = description
-            return varianteProperty
-        }
-   
-    } */ // Salvataggio spostato nella View MAdre in data 27.06
      
      @ViewBuilder private func vbKeyboardLogic() -> some View {
          
        //  if isEditorActive {
                   
                   HStack {
-                      
-                        /*  CSButton_tight(
-                              title: "Undo",
-                              fontWeight: .heavy,
-                              titleColor: .red,
-                              fillColor: .clear) {
-                                  
-                                  withAnimation {
-                                      self.description = itemModel.descrizione
-                                  }
-                              } */
                       
                       Button {
                           withAnimation {
@@ -210,25 +132,11 @@ import MyPackView_L0
                       }
                       .opacity(descriptionTooLong ? 0.4 : 1.0)
                       .disabled(descriptionTooLong)
-                   /*   CSButton_tight(
-                          title: "Salva",
-                          fontWeight: .heavy,
-                          titleColor: .green,
-                          fillColor: .clear) {
 
-                              self.saveAction()
-                             /* self.isEditorActive = false
-                              csHideKeyboard()
-                              self.itemModel.descrizione = description */
-                            //  self.dismissButton.toggle()
-                              
-                          } */
                   }
                   .opacity(isTextChanged ? 1.0 : 0.4)
                   .disabled(!isTextChanged)
-              
-             // }
-         
+
      }
      
     

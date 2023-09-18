@@ -26,15 +26,7 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
     var body: some View {
         
         VStack(alignment:.leading,spacing:5.0) {
-            
-          /*  CSLabel_1Button(
-                placeHolder: labelString,
-                imageNameOrEmojy: "scribble",
-                backgroundColor: backgroundColor,
-                disabledCondition: disabledCondition,
-                toggleBottone: $wannaAddDescription) */
-            
-            
+
             CSLabel_conVB(
                 placeHolder: labelString,
                 imageNameOrEmojy: "scribble",
@@ -43,21 +35,11 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
                     HStack {
                         
                         let error = self.itemModel.descrizione == ""
-                        
-                      /*  CSButton_image(
-                            frontImage: "plus.circle",
-                            imageScale: .large,
-                            frontColor: .seaTurtle_3) {
-                                withAnimation(.default) {
-                                    self.wannaAddDescription?.toggle()
-                                  
-                                }
-                            } */
-                        
+    
                         CSButton_image(
                             activationBool: wannaAddDescription,
                             frontImage: "minus.circle",
-                            backImage: "plus.circle",
+                            backImage:"square.and.pencil",
                             imageScale: .large,
                             backColor: .white,
                             frontColor: .seaTurtle_3){
@@ -74,8 +56,6 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
                     }
                 }
             
-            
-                                    
             if self.wannaAddDescription ?? false {
 
                CSTextField_ExpandingBox(
@@ -88,7 +68,7 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
                                             
             } else {
                 
-                Text(itemModel.descrizione == nil ? "Nessuna descrizione inserita. Press [+] " : itemModel.descrizione!)
+                Text(itemModel.descrizione == nil ? "Nessuna descrizione inserita" : itemModel.descrizione!)
                     .italic()
                     .fontWeight(.light)
             }

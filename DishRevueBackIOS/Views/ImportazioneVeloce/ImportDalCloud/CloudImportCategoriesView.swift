@@ -176,7 +176,7 @@ struct CloudImportCategoriesView: View {
                             
                            
                         } label: {
-                            Text("Scarica e Salva")
+                            Text("Importa")
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(Color.blue)
@@ -227,40 +227,6 @@ struct CloudImportCategoriesView: View {
         }
     }
     
-    private func addNewCategory() async throws {
-        print("[CALL]_addNewCategoryFromCloud_name")
-       /* self.viewModel.alertItem = AlertModel(title: "DATA MISSED", message: "Inserire logica salvataggio su firebase con listener che ritorna i dati nel viewModel")*/
-        guard let propertyID = self.viewModel.currentProperty.info?.id else {
-            
-            self.viewModel.alertItem = AlertModel(title: "DATA MISSED", message: "Inserire logica salvataggio su firebase con listener che ritorna i dati nel viewModel")
-            return
-        }
-        
-      /* try await GlobalDataManager
-            .shared
-            .categoriesManager
-            .publishCategoryInPropertySubCollection(propertyID: propertyID, categoria: focusCategory) */
-        
-      /* try await GlobalDataManager
-            .shared
-            .cloudDataManager
-            .publishSubCollection(forPropID: propertyID, sub: .allMyCategories, as: [Any])*/
-        
-        
-        
-       /* self.viewModel.createItemModel(itemModel: self.focusCategory)
-        self.allFastCategories.removeAll(where: {$0.id == self.focusCategory.id})
-        self.allFastCategories.append(self.focusCategory)//perchè modifichiamo la state focus e dunque va rimossa quella nell'array allfast e va sostituita con quella nel focus che ha la nuova immagine
-        
-        if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyCategories)}) {
-            self.focusCategory = newFocus
-        } else {
-            self.focusCategory = CategoriaMenu()
-            self.disabilitaPicker = false
-        } */
-       
-        
-    }
 }
 
 
