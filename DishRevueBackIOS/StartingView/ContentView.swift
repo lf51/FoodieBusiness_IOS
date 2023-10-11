@@ -138,8 +138,10 @@ UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
                     .opacity(0.6)
                 } else {
                     
-                    VStack {
+                    VStack(alignment:.leading) {
+                        
                         Spacer()
+                        
                         Text("PUBLISHER IN:_\(self.viewModel.cancellables.count)")
                         Text("Reference ViewModel:\(CFGetRetainCount(self.viewModel))")
                         
@@ -149,8 +151,32 @@ UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
                             
                         }*/
                             
-                    }.font(.largeTitle)
+                    }.font(.caption)
 
+                }
+            })
+            .overlay(alignment: .bottom, content: {
+                if let logMessage = self.viewModel.logMessage {
+                    
+                    VStack(alignment:.leading) {
+                        
+                        Text(logMessage)
+                            .font(.title2)
+                            .fontWidth(.compressed)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(Color.black)
+                            .opacity(0.8)
+                            .multilineTextAlignment(.leading)
+                        
+                    }
+                   
+                    .clipShape(RoundedRectangle(cornerRadius: 5.0))
+                    .background {
+                        Color.seaTurtle_4.opacity(0.15)
+                            
+                    }
+                    .offset(y: -50)
+                    
                 }
             })
             .onAppear {

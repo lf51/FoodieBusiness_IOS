@@ -24,6 +24,23 @@ import MyPackView_L0
  
  */
 
+/*
+ 
+ Buntch // Transaction
+ 
+ • Buntch ci permette di salvare più modifiche a più documenti nello stesso tempo. Questo è utile perchè qualora avvenissero modifiche sugli stessi documenti da altri utenti, non si creerebbero degli ibridi, ma o le mie o le sue
+ -> Use Case:
+ Quando modifichiamo i vari modelli localmente e poi mandiamo le modifiche tutte insieme invece che one or one
+ 
+ • Transaction is quite similar, ma prima di scrivere le modifiche legge i dati per essere certo che siano up to date
+ -> Use Case:
+ Quando salviamo una nuova proprietà e creiamo l'admin per lo user. Dobbiamo essere certi che nessuno nello stesso istante stiano facendo lo stesso.
+ -> Cambi di Status dei modelli
+ 
+ 
+ 
+ */
+
 /// Gestisce la collezione userBusiness - E' un ponte fra l'authentication e il viewModel
 public final class UserManager {
    
@@ -340,12 +357,20 @@ func estrapolaPropertyData(from propertyImage:PropertyLocalImage) {
 
 } // close propertyManager
 
-public final class CloudDataManager {
+class SubSyncroManager<Item:Codable> {
+    
+    var listener:ListenerRegistration?
+    var main = PassthroughSubject<[Item]?,Error>()
+ 
+    init() { }
+}
+
+public final class SubCollectionManager {
    // static var shared:CloudDataManager = CloudDataManager()
     private let db_base = Firestore.firestore()
-    var currentProperySnap:QueryDocumentSnapshot?
+    var currentPropertySnap:QueryDocumentSnapshot?
     
-    var categoriesManager:CategoriesManager = CategoriesManager()
+   // var categoriesManager:CategoriesManager = CategoriesManager()
     
     public init() {
         
@@ -360,39 +385,54 @@ public final class CloudDataManager {
          case propertyCollection = "properties_registered" // properties_library
          case businessUser = "user_business" // user_business_library
          case ingredientCollection = "ingredients_library"
-         case categoriesCollection = "dish_categories" // -> categories_library
+         case categoriesCollection = "categories_library" // -> categories_library
      }
     
-    let cloudDataPublisher = PassthroughSubject<CloudDataStore?,Error>() // deprecato in futuro
+   // let cloudDataPublisher = PassthroughSubject<CloudDataStore?,Error>() // deprecato in futuro
     
     // SubPublisher
     
-    var allMyCategoriesListener:ListenerRegistration?
-    var allMyCategoriesPublisher = PassthroughSubject<[CategoriaMenu]?,Error>()
+  //  var allMyCategoriesListener:ListenerRegistration?
+  //  var allMyCategoriesPublisher = PassthroughSubject<[CategoriaMenu]?,Error>()
     
+    
+    var allMyProductsPublisher:SubSyncroManager<DishModel> = SubSyncroManager()
+    var allMyIngredientsPublisher:SubSyncroManager<IngredientModel> = SubSyncroManager()
+    var allMyMenuPublisher:SubSyncroManager<MenuModel> = SubSyncroManager()
+    var allMyCategoriesPublisher:SubSyncroManager<CategoriaMenu> = SubSyncroManager()
+    var allMyReviewsPublisher:SubSyncroManager<DishRatingModel> = SubSyncroManager()
+    
+    var news = PassthroughSubject<String?,Error>()
+    var modified = PassthroughSubject<String?,Error>()
+    var removed = PassthroughSubject<String?,Error>()
     
     func retrieveCloudData() {
         
         print("[CALL]_retrieveCloudData_thread:\(Thread.current)")
-        guard let currentProperySnap else { 
-            self.cloudDataPublisher.send(nil)
+        
+        guard let currentPropertySnap else {
+          //  self.cloudDataPublisher.send(nil)
             return }
         
-        let mainRef = currentProperySnap.reference
+        let mainRef = currentPropertySnap.reference
+      
         
-        Task { // Nota 07.09.23
+     //   Task { // Nota 07.09.23
             
-           // print("[TASK]_retrieveCloudData_thread:\(Thread.current)")
-            var currentData = CloudDataStore()
-            
-            print("PreCategories:Count\(currentData.allMyCategories.count)")
-            
-            listenAndPublishSubCollection(
+           listenAndPublishSubCollection(
                 from: mainRef,
                 for: .allMyCategories,
                 type: CategoriaMenu.self,
-                listener: \.allMyCategoriesListener,
-                publisher: \.allMyCategoriesPublisher)
+                syncroWith: \.allMyCategoriesPublisher)
+  
+            
+            print("[END_CALL]_listenAndPublishSubCollection(.allMyCategories)")
+        
+
+          /*  DispatchQueue.main.async {
+                self[keyPath: \.allMyCategoriesManager].publisher.send(completion: .finished)
+              //  self.allMyCategoriesManager.publisher.send(completion: .finished) // qua non funzia
+            }*/
             
            /* let allMyCategories = await retrieveSubCollection(
                 from: mainRef,
@@ -440,10 +480,10 @@ public final class CloudDataManager {
                 for: .allMyCategories,
                 type: CategoriaMenu.self)*/
             
-            print("Pre handle-After Categories:Count:\(currentData.allMyCategories.count)")
+          //  print("Pre handle-After Categories:Count:\(currentData.allMyCategories.count)")
             
-            self.cloudDataPublisher.send(currentData)
-        }
+           // self.cloudDataPublisher.send(currentData)
+      //  }
  
     }
     
@@ -451,8 +491,8 @@ public final class CloudDataManager {
         from propertyRef:DocumentReference,
         for subKey:CloudDataStore.SubCollectionKey,
         type:Item.Type,
-        listener pathListener:ReferenceWritableKeyPath<CloudDataManager,ListenerRegistration?>,
-        publisher pathPublisher:ReferenceWritableKeyPath<CloudDataManager,PassthroughSubject<[Item]?,Error>>) {
+        syncroWith:ReferenceWritableKeyPath<SubCollectionManager,SubSyncroManager<Item>>)
+{
      // Mettiamo un listener alle subCollection. Per categorie e Ingredienti il decoder delle sub deve essere impostato come valore di default nelle loro struct
         
      //   print("[CALL]_retrieveSubCollection_thread:\(Thread.current)")
@@ -460,48 +500,103 @@ public final class CloudDataManager {
         let subCollection = propertyRef.collection(subKey.rawValue)
         
         // creiamo il listener
-        self[keyPath: pathListener] = subCollection.addSnapshotListener({[weak self] querySnap, error in
-                
+
+            self[keyPath: syncroWith].listener = subCollection.addSnapshotListener(includeMetadataChanges: true, listener: { [weak self] querySnap, error in
+
              guard let self,
                    let snapShot = querySnap else {
                  
                  print("[ERROR]_listenAndPublishSubCollection")
-                 self?[keyPath: pathPublisher].send(nil)
+                 
+                // self?[keyPath: syncroWith].main.send(nil)
+                 self?[keyPath: syncroWith].main.send(nil)
+                // self?[keyPath: syncroWith].publisher.send(completion: .finished)
                  return
              }
                 
-          /*  snapShot.documentChanges.forEach { docs in
-
-                if docs.type == .modified {
-                    print("[BETA TEST]_INSIDE DOCUMENTCHANGE")
-                    self.propertyAllDataChanges.send(docs.type.rawValue)
+             // read MetaData
+                    
+        let source = snapShot.metadata.isFromCache
+        let pending = snapShot.metadata.hasPendingWrites
+                
+        guard !pending else {
+                    print("[PENDING]_cambiamenti locali. In attesa di snap dal server")
+                    return
+                }
+        print("[METADATA_SOURCE]_hasPendingWrite:\(pending.description)\n_isFromCache:\(source.description)")
+               
+        let documents = snapShot.documents
+                    
+        guard !documents.isEmpty else {
+         print("[Error] SubCollection fail to get Documents or there are not Documents")
+                      //  self[keyPath: syncroWith].main.send(nil)
+            self[keyPath: syncroWith].main.send(nil)
+           /* self[keyPath: syncroWith].news.send(completion: .finished)
+            self[keyPath: syncroWith].modified.send(completion: .finished)
+            self[keyPath: syncroWith].removed.send(completion: .finished)*/
+                        return
+                    }
+                    
+            snapShot.documentChanges.forEach { doc in
+                        
+                if doc.type == .modified {
+                    print("[Doc_Change]_modified")
+                    //let item = try? doc.document.data(as: CategoriaMenu.self)
+                    self.modified.send(doc.document.documentID)
+                    }
+                        
+                else if doc.type == .added { 
+                    print("[Doc_Change]_added")
+                    // in primo avvio me li da tutti added. Non mi garba per il discorso di segnalare visivamente modifiche e nuovi arrivi
+                    self.news.send(doc.document.documentID)
+                }
+                        
+                else if doc.type == .removed { 
+                    print("[Doc_Change]_removed")
+                    self.removed.send(doc.document.documentID)
+                }
+                        
+                else { 
+                    print("[Doc_Change]_noOperation")
+                    // no operation Occur
                 }
 
-            }*/ // da implementare
-            
-            let documents = snapShot.documents
-            
-            guard !documents.isEmpty else {
-                print("[Error] SubCollection fail to get Documents or there are not Documents")
-                self[keyPath: pathPublisher].send(nil)
-                return
             }
-            
-            let allItem = documents.compactMap ({ snap -> Item? in
+ 
+           /* for snap in documents {
                 
                 let item = try? snap.data(as: Item.self)
-                return item
                 
-            })
-            
-            self[keyPath: pathPublisher].send(allItem)
+                self[keyPath: pathPublisher].send(item)
+                print("[SNAP_LOOP]_listenAndPublishSubCollection_item:\(item?.id ?? "n/a")")
+            }
+            print("[END_CALL]_listenAndPublishSubCollection")
+            print("SYNCRO_EXIST:\(self[keyPath: pathPublisher].values)")
+                    
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                    self[keyPath: pathPublisher].send(completion: .finished)
+                    print("[END_CALL]_listenAndPublishSubCollection_afterCompletion")
+                } */
+
+                
+                let allItems:[Item] = documents.compactMap { snap -> Item?  in
+                    
+                    let item = try? snap.data(as: Item.self)
+                    return item
+                    
+                }
+                
+                print("[END]_listenAndPublishSubCollection_allItems:\(allItems.count)")
+                
+                self[keyPath: syncroWith].main.send(allItems)
+           
                 
             }) // chiusa listener
- 
+            
     }
     
     /// deprecata
-    func retrieveSubCollection<Item:MyProStarterPack_L0 & Codable>(
+   /* func retrieveSubCollection<Item:MyProStarterPack_L0 & Codable>(
         from propertyRef:DocumentReference,
         for subKey:CloudDataStore.SubCollectionKey,
         type:Item.Type) async -> [Item] {
@@ -529,9 +624,9 @@ public final class CloudDataManager {
         print("[End] retrieveSubCollection. IsEmpty?:\(allItem.isEmpty)")
         return allItem
         
-    }
+    }*/
     
-    func publishIngOnLibrary(model:[IngredientModel]) async throws {
+  /* func publishIngOnLibrary(model:[IngredientModel]) async throws {
         
         // filtra gli ingredient per quelli che hanno modifiche significative
         // salva nella library gli ing modificati come nuovi Ing
@@ -545,17 +640,17 @@ public final class CloudDataManager {
         }
 
         print("[] End publishIngOnLibrary")
-    }
+    }*/
     
-    func publishCloudData(for propertyId:String,from data:CloudDataStore) async throws {
+   /* func publishCloudData(for propertyId:String,from data:CloudDataStore) async throws {
         
         let propertyRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue).document(propertyId)
         
        try await publishMultipleSubCollection(in: propertyRef, from: data)
         
-    }
+    }*/
     
-    private func publishMultipleSubCollection(in propertyDocRef:DocumentReference,from cloudData:CloudDataStore) async throws {
+   /* private func publishMultipleSubCollection(in propertyDocRef:DocumentReference,from cloudData:CloudDataStore) async throws {
         
         let ingImage = cloudData.allMyIngredients.map({$0.retrieveImageFromSelf()})
         
@@ -567,12 +662,12 @@ public final class CloudDataManager {
         try await publishSubCollection(in: propertyDocRef, sub: .allMyReviews, as: cloudData.allMyReviews)
         
         
-    }
+    }*/
     
-    private func publishSubCollection<Item:MyProStarterPack_L0 & Codable>(in propertyRef:DocumentReference,sub collectionKey:CloudDataStore.SubCollectionKey, as items:[Item]) async throws {
+  /*  private func publishSubCollection<Item:MyProStarterPack_L0 & Codable>(in propertyRef:DocumentReference,sub collectionKey:CloudDataStore.SubCollectionKey, as items:[Item]) async throws {
         
         let collectionRef = propertyRef.collection(collectionKey.rawValue)
-        
+                
         for element in items {
             
            try collectionRef
@@ -580,21 +675,33 @@ public final class CloudDataManager {
                 .setData(from: element, merge:true)
             
         }
-    }
+    }*/
     
-     func publishSubCollection<Item:MyProStarterPack_L0 & Codable>(forPropID propertyID:String,sub collectionKey:CloudDataStore.SubCollectionKey, as items:[Item]) async throws {
+     func publishSubCollection<Item:MyProStarterPack_L0 & Codable>(
+        sub collectionKey:CloudDataStore.SubCollectionKey,
+        as items:[Item]) async throws {
         
+        guard let currentPropertySnap else {
+                return
+            }
+        let propertyID = currentPropertySnap.documentID
+            
+        let batch = self.db_base.batch()
+    
          let collectionRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue)
              .document(propertyID)
              .collection(collectionKey.rawValue)
-        
+            
+            print("[COLLECTION]_\(collectionKey.rawValue)_exist:\(collectionRef.description)")
+            
         for element in items {
             
-           try collectionRef
-                .document(element.id)
-                .setData(from: element, merge:true)
+              let ref = collectionRef.document(element.id)
+              try batch.setData(from: element, forDocument: ref, merge: true)
             
         }
+         
+            try await batch.commit()
     }
     
     /// Metodo valido per Categorie e Ingredienti quando modifchiamo un oggetto esistente. Eliminiamo il vecchio e salviamo il nuovo
@@ -680,7 +787,7 @@ public final class CategoriesManager {
    // private var cancellables = Set<AnyCancellable>()
     
     public init() {
-        collectionManaged = self.db_base.collection("dish_categories")
+        collectionManaged = self.db_base.collection("categories_library")
        // publishJoinedCategoriesFromSubscriber()
         print("[INIT]_CategoriesManager")
     }
@@ -691,6 +798,7 @@ public final class CategoriesManager {
     
     /// publisher ascoltato per lavorare con la libreria delle categorie
     let sharedCategoriesPublisher = PassthroughSubject<[CategoriaMenu]?,Error>()
+    
     func publishCategoriesFromSharedCollection(filterBy:String) {
         
         let customDecoder:Firestore.Decoder = {
@@ -757,7 +865,10 @@ public final class CategoriesManager {
     
     func joinCategories(from myCategories:[CategoriaMenu]) async throws ->  [CategoriaMenu] {
         
+        guard !myCategories.isEmpty else { return [] }
+        
         let allCategoriesID = myCategories.map({$0.id})
+       // guard !allCategoriesID.isEmpty else { return [] }
         
        let allSharedSnap = try? await collectionManaged
             .whereField(.documentID(), in: allCategoriesID)
@@ -793,7 +904,7 @@ public final class CategoriesManager {
             
         }
         
-         return fullCategories
+        return fullCategories.sorted(by: {$0.listIndex ?? 999 < $1.listIndex ?? 999})
         
     }
     

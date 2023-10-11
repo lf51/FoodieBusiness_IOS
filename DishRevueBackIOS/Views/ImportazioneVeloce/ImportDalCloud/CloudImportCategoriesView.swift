@@ -36,7 +36,6 @@ final class CloudImportViewModel:ObservableObject {
      //  GlobalDataManager
        //     .shared
         self.viewModel
-            .cloudDataManager
             .categoriesManager
             .sharedCategoriesPublisher
             .sink { error in
@@ -57,17 +56,42 @@ final class CloudImportViewModel:ObservableObject {
 
     }
     
-    func publishSubCollection(propertyID:String) async throws {
+    func publishSubCollection() async throws {
+        // chiamata da una task means che siamo su un backThread
+        guard let selectedCategory else { return}
         
-        guard let selectedCategory else { return }
-        
+        let rigeneratedCategories = updateListIndex(items: selectedCategory)
+
         try await self.viewModel
-                      .cloudDataManager
+                      .subCollectionManager
                       .publishSubCollection(
-                        forPropID: propertyID,
                         sub: .allMyCategories,
-                        as: selectedCategory)
+                        as: rigeneratedCategories)
+                      // su un backThread
         
+        
+        DispatchQueue.main.async {
+            self.selectedCategory = nil
+        }// torniamo sul main
+        
+        
+    }
+    
+    private func updateListIndex(items:[CategoriaMenu]) -> [CategoriaMenu] {
+
+        let remoteCacheCount = self.viewModel.db.allMyCategories.count
+        var rigeneratedCategories:[CategoriaMenu] = []
+        
+        for (index,item) in items.enumerated() {
+            
+            var rigenerata = item
+            rigenerata.listIndex = remoteCacheCount + index
+            rigeneratedCategories.append(rigenerata)
+            
+        }
+
+        return rigeneratedCategories
+
     }
     
 }
@@ -123,7 +147,6 @@ struct CloudImportCategoriesView: View {
                           //  GlobalDataManager
                             //    .shared
                             self.viewModel
-                                .cloudDataManager
                                 .categoriesManager
                                 .publishCategoriesFromSharedCollection(filterBy: string)
                         }
@@ -162,19 +185,13 @@ struct CloudImportCategoriesView: View {
                         .disabled(self.importVM.selectedCategory == nil)
                    
                         Button {
-                            
+
                             Task {
-                                if let propertyID = self.viewModel.currentProperty.info?.id {
+                
+                            try await self.importVM.publishSubCollection()
                                     
-                                   try await self.importVM.publishSubCollection(propertyID: propertyID)
-                                    
-                                } else {
-                                    
-                                    self.viewModel.alertItem = AlertModel(title: "Errore", message: "Ref alla proprietà corrotto. Riprovare")
-                                }
                             }
                             
-                           
                         } label: {
                             Text("Importa")
                         }
@@ -211,7 +228,12 @@ struct CloudImportCategoriesView: View {
     
     private func deSelectCategory(selected categoria:CategoriaMenu) {
 
-        self.importVM.selectedCategory?.removeAll{ $0 == categoria }
+        guard var selectedCategory = self.importVM.selectedCategory else { return }
+        
+        selectedCategory.removeAll{ $0 == categoria }
+        
+        if selectedCategory.isEmpty { self.importVM.selectedCategory = nil }
+        else { self.importVM.selectedCategory = selectedCategory }
 
     }
     

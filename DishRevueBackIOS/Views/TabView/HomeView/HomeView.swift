@@ -384,8 +384,8 @@ struct HomeView: View {
                             .foregroundStyle(Color.seaTurtle_3)
 
                 } */
-                
-                Menu {
+                vbMenuImport()
+               /* Menu {
                     
                     Button {
                         viewModel.addToThePath(destinationPath: .homeView, destinationView:DestinationPathView.moduloImportazioneVeloce)
@@ -412,7 +412,7 @@ struct HomeView: View {
                     Text("⚡️Import⚡️")
                         .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                         .foregroundStyle(Color.seaTurtle_3)
-                }
+                } */
 
                 
                 
@@ -532,6 +532,29 @@ struct HomeView: View {
   
     }
 
+}
+
+@ViewBuilder func vbMenuImport() -> some View {
+    
+    Menu {
+        
+        NavigationButtonBasic(
+            label: "Manuale",
+            systemImage: "square.and.pencil",
+            navigationPath: .homeView,
+            destination: .moduloImportazioneVeloce)
+        
+        NavigationButtonBasic(
+            label: "Cloud",
+            systemImage: "cloud",
+            navigationPath: .homeView,
+            destination: .moduloImportazioneWeb)
+
+    } label: {
+        Text("⚡️Import⚡️")
+            .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+            .foregroundStyle(Color.seaTurtle_3)
+    }
 }
 
 struct HomeView_Previews: PreviewProvider {
@@ -702,6 +725,32 @@ struct MenuDiSistema_BoxView:View {
         
         } // chiusa VStack Madre
 
+    }
+}
+
+struct NavigationButtonBasic:View {
+    
+    @EnvironmentObject var viewModel: AccounterVM
+    
+    let label:String
+    let systemImage:String
+    let navigationPath:DestinationPath
+    let destination: DestinationPathView
+    
+    var body: some View {
+        
+        Button {
+            self.viewModel.addToThePath(
+                destinationPath: navigationPath,
+                destinationView: destination)
+        } label: {
+            HStack {
+                Text(label)
+                Image(systemName: systemImage)
+                
+            }
+        }
+        
     }
 }
 

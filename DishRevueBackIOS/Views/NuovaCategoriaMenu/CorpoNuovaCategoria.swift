@@ -12,7 +12,7 @@ import MyPackView_L0
 struct CorpoNuovaCategoria:View {
     
     @Binding var nuovaCategoria: CategoriaMenu
-    @Binding var editCase:SwitchCategoryEditCase
+    @Binding var editCase:SwitchCategoryEditCase?
     let categoriaArchiviata: CategoriaMenu
 
     let creAction: () -> Void
@@ -51,8 +51,8 @@ struct CorpoNuovaCategoria:View {
             }
             .padding(.vertical,5)
             .scrollDismissesKeyboard(.immediately)
-            .opacity(editCase.disable ? 0.6 : 1.0)
-            .disabled(editCase.disable)
+            .opacity(editCase?.disable ?? false ? 0.6 : 1.0)
+            .disabled(editCase?.disable ?? false)
 
                     CSTextField_4b(
                         textFieldItem: $nuovaCategoria.intestazione,
@@ -62,8 +62,8 @@ struct CorpoNuovaCategoria:View {
                                 .padding(.leading,10)
                         }
                         .focused($modelField,equals: .intestazione)
-                        .opacity(editCase.disable ? 0.6 : 1.0)
-                        .disabled(editCase.disable)
+                        .opacity(editCase?.disable ?? false ? 0.6 : 1.0)
+                        .disabled(editCase?.disable ?? false)
     
                 BoxDescriptionModel_Generic(
                     itemModel: $nuovaCategoria,
@@ -81,7 +81,7 @@ struct CorpoNuovaCategoria:View {
                             
                            Spacer()
                             
-                            Text(editCase.addButton)
+                            Text(editCase?.addButton ?? "No_Action")
                                 .fontWeight(.semibold)
                                 .font(.system(.body, design: .rounded))
                                 .padding(.vertical,10)

@@ -23,6 +23,7 @@ struct ImportCategoryRow: View {
         let isAlreadySelected:Bool = {
             self.importVM.selectedCategory?.contains(category) ?? false
         }()
+        
         let alreadyImported = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
         
         let image:(name:String,color:Color) = {

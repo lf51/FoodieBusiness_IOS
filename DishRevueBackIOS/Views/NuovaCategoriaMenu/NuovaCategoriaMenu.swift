@@ -10,7 +10,7 @@ import MyPackView_L0
 import MyFoodiePackage
 
 enum SwitchCategoryEditCase {
-    case creaNuova(_ :Bool)
+    case creaNuova
     case modificaEsistente(_ :CategoriaMenu)
     
     var labelPlaceHolder:String {
@@ -36,8 +36,8 @@ enum SwitchCategoryEditCase {
     var labelAction:String {
         
         switch self {
-        case .creaNuova(let open):
-            return open ? "Chiudi" : "Crea"
+        case .creaNuova:
+            return "Chiudi"
         case .modificaEsistente:
             return "Esci"
         }
@@ -70,16 +70,14 @@ enum SwitchCategoryEditCase {
 struct NuovaCategoriaMenu: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    @Environment(\.editMode) var editMode
+   // @Environment(\.editMode) var editMode // deprecata
     let backgroundColorView:Color
 
-   // @State private var creaNuovaCategoria:Bool? = false // deprecata
     @State private var nuovaCategoria: CategoriaMenu?
     @State private var categoriaArchiviata: CategoriaMenu? // valutare utilità
     
-    @State private var editCase:SwitchCategoryEditCase = .creaNuova(false)
+    @State private var editCase:SwitchCategoryEditCase?
     @State private var localCache:[CategoriaMenu]?
-   // @State private var forceListEditing:Bool = false
         
     init(backgroundColorView: Color) {
 
@@ -96,25 +94,33 @@ struct NuovaCategoriaMenu: View {
             
             VStack(alignment:.leading,spacing: .vStackBoxSpacing) {
 
-                let isEditing = self.editMode?.wrappedValue.isEditing ?? false
+              //  let isEditing = self.editMode?.wrappedValue.isEditing ?? false
+                let isEditing = self.localCache != nil
                 let modifiche = contaModifiche()
                 
                 VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
                                         
                     CSLabel_conVB(
-                        placeHolder: editCase.labelPlaceHolder,
-                        imageNameOrEmojy: editCase.labelImage,
+                        placeHolder: editCase?.labelPlaceHolder ?? "Nuova Categoria",
+                        imageNameOrEmojy: editCase?.labelImage ?? "🍽️",
                         backgroundColor: Color.seaTurtle_3) {
                             
-                            Button(editCase.labelAction ) {
+                            HStack(spacing:20) {
                                 
-                                withAnimation {
-                                   
-                                    self.labelAction()
-
+                                Button(editCase?.labelAction ?? "Crea" ) {
+                                    
+                                    withAnimation {
+                                        self.labelAction()
+                                    }
                                 }
-                                
+                                .disabled(!isEditing)
+ 
+                                vbMenuImport()
+                                    .opacity(isEditing ? 0.6 : 1.0)
+                                    .disabled(isEditing)
                             }
+                            
+                            
                         }
                     
                     if let nuovaCategoria,
@@ -138,8 +144,10 @@ struct NuovaCategoriaMenu: View {
                 
                 VStack(alignment: .leading, spacing: .vStackLabelBodySpacing) {
                     
+                    let count = localCache?.count ?? self.viewModel.db.allMyCategories.count
+                    
                     CSLabel_conVB(
-                        placeHolder: "Elenco Categorie (\(localCache?.count ?? 0)):",
+                        placeHolder: "Elenco Categorie (\(count)):",
                         imageNameOrEmojy: "list.bullet.circle",
                         backgroundColor: Color.seaTurtle_3) {
                            
@@ -150,14 +158,16 @@ struct NuovaCategoriaMenu: View {
                                 title: "Elenco Categorie",
                                 message: .elencoCategorieMenu)
 
+                               Spacer()
+                               
                                let image:(name:String,color:Color) = {
                                   
-                                   if self.localCache == self.viewModel.db.allMyCategories {
+                                   if let modifiche {
                                        
-                                       return ("checkmark.icloud.fill",Color.seaTurtle_3)
+                                       return ("icloud.slash",Color.yellow)
                                        
                                    } else {
-                                       return ("icloud.slash",Color.yellow)
+                                       return ("checkmark.icloud.fill",Color.seaTurtle_3)
                                    }
                                    
                                }()
@@ -166,27 +176,55 @@ struct NuovaCategoriaMenu: View {
                                    .imageScale(.large)
                                    .foregroundStyle(image.color)
                                    .opacity(0.8)
-
-                               Spacer()
-                               
-                               EditButton()
                                    .csHpadding()
+
+                               
+                               
+                             //  EditButton()
+                               //    .csHpadding()
   
                             }
                         }
 
-                    if modifiche > 0 {
+                     if let modifiche {
                         
+                         let areNews = modifiche.nuovi > 0
+                         let areEdited = modifiche.edited > 0
+                         let areTrash = modifiche.removed > 0
+                         
                         HStack {
                             
-                            Text("Modifiche non Salvate:")
-                                .italic()
-                                .foregroundStyle(Color.black)
-                                .opacity(0.8)
-                            
-                            Text("\(modifiche)")
-                                .foregroundStyle(Color.black)
-                                .bold()
+                            VStack(alignment:.leading) {
+                                
+                                HStack {
+                                    
+                                    Text("\(Image(systemName: "doc.badge.plus")): \(modifiche.nuovi)")
+                                        .bold(areNews)
+                                        .foregroundStyle(areNews ? Color.green : Color.gray)
+                                    
+                                    Divider()
+                                        .bold()
+                                        .fixedSize()
+                                    
+                                    Text("\(Image(systemName: "pencil")): \(modifiche.edited)")
+                                        .bold(areEdited)
+                                        .foregroundStyle(areEdited ? Color.yellow : Color.gray)
+                                    
+                                    Divider()
+                                        .bold()
+                                        .fixedSize()
+                                    
+                                    Text("\(Image(systemName: "trash")): \(modifiche.removed)")
+                                        .bold(areTrash)
+                                        .foregroundStyle(areTrash ? Color.seaTurtle_4 : Color.gray)
+                                }
+                                
+                                Text("modifiche non salvate")
+                                    .italic()
+                                    .font(.caption)
+                                    .foregroundStyle(Color.black)
+                                    .opacity(0.75)
+                            }
                             
                             Spacer()
 
@@ -210,7 +248,7 @@ struct NuovaCategoriaMenu: View {
                     
                         List {
                             
-                            ForEach(localCache?.sorted(by: {$0.listIndex ?? 999 < $1.listIndex ?? 999}) ?? []) { categoria in
+                            ForEach(localCache ?? self.viewModel.db.allMyCategories) { categoria in
                                    
                                     let dishCount = categoria.dishPerCategory(viewModel: viewModel).count
  
@@ -234,7 +272,13 @@ struct NuovaCategoriaMenu: View {
                                                 .font(.system(.body, design: .rounded))
                                                 .foregroundStyle(Color.seaTurtle_4)
                                             
-                                            if !isEditing {
+                                        // temporaneo
+                                            let isNew = self.viewModel.remoteStorage.modelRif_newOne.contains( categoria.id)
+                                            let isEdited = self.viewModel.remoteStorage.modelRif_modified.contains(categoria.id)
+                                            Text(isNew ? "New" : isEdited ? "Mod" : "Old")
+                                            
+                                            if isEditing {
+                                                
                                                 Button {
                                                     
                                                     withAnimation {
@@ -283,8 +327,8 @@ struct NuovaCategoriaMenu: View {
                         .clipShape(RoundedRectangle(cornerRadius: 10.0))
                         .scrollDismissesKeyboard(.immediately)
                         .listStyle(.plain)
-                        .id(editMode?.wrappedValue)
-                        //.id(localCache)
+                       // .id(editMode?.wrappedValue)
+                        .id(localCache)
  
                 }
 
@@ -294,64 +338,115 @@ struct NuovaCategoriaMenu: View {
             .csHpadding()
            // .padding(.horizontal)
         }
-        /* .onAppear {
-            self.localCache = self.viewModel.db.allMyCategories
-            print("[ON_APPEAR]_nuovaCategoriaMenu")
-            }*/
-         .onReceive(viewModel.$db) { db in
-             self.localCache = db.allMyCategories
-             print("[ON_RECEIVE]_nuovaCategoriaMenu_from_viewModel.db")
-         }
-        
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    
+                    let(action,description) = editLogic()
+                    
+                    Button {
+                        
+                      action()
+                        
+                    } label: {
+                        Text(description)
+                    }
+
+                }
+            }
+  
     }
     // Method
-    private func contaModifiche() -> Int {
+    
+    private func editLogic() -> (action:() -> Void,description:String ) {
+        // Edit Reset Chiudi
+        print("[CALL]_editLogic()")
+        let cloudCache = self.viewModel.db.allMyCategories
+        let cache = localCache
         
-        var modifiche:Int = 0
+        var description:String
+        var action:() -> Void
         
-        guard let localCache else {
-            return modifiche
+        switch cache {
+            
+        case nil:
+            action = editAction
+            description = "Edit"
+            
+        case cloudCache: // non ci sono state modifiche
+           action = resetAction
+           description = "Cancel"
+            
+        default: // ci sono state modifiche
+           action = resetAction
+           description = "Reset"
         }
         
+        return(action,description)
+    }
+    
+    private func editAction() -> Void {
+        self.localCache = self.viewModel.db.allMyCategories
+    }
+    
+    private func resetAction() -> Void {
+        self.nuovaCategoria = nil
+        self.categoriaArchiviata = nil
+        self.localCache = nil
+    }
+    
+    private func contaModifiche() -> (nuovi:Int,edited:Int,removed:Int)? {
+ 
         let cloudCache = self.viewModel.db.allMyCategories
+        
+        guard let localCache,
+        localCache != cloudCache else {
+            return withAnimation {
+                nil
+            }
+        }
+        
+        var nuovi:Int = 0
+        var edited:Int = 0
+      
+        let cloudCacheID = cloudCache.map({$0.id})
+        let localCacheID = localCache.map({$0.id})
         
         for categoria in localCache {
             
-            if !cloudCache.contains(categoria) {
+            if !cloudCacheID.contains(categoria.id) {
+                // nuovi
+                nuovi += 1
                 
-                modifiche += 1
-                
-            }
+            } else if !cloudCache.contains(categoria) {
+                // modificati
+                edited += 1
+            } // else { elemento non ha modifiche}
         }
+ 
+       let removed = cloudCacheID.compactMap({
+            if !localCacheID.contains($0) { return $0 }
+            else { return nil }
+        }).count
         
-        for categoria in cloudCache {
-            
-            if !localCache.contains(categoria) {
-                modifiche += 1
-            }
-        }
-        
-      print("[CALL]_contaModifiche():\(modifiche)")
       return withAnimation {
-            modifiche
+            (nuovi,edited,removed)
         }
         
     }
     
-    private func creaOresetNuovaCategoria(open:Bool) {
-        
-        if open {
-            
+    private func creaNuovaCategoria() {
+
             let newCategoria = CategoriaMenu()
             self.nuovaCategoria = newCategoria
             self.categoriaArchiviata = newCategoria
-            
-        } else {
-            self.nuovaCategoria = nil
-            self.nuovaCategoria = nil
-        }
-
-        self.editCase = .creaNuova(open)
+        
+            self.editCase = .creaNuova
+    }
+    
+    private func resetCreaNuovaCategoria() {
+        self.nuovaCategoria = nil
+        self.categoriaArchiviata = nil
+        self.editCase = nil
     }
 
     private func labelAction() {
@@ -360,22 +455,19 @@ struct NuovaCategoriaMenu: View {
             self.nuovaCategoria == nil ||
             self.categoriaArchiviata == nil
         }()
-        
-        let new = CategoriaMenu()
-    
+
         switch self.editCase {
 
         case .modificaEsistente:
-            self.nuovaCategoria = new
-            self.categoriaArchiviata = new
-            
-            self.editCase = .creaNuova(true)
+          creaNuovaCategoria()
             
         default:
-            self.nuovaCategoria = isNewCategoryNil ? new : nil
-            self.categoriaArchiviata = isNewCategoryNil ? new : nil
-            self.editCase = .creaNuova(isNewCategoryNil)
-           
+            if isNewCategoryNil {
+                creaNuovaCategoria()
+            } else {
+                resetCreaNuovaCategoria()
+            }
+
         }
     }
     
@@ -395,8 +487,6 @@ struct NuovaCategoriaMenu: View {
         guard var localCache,
             var nuovaCategoria else { return }
                 
-        localCache = localCache.sorted(by: {$0.listIndex ?? 999 < $1.listIndex ?? 999})
-        
         if localCache.contains(where: {$0.id == nuovaCategoria.id}) {
             
             // trattasi di una modifica
@@ -404,7 +494,6 @@ struct NuovaCategoriaMenu: View {
             print("[OLD]_\(localCache[index].intestazione)_new:\(nuovaCategoria.intestazione)")
            localCache[index] = nuovaCategoria
             
-
         } else {
             // trattasi di nuova Categoria
             let name = csStringCleaner(string: nuovaCategoria.intestazione.lowercased())
@@ -418,20 +507,20 @@ struct NuovaCategoriaMenu: View {
             
         }
 
-        self.creaOresetNuovaCategoria(open: true)
+        self.creaNuovaCategoria()
         self.localCache = localCache
 
        }
     
     private func removeAction(index:IndexSet) {
         
-        guard let localCache else { return }
+      //  guard let localCache else { return }
         
-        var updatedCache:[CategoriaMenu] = localCache
+        var updatedCache:[CategoriaMenu] = self.localCache!
         updatedCache.remove(atOffsets: index)
         
         // ricaviamo l'elemento eliminato
-        let eliminated = localCache.first(where: {!updatedCache.contains($0)})
+        let eliminated = localCache!.first(where: {!updatedCache.contains($0)})
         
         guard let eliminated,
               eliminated.dishPerCategory(viewModel: self.viewModel).count == 0 else {
@@ -453,10 +542,10 @@ struct NuovaCategoriaMenu: View {
     private func onDeleteAction() -> Optional<(IndexSet) -> Void> {
 
       //  guard self.editMode?.wrappedValue.isEditing else { return nil }
-        guard let editMode = editMode?.wrappedValue,
-              editMode.isEditing else { return nil }
+       /* guard let editMode = editMode?.wrappedValue,
+              editMode.isEditing else { return nil } */
       
-       // guard self.localCache != nil else { return nil }
+        guard self.localCache != nil else { return nil }
         
         return removeAction
    
@@ -485,9 +574,9 @@ struct NuovaCategoriaMenu: View {
     
     private func onMoveAction() -> Optional<(IndexSet, Int) -> Void> {
         
-        guard let editMode = editMode?.wrappedValue,
-              editMode.isEditing else { return nil }
-       // guard self.localCache != nil else { return nil }
+       /* guard let editMode = editMode?.wrappedValue,
+              editMode.isEditing else { return nil }*/
+        guard self.localCache != nil else { return nil }
         return makeOrderAction
     }
     
@@ -513,8 +602,12 @@ struct NuovaCategoriaMenu: View {
          */
         guard let localCache else { return }
         
+    //    self.viewModel.isLoading = true
+        
         let cloudCache:[CategoriaMenu] = self.viewModel.db.allMyCategories
         let cloudIDCache:[String] = cloudCache.map({$0.id})
+        
+        let localCacheID:[String] = localCache.map({$0.id})
         
         var allNews:[CategoriaMenu] = [] // i nuovi per la proprietà
         var allEdited:[CategoriaMenu] = []
@@ -532,8 +625,8 @@ struct NuovaCategoriaMenu: View {
             
         }
         
-        let removed:[String] = cloudCache.compactMap {
-            if !localCache.contains($0) { return $0.id }
+        let removed:[String] = cloudIDCache.compactMap {
+            if !localCacheID.contains($0) { return $0}
             else { return nil }
         }
         
@@ -550,15 +643,20 @@ struct NuovaCategoriaMenu: View {
                 print("[SAVE_CATEGORIES]_allEDITED_count:\(allEdited.count)")
                 try await self.viewModel.saveCategoriesMenu(localCache: allEdited)
             }
+            
             if !removed.isEmpty {
                 // rimuoviamo dalla sub
                 print("[SAVE_CATEGORIES]_allREMOVED_count:\(removed.count)")
                 try await self.viewModel.removeCategoriaMenu(localIDCache: removed)
             }
 
+            self.localCache = nil
+            self.nuovaCategoria = nil
+            self.categoriaArchiviata = nil
+          //  self.viewModel.isLoading = nil
         }
         
-        self.editMode?.wrappedValue = .inactive
+       // self.editMode?.wrappedValue = .inactive
        
     }
 

@@ -35,7 +35,9 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     // manager
     let userManager:UserManager
     private(set) var propertiesManager:PropertyManager
-    private(set) var cloudDataManager:CloudDataManager
+    private(set) var categoriesManager:CategoriesManager
+    private(set) var ingredientsManager:IngredientManager
+    private(set) var subCollectionManager:SubCollectionManager
     
     
     @Published public var stepView:SubViewStep?
@@ -48,6 +50,7 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
   
     @Published var showAlert: Bool = false
     @Published var alertItem: AlertModel? {didSet { showAlert = true} }
+    @Published var logMessage:String?
     
     @Published var homeViewPath = NavigationPath()
     @Published var menuListPath = NavigationPath()
@@ -93,7 +96,9 @@ UserManager refCount:\(CFGetRetainCount(userManager))
 """)
         self.userManager = userManager
         self.propertiesManager = PropertyManager(userAuthUID: userManager.currentUserUID)
-        self.cloudDataManager = CloudDataManager()
+        self.subCollectionManager = SubCollectionManager()
+        self.categoriesManager = CategoriesManager()
+        self.ingredientsManager = IngredientManager()
         
         self.allMyPropertiesImage = [] // Da valutare optiona
         super.init(currentProperty: PropertyCurrentData()) // da valutare optional
@@ -101,7 +106,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         addUserManagerSubscriber()
         addPropertyManagerImagesSubscriber()
         addPropertyManagerCurrentPropSubscriber()
-        addCloudDataManagerSubscriber()
+       // addCloudDataManagerSubscriber()
         addAllMyCategoriesSubscriber()
  
         // start data train fetch
@@ -137,7 +142,10 @@ UserManager refCount:\(CFGetRetainCount(userManager))
        // self.currentUser = nil
         self.userManager = UserManager(userAuthUID: "")
         self.propertiesManager = PropertyManager(userAuthUID: "")
-        self.cloudDataManager = CloudDataManager()
+        self.subCollectionManager = SubCollectionManager()
+        self.categoriesManager = CategoriesManager()
+        self.ingredientsManager = IngredientManager()
+        
         self.allMyPropertiesImage = []
         super.init(currentProperty: PropertyCurrentData())
         print("Init ACCOUNTERVM")
@@ -1234,20 +1242,18 @@ extension AccounterVM {
     
     func saveCategoriesMenu(localCache:[CategoriaMenu]) async throws {
         
-        guard let propertyID = self.currentProperty.info?.id else { return }
-        
-       try await self.cloudDataManager
+       try await self.subCollectionManager
             .publishSubCollection(
-                forPropID: propertyID,
                 sub: .allMyCategories,
                 as: localCache)
         
     }
     
     func removeCategoriaMenu(localIDCache:[String]) async throws {
+        
         guard let propertyID = self.currentProperty.info?.id else { return }
         
-       try await self.cloudDataManager
+       try await self.subCollectionManager
             .deleteDataFromSubCollection(
                 forPropID: propertyID,
                 sub: .allMyCategories,
@@ -1283,7 +1289,7 @@ extension AccounterVM {
         // Se non esiste salvare nella library e nella subCollection
         guard let propertyID = self.currentProperty.info?.id else { return }
         
-        for item in news {
+     /*   for item in news {
             
             let rigenerateItem:CategoriaMenu?
             
@@ -1318,7 +1324,7 @@ extension AccounterVM {
                      sub: .allMyCategories,
                      save: rigenerateItem!)
             
-        }
+        } */
         
     }
 
@@ -1327,7 +1333,7 @@ extension AccounterVM {
         // La modifica riguarda solo la descrizione e l'index nei menu
         // salvare nella subCollection
         
-       try await self.cloudDataManager
+       try await self.subCollectionManager
             .setDataSubCollectionSingleDocument(
                 forPropID: propertyID,
                 sub: .allMyCategories,
@@ -1389,40 +1395,58 @@ extension AccounterVM {
 extension AccounterVM {
     // subscriber
     
-    private func addAllMyCategoriesSubscriber() {
+  /*  private func addAllMyCategoriesSubscriber() {
         // 5° Publisher
-      //  GlobalDataManager
-        //    .shared
-        self.cloudDataManager
+        
+        self.subCollectionManager
             .allMyCategoriesPublisher
-            .sink { error in
-                //
+            .main
+            .compactMap({ $0 }) // elimina i nil
+            .collect() // attende la fine del completion e passa un array
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    self.logMessage = "Categorie Caricate"
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                        self.logMessage = nil
+                    }
+                    break
+                case .failure(let error):
+                    print("error:\(error.localizedDescription)")
+                    break
+                }
             } receiveValue: { [weak self] allMyCategories in
-                
+
                 guard let self,
-                      let allMyCategories else {
+                !allMyCategories.isEmpty else {
+                    print("[SINK_ERROR]_addAllMyCategoriesSubscriber")
+                    self?.db.allMyCategories = []
+                    self?.isLoading = nil 
+                    
                     return
                 }
                 
+            print("[RECEIVE]_addAllMyCategoriesSubscriber_countData:\(allMyCategories.count)")
+                
+                if self.isLoading == nil ||
+                   !self.isLoading! { self.isLoading = true } // main thread
+                
                 Task {
-                    
-                  /*  let joinedCategories = try await GlobalDataManager
-                         .shared
-                         .cloudDataManager
-                         .categoriesManager
-                         .joinCategories(from: allMyCategories)*/
-                    let joinedCategories = try await self.cloudDataManager
-                            .categoriesManager
-                            .joinCategories(from: allMyCategories)
+
+                    let joinedCategories = try await self.categoriesManager.joinCategories(from: allMyCategories)
                     
                     DispatchQueue.main.async {
-                        self.db.allMyCategories = joinedCategories
+                        self.db.allMyCategories = joinedCategories.sorted(by: {$0.listIndex ?? 999 < $1.listIndex ?? 999})
+                        
+                        self.isLoading = nil
+                        print("[END_RECEIVE]_addAllMyCategoriesSubscriber_countDataDB:\(self.db.allMyCategories.count)")
                     }
                 }
                 
             }.store(in: &cancellables)
 
-    }
+
+    } */
     
     private func addUserManagerSubscriber()  {
        // 1° Publisher
@@ -1571,8 +1595,8 @@ extension AccounterVM {
                     self.currentProperty = currentPropData
        
              //  }
-                self.cloudDataManager.currentProperySnap = propertyDocRef
-                self.cloudDataManager
+                self.subCollectionManager.currentPropertySnap = propertyDocRef
+                self.subCollectionManager
                     .retrieveCloudData()
                // fetch cloudDataStore
                /* GlobalDataManager
@@ -1584,7 +1608,7 @@ extension AccounterVM {
 
     }
     
-    private func addCloudDataManagerSubscriber() {
+   /* private func addCloudDataManagerSubscriber() {
         
         // 4° Publisher // deprecato in futuro
         
@@ -1615,7 +1639,76 @@ extension AccounterVM {
                 
             }.store(in: &cancellables)
 
+    }*/
+    
+    private func addAllMyCategoriesSubscriber() {
+        
+        self.subCollectionManager
+            .allMyCategoriesPublisher
+            .main
+            .sink { completion in
+                //
+             /*   switch completion {
+                    
+                case .finished:
+                    print("[COMPLETION]_addAllMyCategoriesSubscriber_FINISHED")
+                   /* if self.isLoading == nil || !self.isLoading! {
+                        self.isLoading = true
+                    }*/
+                    self.isLoading = nil // temporaneo da configurare 
+                   break
+                    
+                case .failure(let error):
+                    print("Completion_Error:\(error.localizedDescription)")
+                    break
+                }*/
+            } receiveValue: { [weak self] allCategories in
+                
+                guard let self,
+                let allCategories else { 
+                    print("[RECEIVE_VALUE]_addAllMyCategoriesSubscriber_NOVALUEorWEAKSELF")
+                    self?.db.allMyCategories = []
+                    self?.isLoading = nil
+                    return }
+                
+                Task {
+                    
+                let joinedCategories = try await self.categoriesManager.joinCategories(from: allCategories)
+                    
+                    DispatchQueue.main.async {
+                        
+                        self.db.allMyCategories = joinedCategories
+                        self.isLoading = nil
+                        
+                    }
+                    
+                }
+
+            }.store(in: &cancellables)
+
+    }
+}
+
+/*
+struct GenericSubScriber:Subscriber {// 21.09.23 Smanetto senza fine
+  
+    typealias Input = CategoriaMenu
+    typealias Failure = CSError
+    
+    var combineIdentifier: CombineIdentifier = CombineIdentifier()
+    
+    func receive(subscription: Subscription) {
+        //
     }
     
+    func receive(_ input: MyFoodiePackage.CategoriaMenu) -> Subscribers.Demand {
+        let demand:Subscribers.Demand = .unlimited
+        return demand
+    }
     
-}
+    func receive(completion: Subscribers.Completion<CSError>) {
+        //
+    }
+    
+
+} */
