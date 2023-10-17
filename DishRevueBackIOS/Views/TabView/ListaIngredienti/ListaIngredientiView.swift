@@ -172,8 +172,35 @@ struct ListaIngredientiView: View {
             self.mapTree = nil
         }
     }
-        
+    
     @ViewBuilder private func vbTrailing() -> some View {
+        
+        Menu {
+            
+            NavigationButtonBasic(
+                label: "Aggiungi Manuale",
+                systemImage: "square.and.pencil",
+                navigationPath: .ingredientList,
+                destination: .ingrediente(IngredientModel()))
+            
+            NavigationButtonBasic(
+                label: "Importa dal Cloud",
+                systemImage: "cloud",
+                navigationPath: .ingredientList,
+                destination: .moduloImportazioneDaLibreriaIngredienti)
+   
+        } label: {
+            LargeBar_Text(
+                title: "Nuovo Ingrediente",
+                font: .callout,
+                imageBack: .seaTurtle_2,
+                imageFore: Color.white)
+        }
+
+        
+    }
+        
+   /* @ViewBuilder private func vbTrailing() -> some View {
         
         LargeBar_TextPlusButton(
             buttonTitle: "Nuovo Ingrediente",
@@ -182,7 +209,7 @@ struct ListaIngredientiView: View {
             imageFore: Color.white) {
                 self.viewModel.ingredientListPath.append(DestinationPathView.ingrediente(IngredientModel()))
             }
-    }
+    }*/ // deprecato
     
     @ViewBuilder private func vbFilterView(container:[IngredientModel]) -> some View {
         

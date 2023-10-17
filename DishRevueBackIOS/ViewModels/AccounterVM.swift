@@ -106,7 +106,8 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         addUserManagerSubscriber()
         addPropertyManagerImagesSubscriber()
         addPropertyManagerCurrentPropSubscriber()
-       // addCloudDataManagerSubscriber()
+     
+        addAllMyIngredientsSubscriber()
         addAllMyCategoriesSubscriber()
  
         // start data train fetch
@@ -1240,6 +1241,48 @@ extension AccounterVM {
         
     }
     
+    func updateCategoriesListFromLocalCache(news:[CategoriaMenu],edited:[CategoriaMenu],removedId:[String]) async throws {
+        
+        var newsForMain:[CategoriaMenu] = []
+        var newsForSub:[CategoriaMenu] = []
+        
+        for item in news {
+            
+            if let id = try await self.categoriesManager.checkCategoryAlreadyExistInLibrary(categoria: item) {
+                // già esiste/salviamo solo nella sub con id dalla library
+                let new = item.rigeneraCategoria(newId: id)
+                newsForSub.append(new)
+                
+            } else {
+                // non esiste/salviamo nella sub e nella library
+                
+                newsForMain.append(item)
+                newsForSub.append(item)
+                
+            }
+            
+        }
+        
+        // salviamo nella main le nuove
+        
+        if !newsForMain.isEmpty {
+            // questa la creiamo in batch ma non è comunque un problema perchè le main non hanno listener
+            try await self.categoriesManager
+               .publishInMainCollection(items: newsForMain)
+        }
+        
+        // newsForSub + edited possono essere salvate insieme
+        
+        let allEdited = newsForSub + edited
+        
+        
+        try await self.subCollectionManager.publishBatchSubCollection(sub: .allMyCategories, newOrEdited: allEdited, removed: removedId)
+        
+        print("[END]_updateCategoriesListFromLocalCache")
+    }
+    
+    
+    
     func saveCategoriesMenu(localCache:[CategoriaMenu]) async throws {
         
        try await self.subCollectionManager
@@ -1247,7 +1290,7 @@ extension AccounterVM {
                 sub: .allMyCategories,
                 as: localCache)
         
-    }
+    } // deprecato
     
     func removeCategoriaMenu(localIDCache:[String]) async throws {
         
@@ -1258,7 +1301,7 @@ extension AccounterVM {
                 forPropID: propertyID,
                 sub: .allMyCategories,
                 delete: localIDCache)
-    }
+    } // deprecato
     
     /*func saveCategoriaMenu(item:CategoriaMenu) async throws {
             
@@ -1327,6 +1370,7 @@ extension AccounterVM {
         } */
         
     }
+    // deprecato
 
     private func updateOldCategoria(item:CategoriaMenu,for propertyID:String) async throws {
         
@@ -1339,7 +1383,7 @@ extension AccounterVM {
                 sub: .allMyCategories,
                 save: item)
         
-    }
+    } // deprecato
     
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
     func updateSubCollectionItem<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM  {
@@ -1394,60 +1438,7 @@ extension AccounterVM {
 
 extension AccounterVM {
     // subscriber
-    
-  /*  private func addAllMyCategoriesSubscriber() {
-        // 5° Publisher
-        
-        self.subCollectionManager
-            .allMyCategoriesPublisher
-            .main
-            .compactMap({ $0 }) // elimina i nil
-            .collect() // attende la fine del completion e passa un array
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    self.logMessage = "Categorie Caricate"
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                        self.logMessage = nil
-                    }
-                    break
-                case .failure(let error):
-                    print("error:\(error.localizedDescription)")
-                    break
-                }
-            } receiveValue: { [weak self] allMyCategories in
 
-                guard let self,
-                !allMyCategories.isEmpty else {
-                    print("[SINK_ERROR]_addAllMyCategoriesSubscriber")
-                    self?.db.allMyCategories = []
-                    self?.isLoading = nil 
-                    
-                    return
-                }
-                
-            print("[RECEIVE]_addAllMyCategoriesSubscriber_countData:\(allMyCategories.count)")
-                
-                if self.isLoading == nil ||
-                   !self.isLoading! { self.isLoading = true } // main thread
-                
-                Task {
-
-                    let joinedCategories = try await self.categoriesManager.joinCategories(from: allMyCategories)
-                    
-                    DispatchQueue.main.async {
-                        self.db.allMyCategories = joinedCategories.sorted(by: {$0.listIndex ?? 999 < $1.listIndex ?? 999})
-                        
-                        self.isLoading = nil
-                        print("[END_RECEIVE]_addAllMyCategoriesSubscriber_countDataDB:\(self.db.allMyCategories.count)")
-                    }
-                }
-                
-            }.store(in: &cancellables)
-
-
-    } */
-    
     private func addUserManagerSubscriber()  {
        // 1° Publisher
         print("[CALL]_addCurrentUserSubscriber")
@@ -1595,6 +1586,7 @@ extension AccounterVM {
                     self.currentProperty = currentPropData
        
              //  }
+                // setta la prop corrente per le subCollection
                 self.subCollectionManager.currentPropertySnap = propertyDocRef
                 self.subCollectionManager
                     .retrieveCloudData()
@@ -1608,39 +1600,6 @@ extension AccounterVM {
 
     }
     
-   /* private func addCloudDataManagerSubscriber() {
-        
-        // 4° Publisher // deprecato in futuro
-        
-      //  GlobalDataManager
-        //    .shared
-        self.cloudDataManager
-            .cloudDataPublisher
-            .sink { error in
-                //
-            } receiveValue: { [weak self] cloudData in
-            
-                guard let self,
-                      let cloudData else {
-                    
-                    print("[ERROR_SINK]_cloudData_Fail")
-                   
-                    // decidere cosa fare con l'errore
-
-                    return
-                }
-                print("[RECEIVE]_cloudData_thread:\(Thread.current)")
-                DispatchQueue.main.async/*"After(deadline:.now() + 3.0)"*/ {
-                    // necessario perchè i dati arrivano da un thread di background
-                    self.db = cloudData
-                    self.isLoading = false
-                }
-                
-                
-            }.store(in: &cancellables)
-
-    }*/
-    
     private func addAllMyCategoriesSubscriber() {
         
         self.subCollectionManager
@@ -1648,20 +1607,6 @@ extension AccounterVM {
             .main
             .sink { completion in
                 //
-             /*   switch completion {
-                    
-                case .finished:
-                    print("[COMPLETION]_addAllMyCategoriesSubscriber_FINISHED")
-                   /* if self.isLoading == nil || !self.isLoading! {
-                        self.isLoading = true
-                    }*/
-                    self.isLoading = nil // temporaneo da configurare 
-                   break
-                    
-                case .failure(let error):
-                    print("Completion_Error:\(error.localizedDescription)")
-                    break
-                }*/
             } receiveValue: { [weak self] allCategories in
                 
                 guard let self,
@@ -1680,6 +1625,40 @@ extension AccounterVM {
                         self.db.allMyCategories = joinedCategories
                         self.isLoading = nil
                         
+                    }
+                    
+                }
+
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addAllMyIngredientsSubscriber() {
+        
+        self.subCollectionManager
+            .allMyIngredientsPublisher
+            .main
+            .sink { completion in
+                //
+            } receiveValue: { [weak self] allIngredients in
+                
+                guard let self,
+                let allIngredients else {
+                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
+                    self?.db.allMyIngredients = []
+                    self?.isLoading = nil
+                    return }
+                
+                Task {
+                    
+                    let joinedIngredients = try await self.ingredientsManager.joinIngredients(from: allIngredients)
+                    print("joinedIngredients.count:\(joinedIngredients.count)")
+                    DispatchQueue.main.async {
+                        
+                        self.db.allMyIngredients = joinedIngredients
+                        self.isLoading = nil
+                        
+                        print("db.allMyIngredients.count:\(self.db.allMyIngredients.count)")
                     }
                     
                 }

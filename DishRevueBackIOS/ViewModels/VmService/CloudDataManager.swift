@@ -366,12 +366,10 @@ class SubSyncroManager<Item:Codable> {
 }
 
 public final class SubCollectionManager {
-   // static var shared:CloudDataManager = CloudDataManager()
+ 
     private let db_base = Firestore.firestore()
     var currentPropertySnap:QueryDocumentSnapshot?
-    
-   // var categoriesManager:CategoriesManager = CategoriesManager()
-    
+
     public init() {
         
         print("[INIT]_CloudDataManager")
@@ -387,15 +385,7 @@ public final class SubCollectionManager {
          case ingredientCollection = "ingredients_library"
          case categoriesCollection = "categories_library" // -> categories_library
      }
-    
-   // let cloudDataPublisher = PassthroughSubject<CloudDataStore?,Error>() // deprecato in futuro
-    
-    // SubPublisher
-    
-  //  var allMyCategoriesListener:ListenerRegistration?
-  //  var allMyCategoriesPublisher = PassthroughSubject<[CategoriaMenu]?,Error>()
-    
-    
+
     var allMyProductsPublisher:SubSyncroManager<DishModel> = SubSyncroManager()
     var allMyIngredientsPublisher:SubSyncroManager<IngredientModel> = SubSyncroManager()
     var allMyMenuPublisher:SubSyncroManager<MenuModel> = SubSyncroManager()
@@ -428,6 +418,11 @@ public final class SubCollectionManager {
             
             print("[END_CALL]_listenAndPublishSubCollection(.allMyCategories)")
         
+        listenAndPublishSubCollection(
+             from: mainRef,
+             for: .allMyIngredients,
+             type: IngredientModel.self,
+             syncroWith: \.allMyIngredientsPublisher)
 
           /*  DispatchQueue.main.async {
                 self[keyPath: \.allMyCategoriesManager].publisher.send(completion: .finished)
@@ -523,7 +518,7 @@ public final class SubCollectionManager {
                     print("[PENDING]_cambiamenti locali. In attesa di snap dal server")
                     return
                 }
-        print("[METADATA_SOURCE]_hasPendingWrite:\(pending.description)\n_isFromCache:\(source.description)")
+                print("[METADATA_SOURCE]_hasPendingWrite:\(pending.description)\n_isFromCache:\(source.description)\nModelType:\(type)")
                
         let documents = snapShot.documents
                     
@@ -687,8 +682,8 @@ public final class SubCollectionManager {
         let propertyID = currentPropertySnap.documentID
             
         let batch = self.db_base.batch()
-    
-         let collectionRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue)
+            
+        let collectionRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue)
              .document(propertyID)
              .collection(collectionKey.rawValue)
             
@@ -703,6 +698,40 @@ public final class SubCollectionManager {
          
             try await batch.commit()
     }
+    
+    func publishBatchSubCollection<Item:MyProStarterPack_L0 & Codable>(
+       sub collectionKey:CloudDataStore.SubCollectionKey,
+       newOrEdited items:[Item],
+       removed:[String]) async throws {
+           
+           guard let currentPropertySnap else {
+                   return
+               }
+           let propertyID = currentPropertySnap.documentID
+               
+           let batch = self.db_base.batch()
+           
+           let collectionRef = self.db_base.collection(CollectionKey.propertyCollection.rawValue)
+                .document(propertyID)
+                .collection(collectionKey.rawValue)
+           
+           for element in items {
+               // salva
+                 let ref = collectionRef.document(element.id)
+                 try batch.setData(from: element, forDocument: ref, merge: true)
+               
+           }
+           
+           for id in removed {
+               // rimuove
+               let ref = collectionRef.document(id)
+               batch.deleteDocument(ref)
+               
+           }
+           
+          try await batch.commit()
+       }
+    
     
     /// Metodo valido per Categorie e Ingredienti quando modifchiamo un oggetto esistente. Eliminiamo il vecchio e salviamo il nuovo
     func setDataSubCollectionSingleDocument<Item:MyProStarterPack_L0 & Codable>(
@@ -797,14 +826,14 @@ public final class CategoriesManager {
         }
     
     /// publisher ascoltato per lavorare con la libreria delle categorie
-    let sharedCategoriesPublisher = PassthroughSubject<[CategoriaMenu]?,Error>()
+    let sharedCategoriesPublisher = PassthroughSubject<([CategoriaMenu]?,QueryDocumentSnapshot?),Error>()
     
     func publishCategoriesFromSharedCollection(filterBy:String) {
         
         let customDecoder:Firestore.Decoder = {
            
             let decoder = Firestore.Decoder()
-            decoder.userInfo[CategoriaMenu.codingInfo] = CategoriaMenu.DecodingCase.categoriesMainCollection
+            decoder.userInfo[CategoriaMenu.codingInfo] = MyCodingCase.mainCollection
             return decoder
         }()
         
@@ -816,7 +845,7 @@ public final class CategoriesManager {
                 guard let querySnap else {
                     // no value to push
                     print("[ERROR SNAP]_QueryNonValida")
-                    self.sharedCategoriesPublisher.send(nil)
+                    self.sharedCategoriesPublisher.send((nil,nil))
                     return
                 }
                 
@@ -830,7 +859,7 @@ public final class CategoriesManager {
                 }
                 
             // categories shoul be optional ?
-                self.sharedCategoriesPublisher.send(categories)
+                self.sharedCategoriesPublisher.send((categories,nil))
 
             }
         
@@ -882,7 +911,7 @@ public final class CategoriesManager {
         let sharedCategoryDecode:Firestore.Decoder = {
            
             let decoder = Firestore.Decoder()
-            decoder.userInfo[CategoriaMenu.codingInfo] = CategoriaMenu.DecodingCase.categoriesMainCollection
+            decoder.userInfo[CategoriaMenu.codingInfo] = MyCodingCase.mainCollection
             return decoder
             
         }()
@@ -912,7 +941,7 @@ public final class CategoriesManager {
         
         let customEncoder:Firestore.Encoder = {
             let encoder = Firestore.Encoder()
-            encoder.userInfo[CategoriaMenu.codingInfo] = CategoriaMenu.DecodingCase.categoriesMainCollection
+            encoder.userInfo[CategoriaMenu.codingInfo] = MyCodingCase.mainCollection
             return encoder
         }()
         
@@ -920,7 +949,28 @@ public final class CategoriesManager {
             .document(categoria.id)
             .setData(from: categoria,encoder: customEncoder)
         
-    }
+    } // obsoleta
+    
+    func publishInMainCollection(items:[CategoriaMenu]) async throws {
+ 
+       let batch = self.db_base.batch()
+ 
+       let customEncoder:Firestore.Encoder = {
+            let encoder = Firestore.Encoder()
+            encoder.userInfo[CategoriaMenu.codingInfo] = MyCodingCase.mainCollection
+            return encoder
+        }()
+        
+       for element in items {
+           
+             let ref = collectionManaged.document(element.id)
+             try batch.setData(from: element, forDocument: ref, encoder: customEncoder)
+           
+       }
+        
+        try await batch.commit()
+   }
+    
     
     func checkCategoryAlreadyExistInLibrary(categoria:CategoriaMenu) async throws -> String? {
         
@@ -968,7 +1018,153 @@ deinit {
         print("[DEINIT]_IngredientManager")
     }
 
-func retrieveModel(from images:[IngredientModelImage]) async -> [IngredientModel] {
+    /// publisher ascoltato per lavorare con la libreria degli Ingredienti
+    let ingredientLibraryPublisher = PassthroughSubject<([IngredientModel]?,QueryDocumentSnapshot?),Error>()
+    
+    var lastQuery:Query?
+    
+    func libraryCount() async throws -> Int {
+        
+       print("[CALL]_libraryCount_ingredientManager")
+        
+       let snap = try await collectionManaged.count.getAggregation(source: .server)
+        return Int(truncating: snap.count)
+    }
+    
+    func fetchFromSharedCollection(useCoreFilter filterCore:CoreFilter<IngredientModel>,startAfter:DocumentSnapshot?) {
+        
+        print("[CALL]_fetchIngredientFromSharedCollection")
+        
+        let letter:String = {
+            
+            filterCore.stringaRicerca == "" ? "A" : filterCore.stringaRicerca.lowercased()
+            
+        }()
+        
+        let properties = filterCore.filterProperties
+       
+        let currentQuery = collectionManaged
+            .whereField("intestazione", isGreaterThanOrEqualTo:letter)
+            .csWhereField(isEqualTo: properties.provenienzaING, in: .provenienza)
+            .csWhereField(isEqualTo: properties.produzioneING, in: .produzione)
+            .csWhereField(isEqualTo: properties.origineING, in: .origine)
+            .csWhereField(contain: properties.allergeniIn, in: .allergeni)
+                    
+        guard self.lastQuery != currentQuery else {
+            // la query è stata ripetuta
+            self.ingredientLibraryPublisher.send((nil,nil))
+            return
+            
+        }
+        
+        let count = currentQuery.count.getAggregation(source: .server) { result, error in
+            
+            guard let result else { return }
+            
+            
+        }
+        
+            // nuova query
+            self.lastQuery = currentQuery
+            executiveFetchFromSharedCollection(startAfter: startAfter)
+        
+      
+        
+    }
+    
+    func executiveFetchFromSharedCollection(startAfter:DocumentSnapshot?) {
+        
+        let customDecoder:Firestore.Decoder = {
+           
+            let decoder = Firestore.Decoder()
+            decoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.mainCollection
+            return decoder
+        }()
+        
+       guard let lastQuery else {
+           self.ingredientLibraryPublisher.send((nil,nil))
+           return
+       }
+       
+       lastQuery
+            .limit(to: 3)
+            .csStartAfter(document: startAfter)
+           // .order(by: "intestazione", descending: false)
+            .getDocuments { querySnap, error in
+                
+                guard let querySnap else {
+                    // no value to push
+                    print("[ERROR SNAP]_QueryNonValida")
+                    self.ingredientLibraryPublisher.send((nil,nil))
+                    return
+                }
+                
+                let docs = querySnap.documents
+                var lastSnap:QueryDocumentSnapshot?
+  
+                let allIng = docs.compactMap { snap -> IngredientModel? in
+                    
+                    let ing = try? snap.data(as: IngredientModel.self,decoder: customDecoder)
+
+                    if docs.last == snap {
+                        lastSnap = snap
+                    }
+                    
+                    return ing
+                    
+                }
+
+                self.ingredientLibraryPublisher.send((allIng,lastSnap))
+
+            }
+    }
+    
+    
+    func joinIngredients(from myIngredients:[IngredientModel]) async throws -> [IngredientModel] {
+        
+        guard !myIngredients.isEmpty else { return [] }
+        
+        let allIngID = myIngredients.compactMap({$0.id})
+        
+        let allIngSnap = try? await collectionManaged
+            .whereField(.documentID(), in: allIngID)
+            .getDocuments()
+        
+        guard let allIngSnap else {
+            print("NESSUN DOCUMENTS DAL getDocument()")
+            return [] }
+        
+        let decodeFromLibrary:Firestore.Decoder = {
+           
+            let decoder = Firestore.Decoder()
+            decoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.mainCollection
+            return decoder
+            
+        }()
+        
+        let joinedING = allIngSnap.documents.compactMap { snap -> IngredientModel? in
+            
+            let sharedING = try? snap.data(as: IngredientModel.self,decoder: decodeFromLibrary)
+            
+            guard var sharedING else {
+                print("[ERROR]_ING non ricavato dallo snap")
+                return nil }
+            
+            if let associatedING = myIngredients.first(where: {$0.id == sharedING.id }) {
+                
+                print("[JOIN_ING_SUCCESS]:\(associatedING.id)")
+                
+                sharedING.descrizione = associatedING.descrizione
+                sharedING.status = associatedING.status
+                return sharedING
+                
+            } else { return nil }
+        }
+        
+        return joinedING.sorted(by: {$0.intestazione < $1.intestazione})
+    }
+    
+/*func retrieveModel(from images:[IngredientModelImage]) async -> [IngredientModel] {
     
     print("Inside IngredientManager.retrieveModel")
     
@@ -1004,6 +1200,6 @@ func retrieveModel(from images:[IngredientModelImage]) async -> [IngredientModel
     }
     print("END IngredientManager.retrieveModel.Count \(allModel.count)")
     return allModel
-}
+}*/
 
 } // close IngredientManagar

@@ -10,15 +10,15 @@ import MyPackView_L0
 
 struct Switch_CloudImportObject: View {
     
-    @StateObject var importVM:CloudImportViewModel
+   // @StateObject var importVM:CloudImportViewModel
     let backgroundColorView: Color
     
     @State private var localChoice:SwitcherImport = .moduloA
     @State private var disabilitaPicker:Bool = false
     
-    init(backgroundColorView: Color, viewModel:AccounterVM) {
+    init(backgroundColorView: Color/*, viewModel:AccounterVM*/) {
         print("[INIT]_Switch_CloudImportObject")
-        _importVM = StateObject(wrappedValue: CloudImportViewModel(viewModel: viewModel))
+       /*_importVM = StateObject(wrappedValue: CloudImportViewModel(viewModel: viewModel))*/
         self.backgroundColorView = backgroundColorView
        
     }
@@ -56,9 +56,9 @@ struct Switch_CloudImportObject: View {
         switch localChoice {
             
         case .moduloA:
-            Color.red
+            CloudImportIngredientsView(backgroundColor: backgroundColorView)
         case .moduloB:
-            CloudImportCategoriesView(importVM:importVM,backgroundColor: backgroundColorView)
+            CloudImportCategoriesView(backgroundColor: backgroundColorView)
             
         }
     }
@@ -72,5 +72,5 @@ struct Switch_CloudImportObject: View {
 }
 
 #Preview {
-    Switch_CloudImportObject(backgroundColorView: .seaTurtle_1, viewModel: AccounterVM(userManager: UserManager(userAuthUID: "TEST")))
+    Switch_CloudImportObject(backgroundColorView: .seaTurtle_1)
 }

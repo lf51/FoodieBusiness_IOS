@@ -13,15 +13,15 @@ import MyPackView_L0
 struct ImportCategoryRow: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-    @ObservedObject var importVM:CloudImportViewModel
+    @ObservedObject var importVM:CloudImportGenericViewModel<CategoriaMenu>
     
     let category:CategoriaMenu
-    let selectingAction:(_ isSelected:Bool) -> ()
+   // let selectingAction:(_ isSelected:Bool) -> ()
     
     var body: some View {
         
         let isAlreadySelected:Bool = {
-            self.importVM.selectedCategory?.contains(category) ?? false
+            self.importVM.selectedContainer?.contains(category) ?? false
         }()
         
         let alreadyImported = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
@@ -62,7 +62,10 @@ struct ImportCategoryRow: View {
                 .opacity(isAlreadySelected ? 0.6 : 0.1)
             }
             .onTapGesture {
-                selectingAction(isAlreadySelected)
+               // selectingAction(isAlreadySelected)
+                withAnimation {
+                    self.importVM.selectingLogic(isAlreadySelect: isAlreadySelected, selected: category)
+                }
             }
             .disabled(alreadyImported)
     

@@ -45,9 +45,9 @@ func csReturnEmojyCollection() -> [String] {
     }
 
 /// dovrà essere derivata dalla lingua del device
-func csLanguageAlphabet() -> [String] {
+func csLanguageAlphabet(addValue:[String] = []) -> [String] {
     
-  ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+ addValue + ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     
 }
 

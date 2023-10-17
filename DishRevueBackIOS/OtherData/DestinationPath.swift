@@ -39,6 +39,7 @@ public enum DestinationPathView: Hashable {
     
     case moduloImportazioneVeloce
     case moduloImportazioneWeb
+    case moduloImportazioneDaLibreriaIngredienti
     
     case recensioni(_ :String)
     
@@ -107,7 +108,10 @@ public enum DestinationPathView: Hashable {
             
         case .moduloImportazioneWeb:
            // CloudImportCategoriesView(backgroundColor: backgroundColorView)
-            Switch_CloudImportObject(backgroundColorView: backgroundColorView,viewModel: readOnlyViewModel)
+            Switch_CloudImportObject(backgroundColorView: backgroundColorView)
+            
+        case .moduloImportazioneDaLibreriaIngredienti:
+            CloudImportIngredientsSingleView(backgroundColor: backgroundColorView)
             
         case .recensioni(let rifDish):
            // DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)

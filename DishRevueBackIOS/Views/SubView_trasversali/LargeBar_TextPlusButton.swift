@@ -60,7 +60,6 @@ struct LargeBar_Text: View {
                         .background(imageBack.clipShape(Circle()))
                         .foregroundStyle(imageFore!)
                      
-                    
                     Text(title ?? "")
                         .font(font)
                         .fontWeight(.semibold)

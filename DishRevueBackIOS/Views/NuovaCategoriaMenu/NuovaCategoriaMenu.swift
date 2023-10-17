@@ -632,7 +632,7 @@ struct NuovaCategoriaMenu: View {
         
         Task {
             
-            if !allNews.isEmpty {
+           /* if !allNews.isEmpty {
                 // verificare se sono nuovi in assoluto o se presenti nella libreria
                 print("[SAVE_CATEGORIES]_allNEWS_count:\(allNews.count)")
                 try await self.viewModel.saveNewAfterCheckLibrary(news: allNews)
@@ -648,8 +648,15 @@ struct NuovaCategoriaMenu: View {
                 // rimuoviamo dalla sub
                 print("[SAVE_CATEGORIES]_allREMOVED_count:\(removed.count)")
                 try await self.viewModel.removeCategoriaMenu(localIDCache: removed)
-            }
+            }*/
 
+            try await self.viewModel.updateCategoriesListFromLocalCache(
+                news:allNews,
+                edited:allEdited,
+                removedId:removed)
+            
+            print("[END_STEP]_saveOnCloud")
+            
             self.localCache = nil
             self.nuovaCategoria = nil
             self.categoriaArchiviata = nil

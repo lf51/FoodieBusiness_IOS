@@ -6,3 +6,21 @@
 //
 
 import Foundation
+import SwiftUI
+
+#if canImport(Charts)
+extension UICollectionReusableView {
+    
+    override open var backgroundColor: UIColor? {
+        get { .clear }
+        set { }
+    }
+}
+#endif
+
+extension CGFloat {
+    
+    static let vStackLabelBodySpacing:CGFloat = 5
+    static let vStackBoxSpacing:CGFloat = 10
+    
+}
