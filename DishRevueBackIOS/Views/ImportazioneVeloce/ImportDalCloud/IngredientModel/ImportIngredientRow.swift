@@ -40,16 +40,17 @@ struct ImportIngredientRow: View {
             
         }()
 
-         IngredientModel_RowView(
-            item: ingredient,
-            rowSize: .normale())
+        IngredientModel_RowView(
+           item: ingredient,
+           rowSize: .fromSharedLibrary)
          .opacity(isAlreadySelected ? 1.0 : 0.6)
-         .overlay(alignment: .bottomTrailing, content: {
+         .overlay(alignment: .topTrailing, content: {
              
              Image(systemName: image.name)
                  .imageScale(.large)
                  .foregroundStyle(image.color)
                  .opacity(alreadyImported ? 0.5 : 1.0)
+                 .padding([.trailing,.top],5)
          })
             
             .onTapGesture {

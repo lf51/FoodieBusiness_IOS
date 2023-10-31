@@ -14,6 +14,7 @@ public enum RowSize:Equatable,Hashable { // Nota 22.06.23
     case sintetico
     case ridotto
     case normale(_ limitedTo:CGFloat? = nil)
+    case fromSharedLibrary
   //  case ibrido(_ limitedTo:CGFloat? = nil)
     
     func returnType() -> RowSize {
@@ -25,6 +26,9 @@ public enum RowSize:Equatable,Hashable { // Nota 22.06.23
             return .ridotto
         case .normale(_):
             return .normale()
+        case .fromSharedLibrary:
+            return .normale()
+            
        /* case .ibrido(_):
             return .ibrido() */
         }
@@ -37,8 +41,11 @@ public enum RowSize:Equatable,Hashable { // Nota 22.06.23
             return 300
         case .ridotto:
             return 300
+        case .fromSharedLibrary:
+            return 300
         case .normale(let width):
             return width
+            
        /* case .ibrido(let width):
             return width */
 
@@ -84,7 +91,8 @@ struct DishModel_RowView: View {
             vbSinteticRow()
         case .ridotto:
             vbSmallRow()
-        case .normale:
+        default:
+        //case .normale:
             vbNormalRow()
        /* case .ibrido:
            vbIbridoRow() */

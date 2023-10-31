@@ -15,6 +15,19 @@ extension DishModel:
     MyProToolPack_L1,
     MyProVisualPack_L1,
     MyProDescriptionPack_L0 {
+    
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyDish
+    }
+    
+    public func isEqual(to rhs: MyFoodiePackage.DishModel) -> Bool {
+        
+        self.intestazione == rhs.intestazione
+        
+    }
+    
    
     public typealias VM = AccounterVM
   // public typealias FPM = FilterPropertyModel
@@ -973,4 +986,20 @@ extension DishModel: MyProProgressBar {
         
     }
     
+}
+
+extension DishModel {
+    /// al 30_10_23 funziona solo per ingredienti principali e secondari. Da sviluppare sui sostituti e  sostituiti
+    public func replaceIngredients(id old:String,with new:String) -> DishModel? {
+        
+        let ingPath = self.individuaPathIngrediente(idIngrediente: old)
+        
+        guard let path = ingPath.path,
+              let index = ingPath.index else { return nil }
+        
+        var newDish = self
+        newDish[keyPath: path][index] = new
+        return newDish
+        
+    }
 }

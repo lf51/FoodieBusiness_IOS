@@ -15,6 +15,24 @@ extension IngredientModel:
     MyProVisualPack_L1,
     MyProDescriptionPack_L0 {
     
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyIngredients
+    }
+
+    public func isEqual(to rhs: MyFoodiePackage.IngredientModel) -> Bool {
+        
+        self.intestazione == rhs.intestazione &&
+        self.origine == rhs.origine &&
+        self.allergeni == rhs.allergeni &&
+        self.conservazione == rhs.conservazione &&
+        self.produzione == rhs.produzione &&
+        self.provenienza == rhs.provenienza
+        
+    }
+    
+    
     
     public typealias VM = AccounterVM
   //  public typealias FPM = FilterPropertyModel

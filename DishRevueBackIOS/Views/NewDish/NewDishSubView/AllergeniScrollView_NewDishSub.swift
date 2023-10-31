@@ -56,7 +56,7 @@ struct AllergeniScrollView_NewDishSub: View {
 
                 let allergeniIn = self.newDish.calcolaAllergeniNelPiatto(viewModel: self.viewModel)
                 
-                SimpleModelScrollGeneric_SubView(
+                SimpleModelScrollAllergeni_SubView(
                     modelToShow: allergeniIn,
                     fontWeight: .light,
                     strokeColor: Color.red)

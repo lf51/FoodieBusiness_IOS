@@ -47,7 +47,7 @@ struct CSText_tightRectangle: View {
     
     var body: some View {
 
-            Text(testo)
+        Text(testo.capitalized)
             .fontWeight(fontWeight)
             .foregroundStyle(textColor)
           // .shadow(color: Color.black, radius: 1.5)

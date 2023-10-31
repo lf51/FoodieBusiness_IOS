@@ -37,9 +37,11 @@ public enum DestinationPathView: Hashable {
     case ingrediente(_ :IngredientModel)
     case categoriaMenu
     
-    case moduloImportazioneVeloce
-    case moduloImportazioneWeb
+    case moduloCreaInBloccoCategorie
+    case moduloCreaInBloccoPiattiEIngredienti
+
     case moduloImportazioneDaLibreriaIngredienti
+    case moduloImportazioneDaLibreriaCategorie
     
     case recensioni(_ :String)
     
@@ -100,18 +102,19 @@ public enum DestinationPathView: Hashable {
             NuovoIngredienteGeneralView(nuovoIngrediente: ingredient, backgroundColorView: backgroundColorView, destinationPath: destinationPath)
             
         case .categoriaMenu:
-            NuovaCategoriaMenu(backgroundColorView: backgroundColorView)
+            NuovaCategoriaMenu(backgroundColorView: backgroundColorView,destinationPath: destinationPath)
            
-        case .moduloImportazioneVeloce:
+        case .moduloCreaInBloccoCategorie:
           //  FastImport_MainView(backgroundColorView: backgroundColorView)
-            Switch_ImportObject(backgroundColorView: backgroundColorView)
-            
-        case .moduloImportazioneWeb:
-           // CloudImportCategoriesView(backgroundColor: backgroundColorView)
-            Switch_CloudImportObject(backgroundColorView: backgroundColorView)
-            
+            FastImport_Categorie(backgroundColorView: backgroundColorView)
+        case .moduloCreaInBloccoPiattiEIngredienti:
+            FastImport_MainView(backgroundColorView: backgroundColorView)
+ 
         case .moduloImportazioneDaLibreriaIngredienti:
-            CloudImportIngredientsSingleView(backgroundColor: backgroundColorView)
+            CloudImportIngredientsView(backgroundColor: backgroundColorView)
+            
+        case .moduloImportazioneDaLibreriaCategorie:
+            CloudImportCategoriesView(backgroundColor: backgroundColorView)
             
         case .recensioni(let rifDish):
            // DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)

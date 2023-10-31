@@ -15,6 +15,25 @@ extension MenuModel:
     MyProVisualPack_L1,
     MyProDescriptionPack_L0 {
     
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyMenu
+    }
+    
+    public func isEqual(to rhs: MyFoodiePackage.MenuModel) -> Bool {
+        
+        self.tipologia == rhs.tipologia &&
+        self.isAvaibleWhen == rhs.isAvaibleWhen &&
+        self.dataInizio == rhs.dataInizio &&
+        self.dataFine == rhs.dataFine &&
+        self.oraInizio == rhs.oraInizio &&
+        self.oraFine == rhs.oraFine &&
+        self.rifDishIn == rhs.rifDishIn
+        
+    }
+    
+    
     public typealias VM = AccounterVM
    // public typealias FPM = FilterPropertyModel
   //  public typealias ST = StatusTransition

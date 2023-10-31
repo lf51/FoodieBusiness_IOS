@@ -11,6 +11,7 @@ import MyPackView_L0
 import Combine
 import MyFilterPackage
 
+/*
 struct CloudImportIngredientsView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
@@ -166,15 +167,13 @@ struct CloudImportIngredientsView: View {
         }
     }*/
     
-} // deprecata in futuro
+}*/ // deprecata in futuro
 
-
-struct CloudImportIngredientsSingleView: View {
+struct CloudImportIngredientsView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<IngredientModel>()
 
-   // @State private var searchLetter:String = "A"
     @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
     @State private var openFilter:Bool = false
     let backgroundColor:Color
@@ -185,8 +184,11 @@ struct CloudImportIngredientsSingleView: View {
             
             VStack(alignment:.trailing) {
                 
+                let queryCount = self.importVM.queryCount ?? 0
+                let resultCount = self.importVM.cloudContainer?.count ?? 0
+                
                 VStack(alignment:.trailing) {
-                    
+
                     HStack {
 
                         Text("selected:")
@@ -235,10 +237,11 @@ struct CloudImportIngredientsSingleView: View {
                         Picker("", selection: $filterCore.stringaRicerca) {
                             
                             ForEach(csLanguageAlphabet(addValue: [""]),id:\.self) { letter in
+                                
                                 let value = letter == "" ? "n/d" : letter
+                                
                                 Text(value)
                                     
-                                
                             }
                             
                         }
@@ -247,14 +250,19 @@ struct CloudImportIngredientsSingleView: View {
                                 .clipShape(.buttonBorder)
                         }
                         
-                        Button("Cerca") {
-                          // let string = searchLetter.lowercased()
-                        
-                            self.cercaNellaLibrary()
+                        if openFilter {
                             
-                        }.disabled(filterCore.stringaRicerca == "")
-                        
-
+                            ProgressView()
+                                .csHpadding()
+     
+                        } else {
+                            Button("Cerca") {
+                              // let string = searchLetter.lowercased()
+                            
+                                self.cercaNellaLibrary()
+                                
+                            }.disabled(filterCore.stringaRicerca == "")
+                        }
                     }
                     
                     HStack {
@@ -278,7 +286,7 @@ struct CloudImportIngredientsSingleView: View {
                             .foregroundStyle(Color.black)
                             .opacity(0.8)
                         
-                        Text("\(self.importVM.cloudContainer?.count ?? 0)/\(123)")
+                        Text("\(resultCount)/\(queryCount)")
                             .font(.caption)
                             .bold()
                             .foregroundStyle(Color.seaTurtle_4)
@@ -288,6 +296,8 @@ struct CloudImportIngredientsSingleView: View {
                     ScrollView(showsIndicators:false) {
                         
                         VStack(alignment:.leading) {
+                            
+                            let disableCondition = resultCount == queryCount
                             
                             ForEach(self.importVM.cloudContainer ?? []) { item in
                                 
@@ -304,6 +314,8 @@ struct CloudImportIngredientsSingleView: View {
                                             Text("[+] Carica Altri")
                                                 .foregroundStyle(Color.seaTurtle_2)
                                         }
+                                        .opacity(disableCondition ? 0.6 : 1.0)
+                                        .disabled(disableCondition)
 
                                     }
                                     
@@ -344,36 +356,18 @@ struct CloudImportIngredientsSingleView: View {
                 
             }
             .csHpadding()
-            .onAppear {
-                print("[ON_APPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
-                
-                Task {
-                    
-                   let count = try await self.viewModel.ingredientsManager.libraryCount()
-                    
-                    self.importVM.libraryCount = count
-                    
-                    self.importVM.addCloudContainerSubscriber(to: self.viewModel.ingredientsManager.ingredientLibraryPublisher)
-                    
-                }
-             //   self.filterCore.stringaRicerca = "A"
-               /* self.importVM.addCloudCategoriesSubscriber(viewModel: self.viewModel)*/
-               
-            }
-            .onDisappear {
-                print("[ON_DISAPPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
-               // self.importVM.cancellables.removeAll()
-            }
-            
+         
             if let message = self.importVM.queryMessage {
                 
               Text(message)
                     .background {
                         Color.gray
                     }
+                    .csHpadding()
                     .onTapGesture {
                         self.importVM.queryMessage = nil
                     }
+                
                 
             }
         }
@@ -394,6 +388,30 @@ struct CloudImportIngredientsSingleView: View {
                     })
                     .presentationDetents([.height(600)])
         }
+  
+            .onAppear {
+                print("[ON_APPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
+                
+                Task {
+                    
+                   let count = try await self.viewModel.ingredientsManager.libraryCount()
+                    
+                    self.importVM.libraryCount = count
+                    
+                    self.importVM.addCloudContainerSubscriber(to: self.viewModel.ingredientsManager.ingredientLibraryPublisher)
+                    
+                   // self.importVM.addFilterCoreSubscriber(to: filterCore)
+                    
+                }
+             //   self.filterCore.stringaRicerca = "A"
+               /* self.importVM.addCloudCategoriesSubscriber(viewModel: self.viewModel)*/
+               
+            }
+            .onDisappear {
+                print("[ON_DISAPPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
+                self.viewModel.ingredientsManager.lastQuery = nil
+               // self.importVM.cancellables.removeAll()
+            }
     }
     
     // method
@@ -411,7 +429,7 @@ struct CloudImportIngredientsSingleView: View {
         
         self.viewModel
             .ingredientsManager
-            .executiveFetchFromSharedCollection(startAfter: self.importVM.lastSnap)
+            .executiveFetchFromSharedCollection(startAfter: self.importVM.lastSnap, queryCount: nil)
     }
     
     private func resetAction() {

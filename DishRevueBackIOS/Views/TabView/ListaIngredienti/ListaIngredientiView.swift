@@ -178,7 +178,7 @@ struct ListaIngredientiView: View {
         Menu {
             
             NavigationButtonBasic(
-                label: "Aggiungi Manuale",
+                label: "Crea Nuovo",
                 systemImage: "square.and.pencil",
                 navigationPath: .ingredientList,
                 destination: .ingrediente(IngredientModel()))

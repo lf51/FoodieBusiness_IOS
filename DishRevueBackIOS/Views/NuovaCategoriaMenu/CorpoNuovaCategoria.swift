@@ -14,20 +14,26 @@ struct CorpoNuovaCategoria:View {
     @Binding var nuovaCategoria: CategoriaMenu
     @Binding var editCase:SwitchCategoryEditCase?
     let categoriaArchiviata: CategoriaMenu
-
     let creAction: () -> Void
     
     // 17.02.23 Focus State
     @FocusState private var modelField:ModelField?
-    
+        
     var body: some View {
         
         let value:(isDisabled:Bool,opacity:CGFloat) = {
          
-            guard self.nuovaCategoria.intestazione != "" else { return (true,0.6)}
+           // --> nuova
+           // disabilita se manca intestazione ed emoji
             
-            if self.nuovaCategoria == categoriaArchiviata { return (true,0.6)} // 16.09
-            else { return (false,1.0)}
+            // --> modificata
+            // disabilita se manca la descrizione
+            
+            guard self.nuovaCategoria.intestazione != "" else { return (true,0.6)}
+
+            if self.nuovaCategoria == categoriaArchiviata { return (true,0.6)}
+            else { return (false,1.0) }
+      
         }() // vedi NotaVocale 14.09
         
         VStack(alignment:.leading) {
@@ -51,8 +57,8 @@ struct CorpoNuovaCategoria:View {
             }
             .padding(.vertical,5)
             .scrollDismissesKeyboard(.immediately)
-            .opacity(editCase?.disable ?? false ? 0.6 : 1.0)
-            .disabled(editCase?.disable ?? false)
+            .opacity(editCase?.disableCreaField ?? false ? 0.6 : 1.0)
+            .disabled(editCase?.disableCreaField ?? false)
 
                     CSTextField_4b(
                         textFieldItem: $nuovaCategoria.intestazione,
@@ -62,8 +68,8 @@ struct CorpoNuovaCategoria:View {
                                 .padding(.leading,10)
                         }
                         .focused($modelField,equals: .intestazione)
-                        .opacity(editCase?.disable ?? false ? 0.6 : 1.0)
-                        .disabled(editCase?.disable ?? false)
+                        .opacity(editCase?.disableCreaField ?? false ? 0.6 : 1.0)
+                        .disabled(editCase?.disableCreaField ?? false)
     
                 BoxDescriptionModel_Generic(
                     itemModel: $nuovaCategoria,
@@ -75,7 +81,9 @@ struct CorpoNuovaCategoria:View {
                 .fixedSize(horizontal: false, vertical:true)
                     
                     Button(action: {
+                        
                         creAction()
+                        
                     }, label: {
                         HStack {
                             
@@ -92,11 +100,11 @@ struct CorpoNuovaCategoria:View {
                         .background(Color.seaTurtle_2)
                         .cornerRadius(5.0)
                     })
-                        
                         .opacity(value.opacity)
                         .disabled(value.isDisabled)
  
         }
+
     
     }
 

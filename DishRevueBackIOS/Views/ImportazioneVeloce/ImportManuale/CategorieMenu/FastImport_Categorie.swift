@@ -15,18 +15,19 @@ struct FastImport_Categorie: View {
     let backgroundColorView: Color
     
     @State private var text: String = ""
-    @State private var allFastCategories:[CategoriaMenu] = []
+    @State private var allFastCategories:[CategoriaMenu]?
+    @State private var allAlreadyExisting:[CategoriaMenu]?
+    @State private var readyToSave:[CategoriaMenu]?
     @State private var isUpdateDisable: Bool = true
-   // @Binding var disabilitaPicker:Bool
     
     var body: some View {
         
-        CSZStackVB(title: "Multi Categorie", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: "[+] Multi Categorie", backgroundColorView: backgroundColorView) {
             VStack(alignment:.leading) {
                 
-                CSDivider()
+              //  CSDivider()
                 
-                ScrollView(showsIndicators:false) {
+             //   ScrollView(showsIndicators:false) {
                     
                     VStack(alignment:.leading) {
                         
@@ -47,7 +48,11 @@ struct FastImport_Categorie: View {
                         
                         HStack {
                             
-                            CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.seaTurtle_4, fillColor: Color.seaTurtle_2) {
+                            CSButton_tight(
+                                title: "Estrai",
+                                fontWeight: .semibold,
+                                titleColor: Color.seaTurtle_4,
+                                fillColor: Color.seaTurtle_2) {
                                
                                 self.estrapolaStringhe()
                                 self.postEstrapolaAction()
@@ -60,30 +65,95 @@ struct FastImport_Categorie: View {
                             
                             Spacer()
 
-                            Text("N°Categorie:\(allFastCategories.count)")
+                            Text("Complete:\(readyToSave?.count ?? 0)(\(allAlreadyExisting?.count ?? 0))/\(allFastCategories?.count ?? 0)")
                                 .font(.system(.subheadline, design: .monospaced))
                                 .fontWeight(.medium)
                                 .foregroundStyle(Color.white.opacity(0.6))
                             
+                            let disableSave:Bool = {
+                                guard let readyToSave,
+                                let allFastCategories else {
+                                    return true
+                                }
+                                return (readyToSave.count + (allAlreadyExisting?.count ?? 0)) != allFastCategories.count
+                            }()
+                            
+                            CSButton_tight(
+                                title: "Salva",
+                                fontWeight: .semibold,
+                                titleColor: .seaTurtle_4,
+                                fillColor: .seaTurtle_2) {
+
+                                        self.updateListIndex()
+                                        self.saveCategories()
+                                    
+                            }
+                                .opacity(disableSave ? 0.6 : 1.0)
+                                .disabled(disableSave)
+                            
                         }
                         
-                        if !allFastCategories.isEmpty {
+                        if let allFastCategories {
                             
-                            CorpoCompilazioneCategorie(allFastCategories: $allFastCategories)
+                            // create new binding using unwrapped value
+                            let allFast = Binding { allFastCategories } set: {self.allFastCategories = $0 }
+                            
+                            CorpoCompilazioneCategorie(
+                                allFastCategories: allFast, 
+                                allAlreadyExisting: $allAlreadyExisting,
+                                readyToSave: $readyToSave)
                                 .id(allFastCategories)
                                 
             
                         }
+                        
+                        Spacer()
                     }
-                }
+              //  }
                 
-                CSDivider()
+              //  CSDivider()
             }
             .csHpadding()
         }
     }
     
     // Method
+
+    private func updateListIndex() {
+        
+        guard let readyToSave else { return }
+        
+        let remoteCacheCount = self.viewModel.db.allMyCategories.count
+       
+        var rigeneratedCategories:[CategoriaMenu] = []
+        
+         for (index,item) in readyToSave.enumerated() {
+            
+            var rigenerata = item
+            rigenerata.listIndex = remoteCacheCount + index
+            rigeneratedCategories.append(rigenerata)
+            
+        }
+        
+        self.readyToSave = rigeneratedCategories
+        
+    }
+    
+    private func saveCategories() {
+        
+        // salviamo le readyItems
+        guard let readyToSave else { return }
+        
+        Task {
+            try await self.viewModel.updateCategoriesListFromLocalCache(news: readyToSave, edited: [], removedId: [])
+        }
+        
+        self.readyToSave = nil
+        self.allFastCategories = nil
+        self.allAlreadyExisting = nil
+        self.isUpdateDisable = true
+        self.text = ""
+    }
     
     private func estrapolaStringhe() {
         
@@ -91,7 +161,11 @@ struct FastImport_Categorie: View {
         
         let containerZero = self.text.split(separator: ",")
         
-        for category in containerZero {
+        let containerOne = containerZero.map({$0.lowercased()})
+        let containerTwo = Set(containerOne)// elimina stringhe duplicate
+        let containerThree = Array(containerTwo)
+        
+        for category in containerThree {
             
             let new:CategoriaMenu = {
                 
@@ -99,7 +173,7 @@ struct FastImport_Categorie: View {
                 let cleanTitle = csStringCleaner(string: title)
                 
                 var local = CategoriaMenu()
-                local.intestazione = cleanTitle.capitalized
+                local.intestazione = cleanTitle
                 return local
                 
             }()
@@ -107,6 +181,7 @@ struct FastImport_Categorie: View {
             if let alreadyExist = viewModel.checkExistingUniqueModelName(model: new).1 {
                 
                 allNewCategories.append(alreadyExist)
+                
             } else {
                 allNewCategories.append(new)
             }
@@ -115,16 +190,12 @@ struct FastImport_Categorie: View {
         
         self.allFastCategories = allNewCategories
         
-        
     }
     
     private func postEstrapolaAction() {
         
         csHideKeyboard()
         self.isUpdateDisable = true
-       /* viewModel.alertItem = AlertModel(
-            title: "⚠️ Attenzione",
-            message: SystemMessage.allergeni.simpleDescription()) */
         
     }
     
@@ -135,6 +206,8 @@ struct CorpoCompilazioneCategorie:View {
     @EnvironmentObject var viewModel:AccounterVM
     
     @Binding var allFastCategories:[CategoriaMenu]
+    @Binding var allAlreadyExisting:[CategoriaMenu]?
+    @Binding var readyToSave:[CategoriaMenu]?
     @State private var focusCategory:CategoriaMenu?
    // @Binding var disabilitaPicker:Bool
         
@@ -146,12 +219,13 @@ struct CorpoCompilazioneCategorie:View {
                 
                 HStack(spacing:15) {
                     
-                    ForEach(csReturnEmojyCollection(),id:\.self) { emojy in
+                    ForEach(csReturnEmojyCollection(),id:\.self) { emoji in
                         
-                        Text(emojy)
+                        Text(emoji)
                             .font(.title)
                             .onTapGesture {
-                                    self.focusCategory?.image = emojy
+                                   //self.focusCategory?.image = emojy
+                                self.addEmoji(emoji: emoji)
                             }
                     }
                 }
@@ -160,55 +234,76 @@ struct CorpoCompilazioneCategorie:View {
             .padding(.vertical,5)
             .scrollDismissesKeyboard(.immediately)
             
-            ForEach(allFastCategories) { category in
+            VStack {
                 
-                let focusCheck:Bool = self.focusCategory?.id == category.id
-                let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
-                
-                VStack(alignment:.leading) {
+                ScrollView(showsIndicators: false) {
                     
-                    HStack(spacing:10) {
+                    ForEach(allFastCategories) { category in
                         
-                        Text(focusCheck ? focusCategory?.image ?? category.image : category.image)
-                            .font(.largeTitle)
-                            .opacity(alreadyExist ? 0.3 : 1.0)
-                        Text(category.intestazione)
-                            .font(.largeTitle)
-                            .foregroundStyle(Color.seaTurtle_4)
-                            .opacity(alreadyExist ? 0.3 : 1.0)
-                        Spacer()
-                        
-                        if focusCheck {
+                        let focusCheck:Bool = self.focusCategory?.id == category.id
+                        let currentImage:String = {
                             
-                            CSButton_image(
-                                frontImage: "square.and.arrow.down",
-                                imageScale: .large,
-                                frontColor: .seaTurtle_4
-                                ) {
-                                   addNewCategory()
-                                }
+                            if let isEdited = readyToSave?.first(where: {$0.id == category.id}) { return isEdited.image }
+                            else { return category.image }
+                            
+                        }()
+                        let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
+                        
+                        VStack(alignment:.leading) {
+                            
+                            HStack(spacing:10) {
+                                
+                               /* Text(focusCheck ? focusCategory?.image ?? category.image : category.image)*/
+                                Text(currentImage)
+                                    .font(.largeTitle)
+                                    .opacity(alreadyExist ? 0.3 : 1.0)
+                                
+                                Text(category.intestazione.capitalized)
+                                    .font(.largeTitle)
+                                    .foregroundStyle(Color.seaTurtle_4)
+                                    .opacity(alreadyExist ? 0.3 : 1.0)
+                                
+                                Spacer()
+                                
+                               /* if focusCheck {
+                                    
+                                    CSButton_image(
+                                        frontImage: "square.and.arrow.down",
+                                        imageScale: .large,
+                                        frontColor: .seaTurtle_4
+                                        ) {
+                                           addNewCategory()
+                                        }
+                                }*/
+                                    
+                            }
                         }
-                            
+                        .padding(.vertical,10)
+                        .csHpadding()
+                        .background {
+                            Color.seaTurtle_3
+                                .cornerRadius(5.0)
+                                .opacity(focusCheck ? 0.6 : 0.1)
+                        }
+                        .onTapGesture {
+                            withAnimation{
+                                self.focusCategory = category
+                            }
+                        }
+                        .disabled(alreadyExist)
                     }
                 }
-                .padding(.vertical,10)
-                .csHpadding()
-                .background {
-                    Color.seaTurtle_3
-                        .cornerRadius(5.0)
-                        .opacity(focusCheck ? 0.6 : 0.1)
-                }
-                .onTapGesture {
-                    withAnimation{
-                        self.focusCategory = category
-                    }
-                }
-                .disabled(alreadyExist)
             }
-            
+
           //  CSDivider()
         }
         .onAppear {
+            
+            self.allAlreadyExisting = self.allFastCategories.compactMap({
+                if self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyCategories) {
+                    return $0
+                } else { return nil }
+            })
             
             if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyCategories)}) {
                 self.focusCategory = newFocus
@@ -219,7 +314,39 @@ struct CorpoCompilazioneCategorie:View {
     
     // Method
     
-    private func addNewCategory() {
+    private func addEmoji(emoji:String) {
+        
+        guard var currentFocus = focusCategory else { return }
+        
+        currentFocus.image = emoji
+        var readyItem = readyToSave ?? []
+        
+        if let isEditedIndex = readyItem.firstIndex(where: {$0.id == currentFocus.id}) {
+            
+            readyItem[isEditedIndex] = currentFocus
+            
+        } else {
+            
+            readyItem.append(currentFocus)
+            
+        }
+
+      // newFocus
+        let newFocus = self.allFastCategories.first { categoria in
+            
+            !readyItem.contains(where: {$0.id == categoria.id}) &&
+            !(allAlreadyExisting?.contains(where: {$0.id == categoria.id}) ?? false)
+            
+        }
+
+        withAnimation {
+            self.readyToSave = readyItem
+            self.focusCategory = newFocus
+        }
+        
+    }
+        
+   /* private func addNewCategoryDEPRECATA() {
         
         guard let focusCategory = self.focusCategory else { return }
         
@@ -235,7 +362,7 @@ struct CorpoCompilazioneCategorie:View {
         }
        
         
-    }
+    }*/ // deprecata 21_10_23
     
 }
 

@@ -112,7 +112,8 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProToolPack_L0> : View where T.VM ==
     
     private func checkAndSubmit() {
         
-        let newText = csStringCleaner(string: self.nuovaStringa)
+        let text = self.nuovaStringa.lowercased()
+        let newText = csStringCleaner(string: text)
         
         // 1° Check
         guard csCheckStringa(testo: newText, minLenght: minLenght) else {

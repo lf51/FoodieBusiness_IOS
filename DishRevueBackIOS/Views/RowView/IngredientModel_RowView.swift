@@ -33,6 +33,8 @@ struct IngredientModel_RowView: View {
             vbRegular(frameWidth: 300)
         case .normale(let width):
             vbRegular(frameWidth: width)
+        case .fromSharedLibrary:
+            vbFromSharedLibrary(frameWidth: nil)
        /* case .ibrido(let width):
             vbRegular(frameWidth: width)*/
         }
@@ -49,8 +51,16 @@ struct IngredientModel_RowView: View {
                 
                 VStack(alignment:.leading,spacing: 0) {
                     
-                    vbIntestazioneIngrediente()
-                    //    vbSubIntestazioneIngrediente()
+                    HStack(alignment:.lastTextBaseline){
+                        
+                        vbIntestazioneIngrediente()
+                        
+                        Spacer()
+                        
+                        vbStatusIngrediente()
+                        
+                    }
+
                     vbDishCountIn()
                     
                 }
@@ -59,7 +69,7 @@ struct IngredientModel_RowView: View {
                 
                 //  Spacer()
                 
-                HStack {
+               /* HStack {
                     
                     let(image,size) = self.item.associaImmagine()
                     
@@ -93,7 +103,8 @@ struct IngredientModel_RowView: View {
                     // 07.09
                     // vbDishCountIn()
                     // end 07.09
-                }
+                }*/
+                vbOrigineProvenienza()
                 
                 //    Spacer()
                 
@@ -217,6 +228,27 @@ struct IngredientModel_RowView: View {
     }
     
     @ViewBuilder private func vbIntestazioneIngrediente() -> some View {
+
+        Text(self.item.intestazione.capitalized)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .lineLimit(1)
+                .allowsTightening(true)
+                .foregroundStyle(Color.white)
+                .overlay(alignment:.topTrailing) {
+                    
+                    if self.item.produzione == .biologico {
+                        
+                        Text("Bio")
+                            .font(.system(.caption2, design: .monospaced, weight: .black))
+                            .foregroundStyle(Color.green)
+                            .offset(x: 10, y: -4)
+                    }
+                }
+
+    }
+    
+   /* @ViewBuilder private func vbIntestazioneIngrediente() -> some View {
         
         let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
         
@@ -282,6 +314,86 @@ struct IngredientModel_RowView: View {
                 dashedColor: dashedColor)
             
         }
+        
+    }*/ // deprecata 19_10_23
+    
+    @ViewBuilder private func vbStatusIngrediente() -> some View {
+        
+        let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
+        
+        vbEstrapolaStatusImage(
+            itemModel: self.item,
+            dashedColor: dashedColor)
+    }
+    
+    @ViewBuilder private func vbOrigineProvenienza() -> some View {
+        
+        HStack {
+            
+            let(image,size) = self.item.associaImmagine()
+            
+            CSText_tightRectangleVisual(
+                fontWeight: .bold,
+                textColor: Color.seaTurtle_4,
+                strokeColor: Color.seaTurtle_1,
+                fillColor: Color.seaTurtle_1) {
+                HStack {
+                    csVbSwitchImageText(string: image,size: size)
+                    Text(self.item.origine.simpleDescription())
+                }
+            }
+            
+            let isDefaultValue = self.item.provenienza == .defaultValue
+            
+            CSText_tightRectangleVisual(
+                fontWeight: .bold,
+                textColor: Color.seaTurtle_1,
+                strokeColor: Color.seaTurtle_1,
+                fillColor: Color.seaTurtle_4) {
+                HStack {
+                    
+                    csVbSwitchImageText(string: self.item.provenienza.imageAssociated(),size:.large, slash: isDefaultValue)
+                    
+                    Text(self.item.provenienza.simpleDescription())
+                }
+            }.opacity(isDefaultValue ? 0.4 : 1.0)
+            
+            Spacer()
+            // 07.09
+            // vbDishCountIn()
+            // end 07.09
+        }
+    }
+    
+    
+    @ViewBuilder private func vbFromSharedLibrary(frameWidth:CGFloat?) -> some View {
+        
+        CSZStackVB_Framed(frameWidth: frameWidth) {
+            
+            VStack(alignment:.leading,spacing: 5.0) {
+                
+              //  VStack(alignment:.leading,spacing: 0) {
+                    
+                    vbIntestazioneIngrediente()
+                        .padding(.top,5)
+              //  }
+                
+                
+                vbOrigineProvenienza()
+                
+                VStack(spacing:3) {
+                    
+                    vbProduzioneIngrediente()
+                    vbConservazioneIngrediente()
+                    vbAllergeneScrollRowView(listaAllergeni: self.item.allergeni)
+                    
+                }
+                .padding(.bottom,5)
+                
+            }
+            .padding(.horizontal,10)
+        }
+        
         
     }
     

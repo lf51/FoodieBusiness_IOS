@@ -12,6 +12,18 @@ extension CategoriaMenu:
     MyProStarterPack_L1,
     MyProEnumPack_L2,
     MyProDescriptionPack_L0 {
+    
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyCategories
+    }
+    
+    public func isEqual(to rhs: MyFoodiePackage.CategoriaMenu) -> Bool {
+        self.intestazione == rhs.intestazione &&
+        self.image == rhs.image
+    }
+    
 
     public typealias VM = AccounterVM
     

@@ -144,8 +144,6 @@ struct NewDishIbridView: View {
                                 ProvenienzaScrollView_NewIngredientSubView(nuovoIngrediente: self.$ingredienteDiSistema)
                             } // end Innesti
                            
-             
- 
                             DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
 
                            /* DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)*/
@@ -221,7 +219,7 @@ struct NewDishIbridView: View {
                 VistaAllergeni_Selectable(
                     allergeneIn: $ingredienteDiSistema.allergeni,
                     backgroundColor: backgroundColorView)
-                    .presentationDetents([.height(500)])
+                .presentationDetents([.large])
             }
       
        // } // end ZStack Esterno

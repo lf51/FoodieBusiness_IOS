@@ -7,7 +7,7 @@
 
 import SwiftUI
 import MyPackView_L0
-
+/*
 struct Switch_CloudImportObject: View {
     
    // @StateObject var importVM:CloudImportViewModel
@@ -69,8 +69,8 @@ struct Switch_CloudImportObject: View {
         case moduloB
     }
     
-}
+} // deprecata 20_10_23
 
 #Preview {
     Switch_CloudImportObject(backgroundColorView: .seaTurtle_1)
-}
+}*/

@@ -108,7 +108,14 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         addPropertyManagerCurrentPropSubscriber()
      
         addAllMyIngredientsSubscriber()
+        
+        addGenericSubscriber(to: self.subCollectionManager.allMyProductsPublisher.main)
+        addGenericSubscriber(to: self.subCollectionManager.allMyMenuPublisher.main)
+        addGenericSubscriber(to: self.subCollectionManager.allMyReviewsPublisher.main)
+      //  addAllMyProductsSubscriber()
+      //  addAllMyMenusSubscriber()
         addAllMyCategoriesSubscriber()
+      //  addAllMyReviewsSubscriber()
  
         // start data train fetch
         fetchAndListenCurrentUserData()
@@ -225,7 +232,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
                     
                                         }))
         }
-    }
+    }// deprecato in futuro
     
     private func createItemModelExecutive<T:MyProStarterPack_L1>(itemModel:T, destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
         
@@ -271,7 +278,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
         print("Nuovo Oggeto \(itemModel.intestazione) creato con id: \(itemModel.id)")
         
-    }
+    }// deprecato in Futuro
     
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
     func updateItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM  {
@@ -295,7 +302,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         }
        
         
-    }
+    }// deprecata in futuro
     
     private func updateItemModelExecutive<T:MyProStarterPack_L1>(itemModel: T, destinationPath: DestinationPath? = nil) where T.VM == AccounterVM {
         
@@ -320,7 +327,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         
         print("elementi nel Container POST-Update: \(containerT.count)")
         print("updateItemModelExecutive executed")
-    }
+    }// deprecata in futuro
  
     ///  Permette di aggiornare un array di model. Modifica il viewModel solo dopo aver modificato localmente ogni elemento e manda il refresh del path a processo concluso. Non distingue fra item che hanno ricevuto modifiche e item modificati. Li riscrive tutti.
     func updateItemModelCollection<T:MyProStarterPack_L1>(items:[T],destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
@@ -694,7 +701,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
 
     ///Richiede un TemporaryModel, e oltre a salvare il piatto, salva anche gli ingredienti nel viewModel. Ideata per Modulo Importazione Veloce
-    func dishAndIngredientsFastSave(item: TemporaryModel) /*throws*/ {
+   /* func dishAndIngredientsFastSave(item: TemporaryModel) /*throws*/ {
 
       /*  guard !checkExistingUniqueModelName(model: item.dish).0 else { // da spostare a monte, nell'estrapolazione delle Stringhe
             
@@ -747,7 +754,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         self.db.allMyDish.append(dish)
         self.db.allMyIngredients.append(contentsOf: modelIngredients)
 
-    }
+    }*/// 30_10_23 spostato in una extension
 
     /// La usiamo per creare un nome univoco dei Model per un confronto sull'unicità del nome
     private func creaNomeUnivocoModello(fromIntestazione:String) -> String {
@@ -1047,7 +1054,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         
         let complete = allRev.filter({
             $0.rifImage != "" &&
-            $0.titolo != "" &&
+            $0.intestazione != "" &&
             $0.commento != ""
         }).count //.3
         
@@ -1078,7 +1085,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         
         let l10Complete = lastTenArray.filter({
             $0.rifImage != "" &&
-            $0.titolo != "" &&
+            $0.intestazione != "" &&
             $0.commento != ""
         }).count
         
@@ -1275,165 +1282,12 @@ extension AccounterVM {
         
         let allEdited = newsForSub + edited
         
-        
         try await self.subCollectionManager.publishBatchSubCollection(sub: .allMyCategories, newOrEdited: allEdited, removed: removedId)
         
         print("[END]_updateCategoriesListFromLocalCache")
     }
     
-    
-    
-    func saveCategoriesMenu(localCache:[CategoriaMenu]) async throws {
-        
-       try await self.subCollectionManager
-            .publishSubCollection(
-                sub: .allMyCategories,
-                as: localCache)
-        
-    } // deprecato
-    
-    func removeCategoriaMenu(localIDCache:[String]) async throws {
-        
-        guard let propertyID = self.currentProperty.info?.id else { return }
-        
-       try await self.subCollectionManager
-            .deleteDataFromSubCollection(
-                forPropID: propertyID,
-                sub: .allMyCategories,
-                delete: localIDCache)
-    } // deprecato
-    
-    /*func saveCategoriaMenu(item:CategoriaMenu) async throws {
-            
-        guard let propertyID = self.currentProperty.info?.id else {
-            // throw error
-            throw CSError.propertyDataCorrotti
-            
-        }
-        
-        if self.db.allMyCategories.first(where: {$0.id == item.id}) != nil {
-            
-            // Case 2. Modifica Categoria
-          try await self.updateOldCategoria(item: item,for: propertyID)
-            
-            
-        } else {
-            
-            // Case 1. Nuova Categoria
-           try await self.saveNewCategoria(item: item, for: propertyID)
 
-        }
-  
-    }*/
-    
-    func saveNewAfterCheckLibrary(news:[CategoriaMenu]) async throws {
-        // Controllare se esiste nella library
-        // Se esiste recupera l'id e salvare nella subCollection
-        // Se non esiste salvare nella library e nella subCollection
-        guard let propertyID = self.currentProperty.info?.id else { return }
-        
-     /*   for item in news {
-            
-            let rigenerateItem:CategoriaMenu?
-            
-            if let existingID = try await self.cloudDataManager
-                .categoriesManager
-                .checkCategoryAlreadyExistInLibrary(categoria: item) {
-                // item esiste
-                // rigeneriamo l'item
-                print("[CHECK]_saveNewAfterCheckLibrary()_idExist")
-                let rigenerate:CategoriaMenu = {
-                    var new = item
-                    new.id = existingID
-                    return new
-                }()
-                rigenerateItem = rigenerate
-                
-            } else {
-                // item non esiste
-                // salviamo nella main
-                print("[CHECK]_saveNewAfterCheckLibrary()_id_NOT_Exist")
-                rigenerateItem = item
-                try await self.cloudDataManager
-                   .categoriesManager
-                   .publishSingleCategoryInSharedLibrary(categoria: rigenerateItem!)
-                
-            }
-            
-            // salviamo nella sub
-            try await self.cloudDataManager
-                 .setDataSubCollectionSingleDocument(
-                     forPropID: propertyID,
-                     sub: .allMyCategories,
-                     save: rigenerateItem!)
-            
-        } */
-        
-    }
-    // deprecato
-
-    private func updateOldCategoria(item:CategoriaMenu,for propertyID:String) async throws {
-        
-        // La modifica riguarda solo la descrizione e l'index nei menu
-        // salvare nella subCollection
-        
-       try await self.subCollectionManager
-            .setDataSubCollectionSingleDocument(
-                forPropID: propertyID,
-                sub: .allMyCategories,
-                save: item)
-        
-    } // deprecato
-    
-    /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
-    func updateSubCollectionItem<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM  {
-        print("[CALL]_updateSubCollectionItem()")
-        
-        if !showAlert {
-            
-            self.updateItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)
-       
-        } else {
-            
-            self.alertItem = AlertModel(
-                title: "Confermare Modifiche",
-                message: messaggio,
-                actionPlus: ActionModel(
-                    title: .conferma,
-                    action: {
-        
-                        self.updateItemModelExecutive(itemModel: itemModel,destinationPath: destinationPath)
-                    
-                                        }))
-        }
-       
-        
-    }
-    
-    private func updateSubCollectionItemExecutive<T:MyProStarterPack_L1>(itemModel: T, destinationPath: DestinationPath? = nil) where T.VM == AccounterVM {
-        
-        var containerT = assegnaContainer(itemModel: itemModel)
-  
-        guard let oldItemIndex = containerT.firstIndex(where: {$0.id == itemModel.id}) else {
-            self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
-            return}
-
-        print("elementi nel Container Pre-Update: \(containerT.count)")
-        
-            containerT[oldItemIndex] = itemModel
-            aggiornaContainer(containerT: containerT, modelT: itemModel)
-        // Innesto 02.12.22
-        self.remoteStorage.modelRif_modified.insert(itemModel.id)
-        
-        if let path = destinationPath {
-            
-            self.refreshPath(destinationPath: path)
-            
-        }
-        
-        print("elementi nel Container POST-Update: \(containerT.count)")
-        print("updateItemModelExecutive executed")
-    }
 }
 
 extension AccounterVM {
@@ -1666,28 +1520,332 @@ extension AccounterVM {
             }.store(in: &cancellables)
 
     }
+    
+    private func addGenericSubscriber<Item:MyProStarterPack_L1&Codable>(to publisher:PassthroughSubject<[Item]?,Error>) where Item.VM == AccounterVM {
+        
+        let kp = Item.basicModelInfoTypeAccess()
+        
+        publisher
+            .sink { completion in
+                //
+            } receiveValue: { [weak self] items in
+                
+                guard let self,
+                let items else {
+                    print("[RECEIVE_VALUE]_addGenericSubscriber_to\(kp.debugDescription)")
+                   // self?.db.allMyDish = []
+                    self?[keyPath: kp] = []
+                    self?.isLoading = nil
+                    return }
+                
+                    DispatchQueue.main.async {
+                        
+                        self[keyPath: kp] = items
+                        self.isLoading = nil
+                        
+                        print("\(kp.debugDescription) count:\(self[keyPath: kp].count)")
+                    }
+                    
+            }.store(in: &cancellables)
+
+    }
+    
+    
+    
+   /* private func addAllMyProductsSubscriber() {
+        
+        self.subCollectionManager
+            .allMyProductsPublisher
+            .main
+            .sink { completion in
+                //
+            } receiveValue: { [weak self] allMyProducts in
+                
+                guard let self,
+                let allMyProducts else {
+                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
+                    self?.db.allMyDish = []
+                    self?.isLoading = nil
+                    return }
+                
+                    DispatchQueue.main.async {
+                        
+                        self.db.allMyDish = allMyProducts
+                        self.isLoading = nil
+                        
+                        print("db.allMyProducts.count:\(self.db.allMyDish.count)")
+                    }
+                    
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addAllMyMenusSubscriber() {
+        
+        self.subCollectionManager
+            .allMyMenuPublisher
+            .main
+            .sink { completion in
+                //
+            } receiveValue: { [weak self] allMyMenus in
+                
+                guard let self,
+                let allMyMenus else {
+                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
+                    self?.db.allMyMenu = []
+                    self?.isLoading = nil
+                    return }
+                
+                    DispatchQueue.main.async {
+                        
+                        self.db.allMyMenu = allMyMenus
+                        self.isLoading = nil
+                        
+                        print("db.allMyMenus.count:\(self.db.allMyMenu.count)")
+                    }
+                    
+            }.store(in: &cancellables)
+
+    }
+    
+    private func addAllMyReviewsSubscriber() {
+        
+        self.subCollectionManager
+            .allMyReviewsPublisher
+            .main
+            .sink { completion in
+                //
+            } receiveValue: { [weak self] allMyReviews in
+                
+                guard let self,
+                let allMyReviews else {
+                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
+                    self?.db.allMyReviews = []
+                    self?.isLoading = nil
+                    return }
+                
+                    DispatchQueue.main.async {
+                        
+                        self.db.allMyReviews = allMyReviews
+                        self.isLoading = nil
+                        
+                        print("db.allMyReviews.count:\(self.db.allMyReviews.count)")
+                    }
+                    
+            }.store(in: &cancellables)
+
+    }*/
 }
 
-/*
-struct GenericSubScriber:Subscriber {// 21.09.23 Smanetto senza fine
-  
-    typealias Input = CategoriaMenu
-    typealias Failure = CSError
+/// save & update Model
+extension AccounterVM {
     
-    var combineIdentifier: CombineIdentifier = CombineIdentifier()
-    
-    func receive(subscription: Subscription) {
-        //
+    /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto.
+    func createModel<T:MyProStarterPack_L1 & Codable>(
+        itemModel:T,
+        showAlert:Bool = false,
+        alertMessagge: String = "",
+        refreshPath:DestinationPath? = nil) where T.VM == AccounterVM {
+        
+        if !showAlert {
+            
+            self.createModelExecutive(itemModel: itemModel,destinationPath: refreshPath)
+            
+        } else {
+            
+            self.alertItem = AlertModel(
+                title: "Crea \(itemModel.intestazione)",
+                message: alertMessagge,
+                actionPlus: ActionModel(
+                    title: .conferma,
+                    action: {
+        
+                        self.createModelExecutive(itemModel: itemModel, destinationPath: refreshPath)
+                    
+                                        }))
+        }
     }
     
-    func receive(_ input: MyFoodiePackage.CategoriaMenu) -> Subscribers.Demand {
-        let demand:Subscribers.Demand = .unlimited
-        return demand
-    }
-    
-    func receive(completion: Subscribers.Completion<CSError>) {
-        //
-    }
-    
+    private func createModelExecutive<T:MyProStarterPack_L1 & Codable>(
+        itemModel:T,
+        destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
 
-} */
+        // verifica unicità nel viewModel
+      
+        let(kpContainerT,_,nomeModelloT,_) = itemModel.basicModelInfoInstanceAccess()
+            
+        let containerT = assegnaContainerFromPath(path: kpContainerT)
+            
+        guard !containerT.contains(where: {$0.isEqual(to: itemModel)}) else {
+                return self.alertItem = AlertModel(
+                    title: "Controllare",
+                    message: "Hai già un \(nomeModelloT) con queste caratteristiche")
+            }
+            
+            let sub = itemModel.subCollection() as! CloudDataStore.SubCollectionKey
+            
+            Task {
+                
+             var item = itemModel
+                
+             if item is IngredientModel {
+                // salva in main
+                 let ingredient = item as! IngredientModel
+                 
+                 if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) { item.id = id }
+                     
+                }
+                print("[STEP_2]_afterCheckAndPublish")
+                // salvare in subCollection
+              try await self.subCollectionManager
+                    .setDataSubCollectionSingleDocument(to: sub, item: item)
+                
+                // refresh del path
+                if let path = destinationPath {
+                    
+                    self.refreshPath(destinationPath: path)
+                    
+                }
+
+                print("Nuovo Oggeto \(item.intestazione) creato con id: \(item.id)")
+                
+                
+            }
+
+    }
+    
+    /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
+    func updateModel<T:MyProStarterPack_L1 & Codable>(
+        itemModel:T,
+        showAlert:Bool = false,
+        alertMessage: String = "",
+        refreshPath:DestinationPath? = nil) where T.VM == AccounterVM  {
+            
+        print("[CALL]_UpdateModel()")
+            
+        if !showAlert {
+            
+            self.updateModelExecutive(itemModel: itemModel,destinationPath: refreshPath)
+       
+        } else {
+            
+            self.alertItem = AlertModel(
+                title: "Confermare Modifiche",
+                message: alertMessage,
+                actionPlus: ActionModel(
+                    title: .conferma,
+                    action: {
+        
+                        self.updateModelExecutive(itemModel: itemModel,destinationPath: refreshPath)
+                    
+                                        }))
+        }
+       
+        
+    }
+    
+    private func updateModelExecutive<T:MyProStarterPack_L1 & Codable>(
+        itemModel: T,
+        destinationPath: DestinationPath? = nil) where T.VM == AccounterVM {
+        
+        let containerT = assegnaContainer(itemModel: itemModel)
+  
+        guard let _ = containerT.first(where: {$0.id == itemModel.id}) else {
+                
+                self.alertItem = AlertModel(title: "Errore", message: "Oggetto non presente nel database")
+                return
+            }
+        
+            let sub = itemModel.subCollection() as! CloudDataStore.SubCollectionKey
+            
+            Task {
+                
+                var item = itemModel
+                
+                // caso particolare IngredientModel
+                if item is IngredientModel {
+                    // Nota 29_10_23
+                var ingredient = item as! IngredientModel
+                    ingredient.id = UUID().uuidString // assegniamo un nuovo id per scongiurare che venga salvato nella main con il vecchio già esistente
+                let oldID = item.id
+                // eliminiamo il vecchio riferimento dalla subCollection
+                try await self.subCollectionManager.deleteFromSubCollection(sub: sub, delete: oldID)
+                    
+                // sostituire il vecchio ingrediente con quello modificato nei piatti
+                let allDish = self.allDishContainingIngredient(idIng: oldID)
+                    
+                if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) { item.id = id } else { item.id = ingredient.id}
+                    
+                //rimpiazziamo il vecchio Id nei dish
+                    let rigerateDish = allDish.compactMap({ $0.replaceIngredients(id: oldID, with: item.id)})
+                    
+                try await self.subCollectionManager.publishSubCollection(sub: .allMyDish, as: rigerateDish)
+                    
+ 
+                }
+                
+                try await self.subCollectionManager
+                    .setDataSubCollectionSingleDocument(to: sub, item: item)
+                
+                if let path = destinationPath {
+                    
+                    self.refreshPath(destinationPath: path)
+                    
+                }
+            }
+
+    }
+    
+    ///Richiede un TemporaryModel, e oltre a salvare il piatto, salva anche gli ingredienti nel viewModel. Ideata per Modulo Importazione Veloce
+    func dishAndIngredientsFastSave(item: TemporaryModel) /*throws*/ {
+
+        Task {
+
+        let rigenera = try await checkAnalizeAndRetrieve(temporaryModel: item)
+            
+        try await self.subCollectionManager
+                .setDataSubCollectionSingleDocument(to: .allMyDish, item: rigenera.product)
+            
+        try await self.subCollectionManager
+                .publishSubCollection(sub: .allMyIngredients, as: rigenera.ingredients)
+        }
+
+    }
+
+    private func checkAnalizeAndRetrieve(temporaryModel:TemporaryModel) async throws -> (product:DishModel,ingredients:[IngredientModel]) {
+        // analizzare gli ingredienti / esistenti nel viewModel / esistenti nella library
+       let ingredients = temporaryModel.ingredients
+       let secondaryRif = temporaryModel.rifIngredientiSecondari
+       
+       let notInVM = ingredients.compactMap({
+            if !self.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyIngredients) { return $0 }
+            else { return nil }
+        })
+        
+       var ingRigenerated:[IngredientModel] = ingredients
+       var secondaryRifRigenerated:[String] = secondaryRif
+        
+            for ingredient in notInVM {
+                
+                if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) {
+                    // esiste nella main e quindi lo rigeneriamo per la sub
+                    var rigeneraING = ingredient
+                    rigeneraING.id = id
+                    
+                    if let oldIndex = ingRigenerated.firstIndex(where: {$0.id == ingredient.id}) {
+                        ingRigenerated[oldIndex] = rigeneraING
+                    }
+                    
+                    if let index =  secondaryRifRigenerated.firstIndex(of: ingredient.id) {
+                        secondaryRifRigenerated[index] = id
+                    }
+                }
+        }
+       
+       let product = temporaryModel.generaProduct(from: ingRigenerated, and: secondaryRifRigenerated)
+        
+       return (product,ingRigenerated)
+        
+    }
+    
+}

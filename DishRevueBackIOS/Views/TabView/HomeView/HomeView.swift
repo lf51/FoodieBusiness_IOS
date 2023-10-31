@@ -523,39 +523,60 @@ struct HomeView: View {
             NavigationButtonGeneric(item: newING)
             NavigationButtonGeneric(item: newDish)
             NavigationButtonGeneric(item: newMenu)
+            
+            NavigationButtonBasic(
+                label: "Preparazioni in blocco",
+                systemImage: "doc.on.doc",
+                navigationPath: .homeView,
+                destination: .moduloCreaInBloccoPiattiEIngredienti)
+            
+            NavigationButtonBasic(
+                label: "Categorie in blocco",
+                systemImage: "doc.on.doc",
+                navigationPath: .homeView,
+                destination: .moduloCreaInBloccoCategorie)
 
         } label: {
-            Text("[+] Aggiungi")
+            Text("[+]Aggiungi")
                 .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                 .foregroundStyle(Color.seaTurtle_3)
         }
   
     }
 
-}
-
-@ViewBuilder func vbMenuImport() -> some View {
-    
-    Menu {
+    @ViewBuilder private func vbMenuImport() -> some View {
         
-        NavigationButtonBasic(
-            label: "Manuale",
-            systemImage: "square.and.pencil",
-            navigationPath: .homeView,
-            destination: .moduloImportazioneVeloce)
-        
-        NavigationButtonBasic(
-            label: "Cloud",
-            systemImage: "cloud",
-            navigationPath: .homeView,
-            destination: .moduloImportazioneWeb)
+        Menu {
+            
+           /* NavigationButtonBasic(
+                label: "Manuale",
+                systemImage: "square.and.pencil",
+                navigationPath: .homeView,
+                destination: .moduloImportazioneVeloce)*/
+            
+            NavigationButtonBasic(
+                label: "Importa Ingredienti",
+                systemImage: "cloud",
+                navigationPath: .homeView,
+                destination: .moduloImportazioneDaLibreriaIngredienti)
+            
+            NavigationButtonBasic(
+                label: "Importa Categorie",
+                systemImage: "cloud",
+                navigationPath: .homeView,
+                destination: .moduloImportazioneDaLibreriaCategorie)
+            
+            
 
-    } label: {
-        Text("⚡️Import⚡️")
-            .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-            .foregroundStyle(Color.seaTurtle_3)
+        } label: {
+            Text("🌩️Libreria")
+                .font(.system(.subheadline, design: .monospaced, weight: .semibold))
+                .foregroundStyle(Color.seaTurtle_3)
+        }
     }
 }
+
+
 
 struct HomeView_Previews: PreviewProvider {
  

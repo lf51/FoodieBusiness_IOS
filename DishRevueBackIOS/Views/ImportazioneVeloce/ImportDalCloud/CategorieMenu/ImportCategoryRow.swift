@@ -39,10 +39,10 @@ struct ImportCategoryRow: View {
             HStack(spacing:10) {
                 
                 Text(category.image)
-                    .font(.largeTitle)
+                    .font(.title)
                     .opacity(alreadyImported ? 0.3 : 1.0)
                 Text(category.intestazione)
-                    .font(.largeTitle)
+                    .font(.title)
                     .foregroundStyle(Color.seaTurtle_4)
                     .opacity(alreadyImported ? 0.3 : 1.0)
                 

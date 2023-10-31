@@ -8,11 +8,9 @@
 import SwiftUI
 import MyFoodiePackage
 
-struct SimpleModelScrollGeneric_SubView<M:MyProStarterPack_L1>:View {
-    
-    // passa da MyModelProtocol a MyProStarterPackL1
-    
-    let modelToShow: [M]
+struct SimpleModelScrollAllergeni_SubView:View {
+
+    let modelToShow: [AllergeniIngrediente]
     var fontWeight: Font.Weight? = .bold
     var textColor: Color? = Color.white
     var strokeColor: Color? = Color.blue

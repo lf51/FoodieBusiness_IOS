@@ -164,7 +164,7 @@ struct NuovoIngredienteGeneralView: View {
                 VistaAllergeni_Selectable(
                     allergeneIn: $nuovoIngrediente.allergeni,
                     backgroundColor: backgroundColorView)
-                .presentationDetents([.height(500)])
+                .presentationDetents([.large])
             }
     
        }

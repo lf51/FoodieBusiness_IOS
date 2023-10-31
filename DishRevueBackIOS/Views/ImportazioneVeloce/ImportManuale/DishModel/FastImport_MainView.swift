@@ -16,7 +16,7 @@ struct FastImport_MainView: View {
     let backgroundColorView: Color
     @State private var text: String = ""
     
-    @State private var disableView:Bool = false
+    @State private var disableView:Bool?
     
     @State private var isUpdateDisable: Bool = true
     @State private var tabViewHeight:CGFloat = 200
@@ -87,54 +87,6 @@ struct FastImport_MainView: View {
                                 localScrollPosition:$childScrollItem)
                             .id(2)
                             
-                          /*  TabView { // Risolto bug 23.06.2022 Se allFastDish è vuoto, con la TabView andiamo in crash.
-                                
-                                ForEach($allFastDish) { $fastDish in
-
-                                    let checkExistence = self.viewModel.checkExistingUniqueModelName(model: fastDish.dish).0
-                                    
-                                  //  CSZStackVB_Framed(frameWidth:1200) {
-                                    ZStack {
-                                        
-                                        VStack {
-                                            FastImport_CorpoScheda(temporaryModel: $fastDish) { newDish in
-                                                withAnimation(.spring()) {
-                                                    fastSave(item: newDish)
-                                                }
-                                            }
-                                           
-                                            Spacer()
-                                        }
-                                        //.padding()
-                                        .opacity(checkExistence ? 0.6 : 1.0)
-                                        .disabled(checkExistence)
-                                        .overlay(alignment:.topLeading) {
-                                            if checkExistence {
-                                                
-                                                HStack {
-                                                  //  Spacer()
-                                                    Text("Esistente")
-                                                        .bold()
-                                                        .font(.largeTitle)
-                                                        .foregroundStyle(Color.seaTurtle_1)
-                                                        .lineLimit(1)
-                                                        .padding(.horizontal,100)
-                                                   // Spacer()
-                                                }
-                                                    .background(content: {
-                                                        Color.black.opacity(0.8)
-                                                    })
-                                                    .rotationEffect(Angle.degrees(-45))
-                                                    .offset(x: -70, y: 80)
-                                            }
-                                        }
-                                        
-                                       
-                                    }
-                                }
-                            }
-                            .frame(height:tabViewHeight)
-                            .tabViewStyle(PageTabViewStyle()) */
  
                         } // Chiusa if
                         
@@ -153,8 +105,8 @@ struct FastImport_MainView: View {
                 CSDivider()
             }
             .csHpadding()
-            .opacity(disableView ? 0.4 : 1.0)
-            .disabled(disableView)
+            .opacity(disableView ?? false ? 0.4 : 1.0)
+            .disabled(disableView ?? false)
             
       //  CSDivider()
         }
@@ -168,48 +120,12 @@ struct FastImport_MainView: View {
             }
             
         }
+        .onDisappear {
+            self.disableView = nil
+        }
     }
     
     // Method
-  /*  private func fastSave(item: TemporaryModel) {
- 
-            self.viewModel.dishAndIngredientsFastSave(item: item)
-
-            let localAllFastDish:[TemporaryModel] = self.allFastDish.filter {$0.id != item.id}
- 
-            if !localAllFastDish.isEmpty {
-                self.reBuildIngredientContainer(localTemporaryModel: localAllFastDish)
-            }  else {self.allFastDish = localAllFastDish}
-
-     
-    }// chiudere
- 
-    /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"
-    private func reBuildIngredientContainer(localTemporaryModel:[TemporaryModel]) {
-        
-        var newTemporaryContainer:[TemporaryModel] = []
-        var newTemporaryModel:TemporaryModel?
-        
-        for model in localTemporaryModel {
-            
-            newTemporaryModel = model
-            newTemporaryModel?.ingredients = []
-          //  newDish.ingredientiPrincipaliDEPRECATO = []
-            
-            for ingredient in model.ingredients {
-                
-                if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 { newTemporaryModel?.ingredients.append(oldIngredient) } else {newTemporaryModel?.ingredients.append(ingredient) }
-       
-                
-            }
-            
-            newTemporaryContainer.append(newTemporaryModel!)
-            
-        }
-        
-        self.allFastDish = newTemporaryContainer
-   
-    }*/ // chiudere
     
     private func estrapolaStringhe() {
          
@@ -242,7 +158,7 @@ struct FastImport_MainView: View {
                     
                     let ingredient = {
                        var newIngredient = IngredientModel()
-                        newIngredient.intestazione = newSub.capitalized
+                        newIngredient.intestazione = newSub
                         newIngredient.status = .bozza(.disponibile) // 07.09 !!!!
                         return newIngredient
                     }()
@@ -258,7 +174,7 @@ struct FastImport_MainView: View {
                 
                 let ingredientDS = {
                     var newIng = IngredientModel(id:idUnico)
-                    newIng.intestazione = cleanedDishTitle.capitalized
+                    newIng.intestazione = cleanedDishTitle
                     return newIng
                 }()
                 // lo lasciamo in status == .bozza()
@@ -269,7 +185,7 @@ struct FastImport_MainView: View {
             let fastDish:DishModel = {
                 
                 var dish = DishModel(id:idUnico)
-                dish.intestazione = cleanedDishTitle.capitalized
+                dish.intestazione = cleanedDishTitle
                 dish.status = .bozza(.disponibile) // 07.09 !!!
               //  dish.ingredientiPrincipaliDEPRECATO = step_5
                 return dish

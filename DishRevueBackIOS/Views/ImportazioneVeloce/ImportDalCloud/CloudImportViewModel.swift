@@ -166,6 +166,7 @@ import MyFoodiePackage
 }*/
 
 import Firebase
+import MyFilterPackage
 
 final class CloudImportGenericViewModel<Item:MyProStarterPack_L0 & Codable>:ObservableObject {
 
@@ -177,7 +178,8 @@ final class CloudImportGenericViewModel<Item:MyProStarterPack_L0 & Codable>:Obse
     @Published var libraryCount:Int?
     @Published var lastSnap:QueryDocumentSnapshot?
     @Published var queryMessage:String?
-
+    @Published var queryCount:Int?
+    
     public init() {
 
         print("[INIT]_CloudImportGenericViewModel_cancellables:\(self.cancellables.count)")
@@ -188,26 +190,34 @@ final class CloudImportGenericViewModel<Item:MyProStarterPack_L0 & Codable>:Obse
         
         print("[DEINIT]_CloudImportGenericViewModel_cancellables:\(self.cancellables.count)")
     }
+
     
-    func addCloudContainerSubscriber(to publisher:PassthroughSubject<([Item]?,QueryDocumentSnapshot?),Error>) {
+    func addCloudContainerSubscriber(to publisher:PassthroughSubject<([Item]?,QueryDocumentSnapshot?,Int?),Error>) {
         
         publisher
             .sink { completion in
                 //
-            } receiveValue: { [weak self] items,queryDoc in
+            } receiveValue: { [weak self] items,queryDoc,queryCount in
                 
                 guard let self,
                       let items,
                       !items.isEmpty else {
                     
-                    self?.queryMessage = "La ricerca non ha prodotto nuovi risultati. Cambiare parametri e riprovare."
+                    DispatchQueue.main.async {
+                        
+                        self?.queryMessage = "La ricerca non ha prodotto nuovi risultati. Cambiare parametri e riprovare."
+                    }
+                    
                     return
                 }
                 print("[SINK]_addCloudIngredientsSubscriber_thread:\(Thread.current)")
-                if let lastSnap {
-                    self.cloudContainer?.append(contentsOf: items)
+                if lastSnap != nil {
+                    withAnimation {
+                        self.cloudContainer?.append(contentsOf: items)
+                    }
                 } else {
                     self.cloudContainer = items
+                    self.queryCount = queryCount
                 }
                 self.lastSnap = queryDoc
                 
@@ -266,65 +276,6 @@ final class CloudImportGenericViewModel<Item:MyProStarterPack_L0 & Codable>:Obse
             self.selectedContainer!.append(item)
         }
     }
-    
-    
-    /* func updateCategoriesListIndex() {
 
-        guard let selectedCategory else { return }
-         
-        let remoteCacheCount = self.viewModel.db.allMyCategories.count
-        var rigeneratedCategories:[CategoriaMenu] = []
-        
-         for (index,item) in selectedCategory.enumerated() {
-            
-            var rigenerata = item
-            rigenerata.listIndex = remoteCacheCount + index
-            rigeneratedCategories.append(rigenerata)
-            
-        }
-
-         self.selectedCategory = rigeneratedCategories
-
-    }
-    
-    
-    
-    func publishSubCollection() async throws {
-        // chiamata da una task means che siamo su un backThread
-        guard let selectedCategory else { return}
-        
-        let rigeneratedCategories = updateListIndex(items: selectedCategory)
-
-        try await self.viewModel
-                      .subCollectionManager
-                      .publishSubCollection(
-                        sub: .allMyCategories,
-                        as: rigeneratedCategories)
-                      // su un backThread
-        
-        
-        DispatchQueue.main.async {
-            self.selectedCategory = nil
-        }// torniamo sul main
-        
-        
-    } // deprecata
-    
-    private func updateListIndex(items:[CategoriaMenu]) -> [CategoriaMenu] {
-
-        let remoteCacheCount = self.viewModel.db.allMyCategories.count
-        var rigeneratedCategories:[CategoriaMenu] = []
-        
-        for (index,item) in items.enumerated() {
-            
-            var rigenerata = item
-            rigenerata.listIndex = remoteCacheCount + index
-            rigeneratedCategories.append(rigenerata)
-            
-        }
-
-        return rigeneratedCategories
-
-    }*/ // deprecata
     
 }

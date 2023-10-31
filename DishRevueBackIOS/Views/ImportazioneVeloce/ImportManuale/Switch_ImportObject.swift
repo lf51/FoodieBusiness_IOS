@@ -8,7 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
-
+/*
 struct Switch_ImportObject: View {
     
     @EnvironmentObject var viewModel: AccounterVM
@@ -81,4 +81,4 @@ struct Switch_ImportObject_Previews: PreviewProvider {
                 .environmentObject(AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID")))
         }
     }
-}
+}*/

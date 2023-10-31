@@ -155,13 +155,36 @@ struct DishListView: View {
     
     @ViewBuilder private func vbTrailing() -> some View {
         
-        LargeBar_TextPlusButton(
+       /* LargeBar_TextPlusButton(
             buttonTitle: "Nuovo Prodotto",
             font: .callout,
             imageBack: Color.seaTurtle_2,
             imageFore: Color.white) {
                 self.viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
-            }
+            } */
+        
+        Menu {
+            
+            NavigationButtonBasic(
+                label: "Crea Nuovo",
+                systemImage: "square.and.pencil",
+                navigationPath: .dishList,
+                destination: .piatto(DishModel()))
+            
+            NavigationButtonBasic(
+                label: "Crea in blocco",
+                systemImage: "doc.on.doc",
+                navigationPath: .dishList,
+                destination: .moduloCreaInBloccoPiattiEIngredienti)
+   
+        } label: {
+            LargeBar_Text(
+                title: "Nuovo Prodotto",
+                font: .callout,
+                imageBack: .seaTurtle_2,
+                imageFore: Color.white)
+        }
+        
     }
     
     @ViewBuilder private func vbFilterView(container:[DishModel]) -> some View {

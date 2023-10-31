@@ -77,7 +77,7 @@ struct AllergeniScrollView_NewIngredientSubView: View {
 
                 let allergens = self.nuovoIngrediente.allergeni ?? []
                 
-                SimpleModelScrollGeneric_SubView(
+                SimpleModelScrollAllergeni_SubView(
                     modelToShow: allergens /*self.nuovoIngrediente.allergeni*/,
                     fontWeight: .semibold,
                     strokeColor: Color.red)

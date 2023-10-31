@@ -10,139 +10,210 @@ import MyFoodiePackage
 import MyPackView_L0
 import Combine
 
-
 struct CloudImportCategoriesView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<CategoriaMenu>()
         
-    @State private var searchLetter:String = "A"
+    @State private var searchLetter:String = ""
     let backgroundColor:Color
 
     var body: some View {
         
-                VStack(alignment:.trailing) {
+        CSZStackVB(title: "Libreria Categorie", backgroundColorView: backgroundColor) {
+            
+        VStack(alignment:.trailing) {
+            
+            let queryCount = self.importVM.queryCount ?? 0
+            let resultCount = self.importVM.cloudContainer?.count ?? 0
+            
+            VStack(alignment:.trailing) {
+                
+                HStack {
                     
-                    // barra di ricerca
+                    Text("selected:")
+                        .italic()
+                        .foregroundStyle(Color.black)
+                        .opacity(0.8)
+                    Text("\(importVM.selectedContainer?.count ?? 0)")
+                        .bold()
+                        .foregroundStyle(Color.seaTurtle_4)
                     
-                    HStack {
- 
-                        Text("selected:")
-                            .italic()
-                            .foregroundStyle(Color.black)
-                            .opacity(0.8)
-                        Text("\(importVM.selectedContainer?.count ?? 0)")
-                            .bold()
-                            .foregroundStyle(Color.seaTurtle_4)
-                        
-                        Spacer()
-                        
-                        Text("from:")
-                            .italic()
-                            .foregroundStyle(Color.black)
-                            .opacity(0.8)
-                        
-                        Picker("", selection: $searchLetter) {
-                            
-                            ForEach(csLanguageAlphabet(),id:\.self) { letter in
-                                
-                                Text(letter)
-                                
-                            }
-                            
-                        }
-                        .background {
-                            Color.seaTurtle_4.opacity(0.1)
-                                .clipShape(.buttonBorder)
-                        }
-                        
-                        Button("Cerca") {
-                            let string = searchLetter.lowercased()
-                          //  GlobalDataManager
-                            //    .shared
-                            self.viewModel
-                                .categoriesManager
-                                .publishCategoriesFromSharedCollection(filterBy: string)
-                        }
-                        
-
-                    }
-
-                        ScrollView(showsIndicators:false) {
-                            
-                            VStack(alignment:.leading) {
-                                
-                                ForEach(importVM.cloudContainer ?? []) { category in
- 
-                                    ImportCategoryRow(
-                                        importVM: importVM,
-                                        category: category)/* { isSelected in
-                                            
-                                            withAnimation {
-                                                self.selectingLogic(isAlreadySelect: isSelected, selected: category)
-                                            }
-                                            
-                                        }*/
-
-                                }
-                            }
-                            
-                        }
-                        
                     Spacer()
                     
-                    HStack(spacing:20) {
+                    Text("from:")
+                        .italic()
+                        .foregroundStyle(Color.black)
+                        .opacity(0.8)
+                    
+                    Picker("", selection: $searchLetter) {
                         
-                        Button("Reset",role: .destructive) {
-                            self.importVM.selectedContainer = nil
-                        }
-                        .disabled(self.importVM.selectedContainer == nil)
-                   
-                        Button {
-
-                            Task {
-                
-                           // try await self.importVM.publishSubCollection()
-                               // self.importVM.updateCategoriesListIndex()
-                                self.updateCategoriesListIndex()
-                                
-                               /* try await self.importVM.importInSubCollection(selectedPath: \.selectedCategory, subCollection: .allMyCategories)*/
-                                try await self.importVM.importInSubCollection(subCollection: .allMyCategories, viewModel: self.viewModel)
-                                    
-                            }
+                        ForEach(csLanguageAlphabet(addValue: [""]),id:\.self) { letter in
                             
-                        } label: {
-                            Text("Importa")
+                            let value = letter == "" ? "n/d" : letter
+                            
+                            Text(value)
+                            
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.blue)
-                        .disabled(self.importVM.selectedContainer == nil || self.importVM.selectedContainer?.isEmpty ?? true)
-                     
+                        
                     }
+                    .background {
+                        Color.seaTurtle_4.opacity(0.1)
+                            .clipShape(.buttonBorder)
+                    }
+                    
+                    Button("Cerca") {
 
+                        self.cercaNellaLibrary()
+                        
+                    }.disabled(searchLetter == "")
                     
                     
                 }
-                .csHpadding()
+                
+                HStack {
+
+                    Text("in libreria:")
+                        .font(.caption)
+                        .italic()
+                        .foregroundStyle(Color.black)
+                        .opacity(0.8)
+                    
+                    Text("\(self.importVM.libraryCount ?? 0)")
+                        .font(.caption)
+                        .bold()
+                        .foregroundStyle(Color.seaTurtle_4)
+                    
+                    Spacer()
+                    
+                    Text("risultati mostrati:")
+                        .font(.caption)
+                        .italic()
+                        .foregroundStyle(Color.black)
+                        .opacity(0.8)
+                    
+                    Text("\(resultCount)/\(queryCount)")
+                        .font(.caption)
+                        .bold()
+                        .foregroundStyle(Color.seaTurtle_4)
+                }
+            }
+            
+            ScrollView(showsIndicators:false) {
+                
+                VStack(alignment:.leading) {
+                    
+                    let disableCondition = resultCount == queryCount
+                    
+                    ForEach(importVM.cloudContainer ?? []) { category in
+                        
+                        VStack {
+                            
+                            ImportCategoryRow(
+                                importVM: importVM,
+                                category: category)
+                            
+                            let last = self.importVM.cloudContainer?.last
+                            
+                            if category == last {
+                                Button {
+                                    self.mostraAltri()
+                                } label: {
+                                    Text("[+] Carica Altri")
+                                        .foregroundStyle(Color.seaTurtle_2)
+                                }
+                                .opacity(disableCondition ? 0.6 : 1.0)
+                                .disabled(disableCondition)
+
+                            }
+                            
+                        }
+
+                        
+                    }
+                }
+                
+            }
+            
+            Spacer()
+            
+            HStack(spacing:20) {
+                
+                Button("Reset",role: .destructive) {
+                    self.importVM.selectedContainer = nil
+                }
+                .disabled(self.importVM.selectedContainer == nil)
+                
+                Button {
+                    
+                    Task {
+
+                        self.updateCategoriesListIndex()
+
+                        try await self.importVM.importInSubCollection(subCollection: .allMyCategories, viewModel: self.viewModel)
+                        
+                    }
+                    
+                } label: {
+                    Text("Importa")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Color.blue)
+                .disabled(self.importVM.selectedContainer == nil || self.importVM.selectedContainer?.isEmpty ?? true)
+                
+            }
+            
+            CSDivider()
+            
+        }
+        .csHpadding()
+        
+    }
                 .onAppear {
                     print("[ON_APPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
-                    self.importVM.addCloudContainerSubscriber(to: self.viewModel.categoriesManager.sharedCategoriesPublisher)
+                    
+                    Task {
+                        let count = try await self.viewModel.categoriesManager.libraryCount()
+                        
+                        self.importVM.libraryCount = count
+                        
+                        self.importVM.addCloudContainerSubscriber(to: self.viewModel.categoriesManager.sharedCategoriesPublisher)
+                    }
                    /* self.importVM.addCloudCategoriesSubscriber(viewModel: self.viewModel)*/
                    
                 }
                 .onDisappear {
                     print("[ON_DISAPPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
+                    
+                    self.viewModel.categoriesManager.lastQuery = nil
                    // self.importVM.cancellables.removeAll()
                 }
     }
     
     // method
     
-    func updateCategoriesListIndex() {
+   private func cercaNellaLibrary() {
+        
+        self.importVM.lastSnap = nil
+        
+        self.viewModel
+            .categoriesManager
+            .fetchFromSharedCollection(filterBy: self.searchLetter, startAfter: nil)
+    }
+    
+    private func mostraAltri() {
+        
+        self.viewModel
+            .categoriesManager
+            .executiveFetchFromSharedCollection(startAfter: self.importVM.lastSnap, queryCount: nil)
+    }
+    
+   private func updateCategoriesListIndex() {
 
         guard let selectedCategory = self.importVM.selectedContainer else { return }
          
         let remoteCacheCount = self.viewModel.db.allMyCategories.count
+       
         var rigeneratedCategories:[CategoriaMenu] = []
         
          for (index,item) in selectedCategory.enumerated() {
