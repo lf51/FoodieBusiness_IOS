@@ -17,67 +17,70 @@ struct FastImport_Categorie: View {
     @State private var text: String = ""
     @State private var allFastCategories:[CategoriaMenu] = []
     @State private var isUpdateDisable: Bool = true
-    @Binding var disabilitaPicker:Bool
+   // @Binding var disabilitaPicker:Bool
     
     var body: some View {
         
-       // VStack {
-            
-           // CSDivider()
-            
-            ScrollView(showsIndicators:false) {
+        CSZStackVB(title: "Multi Categorie", backgroundColorView: backgroundColorView) {
+            VStack(alignment:.leading) {
                 
-                VStack(alignment:.leading) {
+                CSDivider()
+                
+                ScrollView(showsIndicators:false) {
                     
-                    TextEditor(text: $text)
-                        .font(.system(.body,design:.rounded))
-                        .foregroundStyle(Color.black)
-                        .autocapitalization(.sentences)
-                        .disableAutocorrection(true)
-                        .keyboardType(.default)
-                        .csTextEditorBackground {
-                            Color.white.opacity(0.2)
-                        }
-                        .cornerRadius(5.0)
-                        .frame(height: 150)
-                        .onChange(of: text) {
-                         self.isUpdateDisable = false
-                        }
-                    
-                    HStack {
+                    VStack(alignment:.leading) {
                         
-                        CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.seaTurtle_4, fillColor: Color.seaTurtle_2) {
-                           
-                            self.estrapolaStringhe()
-                            self.postEstrapolaAction()
-                         
-                        }
-                        .opacity(self.isUpdateDisable ? 0.3 : 1.0)
-                        .disabled(self.isUpdateDisable)
-
-                        CSInfoAlertView(imageScale: .large, title: "Guida Formato", message: .formattazioneInserimentoVeloceCategorie)
+                        TextEditor(text: $text)
+                            .font(.system(.body,design:.rounded))
+                            .foregroundStyle(Color.black)
+                            .autocapitalization(.sentences)
+                            .disableAutocorrection(true)
+                            .keyboardType(.default)
+                            .csTextEditorBackground {
+                                Color.white.opacity(0.2)
+                            }
+                            .cornerRadius(5.0)
+                            .frame(height: 150)
+                            .onChange(of: text) {
+                             self.isUpdateDisable = false
+                            }
                         
-                        Spacer()
-
-                        Text("N°Categorie:\(allFastCategories.count)")
-                            .font(.system(.subheadline, design: .monospaced))
-                            .fontWeight(.medium)
-                            .foregroundStyle(Color.white.opacity(0.6))
-                        
-                    }
-                    
-                    if !allFastCategories.isEmpty {
-                        
-                        CorpoCompilazioneCategorie(allFastCategories: $allFastCategories, disabilitaPicker: $disabilitaPicker)
-                            .id(allFastCategories)
+                        HStack {
                             
-        
+                            CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.seaTurtle_4, fillColor: Color.seaTurtle_2) {
+                               
+                                self.estrapolaStringhe()
+                                self.postEstrapolaAction()
+                             
+                            }
+                            .opacity(self.isUpdateDisable ? 0.3 : 1.0)
+                            .disabled(self.isUpdateDisable)
+
+                            CSInfoAlertView(imageScale: .large, title: "Guida Formato", message: .formattazioneInserimentoVeloceCategorie)
+                            
+                            Spacer()
+
+                            Text("N°Categorie:\(allFastCategories.count)")
+                                .font(.system(.subheadline, design: .monospaced))
+                                .fontWeight(.medium)
+                                .foregroundStyle(Color.white.opacity(0.6))
+                            
+                        }
+                        
+                        if !allFastCategories.isEmpty {
+                            
+                            CorpoCompilazioneCategorie(allFastCategories: $allFastCategories)
+                                .id(allFastCategories)
+                                
+            
+                        }
                     }
                 }
+                
+                CSDivider()
             }
-            
-       // }
-        .csHpadding()
+            .csHpadding()
+        }
     }
     
     // Method
@@ -133,7 +136,7 @@ struct CorpoCompilazioneCategorie:View {
     
     @Binding var allFastCategories:[CategoriaMenu]
     @State private var focusCategory:CategoriaMenu?
-    @Binding var disabilitaPicker:Bool
+   // @Binding var disabilitaPicker:Bool
         
     var body: some View {
         
@@ -228,7 +231,7 @@ struct CorpoCompilazioneCategorie:View {
             self.focusCategory = newFocus
         } else {
             self.focusCategory = CategoriaMenu()
-            self.disabilitaPicker = false
+           // self.disabilitaPicker = false
         }
        
         
@@ -243,7 +246,7 @@ struct FastImport_Categorie_Previews: PreviewProvider {
     static var user:UserRoleModel = UserRoleModel()
     static var previews: some View {
         NavigationStack {
-            FastImport_Categorie(backgroundColorView: .seaTurtle_1, disabilitaPicker: .constant(true))
+            FastImport_Categorie(backgroundColorView: .seaTurtle_1)
                 .environmentObject(AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID")))//(AccounterVM(userAuth: user))
         }
     }

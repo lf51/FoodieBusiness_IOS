@@ -16,6 +16,8 @@ struct FastImport_MainView: View {
     let backgroundColorView: Color
     @State private var text: String = ""
     
+    @State private var disableView:Bool = false
+    
     @State private var isUpdateDisable: Bool = true
     @State private var tabViewHeight:CGFloat = 200
     
@@ -24,11 +26,11 @@ struct FastImport_MainView: View {
     
     var body: some View {
         
-      //  CSZStackVB(title: "Importazione Veloce", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: "Piatti + Ingredienti", backgroundColorView: backgroundColorView) {
             
-         //   VStack {
+            VStack(alignment:.leading) {
                 
-            //   CSDivider()
+               CSDivider()
                 
                 ScrollView(showsIndicators:false) {
                     
@@ -148,11 +150,24 @@ struct FastImport_MainView: View {
                     }
                 }
                // .edgesIgnoringSafeArea(.all)
-                
-           // }
+                CSDivider()
+            }
             .csHpadding()
+            .opacity(disableView ? 0.4 : 1.0)
+            .disabled(disableView)
+            
       //  CSDivider()
-       // }
+        }
+        .onAppear {
+            
+            if self.viewModel.db.allMyCategories.isEmpty {
+                self.disableView = true
+                self.viewModel.alertItem = AlertModel(title: "Action Required", message: "Per creare piatti e ingredienti in blocco è necessario avere almeno una categoria menu", actionPlus: ActionModel(title: .prosegui, action: {
+                    self.viewModel.addToThePath(destinationPath: .dishList, destinationView: .categoriaMenu)
+                }))
+            }
+            
+        }
     }
     
     // Method
