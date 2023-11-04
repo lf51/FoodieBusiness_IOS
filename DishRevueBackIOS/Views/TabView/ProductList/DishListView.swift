@@ -19,10 +19,10 @@ struct DishListView: View {
     
     @State private var openFilter: Bool = false
     @State private var openSort: Bool = false
-   // @State private var mapObject: MapObject<DishModel,CategoriaMenu>?
-    @State private var mapTree:MapTree<DishModel,CategoriaMenu>?
-    //@State private var filterProperty: DishModel.FilterProperty = DishModel.FilterProperty()
-    @State private var filterCore:CoreFilter<DishModel> = CoreFilter()
+   // @State private var mapObject: MapObject<ProductModel,CategoriaMenu>?
+    @State private var mapTree:MapTree<ProductModel,CategoriaMenu>?
+    //@State private var filterProperty: ProductModel.FilterProperty = ProductModel.FilterProperty()
+    @State private var filterCore:CoreFilter<ProductModel> = CoreFilter()
     
     var body: some View {
         
@@ -108,8 +108,8 @@ struct DishListView: View {
                         font: .callout,
                         imageBack: Color.seaTurtle_2,
                         imageFore: Color.white) {
-                           // viewModel.dishListPath.append(DishModel())
-                            self.viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
+                           // viewModel.dishListPath.append(ProductModel())
+                            self.viewModel.dishListPath.append(DestinationPathView.piatto(ProductModel()))
                         }
                 
                 }
@@ -144,7 +144,7 @@ struct DishListView: View {
             
             self.mapTree = MapTree(
                 mapProperties: self.viewModel.db.allMyCategories,
-                kpPropertyInObject: \DishModel.categoriaMenu,
+                kpPropertyInObject: \ProductModel.categoriaMenu,
                 labelColor: .seaTurtle_3)
             
         } else {
@@ -160,7 +160,7 @@ struct DishListView: View {
             font: .callout,
             imageBack: Color.seaTurtle_2,
             imageFore: Color.white) {
-                self.viewModel.dishListPath.append(DestinationPathView.piatto(DishModel()))
+                self.viewModel.dishListPath.append(DestinationPathView.piatto(ProductModel()))
             } */
         
         Menu {
@@ -169,7 +169,7 @@ struct DishListView: View {
                 label: "Crea Nuovo",
                 systemImage: "square.and.pencil",
                 navigationPath: .dishList,
-                destination: .piatto(DishModel()))
+                destination: .piatto(ProductModel()))
             
             NavigationButtonBasic(
                 label: "Crea in blocco",
@@ -187,10 +187,10 @@ struct DishListView: View {
         
     }
     
-    @ViewBuilder private func vbFilterView(container:[DishModel]) -> some View {
+    @ViewBuilder private func vbFilterView(container:[ProductModel]) -> some View {
         
         MyFilterRow(
-            allCases: DishModel.PercorsoProdotto.allCases,
+            allCases: ProductModel.PercorsoProdotto.allCases,
             filterCollection: $filterCore.filterProperties.percorsoPRP,
             selectionColor: Color.white.opacity(0.5),
             imageOrEmoji: "fork.knife",
@@ -235,7 +235,7 @@ struct DishListView: View {
             }
         
         MyFilterRow(
-            allCases: DishModel.BasePreparazione.allCase,
+            allCases: ProductModel.BasePreparazione.allCase,
             filterProperty: $filterCore.filterProperties.basePRP,
             selectionColor: Color.brown,
             imageOrEmoji: "leaf",
@@ -364,7 +364,7 @@ struct DishListView: View {
             
         } */
 
-   /* @ViewBuilder private func vbLocalFilterPop(containerFiltered:[DishModel] = []) -> some View {
+   /* @ViewBuilder private func vbLocalFilterPop(containerFiltered:[ProductModel] = []) -> some View {
      
         FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Filtri") {
              
@@ -372,7 +372,7 @@ struct DishListView: View {
                 
             } content: {
 
-              /*  FilterRow_Generic(allCases: DishModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife",label: "Prodotto") { value in
+              /*  FilterRow_Generic(allCases: ProductModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife",label: "Prodotto") { value in
                     
                     containerFiltered.filter({$0.percorsoProdotto == value}).count
                 } */
@@ -404,7 +404,7 @@ struct DishListView: View {
                 } */
                 
                 
-               /* FilterRow_Generic(allCases: DishModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf",label: "Preparazione a base di")
+               /* FilterRow_Generic(allCases: ProductModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf",label: "Preparazione a base di")
                 { value in
                     containerFiltered.filter({ $0.calcolaBaseDellaPreparazione(readOnlyVM: self.viewModel) == value}).count
                    // return filterM.count
@@ -451,7 +451,7 @@ struct DishListView: View {
        
         guard let percorso = self.filterCore.filterProperties.percorsoPRP else { return false }
         
-       return percorso.contains(.prodottoFinito) &&
+       return percorso.contains(.finito) &&
         percorso.count == 1
         
         
