@@ -66,7 +66,7 @@ struct VistaRecensioniEspansa: View {
     
     // method
     
-    private func mapValue() -> [DishModel] {
+    private func mapValue() -> [ProductModel] {
         
         let element = self.viewModel.db.allMyReviews
         
@@ -101,7 +101,7 @@ private struct RevRowLocal:View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
-    let mapDish:DishModel
+    let mapDish:ProductModel
     let position:Int
    // @State private var showRev:Bool? = nil
     @State private var showStat:Bool = false
@@ -120,7 +120,7 @@ private struct RevRowLocal:View {
                 
                 HStack {
                     
-                    DishModel_RowView(item: mapDish, rowSize: .sintetico)
+                    ProductModel_RowView(item: mapDish, rowSize: .sintetico)
                         .overlay(alignment: .topLeading) {
                             
                             if position <= 2 {
@@ -222,7 +222,7 @@ private struct RevRowLocal:View {
         
     } */
     
-   /* private func reviewValue(dish:DishModel) -> [DishRatingModel] {
+   /* private func reviewValue(dish:ProductModel) -> [DishRatingModel] {
         
         let allRif = dish.rifReviews
         let allRev = self.viewModel.modelCollectionFromCollectionID(collectionId: allRif, modelPath: \.allMyReviews)

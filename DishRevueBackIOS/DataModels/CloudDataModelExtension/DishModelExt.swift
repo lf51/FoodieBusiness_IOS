@@ -1,5 +1,5 @@
 //
-//  DishModelExt.swift
+//  ProductModelExt.swift
 //  DishRevueBackIOS
 //
 //  Created by Calogero Friscia on 09/12/22.
@@ -11,7 +11,7 @@ import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
 
-extension DishModel:
+extension ProductModel:
     MyProToolPack_L1,
     MyProVisualPack_L1,
     MyProDescriptionPack_L0 {
@@ -22,7 +22,7 @@ extension DishModel:
         .allMyDish
     }
     
-    public func isEqual(to rhs: MyFoodiePackage.DishModel) -> Bool {
+    public func isEqual(to rhs: MyFoodiePackage.ProductModel) -> Bool {
         
         self.intestazione == rhs.intestazione
         
@@ -62,11 +62,11 @@ extension DishModel:
         return documentData
     } */
     
-    public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [DishModel]> {
+    public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [ProductModel]> {
         return \.db.allMyDish
     }
     
-    public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [DishModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
+    public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [ProductModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
          return (
             \.db.allMyDish, "Lista Piatti",
@@ -80,7 +80,7 @@ extension DishModel:
     }
             
     public func returnModelRowView(rowSize:RowSize) -> some View {
-        DishModel_RowView(item: self,rowSize: rowSize)
+        ProductModel_RowView(item: self,rowSize: rowSize)
     }
     
     public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
@@ -178,7 +178,7 @@ extension DishModel:
                       Image(systemName:"leaf")
                   }
               }
-          } else if self.percorsoProdotto == .prodottoFinito {
+          } else if self.percorsoProdotto == .finito {
              
               let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
               let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
@@ -324,7 +324,7 @@ extension DishModel:
         
     } // deprecata 22.12 da cancellare
     
-    public static func sortModelInstance(lhs: DishModel, rhs: DishModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
+    public static func sortModelInstance(lhs: ProductModel, rhs: ProductModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
         
         switch condition {
     
@@ -360,12 +360,15 @@ extension DishModel:
         
         guard allMenuWithDish.countWhereDishIsIn != 0 else {
             
-            viewModel.deleteItemModel(itemModel: self)
+           // viewModel.deleteItemModel(itemModel: self)
+            viewModel.deleteModel(itemModel: self)
+            
             return
             
         }
         
         var allCleanedMenu:[MenuModel] = []
+        
         for eachMenu in allMenuWithDish.allModelWithDish {
             
             var new = eachMenu
@@ -379,8 +382,11 @@ extension DishModel:
             allCleanedMenu.append(new)
             
         }
-        viewModel.updateItemModelCollection(items: allCleanedMenu)
-        viewModel.deleteItemModel(itemModel: self)
+       // viewModel.updateItemModelCollection(items: allCleanedMenu)
+       // viewModel.deleteItemModel(itemModel: self)
+        viewModel.deleteModel(itemModel: self) {
+            viewModel.updateModelCollection(items: allCleanedMenu, sub: .allMyMenu)
+        }
     }
     
     /// filtra gli ingredienti principali e secondari ritornandoli tutti meno gli archiviati. Comprende i disponibili e gli inPausa
@@ -670,7 +676,7 @@ extension DishModel:
             }
         }
         
-        public func returnTypeCase() -> DishModel.ExecutionState {
+        public func returnTypeCase() -> ProductModel.ExecutionState {
            
             return self
         }
@@ -702,10 +708,10 @@ extension DishModel:
     
 }
 
-extension DishModel: Object_FPC {
+extension ProductModel: Object_FPC {
         
   //  public typealias VM = AccounterVM
-    public static func sortModelInstance(lhs: DishModel, rhs: DishModel, condition: SortCondition?, readOnlyVM: VM) -> Bool {
+    public static func sortModelInstance(lhs: ProductModel, rhs: ProductModel, condition: SortCondition?, readOnlyVM: VM) -> Bool {
         
         switch condition {
             
@@ -827,7 +833,7 @@ extension DishModel: Object_FPC {
     
     public struct FilterProperty:SubFilterObject_FPC {
        
-       // public typealias M = DishModel 
+       // public typealias M = ProductModel 
         
       //  public var coreFilter: CoreFilter
       //  public var sortCondition: SortCondition
@@ -837,12 +843,12 @@ extension DishModel: Object_FPC {
         var status_singleChoice:StatusTransition?
         var executionState:ExecutionState?
         // 16.03 end
-        var percorsoPRP:[DishModel.PercorsoProdotto]? { willSet {
+        var percorsoPRP:[ProductModel.PercorsoProdotto]? { willSet {
             if let value = newValue,
-               !value.contains(.prodottoFinito) { self.inventario = nil }
+               !value.contains(.finito) { self.inventario = nil }
         }}
         var categorieMenu:[CategoriaMenu]?
-        var basePRP:DishModel.BasePreparazione? //
+        var basePRP:ProductModel.BasePreparazione? //
         var allergeniIn:[AllergeniIngrediente]?
         var dietePRP:[TipoDieta]?
         
@@ -962,7 +968,7 @@ extension DishModel: Object_FPC {
     
 }
 
-extension DishModel: MyProProgressBar {
+extension ProductModel: MyProProgressBar {
     
     public var countProgress: Double {
 
@@ -988,9 +994,9 @@ extension DishModel: MyProProgressBar {
     
 }
 
-extension DishModel {
+extension ProductModel {
     /// al 30_10_23 funziona solo per ingredienti principali e secondari. Da sviluppare sui sostituti e  sostituiti
-    public func replaceIngredients(id old:String,with new:String) -> DishModel? {
+    public func replaceIngredients(id old:String,with new:String) -> ProductModel? {
         
         let ingPath = self.individuaPathIngrediente(idIngrediente: old)
         
@@ -1003,3 +1009,5 @@ extension DishModel {
         
     }
 }
+
+

@@ -14,12 +14,12 @@ struct TemporaryModel:Identifiable {
     // Creato 28.08
     let id:String = UUID().uuidString
     
-    var dish: DishModel
+    var dish: ProductModel
     var ingredients: [IngredientModel]
     var categoriaMenu: CategoriaMenu = .defaultValue
     var rifIngredientiSecondari: [String] = []
     
-    func generaProduct(from ingredients:[IngredientModel], and rif:[String]) -> DishModel {
+    func generaProduct(from ingredients:[IngredientModel], and rif:[String]) -> ProductModel {
         
         var rifIngredientiPrincipali:[String] = []
         var rifIngredientiSecondari:[String] = []
@@ -41,7 +41,7 @@ struct TemporaryModel:Identifiable {
             new.ingredientiSecondari = rifIngredientiSecondari
             
             if rifIngredientiPrincipali.contains(self.dish.id) {
-                new.percorsoProdotto = .prodottoFinito
+                new.percorsoProdotto = .finito
             }
             return new
             

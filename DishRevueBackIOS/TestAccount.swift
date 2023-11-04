@@ -83,9 +83,9 @@ var testAccount: AccounterVM = {
     return prp
 }()
 
-var dishItem2_Test: DishModel = {
+var dishItem2_Test: ProductModel = {
    
-   var newDish = DishModel()
+   var newDish = ProductModel()
    newDish.intestazione = "Caserecce Gamberi e Zucca"
    newDish.status = .completo(.disponibile)
    newDish.ingredientiPrincipali = [ingredientSample6_Test.id]
@@ -112,9 +112,9 @@ var dishItem2_Test: DishModel = {
    return newDish
 }()
 
- var dishItem3_Test: DishModel = {
+ var dishItem3_Test: ProductModel = {
     
-    var newDish = DishModel()
+    var newDish = ProductModel()
     newDish.intestazione = "Bucatini alla Matriciana"
     newDish.status = .completo(.inPausa)
     newDish.ingredientiPrincipali = [ingredientSample4_Test.id]
@@ -141,9 +141,9 @@ var dishItem2_Test: DishModel = {
     return newDish
 }()
 
-var dishItem4_Test: DishModel = {
+var dishItem4_Test: ProductModel = {
     
-    var newDish = DishModel()
+    var newDish = ProductModel()
     newDish.intestazione = "Trofie al Pesto"
     newDish.status = .completo(.inPausa)
     newDish.ingredientiPrincipali = [ingredientSample_Test.id]
@@ -162,9 +162,9 @@ var dishItem4_Test: DishModel = {
     return newDish
 }()
 
-var dishItem5_Test: DishModel = {
+var dishItem5_Test: ProductModel = {
     
-    var newDish = DishModel()
+    var newDish = ProductModel()
     newDish.intestazione = "Spaghetti Aglio e Oglio"
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [ingredientSample7_Test.id]
@@ -182,13 +182,13 @@ var dishItem5_Test: DishModel = {
     
     return newDish
 }()
-var prodottoFinito: DishModel = {
+var prodottoFinito: ProductModel = {
     
-    var newDish = DishModel()
+    var newDish = ProductModel()
     newDish.intestazione = "CocoCola"
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [newDish.id]
-    newDish.percorsoProdotto = .prodottoFinito
+    newDish.percorsoProdotto = .finito
     newDish.categoriaMenu = "cat7"
  
     let price:DishFormat = {

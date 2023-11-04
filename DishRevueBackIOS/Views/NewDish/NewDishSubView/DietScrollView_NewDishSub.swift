@@ -14,12 +14,12 @@ struct DietScrollView_NewDishSub: View {
     static var mostraAlertDiete:Bool = true
     
     @ObservedObject var viewModel:AccounterVM
-    @Binding var newDish: DishModel
+    @Binding var newDish: ProductModel
 
     let dietAvaible:[TipoDieta]
     let dietAvaibleString:[String]
     
-    init(newDish:Binding<DishModel>,viewModel:AccounterVM) {
+    init(newDish:Binding<ProductModel>,viewModel:AccounterVM) {
        
         _newDish = newDish
         self.viewModel = viewModel

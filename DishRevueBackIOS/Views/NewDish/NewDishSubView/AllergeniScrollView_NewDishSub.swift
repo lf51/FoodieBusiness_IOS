@@ -15,7 +15,7 @@ struct AllergeniScrollView_NewDishSub: View {
     // Modifica 26.08
     @EnvironmentObject var viewModel:AccounterVM
     
-    @Binding var newDish: DishModel
+    @Binding var newDish: ProductModel
     let generalErrorCheck: Bool
 
     @Binding var areAllergeniOk: Bool

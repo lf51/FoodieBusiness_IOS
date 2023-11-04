@@ -13,7 +13,7 @@ struct DishChangingIngredient_RowSubView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    @Binding var dish: DishModel
+    @Binding var dish: ProductModel
     @Binding var isDeactive: Bool
     
     let isPermanente: Bool
@@ -26,7 +26,7 @@ struct DishChangingIngredient_RowSubView: View {
     let mapArray: [IngredientModel]
     @State private var nomeSostitutoLocale: String?
     
-    init(dish: Binding<DishModel>,isDeactive:Binding<Bool>,isPermanente:Bool, nomeIngredienteCorrente: String, idSostitutoGlobale: String?,nomeSostitutoGlobale:String?, idIngredienteCorrente: String, mapArray:[IngredientModel]) {
+    init(dish: Binding<ProductModel>,isDeactive:Binding<Bool>,isPermanente:Bool, nomeIngredienteCorrente: String, idSostitutoGlobale: String?,nomeSostitutoGlobale:String?, idIngredienteCorrente: String, mapArray:[IngredientModel]) {
 
         _dish = dish
         _isDeactive = isDeactive

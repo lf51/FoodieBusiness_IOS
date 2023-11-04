@@ -982,7 +982,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     
     @ViewBuilder private func vbSubSingleStateExcecution(
         rifDishes:[String],
-        executionState:DishModel.ExecutionState,
+        executionState:ProductModel.ExecutionState,
         rowLabel:String,
         navLinkDestinationLabel:String) -> some View {
         

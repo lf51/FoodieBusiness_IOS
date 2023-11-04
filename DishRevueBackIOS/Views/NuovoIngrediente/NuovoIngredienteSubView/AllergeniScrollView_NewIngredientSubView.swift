@@ -16,6 +16,7 @@ struct AllergeniScrollView_NewIngredientSubView: View {
     @EnvironmentObject var viewModel:AccounterVM
     @Binding var nuovoIngrediente: IngredientModel
     let generalErrorCheck: Bool
+    var lockEdit:Bool = false 
     
     @Binding var areAllergeniOk: Bool
     @Binding var wannaAddAllergene: Bool
@@ -36,6 +37,8 @@ struct AllergeniScrollView_NewIngredientSubView: View {
                                 self.wannaAddAllergene.toggle()
                             }
                         }
+                        .opacity(lockEdit ? 0.6 : 1.0)
+                        .disabled(lockEdit)
                     
                     Toggle(isOn: self.$areAllergeniOk) {
                         

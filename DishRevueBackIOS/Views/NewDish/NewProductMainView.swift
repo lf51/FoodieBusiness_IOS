@@ -12,16 +12,16 @@ import MyFoodiePackage
 struct NewProductMainView: View {
     // 10.07.23 bug id esistente. vedi Nota
     @EnvironmentObject var viewModel: AccounterVM
-   // let newDish: DishModel
-    @State private var newDish: DishModel
+   // let newDish: ProductModel
+    @State private var newDish: ProductModel
     let backgroundColorView: Color
     let destinationPath: DestinationPath
     let saveDialogType:SaveDialogType
     
     @State private var disabilitaPicker:Bool = false
-   // @State private var type:DishModel.PercorsoProdotto // deprecato
+   // @State private var type:ProductModel.PercorsoProdotto // deprecato
     
-    init(newDish: DishModel, backgroundColorView: Color, destinationPath: DestinationPath,saveDialogType:SaveDialogType) {
+    init(newDish: ProductModel, backgroundColorView: Color, destinationPath: DestinationPath,saveDialogType:SaveDialogType) {
         
        // self.newDish = newDish
         self.newDish = newDish
@@ -36,7 +36,7 @@ struct NewProductMainView: View {
     var body: some View {
         
         let percorsoNew = self.newDish.percorsoProdotto
-        let genere:String = percorsoNew == .composizione ? "Nuova" : "Nuovo"
+        let genere:String = percorsoNew == .finito ? "Nuovo" : "Nuova"
         
         CSZStackVB(title: self.newDish.intestazione == "" ? "\(genere) \(percorsoNew.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
             
@@ -75,7 +75,7 @@ struct NewProductMainView: View {
                 
         switch self.newDish.percorsoProdotto {
             
-        case .prodottoFinito,.composizione:
+       case .finito,.composizione:
             
              NewDishIbridView(
                 newDish: $newDish,
@@ -85,7 +85,7 @@ struct NewProductMainView: View {
                 observedVM: viewModel)
             
         default:
-            
+          
             NewDishMainView(
                 newDish: $newDish,
                 disabilitaPicker: $disabilitaPicker,
@@ -152,8 +152,8 @@ struct NewProductMainView_Previews: PreviewProvider {
         status: .bozza(.inPausa)
        )
     
-    static let dishSample:DishModel = {
-       var dish = DishModel()
+    static let dishSample:ProductModel = {
+       var dish = ProductModel()
         dish.intestazione = "Trofie al Pesto"
         let dishPrice:DishFormat = {
             var price = DishFormat(type: .mandatory)
@@ -164,7 +164,7 @@ struct NewProductMainView_Previews: PreviewProvider {
         dish.mostraDieteCompatibili = true
        // dish.categoriaMenu = CategoriaMenu(nome: "PortataTest")
         dish.status = .bozza(.disponibile)
-        dish.percorsoProdotto = .preparazioneBeverage
+        dish.percorsoProdotto = .preparazione
      
         dish.ingredientiPrincipali = []
         dish.ingredientiSecondari = [ingredientSample3.id,ingredientSample4.id]
@@ -187,7 +187,7 @@ struct NewProductMainView_Previews: PreviewProvider {
         
         NavigationStack {
             
-            NewProductMainView(newDish: DishModel(), backgroundColorView: Color.seaTurtle_1, destinationPath: .dishList,saveDialogType: .completo)
+            NewProductMainView(newDish: ProductModel(), backgroundColorView: Color.seaTurtle_1, destinationPath: .dishList,saveDialogType: .completo)
             
         }.environmentObject(viewModel)
     }

@@ -14,12 +14,13 @@ struct NewDishIbridView: View {
     
     @ObservedObject var viewModel:AccounterVM
     
-   // @State private var newDish: DishModel
-    @Binding var newDish:DishModel
+   // @State private var newDish: ProductModel
+    @Binding var newDish:ProductModel
     @State private var ingredienteDiSistema:IngredientModel
+    @State private var lockIngredientEdit:Bool
     let backgroundColorView: Color
     
-    @State private var piattoArchiviato: DishModel // per il reset
+    @State private var piattoArchiviato: ProductModel // per il reset
     @State private var ingredienteDSArchiviato: IngredientModel
     let destinationPath: DestinationPath
     
@@ -37,9 +38,8 @@ struct NewDishIbridView: View {
     }
     
     init(
-        newDish:Binding<DishModel>,
+        newDish:Binding<ProductModel>,
         disabilitaPicker:Binding<Bool>,
-     //   percorso:DishModel.PercorsoProdotto,// deprecatp
         backgroundColorView: Color,
         destinationPath:DestinationPath,
         observedVM:AccounterVM) {
@@ -48,30 +48,14 @@ struct NewDishIbridView: View {
             
         let wrappedNewDish = newDish.wrappedValue
             
-       // let localDish: DishModel
-        let systemIngredient: IngredientModel = observedVM.modelFromId(id: wrappedNewDish.id, modelPath: \.db.allMyIngredients) ?? IngredientModel(id: wrappedNewDish.id)
- 
-     /*   if wrappedNewDish.status == .bozza() {
+       // let localDish: ProductModel
+        let ingredient = observedVM.modelFromId(id: wrappedNewDish.id, modelPath: \.db.allMyIngredients)
+        let systemIngredient: IngredientModel = ingredient ?? IngredientModel(id: wrappedNewDish.id)
+        let lockIngredientEdit:Bool = ingredient != nil
             
-            let newD: DishModel = {
-                var new = wrappedNewDish
-                new.ingredientiPrincipali = [wrappedNewDish.id]
-               // new.pricingPiatto = [DishFormat(type: .mandatory)]
-                //new.percorsoProdotto = percorso
-                return new
-            }()
-            localDish = newD
-            systemIngredient = IngredientModel(id:wrappedNewDish.id)
-    
-        } else {
-            localDish = wrappedNewDish
-            systemIngredient = observedVM.modelFromId(id: wrappedNewDish.id, modelPath: \.allMyIngredients) ?? IngredientModel(id: wrappedNewDish.id)
-            
-        } */
-        
-        //_newDish = State(wrappedValue: localDish)
         _newDish = newDish
         _ingredienteDiSistema = State(wrappedValue: systemIngredient)
+        _lockIngredientEdit = State(wrappedValue: lockIngredientEdit)
             
         _piattoArchiviato = State(wrappedValue: wrappedNewDish)
         _ingredienteDSArchiviato = State(wrappedValue: systemIngredient)
@@ -108,6 +92,8 @@ struct NewDishIbridView: View {
                                     minLenght: 3,
                                     coloreContainer: .seaTurtle_2)
                             .focused($modelField, equals: .intestazione)
+                            .opacity(lockIngredientEdit ? 0.6 : 1.0)
+                            .disabled(lockIngredientEdit)
  
                         let isComposizione = self.newDish.percorsoProdotto == .composizione
                         let labelString = isComposizione ? "la composizione" : "il prodotto (Optional)"
@@ -128,25 +114,33 @@ struct NewDishIbridView: View {
                             Group {   // Innesto
                                 
                                 OrigineScrollView_NewIngredientSubView(nuovoIngrediente: self.$ingredienteDiSistema, generalErrorCheck: generalErrorCheck)
+                                    .opacity(lockIngredientEdit ? 0.6 : 1.0)
+                                    .disabled(lockIngredientEdit)
                                 
                                 AllergeniScrollView_NewIngredientSubView(
                                     nuovoIngrediente: self.$ingredienteDiSistema,
                                     generalErrorCheck: generalErrorCheck,
+                                    lockEdit: lockIngredientEdit,
                                     areAllergeniOk: $areAllergeniOk,
                                     wannaAddAllergene: $wannaAddAllergeni)
                                 
                                 ConservazioneScrollView_NewIngredientSubView(
                                     nuovoIngrediente: self.$ingredienteDiSistema,
                                     generalErrorCheck: generalErrorCheck)
+                                .opacity(lockIngredientEdit ? 0.6 : 1.0)
+                                .disabled(lockIngredientEdit)
                                 
                                 ProduzioneScrollView_NewIngredientSubView(nuovoIngrediente: self.$ingredienteDiSistema)
+                                    .opacity(lockIngredientEdit ? 0.6 : 1.0)
+                                    .disabled(lockIngredientEdit)
                                 
                                 ProvenienzaScrollView_NewIngredientSubView(nuovoIngrediente: self.$ingredienteDiSistema)
+                                    .opacity(lockIngredientEdit ? 0.6 : 1.0)
+                                    .disabled(lockIngredientEdit)
                             } // end Innesti
+                            
                            
                             DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
-
-                           /* DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, generalErrorCheck: generalErrorCheck)*/
 
                             DishSpecific_NewDishSubView(
                                 allDishFormats: $newDish.pricingPiatto,
@@ -174,27 +168,7 @@ struct NewDishIbridView: View {
      
                     }
                 .scrollDismissesKeyboard(.immediately)
-                   // .zIndex(0)
-                //    .opacity(wannaAddAllergeni ? 0.6 : 1.0)
-                  //  .disabled(wannaAddAllergeni)
-    
-              /* if wannaAddAllergeni {
-           
-                    SelettoreMyModel<_,AllergeniIngrediente>(
-                        itemModel: $ingredienteDiSistema,
-                        allModelList: ModelList.ingredientAllergeniList,
-                        closeButton: $wannaAddAllergeni,
-                        backgroundColorView: backgroundColorView,
-                        actionTitle: "Normativa") {
-                            if let url = URL(string: "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2011:304:0018:0063:it:PDF") {
-                                            openURL(url)
-                                        }
-                        }
-                    
-                }*/
-                
-     
-
+   
                 HStack {
                     Spacer()
                     Text(newDish.id)
@@ -252,11 +226,11 @@ struct NewDishIbridView: View {
         self.generalErrorCheck = false
         self.areAllergeniOk = false
                 
-        let new:(dish:DishModel,ing:IngredientModel) = {
+        let new:(dish:ProductModel,ing:IngredientModel) = {
             
             let currentDishType = self.newDish.percorsoProdotto
             
-            var dish = DishModel()
+            var dish = ProductModel()
             dish.percorsoProdotto = currentDishType
            // dish.ingredientiPrincipali = [dish.id]
             
@@ -384,7 +358,7 @@ struct NewDishIbridView: View {
     
         let intestazione = self.newDish.intestazione
         
-        self.ingredienteDiSistema.intestazione = "(DS)\(intestazione)"
+        self.ingredienteDiSistema.intestazione = intestazione
         return intestazione != ""
         // i controlli sono già eseguiti all'interno sulla proprietà temporanea, se il valore è stato passato al newDish vuol dire che è buono. Per cui basta controllare se l'intestazione è diversa dal valore vuoto
 
@@ -459,8 +433,8 @@ struct NewDishIbridView_Previews: PreviewProvider {
         status: .bozza(.inPausa)
        )
     
-    static let dishSample:DishModel = {
-       var dish = DishModel()
+    static let dishSample:ProductModel = {
+       var dish = ProductModel()
         dish.intestazione = "Trofie al Pesto"
         let dishPrice:DishFormat = {
             var price = DishFormat(type: .mandatory)

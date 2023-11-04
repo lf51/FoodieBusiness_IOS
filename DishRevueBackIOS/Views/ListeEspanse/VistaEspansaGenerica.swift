@@ -147,7 +147,7 @@ struct VistaEspansaMenuPerAnteprima: View {
     @EnvironmentObject var viewModel:AccounterVM
     
     let rifDishes:[String]
-   // let containerPath:KeyPath<FoodieViewModel,[DishModel]>
+   // let containerPath:KeyPath<FoodieViewModel,[ProductModel]>
     let label: String
     let destinationPath:DestinationPath
     let backgroundColorView:Color
@@ -165,7 +165,7 @@ struct VistaEspansaMenuPerAnteprima: View {
         self.backgroundColorView = backgroundColorView
     }
 
-    @State private var currentDishForRatingList:DishModel?
+    @State private var currentDishForRatingList:ProductModel?
     @State private var editMode:Bool = false
     @State private var frames:[CGRect] = []
 
@@ -175,7 +175,7 @@ struct VistaEspansaMenuPerAnteprima: View {
             // Nota 22.02.23
             let mapLabel = MapTree(
                 mapProperties: self.viewModel.db.allMyCategories,
-                kpPropertyInObject: \DishModel.categoriaMenu,
+                kpPropertyInObject: \ProductModel.categoriaMenu,
                 labelColor: .black,
                 labelText: .white,
                 textSizeAsScreenPercentage: 0.1,
@@ -208,7 +208,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                         
                     } elementView: { model in
                         
-                        DishModelRow_ClientVersion(
+                        ProductModelRow_ClientVersion(
                             viewModel: viewModel,
                             item: model,
                             rowColor: backgroundColorView,

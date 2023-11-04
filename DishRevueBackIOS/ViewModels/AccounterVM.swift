@@ -39,7 +39,6 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     private(set) var ingredientsManager:IngredientManager
     private(set) var subCollectionManager:SubCollectionManager
     
-    
     @Published public var stepView:SubViewStep?
     @Published var isLoading: Bool?
      var cancellables = Set<AnyCancellable>()
@@ -188,7 +187,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
     
     /// Controlla se il nome del modello Passato esiste già, se si lo aggiorna, altrimenti lo crea.
-    func switchFraCreaEUpdateModel<T:MyProStarterPack_L1>(itemModel:T) where T.VM == AccounterVM {
+    func switchFraCreaEUpdateModel<T:MyProStarterPack_L1&Codable>(itemModel:T) where T.VM == AccounterVM {
         // Nota 20.10 -> Risolvere rimuovendo e ricreando, senza update
         if let oldModel = checkExistingUniqueModelName(model: itemModel).1 {
             
@@ -197,10 +196,12 @@ UserManager refCount:\(CFGetRetainCount(userManager))
                 new.id = oldModel.id
                 return new
             }()
-            self.updateItemModel(itemModel: newOldModel)
+           // self.updateItemModel(itemModel: newOldModel)
+            self.updateModel(itemModel: newOldModel)
             
         } else {
-            self.createItemModel(itemModel: itemModel)
+           // self.createItemModel(itemModel: itemModel)
+            self.createModel(itemModel: itemModel)
         }
         
     }
@@ -213,7 +214,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
         
     /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto.
-    func createItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
+   /* func createItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
         
         if !showAlert {
             
@@ -232,9 +233,9 @@ UserManager refCount:\(CFGetRetainCount(userManager))
                     
                                         }))
         }
-    }// deprecato in futuro
+    }*/// deprecato in futuro
     
-    private func createItemModelExecutive<T:MyProStarterPack_L1>(itemModel:T, destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
+   /* private func createItemModelExecutive<T:MyProStarterPack_L1>(itemModel:T, destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
         
         // Mod 15.09
        // var containerT = assegnaContainer(itemModel: itemModel)
@@ -278,10 +279,10 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
         print("Nuovo Oggeto \(itemModel.intestazione) creato con id: \(itemModel.id)")
         
-    }// deprecato in Futuro
+    }*/// deprecato in Futuro
     
     /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
-    func updateItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM  {
+    /*func updateItemModel<T:MyProStarterPack_L1>(itemModel:T,showAlert:Bool = false, messaggio: String = "", destinationPath:DestinationPath? = nil) where T.VM == AccounterVM  {
         print("UpdateItemModel()")
         if !showAlert {
             
@@ -327,7 +328,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         
         print("elementi nel Container POST-Update: \(containerT.count)")
         print("updateItemModelExecutive executed")
-    }// deprecata in futuro
+    }*/// deprecata in futuro
  
     ///  Permette di aggiornare un array di model. Modifica il viewModel solo dopo aver modificato localmente ogni elemento e manda il refresh del path a processo concluso. Non distingue fra item che hanno ricevuto modifiche e item modificati. Li riscrive tutti.
     func updateItemModelCollection<T:MyProStarterPack_L1>(items:[T],destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
@@ -352,7 +353,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
             
         }
         
-    }
+    } // deprecata
     
     // PropertyManager
     
@@ -420,7 +421,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }*/
     
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
-    func deleteItemModel<T:MyProStarterPack_L1>(itemModel: T) where T.VM == AccounterVM {
+   /* func deleteItemModel<T:MyProStarterPack_L1>(itemModel: T) where T.VM == AccounterVM {
         
         self.alertItem = AlertModel(
             title: "Conferma Eliminazione",
@@ -434,7 +435,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
                    
                 }))
 
-    }
+    } // deprecato
     
     private func deleteItemModelExecution<T:MyProStarterPack_L1>(itemModel: T) where T.VM == AccounterVM {
         
@@ -451,7 +452,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         //
         self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!")
         
-    }
+    }*/ // deprecato
     
     /// Riconosce e Assegna il container dal tipo di item Passato.Ritorna un container
     private func assegnaContainer<T:MyProStarterPack_L1>(itemModel:T) -> [T] where T.VM == AccounterVM {
@@ -515,27 +516,19 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
     // 23.10 Gestione del Cambio Status dei Modelli (Al fine di eliminare il binding dalle liste per il funzionamento del cambio status nei menu interattivi )
    
-    func manageCambioStatusModel<M:MyProStatusPack_L1>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
+    func manageCambioStatusModel<M:MyProStatusPack_L1&Codable>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
         // Modificata 25.11
         
         var newModel = model
         newModel.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
-       // self.remoteStorage.modelRif_modified.insert(model.id)
-        self.updateItemModel(itemModel: newModel)
-        
-       /* let newModel:M =  {
-            
-            var new = model
-            new.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
-            return new
-            
-        }()
-    
-        self.updateItemModel(itemModel: newModel) */
+     
+       // self.updateItemModel(itemModel: newModel)
+        self.updateModel(itemModel: newModel)
+
     }
     
     /// ritorna un array con i piatti contenenti l'ingrediente passato. La presenza dell'ing è controllata fra i principali, i secondari, e i sosituti.
-    func allDishContainingIngredient(idIng:String) -> [DishModel] {
+    func allDishContainingIngredient(idIng:String) -> [ProductModel] {
         
         let allDishFiltered = self.db.allMyDish.filter({$0.checkIngredientsIn(idIngrediente: idIng)})
         return allDishFiltered
@@ -587,7 +580,8 @@ UserManager refCount:\(CFGetRetainCount(userManager))
             currentMenu.rifDishIn.append(idPiatto)
         }
         
-        self.updateItemModel(itemModel: currentMenu)
+      //  self.updateItemModel(itemModel: currentMenu)
+        self.updateModel(itemModel: currentMenu)
         
     }
 
@@ -628,7 +622,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
             })
     }*/ // 02.01.23 Ricollocato in MyFoodiePackage
     
-    func dishFilteredByIngrediet(idIngredient:String) -> [DishModel] {
+    func dishFilteredByIngrediet(idIngredient:String) -> [ProductModel] {
         // Da modificare per considerare anche gli ingredienti Sostituti
         
         let filteredDish = self.db.allMyDish.filter { dish in
@@ -859,27 +853,28 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         let cleanDish = Set(allDishId)
         let allDishIdCleaned = Array(cleanDish)
         
-        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.db.allMyDish)
+        let allProductModel:[ProductModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.db.allMyDish)
         
-        let allDishAvaible = allDishModel.filter({
+        let allDishAvaible = allProductModel.filter({
             $0.status.checkStatusTransition(check: .disponibile) ||
             $0.status.checkStatusTransition(check: .inPausa)
         })
        
         let foodB = allDishAvaible.filter({
-            $0.percorsoProdotto == .preparazioneBeverage ||
-            $0.percorsoProdotto == .preparazioneFood
+           /* $0.percorsoProdotto == .preparazioneBeverage ||
+            $0.percorsoProdotto == .preparazioneFood*/
+            $0.percorsoProdotto == .preparazione
         })
         
         let prodottiFiniti = allDishAvaible.filter({
-            $0.percorsoProdotto == .prodottoFinito
+            $0.percorsoProdotto == .finito
         })
         //Update 09.07.23
         let composizioni = allDishAvaible.filter({$0.percorsoProdotto == .composizione})
         // end update
         // Ingredient && eseguibilità Piatto
         var allIngredientsRif:[String] = []
-        var dishEseguibili:[DishModel] = [] // deprecata 16.03.23
+        var dishEseguibili:[ProductModel] = [] // deprecata 16.03.23
         
         for dish in foodB {
             
@@ -915,9 +910,9 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
     
     /// Filtra una collezione di piatti per un executionStatus. Se passiamo nil, verrà filtrata l'intera collezione di piatti del viewModel.
-    public func checkDishStatusExecution(of dishes:[String]? = nil,check:DishModel.ExecutionState) -> [String] {
+    public func checkDishStatusExecution(of dishes:[String]? = nil,check:ProductModel.ExecutionState) -> [String] {
         
-        let allModel:[DishModel] = {
+        let allModel:[ProductModel] = {
             
             guard let allDishes = dishes else {
                 return self.db.allMyDish
@@ -947,7 +942,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         
         // Dish
         var allDishId:[String] = []
-      // var allDish:[DishModel] = []
+      // var allDish:[ProductModel] = []
         
         for cart in allMenuOnAir {
             
@@ -958,9 +953,9 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         let cleanDish = Set(allDishId)
         let allDishIdCleaned = Array(cleanDish)
         
-        let allDishModel:[DishModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.allMyDish)
+        let allProductModel:[ProductModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.allMyDish)
         
-        let allDishAvaible = allDishModel.filter({$0.status.checkStatusTransition(check: .disponibile)})
+        let allDishAvaible = allProductModel.filter({$0.status.checkStatusTransition(check: .disponibile)})
        
         let foodB = allDishAvaible.filter({
             $0.percorsoProdotto == .preparazioneBeverage ||
@@ -971,7 +966,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         })
         // Ingredient && eseguibilità Piatto
         var allIngredients:[IngredientModel] = []
-        var dishEseguibili:[DishModel] = []
+        var dishEseguibili:[ProductModel] = []
         
         for dish in foodB {
             
@@ -1104,7 +1099,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
             !$0.rifReviews.isEmpty
         })
         let soloLePreparazioni = self.db.allMyDish.filter({
-            $0.percorsoProdotto != .prodottoFinito
+            $0.percorsoProdotto != .finito
         })
         
         let dishReviewedCount = dishReviewed.count // .1
@@ -1636,8 +1631,7 @@ extension AccounterVM {
 
     }*/
 }
-
-/// save & update Model
+/// save, update and delete Model
 extension AccounterVM {
     
     /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto.
@@ -1796,6 +1790,21 @@ extension AccounterVM {
 
     }
     
+    /// Permette di aggiornare un array di model
+    func updateModelCollection<T:MyProStarterPack_L1 & Codable>(items:[T],sub:CloudDataStore.SubCollectionKey,destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
+        
+        Task {
+            
+            try await self.subCollectionManager.publishSubCollection(sub: sub, as: items)
+            if let destPath = destinationPath {
+                
+                self.refreshPath(destinationPath: destPath)
+                
+            }
+        }
+
+    }
+    
     ///Richiede un TemporaryModel, e oltre a salvare il piatto, salva anche gli ingredienti nel viewModel. Ideata per Modulo Importazione Veloce
     func dishAndIngredientsFastSave(item: TemporaryModel) /*throws*/ {
 
@@ -1812,7 +1821,7 @@ extension AccounterVM {
 
     }
 
-    private func checkAnalizeAndRetrieve(temporaryModel:TemporaryModel) async throws -> (product:DishModel,ingredients:[IngredientModel]) {
+    private func checkAnalizeAndRetrieve(temporaryModel:TemporaryModel) async throws -> (product:ProductModel,ingredients:[IngredientModel]) {
         // analizzare gli ingredienti / esistenti nel viewModel / esistenti nella library
        let ingredients = temporaryModel.ingredients
        let secondaryRif = temporaryModel.rifIngredientiSecondari
@@ -1846,6 +1855,36 @@ extension AccounterVM {
         
        return (product,ingRigenerated)
         
+    }
+    
+    /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
+    func deleteModel<T:MyProStarterPack_L1 & Codable>(itemModel: T,postDeleteAction:(@escaping() -> Void) = {} ) where T.VM == AccounterVM {
+        
+        self.alertItem = AlertModel(
+            title: "Conferma Eliminazione",
+            message: "Confermi di volere eliminare \(itemModel.intestazione)?",
+            actionPlus: ActionModel(
+                title: .elimina,
+                action: {
+                    withAnimation {
+                        self.deleteModelExecution(itemModel: itemModel)
+                        postDeleteAction()
+                    }
+                   
+                }))
+
+    }
+    
+    private func deleteModelExecution<T:MyProStarterPack_L1 & Codable>(itemModel: T) where T.VM == AccounterVM {
+        
+
+        Task {
+            let sub = itemModel.subCollection() as! CloudDataStore.SubCollectionKey
+            
+            try await self.subCollectionManager.deleteFromSubCollection(sub: sub , delete: itemModel.id)
+            self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!")
+        }
+
     }
     
 }

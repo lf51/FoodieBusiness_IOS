@@ -10,5 +10,5 @@ import MyFoodiePackage
 import MyFilterPackage
 
 extension TipoDieta:Property_FPC { }
-extension DishModel.PercorsoProdotto:Property_FPC { }
-extension DishModel.BasePreparazione:Property_FPC { }
+extension ProductModel.PercorsoProdotto:Property_FPC { }
+extension ProductModel.BasePreparazione:Property_FPC { }

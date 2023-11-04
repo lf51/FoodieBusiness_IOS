@@ -17,8 +17,8 @@ enum ModelList: Equatable, Hashable  {
     
         .viewModelContainer("I Miei Ingredienti",\.allMyIngredients,.fonte),
        /* .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),*/
-        .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipaliDEPRECATO,.destinazione(Color.mint, grado: .principale)),
-        .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondariDEPRECATO,.destinazione(Color.orange, grado: .secondario))
+        .itemModelContainer("Ingredienti Principali",\ProductModel.ingredientiPrincipaliDEPRECATO,.destinazione(Color.mint, grado: .principale)),
+        .itemModelContainer("Ingredienti Secondari",\ProductModel.ingredientiSecondariDEPRECATO,.destinazione(Color.orange, grado: .secondario))
     
     ] */ // deprecatp 25.08 -> Cambio di keyPath
  
@@ -27,8 +27,8 @@ enum ModelList: Equatable, Hashable  {
     
         .viewModelContainer("I Miei Ingredienti",\.db.allMyIngredients,.fonte),
        /* .viewModelContainer("From Community",\.listoneFromListaBaseModelloIngrediente,.fonte),*/
-        .itemModelContainer("Ingredienti Principali",\DishModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale)),
-        .itemModelContainer("Ingredienti Secondari",\DishModel.ingredientiSecondari,.destinazione(Color.orange, grado: .secondario))
+        .itemModelContainer("Ingredienti Principali",\ProductModel.ingredientiPrincipali,.destinazione(Color.mint, grado: .principale)),
+        .itemModelContainer("Ingredienti Secondari",\ProductModel.ingredientiSecondari,.destinazione(Color.orange, grado: .secondario))
     
     ]
     

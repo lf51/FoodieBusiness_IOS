@@ -136,15 +136,15 @@ struct PreCallVistaPiattiEspansa: View {
         }
         
         @State private var filterCategoria:CategoriaMenu = .defaultValue
-        @State private var filterPercorso:DishModel.PercorsoProdotto = .preparazioneFood
+        @State private var filterPercorso:ProductModel.PercorsoProdotto = .preparazione
         
         var body: some View {
             
                 VStack(alignment:.leading) {
                     
-                    let container:[DishModel] = {
+                    let container:[ProductModel] = {
                        
-                        var allDish:[DishModel] = []
+                        var allDish:[ProductModel] = []
                         
                         if self.filterCategoria == .defaultValue {
                             allDish = self.viewModel.db.allMyDish
@@ -197,11 +197,11 @@ struct PreCallVistaPiattiEspansa: View {
                         
                         VStack {
                             
-                            ForEach(container) { dishModel in
+                            ForEach(container) { ProductModel in
         
-                                let containTheDish = currentMenu.rifDishIn.contains(dishModel.id)
+                                let containTheDish = currentMenu.rifDishIn.contains(ProductModel.id)
                                 
-                                dishModel.returnModelRowView(rowSize: rowViewSize)
+                                ProductModel.returnModelRowView(rowSize: rowViewSize)
                                     .opacity(containTheDish ? 1.0 : 0.4)
                                     .overlay(alignment: .bottomTrailing) {
                                         
@@ -214,8 +214,8 @@ struct PreCallVistaPiattiEspansa: View {
                                            frontColor: .blue) {
                                                withAnimation {
                                                    
-                                                   self.addRemoveDishLocally(idPiatto: dishModel.id)
-                                                 /*  self.viewModel.manageInOutPiattoDaMenuModel(idPiatto: dishModel.id, menuDaEditare: currentMenu) */
+                                                   self.addRemoveDishLocally(idPiatto: ProductModel.id)
+                                                 /*  self.viewModel.manageInOutPiattoDaMenuModel(idPiatto: ProductModel.id, menuDaEditare: currentMenu) */
                                                }
                                                            }
                                            .padding(5)
@@ -259,7 +259,10 @@ struct PreCallVistaPiattiEspansa: View {
         // Method
 
         private func saveAction() {
-            self.viewModel.updateItemModel(itemModel: currentMenu,destinationPath: destinationPath)
+          //  self.viewModel.updateItemModel(itemModel: currentMenu,destinationPath: destinationPath)
+            self.viewModel.alertItem = AlertModel(
+                title: "DA SVILUPPARE",
+                message: "SVILUPPARE SALVATAGGIO IN BATCH")
         }
         
         private func disableCondition() -> Bool {
@@ -357,9 +360,9 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
         status: .bozza(.inPausa)
     )
     
-    @State static var dishItem3: DishModel = {
+    @State static var dishItem3: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Bucatini alla Matriciana"
         newDish.status = .bozza(.disponibile)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample3.id,ingredientSample.id]
@@ -382,9 +385,9 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
         return newDish
     }()
     
-    @State static var dishItem4: DishModel = {
+    @State static var dishItem4: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Trofie al Pesto"
         newDish.status = .bozza(.disponibile)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample3.id,ingredientSample.id]
@@ -407,9 +410,9 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
         return newDish
     }()
     
-    @State static var dishItem5: DishModel = {
+    @State static var dishItem5: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Spaghetti Cacio e Pepe"
         newDish.status = .bozza(.disponibile)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample3.id,ingredientSample.id]
@@ -432,9 +435,9 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
         return newDish
     }()
     
-    @State static var dishItem6: DishModel = {
+    @State static var dishItem6: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Anellini al forno"
         newDish.status = .bozza(.disponibile)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample3.id,ingredientSample.id]

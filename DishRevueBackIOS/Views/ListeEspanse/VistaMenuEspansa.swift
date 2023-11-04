@@ -14,14 +14,14 @@ struct VistaMenuEspansa: View {
     @EnvironmentObject var viewModel:AccounterVM
    // @ObservedObject var viewModel:AccounterVM
     
-    let currentDish: DishModel
+    let currentDish: ProductModel
     let backgroundColorView: Color
     
     @State private var allMenu:[MenuModel]
     let valoreArchiviato:[MenuModel]
   //  let onlyDishInCount:Int
     
-    init(currentDish:DishModel,backgroundColorView:Color,viewModel:AccounterVM) {
+    init(currentDish:ProductModel,backgroundColorView:Color,viewModel:AccounterVM) {
         
         self.currentDish = currentDish
         self.backgroundColorView = backgroundColorView
@@ -233,9 +233,9 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
         status: .bozza(.inPausa)
     )
     
-    @State static var dishItem3: DishModel = {
+    @State static var dishItem3: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Bucatini alla Matriciana"
         newDish.status = .bozza(.disponibile)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample3.id,ingredientSample.id]

@@ -91,7 +91,7 @@ struct MainView: View {
                     .badge(viewModel.remoteStorage.dish_countModificheIndirette)
                         .tabItem {
                             Image (systemName: "fork.knife.circle")
-                            Text("Piatti")
+                            Text("Prodotti")
                         }
                         .tag(DestinationPath.dishList)
                       

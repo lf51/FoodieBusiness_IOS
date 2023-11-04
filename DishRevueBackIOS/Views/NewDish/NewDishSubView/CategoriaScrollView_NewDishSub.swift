@@ -13,7 +13,7 @@ struct CategoriaScrollView_NewDishSub: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
-    @Binding var newDish: DishModel
+    @Binding var newDish: ProductModel
     let generalErrorCheck: Bool
     
     var body: some View {

@@ -90,9 +90,9 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     @State static var ingredientSample4 =  ingredientSample4_Test
     @State static var ingredientSample6 =  ingredientSample6_Test
     @State static var ingredientSample7 =  ingredienteFinito
-    @State static var dishItem3: DishModel = dishItem3_Test
-    static var dishItem4: DishModel = dishItem4_Test
-   @State static var dishItem5: DishModel = prodottoFinito
+    @State static var dishItem3: ProductModel = dishItem3_Test
+    static var dishItem4: ProductModel = dishItem4_Test
+   @State static var dishItem5: ProductModel = prodottoFinito
    @State static var menuSample: MenuModel = menuSample_Test
    @State static var menuSample2: MenuModel = menuSample2_Test
     static var menuSample3: MenuModel = menuSample3_Test
@@ -154,7 +154,7 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                     MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .normale())
                     MenuModel_RowView(menuItem: menuDelGiorno, rowSize: .sintetico)
                     MenuModel_RowView(menuItem: menuSample, rowSize: .sintetico)
-                    DishModel_RowView(item: dishItem3, rowSize:.sintetico)
+                    ProductModel_RowView(item: dishItem3, rowSize:.sintetico)
                  /*  GenericItemModel_RowViewMask(model: dishItem5) {
                         
                         vbMenuInterattivoModuloCambioStatus(myModel: dishItem5,viewModel: viewModel)
@@ -167,8 +167,8 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                         vbMenuInterattivoModuloTrash(currentModel: dishItem5, viewModel: viewModel)
                     } */
                     
-                   /* DishModel_RowView(item: dishItem5, rowSize: .ridotto)
-                    DishModel_RowView(item: dishItem5, rowSize: .sintetico)
+                   /* ProductModel_RowView(item: dishItem5, rowSize: .ridotto)
+                    ProductModel_RowView(item: dishItem5, rowSize: .sintetico)
                  
                     
                     GenericItemModel_RowViewMask(model: ingredientSample7) {
@@ -189,8 +189,8 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
                             
                         }*/
                     
-                    DishModel_RowView(item: dishItem3, rowSize:.normale())
-                    DishModel_RowView(item: dishItem3, rowSize:.ridotto)
+                    ProductModel_RowView(item: dishItem3, rowSize:.normale())
+                    ProductModel_RowView(item: dishItem3, rowSize:.ridotto)
                    
                     
                  /*   GenericItemModel_RowViewMask(model: ingredientSample6) {

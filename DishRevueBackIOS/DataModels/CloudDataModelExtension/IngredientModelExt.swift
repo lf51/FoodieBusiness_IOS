@@ -277,32 +277,37 @@ extension IngredientModel:
 
     }
     
-    public func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM   ) -> Bool { false }
+    public func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool { false }
     
     public func manageModelDelete(viewModel:AccounterVM) {
         
         let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
         
         guard !allDishWhereIsIn.isEmpty else {
-            viewModel.deleteItemModel(itemModel: self)
+            viewModel.deleteModel(itemModel: self)
+          
             return }
         
-        var allDishChanged:[DishModel] = []
+        var allDishChanged:[ProductModel] = []
         
         for dish in allDishWhereIsIn {
             
             var new = dish
             let (ingPath,index) = new.individuaPathIngrediente(idIngrediente: self.id)
             
-            if ingPath != nil, index != nil {
-                new[keyPath: ingPath!].remove(at: index!)
+            if let ingPath,
+               let index {
+                new[keyPath: ingPath].remove(at: index)
                 new.autoCleanElencoIngredientiOff()
             }
             allDishChanged.append(new)
         }
         
-        viewModel.updateItemModelCollection(items: allDishChanged)
-        viewModel.deleteItemModel(itemModel: self)
+       // viewModel.updateItemModelCollection(items: allDishChanged) // deprecata
+        
+        viewModel.deleteModel(itemModel: self) {
+            viewModel.updateModelCollection(items: allDishChanged, sub: .allMyDish)
+        }
     }
     
     

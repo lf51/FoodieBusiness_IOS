@@ -67,7 +67,8 @@ extension MenuModel:
     } */
     
     public func manageModelDelete(viewModel: AccounterVM) {
-        viewModel.deleteItemModel(itemModel: self)
+       // viewModel.deleteItemModel(itemModel: self)
+        viewModel.deleteModel(itemModel: self)
     }
     
     /// Gestisce il cambio automatico dello status. Chiede un idDaEscludere perchè la chiamata per l'update arriva da un piatto non ancora passato di status
@@ -95,7 +96,7 @@ extension MenuModel:
       
     }
     
-    func allDishActive(idDishEscluso:String? = nil,viewModel:AccounterVM) -> [DishModel] {
+    func allDishActive(idDishEscluso:String? = nil,viewModel:AccounterVM) -> [ProductModel] {
         
         let cleanRif = self.rifDishIn.filter({$0 != idDishEscluso})
         let allDishIn = viewModel.modelCollectionFromCollectionID(collectionId: cleanRif, modelPath: \.db.allMyDish)
@@ -277,7 +278,7 @@ extension MenuModel:
         let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.db.allMyDish)
         
         let allAvaibleDish = allDish.filter({
-            $0.percorsoProdotto != .prodottoFinito &&
+            $0.percorsoProdotto != .finito &&
             $0.status.checkStatusTransition(check: .disponibile) })
         
         let tuttiVotiPesati = allAvaibleDish.map({$0.topRatedValue(readOnlyVM: readOnlyVM)})

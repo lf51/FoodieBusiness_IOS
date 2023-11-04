@@ -14,14 +14,14 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
 
     @EnvironmentObject var viewModel:AccounterVM
     
-    let currentDish: DishModel
+    let currentDish: ProductModel
     let allCases: [TipoDieta]
     let instanceCases:[TipoDieta]
    // let instanceCasesString:[String]
     let colorSelection: Color
     @ViewBuilder var content: Content
   
-    init(currentDish: DishModel, allCases: [TipoDieta] = TipoDieta.allCases,instanceCases:[TipoDieta], colorSelection: Color = Color.clear, dieteConfermate: () -> Content) {
+    init(currentDish: ProductModel, allCases: [TipoDieta] = TipoDieta.allCases,instanceCases:[TipoDieta], colorSelection: Color = Color.clear, dieteConfermate: () -> Content) {
         
         self.currentDish = currentDish
         self.allCases = allCases
@@ -95,6 +95,6 @@ struct DietScrollCasesCmpatibility<Content:View>: View {
 
 /* struct EnumScrollCases_Previews: PreviewProvider {
     static var previews: some View {
-        EnumScrollCases(newDish: .constant(DishModel()))
+        EnumScrollCases(newDish: .constant(ProductModel()))
     }
 } */

@@ -123,7 +123,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
                                     
                                 }
                             } label: {
-                                DishModel_RowView(item: currentDish, rowSize: .sintetico)
+                                ProductModel_RowView(item: currentDish, rowSize: .sintetico)
                                     .csOverlayModelChange(rifModel: rifDish)
                             }
 
@@ -220,7 +220,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
                                 
 
                             } label: {
-                                DishModel_RowView(item: currentDish, rowSize: rowSize)
+                                ProductModel_RowView(item: currentDish, rowSize: rowSize)
                             }
                             
                             ReviewStatMonitor(

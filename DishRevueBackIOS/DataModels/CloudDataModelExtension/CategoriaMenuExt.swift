@@ -51,7 +51,7 @@ extension CategoriaMenu:
         return (\.db.allMyCategories,"Elenco Categorie Menu", "Categoria Menu","list.bullet.clipboard")
     }
     
-    public func dishPerCategory(viewModel:AccounterVM) -> (count:Int,array:[DishModel]) {
+    public func dishPerCategory(viewModel:AccounterVM) -> (count:Int,array:[ProductModel]) {
         
         let dish = viewModel.db.allMyDish.filter {$0.categoriaMenu == self.id}
         return (dish.count,dish)

@@ -14,12 +14,12 @@ struct VistaIngredientiEspansa: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
-    let currentDish: DishModel
+    let currentDish: ProductModel
     let backgroundColorView: Color
     let allING:[String]
     @State private var container:[String]
 
-    init(currentDish: DishModel, backgroundColorView: Color) {
+    init(currentDish: ProductModel, backgroundColorView: Color) {
         
         self.currentDish = currentDish
         self.backgroundColorView = backgroundColorView
@@ -147,7 +147,7 @@ struct VistaIngredientiEspansa_Selectable: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
-    @Binding private var currentDish: DishModel
+    @Binding private var currentDish: ProductModel
     let backgroundColorView: Color
     let rowViewSize:RowSize
     let destinationPath:DestinationPath
@@ -155,7 +155,7 @@ struct VistaIngredientiEspansa_Selectable: View {
     @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
     
     init(
-        currentDish: Binding<DishModel>,
+        currentDish: Binding<ProductModel>,
         backgroundColorView: Color,
         rowViewSize:RowSize,
         destinationPath: DestinationPath) {
@@ -279,7 +279,7 @@ struct VistaIngredientiEspansa_Selectable: View {
  
         }
     
-    private func checkSelection(rifIng:String,path:WritableKeyPath<DishModel,[String]>?) -> (colore:Color,image:String) {
+    private func checkSelection(rifIng:String,path:WritableKeyPath<ProductModel,[String]>?) -> (colore:Color,image:String) {
         
         guard path != nil else { return (.gray,"leaf") }
         
@@ -289,7 +289,7 @@ struct VistaIngredientiEspansa_Selectable: View {
         
     }
     
-    private func selectDeselectAction(rif:String,valuePath:(path:WritableKeyPath<DishModel,[String]>?,index:Int?)) {
+    private func selectDeselectAction(rif:String,valuePath:(path:WritableKeyPath<ProductModel,[String]>?,index:Int?)) {
         
         guard let currentPath = valuePath.path,
               let currentIndex = valuePath.index else {
@@ -358,9 +358,9 @@ struct VistaIngredientiEspansa_Previews: PreviewProvider {
         status: .bozza(.inPausa)
     )
     
-    @State static var dishItem3: DishModel = {
+    @State static var dishItem3: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Bucatini alla Matriciana"
         newDish.status = .completo(.inPausa)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample3.id,ingredientSample.id]

@@ -185,11 +185,11 @@ struct NuovoMenuMainView: View {
     
     @ViewBuilder private func vbShowDishIn(id:String) -> some View {
         
-        if let dishModel = self.viewModel.modelFromId(id: id, modelPath: \.db.allMyDish) {
+        if let ProductModel = self.viewModel.modelFromId(id: id, modelPath: \.db.allMyDish) {
             
-           // DishModel_RowView(item: dishModel,rowSize: .sintetico)
+           // ProductModel_RowView(item: ProductModel,rowSize: .sintetico)
             GenericItemModel_RowViewMask(
-                model: dishModel,
+                model: ProductModel,
                 rowSize: .sintetico) {
  
                     Button {

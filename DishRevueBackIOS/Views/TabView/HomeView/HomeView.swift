@@ -312,13 +312,13 @@ struct HomeView: View {
         
     } */ // deprecata 26.07
     
-    private func compilaArrayPreparazioni() -> [DishModel] {
+    private func compilaArrayPreparazioni() -> [ProductModel] {
         
         //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
         //update 09.07.23
         let tutteLePreparazioni = self.viewModel.db.allMyDish.filter({
             !$0.rifReviews.isEmpty &&
-            $0.percorsoProdotto != .prodottoFinito
+            $0.percorsoProdotto != .finito
             
         })
         // end update
@@ -494,27 +494,27 @@ struct HomeView: View {
         }
     }
     
-    private func nuovePreparazioni() -> (food:DishModel,drink:DishModel,pf:DishModel) {
+  /*  private func nuovePreparazioni() -> (food:ProductModel,drink:ProductModel,pf:ProductModel) {
         
-        let newDish = DishModel()
+        let newDish = ProductModel()
         
         let newDrink = {
-           var new = DishModel()
+           var new = ProductModel()
             new.percorsoProdotto = .preparazioneBeverage
             return new
         }()
         let newPF = {
-           var new = DishModel()
+           var new = ProductModel()
             new.percorsoProdotto = .prodottoFinito
             return new
         }()
         
         return (newDish,newDrink,newPF)
-    }
+    }*/
     
     @ViewBuilder private func addNewModel() -> some View {
         
-        let newDish = DishModel()
+        let newDish = ProductModel()
         let newING = IngredientModel()
         let newMenu = MenuModel()
         
@@ -714,7 +714,7 @@ struct MenuDiSistema_BoxView:View {
                                            
                                         if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.db.allMyDish) {
                                                
-                                             //  DishModel_RowView(item: piatto, rowSize: .sintetico)
+                                             //  ProductModel_RowView(item: piatto, rowSize: .sintetico)
                                                GenericItemModel_RowViewMask(
                                                 model: piatto,
                                                 rowSize: .sintetico) {
@@ -805,7 +805,7 @@ struct NavigationButtonGeneric<M:MyProStatusPack_L1>:View where M.DPV == Destina
         let nome:String
         let image:String
         
-        if let localItem = item as? DishModel {
+        if let localItem = item as? ProductModel {
             
                 incipit = "Nuova"
                 nome = "Preparazione"

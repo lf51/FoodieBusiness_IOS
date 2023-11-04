@@ -20,7 +20,7 @@ import MyFilterPackage
     let backgroundColorView:Color
 
   // @State private var statusState:StatusTransition?
-    @State private var coreFilter:CoreFilter<DishModel> = CoreFilter()
+    @State private var coreFilter:CoreFilter<ProductModel> = CoreFilter()
     
     init(
         container: [String],
@@ -39,7 +39,7 @@ import MyFilterPackage
             title: label,
             backgroundColorView: backgroundColorView) {
             
-                let containerModel:[DishModel] = {
+                let containerModel:[ProductModel] = {
                     
                     let model = self.viewModel.modelCollectionFromCollectionID(
                         collectionId: container,
@@ -173,7 +173,7 @@ import MyFilterPackage
     
     private func excutiveFilterAction() {
         
-        let allCases = DishModel.ExecutionState.allCases
+        let allCases = ProductModel.ExecutionState.allCases
         let casesCount = allCases.count
         let currentState = coreFilter.filterProperties.executionState
         
@@ -381,7 +381,7 @@ import MyFilterPackage
             }
 }
 
-/// Quasi identica a quella degli ing, sarebbe richiesto un accorpamento creando una logica interna, un viewbuilder generico che permette di switchare fra un container di DishModel e uno di IngredientModel. 10.07.23 al momento lo teniamo così
+/// Quasi identica a quella degli ing, sarebbe richiesto un accorpamento creando una logica interna, un viewbuilder generico che permette di switchare fra un container di ProductModel e uno di IngredientModel. 10.07.23 al momento lo teniamo così
 struct VistaEspansaPF_MonitorServizio:View {
    
    @EnvironmentObject var viewModel:AccounterVM
@@ -392,7 +392,7 @@ struct VistaEspansaPF_MonitorServizio:View {
 
  // @State private var statusState:StatusTransition?
    @State private var coreFilterING:CoreFilter<IngredientModel> = CoreFilter()
-   @State private var coreFilterDish:CoreFilter<DishModel> = CoreFilter()
+   @State private var coreFilterDish:CoreFilter<ProductModel> = CoreFilter()
     
    init(
        container: [String],
@@ -411,7 +411,7 @@ struct VistaEspansaPF_MonitorServizio:View {
            title: label,
            backgroundColorView: backgroundColorView) {
            
-               let containerModel:[DishModel] = {
+               let containerModel:[ProductModel] = {
                    
                    let ingModel = self.viewModel.modelCollectionFromCollectionID(
                        collectionId: container,
@@ -422,8 +422,8 @@ struct VistaEspansaPF_MonitorServizio:View {
                        coreFilter: coreFilterING)
                    print("pfContainer_filteres in:\(filteredModel.count)")
                    let filteredId = filteredModel.map({$0.id})
-                   let dishModel = self.viewModel.modelCollectionFromCollectionID(collectionId: filteredId, modelPath: \.db.allMyDish)
-                   let dishFiltered = self.viewModel.filtraSpecificCollection(ofModel: dishModel, coreFilter: coreFilterDish)
+                   let ProductModel = self.viewModel.modelCollectionFromCollectionID(collectionId: filteredId, modelPath: \.db.allMyDish)
+                   let dishFiltered = self.viewModel.filtraSpecificCollection(ofModel: ProductModel, coreFilter: coreFilterDish)
                    print("pfContainer_dish in:\(dishFiltered.count)")
                    return dishFiltered
                }()

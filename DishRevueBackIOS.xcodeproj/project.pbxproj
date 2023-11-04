@@ -769,12 +769,12 @@
 			path = SelettoreMyModel;
 			sourceTree = "<group>";
 		};
-		4DA4615E27AD89E400BD648D /* DishList */ = {
+		4DA4615E27AD89E400BD648D /* ProductList */ = {
 			isa = PBXGroup;
 			children = (
 				4DF0C4AC27A009B800315A73 /* DishListView.swift */,
 			);
-			path = DishList;
+			path = ProductList;
 			sourceTree = "<group>";
 		};
 		4DAD4FBB279EF0C900C0EAE8 /* SubView_trasversali */ = {
@@ -911,7 +911,7 @@
 			children = (
 				4DD29F0927BD11FC0065AC2A /* HomeView */,
 				4D34D54A283289C200A57747 /* MenuList */,
-				4DA4615E27AD89E400BD648D /* DishList */,
+				4DA4615E27AD89E400BD648D /* ProductList */,
 				4DD6308327C68B4100A16E17 /* ListaIngredienti */,
 			);
 			path = TabView;
@@ -1368,7 +1368,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1399,7 +1399,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 129;
+				CURRENT_PROJECT_VERSION = 130;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

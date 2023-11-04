@@ -191,7 +191,7 @@ struct ContainerRowLabel<M1:MyProStarterPack_L1, M2:MyProStarterPack_L1>: View {
 /*
 struct SwitchListeIngredientiPiatto_Previews: PreviewProvider {
     static var previews: some View {
-        SwitchListeIngredientiPiatto(newDish: DishModel(), listaDaMostrare: ElencoListeIngredienti.allFromCommunity)
+        SwitchListeIngredientiPiatto(newDish: ProductModel(), listaDaMostrare: ElencoListeIngredienti.allFromCommunity)
     }
 }
 */

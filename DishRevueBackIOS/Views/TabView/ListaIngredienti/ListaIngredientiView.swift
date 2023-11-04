@@ -74,85 +74,49 @@ struct ListaIngredientiView: View {
                 }, elementView: { ingredient in
                     
                     let navigationPath = \AccounterVM.ingredientListPath
+                    let isAReadyProduct:ProductModel? = {
+                        // controlliamo se esiste un prodotto con lo stesso ID. In quel caso l'ingrediente è anche un prodotto finito e dunque lo mostriamo non editabile
+                        viewModel.modelFromId(id: ingredient.id, modelPath: \.db.allMyDish)
+                    }()
                     
                     GenericItemModel_RowViewMask(model: ingredient) {
                         
-                        ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath)
+                        Group {
+                            
+                            ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath)
                             
                             vbMenuInterattivoModuloCambioStatus(myModel: ingredient,viewModel: viewModel)
                         
                             vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: navigationPath)
                         
                             vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                        }.disabled(isAReadyProduct != nil)
+                        
+                        // Da ViewBuildizzare
+                        if let isAReadyProduct {
+                            Button {
+                                self.viewModel.addToThePath(destinationPath: .ingredientList, destinationView: .piatto(isAReadyProduct))
+                            } label: {
+                                Text("Vedi Prodotto")
+                            }
+
+                        } else {
+                            Button {
+                                self.viewModel.addToThePath(destinationPath: .ingredientList, destinationView: .piatto(ProductModel(from: ingredient)))
+                            } label: {
+                                Text("Crea Prodotto")
+                            }
+                        }
+                        
                        
                     }
+                    .opacity(isAReadyProduct != nil ? 0.6 : 1.0)
                     
-                    
-                    
-                   /* BodyListe_Generic(
-                        container: container,
-                        mapTree: mapTree,
-                        navigationPath: \.ingredientListPath) */
-                    
+                                        
                 })
-
-            
-            
-            
-            
-           /* CSZStackVB(title: "I Miei Ingredienti", backgroundColorView: backgroundColorView) {
-
-                let container = self.viewModel.filtraERicerca(containerPath: \.allMyIngredients, filterProperty: filterProperty)
-            
-                BodyListe_Generic(filterString: $filterProperty.stringaRicerca, container:container,mapObject: mapObject, navigationPath: \.ingredientListPath)
-                    .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
-                        vbLocalFilterPop(container: container)
-                            .presentationDetents([.height(600)])
-                  
-                    }
-                    .popover(isPresented: $openSort, attachmentAnchor: .point(.top)) {
-                        vbLocalSorterPop()
-                            .presentationDetents([.height(300)])
-                  
-                    }
-                            
-            }*/
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
                 destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .ingredientList, readOnlyViewModel: viewModel)
             })
-           /* .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    
-                    LargeBar_TextPlusButton(
-                        buttonTitle: "Nuovo Ingrediente",
-                        font: .callout,
-                        imageBack: Color.seaTurtle_2,
-                        imageFore: Color.white) {
-                            self.viewModel.ingredientListPath.append(DestinationPathView.ingrediente(IngredientModel()))
-                        }
-
-                }
-                
-                ToolbarItem(placement: .navigationBarLeading) {
-                    
-                    let sortActive = self.filterProperty.sortCondition != nil
-                    
-                    FilterSortMap_Bar(open: $openFilter,openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
-                        thirdButtonAction()
-                    }
-                    
-                  /*  CSButton_image(frontImage: "slider.horizontal.3", imageScale: .large, frontColor: Color.seaTurtle_3) {
-                        self.openFilter.toggle()
-                    } */
-
-                }
-               
-            } */
-            /*.popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
-                vbLocalFilterPop()
-                    .presentationDetents([.height(350)])
-          
-            }*/
         }
     }
     
@@ -199,17 +163,6 @@ struct ListaIngredientiView: View {
 
         
     }
-        
-   /* @ViewBuilder private func vbTrailing() -> some View {
-        
-        LargeBar_TextPlusButton(
-            buttonTitle: "Nuovo Ingrediente",
-            font: .callout,
-            imageBack: .seaTurtle_2,
-            imageFore: Color.white) {
-                self.viewModel.ingredientListPath.append(DestinationPathView.ingrediente(IngredientModel()))
-            }
-    }*/ // deprecato
     
     @ViewBuilder private func vbFilterView(container:[IngredientModel]) -> some View {
         
@@ -306,66 +259,7 @@ struct ListaIngredientiView: View {
             coloreScelta: color)
     }
     
-  /*  @ViewBuilder private func vbLocalSorterPop() -> some View {
-     
-        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Sort") {
-             
-            self.filterProperty.sortCondition = nil
-                
-            } content: {
 
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .alfabeticoDecrescente)
-                    
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .livelloScorte)
-  
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .mostUsed)
-                
-
-            }
-                
-            
-        } */
-    
-   /* @ViewBuilder private func vbLocalFilterPop(container:[IngredientModel]) -> some View {
-     
-        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Filtri") {
-             
-                    self.filterProperty = FilterPropertyModel()
-                
-            } content: {
-
-              /*  FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed",label: "Status"){ value in
-                    container.filter({$0.status.checkStatusTransition(check: value)}).count
-                } */
-                
-              /*  FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor:Color.teal.opacity(0.6), imageOrEmoji: "cart",label: "Livello Scorte"){ value in
-                    container.filter({self.viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value}).count
-                } */
-                    
-              /*  FilterRow_Generic(allCases: ProvenienzaIngrediente.allCases, filterProperty: $filterProperty.provenienzaING, selectionColor: Color.gray,imageOrEmoji:"globe.americas",label: "Provenienza"){ value in
-                    container.filter({$0.provenienza == value}).count
-                }*/
-                
-              /*  FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.green,imageOrEmoji: "sun.min.fill",label: "Metodo di Produzione"){ value in
-                    container.filter({$0.produzione == value}).count
-                }*/
-
-               /* FilterRow_Generic(allCases: ConservazioneIngrediente.allCases, filterCollection: $filterProperty.conservazioneING, selectionColor: Color.cyan,imageOrEmoji:"thermometer.snowflake",label: "Metodo di Conservazione"){ value in
-                    container.filter({$0.conservazione == value}).count
-                } */
-                
-              /*  FilterRow_Generic(allCases: OrigineIngrediente.allCases, filterProperty: $filterProperty.origineING, selectionColor: Color.brown,imageOrEmoji:"leaf",label: "Origine"){ value in
-                    container.filter({$0.origine == value}).count
-                } */
-                
-                FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens",label: "Allergeni Contenuti"){ value in
-                    container.filter({$0.allergeni.contains(value)}).count
-                }
-            }
-                
-            
-        } */
-    
 }
 
 struct ListaIngredientiView_Previews: PreviewProvider {

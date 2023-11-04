@@ -64,46 +64,8 @@ struct IngredientModel_RowView: View {
                     vbDishCountIn()
                     
                 }
-                
                 .padding(.top,5)
-                
-                //  Spacer()
-                
-               /* HStack {
-                    
-                    let(image,size) = self.item.associaImmagine()
-                    
-                    CSText_tightRectangleVisual(
-                        fontWeight: .bold,
-                        textColor: Color.seaTurtle_4,
-                        strokeColor: Color.seaTurtle_1,
-                        fillColor: Color.seaTurtle_1) {
-                        HStack {
-                            csVbSwitchImageText(string: image,size: size)
-                            Text(self.item.origine.simpleDescription())
-                        }
-                    }
-                    
-                    let isDefaultValue = self.item.provenienza == .defaultValue
-                    
-                    CSText_tightRectangleVisual(
-                        fontWeight: .bold,
-                        textColor: Color.seaTurtle_1,
-                        strokeColor: Color.seaTurtle_1,
-                        fillColor: Color.seaTurtle_4) {
-                        HStack {
-                            
-                            csVbSwitchImageText(string: self.item.provenienza.imageAssociated(),size:.large, slash: isDefaultValue)
-                            
-                            Text(self.item.provenienza.simpleDescription())
-                        }
-                    }.opacity(isDefaultValue ? 0.4 : 1.0)
-                    
-                    Spacer()
-                    // 07.09
-                    // vbDishCountIn()
-                    // end 07.09
-                }*/
+ 
                 vbOrigineProvenienza()
                 
                 //    Spacer()
@@ -132,6 +94,7 @@ struct IngredientModel_RowView: View {
         let (dishCount,substitution) = self.item.dishWhereIn(readOnlyVM: self.viewModel)
         let isInPausa = self.item.status.checkStatusTransition(check: .inPausa)
         let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
+        let isDiTerzi = self.viewModel.isTheModelAlreadyExist(modelID: self.item.id, path: \.db.allMyDish)
         
         HStack {
             
@@ -159,6 +122,14 @@ struct IngredientModel_RowView: View {
                             backgroundColor: Color.seaTurtle_2,
                             backgroundOpacity: 1.0)
                 
+            }
+            
+            if isDiTerzi {
+                Text("prodotto finito")
+                    .italic()
+                    .font(.subheadline)
+                    .foregroundStyle(Color.seaTurtle_3)
+                    .fontWeight(.semibold)
             }
             
             Spacer()

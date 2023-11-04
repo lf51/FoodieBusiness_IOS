@@ -11,44 +11,27 @@ import MyFoodiePackage
 struct NewDishMainView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-    
-   // @State private var newDish: DishModel
-    @Binding var newDish: DishModel
+
+    @Binding var newDish: ProductModel
     let backgroundColorView: Color
     
-    @State private var piattoArchiviato: DishModel // per il reset
+    @State private var piattoArchiviato: ProductModel // per il reset
     let destinationPath: DestinationPath
     let saveDialogType:SaveDialogType
     
     @State private var generalErrorCheck: Bool = false
-    
-  //  @State private var noIngredientsNeeded: Bool = false
     @State private var wannaAddIngredient: Bool = false
     
     @State private var areAllergeniOk: Bool = false
-  //  @State private var confermaDiete: Bool
     @Binding var disabilitaPicker:Bool
     
     init(
-        newDish: Binding<DishModel>,
+        newDish: Binding<ProductModel>,
         disabilitaPicker:Binding<Bool>,
-       // percorso:DishModel.PercorsoProdotto,// deprecato
         backgroundColorView: Color,
         destinationPath:DestinationPath,
         saveDialogType:SaveDialogType) {
-        
-           /* let localDish: DishModel = {
-               
-                if newDish.status == .bozza() {
-                    
-                    var new = newDish
-                    new.percorsoProdotto = percorso
-                    return new
-                } else { return newDish }
-                
-            }() */
-  
-       //_newDish = State(wrappedValue: localDish)
+ 
         _newDish = newDish
         _piattoArchiviato = State(wrappedValue: newDish.wrappedValue)
 
@@ -194,9 +177,9 @@ struct NewDishMainView: View {
         self.generalErrorCheck = false
         self.areAllergeniOk = false
         
-        let new:DishModel = {
+        let new:ProductModel = {
             let currentDishType = self.newDish.percorsoProdotto
-            var dish = DishModel()
+            var dish = ProductModel()
             dish.percorsoProdotto = currentDishType
             return dish
         }()
@@ -347,8 +330,8 @@ struct NewDishMainView_Previews: PreviewProvider {
         status: .bozza(.inPausa)
        )
     
-    static let dishSample:DishModel = {
-       var dish = DishModel()
+    static let dishSample:ProductModel = {
+       var dish = ProductModel()
         dish.intestazione = "Trofie al Pesto"
         let dishPrice:DishFormat = {
             var price = DishFormat(type: .mandatory)

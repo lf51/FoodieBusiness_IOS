@@ -1,5 +1,5 @@
 //
-//  DishModel_RowView.swift
+//  ProductModel_RowView.swift
 //  DishRevueBackIOS
 //
 //  Created by Calogero Friscia on 07/04/22.
@@ -55,15 +55,15 @@ public enum RowSize:Equatable,Hashable { // Nota 22.06.23
     
 }
 
-struct DishModel_RowView: View {
+struct ProductModel_RowView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    let item: DishModel
+    let item: ProductModel
     let rowSize:RowSize
     
     @State private var showDescription:Bool = false
     
-    init(item: DishModel, rowSize: RowSize = .normale()) {
+    init(item: ProductModel, rowSize: RowSize = .normale()) {
         
         self.item = item
         self.rowSize = rowSize
@@ -180,7 +180,7 @@ struct DishModel_RowView: View {
         
         let percorsoIbrido:Bool = {
             self.item.percorsoProdotto == .composizione ||
-            self.item.percorsoProdotto == .prodottoFinito
+            self.item.percorsoProdotto == .finito
         }()
         
         CSZStackVB_Framed(frameWidth:rowSize.getFrameWidth()) {
@@ -365,7 +365,7 @@ struct DishModel_RowView: View {
         // end 19.10
         
        // let isIbrido = self.rowSize.returnType() == .ibrido()
-        let isIbrido = self.item.percorsoProdotto == .prodottoFinito
+        let isIbrido = self.item.percorsoProdotto == .finito
         let isNotDescribed = self.item.descrizione == ""
         
         HStack {
@@ -543,7 +543,7 @@ struct DishModel_RowView: View {
         
         let dashedColor:Color = {
             
-            if self.item.percorsoProdotto == .prodottoFinito {
+            if self.item.percorsoProdotto == .finito {
                 
                return self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
                 
@@ -591,7 +591,7 @@ struct DishModel_RowView: View {
             
            // let percorso = self.item.percorsoProdotto
             
-            if self.item.percorsoProdotto != .prodottoFinito {
+            if self.item.percorsoProdotto != .finito {
               
                 vbReviewLine()
             } else {
@@ -1049,7 +1049,7 @@ struct DishModel_RowView: View {
     
 } // chiusa Struct
 
-struct DishModel_RowView_Previews: PreviewProvider {
+struct ProductModel_RowView_Previews: PreviewProvider {
     
    static let user = UserRoleModel(ruolo: .admin)
     
@@ -1065,7 +1065,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
     
     static var dishSample = {
        
-        var dish = DishModel()
+        var dish = ProductModel()
         dish.intestazione = "Spaghetti alla Carbonara"
         dish.status = .completo(.disponibile)
         dish.descrizione = "Piatto della tradizione romanesca con uova di galline della nonna Anna"
@@ -1089,7 +1089,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
     }()
     static var dishSample2 = {
        
-        var dish = DishModel()
+        var dish = ProductModel()
         dish.intestazione = "Gin Tonic"
         dish.status = .completo(.disponibile)
       /*  dish.rating = [
@@ -1118,14 +1118,14 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.pricingPiatto = [price1,price2,price3]
         dish.ingredientiPrincipali = [ing1.id,ing4.id]
         dish.ingredientiSecondari = [ing2.id,ing3.id]
-        dish.percorsoProdotto = .preparazioneBeverage
+        dish.percorsoProdotto = .preparazione
       /*  dish.dieteCompatibili = TipoDieta.returnDietAvaible(ingredients: [ing1,ing2,ing3,ing4]).inDishTipologia */
         
         return dish
     }()
     static var dishSample3 = {
        
-        var dish = DishModel()
+        var dish = ProductModel()
         dish.intestazione = "Tagliere Locale"
         
         let price1 = {
@@ -1154,7 +1154,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
     
     static var dishSample4 = {
        
-        var dish = DishModel()
+        var dish = ProductModel()
         dish.intestazione = "CocaCola"
        /* dish.rating = [
             DishRatingModel(voto: "5.7", titolo: "", commento: ""),DishRatingModel(voto: "6.7", titolo: "", commento: ""),DishRatingModel(voto: "8.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: ""),DishRatingModel(voto: "9.7", titolo: "", commento: "")
@@ -1176,7 +1176,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
         dish.status = .completo(.disponibile)
         dish.pricingPiatto = [price1,price2]
         dish.ingredientiPrincipali = [dish.id]
-        dish.percorsoProdotto = .prodottoFinito
+        dish.percorsoProdotto = .finito
         
 
         return dish
@@ -1197,7 +1197,7 @@ struct DishModel_RowView_Previews: PreviewProvider {
                     ScrollView {
                         VStack(spacing:10) {
                             Group {
-                                DishModel_RowView(item: dishSample)
+                                ProductModel_RowView(item: dishSample)
                                     .overlay {
                                         CS_VelaShape()
                                         .foregroundStyle(Color.black)
@@ -1205,14 +1205,14 @@ struct DishModel_RowView_Previews: PreviewProvider {
                                         .opacity(0.8)
                                     }
                                 
-                                DishModel_RowView(item: dishSample, rowSize: .ridotto)
+                                ProductModel_RowView(item: dishSample, rowSize: .ridotto)
                                     .overlay {
                                         CS_VelaShape()
                                         .foregroundStyle(Color.seaTurtle_4)
                                         .cornerRadius(15.0)
                                         .opacity(0.8)
                                     }
-                                DishModel_RowView(item: dishSample, rowSize: .sintetico)
+                                ProductModel_RowView(item: dishSample, rowSize: .sintetico)
                                     .overlay {
                                         CS_VelaShape()
                                         .foregroundStyle(Color.black)
@@ -1222,21 +1222,21 @@ struct DishModel_RowView_Previews: PreviewProvider {
                             }
                               //  .frame(height:150)
                             Group {
-                                DishModel_RowView(item: dishSample2)
-                                DishModel_RowView(item: dishSample2,rowSize: .ridotto)
-                                DishModel_RowView(item: dishSample2,rowSize: .sintetico)
+                                ProductModel_RowView(item: dishSample2)
+                                ProductModel_RowView(item: dishSample2,rowSize: .ridotto)
+                                ProductModel_RowView(item: dishSample2,rowSize: .sintetico)
                             }
                                // .frame(height:150)
                             Group {
-                                DishModel_RowView(item: dishSample3)
-                                DishModel_RowView(item: dishSample3,rowSize: .ridotto)
-                                DishModel_RowView(item: dishSample3,rowSize: .sintetico)
+                                ProductModel_RowView(item: dishSample3)
+                                ProductModel_RowView(item: dishSample3,rowSize: .ridotto)
+                                ProductModel_RowView(item: dishSample3,rowSize: .sintetico)
                             }
                                // .frame(height:150)
                             Group {
-                                DishModel_RowView(item: dishSample4)
-                                DishModel_RowView(item: dishSample4,rowSize: .ridotto)
-                                DishModel_RowView(item: dishSample4,rowSize: .sintetico)
+                                ProductModel_RowView(item: dishSample4)
+                                ProductModel_RowView(item: dishSample4,rowSize: .ridotto)
+                                ProductModel_RowView(item: dishSample4,rowSize: .sintetico)
                             }
                                // .frame(height:150)
                             

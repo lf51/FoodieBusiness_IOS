@@ -20,7 +20,7 @@ struct DishListByIngredientView: View {
     let backgroundColorView: Color
 
     @State private var modelSostitutoGlobale: IngredientModel? = nil
-    @State private var dishWithIngredient:[DishModel] = []
+    @State private var dishWithIngredient:[ProductModel] = []
     @State private var isDeactive: Bool = true
     
     init(ingredientModelCorrente: IngredientModel, isPermanente:Bool, destinationPath:DestinationPath, backgroundColorView: Color) {
@@ -290,8 +290,10 @@ struct DishListByIngredientView: View {
                 cleanCopy.idIngredienteDaSostituire = nil
                 return cleanCopy
             }()
-            
-            self.viewModel.updateItemModel(itemModel: cleanDish)
+            self.viewModel.alertItem = AlertModel(
+                title: "DA SVILUPPARE",
+                message: "SVILUPPARE SALVATAGGIO IN BATCH")
+          //  self.viewModel.updateItemModel(itemModel: cleanDish) // 31_10_23 Da Sviluppare per salvataggi in batch
             
         }
         
@@ -302,8 +304,10 @@ struct DishListByIngredientView: View {
          
             return cleanCopy
       }() {
-          
-          self.viewModel.updateItemModel(itemModel: currentIngredientModel, destinationPath: self.destinationPath)
+          self.viewModel.alertItem = AlertModel(
+              title: "DA SVILUPPARE",
+              message: "SVILUPPARE SALVATAGGIO IN BATCH")
+         // self.viewModel.updateItemModel(itemModel: currentIngredientModel, destinationPath: self.destinationPath) // 31_10_23 Da Sviluppare per salvataggi in batch
           
       } else {
             self.viewModel.alertItem = AlertModel(
@@ -338,8 +342,10 @@ struct DishListByIngredientView: View {
 
                 return cleanCopy
             }()
-            
-            self.viewModel.updateItemModel(itemModel: cleanDish)
+            self.viewModel.alertItem = AlertModel(
+                title: "DA SVILUPPARE",
+                message: "SVILUPPARE SALVATAGGIO IN BATCH")
+          //  self.viewModel.updateItemModel(itemModel: cleanDish) // 31_10_23 Da Sviluppare per salvataggi in batch
         }
         
         guard dishThatNotChange == 0 else { return }
@@ -352,8 +358,10 @@ struct DishListByIngredientView: View {
             return cleanCopy
             
         }() {
-            
-            self.viewModel.updateItemModel(itemModel: currentIngredientModel, destinationPath: self.destinationPath)
+            self.viewModel.alertItem = AlertModel(
+                title: "DA SVILUPPARE",
+                message: "SVILUPPARE SALVATAGGIO IN BATCH")
+          //  self.viewModel.updateItemModel(itemModel: currentIngredientModel, destinationPath: self.destinationPath) // 31_10_23 Da Sviluppare per salvataggi in batch
             
         } else {
               self.viewModel.alertItem = AlertModel(
@@ -374,7 +382,7 @@ struct DishListByIngredientView: View {
         // Spiegato il funzionamento in Nota Vocale il 10.08
     }
     
-    private func checkSostitutoGlobale(currentDish: DishModel) ->(idChecked:String?,nome:String?) {
+    private func checkSostitutoGlobale(currentDish: ProductModel) ->(idChecked:String?,nome:String?) {
         
         guard self.modelSostitutoGlobale != nil else { return (nil,nil) }
         
@@ -453,9 +461,9 @@ struct DishListByIngredientView_Previews: PreviewProvider {
         status: .completo(.disponibile)
        )
     
-    static var dishItem: DishModel = {
+    static var dishItem: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Spaghetti alla Carbonara"
         newDish.status = .completo(.disponibile)
         newDish.ingredientiPrincipali = [ingredientSample.id]
@@ -465,9 +473,9 @@ struct DishListByIngredientView_Previews: PreviewProvider {
         return newDish
     }()
     
-    static var dishItem2: DishModel = {
+    static var dishItem2: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Trofie al Pesto"
         newDish.status = .bozza()
         newDish.ingredientiPrincipali = [ingredientSample3.id]
@@ -478,9 +486,9 @@ struct DishListByIngredientView_Previews: PreviewProvider {
         return newDish
     }()
     
-    static var dishItem3: DishModel = {
+    static var dishItem3: ProductModel = {
         
-        var newDish = DishModel()
+        var newDish = ProductModel()
         newDish.intestazione = "Bucatini alla Matriciana"
         newDish.status = .completo(.inPausa)
         newDish.ingredientiPrincipali = [ingredientSample4.id,ingredientSample.id]

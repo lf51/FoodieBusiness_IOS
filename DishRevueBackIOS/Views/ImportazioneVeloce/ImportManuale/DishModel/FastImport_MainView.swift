@@ -182,9 +182,9 @@ struct FastImport_MainView: View {
   
             }
 
-            let fastDish:DishModel = {
+            let fastDish:ProductModel = {
                 
-                var dish = DishModel(id:idUnico)
+                var dish = ProductModel(id:idUnico)
                 dish.intestazione = cleanedDishTitle
                 dish.status = .bozza(.disponibile) // 07.09 !!!
               //  dish.ingredientiPrincipaliDEPRECATO = step_5
@@ -221,7 +221,7 @@ struct FastImport_MainView: View {
 
 struct FastImportMainView_Previews: PreviewProvider {
    
-   static let dish:DishModel = DishModel()
+   static let dish:ProductModel = ProductModel()
    static let ingredients:[IngredientModel] = [IngredientModel()]
     
     

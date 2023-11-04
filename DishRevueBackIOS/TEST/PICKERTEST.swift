@@ -10,7 +10,7 @@ import MyFoodiePackage
 
 struct PICKERTEST: View {
     
-    @State var fastDish: DishModel = DishModel()
+    @State var fastDish: ProductModel = ProductModel()
     @State var price: String = ""
     
     var body: some View {

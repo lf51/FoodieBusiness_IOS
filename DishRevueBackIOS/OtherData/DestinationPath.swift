@@ -33,7 +33,7 @@ public enum DestinationPathView: Hashable {
     case property(_ :PropertyModel)
     
     case menu(_ menuModel:MenuModel,_ saveDialogType:SaveDialogType = .completo)
-    case piatto(_ dishModel:DishModel,_ saveDialogType:SaveDialogType = .completo)
+    case piatto(_ ProductModel:ProductModel,_ saveDialogType:SaveDialogType = .completo)
     case ingrediente(_ :IngredientModel)
     case categoriaMenu
     
@@ -45,8 +45,8 @@ public enum DestinationPathView: Hashable {
     
     case recensioni(_ :String)
     
-    case vistaIngredientiEspansa(_ :DishModel)
-    case vistaMenuEspansa(_ :DishModel)
+    case vistaIngredientiEspansa(_ :ProductModel)
+    case vistaMenuEspansa(_ :ProductModel)
     case vistaPiattiEspansa(_ :MenuModel,_ :RowSize = .normale())
     
     case vistaCronologiaAcquisti(_ :IngredientModel)

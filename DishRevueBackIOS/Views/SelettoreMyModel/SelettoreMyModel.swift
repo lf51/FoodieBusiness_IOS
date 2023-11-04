@@ -254,9 +254,9 @@ struct SelettoreMyModel_Previews: PreviewProvider {
         
             }
         
-            SelettoreMyModel<_,IngredientModel>(itemModel: .constant(DishModel()), allModelList: ModelList.dishIngredientsList)
+            SelettoreMyModel<_,IngredientModel>(itemModel: .constant(ProductModel()), allModelList: ModelList.dishIngredientsList)
             
-          //  SelettoreIngrediente_NewDishSubView(newDish: .constant(DishModel()))
+          //  SelettoreIngrediente_NewDishSubView(newDish: .constant(ProductModel()))
 
         }.onTapGesture {
             SelettoreMyModel_Previews.test()

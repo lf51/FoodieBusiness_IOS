@@ -271,6 +271,6 @@ struct PropertyScrollCases<T:MyProEnumPack_L2>: View {
 
 /* struct EnumScrollCases_Previews: PreviewProvider {
     static var previews: some View {
-        EnumScrollCases(newDish: .constant(DishModel()))
+        EnumScrollCases(newDish: .constant(ProductModel()))
     }
 } */

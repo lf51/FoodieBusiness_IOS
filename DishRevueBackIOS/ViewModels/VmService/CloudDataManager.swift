@@ -386,7 +386,7 @@ public final class SubCollectionManager {
          case categoriesCollection = "categories_library" // -> categories_library
      }
 
-    var allMyProductsPublisher:SubSyncroManager<DishModel> = SubSyncroManager()
+    var allMyProductsPublisher:SubSyncroManager<ProductModel> = SubSyncroManager()
     var allMyIngredientsPublisher:SubSyncroManager<IngredientModel> = SubSyncroManager()
     var allMyMenuPublisher:SubSyncroManager<MenuModel> = SubSyncroManager()
     var allMyCategoriesPublisher:SubSyncroManager<CategoriaMenu> = SubSyncroManager()
@@ -421,7 +421,7 @@ public final class SubCollectionManager {
         listenAndPublishSubCollection(
              from: mainRef,
              for: .allMyDish,
-             type: DishModel.self,
+             type: ProductModel.self,
              syncroWith: \.allMyProductsPublisher)
         
         listenAndPublishSubCollection(
@@ -748,7 +748,7 @@ public final class SubCollectionManager {
                 .document(propertyID)
                 .collection(collectionKey.rawValue)
         
-            try await subCollection
+        try await subCollection
                         .document(itemId)
                         .delete()
                 

@@ -294,7 +294,7 @@ struct BottomViewGenericPlus_NewModelSubView<M:MyProStarterPack_L1&Codable,M2:My
     
     private func saveModels(refreshPath:DestinationPath? = nil) {
         
-        if var dish = self.itemModel as? DishModel {
+        if var dish = self.itemModel as? ProductModel {
             
             dish.ingredientiPrincipali = [itemModelPlus.id]
             

@@ -15,7 +15,7 @@ struct PannelloIngredienti_NewDishSubView: View {
     // Add 25.08
     @EnvironmentObject var viewModel: AccounterVM
     //
-    let newDish: DishModel
+    let newDish: ProductModel
     let generalErrorCheck: Bool
     @Binding var wannaAddIngredient: Bool
   //  @Binding var noIngredientsNeeded: Bool
