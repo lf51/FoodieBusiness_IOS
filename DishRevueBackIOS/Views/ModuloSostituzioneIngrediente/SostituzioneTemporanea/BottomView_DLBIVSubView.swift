@@ -9,7 +9,7 @@ import SwiftUI
 import MyPackView_L0
 
 /// DLBIV == DishListByIngredientView
-struct BottomView_DLBIVSubView: View {
+/*struct BottomView_DLBIVSubView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
@@ -60,15 +60,16 @@ struct BottomView_DLBIVSubView: View {
 
     }
    
-}
+}*/ // deprecato 15_11_23
 
-struct BottomView_ConVB<Content:View>: View {
+/*struct BottomView_ConVB<Content:View>: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
     var primaryButtonTitle:String = "Salva"
     var secondaryButtonTitle:String = "Reset"
     var paddingVerticalValue:CGFloat? = .none
+    
     let isDeActive: () -> (general:Bool?,primary:Bool,secondary:Bool?)
     let description: () -> (breve:Text,estesa:Text)
     var secondaryAction: (() -> Void)? = nil
@@ -121,4 +122,4 @@ struct BottomView_ConVB<Content:View>: View {
         
     }
  
-}
+}*/ // deprecato 15_11_23

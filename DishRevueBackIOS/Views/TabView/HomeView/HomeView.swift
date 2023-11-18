@@ -318,7 +318,7 @@ struct HomeView: View {
         //update 09.07.23
         let tutteLePreparazioni = self.viewModel.db.allMyDish.filter({
             !$0.rifReviews.isEmpty &&
-            $0.percorsoProdotto != .finito
+            $0.percorsoProdotto != .finito()
             
         })
         // end update
@@ -623,29 +623,52 @@ struct MenuDiSistema_BoxView:View {
         
         VStack(alignment:.leading,spacing:.vStackLabelBodySpacing) {
             
-            let menuDS = self.viewModel.trovaMenuDiSistema(menuDiSistema: menuDiSistema)
+            let menuDS:(item:MenuModel?,isActive:Bool?) = {
+                
+               if let menu = self.viewModel.trovaMenuDiSistema(
+                    tipo: menuDiSistema,
+                    seAttivo: false) {
+                   // esiste o Attivo o Scaduto
+                   let isActive = menu.isOnAirValue().today
+                   
+                   return (menu,isActive)
+                   
+               } else {
+                   // non esiste
+                   return(nil,nil)
+               }
+
+            }()
+
+            let visibility:(attivo:Bool,scaduto:Bool,assente:Bool) = {
+                let full = menuDS.item != nil &&
+                           menuDS.isActive == true
+               
+                let scaduto = menuDS.item != nil &&
+                              menuDS.isActive == false
+                
+                let assente = menuDS.item == nil
+                
+                return (full,scaduto,assente)
+            }()
             
-           // let tipologia:TipologiaMenu = menuDiSistema.returnTipologiaMenu()
-           
             CSLabel_conVB(
                 placeHolder: "\(menuDiSistema.shortDescription())",
                 imageNameOrEmojy: menuDiSistema.imageAssociated(),
                 backgroundColor: .seaTurtle_2,
-                backgroundOpacity: menuDS != nil ? 1.0 : 0.2) {
+                backgroundOpacity: visibility.attivo ? 1.0 : 0.2) {
                    
                     HStack {
                         
-                        if menuDS == nil {
+                        if visibility.scaduto || visibility.assente {
                             
                             Button {
-                                
-                              //  let newDS = MenuModel(tipologia: tipologia)
-                                let newDS = MenuModel(tipologiaDiSistema: menuDiSistema)
+
                                 withAnimation {
-                                    self.viewModel.switchFraCreaEUpdateModel(itemModel: newDS)
+                                    self.viewModel.creaORigeneraMenuDiSistema(tipo: menuDiSistema)
                                 }
                             } label: {
-                                Text("Abilita")
+                                Text(visibility.scaduto ? "Rigenera" : "Attiva")
                                     .font(.system(.subheadline, design: .monospaced, weight: .semibold))
                                     .foregroundStyle(Color.seaTurtle_3)
                                     .shadow(radius: 5.0)
@@ -653,10 +676,10 @@ struct MenuDiSistema_BoxView:View {
                             
                         } else {
                             
-                            let dishIn = menuDS!.rifDishIn.count
+                            let dishIn = menuDS.item!.rifDishIn.count
                             let allDish = viewModel.db.allMyDish.count
                             
-                            NavigationLink(value: DestinationPathView.vistaPiattiEspansa(menuDS!)) {
+                            NavigationLink(value: DestinationPathView.vistaPiattiEspansa(menuDS.item!)) {
                                 
                                 HStack(spacing:0) {
                                     Text("Espandi(\(dishIn)/\(allDish))")
@@ -681,7 +704,7 @@ struct MenuDiSistema_BoxView:View {
                                 frontColor: .seaTurtle_4) {
                                    // self.viewModel.deleteItemModel(itemModel: menuDS)
                                     withAnimation {
-                                        menuDS?.manageModelDelete(viewModel: self.viewModel)
+                                        menuDS.item?.manageModelDelete(viewModel: self.viewModel)
                                     }
                                 }
                                 .shadow(color: .seaTurtle_4, radius: 1.0)
@@ -691,13 +714,14 @@ struct MenuDiSistema_BoxView:View {
                         }
                     }
                     
-                }
+                }// vb Label
             
-            if menuDS != nil {
+           // if menuDS != nil {
+            if visibility.attivo {
                 
                 HStack {
            
-                        if menuDS!.rifDishIn.isEmpty {
+                    if menuDS.item!.rifDishIn.isEmpty {
                             
                             Text("\(menuDiSistema.shortDescription()) Vuoto")
                                 .italic()
@@ -710,7 +734,7 @@ struct MenuDiSistema_BoxView:View {
                                 
                                 HStack {
                                     
-                                    ForEach(menuDS!.rifDishIn,id:\.self) { idPiatto in
+                                    ForEach(menuDS.item!.rifDishIn,id:\.self) { idPiatto in
                                            
                                         if let piatto = self.viewModel.modelFromId(id: idPiatto, modelPath: \.db.allMyDish) {
                                                

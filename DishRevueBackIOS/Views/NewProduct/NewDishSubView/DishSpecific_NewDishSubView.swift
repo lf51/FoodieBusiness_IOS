@@ -152,13 +152,6 @@ struct DishFormatUploadLabel:View {
             backgroundColorView: backgroundColorView) {
             
                 VStack(alignment:.leading) {
-                    
-                   /* HStack(spacing:10) {
-                        
-                        Text("Singola")
-                        
-                        Text("Gruppo")
-                    } */
 
                         ScrollView(showsIndicators: false) {
                             

@@ -8,7 +8,8 @@
 import SwiftUI
 import MyFoodiePackage
 
-struct NewDishIbridView: View {
+/*
+struct NewDishIbridView: View { // deprecata 04_11_23
 
     @Environment(\.openURL) private var openURL
     
@@ -384,7 +385,7 @@ struct NewDishIbridView: View {
       }
     
    
-}
+}*/
 /*
 struct NewDishIbridView_Previews: PreviewProvider {
 

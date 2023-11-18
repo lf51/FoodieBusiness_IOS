@@ -138,7 +138,7 @@ struct NuovoMenuMainView: View {
                                     }
                             }
              
-                            BottomViewGeneric_NewModelSubView(
+                          /*  BottomViewGeneric_NewModelSubView(
                                 itemModel: $nuovoMenu,
                                 generalErrorCheck: $generalErrorCheck,
                                 itemModelArchiviato: menuArchiviato,
@@ -151,7 +151,25 @@ struct NuovoMenuMainView: View {
                                     self.checkPreliminare()
                                 } salvaECreaPostAction: {
                                     self.salvaECreaPostAction()
+                                }*/
+                            
+                            BottomDialogView {
+                                self.menuDescription()
+                            } disableConditions: {
+                                self.disableCondition()
+                            } secondaryAction: {
+                                resetAction()
+                            } preDialogCheck: {
+                                let check = self.checkPreliminare()
+                                if check { return check }
+                                else {
+                                    self.generalErrorCheck = true
+                                    return false
                                 }
+                            } primaryDialogAction: {
+                                self.saveButtonDialogView()
+                            }
+
    
                         }
                         //.padding(.horizontal)
@@ -203,6 +221,12 @@ struct NuovoMenuMainView: View {
         
     }
     
+    private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
+        
+        let general = self.nuovoMenu == self.menuArchiviato
+        return(general,false,false)
+    }
+    
     private func resetAction() {
         
         self.nuovoMenu = self.menuArchiviato
@@ -219,9 +243,9 @@ struct NuovoMenuMainView: View {
         
     }
     
-    private func menuDescription() -> Text {
+    private func menuDescription() -> (breve:Text,estesa:Text) {
            
-              var giorniServizio: [String] = []
+            var giorniServizio: [String] = []
            
            for day in self.nuovoMenu.giorniDelServizio {
                
@@ -233,8 +257,8 @@ struct NuovoMenuMainView: View {
               let dataFine = csTimeFormatter().data.string(from:self.nuovoMenu.dataFine)
               let oraInizio = csTimeFormatter().ora.string(from: self.nuovoMenu.oraInizio)
               let oraFine = csTimeFormatter().ora.string(from: self.nuovoMenu.oraFine)
-              
-          switch self.nuovoMenu.isAvaibleWhen {
+              return(Text("bevre"),Text("estesa"))
+         /* switch self.nuovoMenu.isAvaibleWhen {
               
           case .dataEsatta:
               return Text("Il menu \(nome) sarà attivo \(giorniServizio,format: .list(type: .and)) \(dataInizio), dalle ore \(oraInizio) alle ore \(oraFine)")
@@ -245,7 +269,7 @@ struct NuovoMenuMainView: View {
           case .noValue:
               return Text("Nessuna Info")
               
-          }
+          }*/// da riaprire e sistemare
               
        }
     
@@ -271,10 +295,24 @@ struct NuovoMenuMainView: View {
             self.nuovoMenu.status = .completo(.disponibile)
         } else { self.nuovoMenu.status = .bozza(.disponibile)}
         
-        return true
+        // Innesto 16_11_23
         
-    }
+       return checkNotExistSimilar()
+        
+        }
     
+    private func checkNotExistSimilar() -> Bool {
+        
+        if self.viewModel.checkModelNotInVM(itemModel: nuovoMenu) { return true }
+        else {
+            self.viewModel.alertItem = AlertModel(
+                 title: "Controllare",
+                 message: "Hai già creato un Menu con questo nome e caratteristiche")
+             
+           return false
+            }
+    }
+ 
     private func checkIntestazione() -> Bool {
         
         return self.nuovoMenu.intestazione != ""
@@ -288,6 +326,83 @@ struct NuovoMenuMainView: View {
     private func checkProgrammazione() -> Bool {
         
         return self.nuovoMenu.isAvaibleWhen != .defaultValue
+    }
+    
+    // viewBuilder
+    
+    @ViewBuilder private func saveButtonDialogView() -> some View {
+
+        csBuilderDialogButton {
+            
+            // nuovo Menu
+            DialogButtonElement(
+                label: .saveNew) {
+                    self.menuArchiviato.intestazione == ""
+                } action: {
+                    
+                    self.viewModel.createModelOnSub(
+                        itemModel: self.nuovoMenu)
+                    self.salvaECreaPostAction()
+                    
+                }
+
+            DialogButtonElement(
+                label: .saveEsc) {
+                    self.menuArchiviato.intestazione == ""
+                } action: {
+                    
+                    self.viewModel.createModelOnSub(
+                        itemModel: self.nuovoMenu,
+                        refreshPath: self.destinationPath)
+                   
+                }
+            
+           // modifica menu
+            
+            DialogButtonElement(
+                label: .saveModNew) {
+                    self.menuArchiviato.intestazione != ""
+                } action: {
+                    
+                    self.viewModel.updateModelOnSub(
+                        itemModel: self.nuovoMenu)
+
+                    self.salvaECreaPostAction()// BUG -> deve partire se dall'update non torna un errore - Da sistemare
+                   
+                }
+            
+            DialogButtonElement(
+                label: .saveModEsc) {
+                    self.menuArchiviato.intestazione != ""
+                } action: {
+                    
+                    self.viewModel.updateModelOnSub(
+                        itemModel: self.nuovoMenu,
+                        refreshPath: self.destinationPath)
+                   
+                }
+
+           // salva come nuovo
+            
+            DialogButtonElement(
+                label: .saveAsNew,
+                extraLabel: "Menu") {
+                    self.menuArchiviato.intestazione != "" &&
+                    self.menuArchiviato.intestazione != self.nuovoMenu.intestazione
+                    
+                } action: {
+                    
+                    var new = self.nuovoMenu
+                    new.id = UUID().uuidString
+                   
+                    self.viewModel.createModelOnSub(
+                        itemModel: new,
+                        refreshPath: self.destinationPath)
+                   
+                }
+            
+        } // chiusa result builder
+
     }
 
   /*

@@ -54,6 +54,7 @@
 		3F2CF90B2AB44C4B002DC2AF /* CorpoNuovaCategoria.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F2CF90A2AB44C4B002DC2AF /* CorpoNuovaCategoria.swift */; };
 		3F300F3A293A164D003E5861 /* RemoteChangeStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F300F39293A164D003E5861 /* RemoteChangeStorage.swift */; };
 		3F300F3C293A5757003E5861 /* ElencoModelDeleted.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F300F3B293A5757003E5861 /* ElencoModelDeleted.swift */; };
+		3F37FE862AF682620002FA73 /* NewProductIbridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F37FE852AF682620002FA73 /* NewProductIbridView.swift */; };
 		3F3957FB28C9DCD6004937D2 /* DestinationPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3957FA28C9DCD6004937D2 /* DestinationPath.swift */; };
 		3F39855D29029C03007731C2 /* VistaRecensioniEspansa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F39855C29029C03007731C2 /* VistaRecensioniEspansa.swift */; };
 		3F3D1EC1290D8D2300ED107E /* ScheduleServizio.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3D1EC0290D8D2300ED107E /* ScheduleServizio.swift */; };
@@ -63,6 +64,8 @@
 		3F58EFD82A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F58EFD72A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift */; };
 		3F5CF2162ADD8BC6009FC2D0 /* FirebaseExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5CF2152ADD8BC6009FC2D0 /* FirebaseExtension.swift */; };
 		3F5CF2182ADD8BD6009FC2D0 /* VariousExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5CF2172ADD8BD6009FC2D0 /* VariousExtension.swift */; };
+		3F5F306C2B02A38300E2B8CC /* BottomDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5F306B2B02A38300E2B8CC /* BottomDialogView.swift */; };
+		3F5F306E2B0396F400E2B8CC /* ResultBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5F306D2B0396F400E2B8CC /* ResultBuilder.swift */; };
 		3F628A102A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */; };
 		3F628A2D2A3DF1C300976D93 /* FastImport_Categorie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */; };
 		3F628A2F2A3DF45400976D93 /* Switch_ImportObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */; };
@@ -72,7 +75,7 @@
 		3F7A10E8291285BB0071B647 /* InitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A10E7291285BB0071B647 /* InitType.swift */; };
 		3F7A411428E33D290094B296 /* TestAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7A411328E33D290094B296 /* TestAccount.swift */; };
 		3F7D3BD328B6384300177CA6 /* SystemMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7D3BD228B6384300177CA6 /* SystemMessage.swift */; };
-		3F8FC97D2943791D002F8208 /* DishModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8FC97C2943791D002F8208 /* DishModelExt.swift */; };
+		3F8FC97D2943791D002F8208 /* ProductModelExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8FC97C2943791D002F8208 /* ProductModelExt.swift */; };
 		3FA3241828CE490D005E259D /* IngredientModel_SmallRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */; };
 		3FA965F729A0F120006B2002 /* ModelField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA965F629A0F120006B2002 /* ModelField.swift */; };
 		3FA98A3D2AAEFBD80036D302 /* Switch_CloudImportObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA98A3C2AAEFBD80036D302 /* Switch_CloudImportObject.swift */; };
@@ -217,6 +220,7 @@
 		3F2CF90A2AB44C4B002DC2AF /* CorpoNuovaCategoria.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorpoNuovaCategoria.swift; sourceTree = "<group>"; };
 		3F300F39293A164D003E5861 /* RemoteChangeStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteChangeStorage.swift; sourceTree = "<group>"; };
 		3F300F3B293A5757003E5861 /* ElencoModelDeleted.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElencoModelDeleted.swift; sourceTree = "<group>"; };
+		3F37FE852AF682620002FA73 /* NewProductIbridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewProductIbridView.swift; sourceTree = "<group>"; };
 		3F3957FA28C9DCD6004937D2 /* DestinationPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationPath.swift; sourceTree = "<group>"; };
 		3F39855C29029C03007731C2 /* VistaRecensioniEspansa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaRecensioniEspansa.swift; sourceTree = "<group>"; };
 		3F3D1EC0290D8D2300ED107E /* ScheduleServizio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleServizio.swift; sourceTree = "<group>"; };
@@ -225,6 +229,8 @@
 		3F58EFD72A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaEspansaGenerica_PlusVB.swift; sourceTree = "<group>"; };
 		3F5CF2152ADD8BC6009FC2D0 /* FirebaseExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseExtension.swift; sourceTree = "<group>"; };
 		3F5CF2172ADD8BD6009FC2D0 /* VariousExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariousExtension.swift; sourceTree = "<group>"; };
+		3F5F306B2B02A38300E2B8CC /* BottomDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomDialogView.swift; sourceTree = "<group>"; };
+		3F5F306D2B0396F400E2B8CC /* ResultBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultBuilder.swift; sourceTree = "<group>"; };
 		3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPropertyMainView_GoogleMaps.swift; sourceTree = "<group>"; };
 		3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastImport_Categorie.swift; sourceTree = "<group>"; };
 		3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_ImportObject.swift; sourceTree = "<group>"; };
@@ -234,7 +240,7 @@
 		3F7A10E7291285BB0071B647 /* InitType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitType.swift; sourceTree = "<group>"; };
 		3F7A411328E33D290094B296 /* TestAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAccount.swift; sourceTree = "<group>"; };
 		3F7D3BD228B6384300177CA6 /* SystemMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMessage.swift; sourceTree = "<group>"; };
-		3F8FC97C2943791D002F8208 /* DishModelExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishModelExt.swift; sourceTree = "<group>"; };
+		3F8FC97C2943791D002F8208 /* ProductModelExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductModelExt.swift; sourceTree = "<group>"; };
 		3FA3241728CE490D005E259D /* IngredientModel_SmallRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientModel_SmallRowView.swift; sourceTree = "<group>"; };
 		3FA965F629A0F120006B2002 /* ModelField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelField.swift; sourceTree = "<group>"; };
 		3FA98A3C2AAEFBD80036D302 /* Switch_CloudImportObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_CloudImportObject.swift; sourceTree = "<group>"; };
@@ -412,6 +418,7 @@
 			children = (
 				3F5CF2142ADD8B74009FC2D0 /* Extension */,
 				4D4FE6F928008EBC00AC0190 /* ViewBuilder.swift */,
+				3F5F306D2B0396F400E2B8CC /* ResultBuilder.swift */,
 				4D395900282FFCE800EA3FAA /* ViewModifier&.swift */,
 				4DC94A1727E3915A0080264C /* MetodiTrasversali.swift */,
 				4D8A1DCD283CDBEF0016EE27 /* CheckTestoTextField.swift */,
@@ -483,7 +490,7 @@
 		3F8FC97B294376CB002F8208 /* CloudDataModelExtension */ = {
 			isa = PBXGroup;
 			children = (
-				3F8FC97C2943791D002F8208 /* DishModelExt.swift */,
+				3F8FC97C2943791D002F8208 /* ProductModelExt.swift */,
 				3F17818D2944A4FA00AA1474 /* IngredientModelExt.swift */,
 				3F17818F2944CB5B00AA1474 /* MenuModelExt.swift */,
 				3F1781912944D81900AA1474 /* CategoriaMenuExt.swift */,
@@ -798,6 +805,7 @@
 				4D3C72822887214F00BAFE0B /* SimpleModelScrollGeneric_SubView.swift */,
 				3FC9613528BD05AB009FBCF8 /* InfoAlertView.swift */,
 				3FD342622904079000C06441 /* ReviewStatMonitor.swift */,
+				3F5F306B2B02A38300E2B8CC /* BottomDialogView.swift */,
 			);
 			path = SubView_trasversali;
 			sourceTree = "<group>";
@@ -841,16 +849,17 @@
 			path = SubView;
 			sourceTree = "<group>";
 		};
-		4DCCD6CD27BAB2D700F387B2 /* NewDish */ = {
+		4DCCD6CD27BAB2D700F387B2 /* NewProduct */ = {
 			isa = PBXGroup;
 			children = (
 				3F29179828EB309A003D7BFF /* SwitchProductType.swift */,
 				4D14238127CE7F0C00CFF4AE /* NewDishMainView.swift */,
 				3F1E8FA728EC4194009EB175 /* NewDishIbridView.swift */,
+				3F37FE852AF682620002FA73 /* NewProductIbridView.swift */,
 				3F29179A28EB31C5003D7BFF /* NewProductMainView.swift */,
 				4DCCD6D627BABAF800F387B2 /* NewDishSubView */,
 			);
-			path = NewDish;
+			path = NewProduct;
 			sourceTree = "<group>";
 		};
 		4DCCD6D627BABAF800F387B2 /* NewDishSubView */ = {
@@ -928,7 +937,7 @@
 				4DF0C4B027A009CB00315A73 /* TabView */,
 				4DB75EE02813155E008C1765 /* PropertyList */,
 				4DD6308627C68E8700A16E17 /* NuovoIngrediente */,
-				4DCCD6CD27BAB2D700F387B2 /* NewDish */,
+				4DCCD6CD27BAB2D700F387B2 /* NewProduct */,
 				4D7985F227DB61E60012FE23 /* NuovoMenu */,
 				4D534E9F285612D8008F2AD5 /* NuovaCategoriaMenu */,
 				4DC94A1E27E8F76D0080264C /* NuovaProprietà */,
@@ -1159,6 +1168,7 @@
 				4D7985FE27E0E4900012FE23 /* NuovoMenuMainView.swift in Sources */,
 				4D45241D282683A6009E6128 /* EditingPropertyModel.swift in Sources */,
 				4D403BA027981EA700EB4E1B /* KotlinJunction.swift in Sources */,
+				3F5F306C2B02A38300E2B8CC /* BottomDialogView.swift in Sources */,
 				3FC7EAA82954A4AC00BEF03E /* MenuPropertyExtension.swift in Sources */,
 				4D4FE6F827FF34FB00AC0190 /* DishModel_RowView.swift in Sources */,
 				3F5CF2162ADD8BC6009FC2D0 /* FirebaseExtension.swift in Sources */,
@@ -1175,7 +1185,7 @@
 				4D9257A827D7CA5400D71B9C /* ModelList.swift in Sources */,
 				3F62DDFE289E56D9008F17A4 /* DishListByIngredientView.swift in Sources */,
 				4D168C2028525B61000B137E /* CS_BoxContainer.swift in Sources */,
-				3F8FC97D2943791D002F8208 /* DishModelExt.swift in Sources */,
+				3F8FC97D2943791D002F8208 /* ProductModelExt.swift in Sources */,
 				3F58EFD82A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift in Sources */,
 				3FABFE162ADAEF5A00B0CF6D /* CloudImportViewModel.swift in Sources */,
 				4D1BC747279C1FED000B463C /* MainView.swift in Sources */,
@@ -1218,8 +1228,10 @@
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
 				4D168C10284A56A9000B137E /* GemotryReaderTEST.swift in Sources */,
 				3FC26D0C2994F5EB00763915 /* VistaAllergeni_Selectable.swift in Sources */,
+				3F37FE862AF682620002FA73 /* NewProductIbridView.swift in Sources */,
 				3F39855D29029C03007731C2 /* VistaRecensioniEspansa.swift in Sources */,
 				3F1781962944E92400AA1474 /* AllergeniExt.swift in Sources */,
+				3F5F306E2B0396F400E2B8CC /* ResultBuilder.swift in Sources */,
 				3F628A2D2A3DF1C300976D93 /* FastImport_Categorie.swift in Sources */,
 				3FBB215628A29DA6002A721C /* OverradeStateTEST.swift in Sources */,
 				3F1781902944CB5B00AA1474 /* MenuModelExt.swift in Sources */,
@@ -1368,7 +1380,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 130;
+				CURRENT_PROJECT_VERSION = 131;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1399,7 +1411,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 130;
+				CURRENT_PROJECT_VERSION = 131;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

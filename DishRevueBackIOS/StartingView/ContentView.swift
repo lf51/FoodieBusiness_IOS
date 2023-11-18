@@ -134,7 +134,7 @@ UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
                                     .opacity(0.8)
                                     
                             }
-                        }
+                    }
                     .opacity(0.6)
                 } else {
                     
@@ -155,7 +155,7 @@ UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
 
                 }
             })
-            .overlay(alignment: .bottom, content: {
+           /* .overlay(alignment: .bottom, content: {
                 if let logMessage = self.viewModel.logMessage {
                     
                     VStack(alignment:.leading) {
@@ -178,7 +178,7 @@ UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
                     .offset(y: -50)
                     
                 }
-            })
+            })*/
             .onAppear {
                 print("[APPEAR]_SubContentView")
             }.onDisappear {

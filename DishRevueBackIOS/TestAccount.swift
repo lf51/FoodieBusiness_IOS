@@ -188,7 +188,7 @@ var prodottoFinito: ProductModel = {
     newDish.intestazione = "CocoCola"
     newDish.status = .completo(.disponibile)
     newDish.ingredientiPrincipali = [newDish.id]
-    newDish.percorsoProdotto = .finito
+    newDish.percorsoProdotto = .finito()
     newDish.categoriaMenu = "cat7"
  
     let price:DishFormat = {
@@ -421,12 +421,12 @@ let cat1:CategoriaMenu = CategoriaMenu(
     id:"cat1",
     intestazione: "Antipasti",
     image: "🫒",
-    descrizione: "")
+    descrizione: "", productType: .food)
 let cat2:CategoriaMenu = CategoriaMenu(
     id:"cat2",
     intestazione: "Primi",
     image: "🍝",
-    descrizione: "")
+    descrizione: "", productType: .food)
 let cat3:CategoriaMenu = CategoriaMenu(
     id:"cat3",
     intestazione: "Secondi",

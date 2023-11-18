@@ -50,7 +50,7 @@ struct ListaDellaSpesa_MainView: View {
             
             VStack(alignment:.leading) {
                 
-                BottomView_ConVB(
+               /* BottomView_ConVB(
                     primaryButtonTitle: "∆ Cambia Status",
                     paddingVerticalValue: .zero) {
                         self.deActiveCondition()
@@ -58,8 +58,19 @@ struct ListaDellaSpesa_MainView: View {
                         self.description()
                     } primaryDialogAction: {
                         self.dialogAction()
-                    }
+                    }*/
                 
+                
+                BottomDialogView(
+                    primaryButtonTitle: "∆ Cambia Status",
+                    paddingVerticalValue: .zero) {
+                    self.description()
+                } disableConditions: {
+                    self.deActiveCondition()
+                } primaryDialogAction: {
+                    self.dialogAction()
+                }
+
                 ScrollView(showsIndicators:false) {
                     
                     VStack(alignment:.leading,spacing:1) {
@@ -134,6 +145,27 @@ struct ListaDellaSpesa_MainView: View {
 
     @ViewBuilder private func dialogAction() -> some View {
         
+        csBuilderDialogButton {
+            
+            DialogButtonElement(
+                label: .allAvaible,
+                role: .destructive) {
+                    self.cambioStatusIngredienti()
+                }
+
+            DialogButtonElement(
+                label: .onlyInPausa) {
+                    self.cambioStatusIngredienti(soloAdUnTipo: .inPausa)
+                }
+            
+            
+        } // chiusa result Builder
+        
+    }
+    
+    
+   /* @ViewBuilder private func dialogAction() -> some View {
+        
         Button("Cambia tutti in 'disponibile'", role: .destructive) {
             
             self.cambioStatusIngredienti()
@@ -146,7 +178,7 @@ struct ListaDellaSpesa_MainView: View {
         }
         
         
-    }
+    }*/// deprecata
     
     private func filtraInventarioInArrivo(soloAdUnTipo:StatusTransition? = nil) -> [IngredientModel] {
         

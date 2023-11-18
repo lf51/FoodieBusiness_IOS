@@ -9,7 +9,7 @@ import Foundation
 import MyFoodiePackage
 
 /// Utile nel modulo di importazione Veloce, al fine di portare in un unico oggetto sia il piatto che gli ingredienti. Creato dopo aver trasformato gli ingredienti nel piatto in Riferimenti
-struct TemporaryModel:Identifiable {
+struct TemporaryModel:Identifiable,Hashable {
     
     // Creato 28.08
     let id:String = UUID().uuidString
@@ -41,7 +41,7 @@ struct TemporaryModel:Identifiable {
             new.ingredientiSecondari = rifIngredientiSecondari
             
             if rifIngredientiPrincipali.contains(self.dish.id) {
-                new.percorsoProdotto = .finito
+                new.percorsoProdotto = .finito()
             }
             return new
             

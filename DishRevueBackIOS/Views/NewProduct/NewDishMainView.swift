@@ -8,22 +8,29 @@
 import SwiftUI
 import MyFoodiePackage
 
-struct NewDishMainView: View {
+/*struct NewDishMainView: View {
 
-    @EnvironmentObject var viewModel: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM //
 
-    @Binding var newDish: ProductModel
-    let backgroundColorView: Color
+    @Binding var newDish: ProductModel //
+    let backgroundColorView: Color //
     
-    @State private var piattoArchiviato: ProductModel // per il reset
-    let destinationPath: DestinationPath
+    @State private var piattoArchiviato: ProductModel // per il reset //
+    let destinationPath: DestinationPath //
     let saveDialogType:SaveDialogType
     
-    @State private var generalErrorCheck: Bool = false
+    @State private var generalErrorCheck: Bool = false //
     @State private var wannaAddIngredient: Bool = false
     
-    @State private var areAllergeniOk: Bool = false
-    @Binding var disabilitaPicker:Bool
+    @State private var areAllergeniOk: Bool = false //
+    @Binding var disabilitaPicker:Bool //
+    // Update 10.02.23 DishFormat
+     
+    @State private var uploadDishFormat:Bool = false //
+     // update 10.02
+    
+    // 17.02.23 Focus State
+    @FocusState private var modelField:ModelField? //
     
     init(
         newDish: Binding<ProductModel>,
@@ -41,13 +48,7 @@ struct NewDishMainView: View {
         _disabilitaPicker = disabilitaPicker
     }
     
-    // Update 10.02.23 DishFormat
-     
-    @State private var uploadDishFormat:Bool = false
-     // update 10.02
-    
-    // 17.02.23 Focus State
-    @FocusState private var modelField:ModelField?
+  
     
 
     // 17.02
@@ -81,7 +82,9 @@ struct NewDishMainView: View {
                                 modelField: $modelField)
                                 .focused($modelField, equals: .descrizione)
                             
-                            CategoriaScrollView_NewDishSub(newDish: $newDish, generalErrorCheck: generalErrorCheck)
+                            CategoriaScrollView_NewDishSub(
+                                newDish: $newDish,
+                                generalErrorCheck: generalErrorCheck)
                             
                             PannelloIngredienti_NewDishSubView(
                                 newDish: newDish,
@@ -92,7 +95,10 @@ struct NewDishMainView: View {
  
                             DietScrollView_NewDishSub(newDish: $newDish,viewModel: viewModel)
  
-                            DishSpecific_NewDishSubView(allDishFormats: $newDish.pricingPiatto, openUploadFormat: $uploadDishFormat, generalErrorCheck: generalErrorCheck)
+                            DishSpecific_NewDishSubView(
+                                allDishFormats: $newDish.pricingPiatto,
+                                openUploadFormat: $uploadDishFormat,
+                                generalErrorCheck: generalErrorCheck)
 
                             BottomViewGeneric_NewModelSubView(
                                 itemModel: $newDish,
@@ -153,7 +159,6 @@ struct NewDishMainView: View {
                     allDishFormat: $newDish.pricingPiatto,backgroundColorView: backgroundColorView)
                 .presentationDetents([.fraction(0.60)])
 
-                
             }
          
        // } // end ZStack Esterno
@@ -280,7 +285,7 @@ struct NewDishMainView: View {
       }
     
    
-}
+}*/ // deprecata
 
 /*
 struct NewDishMainView_Previews: PreviewProvider {

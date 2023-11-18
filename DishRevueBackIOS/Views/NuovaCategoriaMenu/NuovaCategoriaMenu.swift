@@ -289,9 +289,12 @@ struct NuovaCategoriaMenu: View {
                                             }
                                             
                                             Spacer()
-
-                                            Text("\(dishCount) 🍽️")
+                                            
+                                            let image = categoria.productType.imageAssociated().system
+                                            
+                                            Text("\(dishCount) \(Image(systemName: image))")
                                                     .foregroundStyle(Color.seaTurtle_4)
+         
 
                                         }
  
@@ -499,38 +502,6 @@ struct NuovaCategoriaMenu: View {
         self.editCase = .modificaEsistente(categoria)
 
     }
-    
-   /*private func aggiungiButton() {
-           
-        csHideKeyboard()
-        
-        guard var nuovaCategoria else { return }
-                
-        var localCache = self.localCache ?? self.viewModel.db.allMyCategories
-        
-        if localCache.contains(where: {$0.id == nuovaCategoria.id}) {
-            
-            // trattasi di una modifica
-           let index = nuovaCategoria.listIndex ?? localCache.count
-           localCache[index] = nuovaCategoria
-            
-        } else {
-            // trattasi di nuova Categoria
-            let name = csStringCleaner(string: nuovaCategoria.intestazione.lowercased())
-          
-            let lastIndex = localCache.count // partendo da zero il numero di elementi rappresenta la prox posizione d'indice
-            
-            nuovaCategoria.intestazione = name
-            nuovaCategoria.listIndex = lastIndex
-            
-            localCache.append(nuovaCategoria)
-            
-        }
-
-        self.creaNuovaCategoria()
-        self.localCache = localCache
-
-       }*/ // backup 25_10_23
     
     private func aggiungiButton() {
            

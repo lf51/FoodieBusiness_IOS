@@ -11,6 +11,7 @@ enum CSError:Error,LocalizedError {
     
     case propertyAlreadyRegistered
     case propertyDataCorrotti
+    case fastImportDishWithNoIng
     
     var errorDescription: String? {
         
@@ -22,6 +23,9 @@ enum CSError:Error,LocalizedError {
         case .propertyDataCorrotti:
         return NSLocalizedString("Provare a riavviare.\nPer reclami e/o errori contattare info@foodies.com.", comment: "Collegamento ai dati corrotto")
             
+        case .fastImportDishWithNoIng:
+            
+            return NSLocalizedString("Editing Error: Ciascun piatto deve contenere almeno un ingrediente", comment: "Creazione in blocco interrotta")
         }
         
         

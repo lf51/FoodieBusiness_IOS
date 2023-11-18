@@ -13,6 +13,7 @@ import MyPackView_L0
 import MyFilterPackage
 import Combine
 
+
 /*public struct InitServiceObjet { // deprecato
     
     public let allPropertiesImage:[PropertyLocalImage]
@@ -186,23 +187,40 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         
     }
     
-    /// Controlla se il nome del modello Passato esiste già, se si lo aggiorna, altrimenti lo crea.
-    func switchFraCreaEUpdateModel<T:MyProStarterPack_L1&Codable>(itemModel:T) where T.VM == AccounterVM {
-        // Nota 20.10 -> Risolvere rimuovendo e ricreando, senza update
-        if let oldModel = checkExistingUniqueModelName(model: itemModel).1 {
+    /// Controlla se esiste già un meni di quel tipo, se si lo rigenera, altrimenti lo crea
+    func creaORigeneraMenuDiSistema(tipo menu:TipologiaMenu.DiSistema) {
+        
+        var newMenu = MenuModel(tipologiaDiSistema: menu)
+        
+        if let oldModel = checkExistingUniqueModelName(model: newMenu).1 {
             
-            let newOldModel:T = {
-                var new = itemModel
-                new.id = oldModel.id
-                return new
-            }()
-           // self.updateItemModel(itemModel: newOldModel)
-            self.updateModel(itemModel: newOldModel)
+            newMenu.id = oldModel.id
+            newMenu.rifDishIn = oldModel.rifDishIn
+            
+            self.updateModelOnSub(itemModel: newMenu)
             
         } else {
-           // self.createItemModel(itemModel: itemModel)
-            self.createModel(itemModel: itemModel)
+            
+            self.createModelOnSub(itemModel: newMenu)
         }
+
+    }
+    /// rigenera un menu di sistema. Se si passa un altra tipologia ritorna un errore
+    func rigeneraMenuDiSistema(from oldModel:MenuModel) {
+        
+        let subType = oldModel.tipologia.returnSubTypeCase()
+        
+        guard let subType else {
+            
+            self.logMessage = "BUG -> \(oldModel.intestazione) non è un menu di sistema"
+            
+            return }
+        
+        var new = MenuModel(tipologiaDiSistema: subType)
+        new.id = oldModel.id
+        new.rifDishIn = oldModel.rifDishIn
+        
+        self.updateModelOnSub(itemModel: new)
         
     }
     
@@ -523,7 +541,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         newModel.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
      
        // self.updateItemModel(itemModel: newModel)
-        self.updateModel(itemModel: newModel)
+        self.updateModelOnSub(itemModel: newModel)
 
     }
     
@@ -581,14 +599,14 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         }
         
       //  self.updateItemModel(itemModel: currentMenu)
-        self.updateModel(itemModel: currentMenu)
+        self.updateModelOnSub(itemModel: currentMenu)
         
     }
 
     /// Permette di inserire o rimuovere un piatto da un MenuDiSistema
     func manageInOutPiattoDaMenuDiSistema(idPiatto:String,menuDiSistema:TipologiaMenu.DiSistema) {
         
-        if let menuDS = trovaMenuDiSistema(menuDiSistema: menuDiSistema) {
+        if let menuDS = trovaMenuDiSistema(tipo: menuDiSistema) {
             
             manageInOutPiattoDaMenuModel(idPiatto: idPiatto, menuDaEditare: menuDS)
             
@@ -867,10 +885,10 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         })
         
         let prodottiFiniti = allDishAvaible.filter({
-            $0.percorsoProdotto == .finito
+            $0.percorsoProdotto == .finito()
         })
         //Update 09.07.23
-        let composizioni = allDishAvaible.filter({$0.percorsoProdotto == .composizione})
+        let composizioni = allDishAvaible.filter({$0.percorsoProdotto == .composizione()})
         // end update
         // Ingredient && eseguibilità Piatto
         var allIngredientsRif:[String] = []
@@ -1099,7 +1117,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
             !$0.rifReviews.isEmpty
         })
         let soloLePreparazioni = self.db.allMyDish.filter({
-            $0.percorsoProdotto != .finito
+            $0.percorsoProdotto != .finito()
         })
         
         let dishReviewedCount = dishReviewed.count // .1
@@ -1278,8 +1296,7 @@ extension AccounterVM {
         let allEdited = newsForSub + edited
         
         try await self.subCollectionManager.publishBatchSubCollection(sub: .allMyCategories, newOrEdited: allEdited, removed: removedId)
-        
-        print("[END]_updateCategoriesListFromLocalCache")
+
     }
     
 
@@ -1631,19 +1648,37 @@ extension AccounterVM {
 
     }*/
 }
+
+import Firebase
 /// save, update and delete Model
 extension AccounterVM {
     
-    /// Manda un alert (opzionale, ) per confermare la creazione del nuovo Oggetto.
-    func createModel<T:MyProStarterPack_L1 & Codable>(
+    func checkModelNotInVM<T:MyProStarterPack_L1 & Codable>(itemModel:T) -> Bool where T.VM == AccounterVM {
+        
+        // verifica unicità nel viewModel
+        let kpContainerT = itemModel.basicModelInfoInstanceAccess().vmPathContainer
+            
+        let containerT = assegnaContainerFromPath(path: kpContainerT)
+            
+        return !containerT.contains(where: {$0.isEqual(to: itemModel)})
+      
+    }
+    
+    
+    /// Crea un oggetto nella SubCollection. Manda un alert (opzionale)
+    func createModelOnSub<T:MyProStarterPack_L1 & Codable>(
         itemModel:T,
         showAlert:Bool = false,
         alertMessagge: String = "",
-        refreshPath:DestinationPath? = nil) where T.VM == AccounterVM {
+        refreshPath:DestinationPath? = nil,
+        encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
         
         if !showAlert {
             
-            self.createModelExecutive(itemModel: itemModel,destinationPath: refreshPath)
+            self.createModelExecutive(
+                itemModel: itemModel,
+                destinationPath: refreshPath,
+                encoder: encoder)
             
         } else {
             
@@ -1654,7 +1689,10 @@ extension AccounterVM {
                     title: .conferma,
                     action: {
         
-                        self.createModelExecutive(itemModel: itemModel, destinationPath: refreshPath)
+                        self.createModelExecutive(
+                            itemModel: itemModel,
+                            destinationPath: refreshPath,
+                            encoder: encoder)
                     
                                         }))
         }
@@ -1662,11 +1700,12 @@ extension AccounterVM {
     
     private func createModelExecutive<T:MyProStarterPack_L1 & Codable>(
         itemModel:T,
-        destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
+        destinationPath:DestinationPath? = nil,
+        encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
 
         // verifica unicità nel viewModel
       
-        let(kpContainerT,_,nomeModelloT,_) = itemModel.basicModelInfoInstanceAccess()
+     /*   let(kpContainerT,_,nomeModelloT,_) = itemModel.basicModelInfoInstanceAccess()
             
         let containerT = assegnaContainerFromPath(path: kpContainerT)
             
@@ -1674,26 +1713,41 @@ extension AccounterVM {
                 return self.alertItem = AlertModel(
                     title: "Controllare",
                     message: "Hai già un \(nomeModelloT) con queste caratteristiche")
-            }
+            } */
+            
+          /* guard self.checkModelNotInVM(itemModel: itemModel) else {
+                
+                return self.alertItem = AlertModel(
+                    title: "Controllare",
+                    message: "Hai già creato un oggetto con questo nome e caratteristiche")
+                
+            }*/ // obsoleto
             
             let sub = itemModel.subCollection() as! CloudDataStore.SubCollectionKey
             
             Task {
                 
-             var item = itemModel
+            // let item = itemModel
                 
-             if item is IngredientModel {
+            /* if item is IngredientModel {
                 // salva in main
                  let ingredient = item as! IngredientModel
                  
-                 if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) { item.id = id }
+               /*  if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) { item.id = id } */
+                 try await manageIngredientCreation(item: ingredient){ id in
+                     print("Nuovo Oggeto \(ingredient.intestazione) creato con id: \(id ?? "Nuovo")")
+                 }
                      
-                }
-                print("[STEP_2]_afterCheckAndPublish")
-                // salvare in subCollection
-              try await self.subCollectionManager
-                    .setDataSubCollectionSingleDocument(to: sub, item: item)
-                
+             }*/// else {
+                 
+                 // salvare in subCollection
+               try await self.subCollectionManager
+                     .setDataSubCollectionSingleDocument(
+                        to: sub,
+                        item: itemModel,
+                        throw: encoder)
+           //  }
+
                 // refresh del path
                 if let path = destinationPath {
                     
@@ -1701,25 +1755,23 @@ extension AccounterVM {
                     
                 }
 
-                print("Nuovo Oggeto \(item.intestazione) creato con id: \(item.id)")
-                
-                
             }
-
     }
     
-    /// Manda un alert per Confermare le Modifiche all'oggetto MyModelProtocol
-    func updateModel<T:MyProStarterPack_L1 & Codable>(
+    /// Aggiorna un Modello nelle subCollection. Manda un alert di conferma optional
+    func updateModelOnSub<T:MyProStarterPack_L1 & Codable>(
         itemModel:T,
         showAlert:Bool = false,
         alertMessage: String = "",
-        refreshPath:DestinationPath? = nil) where T.VM == AccounterVM  {
-            
-        print("[CALL]_UpdateModel()")
-            
+        refreshPath:DestinationPath? = nil,
+        encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM  {
+
         if !showAlert {
             
-            self.updateModelExecutive(itemModel: itemModel,destinationPath: refreshPath)
+            self.updateModelExecutive(
+                itemModel: itemModel,
+                destinationPath: refreshPath,
+                encoder: encoder)
        
         } else {
             
@@ -1730,7 +1782,10 @@ extension AccounterVM {
                     title: .conferma,
                     action: {
         
-                        self.updateModelExecutive(itemModel: itemModel,destinationPath: refreshPath)
+                        self.updateModelExecutive(
+                            itemModel: itemModel,
+                            destinationPath: refreshPath,
+                            encoder: encoder)
                     
                                         }))
         }
@@ -1740,7 +1795,8 @@ extension AccounterVM {
     
     private func updateModelExecutive<T:MyProStarterPack_L1 & Codable>(
         itemModel: T,
-        destinationPath: DestinationPath? = nil) where T.VM == AccounterVM {
+        destinationPath: DestinationPath? = nil,
+        encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
         
         let containerT = assegnaContainer(itemModel: itemModel)
   
@@ -1754,10 +1810,10 @@ extension AccounterVM {
             
             Task {
                 
-                var item = itemModel
+             //   var item = itemModel
                 
                 // caso particolare IngredientModel
-                if item is IngredientModel {
+               /* if item is IngredientModel {
                     // Nota 29_10_23
                 var ingredient = item as! IngredientModel
                     ingredient.id = UUID().uuidString // assegniamo un nuovo id per scongiurare che venga salvato nella main con il vecchio già esistente
@@ -1776,10 +1832,13 @@ extension AccounterVM {
                 try await self.subCollectionManager.publishSubCollection(sub: .allMyDish, as: rigerateDish)
                     
  
-                }
+                }*/
                 
                 try await self.subCollectionManager
-                    .setDataSubCollectionSingleDocument(to: sub, item: item)
+                    .setDataSubCollectionSingleDocument(
+                        to: sub,
+                        item: itemModel,
+                        throw: encoder)
                 
                 if let path = destinationPath {
                     
@@ -1887,4 +1946,80 @@ extension AccounterVM {
 
     }
     
+}
+/// save,update and delete Ingredient
+extension AccounterVM {
+    
+    func updateIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil) {
+        
+        Task {
+            
+            var ingredient = item
+            ingredient.id = UUID().uuidString // assegniamo un nuovo id per scongiurare che venga salvato nella main con il vecchio già esistente
+            
+            let oldID = item.id
+            // eliminiamo il vecchio riferimento dalla subCollection
+            try await self.subCollectionManager.deleteFromSubCollection(sub: .allMyIngredients, delete: oldID)
+            
+            // sostituire il vecchio ingrediente con quello modificato nei piatti
+            let allDish = self.allDishContainingIngredient(idIng: oldID)
+            
+            try await self.createIngredient(item: ingredient) { id in
+                if let id { ingredient.id = id }
+            }
+
+            //rimpiazziamo il vecchio Id nei dish
+            let rigerateDish = allDish.compactMap({ $0.replaceIngredients(id: oldID, with: ingredient.id)})
+            
+            try await self.subCollectionManager.publishSubCollection(
+                sub: .allMyDish,
+                as: rigerateDish)
+
+            if let refreshPath {
+                
+                self.refreshPath(destinationPath: refreshPath)
+            }
+            
+        } // chiusa task
+    }
+    
+    /// handle id nel caso in cui questo ingrediente già esisteva nel cloud
+    func createIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil,handle:@escaping(_ id:String?) -> Void) async throws {
+        
+        Task {
+            
+            var ingredient = item
+            
+            if let id = try await self.ingredientsManager.checkAndPublish(ingredient: item) {
+                ingredient.id = id
+            }
+            
+            try await self.subCollectionManager
+                .setDataSubCollectionSingleDocument(
+                    to: .allMyIngredients,
+                    item: ingredient)
+            
+            if ingredient.id != item.id { handle(ingredient.id) }
+            else { handle(nil) }
+            
+            if let refreshPath {
+                
+                self.refreshPath(destinationPath: refreshPath)
+            }
+            
+        }
+    }
+    
+}
+
+extension AccounterVM {
+    
+    /// ritorna l'id dell'eventuale prodotto
+    func isASubOfReadyProduct(id ingredient:String) -> String? {
+        
+        let readyProduct = self.db.allMyDish.first(where: {$0.percorsoProdotto == .finito(ingredient)})
+        
+        return readyProduct?.id
+    
+    }
 }

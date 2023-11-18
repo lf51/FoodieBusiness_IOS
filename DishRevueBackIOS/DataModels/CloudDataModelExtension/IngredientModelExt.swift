@@ -499,10 +499,10 @@ extension IngredientModel:MyProProgressBar {
     
     public var countProgress: Double {
         
-        let instestazioneOk = self.intestazione != "" && !self.intestazione.contains("(DS)")
+       /* let instestazioneOk = self.intestazione != "" && !self.intestazione.contains("(DS)")*/
         var count:Double = 0.0
         
-        if instestazioneOk { count += 0.35 }
+        if self.intestazione != "" { count += 0.35 }
         if self.descrizione != "" { count += 0.35 }
         if self.conservazione != .defaultValue { count += 0.15 }
         if self.origine != .defaultValue { count += 0.15 }
@@ -510,4 +510,5 @@ extension IngredientModel:MyProProgressBar {
         return count
         
     }
+
 }

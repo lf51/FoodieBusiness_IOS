@@ -20,4 +20,4 @@ enum InitType {
 public enum SaveDialogType {
     
     case completo, ridotto
-}
+}// deprecata

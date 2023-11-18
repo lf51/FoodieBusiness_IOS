@@ -8,9 +8,10 @@
 import SwiftUI
 import MyFoodiePackage
 import MyPackView_L0
+import Firebase
 
 /// Questa View è la bottom Standard - Reset Salva - per i Nuovi Modelli. E' una generic non in senso stretto. Esegue un check Preliminare prima di aprire la confirmationDialog. Rende obsoleto i disabled dei singoli oggetti. Permette di mandare tramite il checkPrelimare il segnale per un warning.
-struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1 & Codable>: View where M.VM == AccounterVM {
+/*struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1 & Codable>: View where M.VM == AccounterVM {
     // 15.09 da M:MyModelProtocol a M:MyProStarterPack_L1
     @EnvironmentObject var viewModel: AccounterVM
     
@@ -150,33 +151,36 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1 & Codable>: View 
         
     }
 
-}
+}*/ // deprecata 15_11_23
 
-/// Questa View è la gemella della BottomViewGeneric, ma accetta due model. Ideata per il salvataggio del modello Ibrido.ItemModel deve essere un Dish e l'itemPlus un ingrediente per creare un ibrido.  11.07.23 La forma generica è totalmente inutile ma ormai la teniamo
-struct BottomViewGenericPlus_NewModelSubView<M:MyProStarterPack_L1&Codable,M2:MyProStarterPack_L1&Codable>: View where M2.VM == AccounterVM, M.VM == AccounterVM {
-    // 15.09 da M:MyModelProtocol a M:MyProStarterPack_L1
+/// Questa View è la gemella della BottomViewGeneric, ma accetta due model. Ideata per il salvataggio del modello Ibrido.
+
+/*struct BottomViewGenericPlus_NewModelSubView: View {
+
     @EnvironmentObject var viewModel: AccounterVM
     
-    @Binding var itemModel: M
-    @Binding var itemModelPlus: M2
+    @Binding var productModel: ProductModel
+    @Binding var ingredienteSottostante: IngredientModel?
     @Binding var generalErrorCheck:Bool
    // let wannaDisableButtonBar: Bool
-    let itemModelArchiviato: M
-    let itemModelPlusArchiviato: M2
+    let productArchiviato: ProductModel
+    let sottostanteArchiviato: IngredientModel?
     let destinationPath: DestinationPath
+    var dialogType:SaveDialogType = .completo
+    
     let description: () -> Text
     let resetAction: () -> Void
     let checkPreliminare: () -> Bool
     let salvaECreaPostAction: () -> Void
-  //  @ViewBuilder var saveButtonDialogView: Content
     
     @State private var showDialog: Bool = false
     
     var body: some View {
         
         let condition: Bool = {
-            itemModel == itemModelArchiviato &&
-            itemModelPlus == itemModelPlusArchiviato
+            productModel == productArchiviato &&
+            ingredienteSottostante == sottostanteArchiviato
+            // da articolare
         }()
         
         HStack {
@@ -191,9 +195,10 @@ struct BottomViewGenericPlus_NewModelSubView<M:MyProStarterPack_L1&Codable,M2:My
             CSButton_tight(title: "Reset", fontWeight: .light, titleColor: Color.red, fillColor: Color.clear) { self.resetAction() }
 
             CSButton_tight(title: "Salva", fontWeight: .bold, titleColor: Color.white, fillColor: Color.blue) {
-                let check = checkPreliminare()
+                self.showDialog = checkPreliminare()
+               /* let check = checkPreliminare()
                 if check { self.showDialog = true}
-                else { self.generalErrorCheck = true }
+                else { self.generalErrorCheck = true }*/
             }
         }
         .opacity(condition ? 0.6 : 1.0)
@@ -202,114 +207,278 @@ struct BottomViewGenericPlus_NewModelSubView<M:MyProStarterPack_L1&Codable,M2:My
         .confirmationDialog(
                 description(),
                 isPresented: $showDialog,
-                titleVisibility: .visible) { saveButtonDialogView() }
+                titleVisibility: .visible) { preCallDialogButton() }
         
     }
     
     // Method
-    
-    /// Reset Crezione Modello - Torna un modello Vuoto o il Modello Senza Modifiche
- /*  private func resetAction() {
-      
-        self.itemModel = itemModelArchiviato
-      //  modelAttivo = modelArchiviato
-    } */
-
-    @ViewBuilder private func saveButtonDialogView() -> some View {
-
-        let newModelName = self.itemModel.basicModelInfoInstanceAccess().nomeOggetto
+    @ViewBuilder private func preCallDialogButton() -> some View {
         
-        if itemModelArchiviato.intestazione == "" {
-            // crea un Nuovo Oggetto
-            Group {
-                
-                Button("Salva e Crea Nuovo", role: .none) {
-                    
-                    self.saveModels()
-
-                    self.salvaECreaPostAction()
-                    
-                }
-                
-                Button("Salva ed Esci", role: .none) {
-                    self.saveModels(refreshPath: self.destinationPath)
-
-                   
-                }
-
-            }
-        }
-        
-        else if self.itemModelArchiviato.intestazione == self.itemModel.intestazione {
-            // modifica l'oggetto corrente
-             vbEditingSaveButton()
-        }
-        
-        else {
+        switch self.dialogType {
             
-            Group {
+        case .completo:
+            saveButtonDialogView()
+        case .ridotto:
+            vbSaveEscButton { refresh in
                 
-                vbEditingSaveButton()
-                
-                Button("Salva come Nuovo \(newModelName)", role: .none) {
-                    // Add 18.08
-                    let newCommondId = UUID().uuidString
-                    self.itemModel.id = newCommondId
-                    self.itemModelPlus.id = newCommondId
-                    // vedi NotaVocale 13.09
-                    
-                    // assegniamo un nuovo id e salviamo così un nuovo oggetto
-                    // end
-                    self.saveModels(refreshPath: self.destinationPath)
-                  //  self.viewModel.createItemModel(itemModel: self.itemModelPlus)
-                  //  self.viewModel.createItemModel(itemModel: self.itemModel,destinationPath: self.destinationPath)
-                }
+                self.viewModel.updateModel(
+                    itemModel: self.productModel,
+                    refreshPath: refresh)
             }
         }
     }
+    /// Casi Possibili:
+    /// • Salvataggio nuova preparazione
+    /// • Modifica nuova preparazione
+    /// • Salva nuova composizione / Modifica composizione
+    /// • Salva nuovo prodotto finito / salva nuovo ingrediente associato
+    /// • Modifica prodotto finito / NON salva ingrediente associato
+    /// • Crea nuovo prodotto finito da ingrediente esistente / NON SALVARE Ingrediente
+    @ViewBuilder private func saveButtonDialogView() -> some View {
+
+    let percorso = self.productModel.percorsoProdotto.returnTypeCase()
     
-    @ViewBuilder private func vbEditingSaveButton() -> some View {
+    switch percorso {
+        
+    case .preparazione:
+        managePreparazione()
+    case .composizione(_):
+        manageComposizione()
+    case .finito(_):
+        manageProdottoFinito()
+    }
+}
+    
+    @ViewBuilder private func vbSaveButton(action:@escaping(_ refreshPath:DestinationPath?) -> Void ) -> some View {
+        
+        Button("Salva ed Esci", role: .none) {
+            
+           // self.saveModels(refreshPath: self.destinationPath)
+            action(self.destinationPath)
+
+        }
+        
+        Button("Salva e Crea Nuovo", role: .none) {
+            
+           // self.saveModels()
+            action(nil)
+
+            self.salvaECreaPostAction()
+        }
+ 
+    }
+    
+    @ViewBuilder private func vbSaveEscButton(action:@escaping(_ refreshPath:DestinationPath?) -> Void) -> some View {
         
         Button("Salva Modifiche ed Esci", role: .none) {
             
-            self.updateModels(refreshPath: self.destinationPath)
+            action(self.destinationPath)
+        }
+        
+    }
+    
+    @ViewBuilder private func vbEditingButton(action:@escaping(_ refreshPath:DestinationPath?) -> Void) -> some View {
+        
+      /*  Button("Salva Modifiche ed Esci", role: .none) {
+            
+          //  self.updateModels(refreshPath: self.destinationPath)
+            action(self.destinationPath)
 
+        }*/
+        vbSaveEscButton { refreshPath in
+            action(refreshPath)
         }
         
         Button("Salva Modifiche e Crea Nuovo", role: .none) {
             
-            self.updateModels()
+           // self.updateModels()
+            action(nil)
         
             self.salvaECreaPostAction()
         }
  
     }
     
-    private func updateModels(refreshPath:DestinationPath? = nil) {
+    @ViewBuilder private func vbRenewButton(action:@escaping() -> Void) -> some View {
         
-        self.viewModel.updateModel(itemModel: self.itemModelPlus) // ing di sistema
-        self.viewModel.updateModel(itemModel: self.itemModel, refreshPath: refreshPath) // dish
-       
+        let newModelName = self.productModel.basicModelInfoInstanceAccess().nomeOggetto
+
+        Button("Salva come Nuovo \(newModelName)", role: .none) {
+           
+            action()
+            
+        }
+        
+    }
+        
+   @ViewBuilder private func managePreparazione() -> some View {
+        
+        let oldIntestazione = self.productArchiviato.intestazione
+        let currentIntestazione = self.productModel.intestazione
+        
+        if oldIntestazione == "" {
+            // Trattassi di nuova Preparazione
+            vbSaveButton { refresh in
+                self.viewModel.createModel(
+                    itemModel: self.productModel,
+                    refreshPath: refresh)
+            }
+        }
+        else if currentIntestazione == oldIntestazione {
+            // trattasi di modifica a preparazione esistente
+            vbEditingButton { refresh in
+                
+                self.viewModel.updateModel(
+                    itemModel: self.productModel,
+                    refreshPath: refresh)
+            }
+        }
+        else {
+            // trattasi di modifica che permette il salvataggio come nuovo prodotto
+            Group {
+                
+                vbEditingButton { refresh in
+                    
+                    self.viewModel.updateModel(
+                        itemModel: self.productModel,
+                        refreshPath: refresh)
+                }
+                
+                vbRenewButton {
+                    
+                    let currentProduct:ProductModel = {
+                        var prop = self.productModel
+                        prop.id = UUID().uuidString
+                        return prop
+                    }()
+                    
+                    self.viewModel.createModel(
+                        itemModel: currentProduct,
+                        refreshPath: self.destinationPath)
+                    
+                }
+            }
+        }
+
     }
     
-    private func saveModels(refreshPath:DestinationPath? = nil) {
+   @ViewBuilder private func manageComposizione() -> some View {
         
-        if var dish = self.itemModel as? ProductModel {
+        var currentProduct:ProductModel = {
             
-            dish.ingredientiPrincipali = [itemModelPlus.id]
-            
-            self.viewModel.createModel(itemModel: self.itemModelPlus)
-            self.viewModel.createModel(itemModel: dish,refreshPath: refreshPath)
-            
+            var prod = self.productModel
+            prod.percorsoProdotto = .composizione(ingredienteSottostante)
+            return prod
+        }()
+       
+       let customEncoder:Firestore.Encoder = {
+            let encoder = Firestore.Encoder()
+            encoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.full
+            return encoder
+        }()
+        
+        if self.productModel.percorsoProdotto.associatedValue() != nil {
+            // trattasi di una modifica
+            if self.productModel.intestazione == self.productArchiviato.intestazione {
+                // modifica
+                vbEditingButton { refresh in
+                
+                    self.viewModel.updateModel(
+                        itemModel: currentProduct,
+                        refreshPath: refresh,
+                        encoder: customEncoder)
+                    
+                }
+           
+            } else {
+                // Possibilità di creare uno nuovo da esistente
+                Group {
+                    
+                    vbEditingButton { refresh in
+                    
+                        self.viewModel.updateModel(
+                            itemModel: currentProduct,
+                            refreshPath: refresh,
+                            encoder: customEncoder)
+                        
+                    }
+                    
+                    vbRenewButton {
+                        
+                        let nuovoSottostante:IngredientModel = {
+                            var new = self.ingredienteSottostante! // deve esserci
+                            new.id = UUID().uuidString
+                            return new
+                            
+                        }()
+                        currentProduct.id = UUID().uuidString
+                        currentProduct.percorsoProdotto = .composizione(nuovoSottostante)
+                        
+                        self.viewModel.createModel(
+                            itemModel: currentProduct,
+                            refreshPath: self.destinationPath,
+                            encoder: customEncoder)
+                    }
+                }
+            }
             
         } else {
-            self.viewModel.createModel(itemModel: self.itemModelPlus)
-            self.viewModel.createModel(itemModel: self.itemModel,refreshPath: refreshPath)
+            // trattasi di nuova composizione
+            vbSaveButton { refresh in
             
-        } // 30_10_23 Utilità dell'else non compresa
+                self.viewModel.createModel(
+                    itemModel: currentProduct,
+                    refreshPath: refresh,
+                    encoder: customEncoder)
+            }
+        }
+
     }
     
+   @ViewBuilder private func manageProdottoFinito() -> some View {
+    // Salva come nuovo non abilitato
+       var currentProduct = self.productModel
+      // var idSottostante = self.ingredienteSottostante?.id
+       
+    if self.productModel.percorsoProdotto.associatedValue() != nil {
+        // trattasi di una modifica al rpdotto. Il sosttostante non è stato toccato
+        vbEditingButton { refresh in
+        
+            self.viewModel.updateModel(
+                itemModel: currentProduct,
+                refreshPath: refresh)
+        }
+        
+    } else if let ingredienteSottostante {
+        // trattasi di un nuovo pF
+        vbSaveButton { refresh in
+            
+            Task {
+                
+                var idSottostante = ingredienteSottostante.id
+                
+                try await self.viewModel.manageIngredientCreation(item:ingredienteSottostante) { id in
+                    
+                    if let id { idSottostante = id  }
+ 
+                }
+                
+                currentProduct.percorsoProdotto = .finito(idSottostante)
+                
+                self.viewModel.createModel(
+                    itemModel: currentProduct,
+                    refreshPath: refresh)
+                
+            }
+
+        }
+
+    }
+
 }
+
+    
+}*/// deprecata 14_11_23
 
 /*
 struct OverlayTEST_Previews: PreviewProvider {
@@ -452,3 +621,5 @@ struct BottomViewGeneric_NewModelSubView<M:MyProStarterPack_L1>: View where M.VM
     }
 
 }*/ // BackUp 27_10_23
+
+

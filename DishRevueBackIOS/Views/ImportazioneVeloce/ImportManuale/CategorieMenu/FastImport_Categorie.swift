@@ -38,10 +38,11 @@ struct FastImport_Categorie: View {
                             .disableAutocorrection(true)
                             .keyboardType(.default)
                             .csTextEditorBackground {
+                                // non funziona
                                 Color.white.opacity(0.2)
                             }
                             .cornerRadius(5.0)
-                            .frame(height: 150)
+                            .frame(height: 100)
                             .onChange(of: text) {
                              self.isUpdateDisable = false
                             }
@@ -96,10 +97,10 @@ struct FastImport_Categorie: View {
                         if let allFastCategories {
                             
                             // create new binding using unwrapped value
-                            let allFast = Binding { allFastCategories } set: {self.allFastCategories = $0 }
+                           // let allFast = Binding { allFastCategories } set: {self.allFastCategories = $0 }
                             
                             CorpoCompilazioneCategorie(
-                                allFastCategories: allFast, 
+                                allFastCategories: allFastCategories,
                                 allAlreadyExisting: $allAlreadyExisting,
                                 readyToSave: $readyToSave)
                                 .id(allFastCategories)
@@ -205,11 +206,12 @@ struct CorpoCompilazioneCategorie:View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
-    @Binding var allFastCategories:[CategoriaMenu]
+    let allFastCategories:[CategoriaMenu]
+    
     @Binding var allAlreadyExisting:[CategoriaMenu]?
     @Binding var readyToSave:[CategoriaMenu]?
+    
     @State private var focusCategory:CategoriaMenu?
-   // @Binding var disabilitaPicker:Bool
         
     var body: some View {
         
@@ -241,40 +243,85 @@ struct CorpoCompilazioneCategorie:View {
                     ForEach(allFastCategories) { category in
                         
                         let focusCheck:Bool = self.focusCategory?.id == category.id
-                        let currentImage:String = {
-                            
-                            if let isEdited = readyToSave?.first(where: {$0.id == category.id}) { return isEdited.image }
-                            else { return category.image }
-                            
-                        }()
                         let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: category.id, path: \.db.allMyCategories)
                         
+                        let currentValue:CategoriaMenu = {
+                            
+                            guard !alreadyExist else { return category }
+                            
+                            if focusCheck,
+                            let focusCategory { return focusCategory }
+                            
+                            if let isReady = self.readyToSave?.first(where: {$0.id == category.id}) { return isReady }
+                            
+                            else { return category }
+                            
+                        }()
+
                         VStack(alignment:.leading) {
                             
-                            HStack(spacing:10) {
+                            HStack {
                                 
-                               /* Text(focusCheck ? focusCategory?.image ?? category.image : category.image)*/
-                                Text(currentImage)
-                                    .font(.largeTitle)
-                                    .opacity(alreadyExist ? 0.3 : 1.0)
-                                
-                                Text(category.intestazione.capitalized)
-                                    .font(.largeTitle)
-                                    .foregroundStyle(Color.seaTurtle_4)
-                                    .opacity(alreadyExist ? 0.3 : 1.0)
+                                HStack(spacing:10) {
+                                    Text(currentValue.image)
+                                        .font(.largeTitle)
+                                        .opacity(alreadyExist ? 0.3 : 1.0)
+                                    
+                                    Text(currentValue.intestazione.capitalized)
+                                        .font(.largeTitle)
+                                        .foregroundStyle(Color.seaTurtle_4)
+                                        .opacity(alreadyExist ? 0.3 : 1.0)
+                                        
+                                }
+                                .overlay(alignment: .bottomTrailing) {
+                                    Text(currentValue.productType.rawValue)
+                                        .foregroundStyle(Color.seaTurtle_1)
+                                        .font(.caption)
+                                        .italic()
+                                        .bold()
+                                        .offset(x: 20, y: 5)
+                                }
                                 
                                 Spacer()
                                 
-                               /* if focusCheck {
-                                    
-                                    CSButton_image(
-                                        frontImage: "square.and.arrow.down",
-                                        imageScale: .large,
-                                        frontColor: .seaTurtle_4
-                                        ) {
-                                           addNewCategory()
+                                if focusCheck {
+                                     
+                                    Menu {
+                                        
+                                        ForEach(ProductType.allCases,id:\.self) { type in
+                                            
+                                            Button {
+                                                addType(type: type)
+                                                
+                                            } label: {
+                                                HStack {
+                                                    
+                                                    if type != .noValue {
+                                                        
+                                                        Image(systemName: type.imageAssociated().system)
+                                                    }
+                                                    Text(type.rawValue)
+                                                }
+                                                .foregroundStyle(Color.black)
+                                            }
+
                                         }
-                                }*/
+
+                                    } label: {
+                                        
+                                        HStack {
+                                            
+                                            Text(currentValue.productType.rawValue)
+                                                .font(.headline)
+                                                .bold()
+                                                
+                                            Image(systemName: "chevron.up.chevron.down")
+                                            
+                                        }
+                                        .foregroundStyle(Color.seaTurtle_4)
+                                    }
+
+                                 }
                                     
                             }
                         }
@@ -287,7 +334,8 @@ struct CorpoCompilazioneCategorie:View {
                         }
                         .onTapGesture {
                             withAnimation{
-                                self.focusCategory = category
+                                //self.focusCategory = currentValue
+                                tapAction(currentValue: currentValue)
                             }
                         }
                         .disabled(alreadyExist)
@@ -301,6 +349,7 @@ struct CorpoCompilazioneCategorie:View {
             
             self.allAlreadyExisting = self.allFastCategories.compactMap({
                 if self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyCategories) {
+                    // usiamo l'id perchè in estrapolazione viene già sostituito in base al nome
                     return $0
                 } else { return nil }
             })
@@ -313,56 +362,77 @@ struct CorpoCompilazioneCategorie:View {
     }
     
     // Method
+    private func tapAction(currentValue:CategoriaMenu) {
+        
+        guard let focusCategory else { 
+              self.focusCategory = currentValue
+            return }
+        
+        if focusCategory.id == currentValue.id { return }
+        else { self.focusCategory = currentValue }
+
+    }
     
     private func addEmoji(emoji:String) {
         
         guard var currentFocus = focusCategory else { return }
         
         currentFocus.image = emoji
-        var readyItem = readyToSave ?? []
-        
-        if let isEditedIndex = readyItem.firstIndex(where: {$0.id == currentFocus.id}) {
-            
-            readyItem[isEditedIndex] = currentFocus
-            
-        } else {
-            
-            readyItem.append(currentFocus)
-            
-        }
-
-      // newFocus
-        let newFocus = self.allFastCategories.first { categoria in
-            
-            !readyItem.contains(where: {$0.id == categoria.id}) &&
-            !(allAlreadyExisting?.contains(where: {$0.id == categoria.id}) ?? false)
-            
-        }
-
         withAnimation {
-            self.readyToSave = readyItem
-            self.focusCategory = newFocus
+            self.focusCategory = currentFocus
         }
+        manageFocus()
+        
         
     }
+    
+    private func addType(type:ProductType) {
         
-   /* private func addNewCategoryDEPRECATA() {
+        guard var currentFocus = focusCategory else { return }
         
-        guard let focusCategory = self.focusCategory else { return }
-        
-        self.viewModel.createItemModel(itemModel: focusCategory)
-        self.allFastCategories.removeAll(where: {$0.id == focusCategory.id})
-        self.allFastCategories.append(focusCategory)//perchè modifichiamo la state focus e dunque va rimossa quella nell'array allfast e va sostituita con quella nel focus che ha la nuova immagine
-        
-        if let newFocus = self.allFastCategories.first(where: {!self.viewModel.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyCategories)}) {
-            self.focusCategory = newFocus
-        } else {
-            self.focusCategory = CategoriaMenu()
-           // self.disabilitaPicker = false
+        currentFocus.productType = type
+        withAnimation {
+            self.focusCategory = currentFocus
         }
-       
+        manageFocus()
         
-    }*/ // deprecata 21_10_23
+    }
+    
+    private func manageFocus() {
+
+        guard let focusCategory else { return }
+        
+        let emoji = focusCategory.image
+        let type = focusCategory.productType
+        
+        guard emoji != "#",
+              type != .noValue else { return }
+        
+        var readyItem = readyToSave ?? []
+        
+        if let isEditedIndex = readyItem.firstIndex(where: {$0.id == focusCategory.id}) {
+            
+            readyItem[isEditedIndex] = focusCategory
+            
+        } else {
+            
+            readyItem.append(focusCategory)
+            
+        }
+
+          let newFocus = self.allFastCategories.first { categoria in
+              
+              !readyItem.contains(where: {$0.id == categoria.id}) &&
+              !(self.allAlreadyExisting?.contains(where: {$0.id == categoria.id}) ?? false)
+              
+          }
+
+          withAnimation {
+              self.readyToSave = readyItem
+              self.focusCategory = newFocus
+          }
+        
+    }
     
 }
 

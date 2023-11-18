@@ -31,9 +31,9 @@ struct ListaIngredientiView: View {
         NavigationStack(path:$viewModel.ingredientListPath) {
             
            // let container_0 = self.viewModel.ricercaFiltra(containerPath: \.cloudData.allMyIngredients, coreFilter: filterCore)
-            let container_0 = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
+            let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
             // update 10.07.23
-            let container = container_0.filter({$0.status != .bozza()})
+           /* let container = container_0.filter({$0.status != .bozza()})*/ // obsoleto
             // update per escludere gli ing di sistema. Prima questo avveniva nella propertyCompare degli Ing, ma abbiamo dovuto modificare perchè ci impediva di filtrare i prodotti finiti nella vista espansa PF del monitor.
             let generalDisable:Bool = {
                 
@@ -75,8 +75,12 @@ struct ListaIngredientiView: View {
                     
                     let navigationPath = \AccounterVM.ingredientListPath
                     let isAReadyProduct:ProductModel? = {
-                        // controlliamo se esiste un prodotto con lo stesso ID. In quel caso l'ingrediente è anche un prodotto finito e dunque lo mostriamo non editabile
-                        viewModel.modelFromId(id: ingredient.id, modelPath: \.db.allMyDish)
+                        if let id = viewModel.isASubOfReadyProduct(id: ingredient.id) {
+                           return viewModel.modelFromId(id:id, modelPath: \.db.allMyDish)
+                        } else {
+                            return nil
+                        }
+                        
                     }()
                     
                     GenericItemModel_RowViewMask(model: ingredient) {
@@ -90,6 +94,7 @@ struct ListaIngredientiView: View {
                             vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: navigationPath)
                         
                             vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                            
                         }.disabled(isAReadyProduct != nil)
                         
                         // Da ViewBuildizzare

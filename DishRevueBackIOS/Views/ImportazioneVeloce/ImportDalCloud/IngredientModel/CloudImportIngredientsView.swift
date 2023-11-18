@@ -356,8 +356,9 @@ struct CloudImportIngredientsView: View {
                 
             }
             .csHpadding()
+            .csOverlayMessage(self.$importVM.queryMessage)
          
-            if let message = self.importVM.queryMessage {
+          /*  if let message = self.importVM.queryMessage {
                 
               Text(message)
                     .background {
@@ -369,7 +370,7 @@ struct CloudImportIngredientsView: View {
                     }
                 
                 
-            }
+            }*/
         }
         .popover(
             isPresented: $openFilter,

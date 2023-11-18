@@ -418,11 +418,18 @@ public final class SubCollectionManager {
              type: IngredientModel.self,
              syncroWith: \.allMyIngredientsPublisher)
         
+        let customDecoder:Firestore.Decoder = {
+            let decoder = Firestore.Decoder()
+            decoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.full
+            return decoder
+        }()
+        
         listenAndPublishSubCollection(
              from: mainRef,
              for: .allMyDish,
              type: ProductModel.self,
-             syncroWith: \.allMyProductsPublisher)
+             syncroWith: \.allMyProductsPublisher,
+             throw: customDecoder)
         
         listenAndPublishSubCollection(
              from: mainRef,
@@ -443,7 +450,8 @@ public final class SubCollectionManager {
         from propertyRef:DocumentReference,
         for subKey:CloudDataStore.SubCollectionKey,
         type:Item.Type,
-        syncroWith:ReferenceWritableKeyPath<SubCollectionManager,SubSyncroManager<Item>>)
+        syncroWith:ReferenceWritableKeyPath<SubCollectionManager,SubSyncroManager<Item>>,
+        throw decoder:Firestore.Decoder = Firestore.Decoder())
 {
      // Mettiamo un listener alle subCollection. Per categorie e Ingredienti il decoder delle sub deve essere impostato come valore di default nelle loro struct
         
@@ -533,7 +541,7 @@ public final class SubCollectionManager {
                 
                 let allItems:[Item] = documents.compactMap { snap -> Item?  in
                     
-                    let item = try? snap.data(as: Item.self)
+                    let item = try? snap.data(as: Item.self,decoder: decoder)
                     return item
                     
                 }
@@ -691,7 +699,8 @@ public final class SubCollectionManager {
     
     func setDataSubCollectionSingleDocument<Item:MyProStarterPack_L0 & Codable>(
         to collectionKey:CloudDataStore.SubCollectionKey,
-        item newItem:Item) async throws {
+        item newItem:Item,
+        throw encoder:Firestore.Encoder = Firestore.Encoder()) async throws {
            
         guard let currentPropertySnap else {
                     return
@@ -707,7 +716,7 @@ public final class SubCollectionManager {
             
         try subCollection
                 .document(newItem.id)
-                .setData(from: newItem, merge: true)
+                .setData(from: newItem, merge: true,encoder: encoder)
 
     }
     
@@ -825,14 +834,17 @@ public final class CategoriesManager {
         return Int(truncating: snap.count)
     }
     
-    func fetchFromSharedCollection(filterBy:String,startAfter:DocumentSnapshot?) {
+    func fetchFromSharedCollection(filterBy letter:String,_ type:ProductType,startAfter:DocumentSnapshot?) {
         
-        let letter = filterBy.lowercased()
+        let lettera = letter.lowercased()
+        let productType = type.rawValue
         
+        // per creare query composte mettere un print per catchare l'errore
         let currentyQuery = collectionManaged
-            .whereField("intestazione", isGreaterThanOrEqualTo:letter)
-            .order(by: "intestazione", descending: false)
-        
+           .whereField(CategoriaMenu.CodingKeys.intestazione.rawValue, isGreaterThanOrEqualTo:lettera)
+           .whereField(CategoriaMenu.CodingKeys.type.rawValue, isEqualTo: productType)
+           // .order(by: intestazione, descending: false)
+      
         guard self.lastQuery != currentyQuery else {
             self.sharedCategoriesPublisher.send((nil,nil,nil))
             return
@@ -843,6 +855,7 @@ public final class CategoriesManager {
             let count = try await queryCount(query: currentyQuery)
             
             guard count > 0 else {
+                print("[GUARD]_countQuery is:\(count)")
                 self.sharedCategoriesPublisher.send((nil,nil,nil))
                 return
             }
@@ -855,7 +868,7 @@ public final class CategoriesManager {
     }
     
     func executiveFetchFromSharedCollection(startAfter:DocumentSnapshot?,queryCount:Int?) {
-        
+        print("[CALL]_executiveFetchFromSharedCollection")
         let customDecoder:Firestore.Decoder = {
             
             let decoder = Firestore.Decoder()
@@ -970,11 +983,12 @@ public final class CategoriesManager {
     
     func checkCategoryAlreadyExistInLibrary(categoria:CategoriaMenu) async throws -> String? {
         
-        // trattasi di una categoria creata dall'utente che potrebbe esistere con diverso id, ma con uguale nome ed mojy
+        // trattasi di una categoria creata dall'utente che potrebbe esistere con diverso id, ma con uguale nome / emojy / type
      
        let query = collectionManaged
             .whereField(CategoriaMenu.CodingKeys.intestazione.rawValue, isEqualTo: categoria.intestazione)
             .whereField(CategoriaMenu.CodingKeys.emoji.rawValue, isEqualTo: categoria.image)
+            .whereField(CategoriaMenu.CodingKeys.type.rawValue, isEqualTo: categoria.productType.rawValue)
            
         let docs = try await query.getDocuments()
         
@@ -1039,7 +1053,7 @@ deinit {
             .csWhereField(isEqualTo: properties.produzioneING, in: .produzione)
             .csWhereField(isEqualTo: properties.origineING, in: .origine)
             .csWhereField(contain: properties.allergeniIn, in: .allergeni)
-           .order(by: "intestazione",descending: false)
+          // .order(by: "intestazione",descending: false)
                     
         guard self.lastQuery != currentQuery else {
             // la query è stata ripetuta

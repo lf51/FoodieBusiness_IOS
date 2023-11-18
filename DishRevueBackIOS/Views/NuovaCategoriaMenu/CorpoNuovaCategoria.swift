@@ -22,19 +22,28 @@ struct CorpoNuovaCategoria:View {
     var body: some View {
         
         let value:(isDisabled:Bool,opacity:CGFloat) = {
-         
-           // --> nuova
-           // disabilita se manca intestazione ed emoji
+            // il guard blocca in caso manchi un qualunque edit / new e/o old
+            guard self.nuovaCategoria != categoriaArchiviata else { return (true,0.6) }
             
-            // --> modificata
-            // disabilita se manca la descrizione
-            
-            guard self.nuovaCategoria.intestazione != "" else { return (true,0.6)}
+            var disable:Bool
 
-            if self.nuovaCategoria == categoriaArchiviata { return (true,0.6)}
-            else { return (false,1.0) }
+            if categoriaArchiviata.intestazione == "" {
+                // --> nuova
+                // disabilita se manca intestazione / emoji / type
+                disable = self.nuovaCategoria.manageDisable()
+ 
+            } else {
+                // --> modificata
+                // disabilita se manca la descrizione
+                disable = self.nuovaCategoria.descrizione == self.categoriaArchiviata.descrizione
+ 
+            }
+            
+            let opa:CGFloat = disable ? 0.6 : 1.0
+
+            return (disable,opa)
       
-        }() // vedi NotaVocale 14.09
+        }()
         
         VStack(alignment:.leading) {
             
@@ -80,28 +89,55 @@ struct CorpoNuovaCategoria:View {
                 .focused($modelField, equals: .descrizione)
                 .fixedSize(horizontal: false, vertical:true)
                     
-                    Button(action: {
-                        
-                        creAction()
-                        
-                    }, label: {
+            HStack {
+   
+                Picker(selection: $nuovaCategoria.productType) {
+                    
+                    ForEach(ProductType.allCases,id:\.self) { type in
+  
                         HStack {
                             
-                           Spacer()
+                            if type != .noValue {
+                                Image(systemName: type.imageAssociated().system)
+                                    .imageScale(.small)
+                            }
+
+                            Text(type.rawValue)
                             
-                            Text(editCase?.addButton ?? "No_Action")
-                                .fontWeight(.semibold)
-                                .font(.system(.body, design: .rounded))
-                                .padding(.vertical,10)
-                                .foregroundStyle(Color.seaTurtle_4)
-                            
-                            Spacer()
                         }
-                        .background(Color.seaTurtle_2)
-                        .cornerRadius(5.0)
-                    })
-                        .opacity(value.opacity)
-                        .disabled(value.isDisabled)
+                            .tag(type)
+                        
+                    }
+                    
+                } label: {
+                    Text("")
+                }
+                .pickerStyle(.menu)
+                .disabled(editCase?.disableCreaField ?? false)
+
+                Button(action: {
+                    
+                    creAction()
+                    
+                }, label: {
+                    HStack {
+                        
+                       Spacer()
+                        
+                        Text(editCase?.addButton ?? "No_Action")
+                            .fontWeight(.semibold)
+                            .font(.system(.body, design: .rounded))
+                            .padding(.vertical,10)
+                            .foregroundStyle(Color.seaTurtle_4)
+                        
+                        Spacer()
+                    }
+                    .background(Color.seaTurtle_2)
+                    .cornerRadius(5.0)
+                })
+                    .opacity(value.opacity)
+                    .disabled(value.isDisabled)
+            }
  
         }
 

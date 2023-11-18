@@ -12,14 +12,13 @@ import MyFoodiePackage
 struct VistaMenuEspansa: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-   // @ObservedObject var viewModel:AccounterVM
     
     let currentDish: ProductModel
     let backgroundColorView: Color
     
     @State private var allMenu:[MenuModel]
-    let valoreArchiviato:[MenuModel]
-  //  let onlyDishInCount:Int
+    let archivioAllMenu:[MenuModel]
+    let archivioMenuWithDishIn:[MenuModel]
     
     init(currentDish:ProductModel,backgroundColorView:Color,viewModel:AccounterVM) {
         
@@ -29,9 +28,8 @@ struct VistaMenuEspansa: View {
         let allMenuMinus = viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: currentDish.id).0
         _allMenu = State(wrappedValue: allMenuMinus)
         
-        self.valoreArchiviato = allMenuMinus.filter({$0.rifDishIn.contains(currentDish.id)})
-    //    self.onlyDishInCount = onlyIn
-        
+        self.archivioAllMenu = allMenuMinus
+        self.archivioMenuWithDishIn = allMenuMinus.filter({$0.rifDishIn.contains(currentDish.id)})
     }
     
     var body: some View {
@@ -101,15 +99,27 @@ struct VistaMenuEspansa: View {
                 }
                 
                 
-              BottomView_DLBIVSubView(
+             /* BottomView_DLBIVSubView(
                 isDeActive: self.disableCondition() ) {
                     self.description()
                 } resetAction: {
                     self.resetAction()
                 } saveAction: {
                     self.saveAction()
+                }*/
+
+                
+                BottomDialogView {
+                    self.description()
+                } disableConditions: {
+                    self.disableCondition()
+                } secondaryAction: {
+                    self.resetAction()
+                } primaryDialogAction: {
+                    self.saveButtonDialogView()
                 }
 
+                
                 
             }
             .csHpadding()
@@ -118,22 +128,61 @@ struct VistaMenuEspansa: View {
         }
     }
     
+    //ViewBuilder
+    
+    @ViewBuilder private func saveButtonDialogView() -> some View {
+ 
+        csBuilderDialogButton {
+            
+            DialogButtonElement(
+                label: .saveEsc) {
+                    self.saveAction()
+                }
+        }
+    }
+    
     // Method
     
     private func saveAction() {
         
-       // se vogliamo dobbiamo qui filtrare la collection e passare soltanto i menu modificati
-        self.viewModel.updateItemModelCollection(items: self.allMenu, destinationPath: .dishList)
+        let menuModified = compareMenu()
+        
+        self.viewModel.updateModelCollection(
+            items: menuModified,
+            sub: .allMyMenu,
+            destinationPath: .dishList)
        
+    }
+    
+    /// Compare i menu nella State con in menu archiviati per ritornare un array utile al salvataggio di soli menu che hanno subito modifiche
+    private func compareMenu() -> [MenuModel] {
+        
+        var menuModified:[MenuModel] = []
+        
+        for menu in self.allMenu {
+            
+            if let valueArchiviato = self.archivioAllMenu.first(where: {$0.id == menu.id }) {
+                
+                if valueArchiviato.rifDishIn != menu.rifDishIn {
+                    menuModified.append(menu)
+                }
+                
+            }
+        }
+        
+        return menuModified
     }
     
     private func resetAction() {
         self.allMenu = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: currentDish.id).0
     }
     
-    private func disableCondition() -> Bool {
+    private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
+        
        let current = self.allMenu.filter({$0.rifDishIn.contains(currentDish.id)})
-        return current == valoreArchiviato
+       let general = current == archivioMenuWithDishIn
+      
+       return (general,false,false)
     }
     
     private func description() -> (breve:Text,estesa:Text) {
@@ -141,12 +190,12 @@ struct VistaMenuEspansa: View {
         let allMenuCount = self.allMenu.count
         let menuContainingDish:[MenuModel] = self.allMenu.filter({$0.rifDishIn.contains(currentDish.id)})
         
-        let plusMinus = menuContainingDish.count - valoreArchiviato.count
+        let plusMinus = menuContainingDish.count - archivioMenuWithDishIn.count
         let plusMinusSymbol = plusMinus >= 0 ? "+" : ""
         let plusMinusString = plusMinus >= 0 ? "Aggiunti" : "Rimossi"
         
         let stringaBreve = "Menu Totali: \(allMenuCount)\nMenu contenenti il piatto: \(menuContainingDish.count) (\(plusMinusSymbol)\(plusMinus))"
-        let stringaEstesa = "Updating -\(currentDish.intestazione)-\nIncluso in precendenza in: \(valoreArchiviato.count) menu\nAdesso incluso in: \(menuContainingDish.count) menu\n\(plusMinusString): \(plusMinus) menu"
+        let stringaEstesa = "Updating -\(currentDish.intestazione)-\nIncluso in precendenza in: \(archivioMenuWithDishIn.count) menu\nAdesso incluso in: \(menuContainingDish.count) menu\n\(plusMinusString): \(plusMinus) menu"
         return (Text(stringaBreve),Text(stringaEstesa))
     }
     
@@ -168,7 +217,7 @@ struct VistaMenuEspansa: View {
             
             guard !localMenu.tipologia.isDiSistema() else { return }
             
-            let localModelArchiviato = self.valoreArchiviato.first { $0.id == localMenu.id}
+            let localModelArchiviato = self.archivioMenuWithDishIn.first { $0.id == localMenu.id}
             
             guard localModelArchiviato != nil,
                   localModelArchiviato!.status.checkStatusTransition(check: .disponibile) else { return }
@@ -183,7 +232,6 @@ struct VistaMenuEspansa: View {
         
         if let index = self.allMenu.firstIndex(where: {$0.id == currentMenu.id}) {
             self.allMenu[index] = currentMenu
-            print("addRemoveDishLocally - ListaEspansaMenu")
         }
     }
 }

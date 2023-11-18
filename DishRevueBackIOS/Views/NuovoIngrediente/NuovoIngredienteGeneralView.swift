@@ -10,7 +10,7 @@ import MyFoodiePackage
 
 struct NuovoIngredienteGeneralView: View {
 
-   // @EnvironmentObject var viewModel: AccounterVM
+    @EnvironmentObject var viewModel: AccounterVM
     @Environment(\.openURL) private var openURL
 
     @State private var nuovoIngrediente: IngredientModel
@@ -107,7 +107,7 @@ struct NuovoIngredienteGeneralView: View {
                             
                             // end View Sostituto
                             
-                            BottomViewGeneric_NewModelSubView(
+                           /* BottomViewGeneric_NewModelSubView(
                                 itemModel: $nuovoIngrediente,
                                 generalErrorCheck: $generalErrorCheck,
                                 itemModelArchiviato: ingredienteArchiviato,
@@ -119,7 +119,26 @@ struct NuovoIngredienteGeneralView: View {
                                     self.checkPreliminare()
                                 } salvaECreaPostAction: {
                                     self.salvaECreaPostAction()
+                                }*/
+                            
+                            BottomDialogView {
+                                self.infoIngrediente()
+                            } disableConditions: {
+                                self.disableCondition()
+                            } secondaryAction: {
+                                self.resetAction()
+                            } preDialogCheck: {
+                                let check = checkPreliminare()
+                                if check { return check }
+                                else {
+                                    self.generalErrorCheck = true
+                                    return false 
                                 }
+                            } primaryDialogAction: {
+                                self.saveButtonDialogView()
+                            }
+
+                            
 
                         }//.padding(.horizontal)
                       
@@ -171,6 +190,11 @@ struct NuovoIngredienteGeneralView: View {
       // .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
     }
     // Method
+    private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
+        
+       let general = self.nuovoIngrediente == self.ingredienteArchiviato
+        return (general,false,false)
+    }
     
     private func resetAction() {
         
@@ -192,40 +216,14 @@ struct NuovoIngredienteGeneralView: View {
         self.ingredienteArchiviato = new
     }
     
-    private func infoIngrediente() -> Text {
-       let string = csInfoIngrediente(areAllergeniOk: self.areAllergeniOk, nuovoIngrediente: self.nuovoIngrediente)
-        return Text(string)
+    private func infoIngrediente() -> (breve:Text,estesa:Text) {
+        
+       let string = csInfoIngrediente(
+        areAllergeniOk: self.areAllergeniOk,
+        nuovoIngrediente: self.nuovoIngrediente)
+        
+        return (Text("breve"),Text(string))
     }
-    
-  /*  private func infoIngrediente() -> Text {
-        
-        var stringaAlllergeni: String = "Presenza/assenza Allergeni non Confermata"
-        var stringaCongeSurge: String = "\nMetodo di Conservazione non indicato"
-        var metodoProduzione: String = ""
-        
-        if areAllergeniOk {
-            
-            if self.nuovoIngrediente.allergeni.isEmpty {
-                stringaAlllergeni = "Questo ingrediente è privo di Allergeni."
-            } else {
-    
-                let count = self.nuovoIngrediente.allergeni.count
-                stringaAlllergeni = "Questo ingrediente contiene \(count > 1 ? "\(count) Allergeni" : "1 Allergene")."
-            }
-        }
-        
-        if self.nuovoIngrediente.conservazione != .defaultValue {
-            
-             stringaCongeSurge = "\nQuesto prodotto \( self.nuovoIngrediente.conservazione.extendedDescription())."
-            
-        }
-        
-        if self.nuovoIngrediente.produzione == .biologico {
-            metodoProduzione = "\nProdotto BIO."
-        }
-        
-        return Text("\(stringaAlllergeni)\(stringaCongeSurge)\(metodoProduzione)")
-    } */ // Resa Pubblica - 04.10
     
     private func checkPreliminare() -> Bool {
         
@@ -238,27 +236,28 @@ struct NuovoIngredienteGeneralView: View {
         guard self.areAllergeniOk else { return false }
         
         guard checkConservazione() else { return false }
-       // guard self.isConservazioneOk else { return false }
-        
-      //  guard checkEtichettaProduzione() else { return false }
-        
-      //  guard checkLuogoProduzione() else { return false }
-        
 
         if self.nuovoIngrediente.optionalComplete() {
             self.nuovoIngrediente.status = .completo(.disponibile) }
         else {
             self.nuovoIngrediente.status = .bozza(.disponibile)
         }
-        
-      //  self.nuovoIngrediente.status = .completo(.archiviato)
-        return true
+
+        return checkNotExistSimilar()
+       // return true
     }
     
-   /* private func checkLuogoProduzione() -> Bool {
+    private func checkNotExistSimilar() -> Bool {
         
-        self.nuovoIngrediente.provenienza != .defaultValue
-    } */
+        if self.viewModel.checkModelNotInVM(itemModel: nuovoIngrediente) { return true }
+        else {
+            self.viewModel.alertItem = AlertModel(
+                 title: "Controllare",
+                 message: "Hai già creato un Ingrediente con questo nome e caratteristiche")
+             
+           return false
+            }
+    }
     
     private func checkOrigine() -> Bool {
         
@@ -272,72 +271,102 @@ struct NuovoIngredienteGeneralView: View {
    
     }
     
-   /* private func checkEtichettaProduzione() -> Bool {
-        
-        self.nuovoIngrediente.produzione != .defaultValue
-    } */
-    
     private func checkConservazione() -> Bool {
         
         self.nuovoIngrediente.conservazione != .defaultValue
     }
     
-    /*
-    @ViewBuilder private func vbScheduleANuovoIngrediente() -> some View {
-        
-        if self.ingredienteArchiviato.intestazione == "" {
-            // crea un Nuovo Oggetto
-            Group {
-                
-                Button("Salva e Crea Nuovo", role: .none) {
-                    
-                self.viewModel.createItemModel(itemModel: self.nuovoIngrediente)
-                self.nuovoIngrediente = IngredientModel()
-                    
-                }
-                
-                Button("Salva ed Esci", role: .none) {
-                    
-                self.viewModel.createItemModel(itemModel: self.nuovoIngrediente,destinationPath: destinationPath)
-                }
-            }
-        }
-        
-        else if self.ingredienteArchiviato.intestazione == self.nuovoIngrediente.intestazione {
-            // modifica l'oggetto corrente
-            
-            Group { vbEditingSaveButton() }
-        }
-        
-        else {
-            
-            Group {
-                
-                vbEditingSaveButton()
-                
-                Button("Salva come Nuovo Ingrediente", role: .none) {
-                    
-                self.viewModel.createItemModel(itemModel: self.nuovoIngrediente,destinationPath: destinationPath)
-                }
-            }
-        }
-    }
+    // ViewBuilder
     
-    @ViewBuilder private func vbEditingSaveButton() -> some View {
-        
-        Button("Salva Modifiche e Crea Nuovo", role: .none) {
+    @ViewBuilder private func saveButtonDialogView() -> some View {
+
+        csBuilderDialogButton {
+          
+            // nuovo ingrediente
+            DialogButtonElement(
+                label: .saveNew) {
+                    self.ingredienteArchiviato.intestazione == ""
+                } action: {
+                    
+                   /* self.viewModel.createModel(
+                        itemModel: self.nuovoIngrediente)*/
+                    Task {
+                       try await self.viewModel.createIngredient(item: self.nuovoIngrediente) { _ in }
+                            
+                        self.salvaECreaPostAction()
+                    }
+                }
+
+            DialogButtonElement(
+                label: .saveEsc) {
+                    self.ingredienteArchiviato.intestazione == ""
+                } action: {
+                    
+                   /* self.viewModel.createModel(
+                        itemModel: self.nuovoIngrediente,
+                        refreshPath: self.destinationPath)*/
+                    Task {
+                       try await self.viewModel.createIngredient(
+                            item: self.nuovoIngrediente,
+                            refreshPath: self.destinationPath) { _ in }
+                    }
+                }
             
-        self.viewModel.updateItemModel(itemModel: self.nuovoIngrediente)
-        self.nuovoIngrediente = IngredientModel()
-        }
-        
-        Button("Salva Modifiche ed Esci", role: .none) {
+           // Modifica
             
-        self.viewModel.updateItemModel(itemModel: self.nuovoIngrediente, destinationPath: destinationPath)
-        }
+            DialogButtonElement(
+                label: .saveModNew) {
+                    self.ingredienteArchiviato.intestazione != ""
+                } action: {
+                    
+                   /* self.viewModel.updateModel(
+                        itemModel: self.nuovoIngrediente)*/
+                    self.viewModel.updateIngredient(item: self.nuovoIngrediente)
+                    self.salvaECreaPostAction()
+                }
+            
+            DialogButtonElement(
+                label: .saveModEsc) {
+                    self.ingredienteArchiviato.intestazione != ""
+                } action: {
+                    
+                   /* self.viewModel.updateModel(
+                        itemModel: self.nuovoIngrediente,
+                        refreshPath: self.destinationPath)*/
+                    self.viewModel.updateIngredient(
+                        item: self.nuovoIngrediente,
+                        refreshPath: self.destinationPath)
+                }
+            
+            // nuovo da modifica
+            
+            DialogButtonElement(
+                label: .saveAsNew,
+                extraLabel: "Ingrediente") {
+                    self.ingredienteArchiviato.intestazione != "" &&
+                    self.nuovoIngrediente.intestazione != self.ingredienteArchiviato.intestazione
+                } action: {
+                    
+                    Task {
+                        var new = self.nuovoIngrediente
+                        new.id = UUID().uuidString
+
+                       /* self.viewModel.createModel(
+                            itemModel: new,
+                            refreshPath: self.destinationPath)*/
+                       try await self.viewModel.createIngredient(item: new) { _ in }
+                    }
+                    
+                    
+                }
+            
+            
+        } // chiusa result builder
         
         
-    } */
+        
+        
+    }
  
     
 }

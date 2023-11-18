@@ -107,6 +107,7 @@ struct MainView: View {
                     }.tag(DestinationPath.ingredientList)
                     
             }
+            .csOverlayMessage($viewModel.logMessage)
             .toolbarBackground(.visible, for: .tabBar)
             .toolbarBackground(Color.seaTurtle_1.opacity(0.9), for: .tabBar)
                 
@@ -171,6 +172,7 @@ struct MainView: View {
         }*/
      
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
+        
        // .environmentObject(viewModel)
         .accentColor(.seaTurtle_3)
        // .accentColor(.seaTurtle_4)

@@ -12,8 +12,10 @@ import MyFoodiePackage
 struct FastImport_MainView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
-    @State private var allFastDish: [TemporaryModel] = []
+    
     let backgroundColorView: Color
+    
+    @State private var allFastDish: [TemporaryModel]?
     @State private var text: String = ""
     
     @State private var disableView:Bool?
@@ -47,20 +49,29 @@ struct FastImport_MainView: View {
                             .csTextEditorBackground {
                                 Color.white.opacity(0.2)
                             }
-                            .id(0)
                             .cornerRadius(5.0)
-                            .frame(height: 150)
+                            .frame(height: 125)
                             .onChange(of: text) {
                              self.isUpdateDisable = false
                             }
+                            .id(0)
                         
                         HStack {
                             
                             CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.seaTurtle_4, fillColor: Color.seaTurtle_2) {
                                
                                 withAnimation {
-                                    self.estrapolaStringhe()
-                                    self.postEstrapolaAction()
+                                    
+                                    do {
+                                        try self.estrapolaStringhe()
+                                        self.postEstrapolaAction()
+                                        
+                                    } catch let error {
+                                        csHideKeyboard()
+                                        self.isUpdateDisable = true
+                                        self.viewModel.logMessage = error.localizedDescription
+                                    }
+                                    
                                 }
                              
                             }
@@ -71,21 +82,35 @@ struct FastImport_MainView: View {
                             
                             Spacer()
 
-                            Text("N°Piatti:\(allFastDish.count)")
-                                .font(.system(.subheadline, design: .monospaced))
-                                .fontWeight(.medium)
-                                .foregroundStyle(Color.white.opacity(0.6))
+                            Group {
+                                Text("n°Prodotti:\(allFastDish?.count ?? 0)")
+                                   /* .font(.system(.subheadline, design: .monospaced))
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(Color.white.opacity(0.6))*/
+                                
+                                Text("-")
+                                
+                                Text("n°Ing:\(ingCount())")
+                                   /* .font(.system(.subheadline, design: .monospaced))
+                                    .fontWeight(.medium)
+                                    .foregroundStyle(Color.white.opacity(0.6))*/
+                            }
+                            .font(.system(.subheadline, design: .monospaced))
+                            .fontWeight(.medium)
+                            .foregroundStyle(Color.white.opacity(0.6))
+                        
                             
                         } // Barra dei Bottoni
                         .id(1)
                         
-                        if !allFastDish.isEmpty {
+                        if let allFastDish {
                             
                             TemporaryModelRow(
-                                allFastDish: $allFastDish,
+                                allFastDish: allFastDish,
                                 tabViewHeight: tabViewHeight,
                                 localScrollPosition:$childScrollItem)
-                            .id(2)
+                              //  .id(2)
+                                .id(allFastDish)
                             
  
                         } // Chiusa if
@@ -98,7 +123,7 @@ struct FastImport_MainView: View {
                 .scrollPosition(id: $localScrollPosition,anchor: .bottom)
                 .onChange(of: childScrollItem) {
                     withAnimation {
-                        self.localScrollPosition = 0
+                        self.localScrollPosition = 1
                     }
                 }
                // .edgesIgnoringSafeArea(.all)
@@ -127,7 +152,103 @@ struct FastImport_MainView: View {
     
     // Method
     
-    private func estrapolaStringhe() {
+    private func ingCount() -> Int {
+        
+        guard let allFastDish else { return 0}
+        
+        var count:Int = 0
+        for model in allFastDish {
+            
+           let modelCount = model.ingredients.count
+            count += modelCount
+        }
+        return count
+    }
+    
+    private func estrapolaStringhe() throws {
+         // 09_11_23 aboliamo la possibilità di creare prodotti finiti
+     self.allFastDish = nil
+     var allTemprary:[TemporaryModel] = []
+     
+     let containerDish = self.text.split(separator: ".")
+        
+        for dish in containerDish {
+
+            let step_3b = dish.replacingOccurrences(of: "*", with: "")
+            
+            var ingredientContainer = step_3b.split(separator: ",")
+            
+            let dishTitle = String(ingredientContainer[0]).lowercased()
+            let cleanedDishTitle = csStringCleaner(string: dishTitle)
+            ingredientContainer.remove(at: 0)
+            
+            var step_5:[IngredientModel] = []
+            
+            // Innesto 06.10
+            let idUnico = UUID().uuidString
+            
+            guard !ingredientContainer.isEmpty else {
+               /* self.viewModel.logMessage = "Errore di editing. Ciascun piatto deve contenere almeno un ingrediente"*/
+                throw CSError.fastImportDishWithNoIng
+              
+            }
+                
+                for subString in ingredientContainer {
+
+                    let sub = String(subString).lowercased()
+                    let newSub = csStringCleaner(string: sub)
+                    
+                    let ingredient = {
+                        var newIngredient = IngredientModel()
+                        newIngredient.intestazione = newSub
+                        newIngredient.status = .bozza(.disponibile) // 07.09 !!!!
+                        return newIngredient
+                    }()
+
+                    if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 {
+                        
+                        step_5.append(oldIngredient)
+       
+                    } else {step_5.append(ingredient)}
+                             
+                 }
+
+            let fastDish:ProductModel = {
+                
+                var dish = ProductModel()
+                dish.intestazione = cleanedDishTitle
+                dish.status = .bozza(.disponibile) // 07.09 !!!
+              //  dish.ingredientiPrincipaliDEPRECATO = step_5
+                return dish
+                
+            }()
+            
+            let temporaryDish: TemporaryModel = TemporaryModel(dish: fastDish, ingredients: step_5)
+            
+           // self.allFastDish.append(temporaryDish)
+            allTemprary.append(temporaryDish)
+        }
+        // impostiamo la altezza della tabView sulla base del piatto che ha il maggior numero di ingredienti. Le tabview ci hanno dato problemi di rendering (18/06/2023) e devono avere tutte la stessa altezza. E dovranno avere dunque l'altezza maggiore altrimenti parte del contenuto va sotto il resto. Abbiamo tolto lo scroll interno alla tab perchè non funzionava bene e senza fissare il nome del piatto aveva anche poco tempo. Vedi nota vocale 18.06.23
+        let maxIngredientsIn = allTemprary.map({$0.ingredients.count}).max()
+        let maxIn = CGFloat(maxIngredientsIn ?? 0)
+        
+        self.tabViewHeight += (maxIn * 200)
+        self.allFastDish = allTemprary
+        
+    }
+ 
+    private func postEstrapolaAction() {
+        
+        csHideKeyboard()
+        self.isUpdateDisable = true
+
+        viewModel.alertItem = AlertModel(
+            title: "⚠️ Attenzione",
+            message: SystemMessage.allergeni.simpleDescription())
+        
+    }
+    
+   /* private func estrapolaStringhe() {
          
      self.allFastDish = []
      
@@ -202,24 +323,11 @@ struct FastImport_MainView: View {
         let maxIn = CGFloat(maxIngredientsIn ?? 0)
         self.tabViewHeight += (maxIn * 200)
         
-    }
- 
-    private func postEstrapolaAction() {
-        
-        csHideKeyboard()
-        self.isUpdateDisable = true
-        
-      //  self.scrollPosition = 2
-        
-        viewModel.alertItem = AlertModel(
-            title: "⚠️ Attenzione",
-            message: SystemMessage.allergeni.simpleDescription())
-        
-    }
+    }*/ // 09_11_23 Backup
     
 }
 
-struct FastImportMainView_Previews: PreviewProvider {
+/*struct FastImportMainView_Previews: PreviewProvider {
    
    static let dish:ProductModel = ProductModel()
    static let ingredients:[IngredientModel] = [IngredientModel()]
@@ -236,26 +344,31 @@ struct FastImportMainView_Previews: PreviewProvider {
     
         NavigationStack {
           //  FastImport_MainView(backgroundColorView: Color.seaTurtle_1)
-            TemporaryModelRow(allFastDish: $allDish,tabViewHeight: 200,localScrollPosition: .constant(""))
+            TemporaryModelRow(allFastDish: allDish,tabViewHeight: 200)
                 
         }.environmentObject(AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID")))
          //   Color.cyan
     
     }
-}
-
-
+}*/
 
 private struct TemporaryModelRow:View {
     
     @EnvironmentObject var viewModel:AccounterVM
-    @Binding var allFastDish:[TemporaryModel]
+    @State private var allFastDish:[TemporaryModel]
     let tabViewHeight:CGFloat
     
-   // @Binding var motherScrollPosition:Int?
-   // @Binding var anchorMotherPoint:UnitPoint?
-    
     @Binding var localScrollPosition:TemporaryModel.ID?
+    
+    init(
+        allFastDish: [TemporaryModel],
+        tabViewHeight: CGFloat,
+        localScrollPosition: Binding<TemporaryModel.ID?>) {
+      
+        _allFastDish = State(wrappedValue: allFastDish)
+        self.tabViewHeight = tabViewHeight
+        _localScrollPosition = localScrollPosition
+    }
     
     var body: some View {
         
@@ -279,7 +392,6 @@ private struct TemporaryModelRow:View {
                     }
                     .frame(height:tabViewHeight)
                     .containerRelativeFrame(.horizontal)
-                    
                     .csModifier(checkExistence) { view in
                         view
                             .opacity(0.6)
@@ -312,14 +424,6 @@ private struct TemporaryModelRow:View {
         }
         .scrollPosition(id: $localScrollPosition,anchor: .center)
         .scrollTargetBehavior(.viewAligned)
-       /* .onChange(of: localScrollPosition) {
-            
-            withAnimation {
-                self.anchorMotherPoint = .bottom
-                self.motherScrollPosition = 1
-               
-            }
-        }*/
 
     }
     
@@ -352,8 +456,7 @@ private struct TemporaryModelRow:View {
             for ingredient in model.ingredients {
                 
                 if let oldIngredient = viewModel.checkExistingUniqueModelName(model: ingredient).1 { newTemporaryModel?.ingredients.append(oldIngredient) } else {newTemporaryModel?.ingredients.append(ingredient) }
-       
-                
+
             }
             
             newTemporaryContainer.append(newTemporaryModel!)

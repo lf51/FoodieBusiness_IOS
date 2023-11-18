@@ -25,10 +25,10 @@ extension ProductModel:
     public func isEqual(to rhs: MyFoodiePackage.ProductModel) -> Bool {
         
         self.intestazione == rhs.intestazione
+
         
     }
-    
-   
+
     public typealias VM = AccounterVM
   // public typealias FPM = FilterPropertyModel
    // public typealias ST = StatusTransition
@@ -970,26 +970,50 @@ extension ProductModel: Object_FPC {
 
 extension ProductModel: MyProProgressBar {
     
-    public var countProgress: Double {
-
-        var count:Double = 0.0
-            
-            if self.intestazione != "" { count += 0.16 }
-            if self.descrizione != "" { count += 0.1 }
-            if self.categoriaMenu != CategoriaMenu.defaultValue.id &&
-                self.categoriaMenu != "" { count += 0.16 }
+    public var countProgress: Double { selectCountProgress() }
     
-            if self.ingredientiPrincipali != [] &&
-               !self.ingredientiPrincipali.contains(self.id) {
-            count += 0.225 }
+    private func selectCountProgress() -> Double {
         
-            if self.ingredientiSecondari != [] { count += 0.075 }
-        
-            if self.mostraDieteCompatibili { count += 0.1 }
-            if !self.arePriceEmpty() { count += 0.18 }
+        switch self.percorsoProdotto {
             
-            return count
+        case .preparazione:
+            return progressPreparazione()
+        default:
+            return progressIbrido()
+            
+        }
+    }
+    
+    private func progressPreparazione() -> Double { 
+        var count:Double = 0.0
         
+        if self.intestazione != "" { count += 0.16 }
+        if let descrizione,
+        descrizione != "" { count += 0.1 }
+        if self.categoriaMenu != CategoriaMenu.defaultValue.id &&
+            self.categoriaMenu != "" { count += 0.16 }
+
+        if self.ingredientiPrincipali != [] { count += 0.225 }
+        if self.ingredientiSecondari != [] { count += 0.075 }
+    
+        if self.mostraDieteCompatibili { count += 0.1 }
+        if !self.arePriceEmpty() { count += 0.18 }
+
+        return count
+    }
+    private func progressIbrido() -> Double {
+        var count:Double = 0.0
+        
+        if self.intestazione != "" { count += 0.16 }
+        if let descrizione,
+        descrizione != "" { count += 0.15 } // +0.3
+        if self.categoriaMenu != CategoriaMenu.defaultValue.id &&
+            self.categoriaMenu != "" { count += 0.16 }
+
+        if self.mostraDieteCompatibili { count += 0.1 }
+        if !self.arePriceEmpty() { count += 0.18 }
+
+        return count
     }
     
 }

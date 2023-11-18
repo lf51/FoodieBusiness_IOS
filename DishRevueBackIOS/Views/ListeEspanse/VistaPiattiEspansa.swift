@@ -9,7 +9,6 @@ import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
 
-
 struct PreCallVistaPiattiEspansa: View {
     
     @State private var localStateMenu:MenuModel
@@ -136,11 +135,18 @@ struct PreCallVistaPiattiEspansa: View {
         }
         
         @State private var filterCategoria:CategoriaMenu = .defaultValue
-        @State private var filterPercorso:ProductModel.PercorsoProdotto = .preparazione
+        @State private var filterPercorso:PercorsoProdotto = .preparazione
         
         var body: some View {
             
                 VStack(alignment:.leading) {
+                    
+                    let hideEditing:Bool = {
+                       // per creare una lista plain non modificabile. In futuro questo valore possiamo farlo passare dall'init.
+                       let isDiSist = self.currentMenu.tipologia.isDiSistema()
+                       let isOnAir = self.currentMenu.isOnAirValue().today
+                       return isDiSist && !isOnAir
+                    }()
                     
                     let container:[ProductModel] = {
                        
@@ -205,26 +211,29 @@ struct PreCallVistaPiattiEspansa: View {
                                     .opacity(containTheDish ? 1.0 : 0.4)
                                     .overlay(alignment: .bottomTrailing) {
                                         
-                                        CSButton_image(
-                                           activationBool: containTheDish,
-                                           frontImage: "trash",
-                                           backImage: "plus",
-                                           imageScale: .medium,
-                                           backColor: .red,
-                                           frontColor: .blue) {
-                                               withAnimation {
-                                                   
-                                                   self.addRemoveDishLocally(idPiatto: ProductModel.id)
-                                                 /*  self.viewModel.manageInOutPiattoDaMenuModel(idPiatto: ProductModel.id, menuDaEditare: currentMenu) */
+                                        if !hideEditing {
+                                            // Se true mostriamo una lista plain non modificabile
+                                            CSButton_image(
+                                               activationBool: containTheDish,
+                                               frontImage: "trash",
+                                               backImage: "plus",
+                                               imageScale: .medium,
+                                               backColor: .red,
+                                               frontColor: .blue) {
+                                                   withAnimation {
+                                                       
+                                                       self.addRemoveDishLocally(idPiatto: ProductModel.id)
+     
+                                                   }
+                                                               }
+                                               .padding(5)
+                                               .background {
+                                                   Color.white.opacity(containTheDish ? 0.5 : 1.0)
+                                                       .clipShape(Circle())
+                                                       .shadow(radius: 5.0)
                                                }
-                                                           }
-                                           .padding(5)
-                                           .background {
-                                               Color.white.opacity(containTheDish ? 0.5 : 1.0)
-                                                   .clipShape(Circle())
-                                                   .shadow(radius: 5.0)
-                                                   //.frame(width: 30, height: 30)
-                                           }
+                                            
+                                        }
                                            
                    
                                     }
@@ -232,16 +241,27 @@ struct PreCallVistaPiattiEspansa: View {
                         }
                     }
                     
-                    if showButtonBar {
+                    if showButtonBar && !hideEditing {
                         
-                        BottomView_DLBIVSubView(
+                      /*  BottomView_DLBIVSubView(
                             isDeActive: disableCondition()) {
                             description()
                             } resetAction: {
                                 self.currentMenu.rifDishIn = valoreArchiviato
                             } saveAction: {
                                 self.saveAction()
-                            }
+                            }*/
+                        
+                        BottomDialogView {
+                            self.description()
+                        } disableConditions: {
+                            self.disableCondition()
+                        } secondaryAction: {
+                            self.currentMenu.rifDishIn = valoreArchiviato
+                        } primaryDialogAction: {
+                            self.saveButtonDialogView()
+                        }
+  
                     } else {
                         
                         CSDivider()
@@ -256,17 +276,30 @@ struct PreCallVistaPiattiEspansa: View {
           //  } // chiusa CSzStack //deprecata 18.01
         }
         
+        // ViewBuilder
+        
+        @ViewBuilder private func saveButtonDialogView() -> some View {
+     
+            csBuilderDialogButton {
+                DialogButtonElement(
+                    label: .saveEsc) {
+                        self.saveAction()
+                    }
+            }
+        }
+        
+        
         // Method
 
         private func saveAction() {
-          //  self.viewModel.updateItemModel(itemModel: currentMenu,destinationPath: destinationPath)
-            self.viewModel.alertItem = AlertModel(
-                title: "DA SVILUPPARE",
-                message: "SVILUPPARE SALVATAGGIO IN BATCH")
+
+            self.viewModel.updateModelOnSub(itemModel: currentMenu,refreshPath: destinationPath)
         }
         
-        private func disableCondition() -> Bool {
-            self.currentMenu.rifDishIn == valoreArchiviato
+        private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
+           let general = self.currentMenu.rifDishIn == valoreArchiviato
+            
+            return(general,false,nil)
         }
         
         private func description() -> (breve:Text,estesa:Text) {

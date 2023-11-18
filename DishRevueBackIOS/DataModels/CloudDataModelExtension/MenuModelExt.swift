@@ -134,19 +134,29 @@ extension MenuModel:
       //  let disabilita = self.rifDishIn.isEmpty
         let dishCount = viewModel.db.allMyDish.count
         let dishInMenu = self.rifDishIn.count
-        
-      return //VStack {
+       
+        let rigenera:Bool = {
+            let isDiSistema = self.tipologia.isDiSistema()
+            let isOnAir = self.isOnAirValue().today
             
-          /*  Button {
-             //   viewModel[keyPath: navigationPath].append(DestinationPathView.categoriaMenu)
+            return isDiSistema && !isOnAir
+        }()
+     
+      return Group {
 
-            } label: {
-                HStack{
-                    Text("Anteprima")
-                    Image(systemName: "eye")
-                }
-            }.disabled(disabilita) */
-          
+          if rigenera {
+              
+              Button {
+                  viewModel.rigeneraMenuDiSistema(from: self)
+
+              } label: {
+                  HStack{
+                      Text("Rigenera")
+                      Image(systemName: "wand.and.stars")
+                  }
+              }
+          }
+        
           Button {
               viewModel[keyPath: navigationPath].append(DestinationPathView.vistaPiattiEspansa(self))
               
@@ -157,7 +167,7 @@ extension MenuModel:
               }
           }.disabled(dishCount == 0)
             
-      //  }
+        }
     }
     
    /* public static func sortModelInstance(lhs: MenuModel, rhs: MenuModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
@@ -278,7 +288,7 @@ extension MenuModel:
         let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.db.allMyDish)
         
         let allAvaibleDish = allDish.filter({
-            $0.percorsoProdotto != .finito &&
+            $0.percorsoProdotto != .finito() &&
             $0.status.checkStatusTransition(check: .disponibile) })
         
         let tuttiVotiPesati = allAvaibleDish.map({$0.topRatedValue(readOnlyVM: readOnlyVM)})

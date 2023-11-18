@@ -16,6 +16,7 @@ struct CloudImportCategoriesView: View {
     @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<CategoriaMenu>()
         
     @State private var searchLetter:String = ""
+    @State private var productType:ProductType = .noValue
     let backgroundColor:Color
 
     var body: some View {
@@ -31,13 +32,35 @@ struct CloudImportCategoriesView: View {
                 
                 HStack {
                     
-                    Text("selected:")
+                  /*  Text("selected:")
                         .italic()
                         .foregroundStyle(Color.black)
                         .opacity(0.8)
                     Text("\(importVM.selectedContainer?.count ?? 0)")
                         .bold()
-                        .foregroundStyle(Color.seaTurtle_4)
+                        .foregroundStyle(Color.seaTurtle_4)*/
+                    
+                   // Spacer()
+                    Text("Type:")
+                        .italic()
+                        .foregroundStyle(Color.black)
+                        .opacity(0.8)
+                    
+                    Picker("", selection: $productType) {
+                        
+                        ForEach(ProductType.allCases,id:\.self) { type in
+                            
+                            let value = type == .noValue ? "n/d" : type.rawValue
+                            
+                            Text(value)
+                            
+                        }
+                        
+                    }
+                    .background {
+                        Color.seaTurtle_4.opacity(0.1)
+                            .clipShape(.buttonBorder)
+                    }
                     
                     Spacer()
                     
@@ -62,17 +85,34 @@ struct CloudImportCategoriesView: View {
                             .clipShape(.buttonBorder)
                     }
                     
+                    let disabilitaRicerca:Bool = { 
+                        searchLetter == "" ||
+                        productType == .noValue
+                    }()
+                    
                     Button("Cerca") {
 
                         self.cercaNellaLibrary()
                         
-                    }.disabled(searchLetter == "")
+                    }.disabled(disabilitaRicerca)
                     
                     
                 }
                 
                 HStack {
 
+                    Text("selected:")
+                        .font(.subheadline)
+                        .italic()
+                        .foregroundStyle(Color.black)
+                        .opacity(0.8)
+                    Text("\(importVM.selectedContainer?.count ?? 0)")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundStyle(Color.seaTurtle_4)
+                    
+                    Spacer()
+                    
                     Text("in libreria:")
                         .font(.caption)
                         .italic()
@@ -84,8 +124,7 @@ struct CloudImportCategoriesView: View {
                         .bold()
                         .foregroundStyle(Color.seaTurtle_4)
                     
-                    Spacer()
-                    
+
                     Text("risultati mostrati:")
                         .font(.caption)
                         .italic()
@@ -167,8 +206,9 @@ struct CloudImportCategoriesView: View {
             
         }
         .csHpadding()
-        
-    }
+        .csOverlayMessage(self.$importVM.queryMessage)
+
+                }
                 .onAppear {
                     print("[ON_APPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
                     
@@ -198,7 +238,9 @@ struct CloudImportCategoriesView: View {
         
         self.viewModel
             .categoriesManager
-            .fetchFromSharedCollection(filterBy: self.searchLetter, startAfter: nil)
+            .fetchFromSharedCollection(
+                filterBy: self.searchLetter,productType,
+                startAfter: nil)
     }
     
     private func mostraAltri() {

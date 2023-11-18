@@ -61,59 +61,19 @@ struct DishListByIngredientView: View {
                         placeHolder: "Sostituire",
                         imageNameOrEmojy: "arrowshape.backward",
                         backgroundColor: Color.black) {
-                          /*  Text(nomeIngredienteCorrente)
-                                .foregroundStyle(Color.seaTurtle_4)
-                                ._tightPadding()
-                                .background(
-                                    RoundedRectangle(cornerRadius: 5.0)
-                                        .fill(Color.seaTurtle_1)
-                                            ) */
-                            
-                           /* Toggle(isOn: $isPermamente) {
-
-                                HStack {
-                                  
-                                    Text(nomeIngredienteCorrente)
-                                         .lineLimit(1)
-                                         .foregroundStyle(Color.seaTurtle_4)
-                                       //  ._tightPadding()
-                                       /*  .background(
-                                             RoundedRectangle(cornerRadius: 5.0)
-                                                 .fill(Color.seaTurtle_1)
-                                                     )*/
-                                   // Spacer()
-                                    Image(systemName: isPermamente ? "exclamationmark.circle" : "clock")
-                                        .imageScale(.medium)
-                                        .foregroundStyle(isPermamente ? Color.red : Color.seaTurtle_3)
-                                   
-                                }
-                                ._tightPadding()
-                               // .padding(.horizontal)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 5.0)
-                                        .fill(Color.seaTurtle_1)
-                                            )
-                            } */ // Mod.16.09
-                           
-                            
+                    
                             HStack {
                               
                                 Text(nomeIngredienteCorrente)
                                      .lineLimit(1)
                                      .foregroundStyle(Color.seaTurtle_4)
-                                   //  ._tightPadding()
-                                   /*  .background(
-                                         RoundedRectangle(cornerRadius: 5.0)
-                                             .fill(Color.seaTurtle_1)
-                                                 )*/
-                               // Spacer()
+
                                 Image(systemName: value.image)
                                     .imageScale(.medium)
                                     .foregroundStyle(value.imageColor)
                                
                             }
                             ._tightPadding()
-                           // .padding(.horizontal)
                             .background(
                                 RoundedRectangle(cornerRadius: 5.0)
                                     .fill(Color.seaTurtle_1)
@@ -127,7 +87,6 @@ struct DishListByIngredientView: View {
                     mapArray: mapArray,
                     modelSostitutoGlobale: $modelSostitutoGlobale,
                     imageOrEmoji: "arrowshape.forward")
-                   // .background(Color.red)
                     .clipped() // altrimenti ha un background fino al notch
         
                 ScrollView(showsIndicators: false) {
@@ -146,14 +105,13 @@ struct DishListByIngredientView: View {
                             idIngredienteCorrente: self.idIngredienteCorrente,
                             mapArray: mapArray)
                                 .id(modelSostitutoGlobale)
-                    
-                        // l'uso dell'id è una soluzione trovata grazie all'overradeStateTEST per permettere l'aggiornamento della view sottostante
+
                     }
                 }
        
              Spacer()
                 
-            BottomView_DLBIVSubView(
+          /*  BottomView_DLBIVSubView(
                 isDeActive: isDeactive) {
                    //self.description()
                     self.switchDescription()
@@ -165,6 +123,20 @@ struct DishListByIngredientView: View {
                 }
               //  .background(Color.red)
                 .clipped() // altrimenti ha un background fino alla base
+                  */
+                    
+                    BottomDialogView {
+                        self.switchDescription()
+                    } disableConditions: {
+                        (self.isDeactive,false,false)
+                    } secondaryAction: {
+                        self.resetAction()
+                    } primaryDialogAction: {
+                        self.saveButtonDialogView()
+                    }
+                    .clipped()
+                    
+                    
             }
            
             .padding(.horizontal,20)
@@ -209,6 +181,22 @@ struct DishListByIngredientView: View {
         
         
     }
+    
+    // viewBuilder
+    
+    @ViewBuilder private func saveButtonDialogView() -> some View {
+ 
+        csBuilderDialogButton {
+            
+            DialogButtonElement(
+                label: .saveEsc) {
+                    self.switchAction()
+                }
+        }
+        
+
+    }
+    
     
     // method
     
@@ -272,8 +260,6 @@ struct DishListByIngredientView: View {
         return (infoBreve,infoEstesa)
     }
     
-   
-    
     private func switchAction() {
         
         if isPermamente { saveActionPermanente() }
@@ -283,6 +269,8 @@ struct DishListByIngredientView: View {
     
     private func saveActionTemporaneo() {
         
+        var productUpdated:[ProductModel] = []
+        
         for dish in self.dishWithIngredient {
             
             let cleanDish = {
@@ -290,24 +278,32 @@ struct DishListByIngredientView: View {
                 cleanCopy.idIngredienteDaSostituire = nil
                 return cleanCopy
             }()
-            self.viewModel.alertItem = AlertModel(
-                title: "DA SVILUPPARE",
-                message: "SVILUPPARE SALVATAGGIO IN BATCH")
-          //  self.viewModel.updateItemModel(itemModel: cleanDish) // 31_10_23 Da Sviluppare per salvataggi in batch
+            
+            productUpdated.append(cleanDish)
             
         }
         
-      if let currentIngredientModel = {
+      if let currentIngredientModel = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.db.allMyIngredients) /*{
+          
           let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.db.allMyIngredients)
-          var cleanCopy = current
+          return current
+       /*   var cleanCopy = current
           cleanCopy?.status = current?.status.changeStatusTransition(changeIn: .inPausa) ?? .bozza()
          
-            return cleanCopy
-      }() {
-          self.viewModel.alertItem = AlertModel(
+        return cleanCopy*/
+      }()*/ {
+         /* self.viewModel.alertItem = AlertModel(
               title: "DA SVILUPPARE",
-              message: "SVILUPPARE SALVATAGGIO IN BATCH")
+              message: "SVILUPPARE SALVATAGGIO IN BATCH")*/
          // self.viewModel.updateItemModel(itemModel: currentIngredientModel, destinationPath: self.destinationPath) // 31_10_23 Da Sviluppare per salvataggi in batch
+          // salviamo l'ingrediente
+       //   self.viewModel.updateModel(itemModel: currentIngredientModel)
+          self.viewModel.manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .inPausa)
+          
+          self.viewModel.updateModelCollection(
+            items: productUpdated,
+            sub: .allMyDish,
+            destinationPath: self.destinationPath)
           
       } else {
             self.viewModel.alertItem = AlertModel(
@@ -319,6 +315,7 @@ struct DishListByIngredientView: View {
     
     private func saveActionPermanente() {
         
+        var dishUpdated:[ProductModel] = []
         var dishThatNotChange = 0
         
         for dish in dishWithIngredient {
@@ -342,26 +339,42 @@ struct DishListByIngredientView: View {
 
                 return cleanCopy
             }()
-            self.viewModel.alertItem = AlertModel(
+            
+            dishUpdated.append(cleanDish)
+          /* self.viewModel.alertItem = AlertModel(
                 title: "DA SVILUPPARE",
-                message: "SVILUPPARE SALVATAGGIO IN BATCH")
+                message: "SVILUPPARE SALVATAGGIO IN BATCH")*/
           //  self.viewModel.updateItemModel(itemModel: cleanDish) // 31_10_23 Da Sviluppare per salvataggi in batch
         }
         
-        guard dishThatNotChange == 0 else { return }
+        guard dishThatNotChange == 0 else { 
+            
+            self.viewModel.updateModelCollection(
+                items: dishUpdated,
+                sub: .allMyDish,
+                destinationPath: self.destinationPath)
+            
+            return }
         
-        if let currentIngredientModel = {
+        if let currentIngredientModel = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.db.allMyIngredients) /*{
             
             let current = self.viewModel.modelFromId(id: self.idIngredienteCorrente, modelPath: \.db.allMyIngredients)
             var cleanCopy = current
             cleanCopy?.status = current?.status.changeStatusTransition(changeIn: .archiviato) ?? .bozza()
             return cleanCopy
             
-        }() {
-            self.viewModel.alertItem = AlertModel(
-                title: "DA SVILUPPARE",
-                message: "SVILUPPARE SALVATAGGIO IN BATCH")
+        }()*/ {
+           
           //  self.viewModel.updateItemModel(itemModel: currentIngredientModel, destinationPath: self.destinationPath) // 31_10_23 Da Sviluppare per salvataggi in batch
+          //  self.viewModel.updateModel(
+              //  itemModel: currentIngredientModel)
+            
+            self.viewModel.manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .archiviato)
+            
+            self.viewModel.updateModelCollection(
+                items: dishUpdated,
+                sub: .allMyDish,
+                destinationPath: self.destinationPath)
             
         } else {
               self.viewModel.alertItem = AlertModel(

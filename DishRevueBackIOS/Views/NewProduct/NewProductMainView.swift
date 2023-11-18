@@ -37,14 +37,24 @@ struct NewProductMainView: View {
         
         let percorsoNew = self.newDish.percorsoProdotto
         let genere:String = percorsoNew == .finito() ? "Nuovo" : "Nuova"
+        let viewTitle = self.newDish.intestazione == "" ? "\(genere) \(percorsoNew.simpleDescription())" : self.newDish.intestazione
         
-        CSZStackVB(title: self.newDish.intestazione == "" ? "\(genere) \(percorsoNew.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
+        CSZStackVB(
+            title: viewTitle,
+            backgroundColorView: backgroundColorView) {
             
             VStack {
+                
                 let disabilita = self.disabilitaSwitch()
+                let value = Binding {
+                    newDish.percorsoProdotto.returnTypeCase()
+                } set: { new in
+                    newDish.percorsoProdotto = new
+                }
+
                 //  CSDivider()
                 SwitchProductType(
-                    percorsoItem:$newDish.percorsoProdotto,
+                    percorsoItem:value,
                     nascondiTesto: disabilita)
                     .csHpadding()
                     .disabled(disabilita)
@@ -52,6 +62,9 @@ struct NewProductMainView: View {
                 vbPercorsoProdotto()
                     .id(percorsoNew)
 
+            }//.csHpadding()
+            .onAppear() {
+                self.viewModel.logMessage = "Controllare e verificare funzionalità saveDialog Ridotto"
             }
             
         } // end ZStack Esterno
@@ -61,26 +74,55 @@ struct NewProductMainView: View {
     // Method
     
     @ViewBuilder private func vbPercorsoProdotto() -> some View {
-                
+              
         switch self.newDish.percorsoProdotto {
             
-       case .finito,.composizione:
+        case .preparazione:
             
-             NewDishIbridView(
-                newDish: $newDish,
-                disabilitaPicker: $disabilitaPicker,
-                backgroundColorView: backgroundColorView,
-                destinationPath: destinationPath,
-                observedVM: viewModel)
+            NewProductIbridView(
+               newDish: $newDish,
+               sottostante: nil,
+               disabilitaPicker: $disabilitaPicker,
+               backgroundColorView: backgroundColorView,
+               destinationPath: destinationPath,
+               saveDialogType: saveDialogType)
             
-        default:
-          
-            NewDishMainView(
-                newDish: $newDish,
+        case .composizione(let ing):
+            // l'ingrediente sottostante può essere modificato se trattasi di modifica del prodotto
+            let ingredient:IngredientModel = {
+                
+                if let ing { return ing }
+                else { return IngredientModel() }
+            }()
+            
+            NewProductIbridView(
+               newDish: $newDish,
+               sottostante: ingredient,
+               disabilitaPicker: $disabilitaPicker,
+               backgroundColorView: backgroundColorView,
+               destinationPath: destinationPath,
+               saveDialogType: saveDialogType)
+            
+        case .finito(let rif):
+            // se trattasi di modifica di un prodotto, le modifiche al sottostante devono essere bloccate
+            let ingredient:(model:IngredientModel,lock:Bool) = {
+                
+                if let rif,
+                let ing = self.viewModel.modelFromId(id: rif, modelPath: \.db.allMyIngredients) {
+                   return (ing,true)
+                }
+                else { return (IngredientModel(),false) }
+            }()
+            
+             NewProductIbridView(
+                newDish: $newDish, 
+                sottostante: ingredient.model,
+                lockEditSottostante: ingredient.lock,
                 disabilitaPicker: $disabilitaPicker,
                 backgroundColorView: backgroundColorView,
                 destinationPath: destinationPath,
                 saveDialogType: saveDialogType)
+
             
         }
     }
@@ -94,7 +136,7 @@ struct NewProductMainView: View {
     
 }
 
-struct NewProductMainView_Previews: PreviewProvider {
+/*struct NewProductMainView_Previews: PreviewProvider {
 
     @State static var ingredientSample =  IngredientModel(
         intestazione: "Guanciale Nero",
@@ -180,4 +222,4 @@ struct NewProductMainView_Previews: PreviewProvider {
             
         }.environmentObject(viewModel)
     }
-}
+}*/

@@ -45,7 +45,7 @@ struct FastImport_CorpoScheda:View {
   
                 VStack(alignment:.leading) {
                     
-                    Text(temporaryModel.dish.intestazione)
+                    Text(temporaryModel.dish.intestazione.capitalized)
                             .font(.title)
                             .foregroundStyle(Color.white)
 
@@ -63,7 +63,6 @@ struct FastImport_CorpoScheda:View {
                                    /* self.temporaryModel.dish.categoriaMenuDEPRECATA == .defaultValue */
                                     }
                                 .fixedSize()
-                     /*   csVbSwitchImageText(string: temporaryModel.dish.categoriaMenuDEPRECATA.imageAssociated()) */
                         csVbSwitchImageText(string: temporaryModel.categoriaMenu.imageAssociated(),size: .large)
                         
                         Spacer()
@@ -114,16 +113,13 @@ struct FastImport_CorpoScheda:View {
            // ScrollView(showsIndicators: false) {
                 
                 ForEach($temporaryModel.ingredients) { $ingredient in
-                
-                  /*  let isIngredientOld = viewModel.checkExistingUniqueModelID(model: ingredient).0 */
+
                     let isIngredientOld = viewModel.isTheModelAlreadyExist(modelID: ingredient.id,path: \.db.allMyIngredients)
                     
                     FastImport_IngredientRow(ingredient: $ingredient,areAllergeniOk: $areAllergeniOk, checkError: checkError, isIngredientOld: isIngredientOld){ idIngredient in
                         self.addSecondary(id: idIngredient)
                       
                     }
-                   // .disabled(isIngredientOld)
-                   // .blur(radius: isIngredientOld ? 0.8 : 0.0)
                     .overlay(alignment:.center) {
                         if isIngredientOld{
                             
@@ -206,14 +202,9 @@ struct FastImport_CorpoScheda:View {
             
             let origineOk = ingredient.origine != .defaultValue
             let conservazioneOk = ingredient.conservazione != .defaultValue
-            // modifica 05.08
-          //  let produzioneOk = ingredient.produzione != .defaultValue
-          //  let provenienzaOk = ingredient.provenienza != .defaultValue
-            
-         //   if !origineOk || !conservazioneOk || !produzioneOk || !provenienzaOk {
-                if !origineOk || !conservazioneOk  {
-                print("CheckAreIngredientsOk -> \(ingredient.intestazione) non completo")
-                return false}
+
+            if !origineOk || !conservazioneOk  { return false }
+                
         }
         
         return true
@@ -221,10 +212,8 @@ struct FastImport_CorpoScheda:View {
     
     private func updateDishPrice() {
         
-        // creiamo un piatto in formato standard "Unico", per una persona e senza indicazione di peso.
-     //   self.fastDish.pricingPiatto = [] // deprecata 24.08
         guard self.dishPrice != "" else { return }
-      //  guard csCheckDouble(testo: self.dishPrice) else { return }
+    
         let newPrice = self.dishPrice.replacingOccurrences(of: ",", with: ".")
         
         let formatoDish: DishFormat = {
@@ -234,25 +223,10 @@ struct FastImport_CorpoScheda:View {
             
         }()
         
-        self.temporaryModel.dish.pricingPiatto.append(formatoDish)
-        print("Update DishPrice")
+       // self.temporaryModel.dish.pricingPiatto.append(formatoDish)
+        self.temporaryModel.dish.pricingPiatto = [formatoDish]
         
     }
-   /* private func updateDishPrice() {
-        
-        // creiamo un piatto in formato standard "Unico", per una persona e senza indicazione di peso.
-        self.fastDish.formatiDelPiatto = []
-        guard self.dishPrice != "" else {return}
-        guard csCheckDouble(testo: self.dishPrice) else { return }
-        
-        let formatoDish: DishFormato = .unico("n/d", "1", self.dishPrice)
-        
-        self.fastDish.formatiDelPiatto.append(formatoDish)
-        print("Update DishPrice")
-        
-    } */ // deprecata 16.07
-    
-    
 }
 
 /*
