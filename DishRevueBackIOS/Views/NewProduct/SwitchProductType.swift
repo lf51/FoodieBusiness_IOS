@@ -10,7 +10,7 @@ import MyFoodiePackage
 
 struct SwitchProductType: View {
 
-    @Binding var percorsoItem: ProductModel.PercorsoProdotto
+    @Binding var percorsoItem: PercorsoProdotto
     let nascondiTesto:Bool
     
     var body: some View {
@@ -19,7 +19,7 @@ struct SwitchProductType: View {
             
             Picker(selection: $percorsoItem) {
                 
-                ForEach(ProductModel.PercorsoProdotto.allCases,id:\.self) { percorso in
+                ForEach(PercorsoProdotto.allCases,id:\.self) { percorso in
                     
                         Text(percorso.pickerDescription())
                         .tag(percorso)

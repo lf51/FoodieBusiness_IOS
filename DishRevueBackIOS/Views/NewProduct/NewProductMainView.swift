@@ -36,7 +36,7 @@ struct NewProductMainView: View {
     var body: some View {
         
         let percorsoNew = self.newDish.percorsoProdotto
-        let genere:String = percorsoNew == .finito ? "Nuovo" : "Nuova"
+        let genere:String = percorsoNew == .finito() ? "Nuovo" : "Nuova"
         
         CSZStackVB(title: self.newDish.intestazione == "" ? "\(genere) \(percorsoNew.simpleDescription())" : self.newDish.intestazione, backgroundColorView: backgroundColorView) {
             
@@ -48,21 +48,10 @@ struct NewProductMainView: View {
                     nascondiTesto: disabilita)
                     .csHpadding()
                     .disabled(disabilita)
-                
-               /* if disabilita {
-                    ProgressView(value: self.newDish.countProgress) {
-                        Text("Completo al: \(self.newDish.countProgress,format: .percent)")
-                            .font(.caption)
-                    }
-                    .csHpadding()
-                    
-                } */
-                  
+  
                 vbPercorsoProdotto()
                     .id(percorsoNew)
-                    //.id(type) // serve ad aggiornare, altrimenti nel passaggio da food a beverage il valore non cambia in quanto usa la stessa View
 
-                
             }
             
         } // end ZStack Esterno

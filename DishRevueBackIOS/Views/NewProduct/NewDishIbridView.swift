@@ -95,7 +95,7 @@ struct NewDishIbridView: View {
                             .opacity(lockIngredientEdit ? 0.6 : 1.0)
                             .disabled(lockIngredientEdit)
  
-                        let isComposizione = self.newDish.percorsoProdotto == .composizione
+                        let isComposizione = self.newDish.percorsoProdotto == .composizione()
                         let labelString = isComposizione ? "la composizione" : "il prodotto (Optional)"
                         
                             BoxDescriptionModel_Generic(
@@ -319,7 +319,7 @@ struct NewDishIbridView: View {
     
     private func checkDescrizione() -> Bool {
         
-        if self.newDish.percorsoProdotto == .composizione {
+        if self.newDish.percorsoProdotto == .composizione() {
             return self.newDish.descrizione != ""
         }
         return true

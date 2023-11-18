@@ -178,7 +178,7 @@ extension ProductModel:
                       Image(systemName:"leaf")
                   }
               }
-          } else if self.percorsoProdotto == .finito {
+          } else if self.percorsoProdotto == .finito() {
              
               let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
               let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
@@ -610,7 +610,7 @@ extension ProductModel:
         // Passaggio di status sempre consentito. 16.03.23 Nessuna modifica da apportare
         
         //Update 09.07.23
-        guard self.percorsoProdotto != .composizione else { return .eseguibileConRiserva }
+        guard self.percorsoProdotto != .composizione() else { return .eseguibileConRiserva }
         //end update
         let allIng = self.allMinusArchiviati(viewModel: viewModel)
         let ingCount = allIng.count
@@ -843,9 +843,9 @@ extension ProductModel: Object_FPC {
         var status_singleChoice:StatusTransition?
         var executionState:ExecutionState?
         // 16.03 end
-        var percorsoPRP:[ProductModel.PercorsoProdotto]? { willSet {
+        var percorsoPRP:[PercorsoProdotto]? { willSet {
             if let value = newValue,
-               !value.contains(.finito) { self.inventario = nil }
+               !value.contains(.finito()) { self.inventario = nil }
         }}
         var categorieMenu:[CategoriaMenu]?
         var basePRP:ProductModel.BasePreparazione? //
