@@ -266,10 +266,10 @@ struct ListaIngredientiView: View {
     
 
 }
-
+/*
 struct ListaIngredientiView_Previews: PreviewProvider {
     static var previews: some View {
         ListaIngredientiView(tabSelection: .ingredientList, backgroundColorView: .seaTurtle_1)
             .environmentObject(testAccount)
     }
-}
+}*/

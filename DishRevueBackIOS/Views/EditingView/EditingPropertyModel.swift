@@ -327,7 +327,7 @@ struct EditingPropertyModel: View {
 
 
 
-
+/*
 struct EditingPropertyModel_Previews: PreviewProvider {
     
    /* @State static var testProperty: PropertyModel = PropertyModel(
@@ -358,7 +358,7 @@ struct EditingPropertyModel_Previews: PreviewProvider {
        // .navigationViewStyle(StackNavigationViewStyle())
         
     }
-}
+}*/
 
 private struct DynamicScrollSizeMM:View {
     

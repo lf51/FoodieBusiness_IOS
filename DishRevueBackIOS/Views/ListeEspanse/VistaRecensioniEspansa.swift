@@ -85,7 +85,7 @@ struct VistaRecensioniEspansa: View {
     }
     
 }
-
+/*
 struct VistaRecensioniEspansa_Previews: PreviewProvider {
     static var previews: some View {
         
@@ -95,7 +95,7 @@ struct VistaRecensioniEspansa_Previews: PreviewProvider {
         .environmentObject(testAccount)
         
     }
-}
+}*/
 
 private struct RevRowLocal:View {
     
@@ -114,7 +114,8 @@ private struct RevRowLocal:View {
         
         VStack(alignment:.leading,spacing: .vStackLabelBodySpacing) {
             
-            let rifReviews = self.mapDish.rifReviews
+           // let rifReviews = self.mapDish.rifReviews
+            let rifReviews = self.viewModel.reviewFilteredByDish(idPiatto: self.mapDish.id).rif
             
             VStack(spacing:.vStackLabelBodySpacing) {
                 

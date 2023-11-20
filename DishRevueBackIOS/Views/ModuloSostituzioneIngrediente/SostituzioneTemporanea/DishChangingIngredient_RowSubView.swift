@@ -98,14 +98,22 @@ struct DishChangingIngredient_RowSubView: View {
         .onAppear {
 
             self.dish.idIngredienteDaSostituire = self.idIngredienteCorrente
-            self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = self.idSostitutoGlobale
+            if self.dish.elencoIngredientiOff != nil {
                 
-            // BUG 31.08 da risolvere. Vedi Nota Vocale 31.08 - Risolto: vedi nota vovale 01.09
+                self.dish.elencoIngredientiOff![self.idIngredienteCorrente] = self.idSostitutoGlobale
+                
+            } else {
+                
+                var dictionary:[String:String] = [:]
+                dictionary[self.idIngredienteCorrente] = self.idSostitutoGlobale
+                self.dish.elencoIngredientiOff = dictionary
+   
+            }
         }
         .onChange(of: self.isPermanente) { _ , newValue in
             if !newValue {
                 self.dish.idIngredienteDaSostituire = idIngredienteCorrente
-                self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = self.idSostitutoGlobale
+                self.dish.elencoIngredientiOff![self.idIngredienteCorrente] = self.idSostitutoGlobale
             }
         }
         
@@ -117,11 +125,11 @@ struct DishChangingIngredient_RowSubView: View {
         if self.dish.idIngredienteDaSostituire == nil {
             
             self.dish.idIngredienteDaSostituire = idIngredienteCorrente
-            self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = self.idSostitutoGlobale
+            self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] = self.idSostitutoGlobale
        
         } else {
             self.dish.idIngredienteDaSostituire = nil
-            self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = nil
+            self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] = nil
             
         }
     
@@ -133,7 +141,7 @@ struct DishChangingIngredient_RowSubView: View {
             self.dish.idIngredienteDaSostituire = idIngredienteCorrente
         }
         
-        self.dish.elencoIngredientiOff[self.idIngredienteCorrente] = isIngredientSelected ? nil : idIngredient
+        self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] = isIngredientSelected ? nil : idIngredient
         self.nomeSostitutoLocale = isIngredientSelected ? nil : nomeIngrediente
 
     }
@@ -141,7 +149,7 @@ struct DishChangingIngredient_RowSubView: View {
     private func isInAndSelected(idIngredient:String) -> (isIn:Bool,isSelect:Bool) {
         
         let isIngredientIn = self.dish.checkIngredientsIn(idIngrediente: idIngredient)
-        let isIngredientSelected = self.dish.elencoIngredientiOff[self.idIngredienteCorrente] == idIngredient
+        let isIngredientSelected = self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] == idIngredient
  
         return (isIngredientIn,isIngredientSelected)
     }
@@ -154,7 +162,7 @@ struct DishChangingIngredient_RowSubView: View {
     
     private func infoSostituzioneTemporanea() -> Text {
         
-        if self.dish.elencoIngredientiOff[self.idIngredienteCorrente] == nil {
+        if self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] == nil {
             
             if idSostitutoGlobale != nil {
                 
@@ -185,7 +193,7 @@ struct DishChangingIngredient_RowSubView: View {
             return Text("L'ingrediente \(nomeIngredienteCorrente) resterà fra gli ingredienti del piatto.")
         }
         
-        else if self.dish.elencoIngredientiOff[self.idIngredienteCorrente] == nil {
+        else if self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] == nil {
             
             if idSostitutoGlobale != nil {
                 

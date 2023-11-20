@@ -83,7 +83,7 @@ struct ElencoModelDeleted: View {
     }
     
 }
-
+/*
 struct ElencoModelDeleted_Previews: PreviewProvider {
     static var previews: some View {
        
@@ -92,4 +92,4 @@ struct ElencoModelDeleted_Previews: PreviewProvider {
         }
             .environmentObject(testAccount)
     }
-}
+}*/

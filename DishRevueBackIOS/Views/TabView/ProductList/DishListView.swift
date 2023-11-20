@@ -19,9 +19,7 @@ struct DishListView: View {
     
     @State private var openFilter: Bool = false
     @State private var openSort: Bool = false
-   // @State private var mapObject: MapObject<ProductModel,CategoriaMenu>?
     @State private var mapTree:MapTree<ProductModel,CategoriaMenu>?
-    //@State private var filterProperty: ProductModel.FilterProperty = ProductModel.FilterProperty()
     @State private var filterCore:CoreFilter<ProductModel> = CoreFilter()
     
     var body: some View {
@@ -84,54 +82,12 @@ struct DishListView: View {
                                 vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
                            
                         }
-              
-                    
-                    
-                    
-                   /* BodyListe_Generic(
-                        container: container,
-                        mapTree: mapTree,
-                        navigationPath: \.dishListPath) */
                     
                 })
             
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
                 destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .dishList, readOnlyViewModel: viewModel)
             })
-            
-     
-           /* .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    
-                    LargeBar_TextPlusButton(
-                        buttonTitle: "Nuovo Prodotto",
-                        font: .callout,
-                        imageBack: Color.seaTurtle_2,
-                        imageFore: Color.white) {
-                           // viewModel.dishListPath.append(ProductModel())
-                            self.viewModel.dishListPath.append(DestinationPathView.piatto(ProductModel()))
-                        }
-                
-                }
-                
-                ToolbarItem(placement: .navigationBarLeading) {
-                    
-                    let sortActive = self.filterProperty.sortCondition != nil
-                    
-                    FilterSortMap_Bar(open: $openFilter, openSort: $openSort, filterCount: filterProperty.countChange,sortActive: sortActive) {
-                        
-                      thirdButtonAction()
-                        
-                    }
-                    
-                }
-            } */
-          /*  .popover(isPresented: $openFilter, attachmentAnchor: .point(.top)) {
-                vbLocalFilterPop()
-                    .presentationDetents([.height(400)])
-          
-            } */
-
         
         }
     }
@@ -154,14 +110,6 @@ struct DishListView: View {
     }
     
     @ViewBuilder private func vbTrailing() -> some View {
-        
-       /* LargeBar_TextPlusButton(
-            buttonTitle: "Nuovo Prodotto",
-            font: .callout,
-            imageBack: Color.seaTurtle_2,
-            imageFore: Color.white) {
-                self.viewModel.dishListPath.append(DestinationPathView.piatto(ProductModel()))
-            } */
         
         Menu {
             
@@ -328,140 +276,18 @@ struct DishListView: View {
             coloreScelta: color)
      
     }
-    
-    /*
-    @ViewBuilder private func vbLocalSorterPop() -> some View {
-     
-        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Sort") {
-             
-            self.filterProperty.sortCondition = nil
-                
-            } content: {
 
-                let isPF:Bool = {
-                    
-                    self.filterProperty.percorsoPRP.contains(.prodottoFinito) &&
-                    self.filterProperty.percorsoPRP.count == 1
-                }()
-                
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .alfabeticoDecrescente)
-                    
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .livelloScorte)
-                    .opacity(isPF ? 1.0 : 0.5)
-                    .disabled(!isPF)
-  
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .mostUsed)
-                
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .topRated)
-                
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .mostRated)
-                
-                SortRow_Generic(sortCondition: $filterProperty.sortCondition, localSortCondition: .topPriced)
-                
-
-            }
-                
-            
-        } */
-
-   /* @ViewBuilder private func vbLocalFilterPop(containerFiltered:[ProductModel] = []) -> some View {
-     
-        FilterAndSort_RowContainer(backgroundColorView: backgroundColorView, label: "Filtri") {
-             
-                    self.filterProperty = FilterPropertyModel()
-                
-            } content: {
-
-              /*  FilterRow_Generic(allCases: ProductModel.PercorsoProdotto.allCases, filterCollection: $filterProperty.percorsoPRP, selectionColor: Color.white.opacity(0.5), imageOrEmoji: "fork.knife",label: "Prodotto") { value in
-                    
-                    containerFiltered.filter({$0.percorsoProdotto == value}).count
-                } */
-            
-              /*  let checkAvailability = checkStatoScorteAvailability()
-                
-                FilterRow_Generic(allCases: Inventario.TransitoScorte.allCases, filterCollection: $filterProperty.inventario, selectionColor: Color.teal.opacity(0.6), imageOrEmoji: "cart",label: "Livello Scorte (Solo PF)") { value in
-                    
-                    if checkAvailability {
-                        
-                      return containerFiltered.filter({self.viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id) == value }).count
-                    
-                    }
-                    else { return 0 }
-                    
-                }
-                    .opacity(checkAvailability ? 1.0 : 0.3)
-                    .disabled(!checkAvailability) */
-                
-               /* FilterRow_Generic(allCases: StatusTransition.allCases, filterCollection: $filterProperty.status, selectionColor: Color.mint.opacity(0.8), imageOrEmoji: "circle.dashed",label: "Status")
-                { value in
-                    
-                   containerFiltered.filter({$0.status.checkStatusTransition(check: value)}).count
-                  
-                } */
-                 
-               /* FilterRow_Generic(allCases: self.viewModel.allMyCategories, filterCollection: $filterProperty.categorieMenu, selectionColor: Color.yellow.opacity(0.7), imageOrEmoji: "list.bullet.indent", label: "Categoria") { value in
-                    containerFiltered.filter({$0.categoriaMenu == value.id }).count
-                } */
-                
-                
-               /* FilterRow_Generic(allCases: ProductModel.BasePreparazione.allCase, filterProperty: $filterProperty.basePRP, selectionColor: Color.brown,imageOrEmoji: "leaf",label: "Preparazione a base di")
-                { value in
-                    containerFiltered.filter({ $0.calcolaBaseDellaPreparazione(readOnlyVM: self.viewModel) == value}).count
-                   // return filterM.count
-                } */
-                
-               /* FilterRow_Generic(allCases: TipoDieta.allCases, filterCollection: $filterProperty.dietePRP, selectionColor: Color.orange.opacity(0.6), imageOrEmoji: "person.fill.checkmark",label: "Adatto alla dieta")
-                { value in
-                    containerFiltered.filter({$0.returnDietAvaible(viewModel: self.viewModel).inDishTipologia.contains(value)}).count
-                } */
-                
-                
-                
-
-             //   HStack {
-                    
-                   /* FilterRow_Generic(allCases: ProduzioneIngrediente.allCases, filterProperty: $filterProperty.produzioneING, selectionColor: Color.blue, imageOrEmoji: "checkmark.shield",label: "Qualità")
-                    { value in
-                        containerFiltered.filter({$0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.produzione, quality: value)}).count
-                    }*/
-                    
-                   /* FilterRow_Generic(allCases: ProvenienzaIngrediente.allCases, filterProperty: $filterProperty.provenienzaING, selectionColor: Color.blue,imageOrEmoji: nil)
-                    { value in
-                        containerFiltered.filter({$0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: value)}).count
-                    }*/
-
-               // }
-                
-             /*   FilterRow_Generic(allCases: AllergeniIngrediente.allCases, filterCollection: $filterProperty.allergeniIn, selectionColor: Color.red.opacity(0.7), imageOrEmoji: "allergens",label: "Allergeni Contenuti")
-                { value in
-                    containerFiltered.filter({$0.calcolaAllergeniNelPiatto(viewModel: self.viewModel).contains(value)}).count
-                } */
-                
-            /*    FilterRow_GenericForString(allCases: self.viewModel.allMyIngredients, filterCollection: $filterProperty.rifIngredientiPRP, selectionColor: Color.gray, imageOrEmoji: "list.bullet.rectangle") */ // Deprecata 04.11
-                
-              
-                
-            }
-                
-            
-        } */
-        
-    
     private func checkStatoScorteAvailability() -> Bool {
        
         guard let percorso = self.filterCore.filterProperties.percorsoPRP else { return false }
         
        return percorso.contains(.finito()) &&
         percorso.count == 1
-        
-        
-     //   self.filterProperty.percorsoPRP.contains(.prodottoFinito) &&
-     //   self.filterProperty.percorsoPRP.count == 1
-        
+ 
     }
     
 }
-
+/*
 struct DishListView_Previews: PreviewProvider {
     
     static var previews: some View {
@@ -469,7 +295,7 @@ struct DishListView_Previews: PreviewProvider {
         DishListView(tabSelection: .dishList, backgroundColorView: Color.seaTurtle_1)
             .environmentObject(testAccount)
     }
-}
+}*/
 
 
 

@@ -512,7 +512,7 @@ struct MenuModel_RowView: View {
     
     
 }
-
+/*
 struct MenuModel_RowView_Previews: PreviewProvider {
     
      static var menuItem: MenuModel = {
@@ -602,3 +602,4 @@ struct MenuModel_RowView_Previews: PreviewProvider {
         
     }
 }
+*/

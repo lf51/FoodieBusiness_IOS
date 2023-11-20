@@ -100,7 +100,7 @@ struct VistaCronologiaAcquisti: View {
         
     } */
 }
-
+/*
 struct VistaCronologiaAcquisti_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
@@ -111,4 +111,4 @@ struct VistaCronologiaAcquisti_Previews: PreviewProvider {
        
             .environmentObject(testAccount)
     }
-}
+}*/

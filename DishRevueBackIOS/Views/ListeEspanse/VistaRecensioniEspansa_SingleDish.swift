@@ -104,8 +104,9 @@ struct VistaRecensioniEspansa_SingleDish: View {
                 
                 if let currentDish = self.viewModel.modelFromId(id: rifDish, modelPath: \.db.allMyDish) {
                     
-                    let rifReviews = currentDish.rifReviews
+                  //  let rifReviews = currentDish.rifReviews
                    //let allDishrev = self.viewModel.reviewValue(rifReviews: rifReviews)
+                    let rifReviews = self.viewModel.reviewFilteredByDish(idPiatto: currentDish.id).rif
                     let allDishrev = self.viewModel.filtroRecensioni(rifReviews: rifReviews, filter: self.timeSchedule,lastCount: self.lastCount)
         
                     ReviewStatMonitor(
@@ -141,8 +142,6 @@ struct VistaRecensioniEspansa_SingleDish: View {
                         }
                         .fixedSize()
                     
-                
-
                         ScrollView(showsIndicators: false) {
                             
                             VStack(spacing:.vStackBoxSpacing) {
@@ -432,7 +431,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
             
     }
 }
-
+/*
 struct VistaRecensioniEspansa_SingleDish_Previews: PreviewProvider {
     static var previews: some View {
         
@@ -444,4 +443,4 @@ struct VistaRecensioniEspansa_SingleDish_Previews: PreviewProvider {
         }
         .environmentObject(testAccount)
     }
-}
+}*/

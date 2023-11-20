@@ -105,7 +105,7 @@ struct MonitorReview: View {
     }
     
 }
-
+/*
 struct MonitorReview_Previews: PreviewProvider {
     static var previews: some View {
         CSZStackVB(title: "Monitor", backgroundColorView: Color.seaTurtle_1) {
@@ -113,3 +113,4 @@ struct MonitorReview_Previews: PreviewProvider {
         }.environmentObject(testAccount)
     }
 }
+*/

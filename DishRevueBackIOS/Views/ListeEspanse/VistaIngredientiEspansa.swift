@@ -24,7 +24,7 @@ struct VistaIngredientiEspansa: View {
         self.currentDish = currentDish
         self.backgroundColorView = backgroundColorView
         
-        let all = currentDish.ingredientiPrincipali + currentDish.ingredientiSecondari
+        let all = (currentDish.ingredientiPrincipali ?? []) + (currentDish.ingredientiSecondari ?? [])
         self.allING = all
         _container = State(wrappedValue: all)
     }
@@ -110,7 +110,7 @@ struct VistaIngredientiEspansa: View {
     
     @ViewBuilder private func vbSostituto(rif:String) -> some View {
         
-        if let sostituto = currentDish.elencoIngredientiOff[rif] {
+        if let sostituto = currentDish.elencoIngredientiOff?[rif] {
            
             if let modelSostituto = self.viewModel.modelFromId(id: sostituto, modelPath: \.db.allMyIngredients) {
                 
@@ -189,7 +189,7 @@ struct VistaIngredientiEspansa_Selectable: View {
                                     .foregroundStyle(Color.seaTurtle_3)
                                 Text("Principali:")
                                     .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                                Text("\(self.currentDish.ingredientiPrincipali.count)")
+                                Text("\(self.currentDish.ingredientiPrincipali?.count ?? 0)")
                                     .monospaced()
                                 
                             }
@@ -200,7 +200,7 @@ struct VistaIngredientiEspansa_Selectable: View {
                                     .foregroundStyle(Color.orange)
                                 Text("Secondari:")
                                     .font(.system(.subheadline, design: .monospaced, weight: .semibold))
-                                Text("\(self.currentDish.ingredientiSecondari.count)")
+                                Text("\(self.currentDish.ingredientiSecondari?.count ?? 0)")
                                     .monospaced()
                                 
                             }
@@ -279,7 +279,7 @@ struct VistaIngredientiEspansa_Selectable: View {
  
         }
     
-    private func checkSelection(rifIng:String,path:WritableKeyPath<ProductModel,[String]>?) -> (colore:Color,image:String) {
+    private func checkSelection(rifIng:String,path:WritableKeyPath<ProductModel,[String]?>?) -> (colore:Color,image:String) {
         
         guard path != nil else { return (.gray,"leaf") }
         
@@ -289,21 +289,25 @@ struct VistaIngredientiEspansa_Selectable: View {
         
     }
     
-    private func selectDeselectAction(rif:String,valuePath:(path:WritableKeyPath<ProductModel,[String]>?,index:Int?)) {
+    private func selectDeselectAction(rif:String,valuePath:(path:WritableKeyPath<ProductModel,[String]?>?,index:Int?)) {
         
         guard let currentPath = valuePath.path,
               let currentIndex = valuePath.index else {
-            
-            self.currentDish.ingredientiPrincipali.append(rif)
+       
+            self.currentDish.ingredientiPrincipali = [rif]
             return }
         
+        
         if currentPath == \.ingredientiPrincipali {
-            self.currentDish.ingredientiPrincipali.remove(at: currentIndex)
-            self.currentDish.ingredientiSecondari.append(rif)
-        }
-        else /*if currentPath == \.ingredientiSecondari*/ {
+            self.currentDish.ingredientiPrincipali?.remove(at: currentIndex)
+            var secondari = self.currentDish.ingredientiSecondari ?? []
             
-            self.currentDish.ingredientiSecondari.remove(at: currentIndex)
+            secondari.append(rif)
+            self.currentDish.ingredientiSecondari = secondari
+        }
+        else {
+            
+            self.currentDish.ingredientiSecondari?.remove(at: currentIndex)
         }
     
     }
@@ -312,7 +316,7 @@ struct VistaIngredientiEspansa_Selectable: View {
  
     
 }
-
+/*
 struct VistaIngredientiEspansa_Previews: PreviewProvider {
     
     @State static var ingredientSample =  IngredientModel(
@@ -395,4 +399,4 @@ struct VistaIngredientiEspansa_Previews: PreviewProvider {
           VistaIngredientiEspansa(currentDish: dishItem3, backgroundColorView: Color.seaTurtle_1)
         }.environmentObject(viewModel)
     }
-}
+}*/

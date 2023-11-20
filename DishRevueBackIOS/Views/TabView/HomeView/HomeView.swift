@@ -316,10 +316,10 @@ struct HomeView: View {
         
         //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
         //update 09.07.23
-        let tutteLePreparazioni = self.viewModel.db.allMyDish.filter({
-            !$0.rifReviews.isEmpty &&
-            $0.percorsoProdotto != .finito()
-            
+        let onlyPrep = self.viewModel.db.allMyDish.filter({$0.percorsoProdotto.returnTypeCase() != .finito()})
+        let tutteLePreparazioni = onlyPrep.filter({
+            $0.ratingInfo(readOnlyViewModel: self.viewModel).count != 0
+       
         })
         // end update
         let topRated = tutteLePreparazioni.sorted(by: {
@@ -577,7 +577,7 @@ struct HomeView: View {
 }
 
 
-
+/*
 struct HomeView_Previews: PreviewProvider {
  
     @State static var viewModel = testAccount
@@ -611,7 +611,7 @@ struct HomeView_Previews: PreviewProvider {
             .previewDevice(PreviewDevice(rawValue: "12.9” iPad Pro"))
 
     }
-}
+}*/
 
 struct MenuDiSistema_BoxView:View {
     

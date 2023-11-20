@@ -253,7 +253,7 @@ struct ListaDellaSpesa_MainView: View {
    
     
 }
-
+/*
 struct ListaDellaSpesa_MainView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
@@ -262,7 +262,7 @@ struct ListaDellaSpesa_MainView_Previews: PreviewProvider {
         }
         
     }
-}
+}*/
 
 struct SpesaRowIngredientView: View {
     

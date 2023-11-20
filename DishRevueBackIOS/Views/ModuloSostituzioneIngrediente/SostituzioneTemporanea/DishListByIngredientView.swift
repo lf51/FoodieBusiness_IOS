@@ -110,21 +110,7 @@ struct DishListByIngredientView: View {
                 }
        
              Spacer()
-                
-          /*  BottomView_DLBIVSubView(
-                isDeActive: isDeactive) {
-                   //self.description()
-                    self.switchDescription()
-                } resetAction: {
-                    self.resetAction()
-                } saveAction: {
-                   // self.saveAction()
-                    self.switchAction()
-                }
-              //  .background(Color.red)
-                .clipped() // altrimenti ha un background fino alla base
-                  */
-                    
+
                     BottomDialogView {
                         self.switchDescription()
                     } disableConditions: {
@@ -149,7 +135,7 @@ struct DishListByIngredientView: View {
             
             for dish in newArray {
                 
-                if dish.elencoIngredientiOff[self.idIngredienteCorrente] != nil {
+                if dish.elencoIngredientiOff?[self.idIngredienteCorrente] != nil {
                     allCheck = false
                     break
                 }
@@ -213,7 +199,9 @@ struct DishListByIngredientView: View {
         
         for dish in self.dishWithIngredient {
             
-            if dish.elencoIngredientiOff.keys.contains(self.idIngredienteCorrente) { dishModified += 1 }
+            let off = dish.elencoIngredientiOff ?? [:]
+            
+            if off.keys.contains(self.idIngredienteCorrente) { dishModified += 1 }
   
         }
         
@@ -237,12 +225,14 @@ struct DishListByIngredientView: View {
         
         for dish in self.dishWithIngredient {
             
+            let off = dish.elencoIngredientiOff ?? [:]
+            
             if dish.idIngredienteDaSostituire == nil {
                 dishLeavedActive += 1
                // dishWhreRemoved -= 1
             }
             
-            else if dish.elencoIngredientiOff.keys.contains(self.idIngredienteCorrente) { dishModified += 1 }
+            else if off.keys.contains(self.idIngredienteCorrente) { dishModified += 1 }
             
             else { dishWhreRemoved += 1}
   
@@ -330,12 +320,12 @@ struct DishListByIngredientView: View {
                 var cleanCopy = dish
                 cleanCopy.idIngredienteDaSostituire = nil
                 
-                if let sostituto = cleanCopy.elencoIngredientiOff[self.idIngredienteCorrente] {
+                if let sostituto = cleanCopy.elencoIngredientiOff?[self.idIngredienteCorrente] {
                     
-                    cleanCopy[keyPath:path!][posizione!] = sostituto
-                    cleanCopy.elencoIngredientiOff[self.idIngredienteCorrente] = nil
+                    cleanCopy[keyPath:path!]![posizione!] = sostituto
+                    cleanCopy.elencoIngredientiOff?[self.idIngredienteCorrente] = nil
                     
-                } else { cleanCopy[keyPath:path!].remove(at: posizione!) }
+                } else { cleanCopy[keyPath:path!]!.remove(at: posizione!) }
 
                 return cleanCopy
             }()
@@ -403,7 +393,10 @@ struct DishListByIngredientView: View {
         let idSostitutoGlobale = self.modelSostitutoGlobale!.id
         let nameSostitutoGlobale = self.modelSostitutoGlobale!.intestazione
         
-       guard currentDish.elencoIngredientiOff[self.idIngredienteCorrente] != idSostitutoGlobale else {return (idSostitutoGlobale,nameSostitutoGlobale) }
+        guard let off = currentDish.elencoIngredientiOff else {
+            return (idSostitutoGlobale,nameSostitutoGlobale)
+        }
+       guard off[self.idIngredienteCorrente] != idSostitutoGlobale else {return (idSostitutoGlobale,nameSostitutoGlobale) }
         // Vedi Nota 01.09
         // end 01.09
         
@@ -415,7 +408,7 @@ struct DishListByIngredientView: View {
     }
     
 }
-
+/*
 struct DishListByIngredientView_Previews: PreviewProvider {
     
     @State static var ingredientSample =  IngredientModel(
@@ -526,4 +519,4 @@ struct DishListByIngredientView_Previews: PreviewProvider {
                 
         }.environmentObject(viewModel)
     }
-}  // BackUp 08.09
+}*/  // BackUp 08.09

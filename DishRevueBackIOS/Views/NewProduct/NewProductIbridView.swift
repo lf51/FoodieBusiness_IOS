@@ -158,6 +158,7 @@ struct NewProductIbridView: View {
                                 newDish: productModel,
                                 generalErrorCheck: generalErrorCheck,
                                 wannaAddIngredient: $wannaOpenPopOver)
+                            .id(productModel.ingredientiPrincipali)
                             
                             AllergeniScrollView_NewDishSub(newDish: $productModel, generalErrorCheck: generalErrorCheck, areAllergeniOk: $areAllergeniOk)
                             
@@ -169,28 +170,7 @@ struct NewProductIbridView: View {
                                 allDishFormats: $productModel.pricingPiatto,
                                 openUploadFormat: $uploadDishFormat,
                                 generalErrorCheck: generalErrorCheck)
-                            
-                           /* BottomViewGenericPlus_NewModelSubView(
-                                productModel: $newDish,
-                                ingredienteSottostante: $ingredienteSottostante,
-                                generalErrorCheck: $generalErrorCheck,
-                                productArchiviato: piattoArchiviato,
-                                sottostanteArchiviato: sottostanteArchiviato,
-                                destinationPath: destinationPath,
-                                dialogType:saveDialogType) {
-                                    self.infoPiatto()
-                                } resetAction: {
-                                    self.resetAction()
-                                } checkPreliminare: {
-                                    let check = self.checkPreliminare()
-                                    if check { return check }
-                                    else {
-                                        self.generalErrorCheck = true
-                                        return false
-                                    }
-                                } salvaECreaPostAction: {
-                                    self.salvaECreaPostAction()
-                                }*/
+
                         
                         BottomDialogView {
                             self.infoPiatto()
@@ -309,7 +289,27 @@ struct NewProductIbridView: View {
         self.generalErrorCheck = false
         self.areAllergeniOk = false
                 
-        let new:(dish:ProductModel,ing:IngredientModel) = {
+        var newProduct:ProductModel = ProductModel()
+        var newSottostante:IngredientModel?
+        
+        let currentDishType = self.productModel.percorsoProdotto.returnTypeCase()
+        
+        switch currentDishType {
+        case .preparazione:
+            newSottostante = nil
+            newProduct.percorsoProdotto = .preparazione
+        case .composizione(_):
+            newSottostante = IngredientModel()
+            newProduct.percorsoProdotto = .composizione()
+            
+        case .finito(_):
+            newSottostante = IngredientModel()
+            newProduct.percorsoProdotto = .finito()
+        }
+        
+        
+        
+       /* let new:(dish:ProductModel,ing:IngredientModel) = {
             
             let currentDishType = self.productModel.percorsoProdotto
             
@@ -320,13 +320,13 @@ struct NewProductIbridView: View {
             let newIng = IngredientModel(id: dish.id)
             
             return (dish,newIng)
-        }()
+        }()*/
         
-        self.productModel = new.dish
-        self.ingredienteSottostante = new.ing
+        self.productModel = newProduct
+        self.ingredienteSottostante = newSottostante
         
-        self.productArchiviato = new.dish
-        self.sottostanteArchiviato = new.ing
+        self.productArchiviato = newProduct
+        self.sottostanteArchiviato = newSottostante
     }
     
     private func infoPiatto() -> (breve:Text,estesa:Text) { // Ok
@@ -370,7 +370,7 @@ struct NewProductIbridView: View {
         
         guard checkCategoria() else { return false }
       
-      //  guard checkIngredienti() else { return false }
+        guard checkIngredienti() else { return false }
        
         guard checkAllergeni() else { return false }
         
@@ -393,13 +393,31 @@ struct NewProductIbridView: View {
         }
         // l'ingrediente di Sistema resterà al suo status iniziale Bozza(nil) -> 04.10 - Vediamo come gira
        
-        return checkNotExistSimilar()
+      //  return checkNotExistSimilar()
+        return true // Nota 18_11_23
         
     }
     
-    private func checkNotExistSimilar() -> Bool {
+   /* private func checkNotExistSimilar() -> Bool {
+       
+        switch self.productModel.percorsoProdotto {
+
+        case .preparazione:
+           return check(by: self.productModel)
+        case .composizione(_):
+            var item = self.productModel
+            item.percorsoProdotto = .composizione(ingredienteSottostante)
+            return check(by: item)
+        case .finito(_):
+            if let ingredienteSottostante {
+                return check(by: ingredienteSottostante)
+            } else { return false }
+        }
+    }
+    
+    private func check<T:MyProStarterPack_L1&Codable>(by element:T) -> Bool where T.VM == AccounterVM {
         
-        if self.viewModel.checkModelNotInVM(itemModel: productModel) { return true }
+        if self.viewModel.checkModelNotInVM(itemModel: element) { return true }
         else {
             self.viewModel.alertItem = AlertModel(
                  title: "Controllare",
@@ -407,7 +425,7 @@ struct NewProductIbridView: View {
              
            return false
             }
-    }
+    }*/
     
     private func allConditionSoddisfatte() -> Bool {
         
@@ -447,21 +465,28 @@ struct NewProductIbridView: View {
         return !self.productModel.categoriaMenu.isEmpty
     }
     
-   /* private func checkIngredienti() -> Bool {
+    private func checkIngredienti() -> Bool {
         
-        guard !self.noIngredientsNeeded else { return true }
+        guard self.productModel.percorsoProdotto == .preparazione else { return true }
         
-        return !self.newDish.ingredientiPrincipali.isEmpty
-    } */
+        if let ingredientiPrincipali = self.productModel.ingredientiPrincipali {
+            
+            return !ingredientiPrincipali.isEmpty
+            
+        } else { return false }
+        
+    }
     
     private func checkIntestazione() -> Bool {
     
         let intestazione = self.productModel.intestazione
         
-        self.ingredienteSottostante?.intestazione = intestazione
+        if self.productModel.percorsoProdotto.returnTypeCase() == .finito() {
+            self.ingredienteSottostante?.intestazione = intestazione
+        }
+        
         return intestazione != ""
-        // i controlli sono già eseguiti all'interno sulla proprietà temporanea, se il valore è stato passato al newDish vuol dire che è buono. Per cui basta controllare se l'intestazione è diversa dal valore vuoto
-
+ 
     }
     
     private func checkFormats() -> Bool {
@@ -482,6 +507,8 @@ struct NewProductIbridView: View {
             }
         return true
       }
+    
+
     
     // ViewBuilder
     
@@ -704,10 +731,7 @@ case .finito(_):
                     itemModel: self.productModel,
                     refreshPath: self.destinationPath)
             }
-           
-           
-           
-           
+
        }// chiusa result builder
        
 }
@@ -720,7 +744,7 @@ case .finito(_):
             
             var currentProduct = self.productModel
                 
-                var idSottostante = ingredienteSottostante.id
+            let idSottostante = ingredienteSottostante.id
                 
                try await self.viewModel.createIngredient(item:ingredienteSottostante) { id in
                     

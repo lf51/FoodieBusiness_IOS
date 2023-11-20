@@ -1302,7 +1302,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
         }
     }
 }
-
+/*
 struct MonitorModelView_Previews: PreviewProvider {
     static let allDish = testAccount.db.allMyDish.map({$0.id})
     static var previews: some View {
@@ -1322,5 +1322,5 @@ struct MonitorModelView_Previews: PreviewProvider {
     }
 }
 
-
+*/
 

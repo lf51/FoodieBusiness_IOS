@@ -303,13 +303,13 @@ struct MenuListView: View {
 */
     
 }
-
+/*
 struct MenuListView_Previews: PreviewProvider {
     static var previews: some View {
         MenuListView(tabSelection:.menuList, backgroundColorView: Color.seaTurtle_1)
             .environmentObject(testAccount)
     }
-}
+}*/
 
 
 

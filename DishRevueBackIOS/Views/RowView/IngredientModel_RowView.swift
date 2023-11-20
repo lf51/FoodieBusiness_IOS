@@ -369,7 +369,7 @@ struct IngredientModel_RowView: View {
     }
     
 }
-
+/*
 struct IngredientModel_RowView_Previews: PreviewProvider {
     
    static let user = UserRoleModel()
@@ -441,4 +441,4 @@ struct IngredientModel_RowView_Previews: PreviewProvider {
             }
         }.environmentObject(viewModel)
     }
-}
+}*/

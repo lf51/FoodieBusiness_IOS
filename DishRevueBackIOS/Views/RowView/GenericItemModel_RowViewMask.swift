@@ -80,7 +80,7 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View wher
             }
     }
 }
-
+/*
 struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
     
     static var property:PropertyModel = property_Test
@@ -245,4 +245,4 @@ struct GenericItemModel_RowViewMask_Previews: PreviewProvider {
         }//.environmentObject(AccounterVM())
         .environmentObject(testAccount)
     }
-}
+}*/

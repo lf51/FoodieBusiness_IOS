@@ -644,8 +644,12 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         // Da modificare per considerare anche gli ingredienti Sostituti
         
         let filteredDish = self.db.allMyDish.filter { dish in
-            dish.ingredientiPrincipali.contains(where: { $0 == idIngredient }) ||
-            dish.ingredientiSecondari.contains(where: { $0 == idIngredient })
+            
+            let ingredientiPrincipali = dish.ingredientiPrincipali ?? []
+            let ingredientiSecondari = dish.ingredientiSecondari ?? []
+            
+            return ingredientiPrincipali.contains(where: { $0 == idIngredient }) ||
+            ingredientiSecondari.contains(where: { $0 == idIngredient })
         }
         
         return filteredDish
@@ -1113,16 +1117,24 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     /// Ritorna il numero di preparazioni (esclude i prodotti finit) con recensioni, il totale delle preparazioni, il numero di preparazioni con media sotto il 6, sopra il 6, sopra il 9.
     func monitorRecensioniMoreInfo() -> (preparazioniConRev:Int,totPrep:Int,negCount:Int,posCount:Int,topCount:Int) {
         
-        let dishReviewed = self.db.allMyDish.filter({
+      /*  let dishReviewed = self.db.allMyDish.filter({
             !$0.rifReviews.isEmpty
         })
         let soloLePreparazioni = self.db.allMyDish.filter({
             $0.percorsoProdotto != .finito()
-        })
+        })*/
+        
+         let soloLePreparazioni = self.db.allMyDish.filter({
+             // preparazione + composizione
+             $0.percorsoProdotto != .finito()
+         })
+        let dishReviewed = soloLePreparazioni.filter({
+            // !$0.rifReviews.isEmpty
+            $0.ratingInfo(readOnlyViewModel: self).count != 0
+         })
         
         let dishReviewedCount = dishReviewed.count // .1
         let totalePreparazioni = soloLePreparazioni.count  // .2
-        
         
         let rateMap = dishReviewed.compactMap({$0.ratingInfo(readOnlyViewModel:self).media})
         

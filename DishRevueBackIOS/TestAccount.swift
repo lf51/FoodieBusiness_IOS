@@ -9,7 +9,7 @@ import Foundation
 import MyFoodiePackage
 import MapKit
 
-
+/*
 let today = Date()
 let todayString = csTimeFormatter().data.string(from: today)
 
@@ -119,7 +119,7 @@ var dishItem2_Test: ProductModel = {
     newDish.status = .completo(.inPausa)
     newDish.ingredientiPrincipali = [ingredientSample4_Test.id]
     newDish.ingredientiSecondari = [ingredientSample2_Test.id]
-     newDish.rifReviews = [rate8.id,rate9.id,rate10.id,rate11.id,rate12.id]
+    // newDish.rifReviews = [rate8.id,rate9.id,rate10.id,rate11.id,rate12.id]
      newDish.categoriaMenu = "cat2"
      
     let price:DishFormat = {
@@ -148,7 +148,7 @@ var dishItem4_Test: ProductModel = {
     newDish.status = .completo(.inPausa)
     newDish.ingredientiPrincipali = [ingredientSample_Test.id]
     newDish.ingredientiSecondari = [ingredientSample3_Test.id]
-    newDish.rifReviews = [rate1.id,rate2.id,rate3.id,rate4.id,rate5.id,rate6.id,rate7.id]
+   // newDish.rifReviews = [rate1.id,rate2.id,rate3.id,rate4.id,rate5.id,rate6.id,rate7.id]
     newDish.categoriaMenu = "cat2"
     let price:DishFormat = {
         var pr = DishFormat(type: .mandatory)
@@ -454,3 +454,4 @@ let cat7:CategoriaMenu = CategoriaMenu(
     descrizione: "")
 
 
+*/

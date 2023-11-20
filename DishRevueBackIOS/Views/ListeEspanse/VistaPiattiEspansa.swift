@@ -347,7 +347,7 @@ struct PreCallVistaPiattiEspansa: View {
     }
     
 }
-
+/*
 struct VistaPiattiEspansa_Previews: PreviewProvider {
     
     @State static var ingredientSample =  IngredientModel(
@@ -567,4 +567,4 @@ struct VistaPiattiEspansa_Previews: PreviewProvider {
         }.environmentObject(viewModel)
             
     }
-}
+}*/

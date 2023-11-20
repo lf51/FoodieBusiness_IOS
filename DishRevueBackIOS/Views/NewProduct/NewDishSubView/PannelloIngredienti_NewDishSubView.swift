@@ -18,8 +18,6 @@ struct PannelloIngredienti_NewDishSubView: View {
     let newDish: ProductModel
     let generalErrorCheck: Bool
     @Binding var wannaAddIngredient: Bool
-  //  @Binding var noIngredientsNeeded: Bool
-
     var body: some View {
         
         VStack(alignment: .leading,spacing: .vStackBoxSpacing) {
@@ -40,30 +38,40 @@ struct PannelloIngredienti_NewDishSubView: View {
                                 }
                             }
                         
-                       /* CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: (newDish.ingredientiPrincipali.isEmpty && !noIngredientsNeeded)) */
-                        CS_ErrorMarkView(generalErrorCheck: generalErrorCheck, localErrorCondition: newDish.ingredientiPrincipali.isEmpty)
+                        let condition:Bool = {
+                            
+                            newDish.ingredientiPrincipali == nil || newDish.ingredientiPrincipali!.isEmpty
+                        }()
+                        CS_ErrorMarkView(
+                            generalErrorCheck: generalErrorCheck,
+                            localErrorCondition: condition)
 
                                                 
                     }
       
                 }
  
-                ScrollView(.horizontal, showsIndicators: false) {
+                if let ingredients = self.newDish.ingredientiPrincipali {
                     
-                    HStack {
+                    ScrollView(.horizontal, showsIndicators: false) {
                         
-                        ForEach(self.newDish.ingredientiPrincipali, id:\.self) { idIngredient in
+                        
+                        HStack {
                             
-                         vbIngredientSmallRow(id: idIngredient)
-                        
+                            ForEach(ingredients, id:\.self) { idIngredient in
+                                
+                             vbIngredientSmallRow(id: idIngredient)
+                            
+                            }
+                            
                         }
-                        
                     }
+                    
                 }
                 
                 if generalErrorCheck {
    
-                            Text("Il box degli ingredienti principali non può essere vuoto.\nPer inserire un prodotto senza ingredienti scegliere Prodotto di Terzi")
+                            Text("Il box degli ingredienti principali non può essere vuoto.\nPer inserire un prodotto senza ingredienti scegliere Composizione")
                                 .italic()
                                 .fontWeight(.bold)
                                 .font(.caption)
@@ -71,28 +79,6 @@ struct PannelloIngredienti_NewDishSubView: View {
                                 .multilineTextAlignment(.leading)
                             
                 }
-                
-               /* if generalErrorCheck && self.newDish.ingredientiPrincipali.isEmpty {
-                                            
-                        if !self.newDish.ingredientiSecondari.isEmpty {
-                            
-                            Text("Il box degli ingredienti principali non può essere vuoto.")
-                                .italic()
-                                .font(.headline)
-                                .foregroundStyle(Color.black)
-                                .multilineTextAlignment(.leading)
-                            
-                        } else {
-                            
-                            Toggle(isOn: $noIngredientsNeeded) {
-                                Text("Forza il salvataggio senza ingredienti {ø}")
-                                    .font(.headline)
-                                    .foregroundStyle(Color.black)
-                                    .multilineTextAlignment(.leading)
-                            }
-                            
-                        }
-                } */
                 
             }
             
@@ -103,11 +89,13 @@ struct PannelloIngredienti_NewDishSubView: View {
                     title: "Info",
                     message: .ingredienteSecondario) }
 
+                if let ingredientsSec = self.newDish.ingredientiSecondari {
+                    
                     ScrollView(.horizontal, showsIndicators: false) {
                         
                         HStack {
                             
-                            ForEach(self.newDish.ingredientiSecondari, id:\.self) { idIngredient in
+                            ForEach(ingredientsSec, id:\.self) { idIngredient in
                                 
                                 vbIngredientSmallRow(id: idIngredient)
                                 
@@ -116,7 +104,8 @@ struct PannelloIngredienti_NewDishSubView: View {
                             
                         }
                     }
-               // }
+                }
+               
       
             }
         }
@@ -145,7 +134,7 @@ struct PannelloIngredienti_NewDishSubView: View {
             return (ingredient,nil)
         }
         
-        let idSostituto = self.newDish.elencoIngredientiOff[id]
+        let idSostituto = self.newDish.elencoIngredientiOff?[id]
                 
         guard idSostituto != nil else { return (ingredient,nil)}
 

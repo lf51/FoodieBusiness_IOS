@@ -292,7 +292,8 @@ extension MenuModel:
             $0.status.checkStatusTransition(check: .disponibile) })
         
         let tuttiVotiPesati = allAvaibleDish.map({$0.topRatedValue(readOnlyVM: readOnlyVM)})
-        let tuttiPesi = allAvaibleDish.map({Double($0.rifReviews.count)})
+       /* let tuttiPesi = allAvaibleDish.map({Double($0.rifReviews.count)})*/
+        let tuttiPesi = allAvaibleDish.map({Double($0.ratingInfo(readOnlyViewModel: readOnlyVM).count)})
         
         let sommaVotiPesati = csSommaValoriCollection(collectionValue: tuttiVotiPesati)
         let sommaPesi = csSommaValoriCollection(collectionValue: tuttiPesi)

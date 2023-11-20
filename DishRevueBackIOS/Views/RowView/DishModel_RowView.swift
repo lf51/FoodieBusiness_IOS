@@ -327,7 +327,7 @@ struct ProductModel_RowView: View {
                 return sottostante
            
         }()
-        let isNotDescribed = self.item.descrizione == ""
+        let isNotDescribed = self.item.descrizione == nil
         
         HStack {
          
@@ -787,9 +787,9 @@ struct ProductModel_RowView: View {
     
     private func analizingIngredient(ingredient:IngredientModel) -> (isPrincipal:Bool,hasAllergene:Bool,isTemporary:Bool,idSostituto:String?,isBio:Bool) {
         
-        let allTemporaryOff = self.item.elencoIngredientiOff
-        
-        let isPrincipal = self.item.ingredientiPrincipali.contains(ingredient.id)
+        let allTemporaryOff = self.item.elencoIngredientiOff ?? [:]
+        let ingredientiPrincipali = self.item.ingredientiPrincipali ?? []
+        let isPrincipal = ingredientiPrincipali.contains(ingredient.id)
        // let hasAllergene = !ingredient.allergeni.isEmpty
         let hasAllergene:Bool = {
             if let allergens = ingredient.allergeni {
@@ -846,7 +846,7 @@ struct ProductModel_RowView: View {
     
     
 } // chiusa Struct
-
+/*
 struct ProductModel_RowView_Previews: PreviewProvider {
     
    static let user = UserRoleModel(ruolo: .admin)
@@ -1053,6 +1053,6 @@ struct ProductModel_RowView_Previews: PreviewProvider {
         .environmentObject(viewModel)
         
     }
-}
+}*/
 
 

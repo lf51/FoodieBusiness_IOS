@@ -235,7 +235,7 @@ struct VistaMenuEspansa: View {
         }
     }
 }
-
+/*
 struct VistaMenuEspansa_Previews: PreviewProvider {
     
     @State static var ingredientSample =  IngredientModel(
@@ -380,4 +380,4 @@ struct VistaMenuEspansa_Previews: PreviewProvider {
         }.environmentObject(viewModel)
             
     }
-}
+}*/

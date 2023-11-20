@@ -23,6 +23,7 @@ extension IngredientModel:
 
     public func isEqual(to rhs: MyFoodiePackage.IngredientModel) -> Bool {
         
+        self.id != rhs.id &&
         self.intestazione == rhs.intestazione &&
         self.origine == rhs.origine &&
         self.allergeni == rhs.allergeni &&
@@ -31,9 +32,7 @@ extension IngredientModel:
         self.provenienza == rhs.provenienza
         
     }
-    
-    
-    
+
     public typealias VM = AccounterVM
   //  public typealias FPM = FilterPropertyModel
    // public typealias ST = StatusTransition
@@ -297,7 +296,7 @@ extension IngredientModel:
             
             if let ingPath,
                let index {
-                new[keyPath: ingPath].remove(at: index)
+                new[keyPath: ingPath]!.remove(at: index)
                 new.autoCleanElencoIngredientiOff()
             }
             allDishChanged.append(new)
