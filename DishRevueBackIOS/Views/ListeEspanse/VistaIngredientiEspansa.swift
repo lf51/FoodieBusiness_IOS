@@ -175,8 +175,8 @@ struct VistaIngredientiEspansa_Selectable: View {
         
                 VStack(alignment:.leading) {
                     
-                    let container_0 = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
-                    let container = container_0.filter({$0.status != .bozza()})
+                    let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
+                   // let container = container_0.filter({$0.status != .bozza()})
                     
                     HStack {
                         
@@ -294,7 +294,11 @@ struct VistaIngredientiEspansa_Selectable: View {
         guard let currentPath = valuePath.path,
               let currentIndex = valuePath.index else {
        
-            self.currentDish.ingredientiPrincipali = [rif]
+            var principali = self.currentDish.ingredientiPrincipali ?? []
+            principali.append(rif)
+            
+            self.currentDish.ingredientiPrincipali = principali
+            
             return }
         
         

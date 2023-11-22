@@ -1344,8 +1344,10 @@ extension AccounterVM {
 
                    """)
 
-                    self.isLoading = nil
-                    self.stepView = .backToAuthentication
+                    DispatchQueue.main.async {
+                        self.isLoading = nil
+                        self.stepView = .backToAuthentication
+                    }
                     
                     return
                 }
@@ -1355,26 +1357,24 @@ extension AccounterVM {
                 guard let ref = userData.propertiesRef,
                       !ref.isEmpty else {
                     
-                    print("[STOP]_addCurrentUserSubscriber_Properties ref is NIL or empty")
-                    self.stepView = .openLandingPage
-                    self.isLoading = nil
+                    DispatchQueue.main.async {
+                        self.stepView = .openLandingPage
+                        self.isLoading = nil
+                    }
+                    
                     return
                 }
                 
-                withAnimation {
-                    self.stepView = .mainView
-                    self.isLoading = true // in attesa di caricare i dati della proprietà
+                DispatchQueue.main.async {
+                    withAnimation {
+                        self.stepView = .mainView
+                        self.isLoading = true // in attesa di caricare i dati della proprietà
+                    }
                 }
 
                 self.propertiesManager
                     .fetchAndListenPropertyImagesPublisher(from: ref)
-                
-                  /*  GlobalDataManager
-                    .shared
-                    .propertiesManager
-                    .fetchAndListenPropertyImagesPublisher(
-                        from: ref,
-                        for: userData.id) */
+ 
                 
             }.store(in: &cancellables)
 
@@ -1397,9 +1397,10 @@ extension AccounterVM {
                 guard let self,
                       let allPropImages else {
                     
-                    print("[ERROR SINK]_PropIMAGES not VALID")
-                    self?.isLoading = false
-                    self?.stepView = .openLandingPage
+                    DispatchQueue.main.async {
+                        self?.isLoading = false
+                        self?.stepView = .openLandingPage
+                    }
                     
                     return
                 }
@@ -1443,9 +1444,11 @@ extension AccounterVM {
                     
                     print("[ERROR_SINK] Property Current Data not VALID")
                    
-                    withAnimation {
-                        self?.stepView = .openLandingPage
-                        self?.isLoading = false
+                    DispatchQueue.main.async {
+                        withAnimation {
+                            self?.stepView = .openLandingPage
+                            self?.isLoading = false
+                        }
                     }
                     
                     return
@@ -1468,11 +1471,6 @@ extension AccounterVM {
                 self.subCollectionManager.currentPropertySnap = propertyDocRef
                 self.subCollectionManager
                     .retrieveCloudData()
-               // fetch cloudDataStore
-               /* GlobalDataManager
-                    .shared
-                    .cloudDataManager
-                    .retrieveCloudData(from: propertyDocRef)*/
                 
             }.store(in: &cancellables)
 
@@ -1489,9 +1487,12 @@ extension AccounterVM {
                 
                 guard let self,
                 let allCategories else { 
-                    print("[RECEIVE_VALUE]_addAllMyCategoriesSubscriber_NOVALUEorWEAKSELF")
-                    self?.db.allMyCategories = []
-                    self?.isLoading = nil
+                    
+                    DispatchQueue.main.async {
+                        self?.db.allMyCategories = []
+                        self?.isLoading = nil
+                    }
+                    
                     return }
                 
                 Task {
@@ -1522,9 +1523,12 @@ extension AccounterVM {
                 
                 guard let self,
                 let allIngredients else {
-                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
-                    self?.db.allMyIngredients = []
-                    self?.isLoading = nil
+                    
+                    DispatchQueue.main.async {
+                        self?.db.allMyIngredients = []
+                        self?.isLoading = nil
+                    }
+                    
                     return }
                 
                 Task {
@@ -1556,109 +1560,23 @@ extension AccounterVM {
                 
                 guard let self,
                 let items else {
-                    print("[RECEIVE_VALUE]_addGenericSubscriber_to\(kp.debugDescription)")
-                   // self?.db.allMyDish = []
-                    self?[keyPath: kp] = []
-                    self?.isLoading = nil
+                    
+                    DispatchQueue.main.async {
+                        self?[keyPath: kp] = []
+                        self?.isLoading = nil
+                    }
+                    
                     return }
                 
                     DispatchQueue.main.async {
                         
                         self[keyPath: kp] = items
                         self.isLoading = nil
-                        
-                        print("\(kp.debugDescription) count:\(self[keyPath: kp].count)")
                     }
                     
             }.store(in: &cancellables)
 
     }
-    
-    
-    
-   /* private func addAllMyProductsSubscriber() {
-        
-        self.subCollectionManager
-            .allMyProductsPublisher
-            .main
-            .sink { completion in
-                //
-            } receiveValue: { [weak self] allMyProducts in
-                
-                guard let self,
-                let allMyProducts else {
-                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
-                    self?.db.allMyDish = []
-                    self?.isLoading = nil
-                    return }
-                
-                    DispatchQueue.main.async {
-                        
-                        self.db.allMyDish = allMyProducts
-                        self.isLoading = nil
-                        
-                        print("db.allMyProducts.count:\(self.db.allMyDish.count)")
-                    }
-                    
-            }.store(in: &cancellables)
-
-    }
-    
-    private func addAllMyMenusSubscriber() {
-        
-        self.subCollectionManager
-            .allMyMenuPublisher
-            .main
-            .sink { completion in
-                //
-            } receiveValue: { [weak self] allMyMenus in
-                
-                guard let self,
-                let allMyMenus else {
-                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
-                    self?.db.allMyMenu = []
-                    self?.isLoading = nil
-                    return }
-                
-                    DispatchQueue.main.async {
-                        
-                        self.db.allMyMenu = allMyMenus
-                        self.isLoading = nil
-                        
-                        print("db.allMyMenus.count:\(self.db.allMyMenu.count)")
-                    }
-                    
-            }.store(in: &cancellables)
-
-    }
-    
-    private func addAllMyReviewsSubscriber() {
-        
-        self.subCollectionManager
-            .allMyReviewsPublisher
-            .main
-            .sink { completion in
-                //
-            } receiveValue: { [weak self] allMyReviews in
-                
-                guard let self,
-                let allMyReviews else {
-                    print("[RECEIVE_VALUE]_addAllMyIngredientsSubscriber_NOVALUEorWEAKSELF")
-                    self?.db.allMyReviews = []
-                    self?.isLoading = nil
-                    return }
-                
-                    DispatchQueue.main.async {
-                        
-                        self.db.allMyReviews = allMyReviews
-                        self.isLoading = nil
-                        
-                        print("db.allMyReviews.count:\(self.db.allMyReviews.count)")
-                    }
-                    
-            }.store(in: &cancellables)
-
-    }*/
 }
 
 import Firebase

@@ -129,7 +129,7 @@ struct NewProductMainView: View {
     
     private func disabilitaSwitch() -> Bool {
         
-        self.newDish.status != .bozza() ||
+        self.newDish.status != .noStatus ||
         self.disabilitaPicker
         
     }

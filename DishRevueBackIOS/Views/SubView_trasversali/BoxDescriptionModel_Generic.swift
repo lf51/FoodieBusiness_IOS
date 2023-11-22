@@ -34,7 +34,7 @@ struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
                     
                     HStack {
                         
-                        let error = self.itemModel.descrizione == ""
+                        let error = self.itemModel.descrizione == nil || self.itemModel.descrizione == ""
     
                         CSButton_image(
                             activationBool: wannaAddDescription,

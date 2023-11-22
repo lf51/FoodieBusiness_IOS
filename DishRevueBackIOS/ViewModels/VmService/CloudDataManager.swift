@@ -420,7 +420,7 @@ public final class SubCollectionManager {
         
         let customDecoder:Firestore.Decoder = {
             let decoder = Firestore.Decoder()
-            decoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.full
+            decoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.inbound
             return decoder
         }()
         

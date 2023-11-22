@@ -607,6 +607,7 @@ extension ProductModel: Object_FPC {
         let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
         let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
         let allRIFCategories = properties.categorieMenu?.map({$0.id})
+        let percorso = self.percorsoProdotto.returnTypeCase()
         
         let stringResult:Bool = {
             
@@ -630,7 +631,7 @@ extension ProductModel: Object_FPC {
         
         //self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
         
-        coreFilter.comparePropertyToCollection(localProperty: self.percorsoProdotto, filterCollection: properties.percorsoPRP) &&
+        coreFilter.comparePropertyToCollection(localProperty: percorso, filterCollection: properties.percorsoPRP) &&
         
         coreFilter.compareRifToCollectionRif(localPropertyRif: self.categoriaMenu,
            filterCollection: allRIFCategories) &&

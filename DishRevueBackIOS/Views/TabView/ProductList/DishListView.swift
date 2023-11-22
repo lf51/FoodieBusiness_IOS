@@ -143,7 +143,7 @@ struct DishListView: View {
             selectionColor: Color.white.opacity(0.5),
             imageOrEmoji: "fork.knife",
             label: "Prodotto") { value in
-                container.filter({$0.percorsoProdotto == value}).count
+                container.filter({$0.percorsoProdotto.returnTypeCase() == value}).count
             }
         
         let checkAvailability = checkStatoScorteAvailability()

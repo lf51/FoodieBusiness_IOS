@@ -13,50 +13,17 @@ struct MainView: View {
     @EnvironmentObject var viewModel:AccounterVM
     
     @ObservedObject var authProcess: AuthenticationManager
-    
-    init(authProcess: AuthenticationManager) {
-        print("[START]INIT MAIN_VIEW")
-        self.authProcess = authProcess
-        print("[END] INIT MainView - for userUID:\(AuthenticationManager.userAuthData.id)")
-    }
-    
-    
-    
-   // @StateObject private var viewModel: AccounterVM
-    
-   // let errorAction:(_ mainViewMustDeinit:Bool) -> ()
-   // @Binding var value:SubViewStep
-   // @State private var isLoading: Bool
-
-   /* init(authProcess: AuthPasswordLess, viewModel: AccounterVM,/*value:Binding<SubViewStep>,*/errorAction:@escaping (_ errorIn:Bool) -> ()) {
-        print("[START]INIT MAIN_VIEW")
-        self.authProcess = authProcess
-        _viewModel = StateObject(wrappedValue: viewModel) // 11.08 closed for test
-      //  _viewModel = StateObject(wrappedValue: testAccount) // test
-        
-        self.errorAction = errorAction
-      //  _value = value
-        
-        print("[END] INIT MainView - for userUID:\(authProcess.utenteCorrente?.id ?? "nil") and IMAGES:\(viewModel.allMyPropertiesImage.count)")
-    } */
-   /* init(authProcess:AuthPasswordLess) {
-        
-      //  self.isLoading = true
-        self.authProcess = authProcess
-        
-        let vm = AccounterVM(userUID: authProcess.utenteCorrente?.id)
-        _viewModel = StateObject(wrappedValue: vm)
-        
-        print("init MainView - userUID:\(authProcess.currentUser?.userUID ?? "nil")")
-    } */
-
-    private let backgroundColorView: Color = Color.seaTurtle_1
     @State private var tabSelector: DestinationPath = .homeView
-   // @State private var controlProxyReset:Bool = false
-    // innesto 01.12.22
- 
+    
+    private let backgroundColorView: Color = Color.seaTurtle_1
+    
     @State private var ingChanged:Int = 0 // serve per il count dall'import veloce. Ancora 01.12 non settato
     
+    init(authProcess: AuthenticationManager) {
+        self.authProcess = authProcess
+        print("[INIT]_MainView - for userUID:\(AuthenticationManager.userAuthData.id)")
+    }
+
     var body: some View {
             
         TabView(selection:$tabSelector.csOnUpdate { oldValue, newValue in
@@ -128,17 +95,6 @@ struct MainView: View {
                 
             }
         }
-       /* .onReceive(viewModel.$mainViewMustDeinit) { value in
-            print("MAIN_VIEW_RECEIVER PERFORM")
-            if let value {
-               // self.viewModel.cancellables.removeAll()
-                self.viewModel.mainViewMustDeinit = nil
-               // self.value = .openLandingPage
-               // errorAction(true)
-                print("MAIN_VIEW_RECEIVER get VALID VALUE")
-            }
-            
-        }*/
         .onAppear {
             // popoliamo il viewModel con una property
             print("MAIN VIEW ON APPEAR")
@@ -149,34 +105,8 @@ struct MainView: View {
             print("MAIN VIEW ON DISAPPEAR")
             
         }
-        
-      /*  .onTapGesture(count: 2, perform: {
-            
-            self.viewModel.refreshPathAndScroll(tab: self.tabSelector)
-            
-        }) */
-       /* .fullScreenCover(isPresented: $viewModel.isLoading, content: {
-           WaitLoadingView(backgroundColorView: backgroundColorView)
-        })*/ // 28.07.23 Collocata male dovrebbe spiegare lo schermo bianco
-        
-      /*  .onAppear {
-         
-               // print("1.Task.beforeFetch")
-              //  self.viewModel.fetchDataFromFirebase()
-               // print("4.Task.afeterFetch")
-              //  self.isLoading = false
-              //  print("5.Task.END")
-                
-            
-
-        }*/
-     
         .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
-        
-       // .environmentObject(viewModel)
         .accentColor(.seaTurtle_3)
-       // .accentColor(.seaTurtle_4)
-  
     }
 }
 

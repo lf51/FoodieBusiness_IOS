@@ -645,6 +645,54 @@ struct ProductModel_RowView: View {
     
     @ViewBuilder private func vbDieteCompatibili() -> some View {
         
+        HStack(spacing: 4.0) {
+            
+            Image(systemName: "person.fill.checkmark")
+                .imageScale(.medium)
+                .foregroundStyle(Color.seaTurtle_4)
+         
+            ScrollView(.horizontal,showsIndicators: false) {
+                
+                HStack(spacing: 2.0) {
+                    
+                    ForEach(TipoDieta.allCases,id:\.self) { diet in
+                        
+                        let value = checkDietCompatibility(for: diet)
+                        
+                        CSEtichetta(
+                            isBarrato: value.isBarrato,
+                            text: diet.simpleDescription(),
+                            fontStyle: .subheadline,
+                            textColor: .seaTurtle_1,
+                            image: value.image,
+                            imageColor: value.colorImage,
+                            imageSize: .medium,
+                            backgroundColor: diet.coloreAssociato(),
+                            backgroundOpacity: value.backOpacity)
+
+
+                    }
+                }
+            }
+        }
+    }
+    
+    private func checkDietCompatibility(for tipo:TipoDieta) -> (isBarrato:Bool,image:String,colorImage:Color,backOpacity:CGFloat) {
+        
+        let dietAvaible = self.item.returnDietAvaible(viewModel: self.viewModel).inDishTipologia
+        
+        if dietAvaible.contains(tipo) {
+            return (false,"checkmark.circle.fill",Color.white,0.8)
+        }
+        else {
+            return (true,"x.circle.fill",Color.red.opacity(0.25),0.2)
+        }
+        
+        
+    }
+    
+  /*  @ViewBuilder private func vbDieteCompatibili() -> some View {
+        
         let dietAvaible = self.item.returnDietAvaible(viewModel: self.viewModel).inDishTipologia
         
         HStack(spacing: 4.0) {
@@ -659,7 +707,6 @@ struct ProductModel_RowView: View {
                     
                     ForEach(dietAvaible,id:\.self) { diet in
                         
-                        
                         CSEtichetta(
                             text: diet.simpleDescription(),
                             fontStyle: .subheadline,
@@ -671,22 +718,13 @@ struct ProductModel_RowView: View {
                             imageSize: .medium,
                             backgroundColor: diet.coloreAssociato(),
                             backgroundOpacity: 0.8)
-                        
-                       /* Text(diet)
-                            .font(.subheadline)
-                            .fontWeight(.black)
-                            .foregroundStyle(Color.seaTurtle_4)
-                        
-                        Text("•")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(Color.seaTurtle_4) */
+
 
                     }
                 }
             }
         }
-    }
+    }*/ // backup 20_11_23
     
     @ViewBuilder private func vbDescriptionScrollRow() -> some View {
         

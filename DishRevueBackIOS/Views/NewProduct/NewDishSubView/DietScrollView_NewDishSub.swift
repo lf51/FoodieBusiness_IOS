@@ -16,23 +16,30 @@ struct DietScrollView_NewDishSub: View {
     @ObservedObject var viewModel:AccounterVM
     @Binding var newDish: ProductModel
 
+    let sottostante:IngredientModel?
     let dietAvaible:[TipoDieta]
     let dietAvaibleString:[String]
     
-    init(newDish:Binding<ProductModel>,viewModel:AccounterVM) {
+    init(newDish:Binding<ProductModel>,sottostante:IngredientModel? = nil,viewModel:AccounterVM) {
        
         _newDish = newDish
         self.viewModel = viewModel
+        self.sottostante = sottostante
      
-        (self.dietAvaible,self.dietAvaibleString) =  newDish.wrappedValue.returnDietAvaible(viewModel: viewModel, byPassShowCompatibility: true)
-        
-       
+        if let sottostante {
+            
+            (self.dietAvaible,self.dietAvaibleString) =  newDish.wrappedValue.returnDietAvaible(viewModel: viewModel, byPassShowCompatibility: true,throwSottostante: sottostante)
+        } else {
+            
+            (self.dietAvaible,self.dietAvaibleString) =  newDish.wrappedValue.returnDietAvaible(viewModel: viewModel, byPassShowCompatibility: true)
+        }
+
     }
     
     var body: some View {
         
         VStack(alignment: .leading,spacing: .vStackLabelBodySpacing) {
-            let isStandardDish = dietAvaible.contains(.standard)
+            let isStandardDish = dietAvaible.isEmpty
             
             CSLabel_conVB(placeHolder: "Diete Compatibili", imageNameOrEmojy: "person.fill.checkmark", backgroundColor: Color.black) {
 
@@ -67,27 +74,9 @@ struct DietScrollView_NewDishSub: View {
                 }
             }
             
-            DietScrollCasesCmpatibility(currentDish: self.newDish, instanceCases: self.dietAvaible) {
-                
-               /* VStack(alignment:.leading) {
-
-                    let string = self.newDish.mostraDieteCompatibili ? "Mostra nel piatto le diete compatibili" : "Non mostrare nel piatto le diete compatibili"
-                        
-                    Text("\(string): \(dietAvaibleString, format: .list(type: .and)).")
-                               .bold(self.newDish.mostraDieteCompatibili)
-                               .font(.caption)
-                               .foregroundStyle(self.newDish.mostraDieteCompatibili ? .green : .black)
-                    
-                    if !self.newDish.mostraDieteCompatibili {
-
-                        Text("Il piatto viene mostrato compatibile con una dieta Standard !!")
-                              .underline()
-                              .fontWeight(.semibold)
-                              .font(.caption)
-                              .foregroundStyle(Color.black)
-  
-                    }
-                } */ // deprecata 25.06
+            DietScrollCasesCmpatibility(
+                currentDish: self.newDish,
+                instanceCases: self.dietAvaible) {
                 
              vbLogicText()
             }
@@ -116,7 +105,7 @@ struct DietScrollView_NewDishSub: View {
     
     @ViewBuilder private func vbLogicText() -> some View {
         
-        let isStandardDish = dietAvaible.contains(.standard)
+        let isStandardDish = dietAvaible.isEmpty
         let showDiet = self.newDish.mostraDieteCompatibili
     
         let standardString = "Il piatto è compatibile soltanto ad una dieta Standard !"
@@ -141,7 +130,7 @@ struct DietScrollView_NewDishSub: View {
                            .foregroundStyle(showDiet ? .green : .black)
                 
                 if !showDiet {
-                    Text("Mostra il piatto come compatibile soltanto ad una dieta Standard !!")
+                    Text("Mostra il piatto senza alcuna compatibilità !!")
                           .underline()
                           .fontWeight(.semibold)
                           .font(.caption)

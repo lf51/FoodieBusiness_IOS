@@ -39,7 +39,7 @@ struct FastImport_IngredientRow: View {
                 
                 VStack(alignment:.leading) {
                     
-                    let isDiSistema = self.ingredient.status == .bozza()
+                  //  let isDiSistema = self.ingredient.status == .bozza()
                     
                     HStack(alignment:.center,spacing: 4) {
                         
@@ -57,7 +57,7 @@ struct FastImport_IngredientRow: View {
                         
                         Spacer()
                         
-                        if !isDiSistema {
+                      //  if !isDiSistema {
                             
                             HStack(spacing: 2) {
                                 
@@ -93,12 +93,12 @@ struct FastImport_IngredientRow: View {
                                 }
 
                             }
-                        } else {
+                      /* } else {
                             Text("Prodotto di terzi")
                                 .italic()
                                 .font(.callout)
                                 .foregroundStyle(Color.seaTurtle_3)
-                        }
+                        }*/
                         
                     }
         

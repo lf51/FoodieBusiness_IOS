@@ -49,7 +49,7 @@ struct ContentView: View {
 struct SubContentView:View {
     
     @ObservedObject var authProcess: AuthenticationManager
-    @StateObject var viewModel:AccounterVM
+    @StateObject private var viewModel:AccounterVM
     
     init(authProcess: AuthenticationManager) {
         

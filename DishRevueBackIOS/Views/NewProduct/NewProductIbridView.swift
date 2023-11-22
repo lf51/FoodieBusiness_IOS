@@ -22,7 +22,7 @@ struct NewProductIbridView: View {
     
     let backgroundColorView: Color
     let lockIngredientEdit:Bool
-    let saveDialogType:SaveDialogType
+   // let saveDialogType:SaveDialogType
     
     @State private var productArchiviato: ProductModel // per il reset
     @State private var sottostanteArchiviato: IngredientModel?
@@ -73,8 +73,7 @@ struct NewProductIbridView: View {
         self.lockIngredientEdit = lockEditSottostante
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
-        self.saveDialogType = saveDialogType
-        print("[INIT]_NewProductIbridView/sottostante is Nil:\(sottostante == nil)")
+      //  self.saveDialogType = saveDialogType
     }
 
     var body: some View {
@@ -102,7 +101,7 @@ struct NewProductIbridView: View {
                             .opacity(lockIngredientEdit ? 0.6 : 1.0)
                             .disabled(lockIngredientEdit)
  
-                        let isComposizione = self.productModel.percorsoProdotto == .composizione()
+                        let isComposizione = self.productModel.percorsoProdotto.returnTypeCase() == .composizione()
                         
                             BoxDescriptionModel_Generic(
                                 itemModel: $productModel,
@@ -164,7 +163,10 @@ struct NewProductIbridView: View {
                             
                         }
 
-                            DietScrollView_NewDishSub(newDish: $productModel,viewModel: viewModel)
+                            DietScrollView_NewDishSub(
+                                newDish: $productModel,
+                                sottostante: ingredienteSottostante,
+                                viewModel: viewModel)
 
                             DishSpecific_NewDishSubView(
                                 allDishFormats: $productModel.pricingPiatto,
@@ -189,8 +191,6 @@ struct NewProductIbridView: View {
                             self.vbSaveButtonDialogView()
                         }
 
-
-                            
                         }
                   //  .padding(.horizontal)
      
@@ -306,22 +306,7 @@ struct NewProductIbridView: View {
             newSottostante = IngredientModel()
             newProduct.percorsoProdotto = .finito()
         }
-        
-        
-        
-       /* let new:(dish:ProductModel,ing:IngredientModel) = {
-            
-            let currentDishType = self.productModel.percorsoProdotto
-            
-            var dish = ProductModel()
-            dish.percorsoProdotto = currentDishType
-           // dish.ingredientiPrincipali = [dish.id]
-            
-            let newIng = IngredientModel(id: dish.id)
-            
-            return (dish,newIng)
-        }()*/
-        
+
         self.productModel = newProduct
         self.ingredienteSottostante = newSottostante
         
@@ -374,26 +359,14 @@ struct NewProductIbridView: View {
        
         guard checkAllergeni() else { return false }
         
-        // Il check della dieta non serve, poichè se non confermato dall'utente, andrà di default sulla dieta standard
-        
         guard checkFormats() else { return false }
         
         // Ingrediente
         guard checkOrigine() else { return false }
         guard checkConservazione() else { return false }
         
-        //
-       
-        if allConditionSoddisfatte() {
-           
-            self.productModel.status = .completo(.disponibile)
-            
-        } else {
-            self.productModel.status = .bozza(.disponibile)
-        }
-        // l'ingrediente di Sistema resterà al suo status iniziale Bozza(nil) -> 04.10 - Vediamo come gira
-       
-      //  return checkNotExistSimilar()
+        allConditionSoddisfatte()
+ 
         return true // Nota 18_11_23
         
     }
@@ -427,18 +400,29 @@ struct NewProductIbridView: View {
             }
     }*/
     
-    private func allConditionSoddisfatte() -> Bool {
+    private func allConditionSoddisfatte() {
         
-      //  self.ingredienteDiSistema.produzione != .defaultValue &&
-      //  self.ingredienteDiSistema.provenienza != .defaultValue &&
-        self.productModel.optionalComplete()
+        var status:StatusModel = .noStatus
         
+        if self.productModel.optionalComplete() {
+            status = .completo(.disponibile)
+        } else {
+            status = .bozza(.disponibile)
+        }
+        
+        if self.productModel.percorsoProdotto.returnTypeCase() == .finito() {
+            self.ingredienteSottostante?.status = status
+        }
+        self.productModel.status = status
+
     }
     
     private func checkDescrizione() -> Bool {
         
-        if self.productModel.percorsoProdotto == .composizione() {
-            return self.productModel.descrizione != ""
+        if self.productModel.percorsoProdotto.returnTypeCase() == .composizione() {
+            
+            let condition = self.productModel.descrizione == nil ? false : self.productModel.descrizione != ""
+            return condition
         }
         return true
     }
@@ -614,7 +598,7 @@ case .finito(_):
        
        let customEncoder:Firestore.Encoder = {
             let encoder = Firestore.Encoder()
-            encoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.full
+            encoder.userInfo[IngredientModel.codingInfo] = MyCodingCase.inbound
             return encoder
         }()
   

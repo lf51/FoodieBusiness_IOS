@@ -123,7 +123,7 @@ struct PreCallVistaPiattiEspansa: View {
                     self.showButtonBar = true
                 } else {
                     self.valoreArchiviato = []
-                    self.statusArchiviato = .bozza()
+                    self.statusArchiviato = .bozza(.inPausa)
                     self.showButtonBar = false
                 }
             

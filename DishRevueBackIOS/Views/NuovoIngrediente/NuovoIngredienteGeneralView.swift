@@ -100,26 +100,6 @@ struct NuovoIngredienteGeneralView: View {
                             
                             ProvenienzaScrollView_NewIngredientSubView(
                                 nuovoIngrediente: $nuovoIngrediente)
-
-                            // Sostituto
-                            
-                           /* SostituzioneIngredienteView_NewIngredientSubView(nuovoIngrediente: $nuovoIngrediente) */ // Deprecato 06.08
-                            
-                            // end View Sostituto
-                            
-                           /* BottomViewGeneric_NewModelSubView(
-                                itemModel: $nuovoIngrediente,
-                                generalErrorCheck: $generalErrorCheck,
-                                itemModelArchiviato: ingredienteArchiviato,
-                                destinationPath: destinationPath) {
-                                    self.infoIngrediente()
-                                } resetAction: {
-                                    self.resetAction()
-                                } checkPreliminare: {
-                                    self.checkPreliminare()
-                                } salvaECreaPostAction: {
-                                    self.salvaECreaPostAction()
-                                }*/
                             
                             BottomDialogView {
                                 self.infoIngrediente()
