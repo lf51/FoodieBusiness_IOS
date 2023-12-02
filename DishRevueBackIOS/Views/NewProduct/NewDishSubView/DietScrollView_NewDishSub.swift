@@ -14,25 +14,18 @@ struct DietScrollView_NewDishSub: View {
     static var mostraAlertDiete:Bool = true
     
     @ObservedObject var viewModel:AccounterVM
-    @Binding var newDish: ProductModel
+    @Binding var newProduct: ProductModel
 
-    let sottostante:IngredientModel?
     let dietAvaible:[TipoDieta]
     let dietAvaibleString:[String]
     
-    init(newDish:Binding<ProductModel>,sottostante:IngredientModel? = nil,viewModel:AccounterVM) {
+    init(newProduct:Binding<ProductModel>,viewModel:AccounterVM) {
        
-        _newDish = newDish
+        _newProduct = newProduct
         self.viewModel = viewModel
-        self.sottostante = sottostante
-     
-        if let sottostante {
-            
-            (self.dietAvaible,self.dietAvaibleString) =  newDish.wrappedValue.returnDietAvaible(viewModel: viewModel, byPassShowCompatibility: true,throwSottostante: sottostante)
-        } else {
-            
-            (self.dietAvaible,self.dietAvaibleString) =  newDish.wrappedValue.returnDietAvaible(viewModel: viewModel, byPassShowCompatibility: true)
-        }
+       
+        let product = newProduct.wrappedValue
+        (self.dietAvaible,self.dietAvaibleString) =  product.returnDietAvaible(viewModel: viewModel, byPassShowCompatibility: true)
 
     }
     
@@ -45,14 +38,14 @@ struct DietScrollView_NewDishSub: View {
 
                 HStack {
                     
-                    let showDiet = self.newDish.mostraDieteCompatibili
+                    let showDiet = self.newProduct.mostraDieteCompatibili
                     
                     CSInfoAlertView(
                         imageScale: .large,
                         title: "Info Diete",
                         message: .dieteCompatibili)
                     
-                    Toggle(isOn: self.$newDish.mostraDieteCompatibili) {
+                    Toggle(isOn: self.$newProduct.mostraDieteCompatibili) {
                         
                         HStack{
                             Spacer()
@@ -75,7 +68,7 @@ struct DietScrollView_NewDishSub: View {
             }
             
             DietScrollCasesCmpatibility(
-                currentDish: self.newDish,
+                currentDish: self.newProduct,
                 instanceCases: self.dietAvaible) {
                 
              vbLogicText()
@@ -85,7 +78,7 @@ struct DietScrollView_NewDishSub: View {
        /* .onChange(of: self.dietAvaible, perform: { _ in
             self.newDish.mostraDieteCompatibili = false
         })*/
-        .onChange(of: self.newDish.mostraDieteCompatibili) { _ , newValue in
+        .onChange(of: self.newProduct.mostraDieteCompatibili) { _ , newValue in
 
             if !newValue && Self.mostraAlertDiete {
  
@@ -106,7 +99,7 @@ struct DietScrollView_NewDishSub: View {
     @ViewBuilder private func vbLogicText() -> some View {
         
         let isStandardDish = dietAvaible.isEmpty
-        let showDiet = self.newDish.mostraDieteCompatibili
+        let showDiet = self.newProduct.mostraDieteCompatibili
     
         let standardString = "Il piatto è compatibile soltanto ad una dieta Standard !"
     

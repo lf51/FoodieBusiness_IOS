@@ -92,10 +92,9 @@ public enum DestinationPathView: Hashable {
             
         case .piatto(let piatto,let dialogType):
             NewProductMainView(
-                newDish: piatto,
+                newProduct: piatto,
                 backgroundColorView: backgroundColorView,
-                destinationPath: destinationPath,
-                saveDialogType: dialogType)
+                destinationPath: destinationPath)
            /* NewDishMainView(newDish: piatto, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */
             
         case .ingrediente(let ingredient):

@@ -138,12 +138,12 @@ struct DishListView: View {
     @ViewBuilder private func vbFilterView(container:[ProductModel]) -> some View {
         
         MyFilterRow(
-            allCases: PercorsoProdotto.allCases,
+            allCases: ProductAdress.allCases,
             filterCollection: $filterCore.filterProperties.percorsoPRP,
             selectionColor: Color.white.opacity(0.5),
             imageOrEmoji: "fork.knife",
             label: "Prodotto") { value in
-                container.filter({$0.percorsoProdotto.returnTypeCase() == value}).count
+                container.filter({$0.adress == value}).count
             }
         
         let checkAvailability = checkStatoScorteAvailability()
@@ -281,7 +281,7 @@ struct DishListView: View {
        
         guard let percorso = self.filterCore.filterProperties.percorsoPRP else { return false }
         
-       return percorso.contains(.finito()) &&
+       return percorso.contains(.finito) &&
         percorso.count == 1
  
     }

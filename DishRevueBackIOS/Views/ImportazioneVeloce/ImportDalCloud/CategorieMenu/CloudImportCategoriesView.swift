@@ -15,6 +15,7 @@ struct CloudImportCategoriesView: View {
     @EnvironmentObject var viewModel:AccounterVM
     @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<CategoriaMenu>()
         
+    private(set) var categoriesManager:CategoriesManager = CategoriesManager()
     @State private var searchLetter:String = ""
     @State private var productType:ProductType = .noValue
     let backgroundColor:Color
@@ -213,11 +214,13 @@ struct CloudImportCategoriesView: View {
                     print("[ON_APPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
                     
                     Task {
-                        let count = try await self.viewModel.categoriesManager.libraryCount()
+                      /*  let count = try await self.viewModel.categoriesManager.libraryCount()*/
+                        let count = try await self.categoriesManager.libraryCount()
                         
                         self.importVM.libraryCount = count
                         
-                        self.importVM.addCloudContainerSubscriber(to: self.viewModel.categoriesManager.sharedCategoriesPublisher)
+                       /* self.importVM.addCloudContainerSubscriber(to: self.viewModel.categoriesManager.sharedCategoriesPublisher)*/
+                        self.importVM.addCloudContainerSubscriber(to: self.categoriesManager.sharedCategoriesPublisher)
                     }
                    /* self.importVM.addCloudCategoriesSubscriber(viewModel: self.viewModel)*/
                    
@@ -225,7 +228,8 @@ struct CloudImportCategoriesView: View {
                 .onDisappear {
                     print("[ON_DISAPPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
                     
-                    self.viewModel.categoriesManager.lastQuery = nil
+                   // self.viewModel.categoriesManager.lastQuery = nil
+                    self.categoriesManager.lastQuery = nil
                    // self.importVM.cancellables.removeAll()
                 }
     }
@@ -236,17 +240,23 @@ struct CloudImportCategoriesView: View {
         
         self.importVM.lastSnap = nil
         
-        self.viewModel
+       /* self.viewModel
             .categoriesManager
             .fetchFromSharedCollection(
                 filterBy: self.searchLetter,productType,
-                startAfter: nil)
+                startAfter: nil) */
+       self.categoriesManager
+           .fetchFromSharedCollection(
+               filterBy: self.searchLetter,productType,
+               startAfter: nil)
     }
     
     private func mostraAltri() {
         
-        self.viewModel
+       /* self.viewModel
             .categoriesManager
+            .executiveFetchFromSharedCollection(startAfter: self.importVM.lastSnap, queryCount: nil)*/
+        self.categoriesManager
             .executiveFetchFromSharedCollection(startAfter: self.importVM.lastSnap, queryCount: nil)
     }
     

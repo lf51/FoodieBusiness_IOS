@@ -131,7 +131,7 @@ struct AddPropertyMainView: View {
                 title: "Congratulation!",
                 message:"Proprietà registrata con Successo!")*/
             
-        } catch let error as CSError {
+        } catch let error as CS_GenericError {
            // print("[CATCH_CSError]_registration")
            // self.dismiss()
            self.localAlert = AlertModel(
@@ -167,7 +167,7 @@ struct AddPropertyMainView: View {
         
         if alreadyExist {
             
-            let error = CSError.propertyAlreadyRegistered
+            let error = CS_GenericError.propertyAlreadyRegistered
             
             throw error
         }/* else {

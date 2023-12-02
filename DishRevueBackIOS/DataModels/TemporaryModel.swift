@@ -19,7 +19,10 @@ struct TemporaryModel:Identifiable,Hashable {
     var categoriaMenu: CategoriaMenu = .defaultValue
     var rifIngredientiSecondari: [String] = []
     
-    func generaProduct(from ingredients:[IngredientModel], and rif:[String]) -> ProductModel {
+    func generaProduct() throws -> ProductModel {
+
+        let ingredients = self.ingredients
+        let rif = self.rifIngredientiSecondari
         
         var rifIngredientiPrincipali:[String] = []
         var rifIngredientiSecondari:[String] = []
@@ -33,16 +36,17 @@ struct TemporaryModel:Identifiable,Hashable {
             }
 
         }
+        
+        guard !rifIngredientiPrincipali.isEmpty else {
+            throw CS_GenericError.invalidPreparazioneStructure
+        }
 
         let dish = {
             var new = self.dish
             new.categoriaMenu = self.categoriaMenu.id
             new.ingredientiPrincipali = rifIngredientiPrincipali
-            new.ingredientiSecondari = rifIngredientiSecondari
-            
-            if rifIngredientiPrincipali.contains(self.dish.id) {
-                new.percorsoProdotto = .finito()
-            }
+            new.ingredientiSecondari = rifIngredientiSecondari == [] ? nil : rifIngredientiSecondari
+
             return new
             
         }()

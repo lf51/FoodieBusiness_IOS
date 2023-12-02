@@ -105,8 +105,11 @@ struct DishSpecific_NewDishSubView: View {
     
     private func reduceRow(formato:DishFormat) {
         
+        var prices = self.allDishFormats
+        
         if let index = self.allDishFormats.firstIndex(of: formato) {
-            self.allDishFormats.remove(at: index)
+            prices.remove(at: index)
+            self.allDishFormats = prices 
         }
     }
 }

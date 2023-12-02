@@ -21,7 +21,7 @@ extension DishRatingModel:MyProStarterPack_L1 {
     
     
     public typealias VM = AccounterVM
-    public typealias Sub = CloudDataStore.SubCollectionKey
+   
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [MyFoodiePackage.DishRatingModel]>, nomeContainer: String, nomeOggetto: String, imageAssociated: String) {
         
@@ -33,13 +33,23 @@ extension DishRatingModel:MyProStarterPack_L1 {
         return \.db.allMyReviews
     }
     
-    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
-        .allMyReviews
-    }
+   
     
 
     public func isEqual(to rhs: MyFoodiePackage.DishRatingModel) -> Bool {
         self.id == rhs.id
     }
 
+}
+
+extension DishRatingModel:MyProSubCollectionPack {
+    
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyReviews
+    }
+    public func sortCondition(compare rhs: DishRatingModel) -> Bool {
+        self.voto.generale > rhs.voto.generale
+    }
 }

@@ -16,23 +16,18 @@ extension ProductModel:
     MyProVisualPack_L1,
     MyProDescriptionPack_L0 {
     
-    public typealias Sub = CloudDataStore.SubCollectionKey
-    
-    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
-        .allMyDish
-    }
-    
-    public func isEqual(to rhs: MyFoodiePackage.ProductModel) -> Bool {
+   
+    public func isEqual(to rhs: MyFoodiePackage.ProductModel) -> Bool { // deprecata in futuro
         
         guard self.id != rhs.id else { return false }
         
-        switch self.percorsoProdotto {
+        switch self.adress {
             
         case .preparazione:
             return isEqualPreparazione(to: rhs)
-        case .composizione(_):
+        case .composizione:
             return isEqualPreparazione(to: rhs)
-        case .finito(_):
+        case .finito:
             return isEqualFinito(to: rhs)
         }
 
@@ -47,8 +42,8 @@ extension ProductModel:
     }
     private func isEqualComposizione(to rhs:ProductModel) -> Bool {
         
-       guard let sottostante = self.percorsoProdotto.associatedValue() as? IngredientModel,
-             let rhs_sottostante = rhs.percorsoProdotto.associatedValue() as? IngredientModel else { return false }
+       guard let sottostante = self.ingredienteSottostante,
+             let rhs_sottostante = rhs.ingredienteSottostante else { return false }
         
        return self.intestazione == rhs.intestazione &&
         sottostante.isEqual(to: rhs_sottostante)
@@ -57,8 +52,8 @@ extension ProductModel:
     
     private func isEqualFinito(to rhs:ProductModel) -> Bool {
        
-        guard let sottostante = self.percorsoProdotto.associatedValue() as? String,
-              let rhs_sottostante = rhs.percorsoProdotto.associatedValue() as? String else { return false }
+        guard let sottostante = self.rifIngredienteSottostante,
+              let rhs_sottostante = rhs.rifIngredienteSottostante else { return false }
      
         return sottostante == rhs_sottostante
     }
@@ -75,13 +70,13 @@ extension ProductModel:
         
          return (
             \.db.allMyDish, "Lista Piatti",
-             self.percorsoProdotto.simpleDescription(),
-             self.percorsoProdotto.imageAssociated().system
+             self.adress.simpleDescription(),
+             self.adress.imageAssociated().system
          )
      }
     
     public func modelStatusDescription() -> String {
-        "\(self.percorsoProdotto.simpleDescription()) (\(self.status.simpleDescription().capitalized))"
+        "\(self.adress.simpleDescription()) (\(self.status.simpleDescription().capitalized))"
     }
             
     public func returnModelRowView(rowSize:RowSize) -> some View {
@@ -184,7 +179,7 @@ extension ProductModel:
                       Image(systemName:"leaf")
                   }
               }
-          } else if self.percorsoProdotto == .finito() {
+          } else if self.adress == .finito {
              
               let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
               let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
@@ -442,7 +437,7 @@ extension ProductModel:
         // Passaggio di status sempre consentito. 16.03.23 Nessuna modifica da apportare
         
         //Update 09.07.23
-        guard self.percorsoProdotto != .composizione() else { return .eseguibileConRiserva }
+        guard self.adress != .composizione else { return .eseguibileConRiserva }
         //end update
         let allIng = self.allMinusArchiviati(viewModel: viewModel)
         let ingCount = allIng.count
@@ -607,7 +602,7 @@ extension ProductModel: Object_FPC {
         let allDietAvaible = self.returnDietAvaible(viewModel: readOnlyVM).inDishTipologia
         let basePreparazione = self.calcolaBaseDellaPreparazione(readOnlyVM: readOnlyVM)
         let allRIFCategories = properties.categorieMenu?.map({$0.id})
-        let percorso = self.percorsoProdotto.returnTypeCase()
+        let percorso = self.adress
         
         let stringResult:Bool = {
             
@@ -676,9 +671,9 @@ extension ProductModel: Object_FPC {
         var status_singleChoice:StatusTransition?
         var executionState:ExecutionState?
         // 16.03 end
-        var percorsoPRP:[PercorsoProdotto]? { willSet {
+        var percorsoPRP:[ProductAdress]? { willSet {
             if let value = newValue,
-               !value.contains(.finito()) { self.inventario = nil }
+               !value.contains(.finito) { self.inventario = nil }
         }}
         var categorieMenu:[CategoriaMenu]?
         var basePRP:ProductModel.BasePreparazione? //
@@ -789,7 +784,7 @@ extension ProductModel: MyProProgressBar {
     
     private func selectCountProgress() -> Double {
         
-        switch self.percorsoProdotto {
+        switch self.adress {
             
         case .preparazione:
             return progressPreparazione()
@@ -816,6 +811,7 @@ extension ProductModel: MyProProgressBar {
 
         return count
     }
+    
     private func progressIbrido() -> Double {
         var count:Double = 0.0
         
@@ -828,6 +824,15 @@ extension ProductModel: MyProProgressBar {
         if self.mostraDieteCompatibili { count += 0.1 }
         if !self.arePriceEmpty() { count += 0.18 }
 
+        if let ingredienteSottostante {
+            
+            if ingredienteSottostante.conservazione != .defaultValue { count += 0.125}
+            if ingredienteSottostante.origine != .defaultValue {
+                count += 0.125
+            }
+            
+        }
+        
         return count
     }
     
@@ -852,4 +857,14 @@ extension ProductModel {
     }
 }
 
-
+extension ProductModel:MyProSubCollectionPack {
+    
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyDish
+    }
+    public func sortCondition(compare rhs: MyFoodiePackage.ProductModel) -> Bool {
+        self.intestazione < rhs.intestazione
+    }
+}

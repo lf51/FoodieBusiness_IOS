@@ -134,7 +134,26 @@ struct IngredientModel_RowView: View {
             
             Spacer()
             
-            let statoScorte = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id)
+            let statoScorte = self.item.statusScorte()
+            let transitionScorte = self.item.transitionScorte()
+    
+            HStack(spacing:3) {
+                
+                Text(statoScorte.rawValue)
+                    .italic()
+                    .bold()
+                    .font(.subheadline)
+                
+                Image(systemName: statoScorte.imageAssociata())
+                    .imageScale(.medium)
+                
+                Image(systemName: transitionScorte.imageAssociata())
+                    .imageScale(.medium)
+                
+            }
+            .foregroundStyle(statoScorte.coloreAssociato())
+            
+          /*  let statoScorte = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id)
             
             HStack(spacing:3) {
                 
@@ -147,13 +166,9 @@ struct IngredientModel_RowView: View {
                     .imageScale(.medium)
                 
             }
-            .foregroundStyle(statoScorte.coloreAssociato())
+            .foregroundStyle(statoScorte.coloreAssociato())*///BACKUP_01_12_23
             
         }
-        
-        
-        
-        
     }
     
     @ViewBuilder private func vbProduzioneIngrediente() -> some View {

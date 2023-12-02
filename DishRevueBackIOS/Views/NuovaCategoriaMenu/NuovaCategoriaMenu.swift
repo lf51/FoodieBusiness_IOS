@@ -646,13 +646,13 @@ struct NuovaCategoriaMenu: View {
     private func saveOnCloud() {
         /*
          1. Nuova Categoria
-         -> Check se esistente nella library
+         -> Check se esistente nella library // non più 26_11_23
          -> Se NON esistente salva su:
          • Categories Library
          • SubCollection
          
          -> se esistente:
-         Recupera ID e salva in:
+         Recupera ID e salva in:  // non più 26_11_23
          • SubCollection
          
          2. Modifica Categoria
@@ -713,7 +713,6 @@ struct NuovaCategoriaMenu: View {
        // self.editMode?.wrappedValue = .inactive
        
     }
-
 
 }
 

@@ -11,7 +11,7 @@ import MyFoodiePackage
 struct NuovoIngredienteGeneralView: View {
 
     @EnvironmentObject var viewModel: AccounterVM
-    @Environment(\.openURL) private var openURL
+  //  @Environment(\.openURL) private var openURL
 
     @State private var nuovoIngrediente: IngredientModel
     let backgroundColorView: Color
@@ -20,33 +20,24 @@ struct NuovoIngredienteGeneralView: View {
     let destinationPath: DestinationPath
     
     @State private var generalErrorCheck: Bool = false
-    
-  //  @State private var isConservazioneOk: Bool = false
     @State private var areAllergeniOk: Bool = false
     @State private var wannaAddAllergeni: Bool = false
+
+    @FocusState private var modelField:ModelField?
     
-    // test
-    
-  //  @State private var idRiserva: String = "Niente"
-    //
-    
-    init(nuovoIngrediente: IngredientModel,backgroundColorView: Color,destinationPath:DestinationPath) {
-      // test 18.08
-        
-       // let new = IngredientModel()
-      //  _nuovoIngrediente = State(wrappedValue: new)
-        
-        // chiusa Test
+    init(
+        nuovoIngrediente: IngredientModel,
+        backgroundColorView: Color,
+        destinationPath:DestinationPath) {
+   
         _nuovoIngrediente = State(wrappedValue: nuovoIngrediente)
+        _ingredienteArchiviato = State(wrappedValue: nuovoIngrediente)
         self.backgroundColorView = backgroundColorView
         self.destinationPath = destinationPath
-        
-        _ingredienteArchiviato = State(wrappedValue: nuovoIngrediente)
        
     }
     
-    // 17.02.23 Focus State
-    @FocusState private var modelField:ModelField?
+   @State private var scrollPosition:Int?
     
     var body: some View {
         
@@ -69,6 +60,7 @@ struct NuovoIngredienteGeneralView: View {
                                 generalErrorCheck: generalErrorCheck,
                                 minLenght: 3,
                                 coloreContainer:.seaTurtle_3)
+                            .id(ModelField.intestazione.rawValue)
                             .focused($modelField, equals: .intestazione)
                                
                             BoxDescriptionModel_Generic(
@@ -82,8 +74,7 @@ struct NuovoIngredienteGeneralView: View {
                             OrigineScrollView_NewIngredientSubView(
                                 nuovoIngrediente: $nuovoIngrediente,
                                 generalErrorCheck: generalErrorCheck)
-                           
-                            
+
                             // Allergeni
                             AllergeniScrollView_NewIngredientSubView(
                                 nuovoIngrediente: self.$nuovoIngrediente,
@@ -111,40 +102,18 @@ struct NuovoIngredienteGeneralView: View {
                                 let check = checkPreliminare()
                                 if check { return check }
                                 else {
-                                    self.generalErrorCheck = true
-                                    return false 
+                                    logMessage()
+                                    return false
                                 }
                             } primaryDialogAction: {
                                 self.saveButtonDialogView()
                             }
-
-                            
-
                         }//.padding(.horizontal)
-                      
+                        .scrollTargetLayout()
                     }
+                    .scrollPosition(id: $scrollPosition,anchor: .top)
                     .scrollDismissesKeyboard(.immediately)
-                  //  .zIndex(0)
-                   // .opacity(wannaAddAllergeni ? 0.6 : 1.0)
-                   // .disabled(wannaAddAllergeni)
-
-                 /*   if wannaAddAllergeni {
-               
-                        SelettoreMyModel<_,AllergeniIngrediente>(
-                            itemModel: $nuovoIngrediente,
-                            allModelList: ModelList.ingredientAllergeniList,
-                            closeButton: $wannaAddAllergeni,
-                            backgroundColorView: backgroundColorView,
-                            actionTitle: "Normativa") {
-                                if let url = URL(string: "https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2011:304:0018:0063:it:PDF") {
-                                                openURL(url)
-                                            }
-                            }
-                        
-                    } */
-                   
-            //   CSDivider()
-                    
+      
                 HStack {
                     Spacer()
                     Text(nuovoIngrediente.id)
@@ -154,11 +123,9 @@ struct NuovoIngredienteGeneralView: View {
                 .font(.caption2)
                 .foregroundStyle(Color.black)
                 .opacity(0.6)
-              //  .padding(.horizontal)
                    
             }
             .csHpadding()
-            //.padding(.horizontal,10)
             .popover(isPresented: $wannaAddAllergeni,attachmentAnchor: .point(.top),arrowEdge: .bottom) {
                 VistaAllergeni_Selectable(
                     allergeneIn: $nuovoIngrediente.allergeni,
@@ -167,13 +134,13 @@ struct NuovoIngredienteGeneralView: View {
             }
     
        }
-      // .csAlertModifier(isPresented: $viewModel.showAlert, item: viewModel.alertItem)
+
     }
     // Method
     private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
         
        let general = self.nuovoIngrediente == self.ingredienteArchiviato
-        return (general,false,false)
+       return (general,false,nil)
     }
     
     private func resetAction() {
@@ -188,8 +155,7 @@ struct NuovoIngredienteGeneralView: View {
         
         self.generalErrorCheck = false
         self.areAllergeniOk = false
-      // self.isConservazioneOk = false
-        
+
         let new = IngredientModel()
         
         self.nuovoIngrediente = new
@@ -198,17 +164,43 @@ struct NuovoIngredienteGeneralView: View {
     
     private func infoIngrediente() -> (breve:Text,estesa:Text) {
         
-       let string = csInfoIngrediente(
-        areAllergeniOk: self.areAllergeniOk,
-        nuovoIngrediente: self.nuovoIngrediente)
+      let ingrediente = self.nuovoIngrediente
         
-        return (Text("breve"),Text(string))
+      let string = csInfoIngrediente(
+        areAllergeniOk: self.areAllergeniOk,
+        nuovoIngrediente: ingrediente)
+       
+        let incipit:String = {
+            
+            let origine = ingrediente.origine
+            let isBio = ingrediente.produzione == .biologico
+            let provenienza = ingrediente.provenienza
+            
+            var stringa = "Ingrediente"
+            
+            if origine != .noValue { stringa += " di Origine \(origine.simpleDescription())"}
+            
+            if isBio { stringa += " Bio" }
+            if provenienza != .noValue {
+                stringa += " \(provenienza.simpleDescription())"
+            }
+
+            return "\(stringa)."
+        }()
+
+      let description = Text("\(incipit)\n\(string)")
+    
+      return (description,description)
     }
     
     private func checkPreliminare() -> Bool {
         
         guard checkIntestazione() else {
-            self.modelField = .intestazione
+            let field:ModelField = .intestazione
+            withAnimation {
+                self.modelField = field
+                self.scrollPosition = field.rawValue
+            }
             return false }
         
         guard checkOrigine() else { return false }
@@ -223,19 +215,17 @@ struct NuovoIngredienteGeneralView: View {
             self.nuovoIngrediente.status = .bozza(.disponibile)
         }
 
-        return checkNotExistSimilar()
-       // return true
+        return true
+       
     }
     
-    private func checkNotExistSimilar() -> Bool {
+    private func logMessage() {
         
-        if self.viewModel.checkModelNotInVM(itemModel: nuovoIngrediente) { return true }
-        else {
-            self.viewModel.alertItem = AlertModel(
-                 title: "Controllare",
-                 message: "Hai già creato un Ingrediente con questo nome e caratteristiche")
-             
-           return false
+        self.generalErrorCheck = true
+        
+        withAnimation {
+               
+                self.viewModel.logMessage = "[ERRORE]_Form Incompleto."
             }
     }
     
@@ -270,11 +260,12 @@ struct NuovoIngredienteGeneralView: View {
                     
                    /* self.viewModel.createModel(
                         itemModel: self.nuovoIngrediente)*/
-                    Task {
-                       try await self.viewModel.createIngredient(item: self.nuovoIngrediente) { _ in }
+                  //  Task {
+                     /*  try await self.viewModel.createIngredient(item: self.nuovoIngrediente) { _ in }*/
                             
+                        self.viewModel.createModelOnSub(itemModel: self.nuovoIngrediente)
                         self.salvaECreaPostAction()
-                    }
+                   // }
                 }
 
             DialogButtonElement(
@@ -285,11 +276,15 @@ struct NuovoIngredienteGeneralView: View {
                    /* self.viewModel.createModel(
                         itemModel: self.nuovoIngrediente,
                         refreshPath: self.destinationPath)*/
-                    Task {
-                       try await self.viewModel.createIngredient(
+                   // Task {
+                      /* try await self.viewModel.createIngredient(
                             item: self.nuovoIngrediente,
-                            refreshPath: self.destinationPath) { _ in }
-                    }
+                            refreshPath: self.destinationPath) { _ in }*/
+                   // }
+                    
+                    self.viewModel.createModelOnSub(
+                        itemModel: self.nuovoIngrediente,
+                        refreshPath: self.destinationPath)
                 }
             
            // Modifica
@@ -301,7 +296,9 @@ struct NuovoIngredienteGeneralView: View {
                     
                    /* self.viewModel.updateModel(
                         itemModel: self.nuovoIngrediente)*/
-                    self.viewModel.updateIngredient(item: self.nuovoIngrediente)
+                  /*  self.viewModel.updateIngredient(item: self.nuovoIngrediente)*/
+                    self.viewModel.updateModelOnSub(
+                        itemModel: self.nuovoIngrediente)
                     self.salvaECreaPostAction()
                 }
             
@@ -313,8 +310,11 @@ struct NuovoIngredienteGeneralView: View {
                    /* self.viewModel.updateModel(
                         itemModel: self.nuovoIngrediente,
                         refreshPath: self.destinationPath)*/
-                    self.viewModel.updateIngredient(
+                   /* self.viewModel.updateIngredient(
                         item: self.nuovoIngrediente,
+                        refreshPath: self.destinationPath)*/
+                    self.viewModel.updateModelOnSub(
+                        itemModel: self.nuovoIngrediente,
                         refreshPath: self.destinationPath)
                 }
             
@@ -327,17 +327,19 @@ struct NuovoIngredienteGeneralView: View {
                     self.nuovoIngrediente.intestazione != self.ingredienteArchiviato.intestazione
                 } action: {
                     
-                    Task {
+                  //  Task {
                         var new = self.nuovoIngrediente
                         new.id = UUID().uuidString
 
                        /* self.viewModel.createModel(
                             itemModel: new,
                             refreshPath: self.destinationPath)*/
-                       try await self.viewModel.createIngredient(item: new) { _ in }
-                    }
+                      /* try await self.viewModel.createIngredient(item: new) { _ in }*/
+                  //  }
                     
-                    
+                    self.viewModel.createModelOnSub(
+                        itemModel: new,
+                        refreshPath: self.destinationPath)
                 }
             
             

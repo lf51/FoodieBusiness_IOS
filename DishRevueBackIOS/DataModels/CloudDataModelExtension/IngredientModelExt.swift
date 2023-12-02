@@ -12,14 +12,7 @@ import MyFilterPackage
 
 extension IngredientModel:
     MyProToolPack_L1,
-    MyProVisualPack_L1,
     MyProDescriptionPack_L0 {
-    
-    public typealias Sub = CloudDataStore.SubCollectionKey
-    
-    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
-        .allMyIngredients
-    }
 
     public func isEqual(to rhs: MyFoodiePackage.IngredientModel) -> Bool {
         
@@ -37,7 +30,7 @@ extension IngredientModel:
   //  public typealias FPM = FilterPropertyModel
    // public typealias ST = StatusTransition
     public typealias DPV = DestinationPathView
-    public typealias RS = RowSize
+   
    // public typealias SM = StatusModel
     
    /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
@@ -78,90 +71,9 @@ extension IngredientModel:
         return (dishCount,dishWhereHasSubstitute)
     }
     
-    public func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
-        
-        if self.status.checkStatusTransition(check: .disponibile) {
-            return(false,false,false,true,1.0)
-        }
-        else if self.status.checkStatusTransition(check: .inPausa) {
-            return(false,false,false,true,0.8)
-        }
-        else {
-            return (true,false,true,false,0.5)
-        }
-    }
-    
-    public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-              
-        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
-        
-       return VStack {
-            
-            let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
-            let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
-                
-                Menu {
-                    
-                    Button("in Esaurimento") {
-                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
-                    }.disabled(statoScorte != .inStock)
-                    
-                    Button("Esaurite") {
-                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
-                        // innesto 01.12.22
-                        if self.status.checkStatusTransition(check: .disponibile) {
-                            self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
-                        }
-                        
-                    }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
-                    
-                    if statoScorte == .esaurito || statoScorte == .inEsaurimento {
-                        
-                        Button("Rimetti in Stock") {
-                            viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
-                        }
-                    }
-                    
-                    Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
-                    
-                    Button("Cronologia Acquisti") {
-                        viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(self))
-                    }
-                    
-                } label: {
-                    HStack{
-                        Text("Scorte \(statoScorte.simpleDescription())")
-                        Image(systemName: statoScorte.imageAssociata())
-                    }
-                }
-
-                Button {
-                    
-                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
-                    
-                } label: {
-                    HStack{
-                        Text("Cambio Temporaneo")
-                        /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
-                        Image(systemName: "clock")
-                    }
-                }
-                
-                Button {
-
-                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
-                    
-                } label: {
-                    HStack{
-                        Text("Cambio Permanente")
-                        Image(systemName: "exclamationmark.circle")
-                      /*  Image(systemName: "arrow.left.arrow.right.circle") */
-                    }
-                }
  
-        }
-        .disabled(generalDisabled)
-    }
+    
+  
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String) {
         
@@ -177,10 +89,7 @@ extension IngredientModel:
         "Ingrediente (\(self.status.simpleDescription().capitalized))"
     } // deprecata in futuro
     
-    public func returnModelRowView(rowSize:RowSize) -> some View {
-        // rowSize da implementare // 22.06 Implementata
-        IngredientModel_RowView(item: self, rowSize: rowSize)
-    }
+   
     
    /* public func modelPropertyCompare(filterProperty: FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool {
         
@@ -274,7 +183,7 @@ extension IngredientModel:
 
         }
 
-    }
+    } // deprecata in futuro
     
     public func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool { false }
     
@@ -497,12 +406,12 @@ extension IngredientModel:Object_FPC {
 extension IngredientModel:MyProProgressBar {
     
     public var countProgress: Double {
-        
-       /* let instestazioneOk = self.intestazione != "" && !self.intestazione.contains("(DS)")*/
+
         var count:Double = 0.0
         
         if self.intestazione != "" { count += 0.35 }
-        if self.descrizione != "" { count += 0.35 }
+        if let descrizione,
+            descrizione != "" { count += 0.35 }
         if self.conservazione != .defaultValue { count += 0.15 }
         if self.origine != .defaultValue { count += 0.15 }
             
@@ -510,4 +419,209 @@ extension IngredientModel:MyProProgressBar {
         
     }
 
+}
+
+extension IngredientModel:MyProSubCollectionPack {
+    
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyIngredients
+    }
+    public func sortCondition(compare rhs: IngredientModel) -> Bool {
+        self.intestazione < rhs.intestazione
+    }
+}
+
+extension IngredientModel:MyProVisualPack_L1 {
+    
+    public typealias RS = RowSize
+    
+    public func returnModelRowView(rowSize:RowSize) -> some View {
+        // rowSize da implementare // 22.06 Implementata
+        IngredientModel_RowView(item: self, rowSize: rowSize)
+    }
+    
+    public func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
+        
+        if self.status.checkStatusTransition(check: .disponibile) {
+            return(false,false,false,true,1.0)
+        }
+        else if self.status.checkStatusTransition(check: .inPausa) {
+            return(false,false,false,true,0.8)
+        }
+        else {
+            return (true,false,true,false,0.5)
+        }
+    }
+    
+   public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+              
+        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
+        
+       return VStack {
+            
+            let statoScorte = self.statusScorte()
+            let transitionScorte = self.transitionScorte()
+            let ultimoAcquisto = self.lastAcquisto()
+                
+                Menu {
+                    
+                    Button("in Esaurimento") {
+                        
+                       /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)*/
+                        self.changeAndUpdateStatus(status: .inEsaurimento, viewModel: viewModel)
+
+                        
+                        
+                    }.disabled(statoScorte != .inStock)
+                    
+                    Button("Esaurite") {
+                        
+                       /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                        // innesto 01.12.22
+                        if self.status.checkStatusTransition(check: .disponibile) {
+                            self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
+                        } */
+                        
+                        self.changeAndUpdateStatus(status: .esaurito, viewModel: viewModel)
+
+                        
+                        
+                    }.disabled(statoScorte == .esaurito || transitionScorte == .inArrivo)
+                    
+                    if transitionScorte == .pending {
+                        
+                        Button("Rimetti in Stock") {
+                            
+                           /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)*/
+                            self.changeAndUpdateStatus(status: .inStock, viewModel: viewModel)
+                            
+                            
+                        }
+                    }
+                    
+                    Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
+                    
+                    Button("Cronologia Acquisti") {
+                       /* viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(self))*/
+                        viewModel.logMessage = "FETCH SUB COLLECTION"
+                    }
+                    
+                } label: {
+                    HStack{
+                        Text("Scorte \(statoScorte.simpleDescription())")
+                        Image(systemName: statoScorte.imageAssociata())
+                    }
+                }
+
+                Button {
+                    
+                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
+                    
+                } label: {
+                    HStack{
+                        Text("Cambio Temporaneo")
+                        /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
+                        Image(systemName: "clock")
+                    }
+                }
+                
+                Button {
+
+                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
+                    
+                } label: {
+                    HStack{
+                        Text("Cambio Permanente")
+                        Image(systemName: "exclamationmark.circle")
+                      /*  Image(systemName: "arrow.left.arrow.right.circle") */
+                    }
+                }
+ 
+        }
+        .disabled(generalDisabled)
+    }
+    
+    private func changeAndUpdateStatus(status:StatoScorte,viewModel:AccounterVM) {
+        
+        var updateIng = self
+        updateIng.changeStatusScorte(newValue: status)
+        viewModel.updateModelOnSub(itemModel: updateIng)
+        
+    }
+    
+   /* public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+              
+        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
+        
+       return VStack {
+            
+            let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
+            let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
+                
+                Menu {
+                    
+                    Button("in Esaurimento") {
+                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
+                    }.disabled(statoScorte != .inStock)
+                    
+                    Button("Esaurite") {
+                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                        // innesto 01.12.22
+                        if self.status.checkStatusTransition(check: .disponibile) {
+                            self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
+                        }
+                        
+                    }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
+                    
+                    if statoScorte == .esaurito || statoScorte == .inEsaurimento {
+                        
+                        Button("Rimetti in Stock") {
+                            viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
+                        }
+                    }
+                    
+                    Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
+                    
+                    Button("Cronologia Acquisti") {
+                        viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(self))
+                    }
+                    
+                } label: {
+                    HStack{
+                        Text("Scorte \(statoScorte.simpleDescription())")
+                        Image(systemName: statoScorte.imageAssociata())
+                    }
+                }
+
+                Button {
+                    
+                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
+                    
+                } label: {
+                    HStack{
+                        Text("Cambio Temporaneo")
+                        /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
+                        Image(systemName: "clock")
+                    }
+                }
+                
+                Button {
+
+                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
+                    
+                } label: {
+                    HStack{
+                        Text("Cambio Permanente")
+                        Image(systemName: "exclamationmark.circle")
+                      /*  Image(systemName: "arrow.left.arrow.right.circle") */
+                    }
+                }
+ 
+        }
+        .disabled(generalDisabled)
+    }*/ // backup_01_12_23
+    
+    
 }

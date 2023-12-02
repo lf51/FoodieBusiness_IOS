@@ -44,12 +44,6 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProToolPack_L0> : View where T.VM ==
         
         VStack(alignment: .leading,spacing: .vStackLabelBodySpacing) {
             
-          /*  CSLabel_1Button(
-                placeHolder: placeHolderItemName,
-                imageNameOrEmojy: imageLabel,
-                imageColor: imageColor,
-                backgroundColor: Color.black) */
-            
             CSLabel_conVB(
                 placeHolder: placeHolderItemName,
                 imageNameOrEmojy: imageLabel,
@@ -76,10 +70,6 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProToolPack_L0> : View where T.VM ==
                     },
                     action: { checkAndSubmit() }
                 )
-              /*  .csWarningModifier(isPresented: generalErrorCheck) {
-                    return self.itemModel.intestazione == ""
-                  //  return !csCheckStringa(testo: self.nuovaStringa,minLenght: minLenght)
-                } */
         
             }
             

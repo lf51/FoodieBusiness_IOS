@@ -7,4 +7,7 @@
 
 import Foundation
 
-enum ModelField:Hashable { case intestazione,descrizione }
+enum ModelField:Int,Hashable {
+    case intestazione = 0
+    case descrizione
+}

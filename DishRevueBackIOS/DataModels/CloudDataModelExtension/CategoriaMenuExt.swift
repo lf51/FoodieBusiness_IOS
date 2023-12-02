@@ -12,13 +12,7 @@ extension CategoriaMenu:
     MyProStarterPack_L1,
     MyProEnumPack_L2,
     MyProDescriptionPack_L0 {
-    
-    public typealias Sub = CloudDataStore.SubCollectionKey
-    
-    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
-        .allMyCategories
-    }
-    
+
     public func isEqual(to rhs: MyFoodiePackage.CategoriaMenu) -> Bool {
         self.intestazione == rhs.intestazione &&
         self.image == rhs.image
@@ -58,3 +52,16 @@ extension CategoriaMenu:
     }
     
 } // end struct
+
+extension CategoriaMenu:MyProSubCollectionPack {
+    
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyCategories
+    }
+    
+    public func sortCondition(compare rhs: CategoriaMenu) -> Bool {
+        self.listIndex ?? 998 < rhs.listIndex ?? 999
+    }
+}

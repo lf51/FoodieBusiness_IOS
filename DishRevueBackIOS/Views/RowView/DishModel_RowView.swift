@@ -108,13 +108,6 @@ struct ProductModel_RowView: View {
     
     @ViewBuilder private func vbNormalRow() -> some View {
         
-        /*let percorsoIbrido:Bool = {
-            let percorsoProdotto = item.percorsoProdotto.returnTypeCase()
-            
-           return percorsoProdotto == .composizione() ||
-            percorsoProdotto == .finito()
-        }()*/
-        
         CSZStackVB_Framed(frameWidth:rowSize.getFrameWidth()) {
             
             VStack(alignment:.leading) {
@@ -137,16 +130,11 @@ struct ProductModel_RowView: View {
                         
                        vbDescriptionScrollRow()
                     }
-                    //else if percorsoIbrido { vbIngredientQuality() }
-                   // else { vbIngredientScrollRow() }
                     else {
                         
                        vbIngredientAdress()
                     }
-                    
-                   /* if percorsoIbrido {vbIngredientQuality()}
-                    else {vbIngredientScrollRow()} */
-                    
+     
                     vbDieteCompatibili()
                 }
                 
@@ -220,10 +208,18 @@ struct ProductModel_RowView: View {
     
     @ViewBuilder private func vbIngredientAdress() -> some View {
         
-        switch self.item.percorsoProdotto {
+        let sottostante = self.item.getSottostante(viewModel: self.viewModel).sottostante
+        
+        if let sottostante { vbIngredientQuality(sottostante:sottostante) }
+        else { vbIngredientScrollRow() }
+        
+        
+        
+        
+       /* switch self.item.percorsoProdotto {
             
         case .preparazione:
-            vbIngredientScrollRow()
+            
         case .composizione(let ingredientModel):
             if let ingredientModel {  vbIngredientQuality(sottostante:ingredientModel) }
             else { Text("ERRORE_ING_SOTTOSTANTE")}
@@ -233,7 +229,7 @@ struct ProductModel_RowView: View {
                let ingredient = self.viewModel.modelFromId(id: string, modelPath: \.db.allMyIngredients) { vbIngredientQuality(sottostante: ingredient) }
             else { Text("ERRORE_ING_SOTTOSTANTE") }
             
-        }
+        } */
     }
     /// solo per viewRow ibride
     @ViewBuilder private func vbIngredientQuality(sottostante:IngredientModel) -> some View {
@@ -321,12 +317,12 @@ struct ProductModel_RowView: View {
         
        // let isIbrido = self.rowSize.returnType() == .ibrido()
         
-        let isSottostanteARif:String? = {
+       /* let isSottostanteARif:String? = {
            
          let sottostante = self.item.percorsoProdotto.associatedValue() as? String
                 return sottostante
            
-        }()
+        }()*/
         let isNotDescribed = self.item.descrizione == nil
         
         HStack {
@@ -347,7 +343,7 @@ struct ProductModel_RowView: View {
                     message: "Indica il numero di menu stabili dove è inserito il piatto. Non considera il menu del giorno e il menu dei consigliati dallo chef.")
             } */ // Tolto 04.10
             
-            if let rif = isSottostanteARif {
+            if let rif = self.item.rifIngredienteSottostante {
                 
                // let sottostante = self.item.percorsoProdotto.associatedValue() as? String
                 let statoScorte = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: rif)
@@ -398,7 +394,7 @@ struct ProductModel_RowView: View {
                         } */ // Tolto 04.10
                     }
                 
-                    if isSottostanteARif == nil {
+                    if self.item.rifIngredienteSottostante == nil {
                         
                         if areAllItalian {
                             
@@ -456,7 +452,6 @@ struct ProductModel_RowView: View {
             
             let describeButton:Color = isNotDescribed ? .gray : .seaTurtle_4
             
-            
             CSButton_image(
                 activationBool: self.showDescription,
                 frontImage: "arrow.triangle.2.circlepath",
@@ -505,10 +500,13 @@ struct ProductModel_RowView: View {
         
         let dashedColor:Color = {
             
-            if let rif = self.item.percorsoProdotto.associatedValue() as? String {
+            if let rif = self.item.rifIngredienteSottostante {
                 
                return self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: rif).coloreAssociato()
                 
+            }
+            else if let rif = self.item.ingredienteSottostante?.id {
+                return self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: rif).coloreAssociato()
             }
             else {
                 return self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
@@ -524,7 +522,7 @@ struct ProductModel_RowView: View {
             }
         }()
     
-        let percorsoImage = self.item.percorsoProdotto.imageAssociated(to: productType)
+        let percorsoImage = self.item.adress.imageAssociated(to: productType)
         
         HStack(alignment:.center,spacing: 3) {
             
@@ -557,16 +555,16 @@ struct ProductModel_RowView: View {
         let moneyCode = Locale.current.currency?.identifier ?? "EUR"
         let priceDouble = Double(price) ?? 0
      
-     
         HStack(alignment:.center,spacing: 3) {
             
-           // let percorso = self.item.percorsoProdotto
+           let adress = item.adress
             
-            if self.item.percorsoProdotto.returnTypeCase() != .finito() {
+            if adress != .finito {
               
                 vbReviewLine()
+                
             } else {
-                Text(self.item.percorsoProdotto.simpleDescription().lowercased())
+                Text(adress.simpleDescription().lowercased())
                     .italic()
                     .fontWeight(.semibold)
                     .foregroundStyle(Color.seaTurtle_2)
@@ -735,7 +733,7 @@ struct ProductModel_RowView: View {
                 .foregroundStyle(Color.seaTurtle_3)
             
             ScrollView(.horizontal,showsIndicators: false) {
-                Text(self.item.descrizione ?? "")
+                Text(self.item.descrizione ?? "no description")
                     .font(.headline)
                     .italic()
                     .foregroundStyle(Color.black)

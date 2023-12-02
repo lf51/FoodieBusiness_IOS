@@ -60,10 +60,9 @@ func csSwitchSingolarePlurale(checkNumber:Int,wordSingolare:String,wordPlurale:S
 /// Analizza le proprietà di un ingrediente e tira fuori una stringa. Trasfersale al modello nuovo Ingrediente e al modello Ibrido
 func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> String {
     
-    var stringaAllergeni: String = "Presenza/assenza Allergeni non Confermata"
-    var stringaCongeSurge: String = "\nMetodo di Conservazione non indicato"
-    var metodoProduzione: String = ""
-    
+    var stringaAllergeni: String = "Presenza/assenza Allergeni non Confermata."
+    var stringaCongeSurge: String = "\nMetodo di Conservazione non indicato."
+ 
     if areAllergeniOk {
         
         if let allergens = nuovoIngrediente.allergeni,
@@ -73,29 +72,17 @@ func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> 
             stringaAllergeni = "Questo prodotto contiene \(count > 1 ? "\(count) Allergeni" : "1 Allergene")."
             
         } else {
-            stringaAllergeni = "Questo prodotto è privo di Allergeni."
+            stringaAllergeni = "Prodotto privo di Allergeni."
         }
-        
-      /*  if nuovoIngrediente.allergeni.isEmpty {
-            stringaAllergeni = "Questo prodotto è privo di Allergeni."
-        } else {
-
-            let count = nuovoIngrediente.allergeni.count
-            stringaAllergeni = "Questo prodotto contiene \(count > 1 ? "\(count) Allergeni" : "1 Allergene")."
-        } */
     }
     
     if nuovoIngrediente.conservazione != .defaultValue {
         
-         stringaCongeSurge = "\nQuesto prodotto \( nuovoIngrediente.conservazione.extendedDescription())."
+         stringaCongeSurge = "\n\( nuovoIngrediente.conservazione.extendedDescription())."
         
     }
     
-    if nuovoIngrediente.produzione == .biologico {
-        metodoProduzione = "\nProdotto BIO."
-    }
-    
-    return ("\(stringaAllergeni)\(stringaCongeSurge)\(metodoProduzione)")
+    return ("\(stringaAllergeni)\(stringaCongeSurge)")
 }
 
 /// somma dei valori di una collection di valori Double

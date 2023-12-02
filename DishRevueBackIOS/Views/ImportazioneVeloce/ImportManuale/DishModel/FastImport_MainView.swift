@@ -28,7 +28,7 @@ struct FastImport_MainView: View {
     
     var body: some View {
         
-        CSZStackVB(title: "Piatti + Ingredienti", backgroundColorView: backgroundColorView) {
+        CSZStackVB(title: "Preparazioni", backgroundColorView: backgroundColorView) {
             
             VStack(alignment:.leading) {
                 
@@ -61,17 +61,8 @@ struct FastImport_MainView: View {
                             CSButton_tight(title: "Estrai", fontWeight: .semibold, titleColor: Color.seaTurtle_4, fillColor: Color.seaTurtle_2) {
                                
                                 withAnimation {
-                                    
-                                    do {
-                                        try self.estrapolaStringhe()
-                                        self.postEstrapolaAction()
-                                        
-                                    } catch let error {
-                                        csHideKeyboard()
-                                        self.isUpdateDisable = true
-                                        self.viewModel.logMessage = error.localizedDescription
-                                    }
-                                    
+                                    getString()
+
                                 }
                              
                             }
@@ -83,14 +74,14 @@ struct FastImport_MainView: View {
                             Spacer()
 
                             Group {
-                                Text("n°Prodotti:\(allFastDish?.count ?? 0)")
+                                Text("Prodotti:\(allFastDish?.count ?? 0)")
                                    /* .font(.system(.subheadline, design: .monospaced))
                                     .fontWeight(.medium)
                                     .foregroundStyle(Color.white.opacity(0.6))*/
                                 
                                 Text("-")
                                 
-                                Text("n°Ing:\(ingCount())")
+                                Text("Ing:\(ingCount())")
                                    /* .font(.system(.subheadline, design: .monospaced))
                                     .fontWeight(.medium)
                                     .foregroundStyle(Color.white.opacity(0.6))*/
@@ -152,6 +143,19 @@ struct FastImport_MainView: View {
     
     // Method
     
+    private func getString() {
+        
+        do {
+            try self.estrapolaStringhe()
+            self.postEstrapolaAction()
+            
+        } catch let error {
+            csHideKeyboard()
+            self.isUpdateDisable = true
+            self.viewModel.logMessage = error.localizedDescription
+        }
+    }
+    
     private func ingCount() -> Int {
         
         guard let allFastDish else { return 0}
@@ -182,16 +186,12 @@ struct FastImport_MainView: View {
             let cleanedDishTitle = csStringCleaner(string: dishTitle)
             ingredientContainer.remove(at: 0)
             
-            var step_5:[IngredientModel] = []
-            
-            // Innesto 06.10
-            let idUnico = UUID().uuidString
-            
             guard !ingredientContainer.isEmpty else {
                /* self.viewModel.logMessage = "Errore di editing. Ciascun piatto deve contenere almeno un ingrediente"*/
-                throw CSError.fastImportDishWithNoIng
+                throw CS_GenericError.fastImportDishWithNoIng
               
             }
+            var step_5:[IngredientModel] = []
                 
                 for subString in ingredientContainer {
 
@@ -223,7 +223,9 @@ struct FastImport_MainView: View {
                 
             }()
             
-            let temporaryDish: TemporaryModel = TemporaryModel(dish: fastDish, ingredients: step_5)
+            let temporaryDish: TemporaryModel = TemporaryModel(
+                dish: fastDish,
+                ingredients: step_5)
             
            // self.allFastDish.append(temporaryDish)
             allTemprary.append(temporaryDish)
@@ -429,16 +431,28 @@ private struct TemporaryModelRow:View {
     
     // method
     
-    private func fastSave(item: TemporaryModel) {
- 
-            self.viewModel.dishAndIngredientsFastSave(item: item)
-
-            let localAllFastDish:[TemporaryModel] = self.allFastDish.filter {$0.id != item.id}
- 
-            if !localAllFastDish.isEmpty {
-                self.reBuildIngredientContainer(localTemporaryModel: localAllFastDish)
-            }  else {self.allFastDish = localAllFastDish}
-
+    private func fastSave(item: TemporaryModel)  {
+        
+        Task {
+            do {
+                
+                try await self.viewModel.dishAndIngredientsFastSave(item: item)
+                
+                let localAllFastDish:[TemporaryModel] = self.allFastDish.filter {$0.id != item.id}
+                
+                if !localAllFastDish.isEmpty {
+                    self.reBuildIngredientContainer(localTemporaryModel: localAllFastDish)
+                }  else {self.allFastDish = localAllFastDish}
+                
+            } catch let error {
+               // print("\(error.localizedDescription)")
+             //   DispatchQueue.main.async {
+                    self.viewModel.logMessage = error.localizedDescription
+             //   }
+                
+            }
+        }
+        
     }
     
     /// reBuilda il container Piatto aggiornando gli ingredienti, sostituendo i vecchi ai "nuovi"

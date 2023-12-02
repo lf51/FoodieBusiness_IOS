@@ -67,7 +67,6 @@
 		3F5F306E2B0396F400E2B8CC /* ResultBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5F306D2B0396F400E2B8CC /* ResultBuilder.swift */; };
 		3F628A102A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */; };
 		3F628A2D2A3DF1C300976D93 /* FastImport_Categorie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */; };
-		3F628A2F2A3DF45400976D93 /* Switch_ImportObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */; };
 		3F62DDFE289E56D9008F17A4 /* DishListByIngredientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */; };
 		3F66D6582905474100FF2751 /* VistaEspansaGenerica.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */; };
 		3F742B5F2A97872B00230CE8 /* TestFILTRABLE.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F742B5E2A97872B00230CE8 /* TestFILTRABLE.swift */; };
@@ -100,7 +99,7 @@
 		3FD854112941FE6500F7CC98 /* PropertyLocalImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD854102941FE6500F7CC98 /* PropertyLocalImage.swift */; };
 		3FD85437294254D800F7CC98 /* MyFoodiePackage in Frameworks */ = {isa = PBXBuildFile; productRef = 3FD85436294254D800F7CC98 /* MyFoodiePackage */; };
 		3FDEE80F2AAB61BD004B3402 /* CloudImportCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDEE80E2AAB61BD004B3402 /* CloudImportCategoriesView.swift */; };
-		3FE7D2F92AAA0A7500C67D02 /* CSError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE7D2F82AAA0A7500C67D02 /* CSError.swift */; };
+		3FE7D2F92AAA0A7500C67D02 /* CS_GenericError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE7D2F82AAA0A7500C67D02 /* CS_GenericError.swift */; };
 		3FE823252A9E34B200366A1E /* UserNameSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE823242A9E34B200366A1E /* UserNameSettingView.swift */; };
 		3FE823272A9E356700366A1E /* WelcomeLandingPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE823262A9E356700366A1E /* WelcomeLandingPage.swift */; };
 		3FFECF2F2A863A960089D759 /* CloudDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFECF2E2A863A960089D759 /* CloudDataManager.swift */; };
@@ -230,7 +229,6 @@
 		3F5F306D2B0396F400E2B8CC /* ResultBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultBuilder.swift; sourceTree = "<group>"; };
 		3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPropertyMainView_GoogleMaps.swift; sourceTree = "<group>"; };
 		3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastImport_Categorie.swift; sourceTree = "<group>"; };
-		3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Switch_ImportObject.swift; sourceTree = "<group>"; };
 		3F62DDFD289E56D9008F17A4 /* DishListByIngredientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishListByIngredientView.swift; sourceTree = "<group>"; };
 		3F66D6572905474100FF2751 /* VistaEspansaGenerica.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaEspansaGenerica.swift; sourceTree = "<group>"; };
 		3F742B5E2A97872B00230CE8 /* TestFILTRABLE.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFILTRABLE.swift; sourceTree = "<group>"; };
@@ -262,7 +260,7 @@
 		3FD854102941FE6500F7CC98 /* PropertyLocalImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyLocalImage.swift; sourceTree = "<group>"; };
 		3FD854352942549300F7CC98 /* MyFoodiePackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MyFoodiePackage; path = ../MyFoodiePackage; sourceTree = "<group>"; };
 		3FDEE80E2AAB61BD004B3402 /* CloudImportCategoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudImportCategoriesView.swift; sourceTree = "<group>"; };
-		3FE7D2F82AAA0A7500C67D02 /* CSError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSError.swift; sourceTree = "<group>"; };
+		3FE7D2F82AAA0A7500C67D02 /* CS_GenericError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CS_GenericError.swift; sourceTree = "<group>"; };
 		3FE823242A9E34B200366A1E /* UserNameSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserNameSettingView.swift; sourceTree = "<group>"; };
 		3FE823262A9E356700366A1E /* WelcomeLandingPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeLandingPage.swift; sourceTree = "<group>"; };
 		3FFECF2E2A863A960089D759 /* CloudDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudDataManager.swift; sourceTree = "<group>"; };
@@ -449,7 +447,7 @@
 				3F300F39293A164D003E5861 /* RemoteChangeStorage.swift */,
 				3FD854102941FE6500F7CC98 /* PropertyLocalImage.swift */,
 				3FFECF2E2A863A960089D759 /* CloudDataManager.swift */,
-				3FE7D2F82AAA0A7500C67D02 /* CSError.swift */,
+				3FE7D2F82AAA0A7500C67D02 /* CS_GenericError.swift */,
 			);
 			path = VmService;
 			sourceTree = "<group>";
@@ -572,7 +570,6 @@
 			children = (
 				3F1322F92AE2BE280001A417 /* DishModel */,
 				3F1322F82AE2BDFA0001A417 /* CategorieMenu */,
-				3F628A2E2A3DF45400976D93 /* Switch_ImportObject.swift */,
 			);
 			path = ImportManuale;
 			sourceTree = "<group>";
@@ -1209,7 +1206,7 @@
 				4DC94A1627E3870F0080264C /* SpecificTipologiaNuovoMenu_SubView.swift in Sources */,
 				3FBE221F292FCB150096F11B /* PopNewCollab.swift in Sources */,
 				3F300F3C293A5757003E5861 /* ElencoModelDeleted.swift in Sources */,
-				3FE7D2F92AAA0A7500C67D02 /* CSError.swift in Sources */,
+				3FE7D2F92AAA0A7500C67D02 /* CS_GenericError.swift in Sources */,
 				3FA965F729A0F120006B2002 /* ModelField.swift in Sources */,
 				4D34D549283289B300A57747 /* MenuListView.swift in Sources */,
 				3F5CF2182ADD8BD6009FC2D0 /* VariousExtension.swift in Sources */,
@@ -1242,7 +1239,6 @@
 				4DB75EDF2812BC22008C1765 /* PropertyModel_RowView.swift in Sources */,
 				3FCC71B828E9D1D600F105A2 /* MonitorServizio.swift in Sources */,
 				4D395901282FFCE800EA3FAA /* ViewModifier&.swift in Sources */,
-				3F628A2F2A3DF45400976D93 /* Switch_ImportObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1372,7 +1368,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 133;
+				CURRENT_PROJECT_VERSION = 134;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1403,7 +1399,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 133;
+				CURRENT_PROJECT_VERSION = 134;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

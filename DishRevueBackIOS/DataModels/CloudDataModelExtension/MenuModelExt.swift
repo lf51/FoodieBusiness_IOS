@@ -14,13 +14,7 @@ extension MenuModel:
     MyProToolPack_L1,
     MyProVisualPack_L1,
     MyProDescriptionPack_L0 {
-    
-    public typealias Sub = CloudDataStore.SubCollectionKey
-    
-    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
-        .allMyMenu
-    }
-    
+  
     public func isEqual(to rhs: MyFoodiePackage.MenuModel) -> Bool {
         
         self.tipologia == rhs.tipologia &&
@@ -288,7 +282,7 @@ extension MenuModel:
         let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.db.allMyDish)
         
         let allAvaibleDish = allDish.filter({
-            $0.percorsoProdotto != .finito() &&
+            $0.adress != .finito &&
             $0.status.checkStatusTransition(check: .disponibile) })
         
         let tuttiVotiPesati = allAvaibleDish.map({$0.topRatedValue(readOnlyVM: readOnlyVM)})
@@ -490,5 +484,18 @@ extension MenuModel:MyProProgressBar {
         
         return count
         
+    }
+}
+
+extension MenuModel:MyProSubCollectionPack {
+    
+    public typealias Sub = CloudDataStore.SubCollectionKey
+    
+    public func subCollection() -> MyFoodiePackage.CloudDataStore.SubCollectionKey {
+        .allMyMenu
+    }
+    
+    public func sortCondition(compare rhs: MenuModel) -> Bool {
+        self.intestazione < rhs.intestazione
     }
 }

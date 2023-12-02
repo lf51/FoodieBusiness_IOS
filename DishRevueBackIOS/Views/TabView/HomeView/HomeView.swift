@@ -316,7 +316,7 @@ struct HomeView: View {
         
         //let tutteLePreparazioni = self.viewModel.allMyDish.filter({$0.percorsoProdotto != .prodottoFinito})
         //update 09.07.23
-        let onlyPrep = self.viewModel.db.allMyDish.filter({$0.percorsoProdotto.returnTypeCase() != .finito()})
+        let onlyPrep = self.viewModel.db.allMyDish.filter({$0.adress != .finito})
         let tutteLePreparazioni = onlyPrep.filter({
             $0.ratingInfo(readOnlyViewModel: self.viewModel).count != 0
        

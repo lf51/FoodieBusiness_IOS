@@ -10,6 +10,85 @@ import MyPackView_L0
 import MyFoodiePackage
 
 struct NewProductMainView: View {
+   
+    @EnvironmentObject var viewModel: AccounterVM
+    @State private var newProduct: ProductModel
+    
+    let backgroundColorView: Color
+    let destinationPath: DestinationPath
+    
+    @State private var disabilitaPicker:Bool = false
+    
+    init(newProduct: ProductModel, backgroundColorView: Color, destinationPath: DestinationPath) {
+        
+        self.newProduct = newProduct
+        
+        self.backgroundColorView = backgroundColorView
+        self.destinationPath = destinationPath
+
+    }
+    
+    var body: some View {
+        
+        let viewTitle = self.viewTitle()
+        let disabilita = self.disabilitaSwitch()
+        
+        CSZStackVB(
+            title: viewTitle,
+            backgroundColorView: backgroundColorView) {
+            
+            VStack {
+
+                SwitchProductType(
+                    percorsoItem: $newProduct.adress,
+                    nascondiTesto: disabilita)
+                    .csHpadding()
+                    .disabled(disabilita)
+
+                    vbPercorsoProdotto()
+                        .id(newProduct.adress)
+
+            }
+           /* .onAppear {
+                newProduct.prepareForEditing(viewModel: viewModel)
+            }*/
+            
+        } // end ZStack Esterno
+      
+    }
+    
+    // Method
+    private func viewTitle() -> String {
+        
+        let intestazione = self.newProduct.intestazione
+        guard intestazione == "" else { return intestazione}
+        
+        let adress = self.newProduct.adress
+        let genere:String = adress.genereCase()
+        
+        let viewTitle =  "\(genere) \(adress.simpleDescription())"
+        return viewTitle
+    }
+        
+  @ViewBuilder private func vbPercorsoProdotto() -> some View {
+      
+     NewProductIbridView(
+        newDish: $newProduct,
+        disabilitaPicker: $disabilitaPicker,
+        backgroundColorView: .seaTurtle_1,
+        destinationPath: destinationPath)
+    }
+    
+    private func disabilitaSwitch() -> Bool {
+        
+        self.newProduct.status != .noStatus ||
+        self.disabilitaPicker
+        
+    }
+    
+}
+
+/*struct NewProductMainView: View {
     // 10.07.23 bug id esistente. vedi Nota
     @EnvironmentObject var viewModel: AccounterVM
    // let newDish: ProductModel
@@ -134,7 +213,7 @@ struct NewProductMainView: View {
         
     }
     
-}
+}*/ // backUp_22_11_23
 
 /*struct NewProductMainView_Previews: PreviewProvider {
 

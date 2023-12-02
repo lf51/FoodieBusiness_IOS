@@ -135,7 +135,7 @@ struct PreCallVistaPiattiEspansa: View {
         }
         
         @State private var filterCategoria:CategoriaMenu = .defaultValue
-        @State private var filterPercorso:PercorsoProdotto = .preparazione
+        @State private var filterPercorso:ProductAdress = .preparazione
         
         var body: some View {
             

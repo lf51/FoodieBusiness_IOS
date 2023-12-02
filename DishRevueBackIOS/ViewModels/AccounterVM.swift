@@ -36,8 +36,8 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     // manager
     let userManager:UserManager
     private(set) var propertiesManager:PropertyManager
-    private(set) var categoriesManager:CategoriesManager
-    private(set) var ingredientsManager:IngredientManager
+  //  private(set) var categoriesManager:CategoriesManager
+  //  private(set) var ingredientsManager:IngredientManager
     private(set) var subCollectionManager:SubCollectionManager
     
     @Published public var stepView:SubViewStep?
@@ -97,8 +97,8 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         self.userManager = userManager
         self.propertiesManager = PropertyManager(userAuthUID: userManager.currentUserUID)
         self.subCollectionManager = SubCollectionManager()
-        self.categoriesManager = CategoriesManager()
-        self.ingredientsManager = IngredientManager()
+      //  self.categoriesManager = CategoriesManager()
+      //  self.ingredientsManager = IngredientManager()
         
         self.allMyPropertiesImage = [] // Da valutare optiona
         super.init(currentProperty: PropertyCurrentData()) // da valutare optional
@@ -107,14 +107,15 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         addPropertyManagerImagesSubscriber()
         addPropertyManagerCurrentPropSubscriber()
      
-        addAllMyIngredientsSubscriber()
-        
+       // addAllMyIngredientsSubscriber()
+        addGenericSubscriber(to: self.subCollectionManager.allMyCategoriesPublisher.main)
+        addGenericSubscriber(to: self.subCollectionManager.allMyIngredientsPublisher.main)
         addGenericSubscriber(to: self.subCollectionManager.allMyProductsPublisher.main)
         addGenericSubscriber(to: self.subCollectionManager.allMyMenuPublisher.main)
         addGenericSubscriber(to: self.subCollectionManager.allMyReviewsPublisher.main)
       //  addAllMyProductsSubscriber()
       //  addAllMyMenusSubscriber()
-        addAllMyCategoriesSubscriber()
+       // addAllMyCategoriesSubscriber()
       //  addAllMyReviewsSubscriber()
  
         // start data train fetch
@@ -151,8 +152,8 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         self.userManager = UserManager(userAuthUID: "")
         self.propertiesManager = PropertyManager(userAuthUID: "")
         self.subCollectionManager = SubCollectionManager()
-        self.categoriesManager = CategoriesManager()
-        self.ingredientsManager = IngredientManager()
+       // self.categoriesManager = CategoriesManager()
+       // self.ingredientsManager = IngredientManager()
         
         self.allMyPropertiesImage = []
         super.init(currentProperty: PropertyCurrentData())
@@ -778,7 +779,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
 
     /// Crea Inventario Ingredienti per Lista della Spesa ordinato per aree tematiche (vegetali,latticini,carne,pesce)
-    func inventarioIngredienti() -> [IngredientModel] {
+   /* func inventarioIngredienti() -> [IngredientModel] {
          
          let allIDing = self.currentProperty.inventario.allInventario()
          let allING = self.modelCollectionFromCollectionID(collectionId: allIDing, modelPath: \.db.allMyIngredients)
@@ -854,7 +855,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
 
          return (allVegetable + allMilk + allMeat + allFish)
        
-     }
+     }*/// deprecata_29_11_23
 
     /// Ritorna un quadro corrente del servizio, ossia il servizo del giorno. Le preparazione tornate sono quelle marcate come .disponibili, i menu sono quelli onAir, e gli ingredienti quelli attivi delle preparazioni disponibili.
     func monitorServizio(menuModelToAnalize allMenuOnAir:[MenuModel]) -> (rifMenuOnAir:[String],rifFoodBeverage:[String],rifProdottiFiniti:[String], rifIngredients:[String],rifPreparazioniEseguibili:[String]) {
@@ -885,14 +886,14 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         let foodB = allDishAvaible.filter({
            /* $0.percorsoProdotto == .preparazioneBeverage ||
             $0.percorsoProdotto == .preparazioneFood*/
-            $0.percorsoProdotto == .preparazione
+            $0.adress == .preparazione
         })
         
         let prodottiFiniti = allDishAvaible.filter({
-            $0.percorsoProdotto == .finito()
+            $0.adress == .finito
         })
         //Update 09.07.23
-        let composizioni = allDishAvaible.filter({$0.percorsoProdotto == .composizione()})
+        let composizioni = allDishAvaible.filter({$0.adress == .composizione})
         // end update
         // Ingredient && eseguibilità Piatto
         var allIngredientsRif:[String] = []
@@ -1126,7 +1127,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         
          let soloLePreparazioni = self.db.allMyDish.filter({
              // preparazione + composizione
-             $0.percorsoProdotto != .finito()
+             $0.adress != .finito
          })
         let dishReviewed = soloLePreparazioni.filter({
             // !$0.rifReviews.isEmpty
@@ -1226,6 +1227,64 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
 } // chiusa Class
 
+///Gestione Inventario
+extension AccounterVM {
+    
+    /// Crea Inventario Ingredienti per Lista della Spesa ordinato per aree tematiche (vegetali,latticini,carne,pesce)
+    func inventarioIngredienti() -> [IngredientModel] {
+         
+         let allING = self.db.allMyIngredients.filter({$0.isDaAcquistare()})
+           
+         let allVegetable = allING.filter({
+             $0.origine.returnTypeCase() == .vegetale
+         }).sorted(by: {$0.intestazione < $1.intestazione})
+        
+        let allMeat = allING.filter({
+            
+            let conditionOne = $0.origine.returnTypeCase() == .animale
+            var conditionTwo = true
+            
+            if let allergens = $0.allergeni {
+                
+                conditionTwo =
+                !allergens.contains(.latte_e_derivati) &&
+                !allergens.contains(.molluschi) &&
+                !allergens.contains(.pesce) &&
+                !allergens.contains(.crostacei)
+                
+            }
+               return conditionOne && conditionTwo
+              
+          }).sorted(by: {$0.intestazione < $1.intestazione})
+       
+        let allFish = allING.filter({
+            
+            if let allergens = $0.allergeni {
+                
+               return allergens.contains(.molluschi) ||
+                allergens.contains(.pesce) ||
+                allergens.contains(.crostacei)
+                
+            } else { return false }
+             
+            
+          }).sorted(by: {$0.intestazione < $1.intestazione})
+          
+        let allMilk = allING.filter({
+            
+            let conditionOne = $0.origine.returnTypeCase() == .animale
+            var conditionTwo = false
+            if let allergens = $0.allergeni {
+                conditionTwo = allergens.contains(.latte_e_derivati)
+            }
+              return conditionOne && conditionTwo
+          }).sorted(by: {$0.intestazione < $1.intestazione})
+
+         return (allVegetable + allMilk + allMeat + allFish)
+       
+     }
+}
+
 extension AccounterVM:VM_FPC {
     
     public func ricercaFiltra<M:Object_FPC>(
@@ -1273,7 +1332,20 @@ extension AccounterVM {
         
     }
     
-    func updateCategoriesListFromLocalCache(news:[CategoriaMenu],edited:[CategoriaMenu],removedId:[String]) async throws {
+    func updateCategoriesListFromLocalCache(
+        news:[CategoriaMenu],
+        edited:[CategoriaMenu],
+        removedId:[String]) async throws {
+
+        let allNewOrEdited = news + edited
+        
+        let allEdited:[CategoriaMenu]? = allNewOrEdited == [] ? nil : allNewOrEdited
+        let removed:[String]? = removedId == [] ? nil : removedId
+            
+        try await self.subCollectionManager.publishBatchSubCollection(sub: .allMyCategories, newOrEdited: allEdited, removed: removed)
+
+    }
+   /* func updateCategoriesListFromLocalCache(news:[CategoriaMenu],edited:[CategoriaMenu],removedId:[String]) async throws {
         
         var newsForMain:[CategoriaMenu] = []
         var newsForSub:[CategoriaMenu] = []
@@ -1309,7 +1381,7 @@ extension AccounterVM {
         
         try await self.subCollectionManager.publishBatchSubCollection(sub: .allMyCategories, newOrEdited: allEdited, removed: removedId)
 
-    }
+    }*/ // deprecata 26_11_23
     
 
 }
@@ -1476,7 +1548,7 @@ extension AccounterVM {
 
     }
     
-    private func addAllMyCategoriesSubscriber() {
+   /* private func addAllMyCategoriesSubscriber() {
         
         self.subCollectionManager
             .allMyCategoriesPublisher
@@ -1510,9 +1582,9 @@ extension AccounterVM {
 
             }.store(in: &cancellables)
 
-    }
+    }*/ // deprecato in futuro
     
-    private func addAllMyIngredientsSubscriber() {
+   /* private func addAllMyIngredientsSubscriber() {
         
         self.subCollectionManager
             .allMyIngredientsPublisher
@@ -1533,11 +1605,11 @@ extension AccounterVM {
                 
                 Task {
                     
-                    let joinedIngredients = try await self.ingredientsManager.joinIngredients(from: allIngredients)
-                    print("joinedIngredients.count:\(joinedIngredients.count)")
+                   /* let joinedIngredients = try await self.ingredientsManager.joinIngredients(from: allIngredients)
+                    print("joinedIngredients.count:\(joinedIngredients.count)")*/
                     DispatchQueue.main.async {
                         
-                        self.db.allMyIngredients = joinedIngredients
+                        self.db.allMyIngredients = allIngredients
                         self.isLoading = nil
                         
                         print("db.allMyIngredients.count:\(self.db.allMyIngredients.count)")
@@ -1547,9 +1619,9 @@ extension AccounterVM {
 
             }.store(in: &cancellables)
 
-    }
+    }*/ // deprecato 26_11_23
     
-    private func addGenericSubscriber<Item:MyProStarterPack_L1&Codable>(to publisher:PassthroughSubject<[Item]?,Error>) where Item.VM == AccounterVM {
+    private func addGenericSubscriber<Item:MyProSubCollectionPack & Codable>(to publisher:PassthroughSubject<[Item]?,Error>) where Item.VM == AccounterVM {
         
         let kp = Item.basicModelInfoTypeAccess()
         
@@ -1569,8 +1641,9 @@ extension AccounterVM {
                     return }
                 
                     DispatchQueue.main.async {
+                        let sorted = items.sorted(by: {$0.sortCondition(compare: $1)})
                         
-                        self[keyPath: kp] = items
+                        self[keyPath: kp] = sorted
                         self.isLoading = nil
                     }
                     
@@ -1583,7 +1656,7 @@ import Firebase
 /// save, update and delete Model
 extension AccounterVM {
     
-    func checkModelNotInVM<T:MyProStarterPack_L1 & Codable>(itemModel:T) -> Bool where T.VM == AccounterVM {
+    func checkModelNotInVM<T:MyProSubCollectionPack & Codable>(itemModel:T) -> Bool where T.VM == AccounterVM {
         
         // verifica unicità nel viewModel
         let kpContainerT = itemModel.basicModelInfoInstanceAccess().vmPathContainer
@@ -1592,11 +1665,11 @@ extension AccounterVM {
             
         return !containerT.contains(where: {$0.isEqual(to: itemModel)})
       
-    }
+    }// deprecata in futuro // può servire solo per i menu per evitare accavallamenti
     
     
     /// Crea un oggetto nella SubCollection. Manda un alert (opzionale)
-    func createModelOnSub<T:MyProStarterPack_L1 & Codable>(
+    func createModelOnSub<T:MyProSubCollectionPack & Codable>(
         itemModel:T,
         showAlert:Bool = false,
         alertMessagge: String = "",
@@ -1628,7 +1701,7 @@ extension AccounterVM {
         }
     }
     
-    private func createModelExecutive<T:MyProStarterPack_L1 & Codable>(
+    private func createModelExecutive<T:MyProSubCollectionPack & Codable>(
         itemModel:T,
         destinationPath:DestinationPath? = nil,
         encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
@@ -1689,7 +1762,7 @@ extension AccounterVM {
     }
     
     /// Aggiorna un Modello nelle subCollection. Manda un alert di conferma optional
-    func updateModelOnSub<T:MyProStarterPack_L1 & Codable>(
+    func updateModelOnSub<T:MyProSubCollectionPack & Codable>(
         itemModel:T,
         showAlert:Bool = false,
         alertMessage: String = "",
@@ -1723,7 +1796,7 @@ extension AccounterVM {
         
     }
     
-    private func updateModelExecutive<T:MyProStarterPack_L1 & Codable>(
+    private func updateModelExecutive<T:MyProSubCollectionPack & Codable>(
         itemModel: T,
         destinationPath: DestinationPath? = nil,
         encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
@@ -1780,7 +1853,7 @@ extension AccounterVM {
     }
     
     /// Permette di aggiornare un array di model
-    func updateModelCollection<T:MyProStarterPack_L1 & Codable>(items:[T],sub:CloudDataStore.SubCollectionKey,destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
+    func updateModelCollection<T:MyProSubCollectionPack & Codable>(items:[T],sub:CloudDataStore.SubCollectionKey,destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
         
         Task {
             
@@ -1795,35 +1868,40 @@ extension AccounterVM {
     }
     
     ///Richiede un TemporaryModel, e oltre a salvare il piatto, salva anche gli ingredienti nel viewModel. Ideata per Modulo Importazione Veloce
-    func dishAndIngredientsFastSave(item: TemporaryModel) /*throws*/ {
+    func dishAndIngredientsFastSave(item: TemporaryModel) async throws {
 
-        Task {
+       // Task {
 
-        let rigenera = try await checkAnalizeAndRetrieve(temporaryModel: item)
+        let rigenera = try checkAnalizeAndRetrieve(temporaryModel: item)
             
         try await self.subCollectionManager
-                .setDataSubCollectionSingleDocument(to: .allMyDish, item: rigenera.product)
+                    .publishSubCollection(
+                        sub: .allMyIngredients,
+                        as: rigenera.ingredients)
             
         try await self.subCollectionManager
-                .publishSubCollection(sub: .allMyIngredients, as: rigenera.ingredients)
-        }
+                .setDataSubCollectionSingleDocument(
+                    to: .allMyDish,
+                    item: rigenera.product)
+            
+       // }
 
     }
 
-    private func checkAnalizeAndRetrieve(temporaryModel:TemporaryModel) async throws -> (product:ProductModel,ingredients:[IngredientModel]) {
+    private func checkAnalizeAndRetrieve(temporaryModel:TemporaryModel) throws -> (product:ProductModel,ingredients:[IngredientModel])  {
         // analizzare gli ingredienti / esistenti nel viewModel / esistenti nella library
        let ingredients = temporaryModel.ingredients
-       let secondaryRif = temporaryModel.rifIngredientiSecondari
+      // let secondaryRif = temporaryModel.rifIngredientiSecondari
        
        let notInVM = ingredients.compactMap({
             if !self.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyIngredients) { return $0 }
             else { return nil }
         })
         
-       var ingRigenerated:[IngredientModel] = ingredients
-       var secondaryRifRigenerated:[String] = secondaryRif
+      // var ingRigenerated:[IngredientModel] = ingredients
+      // var secondaryRifRigenerated:[String] = secondaryRif
         
-            for ingredient in notInVM {
+         /*   for ingredient in notInVM {
                 
                 if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) {
                     // esiste nella main e quindi lo rigeneriamo per la sub
@@ -1838,16 +1916,16 @@ extension AccounterVM {
                         secondaryRifRigenerated[index] = id
                     }
                 }
-        }
+        }*/
        
-       let product = temporaryModel.generaProduct(from: ingRigenerated, and: secondaryRifRigenerated)
+       let product = try temporaryModel.generaProduct()
         
-       return (product,ingRigenerated)
+       return (product,notInVM)
         
-    }
+    } // deprecata 26_11_23
     
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
-    func deleteModel<T:MyProStarterPack_L1 & Codable>(itemModel: T,postDeleteAction:(@escaping() -> Void) = {} ) where T.VM == AccounterVM {
+    func deleteModel<T:MyProSubCollectionPack & Codable>(itemModel: T,postDeleteAction:(@escaping() -> Void) = {} ) where T.VM == AccounterVM {
         
         self.alertItem = AlertModel(
             title: "Conferma Eliminazione",
@@ -1864,7 +1942,7 @@ extension AccounterVM {
 
     }
     
-    private func deleteModelExecution<T:MyProStarterPack_L1 & Codable>(itemModel: T) where T.VM == AccounterVM {
+    private func deleteModelExecution<T:MyProSubCollectionPack & Codable>(itemModel: T) where T.VM == AccounterVM {
         
 
         Task {
@@ -1880,7 +1958,7 @@ extension AccounterVM {
 /// save,update and delete Ingredient
 extension AccounterVM {
     
-    func updateIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil) {
+   /* func updateIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil) {
         
         Task {
             
@@ -1911,12 +1989,12 @@ extension AccounterVM {
             }
             
         } // chiusa task
-    }
+    } */// deprecata in futuro
     
     /// handle id nel caso in cui questo ingrediente già esisteva nel cloud
-    func createIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil,handle:@escaping(_ id:String?) -> Void) async throws {
+   /* func createIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil,handle:@escaping(_ id:String?) -> Void) async throws {
         
-        Task {
+       /* Task {
             
             var ingredient = item
             
@@ -1937,8 +2015,8 @@ extension AccounterVM {
                 self.refreshPath(destinationPath: refreshPath)
             }
             
-        }
-    }
+        }*/
+    }*/ //deprecata in futuro
     
 }
 
@@ -1947,7 +2025,7 @@ extension AccounterVM {
     /// ritorna l'id dell'eventuale prodotto
     func isASubOfReadyProduct(id ingredient:String) -> String? {
         
-        let readyProduct = self.db.allMyDish.first(where: {$0.percorsoProdotto == .finito(ingredient)})
+        let readyProduct = self.db.allMyDish.first(where: {$0.rifIngredienteSottostante == ingredient})
         
         return readyProduct?.id
     

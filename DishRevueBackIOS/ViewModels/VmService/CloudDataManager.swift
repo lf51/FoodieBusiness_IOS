@@ -642,7 +642,7 @@ public final class SubCollectionManager {
         as items:[Item]) async throws {
         
         guard let currentPropertySnap else {
-                return
+            throw CS_FirebaseError.invalidPropertySnap
             }
         let propertyID = currentPropertySnap.documentID
             
@@ -652,26 +652,31 @@ public final class SubCollectionManager {
              .document(propertyID)
              .collection(collectionKey.rawValue)
             
-            print("[COLLECTION]_\(collectionKey.rawValue)_exist:\(collectionRef.description)")
-            
         for element in items {
             
               let ref = collectionRef.document(element.id)
               try batch.setData(from: element, forDocument: ref, merge: true)
             
         }
-         
-            try await batch.commit()
+            
+        try await batch.commit()
+            
     }
     
     func publishBatchSubCollection<Item:MyProStarterPack_L0 & Codable>(
        sub collectionKey:CloudDataStore.SubCollectionKey,
-       newOrEdited items:[Item],
-       removed:[String]) async throws {
+       newOrEdited items:[Item]?,
+       removed:[String]?) async throws {
            
            guard let currentPropertySnap else {
                    return
                }
+           
+           guard items != nil || removed != nil else {
+               // throw error
+               return
+           }
+           
            let propertyID = currentPropertySnap.documentID
                
            let batch = self.db_base.batch()
@@ -680,18 +685,23 @@ public final class SubCollectionManager {
                 .document(propertyID)
                 .collection(collectionKey.rawValue)
            
-           for element in items {
-               // salva
-                 let ref = collectionRef.document(element.id)
-                 try batch.setData(from: element, forDocument: ref, merge: true)
-               
+           if let items {
+               for element in items {
+                   // salva
+                     let ref = collectionRef.document(element.id)
+                     try batch.setData(from: element, forDocument: ref, merge: true)
+                   
+               }
            }
            
-           for id in removed {
-               // rimuove
-               let ref = collectionRef.document(id)
-               batch.deleteDocument(ref)
+           if let removed {
                
+               for id in removed {
+                   // rimuove
+                   let ref = collectionRef.document(id)
+                   batch.deleteDocument(ref)
+                   
+               }
            }
            
           try await batch.commit()
@@ -703,8 +713,9 @@ public final class SubCollectionManager {
         throw encoder:Firestore.Encoder = Firestore.Encoder()) async throws {
            
         guard let currentPropertySnap else {
-                    return
+            throw CS_FirebaseError.invalidPropertySnap
                 }
+            
         let propertyID = currentPropertySnap.documentID
             
         let subCollection = self.db_base
@@ -716,7 +727,10 @@ public final class SubCollectionManager {
             
         try subCollection
                 .document(newItem.id)
-                .setData(from: newItem, merge: true,encoder: encoder)
+                .setData(
+                    from: newItem,
+                    merge: true,
+                    encoder: encoder)
 
     }
     
@@ -914,8 +928,9 @@ public final class CategoriesManager {
         }
         
     }
-        
-    func joinCategories(from myCategories:[CategoriaMenu]) async throws ->  [CategoriaMenu] {
+    
+    // Deprecate
+   /*func joinCategories(from myCategories:[CategoriaMenu]) async throws ->  [CategoriaMenu] {
         
         guard !myCategories.isEmpty else { return [] }
         
@@ -959,9 +974,9 @@ public final class CategoriesManager {
         
         return fullCategories.sorted(by: {$0.listIndex ?? 999 < $1.listIndex ?? 999})
         
-    }
+    }*/ //deprecata 26_11_23
         
-    func publishInMainCollection(items:[CategoriaMenu]) async throws {
+   /* func publishInMainCollection(items:[CategoriaMenu]) async throws {
  
        let batch = self.db_base.batch()
  
@@ -979,9 +994,9 @@ public final class CategoriesManager {
        }
         
         try await batch.commit()
-   }
+   }*///deprecata 26_11_23
     
-    func checkCategoryAlreadyExistInLibrary(categoria:CategoriaMenu) async throws -> String? {
+    /*func checkCategoryAlreadyExistInLibrary(categoria:CategoriaMenu) async throws -> String? {
         
         // trattasi di una categoria creata dall'utente che potrebbe esistere con diverso id, ma con uguale nome / emojy / type
      
@@ -1000,11 +1015,12 @@ public final class CategoriesManager {
             return nil
         }
 
-    }
-
+    } */ //deprecata 26_11_23
+ // end deprecate
     
 } // close CategoriesManager
 
+///Classe di servizio per la gestione in sola lettura della main Ingredient Library
 public final class IngredientManager {
 
 private let db_base = Firestore.firestore()
@@ -1016,7 +1032,8 @@ public init() {
 }
     
 deinit {
-        print("[DEINIT]_IngredientManager")
+    print("[DEINIT]_IngredientManager")
+   // self.db_base.disableNetwork()
     }
 
     /// publisher ascoltato per lavorare con la libreria degli Ingredienti
@@ -1123,7 +1140,7 @@ deinit {
             }
     }
     
-    func joinIngredients(from myIngredients:[IngredientModel]) async throws -> [IngredientModel] {
+    /*func joinIngredients(from myIngredients:[IngredientModel]) async throws -> [IngredientModel] {
         
         guard !myIngredients.isEmpty else { return [] }
         
@@ -1165,9 +1182,9 @@ deinit {
         }
         
         return joinedING.sorted(by: {$0.intestazione < $1.intestazione})
-    }
+    }*/ // deprecata 26_11_23
     
-    func publishInMainCollection(items:[IngredientModel]) async throws {
+   /* func publishInMainCollection(items:[IngredientModel]) async throws {
  
        let batch = self.db_base.batch()
  
@@ -1185,9 +1202,9 @@ deinit {
        }
         
         try await batch.commit()
-   }
+   }*/ // deprecata 26_11_23
     
-    func publishInMainCollection(item:IngredientModel) async throws {
+   /* func publishInMainCollection(item:IngredientModel) async throws {
         
         let customEncoder:Firestore.Encoder = {
              let encoder = Firestore.Encoder()
@@ -1198,9 +1215,9 @@ deinit {
         let ref = collectionManaged.document(item.id)
         try ref.setData(from: item, encoder: customEncoder)
 
-   }
+   }*/// deprecata 26_11_23
     
-    func checkIngredientAlreadyExistInLibrary(ingredient:IngredientModel) async throws -> String? {
+   /* func checkIngredientAlreadyExistInLibrary(ingredient:IngredientModel) async throws -> String? {
 
        let query = collectionManaged
             .whereField(IngredientModel.CodingKeys.intestazione.rawValue, isEqualTo: ingredient.intestazione)
@@ -1220,9 +1237,9 @@ deinit {
             return nil
         }
 
-    }
+    }*/// deprecata 26_11_23
     /// Se l'ingrediente esiste nella library ritorna il suo id, altrimenti lo salva
-    func checkAndPublish(ingredient:IngredientModel) async throws -> String? {
+   /* func checkAndPublish(ingredient:IngredientModel) async throws -> String? {
         
         if let id = try await self.checkIngredientAlreadyExistInLibrary(ingredient: ingredient) {
             // esiste un ingrediente uguale nella library
@@ -1234,7 +1251,7 @@ deinit {
             try await self.publishInMainCollection(item:ingredient)
             return nil
            }
-    }
+    }*/ // deprecata 26_11_23
     
 } // close IngredientManagar
 

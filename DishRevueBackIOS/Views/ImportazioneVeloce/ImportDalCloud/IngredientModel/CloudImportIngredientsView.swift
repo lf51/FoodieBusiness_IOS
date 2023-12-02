@@ -11,167 +11,10 @@ import MyPackView_L0
 import Combine
 import MyFilterPackage
 
-/*
 struct CloudImportIngredientsView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-    @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<IngredientModel>()
-        
-    @State private var searchLetter:String = "A"
-    let backgroundColor:Color
-
-    var body: some View {
-        
-                VStack(alignment:.trailing) {
-                    
-                    // barra di ricerca
-                    
-                    HStack {
- 
-                        Text("selected:")
-                            .italic()
-                            .foregroundStyle(Color.black)
-                            .opacity(0.8)
-                        Text("\(importVM.selectedContainer?.count ?? 0)")
-                            .bold()
-                            .foregroundStyle(Color.seaTurtle_4)
-                        
-                        Spacer()
-                        
-                        Text("from:")
-                            .italic()
-                            .foregroundStyle(Color.black)
-                            .opacity(0.8)
-                        
-                        Picker("", selection: $searchLetter) {
-                            
-                            ForEach(csLanguageAlphabet(),id:\.self) { letter in
-                                
-                                Text(letter)
-                                
-                            }
-                            
-                        }
-                        .background {
-                            Color.seaTurtle_4.opacity(0.1)
-                                .clipShape(.buttonBorder)
-                        }
-                        
-                        Button("Cerca") {
-                            let string = searchLetter.lowercased()
-                          //  GlobalDataManager
-                            //    .shared
-                          /*  self.viewModel
-                                .ingredientsManager
-                                .fetchIngredientsFromSharedCollection(filterBy: string)*/
-                        }
-                        
-
-                    }
-
-                        ScrollView(showsIndicators:false) {
-                            
-                            VStack(alignment:.leading) {
-                                
-                                ForEach(importVM.cloudContainer ?? []) { ingredient in
-                                    
-                                    ImportIngredientRow(
-                                       importVM: importVM,
-                                       ingredient: ingredient) /*{ isSelected in
-                                          
-                                           withAnimation {
-                                               self.selectingLogic(isAlreadySelect: isSelected, selected: ingredient)
-                                           }
-                                       }*/
-           
-
-                                }
-                            }
-                            
-                        }
-                        
-                    Spacer()
-                    
-                    HStack(spacing:20) {
-                        
-                        Button("Reset",role: .destructive) {
-                            self.importVM.selectedContainer = nil
-                        }
-                        .disabled(self.importVM.selectedContainer == nil)
-                   
-                        Button {
-
-                            Task {
-                
-                          //  try await self.importVM.publishSubCollection()
-                           /* try await self.importVM.importInSubCollection(selectedPath: \.selectedIngredient, subCollection: .allMyIngredients)*/
-                                try await self.importVM.importInSubCollection(subCollection:.allMyIngredients,viewModel:self.viewModel)
-                                    
-                            }
-                            
-                        } label: {
-                            Text("Importa")
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(Color.blue)
-                        .disabled(self.importVM.selectedContainer == nil || self.importVM.selectedContainer?.isEmpty ?? true)
-                     
-                    }
-
-                    
-                    
-                }
-                .csHpadding()
-                .onAppear {
-                    print("[ON_APPEAR]_cloudImportIngredientsView_publisher:\(self.importVM.cancellables.count)")
-                    
-                    self.importVM.addCloudContainerSubscriber(to: self.viewModel.ingredientsManager.ingredientLibraryPublisher)
-                   /* self.importVM.addCloudCategoriesSubscriber(viewModel: self.viewModel)*/
-                   
-                }
-                .onDisappear {
-                    print("[ON_DISAPPEAR]_cloudImportIngredientsView_publisher:\(self.importVM.cancellables.count)")
-                   // self.importVM.cancellables.removeAll()
-                }
-    }
-    
-    // method
-    
-   /* private func selectingLogic(isAlreadySelect:Bool,selected ingredient:IngredientModel) {
-        
-        if isAlreadySelect { self.deSelectAction(selected: ingredient) }
-        else { self.selectAction(selected: ingredient) }
-        
-    }
-    
-    private func deSelectAction(selected ingredient:IngredientModel) {
-
-        guard var selectedIngredient = self.importVM.selectedIngredient else { return }
-        
-        selectedIngredient.removeAll{ $0 == ingredient }
-        
-        if selectedIngredient.isEmpty { self.importVM.selectedIngredient = nil }
-        else { self.importVM.selectedIngredient = selectedIngredient }
-
-    }
-    
-    private func selectAction(selected ingredient:IngredientModel) {
-        
-        if self.importVM.selectedIngredient == nil {
-            
-            self.importVM.selectedIngredient = [ingredient]
-            
-        } else {
-            
-            self.importVM.selectedIngredient!.append(ingredient)
-        }
-    }*/
-    
-}*/ // deprecata in futuro
-
-struct CloudImportIngredientsView: View {
-    
-    @EnvironmentObject var viewModel:AccounterVM
+    private(set) var ingredientsManager:IngredientManager = IngredientManager()
     @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<IngredientModel>()
 
     @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
@@ -395,11 +238,13 @@ struct CloudImportIngredientsView: View {
                 
                 Task {
                     
-                   let count = try await self.viewModel.ingredientsManager.libraryCount()
+                  /* let count = try await self.viewModel.ingredientsManager.libraryCount()*/
+                    let count = try await self.ingredientsManager.libraryCount()
                     
                     self.importVM.libraryCount = count
                     
-                    self.importVM.addCloudContainerSubscriber(to: self.viewModel.ingredientsManager.ingredientLibraryPublisher)
+                   /* self.importVM.addCloudContainerSubscriber(to: self.viewModel.ingredientsManager.ingredientLibraryPublisher)*/
+                    self.importVM.addCloudContainerSubscriber(to: self.ingredientsManager.ingredientLibraryPublisher)
                     
                    // self.importVM.addFilterCoreSubscriber(to: filterCore)
                     
@@ -410,7 +255,8 @@ struct CloudImportIngredientsView: View {
             }
             .onDisappear {
                 print("[ON_DISAPPEAR]_cloudImportCategoriesView_publisher:\(self.importVM.cancellables.count)")
-                self.viewModel.ingredientsManager.lastQuery = nil
+               // self.viewModel.ingredientsManager.lastQuery = nil
+                self.ingredientsManager.lastQuery = nil
                // self.importVM.cancellables.removeAll()
             }
     }
@@ -421,15 +267,19 @@ struct CloudImportIngredientsView: View {
         
         self.importVM.lastSnap = nil
         
-        self.viewModel
+       /* self.viewModel
              .ingredientsManager
+             .fetchFromSharedCollection(useCoreFilter: filterCore, startAfter: nil)*/
+        self.ingredientsManager
              .fetchFromSharedCollection(useCoreFilter: filterCore, startAfter: nil)
     }
     
     private func mostraAltri() {
         
-        self.viewModel
+       /* self.viewModel
             .ingredientsManager
+            .executiveFetchFromSharedCollection(startAfter: self.importVM.lastSnap, queryCount: nil)*/
+        self.ingredientsManager
             .executiveFetchFromSharedCollection(startAfter: self.importVM.lastSnap, queryCount: nil)
     }
     
