@@ -156,11 +156,15 @@ struct MonitorServizio: View {
     }
     
     private func checkStatoServizio(rifIngOrPrep:[String]) -> StatoServizio {
+        // 04_12_23 Più corretto contrallare la transizione // Da RiScrivere
         
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)})
+       /* let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)})*/
+        let mapStatoScorte = rifIngOrPrep.map({
+            self.viewModel.getStatusScorteING(from: $0)
+        })
         
         if mapStatoScorte.contains(.esaurito) { return .fareSpesa }
-        else if mapStatoScorte.contains([.inEsaurimento,.inArrivo]) { return .controlloScorte}
+        else if mapStatoScorte.contains([.inEsaurimento/*,.inArrivo*/]) { return .controlloScorte}
         else { return .ok }
         
     }
@@ -198,13 +202,16 @@ struct MonitorServizio: View {
     }
     
     @ViewBuilder private func monitorIngredientiEPreparati(rifIngOrPrep:[String],label:String) -> some View {
-        
+        // 04_12_23 Più corretto contrallare la transizione // Da RiScrivere
         let inCount = rifIngOrPrep.count
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)})
+        let mapStatoScorte = rifIngOrPrep.map({
+           /* self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)*/
+            self.viewModel.getStatusScorteING(from: $0)
+        })
 
         let generalStock = mapStatoScorte.filter({
-            $0 == .inStock ||
-            $0 == .inArrivo
+            $0 == .inStock // ||
+           // $0 == .inArrivo
         }).count
         
         let doubleTotal = Double(inCount)
@@ -878,7 +885,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
         
     }
     
-    @ViewBuilder private func vbSingleStatusRow<M:MyProStatusPack_L1>(
+    @ViewBuilder private func vbSingleStatusRow<M:MyProStarterPack_L0&MyProStatusPack_L1>(
         rifToCheck:[String],
         statusCheck:StatusTransition,
         path:KeyPath<FoodieViewModel,[M]>,
@@ -1031,7 +1038,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     }
     
     
-    private func csDispoCountAndRif<M:MyProStatusPack_L1>(
+    private func csDispoCountAndRif<M:MyProStatusPack_L1&MyProStarterPack_L0>(
         rifToCheck:[String],
         statusCheck:StatusTransition,
         path:KeyPath<FoodieViewModel,[M]>) -> (count:Int,percentage:String) {
@@ -1054,7 +1061,10 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
         
       //  let inCount = rifIngOrPrep.count
         
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)}) //
+        let mapStatoScorte = rifIngOrPrep.map({
+            /*self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)*/
+            self.viewModel.getStatusScorteING(from: $0)
+        }) //
 
       /* let generalStock = mapStatoScorte.filter({
             $0 == .inStock ||
@@ -1114,11 +1124,11 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                     statoServizio: statoServizio,
                     confrontaCon: .ok)
                 
-                vbSingleRowInventario(
+               /* vbSingleRowInventario(
                     mapTransitoScorte: mapStatoScorte,
                     filtraPer: .inArrivo,
                     statoServizio: statoServizio,
-                    confrontaCon: .controlloScorte(.inArrivo))
+                    confrontaCon: .controlloScorte(.inArrivo))*/
                 
                 vbSingleRowInventario(
                     mapTransitoScorte: mapStatoScorte,
@@ -1160,8 +1170,8 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     }
     
     @ViewBuilder private func vbSingleRowInventario(
-        mapTransitoScorte:[Inventario.TransitoScorte],
-        filtraPer transitoScorte:Inventario.TransitoScorte,
+        mapTransitoScorte:[StatoScorte],
+        filtraPer transitoScorte:StatoScorte,
         statoServizio:StatoServizio,
         confrontaCon localStatoServizio:StatoServizio) -> some View {
         
@@ -1243,14 +1253,17 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     }
     
     private func checkStatoServizio(rifIngOrPrep:[String]) -> StatoServizio {
-        
-        let mapStatoScorte = rifIngOrPrep.map({self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)})
+        // 04_12_23 Più corretto contrallare la transizione // Da RiScrivere
+        let mapStatoScorte = rifIngOrPrep.map({
+            /*self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0)*/
+            self.viewModel.getStatusScorteING(from: $0)
+        })
         
         if mapStatoScorte.contains(.esaurito) { return .fareSpesa }
         
         else if mapStatoScorte.contains(.inEsaurimento) { return .controlloScorte(.inEsaurimento) }
         
-        else if mapStatoScorte.contains(.inArrivo) { return .controlloScorte(.inArrivo)}
+       /* else if mapStatoScorte.contains(.inArrivo) { return .controlloScorte(.inArrivo)}*/
         
         else { return .ok }
         
@@ -1262,7 +1275,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
         
         case ok
         case fareSpesa
-        case controlloScorte(_ transito:Inventario.TransitoScorte) // limitato a .inArrivo, .inEsaurimento
+        case controlloScorte(_ transito:StatoScorte) // limitato a .inArrivo, .inEsaurimento
         
         func simpleDescription() -> String {
             

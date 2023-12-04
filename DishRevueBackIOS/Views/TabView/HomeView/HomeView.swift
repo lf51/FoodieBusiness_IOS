@@ -799,7 +799,7 @@ struct NavigationButtonBasic:View {
     }
 }
 
-struct NavigationButtonGeneric<M:MyProStatusPack_L1>:View where M.DPV == DestinationPathView {
+struct NavigationButtonGeneric<M:MyProStatusPack_L1&MyProStarterPack_L1>:View where M.DPV == DestinationPathView {
     
     @EnvironmentObject var viewModel: AccounterVM
     let item: M
@@ -849,7 +849,7 @@ struct NavigationButtonGeneric<M:MyProStatusPack_L1>:View where M.DPV == Destina
     
 }
 
-struct TopRated_SubView<M:MyProVisualPack_L1>:View where M.RS == RowSize, M.VM == AccounterVM {
+struct TopRated_SubView<M:MyProStarterPack_L0&MyProVisualPack_L1>:View where M.RS == RowSize, M.VM == AccounterVM {
     
     @EnvironmentObject var viewModel:AccounterVM
     let allRated:[M]

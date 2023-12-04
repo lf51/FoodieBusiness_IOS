@@ -231,7 +231,7 @@ extension IngredientModel:Object_FPC {
             return lhs.intestazione > rhs.intestazione
             
         case .livelloScorte:
-          return readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
+            return lhs.statusScorte().orderAndStorageValue() < rhs.statusScorte().orderAndStorageValue() /*readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()*/
             
         case .mostUsed:
             return lhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount > rhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount
@@ -314,11 +314,13 @@ extension IngredientModel:Object_FPC {
       //  public var sortCondition: SortCondition
         
         var status:[StatusTransition]?
-        var inventario:[Inventario.TransitoScorte]?
+       // var inventario:[Inventario.TransitoScorte]?
+        var inventario:[StatoScorte]?
         
         //09.07.23 innesto per filtro visivo
         var status_singleChoice:StatusTransition?
-        var inventario_singleChoice:Inventario.TransitoScorte?
+       // var inventario_singleChoice:Inventario.TransitoScorte?
+        var inventario_singleChoice:StatoScorte?
         //end innsto
         
         var provenienzaING:ProvenienzaIngrediente?
@@ -464,6 +466,16 @@ extension IngredientModel:MyProVisualPack_L1 {
             let statoScorte = self.statusScorte()
             let transitionScorte = self.transitionScorte()
             let ultimoAcquisto = self.lastAcquisto()
+           
+           let value:(raw:String,image:String) = {
+              
+               if transitionScorte == .inArrivo {
+                   return (transitionScorte.rawValue,transitionScorte.imageAssociata())
+               } else {
+                   return (statoScorte.simpleDescription(),statoScorte.imageAssociata())
+               }
+               
+           }()
                 
                 Menu {
                     
@@ -510,8 +522,8 @@ extension IngredientModel:MyProVisualPack_L1 {
                     
                 } label: {
                     HStack{
-                        Text("Scorte \(statoScorte.simpleDescription())")
-                        Image(systemName: statoScorte.imageAssociata())
+                        Text("Scorte \(value.raw)")
+                        Image(systemName: value.image)
                     }
                 }
 

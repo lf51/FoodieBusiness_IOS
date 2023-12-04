@@ -36,21 +36,22 @@ extension CoreFilter {
         
     }  // creata 16.03.23
     
-    func compareStatoScorte(modelId:String,filterInventario:[Inventario.TransitoScorte]?, readOnlyVM:AccounterVM) -> Bool {
+    func compareStatoScorte(modelId:String,filterInventario:[StatoScorte]?, readOnlyVM:AccounterVM) -> Bool {
         
         guard let inventario = filterInventario,
               inventario != [] else { return true }
         
-        let statoScorte = readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: modelId)
+       /* let statoScorte = readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: modelId) */
+        let statoScorte = readOnlyVM.getStatusScorteING(from: modelId)
         
         return inventario.contains(statoScorte)
     }
     
-    func compareStatoScorte(modelId:String,singleFilter:Inventario.TransitoScorte?, readOnlyVM:AccounterVM) -> Bool {
+    func compareStatoScorte(modelId:String,singleFilter:StatoScorte?, readOnlyVM:AccounterVM) -> Bool {
         
         guard let inventario = singleFilter else { return true }
         
-        let statoScorte = readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: modelId)
+        let statoScorte = readOnlyVM.getStatusScorteING(from: modelId)
         
         return statoScorte == inventario
     } // create 09.07.23

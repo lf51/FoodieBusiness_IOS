@@ -164,7 +164,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     // MyProStarterPack_L1
     
     /// Controlla se un modello esiste già nel viewModel controllando la presenza del sui ID
-    func isTheModelAlreadyExist<M:MyProStarterPack_L1>(modelID:String, path: KeyPath<AccounterVM,[M]>) -> Bool {
+    func isTheModelAlreadyExist<M:MyProStarterPack_L0&MyProStarterPack_L1>(modelID:String, path: KeyPath<AccounterVM,[M]>) -> Bool {
         
        // let kp = model.basicModelInfoInstanceAccess().vmPathContainer
     
@@ -174,7 +174,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
     
     /// Controlla che non ci sia un modello con lo stesso nome, qualora ci fosse ritorna il modello esistente. Questo ci serve per dare superiorità al dato salvato nel caso ad esempio del fastSave
-    func checkExistingUniqueModelName<M:MyProStarterPack_L1>(model:M) -> (Bool,M?) where M.VM == AccounterVM {
+    func checkExistingUniqueModelName<M:MyProStarterPack_L01&MyProStarterPack_L1>(model:M) -> (Bool,M?) where M.VM == AccounterVM {
         
         print("NEW AccounterVM/checkModelExist - Item: \(model.intestazione)")
         
@@ -350,7 +350,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }*/// deprecata in futuro
  
     ///  Permette di aggiornare un array di model. Modifica il viewModel solo dopo aver modificato localmente ogni elemento e manda il refresh del path a processo concluso. Non distingue fra item che hanno ricevuto modifiche e item modificati. Li riscrive tutti.
-    func updateItemModelCollection<T:MyProStarterPack_L1>(items:[T],destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
+    func updateItemModelCollection<T:MyProStarterPack_L0&MyProStarterPack_L1>(items:[T],destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
         
         let itemsVmPath = T.basicModelInfoTypeAccess()
         var container = self[keyPath: itemsVmPath]
@@ -490,7 +490,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
     
     /// Aggiorna il container nel viewModel corrispondente al tipo T passato.
-   private func aggiornaContainer<T:MyProStarterPack_L1>(containerT: [T], modelT:T) where T.VM == AccounterVM {
+   private func aggiornaContainer<T:MyProStarterPack_L01&MyProStarterPack_L1>(containerT: [T], modelT:T) where T.VM == AccounterVM {
       
        let (pathContainer,nomeContainer,_,_) = modelT.basicModelInfoInstanceAccess()
        self[keyPath: pathContainer] = containerT
@@ -535,7 +535,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
     // 23.10 Gestione del Cambio Status dei Modelli (Al fine di eliminare il binding dalle liste per il funzionamento del cambio status nei menu interattivi )
    
-    func manageCambioStatusModel<M:MyProStatusPack_L1&Codable>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
+    func manageCambioStatusModel<M:MyProStatusPack_L1 & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
         // Modificata 25.11
         
         var newModel = model
@@ -1621,7 +1621,7 @@ extension AccounterVM {
 
     }*/ // deprecato 26_11_23
     
-    private func addGenericSubscriber<Item:MyProSubCollectionPack & Codable>(to publisher:PassthroughSubject<[Item]?,Error>) where Item.VM == AccounterVM {
+    private func addGenericSubscriber<Item:MyProStarterPack_L1 & MyProSubCollectionPack & Codable>(to publisher:PassthroughSubject<[Item]?,Error>) where Item.VM == AccounterVM {
         
         let kp = Item.basicModelInfoTypeAccess()
         
@@ -1656,7 +1656,7 @@ import Firebase
 /// save, update and delete Model
 extension AccounterVM {
     
-    func checkModelNotInVM<T:MyProSubCollectionPack & Codable>(itemModel:T) -> Bool where T.VM == AccounterVM {
+    func checkModelNotInVM<T:MyProStarterPack_L1 & MyProSubCollectionPack & Codable>(itemModel:T) -> Bool where T.VM == AccounterVM {
         
         // verifica unicità nel viewModel
         let kpContainerT = itemModel.basicModelInfoInstanceAccess().vmPathContainer
@@ -1669,7 +1669,7 @@ extension AccounterVM {
     
     
     /// Crea un oggetto nella SubCollection. Manda un alert (opzionale)
-    func createModelOnSub<T:MyProSubCollectionPack & Codable>(
+    func createModelOnSub<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
         itemModel:T,
         showAlert:Bool = false,
         alertMessagge: String = "",
@@ -1701,7 +1701,7 @@ extension AccounterVM {
         }
     }
     
-    private func createModelExecutive<T:MyProSubCollectionPack & Codable>(
+    private func createModelExecutive<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
         itemModel:T,
         destinationPath:DestinationPath? = nil,
         encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
@@ -1762,7 +1762,7 @@ extension AccounterVM {
     }
     
     /// Aggiorna un Modello nelle subCollection. Manda un alert di conferma optional
-    func updateModelOnSub<T:MyProSubCollectionPack & Codable>(
+    func updateModelOnSub<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
         itemModel:T,
         showAlert:Bool = false,
         alertMessage: String = "",
@@ -1796,7 +1796,7 @@ extension AccounterVM {
         
     }
     
-    private func updateModelExecutive<T:MyProSubCollectionPack & Codable>(
+    private func updateModelExecutive<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
         itemModel: T,
         destinationPath: DestinationPath? = nil,
         encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
@@ -1853,11 +1853,19 @@ extension AccounterVM {
     }
     
     /// Permette di aggiornare un array di model
-    func updateModelCollection<T:MyProSubCollectionPack & Codable>(items:[T],sub:CloudDataStore.SubCollectionKey,destinationPath:DestinationPath? = nil) where T.VM == AccounterVM {
+    func updateModelCollection<T:MyProSubCollectionPack & Codable & MyProStarterPack_L0>(
+        items:[T],
+        sub:CloudDataStore.SubCollectionKey,
+        encoder:Firestore.Encoder = Firestore.Encoder(),
+        destinationPath:DestinationPath? = nil)/* where T.VM == AccounterVM*/ {
         
         Task {
             
-            try await self.subCollectionManager.publishSubCollection(sub: sub, as: items)
+            try await self.subCollectionManager.publishSubCollection(
+                sub: sub,
+                as: items,
+                encoder: encoder)
+            
             if let destPath = destinationPath {
                 
                 self.refreshPath(destinationPath: destPath)
@@ -1925,7 +1933,7 @@ extension AccounterVM {
     } // deprecata 26_11_23
     
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
-    func deleteModel<T:MyProSubCollectionPack & Codable>(itemModel: T,postDeleteAction:(@escaping() -> Void) = {} ) where T.VM == AccounterVM {
+    func deleteModel<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(itemModel: T,postDeleteAction:(@escaping() -> Void) = {} ) where T.VM == AccounterVM {
         
         self.alertItem = AlertModel(
             title: "Conferma Eliminazione",
@@ -1942,7 +1950,7 @@ extension AccounterVM {
 
     }
     
-    private func deleteModelExecution<T:MyProSubCollectionPack & Codable>(itemModel: T) where T.VM == AccounterVM {
+    private func deleteModelExecution<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(itemModel: T) where T.VM == AccounterVM {
         
 
         Task {
@@ -2029,5 +2037,15 @@ extension AccounterVM {
         
         return readyProduct?.id
     
+    }
+    
+    func getStatusScorteING(from id:String) -> StatoScorte {
+        
+        let model = self.modelFromId(id: id, modelPath: \.db.allMyIngredients)
+        
+        guard let model else { return .outOfStock}
+        
+        return model.statusScorte()
+        
     }
 }

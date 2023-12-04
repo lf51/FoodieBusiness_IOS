@@ -351,7 +351,8 @@ import MyFilterPackage
             
             private func excutiveFilterAction() {
                 
-                let allCases = Inventario.TransitoScorte.allCases
+                //let allCases = Inventario.TransitoScorte.allCases
+                let allCases = StatoScorte.allCases
                 let casesCount = allCases.count
                 let currentState = coreFilter.filterProperties.inventario_singleChoice
                 
@@ -553,7 +554,8 @@ struct VistaEspansaPF_MonitorServizio:View {
    
    private func excutiveFilterAction() {
        
-       let allCases = Inventario.TransitoScorte.allCases
+       /*let allCases = Inventario.TransitoScorte.allCases*/
+       let allCases = StatoScorte.allCases
        let casesCount = allCases.count
        let currentState = coreFilterING.filterProperties.inventario_singleChoice
        

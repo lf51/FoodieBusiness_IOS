@@ -149,7 +149,7 @@ struct DishListView: View {
         let checkAvailability = checkStatoScorteAvailability()
         
         MyFilterRow(
-            allCases: Inventario.TransitoScorte.allCases,
+            allCases: StatoScorte.allCases,
             filterCollection: $filterCore.filterProperties.inventario,
             selectionColor: Color.teal.opacity(0.6),
             imageOrEmoji: "cart",
@@ -157,7 +157,9 @@ struct DishListView: View {
                 
                 if checkAvailability {
                      return container.filter({
-                        self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value
+                         
+                         self.viewModel.getStatusScorteING(from: $0.id) == value
+                       /* self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value*/
                     }).count
                 } else { return 0 }
             }

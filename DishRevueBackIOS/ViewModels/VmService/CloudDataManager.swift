@@ -639,7 +639,8 @@ public final class SubCollectionManager {
     
      func publishSubCollection<Item:MyProStarterPack_L0 & Codable>(
         sub collectionKey:CloudDataStore.SubCollectionKey,
-        as items:[Item]) async throws {
+        as items:[Item],
+        encoder:Firestore.Encoder = Firestore.Encoder()) async throws {
         
         guard let currentPropertySnap else {
             throw CS_FirebaseError.invalidPropertySnap
@@ -655,7 +656,12 @@ public final class SubCollectionManager {
         for element in items {
             
               let ref = collectionRef.document(element.id)
-              try batch.setData(from: element, forDocument: ref, merge: true)
+            
+              try batch.setData(
+                from: element,
+                forDocument: ref,
+                merge: true,
+                encoder: encoder)
             
         }
             

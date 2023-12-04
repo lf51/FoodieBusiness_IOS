@@ -181,13 +181,14 @@ struct ListaIngredientiView: View {
             }
         
         MyFilterRow(
-            allCases: Inventario.TransitoScorte.allCases,
+            allCases: StatoScorte.allCases,
             filterCollection: $filterCore.filterProperties.inventario,
             selectionColor: Color.teal.opacity(0.6),
             imageOrEmoji: "cart",
             label: "Livello Scorte") { value in
                 container.filter({
-                    self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value
+                    $0.statusScorte() == value 
+                    /*self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value*/
                 }).count
             }
         

@@ -117,7 +117,8 @@ struct IngredientModel_SmallRowView: View {
             
     @ViewBuilder private func vbIntestazioneIngrediente(itemIsModel:Bool) -> some View {
         
-        let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()
+        /*let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()*/
+        let dashedColor = self.currentModel.statusScorte().coloreAssociato() /*self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()*/
         
         HStack(alignment:.lastTextBaseline) {
             

@@ -179,21 +179,26 @@ extension ProductModel:
                       Image(systemName:"leaf")
                   }
               }
-          } else if self.adress == .finito {
+          } else if self.adress == .finito,
+          let rif = rifIngredienteSottostante {
              
-              let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
-              let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
+             /* let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
+              let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)*/
+              
+              
+              let statoScorte = viewModel.getStatusScorteING(from: rif)
+              /* let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)*/
               
               Menu {
                   
                   Button("in Esaurimento") {
-                      viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
-                  }.disabled(statoScorte != .inStock)
+                     /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)*/
+                  }//.disabled(statoScorte != .inStock)
                   
                   Button("Esaurite") {
-                      viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
+                     /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)*/
                      // innsesto 01.12.22
-                      if self.status.checkStatusTransition(check: .disponibile) {
+                     /* if self.status.checkStatusTransition(check: .disponibile) {
                           
                           viewModel.alertItem = AlertModel(
                             title: "Update Status Prodotto",
@@ -203,26 +208,26 @@ extension ProductModel:
                                 action: {
                                     self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
                                 }))
-                      }
+                      }*/
                       
                       
-                  }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
+                  }/*.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)*/
                   
-                  if statoScorte == .esaurito || statoScorte == .inEsaurimento {
+                 /* if statoScorte == .esaurito || statoScorte == .inEsaurimento {
                       
                       Button("Rimetti in Stock") {
                           viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
                       }
-                  }
+                  }*/
                   
-                  Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
+                  Text("Ultimo Acquisto:\nSTATUS DA SVILUPPARE")
                   
-                  if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.db.allMyIngredients) {
+                 /* if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.db.allMyIngredients) {
                       
                       Button("Cronologia Acquisti") {
                           viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(ingDS))
                       }
-                  }
+                  }*/
               } label: {
                   HStack{
                       Text("Scorte \(statoScorte.simpleDescription())")
@@ -415,14 +420,15 @@ extension ProductModel:
     
     /// controlla tutti gii ingredienti attivi del piatto, se sono in stock, in arrivo, o in esaurimento. In caso affermativo ritorna true, il piatto è eseguibile
     func controllaSeEseguibile(viewModel:AccounterVM) -> Bool {
-        
+        // il controllo dello status è deprecato in futuro perchè sarà derivato dallo stato Scorte
         let allIngActive = self.allIngredientsAttivi(viewModel: viewModel)
         
         let mapStock = allIngActive.map({
-            viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id)
+          /*  viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id)*/
+            viewModel.getStatusScorteING(from: $0.id)
         })
         let filtraStock = mapStock.filter({
-            $0 != .esaurito
+            $0 != .esaurito || $0 != .outOfStock
         })
         
         return allIngActive.count == filtraStock.count
@@ -451,7 +457,9 @@ extension ProductModel:
         let allInPausa = allIng.filter({$0.status.checkStatusTransition(check: .inPausa)})
        /* let allInPausaAvaible = allInPausa.map({viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)}).contains(.esaurito) */
         
-        let areNotAllIngInPausaAvaible = allInPausa.contains(where: { viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == .esaurito })
+        let areNotAllIngInPausaAvaible = allInPausa.contains(where: { /*viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == .esaurito*/
+            viewModel.getStatusScorteING(from: $0.id) == .esaurito
+        })
         
         guard areNotAllIngInPausaAvaible else { return .eseguibile }
         
@@ -550,8 +558,21 @@ extension ProductModel: Object_FPC {
             return lhs.intestazione > rhs.intestazione
             
         case .livelloScorte:
-            return readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() <
-                readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
+            
+            if let lhsRif = lhs.rifIngredienteSottostante,
+               let rhsRif = rhs.rifIngredienteSottostante {
+                
+                let lhsValue = readOnlyVM.getStatusScorteING(from: lhsRif).orderAndStorageValue()
+                let rhsValue = readOnlyVM.getStatusScorteING(from: rhsRif).orderAndStorageValue()
+                
+               return lhsValue < rhsValue
+                
+            } else {
+                return false 
+            }
+            
+             /*readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() <
+                readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()*/
         case .mostUsed:
             return readOnlyVM.allMenuContaining(idPiatto: lhs.id).countWhereDishIsIn >
             readOnlyVM.allMenuContaining(idPiatto: rhs.id).countWhereDishIsIn
@@ -680,8 +701,8 @@ extension ProductModel: Object_FPC {
         var allergeniIn:[AllergeniIngrediente]?
         var dietePRP:[TipoDieta]?
         
-        var inventario:[Inventario.TransitoScorte]?
-        
+       //var inventario:[Inventario.TransitoScorte]?
+        var inventario:[StatoScorte]?
         var produzioneING:ProduzioneIngrediente? //
         var provenienzaING:ProvenienzaIngrediente? //
         

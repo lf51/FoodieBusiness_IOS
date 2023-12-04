@@ -40,7 +40,8 @@ extension OrigineIngrediente:Property_FPC_Mappable { }
 
 extension ConservazioneIngrediente:Property_FPC { }
 
-extension Inventario.TransitoScorte:Property_FPC { }
+//extension Inventario.TransitoScorte:Property_FPC { }
+extension StatoScorte:Property_FPC { }
 
 extension StatusTransition:Property_FPC { }
 

@@ -346,7 +346,7 @@ struct ProductModel_RowView: View {
             if let rif = self.item.rifIngredienteSottostante {
                 
                // let sottostante = self.item.percorsoProdotto.associatedValue() as? String
-                let statoScorte = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: rif)
+                let statoScorte = self.viewModel.getStatusScorteING(from: rif)
                 
                 CSEtichetta(
                     text: statoScorte.rawValue,
@@ -502,11 +502,14 @@ struct ProductModel_RowView: View {
             
             if let rif = self.item.rifIngredienteSottostante {
                 
-               return self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: rif).coloreAssociato()
+                let statoScorte = self.viewModel.getStatusScorteING(from: rif)
+                
+                return statoScorte.coloreAssociato()
                 
             }
             else if let rif = self.item.ingredienteSottostante?.id {
-                return self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: rif).coloreAssociato()
+                let statoScorte = self.viewModel.getStatusScorteING(from: rif)
+                return statoScorte.coloreAssociato()
             }
             else {
                 return self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
@@ -744,8 +747,8 @@ struct ProductModel_RowView: View {
     
     @ViewBuilder private func vbIngredientScrollRow() -> some View {
  
-        let allFilteredIngredients = self.item.allMinusArchiviati(viewModel: self.viewModel)
-     
+        let allFilteredIngredients:[IngredientModel] = self.item.allMinusArchiviati(viewModel: self.viewModel)
+    
             HStack(spacing: 4.0) {
    
                     Image(systemName: "list.bullet.rectangle")

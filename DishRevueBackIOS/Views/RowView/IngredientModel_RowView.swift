@@ -94,7 +94,8 @@ struct IngredientModel_RowView: View {
         let (dishCount,substitution) = self.item.dishWhereIn(readOnlyVM: self.viewModel)
         let isInPausa = self.item.status.checkStatusTransition(check: .inPausa)
         let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
-        let isDiTerzi = self.viewModel.isTheModelAlreadyExist(modelID: self.item.id, path: \.db.allMyDish)
+       /* let isDiTerzi = self.viewModel.isTheModelAlreadyExist(modelID: self.item.id, path: \.db.allMyDish)*/
+        let isDiTerzi = self.viewModel.isASubOfReadyProduct(id: self.item.id) != nil
         
         HStack {
             
@@ -137,21 +138,31 @@ struct IngredientModel_RowView: View {
             let statoScorte = self.item.statusScorte()
             let transitionScorte = self.item.transitionScorte()
     
+            let value:(raw:String,image:String,color:Color) = {
+                
+                if transitionScorte == .inArrivo {
+                    return (transitionScorte.rawValue,transitionScorte.imageAssociata(),transitionScorte.coloreAssociato())
+                } else {
+                    return (statoScorte.rawValue,statoScorte.imageAssociata(),statoScorte.coloreAssociato())
+                }
+            }()
+            
             HStack(spacing:3) {
                 
-                Text(statoScorte.rawValue)
+                Text(value.raw)
                     .italic()
                     .bold()
                     .font(.subheadline)
                 
-                Image(systemName: statoScorte.imageAssociata())
+                Image(systemName: value.image)
                     .imageScale(.medium)
                 
                 Image(systemName: transitionScorte.imageAssociata())
-                    .imageScale(.medium)
+                    .imageScale(.medium) // temporanea for debug
+                
                 
             }
-            .foregroundStyle(statoScorte.coloreAssociato())
+            .foregroundStyle(value.color)
             
           /*  let statoScorte = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id)
             
@@ -305,7 +316,8 @@ struct IngredientModel_RowView: View {
     
     @ViewBuilder private func vbStatusIngrediente() -> some View {
         
-        let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()
+       /* let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()*/
+        let dashedColor = self.item.statusScorte().coloreAssociato()
         
         vbEstrapolaStatusImage(
             itemModel: self.item,

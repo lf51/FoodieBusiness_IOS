@@ -262,11 +262,14 @@ struct VistaIngredientiEspansa_Selectable: View {
     @ViewBuilder private func vbFilterView(container:[IngredientModel]) -> some View {
         
                 MyFilterRow(
-                    allCases: [Inventario.TransitoScorte.inStock],
+                    allCases: [StatoScorte.inStock],
                     filterCollection: $filterCore.filterProperties.inventario,
                     selectionColor: Color.teal.opacity(0.6)) { value in
                         container.filter({
-                            self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value
+                            
+                            $0.statusScorte() == value 
+                            
+                           /* self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value*/
                         }).count
                     }
 

@@ -67,9 +67,10 @@ struct DialogButtonElement {
         case saveModNew = "Salva Modifiche e Crea Nuovo"
         
         case saveAsNew = "Salva come Nuovo"
+        case validate = "Convalida Acquisti"
         
-        case allAvaible = "Cambia tutti in 'disponibile'"
-        case onlyInPausa = "Cambia solo quelli 'in Pausa'"
+        case allAvaible = "Cambia tutti in 'disponibile'" // deprecato
+        case onlyInPausa = "Cambia solo quelli 'in Pausa'" // deprecato
         
     }
 }

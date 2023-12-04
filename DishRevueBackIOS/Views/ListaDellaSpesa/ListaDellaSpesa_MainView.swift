@@ -8,6 +8,7 @@
 import SwiftUI
 import MyPackView_L0
 import MyFoodiePackage
+import Firebase
 
 struct ListaDellaSpesa_MainView: View {
     
@@ -137,22 +138,71 @@ struct ListaDellaSpesa_MainView: View {
         csBuilderDialogButton {
             
             DialogButtonElement(
-                label: .allAvaible,
-                role: .destructive) {
-                    self.cambioStatusIngredienti()
+                label: .validate) {
+                    self.validateAcquisti()
                 }
 
-            DialogButtonElement(
+         /*   DialogButtonElement(
                 label: .onlyInPausa) {
                     self.cambioStatusIngredienti(soloAdUnTipo: .inPausa)
-                }
+                }*/
             
             
         } // chiusa result Builder
         
     }
     
-    private func filtraInventarioInArrivo(soloAdUnTipo:StatusTransition? = nil) -> [IngredientModel] {
+    private func validateAcquisti() {
+        
+        let userCorrente = self.viewModel.currentUser?.userName
+        let depennati = self.ingredientiInArrivo()
+        
+        let bolle = depennati.compactMap({
+            let rif = $0.id
+            if let inventario = $0.inventario,
+               var bollaCorrente = inventario.bollaCorrente {
+                bollaCorrente.rifIngrediente = rif
+                bollaCorrente.user = userCorrente
+                return bollaCorrente
+            } else {
+                return nil
+            }
+        })
+        
+        let validate = depennati.map({
+            var current = $0
+            current.changeTransizioneScorte(to: .validate)
+            return current
+        })
+        
+        let bollaEncoder:Firestore.Encoder = {
+            let encoder = Firestore.Encoder()
+            encoder.userInfo[BollaAcquisto.codingInfo] = MyCodingCase.subCollection
+            return encoder
+        }()
+        
+      //  do {
+            
+            self.viewModel.updateModelCollection(
+                items: bolle,
+                sub: .archivioBolleAcquisto,
+                encoder: bollaEncoder)
+            
+           self.viewModel.updateModelCollection(
+                items: validate,
+                sub: .allMyIngredients)
+            
+            
+       /* } catch {
+            
+            print(error.localizedDescription)
+        }*/
+        
+        
+       
+    }
+    
+  /*  private func filtraInventarioInArrivo(soloAdUnTipo:StatusTransition? = nil) -> [IngredientModel] {
         
         let allIDInArrivo = self.viewModel.currentProperty.inventario.allInArrivo()
         let allModelInArrivo = self.viewModel.modelCollectionFromCollectionID(collectionId: allIDInArrivo, modelPath: \.db.allMyIngredients)
@@ -167,9 +217,9 @@ struct ListaDellaSpesa_MainView: View {
         })
         
         return allFilteredModel
-    }
+    }*/
     
-    private func cambioStatusIngredienti(soloAdUnTipo:StatusTransition? = nil) {
+   /* private func cambioStatusIngredienti(soloAdUnTipo:StatusTransition? = nil) {
         
         let allFilteredModel = filtraInventarioInArrivo(soloAdUnTipo: soloAdUnTipo)
         
@@ -193,25 +243,41 @@ struct ListaDellaSpesa_MainView: View {
         
         self.viewModel.updateItemModelCollection(items: statusChangedModelCollection)
         
+    }*/
+    
+    private func ingredientiInArrivo() -> [IngredientModel] {
+        
+        let reverseEnum = self.inventarioEnumerato.map({$0.element})
+
+        let depennati = reverseEnum.filter({
+            $0.transitionScorte() == .inArrivo
+        })
+        return depennati
     }
+    
     
     private func deActiveCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
         
-      let primaria:Bool = {
+      let depennati = ingredientiInArrivo()
+      let primaria = depennati.isEmpty
+        
+     /* let primaria:Bool = {
             let filterdInventario = filtraInventarioInArrivo()
             return filterdInventario.isEmpty
-        }()
+        }()*/
   
       return (nil,primaria,nil)
     }
         
     private func description() -> (breve:Text,estesa:Text) {
         
-        let reverseEnum = self.inventarioEnumerato.map({$0.element})
+        let depennati = self.ingredientiInArrivo().count
+        
+        /*let reverseEnum = self.inventarioEnumerato.map({$0.element})
 
         let depennati = reverseEnum.filter({
             $0.transitionScorte() == .inArrivo
-        }).count 
+        }).count */
         
         let breve = "\(self.currentDate)\nAcquistati: \(depennati)/\(self.countInventario)"
         
@@ -311,6 +377,13 @@ struct SpesaRowIngredientView: View {
             .csModifier(!self.showNote) { view in
                 view.padding(.bottom,15)
             }
+            .onTapGesture {
+                if self.openNoteUpdate {
+                    withAnimation {
+                        self.openNoteUpdate.toggle()
+                    }
+                }
+            }
             
             if showNote {
                 
@@ -396,7 +469,7 @@ struct SpesaRowIngredientView: View {
                 let step_02 = csStringCut(testo: step_01, maxLenght: 100)
                 let step_03 = step_02.replacingOccurrences(of: "_:", with: "-")
                // return "\(currentDate)|\(step_02)"
-                return step_02
+                return step_03
                 
             } else { return value }
         }()
@@ -508,7 +581,7 @@ struct SpesaRowIngredientView: View {
               inventario.transitionState == .inArrivo else { return }
         
         var updateIng = element
-        updateIng.dePendingAction(reverse: true)
+        updateIng.changeTransizioneScorte(to: .pending)
         
         self.viewModel.updateModelOnSub(itemModel: updateIng) // sostituire con un save singleField
 
@@ -524,7 +597,7 @@ struct SpesaRowIngredientView: View {
               }
         
         var updateIng = element
-        updateIng.dePendingAction()
+        updateIng.changeTransizioneScorte(to: .inArrivo)
         
         self.viewModel.updateModelOnSub(itemModel: updateIng) // sostituire con un save singleField
 
