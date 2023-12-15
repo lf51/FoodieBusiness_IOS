@@ -11,376 +11,12 @@ import MyFoodiePackage
 import MyPackView_L0
 import MyFilterPackage
 
-extension ProductModel:
-    MyProToolPack_L1,
-    MyProVisualPack_L1,
-    MyProDescriptionPack_L0 {
-    
-   
-    public func isEqual(to rhs: MyFoodiePackage.ProductModel) -> Bool { // deprecata in futuro
-        
-        guard self.id != rhs.id else { return false }
-        
-        switch self.adress {
-            
-        case .preparazione:
-            return isEqualPreparazione(to: rhs)
-        case .composizione:
-            return isEqualPreparazione(to: rhs)
-        case .finito:
-            return isEqualFinito(to: rhs)
-        }
-
-    }
-
-    private func isEqualPreparazione(to rhs:ProductModel) -> Bool {
-        
-        self.intestazione == rhs.intestazione &&
-        self.ingredientiPrincipali == rhs.ingredientiPrincipali &&
-        self.ingredientiSecondari == rhs.ingredientiSecondari
-        
-    }
-    private func isEqualComposizione(to rhs:ProductModel) -> Bool {
-        
-       guard let sottostante = self.ingredienteSottostante,
-             let rhs_sottostante = rhs.ingredienteSottostante else { return false }
-        
-       return self.intestazione == rhs.intestazione &&
-        sottostante.isEqual(to: rhs_sottostante)
-        
-    }
-    
-    private func isEqualFinito(to rhs:ProductModel) -> Bool {
-       
-        guard let sottostante = self.rifIngredienteSottostante,
-              let rhs_sottostante = rhs.rifIngredienteSottostante else { return false }
-     
-        return sottostante == rhs_sottostante
-    }
-    
+extension ProductModel:MyProVMPack_L0 {
     public typealias VM = AccounterVM
-    public typealias DPV = DestinationPathView
-    public typealias RS = RowSize
-    
-    public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [ProductModel]> {
-        return \.db.allMyDish
-    }
-    
-    public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [ProductModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
-        
-         return (
-            \.db.allMyDish, "Lista Piatti",
-             self.adress.simpleDescription(),
-             self.adress.imageAssociated().system
-         )
-     }
-    
-    public func modelStatusDescription() -> String {
-        "\(self.adress.simpleDescription()) (\(self.status.simpleDescription().capitalized))"
-    }
-            
-    public func returnModelRowView(rowSize:RowSize) -> some View {
-        ProductModel_RowView(item: self,rowSize: rowSize)
-    }
-    
-    public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-        
-        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
-        let reviewCount = self.ratingInfo(readOnlyViewModel: viewModel).count
-        
-        let disabilitaReview = reviewCount == 0
-        let priceCount = self.pricingPiatto.count
-        let currencyCode = Locale.current.currency?.identifier ?? "EUR"
-        let (ingredientsCount,ingredientsCanBeExpanded) = countIngredients()
-        
-        let isDelGiorno = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delGiorno)
-        let isDelloChef = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delloChef)
-
-        let isDisponibile = self.status.checkStatusTransition(check: .disponibile)
-
-        let(_,allMenuMinusDS,allWhereDishIsIn) = viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.id)
-        
-      return VStack {
-            
-            Button {
-                
-                viewModel[keyPath: navigationPath].append(DestinationPathView.recensioni(self.id))
-                
-            } label: {
-                HStack{
-                    Text("Vedi Recensioni")
-                    Image(systemName: "eye")
-                }
-            }.disabled(disabilitaReview)
-          
-          if priceCount > 1 {
-              
-              Menu {
-             
-                 ForEach(self.pricingPiatto,id:\.self) { format in
-        
-                     let price = Double(format.price) ?? 0
-                     Text("\(format.label) : \(price,format: .currency(code: currencyCode))")
-                  //   Text("\(format.label) : € \(format.price)")
-                  }
-
-                  
-              } label: {
-
-                  Text("Prezziario (\(priceCount))")
-                
-              }// end label menu
-
-          } // end if
-
-          Button {
-              
-              viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: self.id, menuDiSistema: .delGiorno)
-
-          } label: {
-              HStack{
-                  
-                  Text(isDelGiorno ? "[-] dal Menu del Giorno" : "[+] nel Menu del Giorno")
-                  Image(systemName:isDelGiorno ? "clock.badge.xmark" : "clock.badge.checkmark")
-              }
-          }.disabled(!isDisponibile)
-          
-          Button {
-              
-              viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: self.id, menuDiSistema: .delloChef)
-
-          } label: {
-              HStack{
-                  Text(isDelloChef ? "Rimuovi dai consigliati" : "Consigliato dallo 👨🏻‍🍳")
-                  Image(systemName:isDelloChef ? "x.circle" : "clock.badge.checkmark")
-              }
-          }.disabled(!isDisponibile)
-          
-          Button {
-             
-              viewModel[keyPath: navigationPath].append(DestinationPathView.vistaMenuEspansa(self))
-        
-          } label: {
-              HStack{
-                  Text("Espandi Menu (\(allWhereDishIsIn)/\(allMenuMinusDS))")
-                  Image (systemName: "menucard")
-              }
-          }.disabled(allMenuMinusDS == 0)
-          
-          if ingredientsCanBeExpanded {
-              
-              Button {
-                  
-                  viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
-            
-              } label: {
-                  HStack{
-                      Text("Espandi Ingredienti (\(ingredientsCount))")
-                      Image(systemName:"leaf")
-                  }
-              }
-          } else if self.adress == .finito,
-          let rif = rifIngredienteSottostante {
-             
-             /* let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
-              let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)*/
-              
-              
-              let statoScorte = viewModel.getStatusScorteING(from: rif)
-              /* let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)*/
-              
-              Menu {
-                  
-                  Button("in Esaurimento") {
-                     /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)*/
-                  }//.disabled(statoScorte != .inStock)
-                  
-                  Button("Esaurite") {
-                     /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)*/
-                     // innsesto 01.12.22
-                     /* if self.status.checkStatusTransition(check: .disponibile) {
-                          
-                          viewModel.alertItem = AlertModel(
-                            title: "Update Status Prodotto",
-                            message: "Clicca su conferma se desideri porre il prodotto - \(self.intestazione) - nello status di - in Pausa -\nI Menu che contengono il prodotto potrebbero subire anch'essi modifiche di status.",
-                            actionPlus: ActionModel(
-                                title: .conferma,
-                                action: {
-                                    self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
-                                }))
-                      }*/
-                      
-                      
-                  }/*.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)*/
-                  
-                 /* if statoScorte == .esaurito || statoScorte == .inEsaurimento {
-                      
-                      Button("Rimetti in Stock") {
-                          viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
-                      }
-                  }*/
-                  
-                  Text("Ultimo Acquisto:\nSTATUS DA SVILUPPARE")
-                  
-                 /* if let ingDS = viewModel.modelFromId(id: self.id, modelPath: \.db.allMyIngredients) {
-                      
-                      Button("Cronologia Acquisti") {
-                          viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(ingDS))
-                      }
-                  }*/
-              } label: {
-                  HStack{
-                      Text("Scorte \(statoScorte.simpleDescription())")
-                      Image(systemName: statoScorte.imageAssociata())
-                  }
-              }
-              
-          }/* else {
-              
-             Text("NOWAY")
-          }*/
-        }
-      .disabled(generalDisabled)
-    }
-    
-    public func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
-        
-        if self.status.checkStatusTransition(check: .disponibile) {
-              
-              return (false,false,false,true,1.0)
-          }
-          
-          else if self.status.checkStatusTransition(check: .inPausa) {
-              
-              return (false,false,false,true,0.8)
-          }
-          
-          else {
-              return (true,false,true,false,0.5)
-          }
-          
-      }
-    
-    public func pathDestination() -> DestinationPathView {
-        DestinationPathView.piatto(self)
-    }
-    
-    public func manageCambioStatus(nuovoStatus: StatusTransition, viewModel: AccounterVM) {
-        //Nota 27.11 // Nota 28.11
-    let isCurrentlyDisponibile = self.status.checkStatusTransition(check: .disponibile)
-    viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
-  //  viewModel.remoteStorage.modelRif_modified.insert(self.id)
-    
-    guard isCurrentlyDisponibile else { return }
-
-    let allMenuWithDish = viewModel.allMenuContaining(idPiatto: self.id)
-    
-    for eachMenu in allMenuWithDish.allModelWithDish {
-        if eachMenu.status.checkStatusTransition(check: .disponibile) {
-            eachMenu.autoManageCambioStatus(viewModel: viewModel,idPiattoEscluso: self.id)
-          //  eachMenu.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
-        }
-    }
 }
-    
-    public func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool { false }
-    
-    public func manageModelDelete(viewModel: AccounterVM) {
-        
-        let allMenuWithDish = viewModel.allMenuContaining(idPiatto: self.id)
-        
-        guard allMenuWithDish.countWhereDishIsIn != 0 else {
 
-            viewModel.deleteModel(itemModel: self)
-            
-            return
-            
-        }
-        
-        var allCleanedMenu:[MenuModel] = []
-        
-        for eachMenu in allMenuWithDish.allModelWithDish {
-            
-            var new = eachMenu
-            
-            if eachMenu.status.checkStatusTransition(check: .disponibile) {
-                new.autoManageCambioStatus(viewModel: viewModel, idPiattoEscluso: self.id)
-            }
-            new.rifDishIn.removeAll(where: {$0 == self.id})
-            
-           /* if new.rifDishIn.isEmpty { new.status = eachMenu.status.changeStatusTransition(changeIn: .inPausa)} */
-            allCleanedMenu.append(new)
-            
-        }
-       // viewModel.updateItemModelCollection(items: allCleanedMenu)
-       // viewModel.deleteItemModel(itemModel: self)
-        viewModel.deleteModel(itemModel: self) {
-            viewModel.updateModelCollection(items: allCleanedMenu, sub: .allMyMenu)
-        }
-    }
-    
-    /// filtra gli ingredienti principali e secondari ritornandoli tutti meno gli archiviati. Comprende i disponibili e gli inPausa
-   /* func allMinusArchiviati(viewModel:AccounterVM) -> [IngredientModel] {
-        
-        let allIngredientsID = self.ingredientiPrincipali + self.ingredientiSecondari
-        let allTheIngredients = viewModel.modelCollectionFromCollectionID(collectionId: allIngredientsID, modelPath: \.db.allMyIngredients)
-        let allMinusBozzeEArchiviati = allTheIngredients.filter({
-          // !$0.status.checkStatusTransition(check: .archiviato)
-            !$0.status.checkStatusTransition(check: .archiviato)
-           /* $0.status != .completo(.archiviato) &&
-            $0.status != .bozza() */
-        })
-        
-        return allMinusBozzeEArchiviati
-    }*/ // 31.12.22 Spostata nel Package
-    
-    /// ritorna gli ingredienti Attivi sostituendo gli ingredienti inPausa con gli eventuali sostituti
-   /* func allIngredientsAttivi(viewModel:AccounterVM) -> [IngredientModel] {
-        
-        // Innesto 06.10
-        guard !self.ingredientiPrincipali.contains(self.id) else {
-           // Trattasi di ibrido
-            if let model = viewModel.modelFromId(id: self.id, modelPath: \.db.allMyIngredients) { return [model] }
-            else { return [] }
-        }
-        
-        let allMinusBozzeEArchiviati = allMinusArchiviati(viewModel: viewModel)
+extension ProductModel {
 
-        let allInPausa = allMinusBozzeEArchiviati.filter({
-            $0.status.checkStatusTransition(check: .inPausa)
-            })
-        
-        guard !allInPausa.isEmpty else { return allMinusBozzeEArchiviati }
-        
-        guard !self.elencoIngredientiOff.isEmpty else {
-            return allMinusBozzeEArchiviati.filter({
-                $0.status.checkStatusTransition(check: .disponibile)
-            })
-        }
-        
-        var allActiveIDs = allMinusBozzeEArchiviati.map({$0.id})
-        
-        for ingredient in allInPausa {
-            
-            let position = allActiveIDs.firstIndex{$0 == ingredient.id}
-            
-            if let sostituto = self.elencoIngredientiOff[ingredient.id] {
-                
-                let(isActive,_,_) = viewModel.infoFromId(id: sostituto, modelPath: \.db.allMyIngredients)
-                
-                if isActive {
-                    allActiveIDs[position!] = sostituto
-                } else { allActiveIDs.remove(at: position!)}
-                
-            } else { allActiveIDs.remove(at: position!)}
-            
-        }
-        
-        let allActiveModels = viewModel.modelCollectionFromCollectionID(collectionId: allActiveIDs, modelPath: \.db.allMyIngredients)
-        
-        return allActiveModels
-    }*/ //02.01.23 ricollocata in MyFoodiePackage
-        
     private func preCallHasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T?) -> Bool {
         
         guard let unwrapQuality = quality else { return true }
@@ -389,27 +25,7 @@ extension ProductModel:
         
     } // Migrata su MyFoodiePackage 20.01.23
     
-   
-    /// Ritorna la media in forma di stringa delle recensioni di un Piatto, e il numero delle stesse come Int, e un array con i modelli delle recensioni
-   /* func ratingInfo(readOnlyViewModel:AccounterVM) -> (media:Double,count:Int,allModelReview:[DishRatingModel]) {
-        
-        // Nota 13.09
 
-        let allLocalReviews:[DishRatingModel] = readOnlyViewModel.modelCollectionFromCollectionID(collectionId: self.rifReviews, modelPath: \.db.allMyReviews)
-        
-        guard !allLocalReviews.isEmpty else {
-            
-            return (0.0,0,[])
-        }
-        
-        let ratingCount: Int = allLocalReviews.count // item.rating.count
-        let mediaPonderata = csCalcoloMediaRecensioni(elementi: allLocalReviews)
- 
-        return (mediaPonderata,ratingCount,allLocalReviews)
-        
-    }*/ // 13.01 Ricollocata Nel MyFoodiePackage
-    
-    /// Torna un valore da usare per ordinare i model nella classifica TopRated. In questo caso torna il peso delle recensioni, ossia la media ponderata per il numero di recensioni
     func topRatedValue(readOnlyVM:AccounterVM) -> Double {
         
         let (media,count,_) = self.ratingInfo(readOnlyViewModel:readOnlyVM)
@@ -444,6 +60,7 @@ extension ProductModel:
         
         //Update 09.07.23
         guard self.adress != .composizione else { return .eseguibileConRiserva }
+ 
         //end update
         let allIng = self.allMinusArchiviati(viewModel: viewModel)
         let ingCount = allIng.count
@@ -454,7 +71,7 @@ extension ProductModel:
         
         // 1b. Non tutti gli ing sono disponibili, ma sono tutti in stock
         // Passaggio di status consentito con alert informativo della presenza di ing inPausa. 16.03.23 da implementare
-        let allInPausa = allIng.filter({$0.status.checkStatusTransition(check: .inPausa)})
+        let allInPausa = allIng.filter({ $0.statusTransition == .inPausa })
        /* let allInPausaAvaible = allInPausa.map({viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)}).contains(.esaurito) */
         
         let areNotAllIngInPausaAvaible = allInPausa.contains(where: { /*viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == .esaurito*/
@@ -542,6 +159,63 @@ extension ProductModel:
     }
     
     
+}
+
+extension ProductModel:MyProStarterPack_L1 {
+    
+    public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [ProductModel]> {
+        return \.db.allMyDish
+    }
+    
+    public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [ProductModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
+        
+         return (
+            \.db.allMyDish, "Lista Piatti",
+             self.adress.simpleDescription(),
+             self.adress.imageAssociated().system
+         )
+     }
+    
+    public func isEqual(to rhs: MyFoodiePackage.ProductModel) -> Bool { // deprecata in futuro
+        
+        guard self.id != rhs.id else { return false }
+        
+        switch self.adress {
+            
+        case .preparazione:
+            return isEqualPreparazione(to: rhs)
+        case .composizione:
+            return isEqualPreparazione(to: rhs)
+        case .finito:
+            return isEqualFinito(to: rhs)
+        }
+
+    }
+    
+    private func isEqualPreparazione(to rhs:ProductModel) -> Bool {
+        
+        self.intestazione == rhs.intestazione &&
+        self.ingredientiPrincipali == rhs.ingredientiPrincipali &&
+        self.ingredientiSecondari == rhs.ingredientiSecondari
+        
+    }
+    private func isEqualComposizione(to rhs:ProductModel) -> Bool {
+        
+       guard let sottostante = self.ingredienteSottostante,
+             let rhs_sottostante = rhs.ingredienteSottostante else { return false }
+        
+       return self.intestazione == rhs.intestazione &&
+        sottostante.isEqual(to: rhs_sottostante)
+        
+    }
+    
+    private func isEqualFinito(to rhs:ProductModel) -> Bool {
+       
+        guard let sottostante = self.rifIngredienteSottostante,
+              let rhs_sottostante = rhs.rifIngredienteSottostante else { return false }
+     
+        return sottostante == rhs_sottostante
+    }
 }
 
 extension ProductModel: Object_FPC {
@@ -636,6 +310,8 @@ extension ProductModel: Object_FPC {
         }()
         
         let executionState:ExecutionState = self.checkStatusExecution(viewModel: readOnlyVM)
+        
+        let statusTransition = getStatusTransition(viewModel: readOnlyVM)
        // let core = filterProperties.coreFilter
         
       //  return
@@ -658,12 +334,12 @@ extension ProductModel: Object_FPC {
         
         coreFilter.comparePropertyToProperty(localProperty: basePreparazione, filterProperty: properties.basePRP) &&
         
-        coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: properties.status) &&
+        coreFilter.compareStatusTransition(localStatus: statusTransition, filterStatus: properties.status) &&
         
         // innsesto 16.03.23
         
         coreFilter.compareStatusTransition(
-            localStatus: self.status,
+            localStatus: statusTransition,
             singleFilter: properties.status_singleChoice) &&
         
         coreFilter.comparePropertyToProperty(localProperty: executionState, filterProperty: properties.executionState) &&
@@ -889,3 +565,463 @@ extension ProductModel:MyProSubCollectionPack {
         self.intestazione < rhs.intestazione
     }
 }
+
+extension ProductModel:MyProNavigationPack_L0 { 
+    
+    public typealias DPV = DestinationPathView
+    public func pathDestination() -> DestinationPathView {
+        DestinationPathView.piatto(self)
+    }
+}
+
+extension ProductModel:MyProStatusPack_L1 {
+
+    public var status: StatusModel { self.getStatus() }
+  
+    /// Lo status Transition è ricavato in modo semi-Automatico. Il valore di default per i nuovi prodotti sarà zero, ovvero disponibile. In questo caso il transition si muoverà in automatico, riflettendo l'executionState. Se l'utente lo forza ad uno stato di inPausa o archiviato, l'executionState sarà ignorato. Se l'utente vuole ripristinare lo stato di disponibile, il sistema ritorneraà ad una assegnazione automatica in funzione dell'executionState. Potremmo rimpiazzare sul firebase lo status di .disponibile con un valore nil.
+    public func getStatusTransition(viewModel:AccounterVM) -> StatusTransition {
+        
+        if statusCache == 0  {
+            // automatizzato
+            
+            if self.adress != .finito {
+               return getTransitionFromExecution(viewModel: viewModel)
+            } else {
+               return getTransitionFromRifSottostante(viewModel: viewModel)
+            }
+
+        } else {
+            // valore precedentemente forzato
+            let currentStatus = StatusTransition.decodeStatus(from: self.statusCache)
+            
+            return currentStatus
+        }
+
+    }
+    
+    private func getTransitionFromRifSottostante(viewModel:AccounterVM) -> StatusTransition {
+        
+        let sottostante = self.getSottostante(viewModel: viewModel).sottostante
+        
+        if let sottostante {
+            return sottostante.statusTransition
+        } else {
+            // deve esserci un errore
+            // throwerei un errore
+            return .archiviato
+        }
+    }
+    
+    private func getTransitionFromExecution(viewModel:AccounterVM) -> StatusTransition {
+        
+        let executionState = self.checkStatusExecution(viewModel: viewModel)
+        
+        switch executionState {
+        case .eseguibile,.eseguibileConRiserva:
+            return .disponibile
+        case .nonEseguibile:
+            return .inPausa
+        }
+        
+    }
+    
+    public func setStatusTransition(to status: StatusTransition, viewModel: AccounterVM) {
+        
+        let value = String(status.orderAndStorageValue())
+        let key = Self.CodingKeys.status.rawValue
+        let path = [key:value]
+        
+        viewModel.updateSingleField(
+            docId: self.id,
+            sub: .allMyDish,
+            path: path)
+    }
+    
+    public func disabilitaSetStatusTransition(viewModel: AccounterVM) -> (general:Bool,upToDisponibile:Bool) {
+        
+        let executionState = self.checkStatusExecution(viewModel: viewModel)
+        
+        switch executionState {
+        case .eseguibile,.eseguibileConRiserva:
+            return (false,false)
+        case .nonEseguibile:
+            return (false,true)
+        }
+    }
+    
+    public func getStatus() -> StatusModel {
+        
+        if self.optionalComplete() { return .completo }
+        else { return .bozza }
+    }
+    
+    public func modelStatusDescription() -> String {
+         "\(self.adress.simpleDescription()) (\(self.status.simpleDescription().capitalized))"
+     }
+    
+    /// ritorna true se tutte le proprietà optional sono state compilate, e dunque il modello è completo.
+    public func optionalComplete() -> Bool {
+            
+        var conditionOne:Bool
+        
+        switch self.adress {
+        case .preparazione:
+            conditionOne = checkOptionalPreparazione()
+        case .composizione:
+            conditionOne = checkOptionalComposizione()
+        case .finito:
+            conditionOne = false
+        }
+        
+       return conditionOne && self.mostraDieteCompatibili
+    }
+    
+    private func checkOptionalPreparazione() -> Bool {
+        
+        guard let descrizione else { return false }
+        
+        return descrizione != ""
+    }
+    
+    private func checkOptionalComposizione() -> Bool {
+    
+        if let ingredienteSottostante {
+            
+            return ingredienteSottostante.optionalComplete()
+        } else {
+            return false
+        }
+        
+    }
+        
+}
+
+extension ProductModel:MyProStatusPack_L02 {
+    
+    public func visualStatusDescription(viewModel:AccounterVM) -> (internalImage:String,internalColor:Color,externalColor:Color,description:String) {
+        
+        let transition = getStatusTransition(viewModel: viewModel)
+        
+        let imageInt:String = self.status.imageAssociated()
+    
+        let coloreInterno = transition.colorAssociated()
+        var coloreEsterno:Color
+        
+        let statusDescription = self.status.simpleDescription()
+        let transitionDescription = transition.simpleDescription()
+        var thirdString:String
+        
+        // Switch fra stato scorte per i prodotti finiti ed executionState per gli altri
+        
+        if let rif = self.rifIngredienteSottostante {
+            
+            let statoScorte = viewModel.getStatusScorteING(from: rif)
+            coloreEsterno = statoScorte.coloreAssociato()
+            thirdString = "Scorte: \(statoScorte.simpleDescription())"
+            
+        } else {
+            
+            let execution = self.checkStatusExecution(viewModel: viewModel)
+            coloreEsterno = execution.coloreAssociato()
+            thirdString = "Preparazione: \(execution.simpleDescription())"
+            
+        }
+        
+        
+        let descrizione = "Stato: \(statusDescription) \(transitionDescription)\n\(thirdString)"
+        
+        return (imageInt,coloreInterno,coloreEsterno,descrizione)
+        
+        
+    }
+}
+
+extension ProductModel:MyProEditingPack_L0 {
+    
+    public func disabilitaEditing(viewModel:AccounterVM) -> Bool {
+        
+        let statusTransition = getStatusTransition(viewModel: viewModel)
+        return statusTransition == .archiviato
+        
+        
+      /*  let statusTransition = StatusTransition.decodeStatus(from: self.statusCache)
+        return statusTransition == .archiviato */
+    }
+}
+
+extension ProductModel:MyProTrashPack_L0 {
+    
+    public func disabilitaTrash(viewModel:AccounterVM) -> Bool {
+        
+        let statusTransition = getStatusTransition(viewModel: viewModel)
+        
+        return statusTransition != .archiviato
+    }
+    
+    public func manageModelDelete(viewModel: AccounterVM) {
+        
+        let allMenuWithDish = viewModel.allMenuContaining(idPiatto: self.id)
+        
+        guard allMenuWithDish.countWhereDishIsIn != 0 else {
+
+            viewModel.deleteModel(itemModel: self)
+            
+            return
+            
+        }
+        
+        var allCleanedMenu:[MenuModel] = []
+        
+        for eachMenu in allMenuWithDish.allModelWithDish {
+            
+            var new = eachMenu
+            
+            if eachMenu.getStatusTransition(viewModel: viewModel) == .disponibile {
+                new.autoManageCambioStatus(viewModel: viewModel, idPiattoEscluso: self.id)
+            }
+            new.rifDishIn.removeAll(where: {$0 == self.id})
+            
+           /* if new.rifDishIn.isEmpty { new.status = eachMenu.status.changeStatusTransition(changeIn: .inPausa)} */
+            allCleanedMenu.append(new)
+            
+        }
+       // viewModel.updateItemModelCollection(items: allCleanedMenu)
+       // viewModel.deleteItemModel(itemModel: self)
+        viewModel.deleteModel(itemModel: self) {
+            viewModel.updateModelCollection(items: allCleanedMenu, sub: CloudDataStore.SubCollectionKey.allMyMenu)
+        }
+    }
+}
+
+extension ProductModel:MyProVisualPack_L0 {
+    
+    public typealias RS = RowSize
+    
+    public func returnModelRowView(rowSize:RowSize) -> some View {
+        ProductModel_RowView(item: self,rowSize: rowSize)
+    }
+    
+    public func opacityModelRowView(viewModel: AccounterVM) -> CGFloat {
+        let statusTransition = getStatusTransition(viewModel:viewModel)
+        
+        switch statusTransition {
+            
+        case .disponibile: return 1.0
+        case .inPausa: return 0.8
+        case .archiviato: return 0.5
+        }
+    }
+    
+    public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        let statusTransition = getStatusTransition(viewModel: viewModel)
+        
+        let generalDisabled = statusTransition == .archiviato
+        let priceCount = self.pricingPiatto.count
+        let (ingredientsCount,ingredientsCanBeExpanded) = countIngredients()
+        
+        let isDisponibile = statusTransition == .disponibile
+        
+      return VStack {
+            
+          vbSwitchReviewAndAdress(
+            viewModel: viewModel,
+            navigationPath: navigationPath)
+          
+          if priceCount > 1 {
+              
+              vbVisualPricing(priceCount: priceCount)
+          }
+
+          vbVisualManageMenuDiSistema(viewModel: viewModel)
+              .disabled(!isDisponibile)
+          
+          vbVisualManageEspansioneMenu(viewModel: viewModel, navigationPath: navigationPath)
+              .disabled(!isDisponibile)
+          
+          if ingredientsCanBeExpanded {
+              
+              vbVisualManageEspansioneIngredienti(
+                viewModel: viewModel,
+                navigationPath: navigationPath,
+                ingredientsCount: ingredientsCount)
+
+          }
+
+        }
+      .disabled(generalDisabled)
+    }
+    
+   @ViewBuilder private func vbSwitchReviewAndAdress(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        switch self.adress {
+            
+        case .finito:
+            vbSottostanteDestination(
+                viewModel: viewModel,
+                navigationPath: navigationPath)
+        case .composizione,.preparazione:
+            vbVisualReview(
+                viewModel: viewModel,
+                navigationPath: navigationPath)
+        }
+        
+    }
+    
+   @ViewBuilder private func vbSottostanteDestination(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        let sottostante = self.getSottostante(viewModel: viewModel).sottostante
+        
+        if let sottostante {
+            
+             Button {
+                 
+                viewModel[keyPath: navigationPath].append(DestinationPathView.ingrediente(sottostante))
+                 
+             } label: {
+                 HStack{
+                     Text("Vedi Sottostante")
+                     Image(systemName: "leaf")
+                 }
+             }
+            
+        }
+        
+    }
+    
+    private func vbVisualReview(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        let reviewCount = self.ratingInfo(readOnlyViewModel: viewModel).count
+        
+        let disabilitaReview = reviewCount == 0
+        
+       return Button {
+            
+            viewModel[keyPath: navigationPath].append(DestinationPathView.recensioni(self.id))
+            
+        } label: {
+            HStack{
+                Text("Vedi Recensioni")
+                Image(systemName: "eye")
+            }
+        }.disabled(disabilitaReview)
+        
+    }
+    
+    private func vbVisualPricing(priceCount:Int) -> some View {
+        
+        let currencyCode = Locale.current.currency?.identifier ?? "EUR"
+        
+       return Menu {
+       
+           ForEach(self.pricingPiatto,id:\.self) { format in
+  
+               let price = Double(format.price) ?? 0
+               Text("\(format.label) : \(price,format: .currency(code: currencyCode))")
+            }
+           
+        } label: {
+
+            Text("Prezziario (\(priceCount))")
+          
+        }
+    }
+    
+    private func vbVisualManageMenuDiSistema(viewModel:AccounterVM) -> some View {
+        
+        let isDelGiorno = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delGiorno)
+        let isDelloChef = viewModel.checkMenuDiSistemaContainDish(idPiatto: self.id, menuDiSistema: .delloChef)
+        
+       return Group {
+            
+            Button {
+                
+                viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: self.id, menuDiSistema: .delGiorno)
+
+            } label: {
+                HStack{
+                    
+                    Text(isDelGiorno ? "[-] Menu del Giorno" : "[+] Menu del Giorno")
+                    Image(systemName:isDelGiorno ? "clock.badge.xmark" : "clock.badge.checkmark")
+                }
+            }
+            
+            Button {
+                
+                viewModel.manageInOutPiattoDaMenuDiSistema(idPiatto: self.id, menuDiSistema: .delloChef)
+
+            } label: {
+                HStack{
+                    Text(isDelloChef ? "[-] dai consigliati" : "[+] ai consigliati")
+                    Image(systemName:isDelloChef ? "x.circle" : "clock.badge.checkmark")
+                }
+            }
+        }
+        
+    }
+    
+    private func vbVisualManageEspansioneMenu(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+        
+        let(_,allMenuMinusDS,allWhereDishIsIn) = viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: self.id)
+        
+       return Button {
+           
+            viewModel[keyPath: navigationPath].append(DestinationPathView.vistaMenuEspansa(self))
+      
+        } label: {
+            HStack{
+                Text("Espandi Menu (\(allWhereDishIsIn)/\(allMenuMinusDS))")
+                Image (systemName: "menucard")
+            }
+        }.disabled(allMenuMinusDS == 0)
+
+    }
+    
+    private func vbVisualManageEspansioneIngredienti(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>,ingredientsCount:Int) -> some View {
+        
+        Button {
+            
+            viewModel[keyPath: navigationPath].append(DestinationPathView.vistaIngredientiEspansa(self))
+      
+        } label: {
+            HStack{
+                Text("Espandi Ingredienti (\(ingredientsCount))")
+                Image(systemName:"leaf")
+            }
+        }
+
+    }
+}
+
+extension ProductModel {
+    
+    func sintetizzaIngrediente(viewModel:AccounterVM) -> IngredientModel {
+        
+        var ingredient = IngredientModel(.diSintesi)
+        ingredient.id = self.id
+        ingredient.intestazione = self.intestazione
+        ingredient.descrizione = self.descrizione
+        
+        ingredient.allergeni = self.calcolaAllergeniNelPiatto(viewModel: viewModel)
+        ingredient.conservazione = .altro
+        ingredient.origine = .animale
+        ingredient.produzione = self.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.produzione, quality: .biologico) ? .biologico : .noValue
+        ingredient.provenienza = .noValue
+        
+        ingredient.inventario = InventarioScorte()
+         
+        let statusTransition = self.getStatusTransition(viewModel: viewModel)
+        
+        switch statusTransition {
+            
+        case .disponibile: ingredient.inventario?.statusScorte = .inStock
+        case .inPausa: ingredient.inventario?.statusScorte = .esaurito
+        case .archiviato: ingredient.inventario?.statusScorte = .outOfStock
+            
+        }
+        
+        
+        return ingredient
+    }
+    
+}// 15_12_23 Test

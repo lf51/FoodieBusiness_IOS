@@ -88,8 +88,12 @@ struct NewProductIbridView: View {
                         let adress = self.productModel.adress
                         let isComposizione = adress == .composizione
                         
+                        if let ingredienteSottostante {
+                            
+                            let sottostante = Binding { ingredienteSottostante } set: { self.productModel.ingredienteSottostante = $0 }
+                            
                             BoxDescriptionModel_Generic(
-                                itemModel: $productModel,
+                                itemModel: sottostante,
                                 labelString: adress.boxDescription(),
                                 disabledCondition: wannaOpenPopOver,
                                 generalErrorCheck: isComposizione ? generalErrorCheck : false,
@@ -98,6 +102,20 @@ struct NewProductIbridView: View {
                             .opacity(lockEdit ? 0.6 : 1.0)
                             .disabled(lockEdit)
                             
+                        } else {
+                            
+                            BoxDescriptionModel_Generic(
+                                itemModel: $productModel,
+                                labelString: adress.boxDescription(),
+                                disabledCondition: wannaOpenPopOver,
+                                generalErrorCheck: false,
+                                modelField: $modelField)
+                            .focused($modelField, equals: .descrizione)
+                            .opacity(lockEdit ? 0.6 : 1.0)
+                            .disabled(lockEdit)
+                            
+                        }
+
                             CategoriaScrollView_NewDishSub(
                                 newDish: $productModel,
                                 generalErrorCheck: generalErrorCheck)
@@ -120,6 +138,7 @@ struct NewProductIbridView: View {
                                 lockEdit: lockEdit,
                                 areAllergeniOk: $areAllergeniOk,
                                 wannaAddAllergene: $wannaOpenPopOver)
+                            
                            Group {
                                
                             ConservazioneScrollView_NewIngredientSubView(
@@ -365,8 +384,8 @@ struct NewProductIbridView: View {
        // guard checkOrigine() else { return false }
        // guard checkConservazione() else { return false }
         
-        self.productModel.updateNameAndDescription()
-        self.updateStatus()
+        self.productModel.syncronizeIntestazione()
+       // self.updateStatus()
  
         return true // Nota 18_11_23
         
@@ -381,9 +400,9 @@ struct NewProductIbridView: View {
         }
     }
     
-    private func updateStatus() {
+   /* private func updateStatus() {
         // Probabile bug. Un prodotto in pausa che viene modificato viene riportato su disponibile
-        var status:StatusModel = .noStatus
+      /*  var status:StatusModel = .noStatus
         
         if self.productModel.optionalComplete() {
             status = .completo(.disponibile)
@@ -394,19 +413,15 @@ struct NewProductIbridView: View {
         if self.productModel.adress == .finito {
             self.productModel.ingredienteSottostante?.status = status
         }
-        self.productModel.status = status
-    }
+        self.productModel.status = status */
+        
+        self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS PRODOTTO FINITO"
+    }*/ // depercata
     
     private func checkDescrizione() -> Bool {
         
         self.productModel.isDescriptionOk()
         
-       /* if self.productModel.percorsoProdotto.returnTypeCase() == .composizione() {
-            
-            let condition = self.productModel.descrizione == nil ? false : self.productModel.descrizione != ""
-            return condition
-        }
-        return true */
     }
     
     private func checkAllergeni() -> Bool {

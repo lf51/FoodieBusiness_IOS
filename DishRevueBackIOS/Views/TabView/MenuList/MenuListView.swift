@@ -136,7 +136,9 @@ struct MenuListView: View {
             selectionColor: Color.mint.opacity(0.8),
             imageOrEmoji: "circle.dashed",
             label: "Status") { value in
-                container.filter({$0.status.checkStatusTransition(check: value)}).count
+                container.filter({
+                    $0.getStatusTransition(viewModel:self.viewModel) == value
+                }).count
             }
         
         MyFilterRow(

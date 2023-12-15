@@ -81,8 +81,11 @@ struct NewProductMainView: View {
     
     private func disabilitaSwitch() -> Bool {
         
-        self.newProduct.status != .noStatus ||
-        self.disabilitaPicker
+        let modelExist = self.viewModel.isTheModelAlreadyExist(modelID: self.newProduct.id, path: \.db.allMyDish)
+        
+        return modelExist || self.disabilitaPicker
+       /* self.newProduct.status != .noStatus ||
+        self.disabilitaPicker*/
         
     }
     

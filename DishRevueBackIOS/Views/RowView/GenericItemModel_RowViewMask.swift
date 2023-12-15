@@ -8,7 +8,7 @@
 import SwiftUI
 import MyFoodiePackage
 
-struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View where M.RS == RowSize {
+struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View where M.RS == RowSize, M.VM == AccounterVM {
 
     @EnvironmentObject var viewModel:AccounterVM
     
@@ -20,7 +20,8 @@ struct GenericItemModel_RowViewMask<M:MyProVisualPack_L0,Content:View>:View wher
    
     var body: some View {
         
-        let opacity = model.conditionToManageMenuInterattivo().opacizzaAll
+       /* let opacity = model.conditionToManageMenuInterattivo(viewModel: self.viewModel).opacizzaAll */
+        let opacity = model.opacityModelRowView(viewModel: self.viewModel)
         
         vbSwitchRowSize()
             .csOverlayModelChange(rifModel: model.id)

@@ -91,13 +91,17 @@ extension PropertyModel:
         }
     }
     
-    public func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
+  /*  public func conditionToManageMenuInterattivo(viewModel:AccounterVM) -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
         (false,false,false,false,1.0)
-    }
+    }*/
     
     public func returnModelRowView(rowSize:RowSize) -> some View {
         // row size non implementata
         PropertyModel_RowView(itemModel: self)
+    }
+    
+    public func opacityModelRowView(viewModel: AccounterVM) -> CGFloat {
+        return 1.0
     }
     
    /* public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [PropertyModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {

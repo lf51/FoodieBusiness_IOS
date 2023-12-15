@@ -130,7 +130,7 @@ struct PannelloIngredienti_NewDishSubView: View {
             return (nil,nil)
         }*/
         
-        guard ingredient.status.checkStatusTransition(check: .inPausa) else {
+        guard ingredient.statusTransition == .inPausa else {
             return (ingredient,nil)
         }
         
@@ -143,7 +143,7 @@ struct PannelloIngredienti_NewDishSubView: View {
                 } */
         guard let modelSostituto = self.viewModel.modelFromId(id: idSostituto!, modelPath: \.db.allMyIngredients) else { return (ingredient,nil) }
         
-        guard modelSostituto.status.checkStatusTransition(check: .disponibile) else { return (ingredient,nil)}
+        guard modelSostituto.statusTransition == .disponibile else { return (ingredient,nil)}
                 
         return (ingredient,modelSostituto)
         

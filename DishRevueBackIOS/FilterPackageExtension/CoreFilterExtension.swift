@@ -11,7 +11,7 @@ import MyFilterPackage
 
 extension CoreFilter {
     
-    func compareStatusTransition(localStatus:StatusModel,filterStatus:[StatusTransition]?) -> Bool {
+   /* func compareStatusTransition(localStatus:StatusModel,filterStatus:[StatusTransition]?) -> Bool {
         
         guard
             let filter = filterStatus,
@@ -25,16 +25,39 @@ extension CoreFilter {
         }
         return false
         
-    } 
+    }*/  // deprecata
+    func compareStatusTransition(localStatus:StatusTransition,filterStatus:[StatusTransition]?) -> Bool {
+        
+        guard
+            let filter = filterStatus,
+            filter != [] else { return true }
+      
+        for value in filter {
+            
+            if localStatus == value { return true }
+            else { continue }
+            
+        }
+        return false
+        
+    }
     
-    func compareStatusTransition(localStatus:StatusModel,singleFilter:StatusTransition?) -> Bool {
+    func compareStatusTransition(localStatus:StatusTransition,singleFilter:StatusTransition?) -> Bool {
+        
+        guard
+            let filter = singleFilter else { return true }
+      
+            return localStatus == filter
+        
+    }
+   /* func compareStatusTransition(localStatus:StatusModel,singleFilter:StatusTransition?) -> Bool {
         
         guard
             let filter = singleFilter else { return true }
       
             return localStatus.checkStatusTransition(check: filter)
         
-    }  // creata 16.03.23
+    } */ // deprecata
     
     func compareStatoScorte(modelId:String,filterInventario:[StatoScorte]?, readOnlyVM:AccounterVM) -> Bool {
         

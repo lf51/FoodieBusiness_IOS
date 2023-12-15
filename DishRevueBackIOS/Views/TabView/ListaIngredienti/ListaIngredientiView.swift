@@ -74,6 +74,7 @@ struct ListaIngredientiView: View {
                 }, elementView: { ingredient in
                     
                     let navigationPath = \AccounterVM.ingredientListPath
+                    
                     let isAReadyProduct:ProductModel? = {
                         if let id = viewModel.isASubOfReadyProduct(id: ingredient.id) {
                            return viewModel.modelFromId(id:id, modelPath: \.db.allMyDish)
@@ -88,14 +89,12 @@ struct ListaIngredientiView: View {
                         Group {
                             
                             ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath)
-                            
-                            vbMenuInterattivoModuloCambioStatus(myModel: ingredient,viewModel: viewModel)
-                        
+
                             vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: navigationPath)
                         
                             vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
                             
-                        }.disabled(isAReadyProduct != nil)
+                        }//.disabled(isAReadyProduct != nil)
                         
                         // Da ViewBuildizzare
                         if let isAReadyProduct {
@@ -115,7 +114,7 @@ struct ListaIngredientiView: View {
                         
                        
                     }
-                    .opacity(isAReadyProduct != nil ? 0.6 : 1.0)
+                   // .opacity(isAReadyProduct != nil ? 0.6 : 1.0)
                     
                                         
                 })
@@ -177,7 +176,7 @@ struct ListaIngredientiView: View {
             selectionColor: Color.mint.opacity(0.8),
             imageOrEmoji: "circle.dashed",
             label: "Status") { value in
-                container.filter({$0.status.checkStatusTransition(check: value)}).count
+                container.filter({$0.statusTransition == value}).count
             }
         
         MyFilterRow(

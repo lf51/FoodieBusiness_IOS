@@ -9,53 +9,12 @@ import Foundation
 import SwiftUI
 import MyFoodiePackage
 import MyFilterPackage
+import MyPackView_L0
 
-extension IngredientModel:
-    MyProToolPack_L1,
-    MyProDescriptionPack_L0 {
-
-    public func isEqual(to rhs: MyFoodiePackage.IngredientModel) -> Bool {
-        
-        self.id != rhs.id &&
-        self.intestazione == rhs.intestazione &&
-        self.origine == rhs.origine &&
-        self.allergeni == rhs.allergeni &&
-        self.conservazione == rhs.conservazione &&
-        self.produzione == rhs.produzione &&
-        self.provenienza == rhs.provenienza
-        
-    }
+extension IngredientModel:MyProVMPack_L0 {
 
     public typealias VM = AccounterVM
-  //  public typealias FPM = FilterPropertyModel
-   // public typealias ST = StatusTransition
-    public typealias DPV = DestinationPathView
-   
-   // public typealias SM = StatusModel
-    
-   /* public func documentDataForFirebaseSavingAction(positionIndex:Int?) -> [String:Any] {
-        
-        let dictionary:[String:Any] = [
-        
-            DataBaseField.intestazione : self.intestazione,
-            DataBaseField.descrizione : self.descrizione,
-            DataBaseField.conservazione : self.conservazione.orderAndStorageValue(),
-            DataBaseField.produzione : self.produzione.orderAndStorageValue(),
-            DataBaseField.provenienza : self.provenienza.orderAndStorageValue(),
-            DataBaseField.origine : self.origine.orderAndStorageValue(),
-            DataBaseField.status : self.status.orderAndStorageValue(),
-            DataBaseField.allergeni : self.conversioneAllergeniInt()
-        
-        ]
-        
-        return dictionary
-        
-    } */
-    
-    public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
-        return \.db.allMyIngredients
-      }
-    
+
     public func dishWhereIn(readOnlyVM:AccounterVM) -> (dishCount:Int,Substitution:Int) {
         
         var dishCount: Int = 0
@@ -71,153 +30,30 @@ extension IngredientModel:
         return (dishCount,dishWhereHasSubstitute)
     }
     
- 
+}
+
+extension IngredientModel:MyProStarterPack_L1 {
     
-  
+    public static func basicModelInfoTypeAccess() -> ReferenceWritableKeyPath<AccounterVM, [IngredientModel]> {
+        return \.db.allMyIngredients
+      }
     
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [IngredientModel]>, nomeContainer: String, nomeOggetto:String, imageAssociated:String) {
         
         return (\.db.allMyIngredients, "Lista Ingredienti", "Ingrediente","leaf")
     }
-
-    public func pathDestination() -> DestinationPathView {
-        DestinationPathView.ingrediente(self)
+    
+    public func isEqual(to rhs: MyFoodiePackage.IngredientModel) -> Bool {
+        
+        self.id != rhs.id &&
+        self.intestazione == rhs.intestazione &&
+        self.origine == rhs.origine &&
+        self.allergeni == rhs.allergeni &&
+        self.conservazione == rhs.conservazione &&
+        self.produzione == rhs.produzione &&
+        self.provenienza == rhs.provenienza
+        
     }
-    
-    
-    public func modelStatusDescription() -> String {
-        "Ingrediente (\(self.status.simpleDescription().capitalized))"
-    } // deprecata in futuro
-    
-   
-    
-   /* public func modelPropertyCompare(filterProperty: FilterPropertyModel,readOnlyVM:AccounterVM) -> Bool {
-        
-        // 02.11 Abbiamo spostato tutte le funzioni di compare direttamente nel filterPropertyModel per avere uniformità e non duplicare codice
-        
-        self.modelStringResearch(string: filterProperty.stringaRicerca) &&//
-        
-        filterProperty.comparePropertyToProperty(local: self.provenienza, filter: \.provenienzaING) && //
-        filterProperty.comparePropertyToProperty(local: self.produzione, filter: \.produzioneING) && //
-        filterProperty.comparePropertyToProperty(local: self.origine, filter: \.origineING) &&//
-        filterProperty.comparePropertyToCollection(localProperty: self.conservazione, filterCollection: \.conservazioneING) && //
-        
-        filterProperty.compareStatusTransition(localStatus: self.status) &&//
-        filterProperty.compareStatoScorte(modelId: self.id, readOnlyVM: readOnlyVM) &&
-        filterProperty.compareCollectionToCollection(localCollection: self.allergeni, filterCollection: \.allergeniIn) //
-       
-
-    } */
-    
-   /* public func modelStringResearch(string: String,readOnlyVM:AccounterVM? = nil) -> Bool {
-        
-        guard string != "" else { return true }
-        
-        let ricerca = string.replacingOccurrences(of: " ", with: "").lowercased()
-        let condtionOne = self.intestazione.lowercased().contains(ricerca)
-
-        let allAllergens = self.allergeni.map({$0.intestazione.lowercased()})
-        let allAllergensChecked = allAllergens.filter({$0.contains(ricerca)})
-        
-        let conditionTwo = !allAllergensChecked.isEmpty
-        
-        return condtionOne || conditionTwo
-
-    }*/ // deprecata 22.12 da cancellare
-    
-    // La teniamo nel modello per permettere una maggiore customizzazione nella ricerca
-    
-   /* public static func sortModelInstance(lhs: IngredientModel, rhs: IngredientModel,condition:FilterPropertyModel.SortCondition?,readOnlyVM:AccounterVM) -> Bool {
-        
-        switch condition {
-            
-        case .alfabeticoDecrescente:
-            return lhs.intestazione > rhs.intestazione
-            
-        case .livelloScorte:
-          return readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: lhs.id).orderAndStorageValue() < readOnlyVM.inventarioScorte.statoScorteIng(idIngredient: rhs.id).orderAndStorageValue()
-            
-        case .mostUsed:
-            return lhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount > rhs.dishWhereIn(readOnlyVM: readOnlyVM).dishCount
-            
-            
-        default:
-            return lhs.intestazione < rhs.intestazione // alfabetico crescente va di default quando il sort è nil
-        }
-    }*/ // deprecata 22.12 da cancellare
-    
-    public func manageCambioStatus(nuovoStatus:StatusTransition,viewModel:AccounterVM) {
-    
-        let isCurrentlyDisponibile = self.status.checkStatusTransition(check: .disponibile)
-        
-        viewModel.manageCambioStatusModel(model: self, nuovoStatus: nuovoStatus)
-       // viewModel.remoteStorage.modelRif_modified.insert(self.id)
-        
-        guard nuovoStatus != .disponibile, isCurrentlyDisponibile else { return }
-        
-        if nuovoStatus == .inPausa, viewModel.currentProperty.setup.autoPauseDish_byPauseING == .sempre {
-            
-            privateStatusChange()
-            
-        } else if nuovoStatus == .archiviato, viewModel.currentProperty.setup.autoPauseDish_byArchiveING == .sempre {
-            privateStatusChange()
-        }
-        
-        func privateStatusChange() {
-            
-            let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
-            
-            for dish in allDishWhereIsIn {
-              //  dish.autoManageCambioStatus(viewModel: viewModel)
-                if dish.status.checkStatusTransition(check: .disponibile) {
-                    dish.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
-                    viewModel.remoteStorage.dish_countModificheIndirette += 1
-                   //viewModel.dishStatusChanged += 1
-                   // viewModel.remoteStorage.dishRif_modified.append(dish.id)
-                   // viewModel.remoteStorage.dish_countModificheIndirette += 1
-                   // viewModel.remoteStorage.modelRif_modified.append(dish.id)
-                  //  viewModel.remoteStorage.applicaModificaIndiretta(id: dish.id, model: .dish)
-                }
-               
-            }
-
-        }
-
-    } // deprecata in futuro
-    
-    public func conditionToManageMenuInterattivo_dispoStatusDisabled(viewModel:AccounterVM) -> Bool { false }
-    
-    public func manageModelDelete(viewModel:AccounterVM) {
-        
-        let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
-        
-        guard !allDishWhereIsIn.isEmpty else {
-            viewModel.deleteModel(itemModel: self)
-          
-            return }
-        
-        var allDishChanged:[ProductModel] = []
-        
-        for dish in allDishWhereIsIn {
-            
-            var new = dish
-            let (ingPath,index) = new.individuaPathIngrediente(idIngrediente: self.id)
-            
-            if let ingPath,
-               let index {
-                new[keyPath: ingPath]!.remove(at: index)
-                new.autoCleanElencoIngredientiOff()
-            }
-            allDishChanged.append(new)
-        }
-        
-       // viewModel.updateItemModelCollection(items: allDishChanged) // deprecata
-        
-        viewModel.deleteModel(itemModel: self) {
-            viewModel.updateModelCollection(items: allDishChanged, sub: .allMyDish)
-        }
-    }
-    
     
 }
 
@@ -296,11 +132,11 @@ extension IngredientModel:Object_FPC {
         
         coreFilter.compareCollectionToCollection(localCollection: allergens, filterCollection: filterProperties.allergeniIn) &&
         
-        coreFilter.compareStatusTransition(localStatus: self.status, filterStatus: filterProperties.status) &&
+        coreFilter.compareStatusTransition(localStatus: self.statusTransition, filterStatus: filterProperties.status) &&
         
         coreFilter.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM) &&
         
-        coreFilter.compareStatusTransition(localStatus: self.status, singleFilter: filterProperties.status_singleChoice) &&
+        coreFilter.compareStatusTransition(localStatus: self.statusTransition, singleFilter: filterProperties.status_singleChoice) &&
         
         coreFilter.compareStatoScorte(modelId: self.id, singleFilter: filterProperties.inventario_singleChoice, readOnlyVM: readOnlyVM)
         
@@ -435,80 +271,94 @@ extension IngredientModel:MyProSubCollectionPack {
     }
 }
 
-extension IngredientModel:MyProVisualPack_L1 {
+extension IngredientModel:MyProVisualPack_L0 {
     
     public typealias RS = RowSize
     
     public func returnModelRowView(rowSize:RowSize) -> some View {
-        // rowSize da implementare // 22.06 Implementata
+    
         IngredientModel_RowView(item: self, rowSize: rowSize)
     }
     
-    public func conditionToManageMenuInterattivo() -> (disableCustom: Bool, disableStatus: Bool, disableEdit: Bool, disableTrash: Bool, opacizzaAll: CGFloat) {
+    public func opacityModelRowView(viewModel:AccounterVM) -> CGFloat {
         
-        if self.status.checkStatusTransition(check: .disponibile) {
-            return(false,false,false,true,1.0)
-        }
-        else if self.status.checkStatusTransition(check: .inPausa) {
-            return(false,false,false,true,0.8)
-        }
-        else {
-            return (true,false,true,false,0.5)
+        switch self.statusTransition {
+            
+        case .disponibile: return 1.0
+        case .inPausa: return 0.8
+        case .archiviato: return 0.5
         }
     }
     
    public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-              
-        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
+
+      /* let dishIn = self.dishWhereIn(readOnlyVM: viewModel)
+       
+       let statoScorte = self.statusScorte()
+       let transitionScorte = self.transitionScorte()
+       let ultimoAcquisto = self.lastAcquisto()*/
+      
+     /* let value:(raw:String,image:String) = {
+         
+          if transitionScorte == .inArrivo {
+              return (transitionScorte.rawValue,transitionScorte.imageAssociata())
+          } else {
+              return (statoScorte.simpleDescription(),statoScorte.imageAssociata())
+          }
+          
+      }()*/
+       
+       let dishIn = self.dishWhereIn(readOnlyVM: viewModel)
+       let statoScorte = self.statusScorte()
+       let transitionScorte = self.transitionScorte()
+       
+       let disabilitaButton:(cambioTemp:Bool,cambioPerma:Bool) = {
+          
+           let conditionOne = transitionScorte == .inArrivo
+           let conditionTwo = transitionScorte == .pending
+           let noDish = dishIn.dishCount == 0
+           
+           let tempChange = noDish || conditionOne || statoScorte != .esaurito
+           let permanentChange = noDish || conditionOne || conditionTwo
+           
+           return (tempChange,permanentChange)
+       }()
         
        return VStack {
             
-            let statoScorte = self.statusScorte()
-            let transitionScorte = self.transitionScorte()
-            let ultimoAcquisto = self.lastAcquisto()
-           
-           let value:(raw:String,image:String) = {
-              
-               if transitionScorte == .inArrivo {
-                   return (transitionScorte.rawValue,transitionScorte.imageAssociata())
-               } else {
-                   return (statoScorte.simpleDescription(),statoScorte.imageAssociata())
-               }
-               
-           }()
-                
-                Menu {
+           vbVisualManageScorte(viewModel: viewModel)
+              /*  Menu {
                     
                     Button("in Esaurimento") {
-                        
-                       /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)*/
-                        self.changeAndUpdateStatus(status: .inEsaurimento, viewModel: viewModel)
 
+                        self.changeAndUpdateStatus(status: .inEsaurimento, viewModel: viewModel)
                         
-                        
-                    }.disabled(statoScorte != .inStock)
+                    }.disabled(disabilitaButton.inEsaurimento)
                     
                     Button("Esaurite") {
-                        
-                       /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
-                        // innesto 01.12.22
-                        if self.status.checkStatusTransition(check: .disponibile) {
-                            self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
-                        } */
-                        
+     
                         self.changeAndUpdateStatus(status: .esaurito, viewModel: viewModel)
 
-                        
-                        
-                    }.disabled(statoScorte == .esaurito || transitionScorte == .inArrivo)
+                    }.disabled(disabilitaButton.esaurito)
                     
-                    if transitionScorte == .pending {
+                    Button("Fuori Inventario",role: .destructive) {
+     
+                        if dishIn.dishCount == 0 {
+                            self.changeAndUpdateStatus(status: .outOfStock, viewModel: viewModel)
+                        } else {
+                            viewModel.alertItem = AlertModel(
+                                title: "Azione Bloccata",
+                                message: "L'ingrediente è in uso e non può essere messo fuori inventario. E' possibile usare il modulo di cambio permanente per sostiuirlo e/o rimuoverlo dai prodotti.")
+                        }
+
+                    }.disabled(disabilitaButton.outOfStock)
+                    
+                   // if transitionScorte == .pending {
+                    if statoScorte != .inStock && transitionScorte != .inArrivo {
                         
                         Button("Rimetti in Stock") {
-                            
-                           /* viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)*/
+
                             self.changeAndUpdateStatus(status: .inStock, viewModel: viewModel)
-                            
                             
                         }
                     }
@@ -525,34 +375,123 @@ extension IngredientModel:MyProVisualPack_L1 {
                         Text("Scorte \(value.raw)")
                         Image(systemName: value.image)
                     }
-                }
+                }*/
 
-                Button {
-                    
-                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
-                    
-                } label: {
-                    HStack{
-                        Text("Cambio Temporaneo")
-                        /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
-                        Image(systemName: "clock")
-                    }
-                }
-                
-                Button {
+          // Group {
+               
+               Button {
+                   
+                   viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
+                   
+               } label: {
+                   HStack{
+                       Text("Cambio Temporaneo")
+                       Image(systemName: "clock")
+                   }
+               }.disabled(disabilitaButton.cambioTemp)
+               
+               Button {
 
-                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
-                    
-                } label: {
-                    HStack{
-                        Text("Cambio Permanente")
-                        Image(systemName: "exclamationmark.circle")
-                      /*  Image(systemName: "arrow.left.arrow.right.circle") */
-                    }
-                }
- 
+                   viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
+                   
+               } label: {
+                   HStack{
+                       Text("Cambio Permanente")
+                       Image(systemName: "exclamationmark.circle")
+                   }
+               }.disabled(disabilitaButton.cambioPerma)
+         
         }
-        .disabled(generalDisabled)
+    }
+    
+    public func vbVisualManageScorte(viewModel:AccounterVM) -> some View {
+        
+        let dishIn = self.dishWhereIn(readOnlyVM: viewModel)
+        
+        let statoScorte = self.statusScorte()
+        let transitionScorte = self.transitionScorte()
+        let ultimoAcquisto = self.lastAcquisto()
+        
+        let value:(raw:String,image:String) = {
+           
+            if transitionScorte == .inArrivo {
+                return (transitionScorte.rawValue,transitionScorte.imageAssociata())
+            } else {
+                return (statoScorte.simpleDescription(),statoScorte.imageAssociata())
+            }
+            
+        }()
+        
+        let disabilitaButton:(inEsaurimento:Bool,esaurito:Bool,outOfStock:Bool,cambioTemp:Bool,cambioPerma:Bool) = {
+           
+            let conditionOne = transitionScorte == .inArrivo
+            let conditionTwo = transitionScorte == .pending
+            
+            let conditionThree = statoScorte == .outOfStock
+            let conditionFour = statoScorte == .esaurito || conditionThree
+            
+            let noDish = dishIn.dishCount == 0
+            
+            let inEsauri = statoScorte != .inStock
+            let esauri = conditionOne || conditionFour
+            let outOf = conditionOne || conditionThree
+            
+            let tempChange = noDish || conditionOne || statoScorte != .esaurito
+            let permanentChange = noDish || conditionOne || conditionTwo
+            
+            return (inEsauri,esauri,outOf,tempChange,permanentChange)
+        }()
+        
+       return Menu {
+            
+            Button("in Esaurimento") {
+
+                self.changeAndUpdateStatus(status: .inEsaurimento, viewModel: viewModel)
+                
+            }.disabled(disabilitaButton.inEsaurimento)
+            
+            Button("Esaurite") {
+
+                self.changeAndUpdateStatus(status: .esaurito, viewModel: viewModel)
+
+            }.disabled(disabilitaButton.esaurito)
+            
+            Button("Fuori Inventario",role: .destructive) {
+
+                if dishIn.dishCount == 0 {
+                    self.changeAndUpdateStatus(status: .outOfStock, viewModel: viewModel)
+                } else {
+                    viewModel.alertItem = AlertModel(
+                        title: "Azione Bloccata",
+                        message: "L'ingrediente è in uso e non può essere messo fuori inventario. E' possibile usare il modulo di cambio permanente per sostiuirlo e/o rimuoverlo dai prodotti.")
+                }
+
+            }.disabled(disabilitaButton.outOfStock)
+            
+           // if transitionScorte == .pending {
+            if statoScorte != .inStock && transitionScorte != .inArrivo {
+                
+                Button("Rimetti in Stock") {
+
+                    self.changeAndUpdateStatus(status: .inStock, viewModel: viewModel)
+                    
+                }
+            }
+            
+            Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
+            
+            Button("Cronologia Acquisti") {
+               /* viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(self))*/
+                viewModel.logMessage = "FETCH SUB COLLECTION"
+            }
+            
+        } label: {
+            HStack{
+                Text("Scorte \(value.raw)")
+                Image(systemName: value.image)
+            }
+        }
+        
     }
     
     private func changeAndUpdateStatus(status:StatoScorte,viewModel:AccounterVM) {
@@ -562,78 +501,79 @@ extension IngredientModel:MyProVisualPack_L1 {
         viewModel.updateModelOnSub(itemModel: updateIng)
         
     }
+}
+
+extension IngredientModel:MyProNavigationPack_L0 {
+  
+    public typealias DPV = DestinationPathView
     
-   /* public func vbMenuInterattivoModuloCustom(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
-              
-        let generalDisabled = self.status.checkStatusTransition(check: .archiviato)
+    public func pathDestination() -> DestinationPathView {
+        DestinationPathView.ingrediente(self)
+    }
+}
+
+extension IngredientModel:MyProStatusPack_L02 {
+    
+    public func visualStatusDescription(viewModel: AccounterVM) -> (internalImage: String, internalColor: Color, externalColor: Color, description: String) {
         
-       return VStack {
-            
-            let statoScorte = viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.id)
-            let ultimoAcquisto = viewModel.currentProperty.inventario.dataUltimoAcquisto(idIngrediente: self.id)
-                
-                Menu {
-                    
-                    Button("in Esaurimento") {
-                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inEsaurimento)
-                    }.disabled(statoScorte != .inStock)
-                    
-                    Button("Esaurite") {
-                        viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .esaurito)
-                        // innesto 01.12.22
-                        if self.status.checkStatusTransition(check: .disponibile) {
-                            self.manageCambioStatus(nuovoStatus: .inPausa, viewModel: viewModel)
-                        }
-                        
-                    }.disabled(statoScorte == .esaurito || statoScorte == .inArrivo)
-                    
-                    if statoScorte == .esaurito || statoScorte == .inEsaurimento {
-                        
-                        Button("Rimetti in Stock") {
-                            viewModel.currentProperty.inventario.cambioStatoScorte(idIngrediente: self.id, nuovoStato: .inStock)
-                        }
-                    }
-                    
-                    Text("Ultimo Acquisto:\n\(ultimoAcquisto)")
-                    
-                    Button("Cronologia Acquisti") {
-                        viewModel[keyPath: navigationPath].append(DestinationPathView.vistaCronologiaAcquisti(self))
-                    }
-                    
-                } label: {
-                    HStack{
-                        Text("Scorte \(statoScorte.simpleDescription())")
-                        Image(systemName: statoScorte.imageAssociata())
-                    }
-                }
+        let imageInternal = self.status.imageAssociated()
+        let colorInternal = self.statusTransition.colorAssociated()
+        let dashedColor = self.statusScorte().coloreAssociato()
+        
+        let descrizione = "Stato: \(self.fullStatusDescription())\nScorte: \(self.statoScorteDescription())"
+        
+        return (imageInternal,colorInternal,dashedColor,descrizione)
+        
+    }
+}
 
-                Button {
-                    
-                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self))
-                    
-                } label: {
-                    HStack{
-                        Text("Cambio Temporaneo")
-                        /*Image(systemName: "arrowshape.turn.up.backward.badge.clock")*/
-                        Image(systemName: "clock")
-                    }
-                }
-                
-                Button {
-
-                    viewModel[keyPath: navigationPath].append(DestinationPathView.moduloSostituzioneING(self,isPermanente: true))
-                    
-                } label: {
-                    HStack{
-                        Text("Cambio Permanente")
-                        Image(systemName: "exclamationmark.circle")
-                      /*  Image(systemName: "arrow.left.arrow.right.circle") */
-                    }
-                }
- 
-        }
-        .disabled(generalDisabled)
-    }*/ // backup_01_12_23
+extension IngredientModel:MyProEditingPack_L0 {
     
+    public func disabilitaEditing(viewModel:AccounterVM) -> Bool {
+        
+        self.statusTransition == .archiviato
+        
+    }
+}
+
+extension IngredientModel:MyProTrashPack_L0 {
+    
+    public func disabilitaTrash(viewModel:AccounterVM) -> Bool {
+       
+        self.statusTransition != .archiviato
+    }
+    
+    public func manageModelDelete(viewModel:AccounterVM) {
+        
+        let allDishWhereIsIn = viewModel.allDishContainingIngredient(idIng: self.id)
+        
+        guard !allDishWhereIsIn.isEmpty else {
+            viewModel.deleteModel(itemModel: self)
+          
+            return }
+        
+        var allDishChanged:[ProductModel] = []
+        
+        for dish in allDishWhereIsIn {
+            
+            var new = dish
+            let (ingPath,index) = new.individuaPathIngrediente(idIngrediente: self.id)
+            
+            if let ingPath,
+               let index {
+                new[keyPath: ingPath]!.remove(at: index)
+                new.autoCleanElencoIngredientiOff()
+            }
+            allDishChanged.append(new)
+        }
+        
+       // viewModel.updateItemModelCollection(items: allDishChanged) // deprecata
+        
+        viewModel.deleteModel(itemModel: self) {
+            viewModel.updateModelCollection(
+                items: allDishChanged,
+                sub: CloudDataStore.SubCollectionKey.allMyDish)
+        }
+    }
     
 }

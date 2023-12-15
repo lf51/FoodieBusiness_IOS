@@ -288,7 +288,8 @@ struct DishListByIngredientView: View {
          // self.viewModel.updateItemModel(itemModel: currentIngredientModel, destinationPath: self.destinationPath) // 31_10_23 Da Sviluppare per salvataggi in batch
           // salviamo l'ingrediente
        //   self.viewModel.updateModel(itemModel: currentIngredientModel)
-          self.viewModel.manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .inPausa)
+        /*  self.viewModel.manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .inPausa)*/
+          self.viewModel.logMessage = "manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .inPausa"
           
           self.viewModel.updateModelCollection(
             items: productUpdated,
@@ -359,7 +360,8 @@ struct DishListByIngredientView: View {
           //  self.viewModel.updateModel(
               //  itemModel: currentIngredientModel)
             
-            self.viewModel.manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .archiviato)
+           /* self.viewModel.manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .archiviato)*/
+            self.viewModel.logMessage = "manageCambioStatusModel(model: currentIngredientModel, nuovoStatus: .archiviato)"
             
             self.viewModel.updateModelCollection(
                 items: dishUpdated,

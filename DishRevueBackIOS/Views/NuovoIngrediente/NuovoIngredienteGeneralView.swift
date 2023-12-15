@@ -43,6 +43,8 @@ struct NuovoIngredienteGeneralView: View {
         
         CSZStackVB(title:self.nuovoIngrediente.intestazione == "" ? "Nuovo Ingrediente" : self.nuovoIngrediente.intestazione, backgroundColorView: backgroundColorView) {
             
+            let asProduct = self.nuovoIngrediente.type == .asProduct
+            
             VStack {
                     
                    // CSDivider()
@@ -62,6 +64,8 @@ struct NuovoIngredienteGeneralView: View {
                                 coloreContainer:.seaTurtle_3)
                             .id(ModelField.intestazione.rawValue)
                             .focused($modelField, equals: .intestazione)
+                            .opacity(asProduct ? 0.6 : 1.0)
+                            .disabled(asProduct)
                                
                             BoxDescriptionModel_Generic(
                                 itemModel: $nuovoIngrediente,
@@ -209,12 +213,12 @@ struct NuovoIngredienteGeneralView: View {
         
         guard checkConservazione() else { return false }
 
-        if self.nuovoIngrediente.optionalComplete() {
+       /* if self.nuovoIngrediente.optionalComplete() {
             self.nuovoIngrediente.status = .completo(.disponibile) }
         else {
             self.nuovoIngrediente.status = .bozza(.disponibile)
-        }
-
+        } */
+        self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS Ingrediente in CHECK_PRELIMINARE"
         return true
        
     }

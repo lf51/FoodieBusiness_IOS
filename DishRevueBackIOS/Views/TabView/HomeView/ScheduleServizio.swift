@@ -36,7 +36,7 @@ struct ScheduleServizio:View {
         
         // .1
         let allMenuAvaible = self.viewModel.db.allMyMenu.filter({
-            $0.status.checkStatusTransition(check: .disponibile)})
+            $0.getStatusTransition(viewModel:self.viewModel) == .disponibile })
         
         let allMenuDataEsatta = allMenuAvaible.filter({$0.isAvaibleWhen == .dataEsatta})
       /*  let allDataEsatta = allMenuAvaible.filter({$0.isAvaibleWhen == .dataEsatta}).sorted(by: {$0.dataInizio < $1.dataInizio}) */

@@ -122,7 +122,7 @@ struct MenuModel_RowView: View {
             .onChange(of: timerViewModel.codiceOnOff) { _, newValue in
                 // Nota 06.07.23 onChangeCodiceOnOff
                 guard newValue == .scadutoForEver else { return }
-                let currentStatus = self.menuItem.status.checkStatusTransition(check: .archiviato)
+                let currentStatus = self.menuItem.getStatusTransition(viewModel: self.viewModel) == .archiviato
     
                 if !currentStatus {
                     self.viewModel.manageCambioStatusModel(model: self.menuItem, nuovoStatus: .archiviato)
@@ -387,7 +387,7 @@ struct MenuModel_RowView: View {
             
             vbEstrapolaStatusImage(
                 itemModel: self.menuItem,
-                dashedColor: .clear)
+                viewModel: self.viewModel)
             .overlay(alignment:.center) {
                ImageLampeggiante(
                 image: "circle.dashed",

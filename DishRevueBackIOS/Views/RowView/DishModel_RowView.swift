@@ -323,7 +323,27 @@ struct ProductModel_RowView: View {
                 return sottostante
            
         }()*/
-        let isNotDescribed = self.item.descrizione == nil
+       // let isNotDescribed = self.item.descrizione == nil
+        let sottostante:IngredientModel? = {
+            
+            if self.item.adress != .preparazione {
+                return self.item.getSottostante(viewModel: self.viewModel).sottostante
+            } else { return nil}
+        }()
+        
+        let isNotDescribed:Bool = {
+
+            if let sottostante {
+                let conditionOne = sottostante.descrizione == nil
+                let conditionTwo = sottostante.descrizione?.isEmpty ?? true
+                return conditionOne || conditionTwo
+            } else {
+             
+                let conditionOne = self.item.descrizione == nil
+                let conditionTwo = self.item.descrizione?.isEmpty ?? true
+                return conditionOne || conditionTwo
+            }
+        }()
         
         HStack {
          
@@ -343,21 +363,35 @@ struct ProductModel_RowView: View {
                     message: "Indica il numero di menu stabili dove è inserito il piatto. Non considera il menu del giorno e il menu dei consigliati dallo chef.")
             } */ // Tolto 04.10
             
-            if let rif = self.item.rifIngredienteSottostante {
+            if let sottostante,
+               self.item.adress == .finito {
                 
-               // let sottostante = self.item.percorsoProdotto.associatedValue() as? String
-                let statoScorte = self.viewModel.getStatusScorteING(from: rif)
+              //  let statoScorte = self.viewModel.getStatusScorteING(from: sottostanteProdottoFinito.id)
+                let statoScorte = sottostante.statusScorte()
+                let transition = sottostante.transitionScorte()
+                
+                let value:(raw:String,image:String,color:Color) = {
+                    
+                    if transition == .inArrivo {
+                        
+                        return (transition.rawValue,transition.imageAssociata(),transition.coloreAssociato())
+                    } else {
+                        
+                        return (statoScorte.rawValue,statoScorte.imageAssociata(),statoScorte.coloreAssociato())
+                    }
+                    
+                }()
                 
                 CSEtichetta(
-                    text: statoScorte.rawValue,
+                    text: value.raw,
                     fontStyle: .subheadline,
                     fontWeight: .semibold,
                     fontDesign: .default,
                     textColor: .seaTurtle_1,
-                    image: statoScorte.imageAssociata(),
+                    image: value.image,
                     imageColor: .seaTurtle_1,
                     imageSize: .medium,
-                    backgroundColor: statoScorte.coloreAssociato(),
+                    backgroundColor: value.color,
                     backgroundOpacity: 1.0)
 
             } else {
@@ -498,30 +532,12 @@ struct ProductModel_RowView: View {
             else { return (.title3,.small)}
         }()
         
-        let dashedColor:Color = {
-            
-            if let rif = self.item.rifIngredienteSottostante {
-                
-                let statoScorte = self.viewModel.getStatusScorteING(from: rif)
-                
-                return statoScorte.coloreAssociato()
-                
-            }
-            else if let rif = self.item.ingredienteSottostante?.id {
-                let statoScorte = self.viewModel.getStatusScorteING(from: rif)
-                return statoScorte.coloreAssociato()
-            }
-            else {
-                return self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
-            }
-        }()
-        
         let productType:ProductType = {
             
             if let categoria = self.viewModel.modelFromId(id: item.categoriaMenu, modelPath: \.db.allMyCategories) {
                 return categoria.productType
             } else {
-                return .food
+                return .noValue
             }
         }()
     
@@ -543,13 +559,44 @@ struct ProductModel_RowView: View {
             
             Spacer()
             
-            vbEstrapolaStatusImage(
-                itemModel: self.item,
-                dashedColor: dashedColor)
+                vbEstrapolaStatusImage(
+                    itemModel: self.item,
+                    viewModel: self.viewModel)
+          //  }
             
         }
         
     }
+    
+   /* @ViewBuilder private func vbStatusProduct() -> some View {
+        
+        let dashedColor:Color = {
+            
+            if let rif = self.item.rifIngredienteSottostante {
+                
+                let statoScorte = self.viewModel.getStatusScorteING(from: rif)
+                return statoScorte.coloreAssociato()
+                
+            }
+            else if let sottostante = self.item.ingredienteSottostante {
+                // errato
+                let statoScorte = sottostante.statusScorte()
+                return statoScorte.coloreAssociato()
+                
+            }
+            else {
+                return self.item.checkStatusExecution(viewModel: self.viewModel).coloreAssociato()
+            }
+        }()
+        
+        vbEstrapolaStatusImage(
+            itemModel: self.item,
+            dashedColor: Color.clear,
+            viewModel: self.viewModel)
+   
+        
+    }*/
+    
     
     @ViewBuilder private func vbSubIntestazioneDishRow() -> some View {
         
@@ -729,6 +776,22 @@ struct ProductModel_RowView: View {
     
     @ViewBuilder private func vbDescriptionScrollRow() -> some View {
         
+        let sottostante:IngredientModel? = {
+            
+            if self.item.adress != .preparazione {
+                return self.item.getSottostante(viewModel: self.viewModel).sottostante
+            } else { return nil }
+        }()
+        
+        let description:String? = {
+            
+            if let sottostante {
+                return sottostante.descrizione
+            } else {
+                return self.item.descrizione
+            }
+        }()
+        
         HStack(spacing:4) {
             
             Image(systemName: "list.bullet.rectangle")
@@ -736,7 +799,7 @@ struct ProductModel_RowView: View {
                 .foregroundStyle(Color.seaTurtle_3)
             
             ScrollView(.horizontal,showsIndicators: false) {
-                Text(self.item.descrizione ?? "no description")
+                Text(description ?? "no description")
                     .font(.headline)
                     .italic()
                     .foregroundStyle(Color.black)
@@ -843,7 +906,7 @@ struct ProductModel_RowView: View {
         
         if self.item.idIngredienteDaSostituire == ingredient.id {isOff = true}
       //  else { isOff = ingredient.status == .completo(.inPausa) }
-        else { isOff = ingredient.status.checkStatusTransition(check: .inPausa) }
+        else { isOff = ingredient.statusTransition == .inPausa }
        // let isOff = ingredient.status == .completo(.inPausa)
         var idSostituto: String? = nil
         

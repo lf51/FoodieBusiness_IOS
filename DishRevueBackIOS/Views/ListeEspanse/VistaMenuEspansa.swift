@@ -220,12 +220,16 @@ struct VistaMenuEspansa: View {
             let localModelArchiviato = self.archivioMenuWithDishIn.first { $0.id == localMenu.id}
             
             guard localModelArchiviato != nil,
-                  localModelArchiviato!.status.checkStatusTransition(check: .disponibile) else { return }
+                  localModelArchiviato!.getStatusTransition(viewModel: self.viewModel) == .disponibile else { return }
             
             if currentMenu.allDishActive(viewModel: self.viewModel).isEmpty {
-                currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .inPausa)
+               /* currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .inPausa)*/
+                currentMenu.setStatusTransition(to:.inPausa,viewModel: self.viewModel) //= .inPausa
+                self.viewModel.logMessage = "IMPLEMENTARE SAVE SU FIREBASE"
             } else {
-                currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .disponibile)
+               /* currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .disponibile)*/
+                currentMenu.setStatusTransition(to:.disponibile,viewModel: self.viewModel)// .disponibile
+                self.viewModel.logMessage = "IMPLEMENTARE SAVE SU FIREBASE"
             }
         }
         // fine Innesto

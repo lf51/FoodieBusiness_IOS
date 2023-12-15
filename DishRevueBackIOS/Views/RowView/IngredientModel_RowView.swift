@@ -92,10 +92,11 @@ struct IngredientModel_RowView: View {
     @ViewBuilder private func vbDishCountIn() -> some View {
         
         let (dishCount,substitution) = self.item.dishWhereIn(readOnlyVM: self.viewModel)
-        let isInPausa = self.item.status.checkStatusTransition(check: .inPausa)
-        let isDisponibile = self.item.status.checkStatusTransition(check: .disponibile)
+        let isInPausa = self.item.statusTransition == .inPausa
+        let isDisponibile = self.item.statusTransition == .disponibile
        /* let isDiTerzi = self.viewModel.isTheModelAlreadyExist(modelID: self.item.id, path: \.db.allMyDish)*/
-        let isDiTerzi = self.viewModel.isASubOfReadyProduct(id: self.item.id) != nil
+       // let isDiTerzi = self.viewModel.isASubOfReadyProduct(id: self.item.id) != nil
+        let isDiTerzi = self.item.type == .asProduct
         
         HStack {
             
@@ -126,7 +127,7 @@ struct IngredientModel_RowView: View {
             }
             
             if isDiTerzi {
-                Text("prodotto finito")
+                Text(self.item.type.simpleDescription())
                     .italic()
                     .font(.subheadline)
                     .foregroundStyle(Color.seaTurtle_3)
@@ -157,8 +158,8 @@ struct IngredientModel_RowView: View {
                 Image(systemName: value.image)
                     .imageScale(.medium)
                 
-                Image(systemName: transitionScorte.imageAssociata())
-                    .imageScale(.medium) // temporanea for debug
+               /* Image(systemName: transitionScorte.imageAssociata())
+                    .imageScale(.medium)*/ // temporanea for debug
                 
                 
             }
@@ -191,7 +192,8 @@ struct IngredientModel_RowView: View {
             
             ScrollView(.horizontal, showsIndicators: false) {
                 
-                Text(self.item.produzione.extendedDescription())
+                //Text(self.item.produzione.extendedDescription())
+                Text(self.item.produzione.simpleDescription())
                     .font(.caption)
                     .fontWeight(.black)
                     .foregroundStyle(Color.white)
@@ -226,22 +228,38 @@ struct IngredientModel_RowView: View {
     
     @ViewBuilder private func vbIntestazioneIngrediente() -> some View {
 
-        Text(self.item.intestazione.capitalized)
-                .font(.title2)
-                .fontWeight(.semibold)
-                .lineLimit(1)
-                .allowsTightening(true)
-                .foregroundStyle(Color.white)
-                .overlay(alignment:.topTrailing) {
-                    
-                    if self.item.produzione == .biologico {
+        let value:(font:Font,imageSize:Image.Scale) = {
+           
+            if self.rowSize.returnType() == .normale() { return (.title2,.medium)}
+            else { return (.title3,.small)}
+        }()
+        
+        let image = self.item.type.imageAssociated()
+        let color = self.item.type.coloreAssociato()
+        
+        HStack(alignment:.center,spacing: 3) {
+            
+            Image(systemName: image)
+                .imageScale(value.imageSize)
+                .foregroundStyle(color)
+            
+            Text(self.item.intestazione.capitalized)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .lineLimit(1)
+                    .allowsTightening(true)
+                    .foregroundStyle(Color.white)
+                    .overlay(alignment:.topTrailing) {
                         
-                        Text("Bio")
-                            .font(.system(.caption2, design: .monospaced, weight: .black))
-                            .foregroundStyle(Color.green)
-                            .offset(x: 10, y: -4)
+                        if self.item.produzione == .biologico {
+                            
+                            Text("Bio")
+                                .font(.system(.caption2, design: .monospaced, weight: .black))
+                                .foregroundStyle(Color.green)
+                                .offset(x: 10, y: -4)
+                        }
                     }
-                }
+        }
 
     }
     
@@ -315,13 +333,19 @@ struct IngredientModel_RowView: View {
     }*/ // deprecata 19_10_23
     
     @ViewBuilder private func vbStatusIngrediente() -> some View {
-        
-       /* let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.item.id).coloreAssociato()*/
-        let dashedColor = self.item.statusScorte().coloreAssociato()
+   
+       // let dashedColor = self.item.statusScorte().coloreAssociato()
         
         vbEstrapolaStatusImage(
             itemModel: self.item,
-            dashedColor: dashedColor)
+            viewModel: self.viewModel)
+       /* .onTapGesture {
+            
+            self.viewModel.alertItem = AlertModel(
+                title: "\(self.item.intestazione)",
+                message: "Stato: \(self.item.fullStatusDescription())\nScorte: \(self.item.statoScorteDescription())")
+        }*/
+        
     }
     
     @ViewBuilder private func vbOrigineProvenienza() -> some View {

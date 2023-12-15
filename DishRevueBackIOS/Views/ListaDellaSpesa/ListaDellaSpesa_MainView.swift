@@ -327,8 +327,7 @@ struct SpesaRowIngredientView: View {
     
     @FocusState private var modelField:ModelField?
     
-    var statoInventario:TransizioneScorte { element.transitionScorte()
-    }
+    var statoInventario:TransizioneScorte { element.transitionScorte() }
     
     var body: some View {
         
@@ -348,7 +347,7 @@ struct SpesaRowIngredientView: View {
      
                            RoundedRectangle(cornerRadius: 2.0)
                                         .frame(width: 5)
-                                        .foregroundStyle(element.status.transitionStateColor())
+                                        .foregroundStyle(element.statusTransition.colorAssociated())
         
                             VStack(alignment:.leading,spacing:0) {
                                 

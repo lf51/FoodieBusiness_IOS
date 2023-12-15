@@ -49,11 +49,12 @@ struct EditingPropertyModel: View {
                     .focused($modelField, equals: .descrizione)
                     
                     VStack(spacing:10) {
-                        let allMenuActive = self.viewModel.db.allMyMenu.filter({$0.status.checkStatusTransition(check: .disponibile)})
+                        let allMenuActive = self.viewModel.db.allMyMenu.filter({ $0.getStatusTransition(viewModel:self.viewModel) == .disponibile })
                         
                         let allMenuDeActive = self.viewModel.db.allMyMenu.filter({
-                            $0.status.checkStatusTransition(check: .inPausa) ||
-                            $0.status.checkStatusTransition(check: .archiviato)
+                            let statusTransition = $0.getStatusTransition(viewModel: self.viewModel)
+                            return statusTransition == .inPausa ||
+                            statusTransition == .archiviato
                         })
                         
                         DynamicScrollSizeMM(

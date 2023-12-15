@@ -141,7 +141,8 @@ public enum DestinationPathView: Hashable {
             VistaRecensioniEspansa(backgroundColorView: backgroundColorView)
             
         case .moduloSostituzioneING(let ingredient,let isPermanente):
-            DishListByIngredientView(ingredientModelCorrente: ingredient,isPermanente: isPermanente, destinationPath: destinationPath, backgroundColorView: backgroundColorView)
+            Text("check_moduloSostituzioneING")
+           /* DishListByIngredientView(ingredientModelCorrente: ingredient,isPermanente: isPermanente, destinationPath: destinationPath, backgroundColorView: backgroundColorView)*/
             
         case .listaDellaSpesa:
             let inventario = readOnlyViewModel.inventarioIngredienti()
@@ -155,11 +156,13 @@ public enum DestinationPathView: Hashable {
                 backgroundColorView: backgroundColorView)
             
         case .listaGenericaIng(let container,let label):
-            VistaEspansaGenerica(
+            
+            Text("ERRORE_CHECK_LISTA GENERICA:CONFORMITA' MYPROTOOLPACK")
+           /* VistaEspansaGenerica(
                 container:container,
                 containerPath: \.db.allMyIngredients,
                 label:label,
-                backgroundColorView: backgroundColorView)
+                backgroundColorView: backgroundColorView)*/
             
         case .listaGenericaDish(let container,let label):
             VistaEspansaGenerica(

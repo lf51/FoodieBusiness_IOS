@@ -244,8 +244,8 @@ import MyFilterPackage
                                 
                                 mod.vbMenuInterattivoModuloCustom(viewModel: self.viewModel, navigationPath: \.homeViewPath)
                                 
-                                vbMenuInterattivoModuloCambioStatus(myModel: mod, viewModel: self.viewModel)
-                                
+                               /* vbMenuInterattivoModuloCambioStatus(myModel: mod, viewModel: self.viewModel)*/
+                                Text("[ERRORE]_checkVISTAESPANSAING_MONITORSERVIZIO")
                             }
 
                       

@@ -8,34 +8,43 @@
 import Foundation
 import SwiftUI
 import MyFoodiePackage
+import MyPackView_L0
 
 
 /// Ritorna l'immagine associata allo Status del Modello
-@ViewBuilder func vbEstrapolaStatusImage<M:MyProStatusPack_L0>(itemModel:M,dashedColor:Color) -> some View {
-    // M passa da MyModelStatusConformity a MyProStatusPackL0
+/*@ViewBuilder func vbEstrapolaStatusImage<M:MyProStatusPack_L01>(itemModel:M,dashedColor:Color) -> some View {
    
     let image = itemModel.status.imageAssociated()
-    let color = itemModel.status.transitionStateColor()
+    let color = itemModel.statusTransition.colorAssociated()
+  //  let dashedColor = itemModel.statusScorte().coloreAssociato()
 
     csCircleDashed(
         internalCircle: image,
         internalColor: color,
         dashedColor: dashedColor)
+ 
+}*/ // deprecato
+
+@ViewBuilder func vbEstrapolaStatusImage<M:MyProStatusPack_L02&MyProStarterPack_L01>(itemModel:M,viewModel:AccounterVM) -> some View where M.VM == AccounterVM {
+   
+    let visualData = itemModel.visualStatusDescription(viewModel: viewModel)
     
-       /* ZStack {
-            
-            Image(systemName: image)
-                .imageScale(.medium)
-                .foregroundStyle(color)
-                .zIndex(0)
-            
-            Image(systemName: "circle.dashed")
-                .imageScale(.large)
-                .foregroundStyle(dashedColor)
-                .zIndex(1)
-            
-        } */
-       
+    let image = visualData.internalImage 
+    let color = visualData.internalColor
+    let dashedColor = visualData.externalColor
+    let description = visualData.description
+
+    csCircleDashed(
+        internalCircle: image,
+        internalColor: color,
+        dashedColor: dashedColor)
+    .onTapGesture {
+        
+        viewModel.alertItem = AlertModel(
+            title: "\(itemModel.intestazione)",
+            message: description)
+    }
+ 
 }
 
 /// Versione custom del circle.dashed.inset.filled. L'immagine internal, internalCircle, può essere customizzata. Chiaramente è preferibile che sia comunque un cerchio. Utile però perchè per le bozze passiamo un martello cerchiato.
@@ -57,7 +66,7 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
     }
 }
 
-@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:M.VM) -> some View {
+/*@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:M.VM) -> some View {
 
    /* let disableCondition:Bool = {
         
@@ -169,32 +178,110 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
     }//.disabled(disableCondition)
     .disabled(generalDisabled)
            
+}*/ // deprecato 06_12_23
+
+@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:M.VM) -> some View {
+
+    let statusTransition = myModel.getStatusTransition(viewModel: viewModel)
+    let disabilita = myModel.disabilitaSetStatusTransition(viewModel: viewModel)
+
+    Group {
+        if statusTransition == .disponibile {
+                    
+            VStack {
+                
+                Button {
+                    
+                    myModel.setStatusTransition(to: .inPausa, viewModel: viewModel)
+                    
+                } label: {
+                    HStack{
+                        Text("Metti in Pausa")
+                        Image(systemName: "pause.circle")
+                        
+                    }
+                }
+                
+                Button(role:.destructive) {
+
+                    myModel.setStatusTransition(to: .archiviato, viewModel: viewModel)
+                    
+                } label: {
+                    HStack{
+                        Text("Archivia")
+                        Image(systemName: "archivebox")
+                      
+                    }
+                }
+
+            }
+
+        } else if statusTransition == .inPausa {
+            
+                VStack {
+                    
+                    Button {
+
+                        myModel.setStatusTransition(to: .disponibile, viewModel: viewModel)
+       
+                        
+                    } label: {
+                        HStack{
+                            Text("Rendi Disponibile")
+                            Image(systemName: "play.circle")
+                           
+                        }
+                    }.disabled(disabilita.upToDisponibile)
+                    
+                    
+                    Button(role:.destructive) {
+
+                        myModel.setStatusTransition(to: .archiviato, viewModel: viewModel)
+
+                        
+                    } label: {
+                        HStack{
+                            Text("Archivia")
+                            Image(systemName: "archivebox")
+                           
+                        }
+                    }
+
+                }
+
+        } else if statusTransition == .archiviato {
+ 
+                VStack {
+                    
+                    Button {
+
+                        myModel.setStatusTransition(to: .disponibile, viewModel: viewModel)
+       
+                        
+                    } label: {
+                        HStack{
+                            Text("Rendi Disponibile")
+                            Image(systemName: "play.circle")
+                           
+                        }
+                    }.disabled(disabilita.upToDisponibile)
+                    
+
+
+                }
+        }
+       
+    }.disabled(disabilita.general)           
 }
 
-@ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProStatusPack_L1>(currentModel:M,viewModel:M.VM, navPath:ReferenceWritableKeyPath<M.VM,NavigationPath>) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProStatusPack_L0&MyProEditingPack_L0&MyProNavigationPack_L0&MyProVMPack_L0>(currentModel:M,viewModel:M.VM, navPath:ReferenceWritableKeyPath<M.VM,NavigationPath>) -> some View {
     
-    // M passa da MyModelStatusConformity a MyProStatusPackL1
-    let generalDisabled = currentModel.conditionToManageMenuInterattivo().disableEdit
+    let generalDisabled = currentModel.disabilitaEditing(viewModel: viewModel)
     let isBozza = currentModel.status.checkStatusBozza()
     let title = isBozza ? "Completa" : "Modifica"
-    
-   /* let disableCondition:Bool = {
-       
-        if let model = currentModel as? MenuModel {
-            
-            return model.tipologia.isDiSistema()
-        }
-        
-        return false
-    }() */
-    
- //   VStack {
-        
+
     Button {
-          //  viewModel[keyPath: navPath].append(currentModel)
-          /*  let currentDestination:DestinationPathView = currentModel.pathDestination()
-            viewModel[keyPath: navPath].append(currentDestination) */
-        
+
         let currentDestination:M.DPV = currentModel.pathDestination()
         viewModel[keyPath: navPath].append(currentDestination)
         
@@ -204,32 +291,17 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
                   Text(title)
                   Image(systemName: isBozza ? "hammer" : "square.and.pencil")
               }
-          }//.disabled(disableCondition)
+          }
           .disabled(generalDisabled)
-     /*   Button(role:.destructive) {
-            
-              viewModel.deleteItemModel(itemModel: currentModel)
-              
-          } label: {
-              HStack{
-                  Text("Elimina")
-                  Image(systemName: "trash")
-              }
-          } */
-        
-   // }
    
 }
 
-@ViewBuilder func vbMenuInterattivoModuloTrash<M:MyProManagingPack_L0>(currentModel:M,viewModel:M.VM) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloTrash<M:MyProTrashPack_L0>(currentModel:M,viewModel:M.VM) -> some View {
+
+    let generalDisabled = currentModel.disabilitaTrash(viewModel: viewModel)
     
-    // Nota 27.11
-    let generalDisabled = currentModel.conditionToManageMenuInterattivo().disableTrash
-    // M passa da MyModelStatusConformity a MyProStatusPackL1
         Button(role:.destructive) {
              currentModel.manageModelDelete(viewModel: viewModel)
-            //  viewModel.deleteItemModel(itemModel: currentModel)
-            // currentModel.manageModelDelete
               
           } label: {
               HStack{

@@ -74,7 +74,7 @@ struct VistaIngredientiEspansa: View {
     
                             if let model = self.viewModel.modelFromId(id: rif, modelPath: \.db.allMyIngredients) {
                                 
-                                let isDisponibile = model.status.checkStatusTransition(check: .disponibile)
+                                let isDisponibile = model.statusTransition == .disponibile
  
                                     TabView {
                                         IngredientModel_RowView(item: model, rowSize: .normale())
@@ -114,7 +114,7 @@ struct VistaIngredientiEspansa: View {
            
             if let modelSostituto = self.viewModel.modelFromId(id: sostituto, modelPath: \.db.allMyIngredients) {
                 
-                let isActive = modelSostituto.status.checkStatusTransition(check: .disponibile)
+                let isActive = modelSostituto.statusTransition == .disponibile
                 
                 IngredientModel_RowView(item: modelSostituto, rowSize: .normale())
                     .opacity(isActive ? 1.0 : 0.6)

@@ -75,8 +75,11 @@ struct DishListView: View {
                     
                             dish.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
                                 
+                            if dish.adress != .finito {
+                                
                                 vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
-                            
+                            }
+                                
                                 vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
                             
                                 vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
@@ -172,7 +175,9 @@ struct DishListView: View {
             selectionColor: Color.mint.opacity(0.8),
             imageOrEmoji: "circle.dashed",
             label: "Status") { value in
-                container.filter({$0.status.checkStatusTransition(check: value)}).count
+                container.filter({
+                    $0.getStatusTransition(viewModel:self.viewModel) == value
+                }).count
             }
      
         MyFilterRow(

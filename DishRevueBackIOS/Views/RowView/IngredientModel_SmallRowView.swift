@@ -28,7 +28,7 @@ struct IngredientModel_SmallRowView: View {
     
     var body: some View {
         
-        let isDisponibile = self.currentModel.status.checkStatusTransition(check: .disponibile)
+        let isDisponibile = self.currentModel.statusTransition == .disponibile
         let itemIsModel = self.currentModel == self.titolare
         
         let value:(opacity:CGFloat,blur:CGFloat) = {
@@ -146,7 +146,7 @@ struct IngredientModel_SmallRowView: View {
             if itemIsModel {
                 vbEstrapolaStatusImage(
                     itemModel: self.currentModel,
-                    dashedColor: dashedColor)
+                    viewModel: self.viewModel)
             }
             
             else {
@@ -165,7 +165,7 @@ struct IngredientModel_SmallRowView: View {
 }
 
 
-struct IngredientModel_SmallRowView_Previews: PreviewProvider {
+/*struct IngredientModel_SmallRowView_Previews: PreviewProvider {
    @State static var vm = {
        let user = UserRoleModel()
        var viewM = AccounterVM(userManager: UserManager(userAuthUID: "TEST_USER_UID"))
@@ -194,5 +194,5 @@ struct IngredientModel_SmallRowView_Previews: PreviewProvider {
             }.frame(height:150)
         }.environmentObject(vm)
     }
-}
+}*/
 

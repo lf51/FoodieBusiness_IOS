@@ -107,17 +107,17 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         addPropertyManagerImagesSubscriber()
         addPropertyManagerCurrentPropSubscriber()
      
-       // addAllMyIngredientsSubscriber()
         addGenericSubscriber(to: self.subCollectionManager.allMyCategoriesPublisher.main)
-        addGenericSubscriber(to: self.subCollectionManager.allMyIngredientsPublisher.main)
+
+         addGenericSubscriber(to: self.subCollectionManager.allMyIngredientsPublisher.main)
+         
         addGenericSubscriber(to: self.subCollectionManager.allMyProductsPublisher.main)
+    
+       // addAllMyProductsSubscriber() // eliminare
+        
         addGenericSubscriber(to: self.subCollectionManager.allMyMenuPublisher.main)
         addGenericSubscriber(to: self.subCollectionManager.allMyReviewsPublisher.main)
-      //  addAllMyProductsSubscriber()
-      //  addAllMyMenusSubscriber()
-       // addAllMyCategoriesSubscriber()
-      //  addAllMyReviewsSubscriber()
- 
+
         // start data train fetch
         fetchAndListenCurrentUserData()
         // vedi Nota 28.08.23
@@ -535,16 +535,15 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
     // 23.10 Gestione del Cambio Status dei Modelli (Al fine di eliminare il binding dalle liste per il funzionamento del cambio status nei menu interattivi )
    
-    func manageCambioStatusModel<M:MyProStatusPack_L1 & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
-        // Modificata 25.11
-        
-        var newModel = model
-        newModel.status = model.status.changeStatusTransition(changeIn: nuovoStatus)
-     
-       // self.updateItemModel(itemModel: newModel)
-        self.updateModelOnSub(itemModel: newModel)
+    func manageCambioStatusModel<M:MyProStatusPack_L1 & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1 & MyProSubCollectionPack>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
 
-    }
+      /*  var newModel = model
+        newModel.statusTransition = nuovoStatus
+
+        self.updateModelOnSub(itemModel: newModel)*/
+        self.logMessage = "[CHECK]_manageCambioStatusModel -OBSOLETO-"
+
+    } // deprecata in Futuro
     
     /// ritorna un array con i piatti contenenti l'ingrediente passato. La presenza dell'ing è controllata fra i principali, i secondari, e i sosituti.
     func allDishContainingIngredient(idIng:String) -> [ProductModel] {
@@ -662,7 +661,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
 
         let filterArray = self.db.allMyIngredients.filter({
             $0.id != idIngredient &&
-            $0.status.checkStatusTransition(check: ingredientStatus)
+            $0.statusTransition == ingredientStatus
             
         })
 
@@ -879,8 +878,9 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         let allProductModel:[ProductModel] = self.modelCollectionFromCollectionID(collectionId: allDishIdCleaned, modelPath: \.db.allMyDish)
         
         let allDishAvaible = allProductModel.filter({
-            $0.status.checkStatusTransition(check: .disponibile) ||
-            $0.status.checkStatusTransition(check: .inPausa)
+            let statusTransition = $0.getStatusTransition(viewModel: self)
+            return statusTransition == .disponibile ||
+            statusTransition == .inPausa
         })
        
         let foodB = allDishAvaible.filter({
@@ -914,7 +914,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         let cleanAllIngreArray = Array(cleanAllIngredient)
         //
         
-        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.db.allMyIngredients).filter({!$0.status.checkStatusTransition(check: .archiviato)})
+        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.db.allMyIngredients).filter({ $0.statusTransition != .archiviato })
         
         //
         
@@ -1583,43 +1583,7 @@ extension AccounterVM {
             }.store(in: &cancellables)
 
     }*/ // deprecato in futuro
-    
-   /* private func addAllMyIngredientsSubscriber() {
-        
-        self.subCollectionManager
-            .allMyIngredientsPublisher
-            .main
-            .sink { completion in
-                //
-            } receiveValue: { [weak self] allIngredients in
-                
-                guard let self,
-                let allIngredients else {
-                    
-                    DispatchQueue.main.async {
-                        self?.db.allMyIngredients = []
-                        self?.isLoading = nil
-                    }
-                    
-                    return }
-                
-                Task {
-                    
-                   /* let joinedIngredients = try await self.ingredientsManager.joinIngredients(from: allIngredients)
-                    print("joinedIngredients.count:\(joinedIngredients.count)")*/
-                    DispatchQueue.main.async {
-                        
-                        self.db.allMyIngredients = allIngredients
-                        self.isLoading = nil
-                        
-                        print("db.allMyIngredients.count:\(self.db.allMyIngredients.count)")
-                    }
-                    
-                }
 
-            }.store(in: &cancellables)
-
-    }*/ // deprecato 26_11_23
     
     private func addGenericSubscriber<Item:MyProStarterPack_L1 & MyProSubCollectionPack & Codable>(to publisher:PassthroughSubject<[Item]?,Error>) where Item.VM == AccounterVM {
         
@@ -1667,6 +1631,25 @@ extension AccounterVM {
       
     }// deprecata in futuro // può servire solo per i menu per evitare accavallamenti
     
+    func updateSingleField(
+        docId:String,
+        sub collectionKey:CloudDataStore.SubCollectionKey,
+        path value:[String:String]) {
+        
+        do {
+            
+            try self.subCollectionManager.setSingleField(
+                docId: docId,
+                sub: collectionKey,
+                path: value)
+            
+        } catch {
+            
+            self.logMessage = ""
+        }
+        
+        
+    }
     
     /// Crea un oggetto nella SubCollection. Manda un alert (opzionale)
     func createModelOnSub<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
@@ -1963,70 +1946,6 @@ extension AccounterVM {
     }
     
 }
-/// save,update and delete Ingredient
-extension AccounterVM {
-    
-   /* func updateIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil) {
-        
-        Task {
-            
-            var ingredient = item
-            ingredient.id = UUID().uuidString // assegniamo un nuovo id per scongiurare che venga salvato nella main con il vecchio già esistente
-            
-            let oldID = item.id
-            // eliminiamo il vecchio riferimento dalla subCollection
-            try await self.subCollectionManager.deleteFromSubCollection(sub: .allMyIngredients, delete: oldID)
-            
-            // sostituire il vecchio ingrediente con quello modificato nei piatti
-            let allDish = self.allDishContainingIngredient(idIng: oldID)
-            
-            try await self.createIngredient(item: ingredient) { id in
-                if let id { ingredient.id = id }
-            }
-
-            //rimpiazziamo il vecchio Id nei dish
-            let rigerateDish = allDish.compactMap({ $0.replaceIngredients(id: oldID, with: ingredient.id)})
-            
-            try await self.subCollectionManager.publishSubCollection(
-                sub: .allMyDish,
-                as: rigerateDish)
-
-            if let refreshPath {
-                
-                self.refreshPath(destinationPath: refreshPath)
-            }
-            
-        } // chiusa task
-    } */// deprecata in futuro
-    
-    /// handle id nel caso in cui questo ingrediente già esisteva nel cloud
-   /* func createIngredient(item:IngredientModel,refreshPath:DestinationPath? = nil,handle:@escaping(_ id:String?) -> Void) async throws {
-        
-       /* Task {
-            
-            var ingredient = item
-            
-            if let id = try await self.ingredientsManager.checkAndPublish(ingredient: item) {
-                ingredient.id = id
-            }
-            
-            try await self.subCollectionManager
-                .setDataSubCollectionSingleDocument(
-                    to: .allMyIngredients,
-                    item: ingredient)
-            
-            if ingredient.id != item.id { handle(ingredient.id) }
-            else { handle(nil) }
-            
-            if let refreshPath {
-                
-                self.refreshPath(destinationPath: refreshPath)
-            }
-            
-        }*/
-    }*/ //deprecata in futuro
-    
-}
 
 extension AccounterVM {
     
@@ -2049,3 +1968,4 @@ extension AccounterVM {
         
     }
 }
+

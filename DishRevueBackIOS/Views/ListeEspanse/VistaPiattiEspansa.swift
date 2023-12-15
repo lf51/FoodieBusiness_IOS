@@ -123,7 +123,7 @@ struct PreCallVistaPiattiEspansa: View {
                     self.showButtonBar = true
                 } else {
                     self.valoreArchiviato = []
-                    self.statusArchiviato = .bozza(.inPausa)
+                    self.statusArchiviato = .bozza//(.inPausa)
                     self.showButtonBar = false
                 }
             
@@ -333,14 +333,23 @@ struct PreCallVistaPiattiEspansa: View {
             // Innesto 01.12.22
             func updateStatus() {
                 
+                self.viewModel.logMessage = "[SVILUPPARE]_updateStatus()"
+                /*
+                
                 guard !currentMenu.tipologia.isDiSistema(),
                       statusArchiviato.checkStatusTransition(check: .disponibile) else { return }
+                      
                 
                 if currentMenu.allDishActive(viewModel: self.viewModel).isEmpty {
-                    currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .inPausa)
+                    self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS MENU"
+                   /* currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .inPausa)*/
                 } else {
-                    currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .disponibile)
+                    self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS MENU"
+                  /*  currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .disponibile)*/
                 }
+                
+                */
+                
             }
            
         }

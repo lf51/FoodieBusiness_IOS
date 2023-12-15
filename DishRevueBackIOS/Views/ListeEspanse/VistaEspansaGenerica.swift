@@ -11,7 +11,7 @@ import MyFoodiePackage
 import MyFilterPackage
 
 
-struct VistaEspansaGenerica<M:MyProToolPack_L1>: View where M.VM == AccounterVM, M.RS == RowSize {
+struct VistaEspansaGenerica<M:/*MyProToolPack_L1*/MyProStatusPack_L1&MyProStarterPack_L0&MyProVisualPack_L0>: View where M.VM == AccounterVM, M.RS == RowSize {
     
     @EnvironmentObject var viewModel:AccounterVM
     

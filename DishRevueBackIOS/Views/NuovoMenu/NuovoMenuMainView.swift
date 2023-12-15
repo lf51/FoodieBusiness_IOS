@@ -287,14 +287,14 @@ struct NuovoMenuMainView: View {
         else {  self.nuovoMenu.status = .completo(.archiviato) } */ // 16.09
       
         guard !self.nuovoMenu.rifDishIn.isEmpty else {
-            self.nuovoMenu.status = .bozza(.inPausa)
+           /* self.nuovoMenu.status = .bozza(.inPausa)*/
             return true
         }
         
-        if self.nuovoMenu.optionalComplete() {
+       /* if self.nuovoMenu.optionalComplete() {
             self.nuovoMenu.status = .completo(.disponibile)
-        } else { self.nuovoMenu.status = .bozza(.disponibile)}
-        
+        } else { self.nuovoMenu.status = .bozza(.disponibile)}*/
+        self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS MENU in CHECK PRELIMINARE"
         // Innesto 16_11_23
         
        return checkNotExistSimilar()

@@ -201,7 +201,8 @@ struct FastImport_MainView: View {
                     let ingredient = {
                         var newIngredient = IngredientModel()
                         newIngredient.intestazione = newSub
-                        newIngredient.status = .bozza(.disponibile) // 07.09 !!!!
+                      /* newIngredient.status = .bozza(.disponibile) */
+                        // 07.09 !!!!
                         return newIngredient
                     }()
 
@@ -217,7 +218,13 @@ struct FastImport_MainView: View {
                 
                 var dish = ProductModel()
                 dish.intestazione = cleanedDishTitle
-                dish.status = .bozza(.disponibile) // 07.09 !!!
+               // dish.statusTransition = .disponibile
+                dish.setStatusTransition(to: .disponibile, viewModel: self.viewModel) // da IMPOSTARE
+                print("=======setStatusTransition for fastImport")
+                
+                
+               /* dish.status = .bozza(.disponibile)*/
+                // 07.09 !!!
               //  dish.ingredientiPrincipaliDEPRECATO = step_5
                 return dish
                 

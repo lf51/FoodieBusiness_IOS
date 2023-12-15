@@ -782,36 +782,27 @@ public final class SubCollectionManager {
                         .delete()
                 
     }
-    
-   /* func setDataSubCollectionAndLibrary<Item:MyProStarterPack_L0 & Codable>(
-        forPropID propertyID:String,
+
+    func setSingleField(
+        docId:String,
         sub collectionKey:CloudDataStore.SubCollectionKey,
-        libraryPath mainCollection:ReferenceWritableKeyPath<CloudDataManager,AnyClass>,
-        as item:Item) throws {
-            
-            
-            Task {
-                
-               // categoriesManager
-                  //  .publishSingleCategoryInSharedLibrary(categoria:item)
-                    
-                
-                
-                try await setDataSubCollectionSingleDocument(
-                    forPropID: propertyID,
-                    sub: collectionKey,
-                    as: item)
-                
-            }
-            
-            
-           
-            
-            
-            
-            
-        } */
-    
+        path value:[String:String]) throws {
+        
+        guard let currentPropertySnap else { return }
+        let propertyID = currentPropertySnap.documentID
+        
+        let subCollection = self.db_base
+                .collection(CollectionKey
+                    .propertyCollection
+                    .rawValue)
+                .document(propertyID)
+                .collection(collectionKey.rawValue)
+        
+      subCollection
+                .document(docId)
+                .setData(value, merge: true)
+
+    }
 
 
 } // close cloudDataManager

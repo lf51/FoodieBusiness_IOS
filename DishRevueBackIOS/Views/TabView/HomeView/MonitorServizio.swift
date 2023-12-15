@@ -117,8 +117,9 @@ struct MonitorServizio: View {
         case .generale:
             
             let allMenuToAnalize = self.viewModel.db.allMyMenu.filter({
-                $0.status.checkStatusTransition(check: .disponibile) ||
-                $0.status.checkStatusTransition(check: .inPausa)
+                let statusTransition = $0.getStatusTransition(viewModel: self.viewModel)
+                return statusTransition == .disponibile ||
+                statusTransition == .inPausa
             })
             
             MonitorServizio_SubLogic(
@@ -667,15 +668,16 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
                 if showMore {
                     Grid(alignment:.leading) {
                         
-                        vbSingleStatusRow(
+                        /*vbSingleStatusRow(
                             rifToCheck: self.ingredientsNeeded,
                             statusCheck: .disponibile,
-                            path: \.db.allMyIngredients)
+                            path: \.db.allMyIngredients)*/
+                        Text("ERROR_CHECK")
                         
-                        vbSingleStatusRow(
+                       /* vbSingleStatusRow(
                             rifToCheck: self.ingredientsNeeded,
                             statusCheck: .inPausa,
-                            path: \.db.allMyIngredients)
+                            path: \.db.allMyIngredients)*/
                         
                     }
                 }
@@ -889,7 +891,7 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
         rifToCheck:[String],
         statusCheck:StatusTransition,
         path:KeyPath<FoodieViewModel,[M]>,
-        label:String? = nil) -> some View {
+        label:String? = nil) -> some View where M.VM == AccounterVM {
         
         let localLabel = label ?? statusCheck.simpleDescription()
             
@@ -1041,10 +1043,11 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     private func csDispoCountAndRif<M:MyProStatusPack_L1&MyProStarterPack_L0>(
         rifToCheck:[String],
         statusCheck:StatusTransition,
-        path:KeyPath<FoodieViewModel,[M]>) -> (count:Int,percentage:String) {
+        path:KeyPath<FoodieViewModel,[M]>) -> (count:Int,percentage:String) where M.VM == AccounterVM {
         
         let active = self.viewModel.modelCollectionFromCollectionID(collectionId: rifToCheck, modelPath: path)
-        let dispo = active.filter({$0.status.checkStatusTransition(check: statusCheck)})
+        let dispo = active.filter({
+            $0.getStatusTransition(viewModel:self.viewModel) == statusCheck})
             
        // let dispoRif = dispo.map({$0.id})
         let totRif = Double(rifToCheck.count)
