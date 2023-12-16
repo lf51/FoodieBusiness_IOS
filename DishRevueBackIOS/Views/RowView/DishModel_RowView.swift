@@ -61,7 +61,7 @@ struct ProductModel_RowView: View {
     let item: ProductModel
     let rowSize:RowSize
     
-    @State private var showDescription:Bool = false
+    @State private var hideDescription:Bool = true
     
     init(item: ProductModel, rowSize: RowSize = .normale()) {
         
@@ -126,13 +126,13 @@ struct ProductModel_RowView: View {
                     
                     vbBadgeRow()
                     
-                    if showDescription {
-                        
-                       vbDescriptionScrollRow()
+                    if hideDescription {
+                        vbIngredientAdress()
+                      
                     }
                     else {
-                        
-                       vbIngredientAdress()
+                        vbDescriptionScrollRow()
+                       
                     }
      
                     vbDieteCompatibili()
@@ -487,14 +487,14 @@ struct ProductModel_RowView: View {
             let describeButton:Color = isNotDescribed ? .gray : .seaTurtle_4
             
             CSButton_image(
-                activationBool: self.showDescription,
+                activationBool: self.hideDescription,
                 frontImage: "arrow.triangle.2.circlepath",
                 imageScale: .medium,
-                backColor: .seaTurtle_2,
-                frontColor: describeButton,
+                backColor: describeButton,
+                frontColor: .seaTurtle_2,
                 rotationDegree: 120) {
                     withAnimation(.linear) {
-                        self.showDescription.toggle()
+                        self.hideDescription.toggle()
                     }
                 }
                 .shadow(color: .gray, radius: 1.0,x:1.5)

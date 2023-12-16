@@ -30,6 +30,7 @@ struct ListaIngredientiView: View {
         
         NavigationStack(path:$viewModel.ingredientListPath) {
             
+            let allModelCount = self.viewModel.db.allMyIngredients.count
            // let container_0 = self.viewModel.ricercaFiltra(containerPath: \.cloudData.allMyIngredients, coreFilter: filterCore)
             let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
             // update 10.07.23
@@ -47,7 +48,7 @@ struct ListaIngredientiView: View {
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
-                title: "I Miei Ingredienti",
+                title: "I Miei Ingredienti (\(allModelCount))",
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per nome e/o allergene",
                 altezzaPopOverSorter: 300,

@@ -26,6 +26,7 @@ struct DishListView: View {
         
         NavigationStack(path:$viewModel.dishListPath) {
             
+            let allModelCount = self.viewModel.db.allMyDish.count
             let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyDish, coreFilter: filterCore)
             
             let generalDisable:Bool = {
@@ -40,7 +41,7 @@ struct DishListView: View {
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
-                title: "I Miei Prodotti",
+                title: "I Miei Prodotti (\(allModelCount))",
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Prodotto e/o Ingrediente",
                 buttonColor: .seaTurtle_3,

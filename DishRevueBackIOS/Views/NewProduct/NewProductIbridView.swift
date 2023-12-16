@@ -635,8 +635,20 @@ struct NewProductIbridView: View {
     
    @ViewBuilder private func manageProdottoFinito() -> some View {
       
-     //  let productArchiviato:ProductModel = self.productArchiviato
-       let sottostante = self.productModel.ingredienteSottostante
+     /*
+      1. Nuovo da Nuovo Prodotto -> !alreadyExist && sottostante != nil
+      2. Modifica da DishList -> alreadyExist && sottostante == nil
+      3. Vedi da Ingredient -> alreadyExist && sottostante == nil
+      4. Crea da Ingrediente -> !alreadyExist && sottostante == nil
+      
+      */
+       let alreadyExist:Bool = {
+         
+           let exist = self.viewModel.isTheModelAlreadyExist(modelID: self.productModel.id, path: \.db.allMyDish)
+         return exist
+       }()
+       
+       //let sottostante = self.productModel.ingredienteSottostante
        
        let currentProduct:ProductModel = {
            var current = self.productModel
@@ -650,39 +662,50 @@ struct NewProductIbridView: View {
            DialogButtonElement(
             label: .saveNew) {
                // productArchiviato.intestazione.isEmpty
-                sottostante != nil
+               // sottostante != nil
+                !alreadyExist
             } action: {
                 
-                if let sottostante {
-                    
+                if let sottostante = self.productModel.ingredienteSottostante {
+                    print("SAVE SOTTOSTANTE:\(sottostante.intestazione)")
                     self.viewModel.createModelOnSub(
                         itemModel: sottostante)
-                    self.viewModel.createModelOnSub(
+                  /* self.viewModel.createModelOnSub(
                         itemModel: currentProduct)
-                    self.salvaECreaPostAction()
+                    self.salvaECreaPostAction()*/
                     
-                } else {
+                }/* else {
                     self.viewModel.logMessage = "[ERRORE]_prodotto non salvato"
-                }
+                }*/
+                
+                self.viewModel.createModelOnSub(
+                    itemModel: currentProduct)
+                self.salvaECreaPostAction()
+                
             }
 
            DialogButtonElement(
             label: .saveEsc) {
                // productArchiviato.intestazione.isEmpty
-                sottostante != nil
+               // sottostante != nil
+                !alreadyExist
             } action: {
                 
-                if let sottostante {
-                    
+                if let sottostante = self.productModel.ingredienteSottostante {
+                    print("SAVE SOTTOSTANTE:\(sottostante.intestazione)")
                     self.viewModel.createModelOnSub(
                         itemModel: sottostante)
                     
-                    self.viewModel.createModelOnSub(
+                   /* self.viewModel.createModelOnSub(
                         itemModel: currentProduct,
-                        refreshPath: self.destinationPath)
-                } else {
+                        refreshPath: self.destinationPath)*/
+                } /*else {
                     self.viewModel.logMessage = "[ERRORE]_prodotto non salvato"
-                }
+                }*/
+                
+                self.viewModel.createModelOnSub(
+                    itemModel: currentProduct,
+                    refreshPath: self.destinationPath)
             }
            
            // trattasi di una modifica al rpdotto. Il sosttostante non è stato toccato
@@ -690,7 +713,8 @@ struct NewProductIbridView: View {
            DialogButtonElement(
             label: .saveModNew) {
                // productArchiviato.intestazione != ""
-                sottostante == nil
+               // sottostante == nil
+                alreadyExist
             } action: {
                 self.viewModel.updateModelOnSub(
                     itemModel: currentProduct)
@@ -700,7 +724,8 @@ struct NewProductIbridView: View {
            DialogButtonElement(
             label: .saveModEsc) {
               //  productArchiviato.intestazione != ""
-                sottostante == nil
+               // sottostante == nil
+                alreadyExist
             } action: {
                 self.viewModel.updateModelOnSub(
                     itemModel: currentProduct,

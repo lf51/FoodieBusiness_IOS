@@ -520,7 +520,10 @@ extension IngredientModel:MyProStatusPack_L02 {
         let colorInternal = self.statusTransition.colorAssociated()
         let dashedColor = self.statusScorte().coloreAssociato()
         
-        let descrizione = "Stato: \(self.fullStatusDescription())\nScorte: \(self.statoScorteDescription())"
+        let form = "Form: \(self.status.simpleDescription())"
+        let stato = "Stato: \(self.statusTransition.simpleDescription())"
+        
+        let descrizione = "\(form)\n\(stato)\nScorte: \(self.statoScorteDescription())"
         
         return (imageInternal,colorInternal,dashedColor,descrizione)
         
@@ -573,6 +576,71 @@ extension IngredientModel:MyProTrashPack_L0 {
             viewModel.updateModelCollection(
                 items: allDishChanged,
                 sub: CloudDataStore.SubCollectionKey.allMyDish)
+        }
+    }
+    
+}
+
+extension IngredientModel {
+    
+    public func getIngredientType(viewModel:AccounterVM) -> IngredientType {
+        
+        guard viewModel.isASubOfReadyProduct(id: self.id) != nil else {
+            return .standard
+        }
+        return .asProduct
+
+    }
+    
+   /* public func isAReadyProduct(viewModel:AccounterVM) -> Bool {
+        
+        viewModel.isASubOfReadyProduct(id: self.id) != nil
+
+    }*/
+    
+    public enum IngredientType:String,Codable {
+        
+        case standard
+        case asProduct
+        
+        public func imageAssociated() -> String {
+            
+            switch self {
+            case .standard:
+               return "leaf"
+           /* case .diSintesi:
+                return "lasso.badge.sparkles"*/
+            case .asProduct:
+                return "takeoutbag.and.cup.and.straw"
+          //  case .limited:
+            //    return "x.circle"
+            }
+            
+        }
+        
+        public func simpleDescription() -> String {
+            
+            switch self {
+            case .standard:
+               return "standard"
+            case .asProduct:
+                return "prodotto pronto"
+           // case .limited:
+             //   return "sottostante composizione"
+            }
+            
+        }
+        
+        public func coloreAssociato() -> Color {
+            
+            switch self {
+            case .standard:
+                return Color.yellow
+            case .asProduct:
+                return Color.gray
+          //  case .limited:
+            //    return Color.clear
+            }
         }
     }
     

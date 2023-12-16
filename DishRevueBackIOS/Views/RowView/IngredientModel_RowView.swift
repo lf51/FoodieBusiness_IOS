@@ -18,6 +18,7 @@ struct IngredientModel_RowView: View {
     @EnvironmentObject var viewModel: AccounterVM
     let item: IngredientModel
     let rowSize:RowSize
+    @State private var hideDescription:Bool = true
     
     var body: some View { vbSwitchLocalRowSize() }
     
@@ -66,7 +67,8 @@ struct IngredientModel_RowView: View {
                 }
                 .padding(.top,5)
  
-                vbOrigineProvenienza()
+          
+                vbDescriptionSwap()
                 
                 //    Spacer()
                 
@@ -89,6 +91,62 @@ struct IngredientModel_RowView: View {
         
     }
     
+    @ViewBuilder private func vbDescriptionSwap() -> some View {
+        
+        HStack {
+            
+            if hideDescription { vbOrigineProvenienza() }
+            else { vbDescriptionScrollRow() }
+            
+            Spacer()
+            
+            let isNotDescrived:Bool = {
+                
+                guard let descrizione = item.descrizione else { return true }
+                return descrizione.isEmpty
+            }()
+            
+            let describeButton:Color = isNotDescrived ? .gray : .seaTurtle_4
+            
+            CSButton_image(
+                activationBool: self.hideDescription,
+                frontImage: "arrow.triangle.2.circlepath",
+                imageScale: .medium,
+                backColor: describeButton,
+                frontColor: .seaTurtle_2,
+                rotationDegree: 120) {
+                    withAnimation(.linear) {
+                        self.hideDescription.toggle()
+                    }
+                }
+                .shadow(color: .gray, radius: 1.0,x:1.5)
+                .csModifier(self.rowSize != .normale(), transform: { image in
+                    image
+                        .hidden()
+                })
+                .disabled(isNotDescrived)
+            
+        }
+    }
+    
+    @ViewBuilder private func vbDescriptionScrollRow() -> some View {
+        
+        HStack(spacing:4) {
+            
+            Image(systemName: "list.bullet.rectangle")
+                .imageScale(.medium)
+                .foregroundStyle(Color.seaTurtle_3)
+            
+            ScrollView(.horizontal,showsIndicators: false) {
+                Text(self.item.descrizione ?? "no description")
+                    .font(.headline)
+                    .italic()
+                    .foregroundStyle(Color.black)
+                    .opacity(0.6)
+            }
+        }
+    }
+    
     @ViewBuilder private func vbDishCountIn() -> some View {
         
         let (dishCount,substitution) = self.item.dishWhereIn(readOnlyVM: self.viewModel)
@@ -96,7 +154,9 @@ struct IngredientModel_RowView: View {
         let isDisponibile = self.item.statusTransition == .disponibile
        /* let isDiTerzi = self.viewModel.isTheModelAlreadyExist(modelID: self.item.id, path: \.db.allMyDish)*/
        // let isDiTerzi = self.viewModel.isASubOfReadyProduct(id: self.item.id) != nil
-        let isDiTerzi = self.item.type == .asProduct
+       // let isDiTerzi = self.item.type == .asProduct
+        let type = self.item.getIngredientType(viewModel: self.viewModel)
+        let isDiTerzi = type == .asProduct
         
         HStack {
             
@@ -127,7 +187,7 @@ struct IngredientModel_RowView: View {
             }
             
             if isDiTerzi {
-                Text(self.item.type.simpleDescription())
+                Text(type.simpleDescription())
                     .italic()
                     .font(.subheadline)
                     .foregroundStyle(Color.seaTurtle_3)
@@ -234,8 +294,10 @@ struct IngredientModel_RowView: View {
             else { return (.title3,.small)}
         }()
         
-        let image = self.item.type.imageAssociated()
-        let color = self.item.type.coloreAssociato()
+        let type = self.item.getIngredientType(viewModel: self.viewModel)
+        
+        let image = type.imageAssociated()
+        let color = type.coloreAssociato()
         
         HStack(alignment:.center,spacing: 3) {
             

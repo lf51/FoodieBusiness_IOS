@@ -670,7 +670,7 @@ extension ProductModel:MyProStatusPack_L1 {
         case .composizione:
             conditionOne = checkOptionalComposizione()
         case .finito:
-            conditionOne = false
+            conditionOne = true
         }
         
        return conditionOne && self.mostraDieteCompatibili
@@ -728,7 +728,7 @@ extension ProductModel:MyProStatusPack_L02 {
         }
         
         
-        let descrizione = "Stato: \(statusDescription) \(transitionDescription)\n\(thirdString)"
+        let descrizione = "Form: \(statusDescription)\nStato: \(transitionDescription)\n\(thirdString)"
         
         return (imageInt,coloreInterno,coloreEsterno,descrizione)
         
@@ -993,35 +993,3 @@ extension ProductModel:MyProVisualPack_L0 {
     }
 }
 
-extension ProductModel {
-    
-    func sintetizzaIngrediente(viewModel:AccounterVM) -> IngredientModel {
-        
-        var ingredient = IngredientModel(.diSintesi)
-        ingredient.id = self.id
-        ingredient.intestazione = self.intestazione
-        ingredient.descrizione = self.descrizione
-        
-        ingredient.allergeni = self.calcolaAllergeniNelPiatto(viewModel: viewModel)
-        ingredient.conservazione = .altro
-        ingredient.origine = .animale
-        ingredient.produzione = self.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.produzione, quality: .biologico) ? .biologico : .noValue
-        ingredient.provenienza = .noValue
-        
-        ingredient.inventario = InventarioScorte()
-         
-        let statusTransition = self.getStatusTransition(viewModel: viewModel)
-        
-        switch statusTransition {
-            
-        case .disponibile: ingredient.inventario?.statusScorte = .inStock
-        case .inPausa: ingredient.inventario?.statusScorte = .esaurito
-        case .archiviato: ingredient.inventario?.statusScorte = .outOfStock
-            
-        }
-        
-        
-        return ingredient
-    }
-    
-}// 15_12_23 Test

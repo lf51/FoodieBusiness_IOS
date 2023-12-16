@@ -277,7 +277,7 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
 @ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProStatusPack_L0&MyProEditingPack_L0&MyProNavigationPack_L0&MyProVMPack_L0>(currentModel:M,viewModel:M.VM, navPath:ReferenceWritableKeyPath<M.VM,NavigationPath>) -> some View {
     
     let generalDisabled = currentModel.disabilitaEditing(viewModel: viewModel)
-    let isBozza = currentModel.status.checkStatusBozza()
+    let isBozza = currentModel.status == .bozza
     let title = isBozza ? "Completa" : "Modifica"
 
     Button {

@@ -43,7 +43,9 @@ struct NuovoIngredienteGeneralView: View {
         
         CSZStackVB(title:self.nuovoIngrediente.intestazione == "" ? "Nuovo Ingrediente" : self.nuovoIngrediente.intestazione, backgroundColorView: backgroundColorView) {
             
-            let asProduct = self.nuovoIngrediente.type == .asProduct
+           // let asProduct = self.nuovoIngrediente.type == .asProduct
+           // let asProduct = self.viewModel.isASubOfReadyProduct(id: self.nuovoIngrediente.id) != nil
+            let asProduct = self.nuovoIngrediente.getIngredientType(viewModel: self.viewModel) == .asProduct
             
             VStack {
                     

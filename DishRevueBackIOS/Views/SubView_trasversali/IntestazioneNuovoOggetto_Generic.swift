@@ -19,9 +19,9 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProStatusPack_L0&/*MyProToolPack_L0&
     let minLenght: Int
     let coloreContainer: Color
     
-    let placeHolderItemName: String
-    let imageLabel: String
-    var imageColor: Color? = nil
+   // let placeHolderItemName: String
+   // let imageLabel: String
+   // var imageColor: Color? = nil
     
     @State private var nuovaStringa: String = ""
     @State private var editNuovaStringa: Bool = false
@@ -33,11 +33,11 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProStatusPack_L0&/*MyProToolPack_L0&
         self.minLenght = minLenght
         self.coloreContainer = coloreContainer
         
-        let wrappedModel = itemModel.wrappedValue
+        //let wrappedModel = itemModel.wrappedValue
         
-        self.placeHolderItemName = wrappedModel.modelStatusDescription()
-        self.imageLabel = wrappedModel.status.imageAssociated()
-        self.imageColor = wrappedModel.status.transitionStateColor()
+       // self.placeHolderItemName = wrappedModel.modelStatusDescription()
+       // self.imageLabel = wrappedModel.status.imageAssociated()
+       // self.imageColor = wrappedModel.status.transitionStateColor()
     }
     
     var body: some View {
@@ -45,9 +45,9 @@ struct IntestazioneNuovoOggetto_Generic<T:MyProStatusPack_L0&/*MyProToolPack_L0&
         VStack(alignment: .leading,spacing: .vStackLabelBodySpacing) {
             
             CSLabel_conVB(
-                placeHolder: placeHolderItemName,
-                imageNameOrEmojy: imageLabel,
-                imageColor: imageColor,
+                placeHolder: "Intestazione" /*placeHolderItemName*/,
+                imageNameOrEmojy: "doc.richtext"/*imageLabel*/,
+                imageColor: nil /*imageColor*/,
                 backgroundColor: .black) {
                     CS_ErrorMarkView(
                         generalErrorCheck: generalErrorCheck,
