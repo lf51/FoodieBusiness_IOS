@@ -168,7 +168,7 @@ import MyFoodiePackage
 import Firebase
 import MyFilterPackage
 
-final class CloudImportGenericViewModel<Item:MyProStarterPack_L0 & Codable>:ObservableObject {
+final class CloudManagerGenericViewModel<Item:MyProStarterPack_L0 & Codable>:ObservableObject {
 
     @Published var cloudContainer:[Item]?
     @Published var selectedContainer:[Item]?
@@ -211,15 +211,18 @@ final class CloudImportGenericViewModel<Item:MyProStarterPack_L0 & Codable>:Obse
                     return
                 }
                 print("[SINK]_addCloudIngredientsSubscriber_thread:\(Thread.current)")
-                if lastSnap != nil {
-                    withAnimation {
-                        self.cloudContainer?.append(contentsOf: items)
+                
+                DispatchQueue.main.async {
+                    if self.lastSnap != nil {
+                        withAnimation {
+                            self.cloudContainer?.append(contentsOf: items)
+                        }
+                    } else {
+                        self.cloudContainer = items
+                        self.queryCount = queryCount
                     }
-                } else {
-                    self.cloudContainer = items
-                    self.queryCount = queryCount
+                    self.lastSnap = queryDoc
                 }
-                self.lastSnap = queryDoc
                 
             }.store(in: &cancellables)
 

@@ -340,7 +340,7 @@ struct NuovoMenuMainView: View {
                     self.menuArchiviato.intestazione == ""
                 } action: {
                     
-                    self.viewModel.createModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: self.nuovoMenu)
                     self.salvaECreaPostAction()
                     
@@ -351,7 +351,7 @@ struct NuovoMenuMainView: View {
                     self.menuArchiviato.intestazione == ""
                 } action: {
                     
-                    self.viewModel.createModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: self.nuovoMenu,
                         refreshPath: self.destinationPath)
                    
@@ -364,7 +364,7 @@ struct NuovoMenuMainView: View {
                     self.menuArchiviato.intestazione != ""
                 } action: {
                     
-                    self.viewModel.updateModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: self.nuovoMenu)
 
                     self.salvaECreaPostAction()// BUG -> deve partire se dall'update non torna un errore - Da sistemare
@@ -376,7 +376,7 @@ struct NuovoMenuMainView: View {
                     self.menuArchiviato.intestazione != ""
                 } action: {
                     
-                    self.viewModel.updateModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: self.nuovoMenu,
                         refreshPath: self.destinationPath)
                    
@@ -395,7 +395,7 @@ struct NuovoMenuMainView: View {
                     var new = self.nuovoMenu
                     new.id = UUID().uuidString
                    
-                    self.viewModel.createModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: new,
                         refreshPath: self.destinationPath)
                    

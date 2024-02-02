@@ -16,19 +16,14 @@ struct NewProductIbridView: View {
    // @Environment(\.openURL) private var openURL
     @EnvironmentObject var viewModel:AccounterVM
 
+    @State private var ingredientAsProduct:IngredientModel?
     @Binding var productModel:ProductModel
-  //  @State private var ingredienteSottostante:IngredientModel?
-    
     let backgroundColorView: Color
-   // var lockIngredientEdit:Bool
-   // let saveDialogType:SaveDialogType
     
     @State private var productArchiviato: ProductModel // per il reset
-   // @State private var sottostanteArchiviato: IngredientModel?
     let destinationPath: DestinationPath
     
     @State private var generalErrorCheck: Bool = false
-    
     @State private var areAllergeniOk: Bool = false
     @State private var wannaOpenPopOver: Bool = false
     @State private var uploadDishFormat:Bool = false
@@ -88,34 +83,16 @@ struct NewProductIbridView: View {
                         let adress = self.productModel.adress
                         let isComposizione = adress == .composizione
                         
-                        if let ingredienteSottostante {
-                            
-                            let sottostante = Binding { ingredienteSottostante } set: { self.productModel.ingredienteSottostante = $0 }
-                            
-                            BoxDescriptionModel_Generic(
-                                itemModel: sottostante,
-                                labelString: adress.boxDescription(),
-                                disabledCondition: wannaOpenPopOver,
-                                generalErrorCheck: isComposizione ? generalErrorCheck : false,
-                                modelField: $modelField)
-                            .focused($modelField, equals: .descrizione)
-                            .opacity(lockEdit ? 0.6 : 1.0)
-                            .disabled(lockEdit)
-                            
-                        } else {
-                            
-                            BoxDescriptionModel_Generic(
-                                itemModel: $productModel,
-                                labelString: adress.boxDescription(),
-                                disabledCondition: wannaOpenPopOver,
-                                generalErrorCheck: false,
-                                modelField: $modelField)
-                            .focused($modelField, equals: .descrizione)
-                            .opacity(lockEdit ? 0.6 : 1.0)
-                            .disabled(lockEdit)
-                            
-                        }
-
+                        BoxDescriptionModel_Generic(
+                            itemModel: $productModel,
+                            labelString: adress.boxDescription(),
+                            disabledCondition: wannaOpenPopOver,
+                            generalErrorCheck: isComposizione ? generalErrorCheck : false,
+                            modelField: $modelField)
+                        .focused($modelField, equals: .descrizione)
+                        .opacity(lockEdit ? 0.6 : 1.0)
+                        .disabled(lockEdit)
+                        
                             CategoriaScrollView_NewDishSub(
                                 newDish: $productModel,
                                 generalErrorCheck: generalErrorCheck)
@@ -184,12 +161,13 @@ struct NewProductIbridView: View {
                         } secondaryAction: {
                             self.resetAction()
                         } preDialogCheck: {
-                            let check = self.checkPreliminare()
-                            if check { return check }
+                            checkPreliminare()
+                           // let check = self.checkPreliminare()
+                           /* if check { return check }
                             else {
                                 logMessage()
                                 return false
-                            }
+                            }*/
                         } primaryDialogAction: {
                             self.vbSaveButtonDialogView()
                         }
@@ -347,11 +325,11 @@ struct NewProductIbridView: View {
         
         let allAllergeni = self.productModel.calcolaAllergeniNelPiatto(viewModel: viewModel).map({$0.intestazione})
         
-        let isBio = self.productModel.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.produzione, quality: .biologico)
+        let isBio = self.productModel.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.values.produzione, quality: .biologico)
         
-        let areProdottiCongelati = self.productModel.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.conservazione, quality: .congelato)
+        let areProdottiCongelati = self.productModel.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.values.conservazione, quality: .congelato)
         
-        let areProdottiSurgelati = self.productModel.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.conservazione, quality: .surgelato)
+        let areProdottiSurgelati = self.productModel.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: \.values.conservazione, quality: .surgelato)
         
         let bio = isBio ? "Bio" : ""
         let congeOrSurge = (areProdottiCongelati || areProdottiSurgelati) ? "\nPotrebbe contenere ingredienti surgelati e/o congelati" : ""
@@ -362,7 +340,7 @@ struct NewProductIbridView: View {
 
     }
     
-    private func checkPreliminare() -> Bool { //Ok
+   /* private func checkPreliminare() -> Bool { //Ok
         
         guard checkIntestazione() else {
             self.modelField = .intestazione
@@ -380,25 +358,153 @@ struct NewProductIbridView: View {
         
         guard checkFormats() else { return false }
         
-        // Ingrediente
-       // guard checkOrigine() else { return false }
-       // guard checkConservazione() else { return false }
-        
-        self.productModel.syncronizeIntestazione()
-       // self.updateStatus()
+        guard checkThrowAdress() else { return false }
+
  
         return true // Nota 18_11_23
         
+    }*/ // deprecato
+    
+    private func checkPreliminare() -> Bool { //Ok
+        
+        do {
+            
+            try checkIntestazione()
+            try checkDescrizione()
+            try checkCategoria()
+            try checkIngredienti()
+            try checkAllergeni()
+            try checkFormats()
+            try checkThrowAdress()
+            return true
+            
+        } catch let error {
+            
+            withAnimation {
+                self.generalErrorCheck = true
+                self.viewModel.logMessage = error.localizedDescription
+            }
+            return false
+        }
+        
+        
+        
+       /* guard checkIntestazione() else {
+            self.modelField = .intestazione
+            return false }*/
+        
+       /* guard checkDescrizione() else {
+            self.modelField = .descrizione
+            return false }*/
+        
+      //  guard checkCategoria() else { return false }
+      
+       /* guard checkIngredienti() else { return false }*/
+       
+       // guard checkAllergeni() else { return false }
+        
+       // guard checkFormats() else { return false }
+        
+      //  guard checkThrowAdress() else { return false }
+
+ 
+       // return true // Nota 18_11_23
+        
     }
     
-    private func logMessage() {
+    /// Necessaria per evitare di procedere in caso di errori nella struttura del Model
+    private func checkThrowAdress() throws /*-> Bool*/ {
+        
+        let percorso = self.productModel.adress
+
+         switch percorso {
+     
+             case .preparazione:
+                 return
+             case .composizione:
+             if self.productModel.ingredienteSottostante == nil {
+                 throw CS_NewModelCheckError.sottostanteNil
+             }
+             return
+             case .finito:
+             if self.productModel.ingredienteSottostante == nil {
+                 throw CS_NewModelCheckError.sottostanteNil
+             }
+             if self.productModel.rifIngredienteSottostante == nil {
+                 throw CS_NewModelCheckError.rifSottostanteNil
+             }
+             
+             try checkIngredientUnicity()
+             return
+             }
+        
+    }
+    
+    private func checkIngredientUnicity() throws {
+        
+        // controlliamo in caso di nuovo prodotto finito che non esista un ingrediente con lo stesso nome. Per il prodotto è già controllato nell'intestazione
+        var ingrediente = try IngredientModel(from: self.productModel)
+        
+        // check id per la modifica di un Prodotto finito
+        
+        if let modelExist = self.viewModel.modelFromId(id: ingrediente.id, modelPath: \.db.allMyIngredients) {
+            // sia per le modifiche sia per il crea prodotto da ingrediente
+            ingrediente.inventario = modelExist.inventario
+            
+        } else {
+            
+            // trattasi di nuovo Prodotto
+            let nameExist = self.viewModel.checkExistingUniqueModelName(model: ingrediente).0
+            
+            if nameExist {
+                throw CS_NewModelCheckError.intestazioneEsistente("<\(ingrediente.intestazione)> esiste già come ingrediente. Per farne un prodotto vendibile è possibile selezionare -Crea Prodotto- nel menu opzioni dell'ingrediente.")
+            }
+            
+        }
+        
+        self.ingredientAsProduct = ingrediente
+        
+       /* if alreadyModelExist {
+            
+            // trattasi di una modifica
+            self.ingredientAsProduct = ingrediente
+            
+        }
+        
+        
+        
+        guard alreadyExist else {
+            // trattasi di nuovo prdotto finito
+            // check nome unico fra gli ingredienti
+            
+            let nameExist = self.viewModel.checkExistingUniqueModelName(model: ingrediente).0
+            
+        }
+        
+        
+        
+        
+        
+        guard !nameExist else {
+            throw CS_NewModelCheckError.intestazioneEsistente("<\(ingrediente.intestazione)> esiste già come ingrediente. Per farne un prodotto vendibile è possibile selezionare -Crea Prodotto- nel menu opzioni dell'ingrediente.")
+        }
+        
+        self.ingredientAsProduct = ingrediente */
+        
+    }
+    
+    // monkey 427CBD7D-5732-4786-8AF4-33A13BE56DA1
+    // asProduct DE084E9D-4A9A-445F-AD29-B598C39667EC
+    
+    
+   /* private func logMessage() {
         
         self.generalErrorCheck = true
         
         withAnimation {
             self.viewModel.logMessage = "[ERRORE]_Form Incompleto."
         }
-    }
+    }*/
     
    /* private func updateStatus() {
         // Probabile bug. Un prodotto in pausa che viene modificato viene riportato su disponibile
@@ -418,52 +524,73 @@ struct NewProductIbridView: View {
         self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS PRODOTTO FINITO"
     }*/ // depercata
     
-    private func checkDescrizione() -> Bool {
+    private func checkDescrizione() throws /*-> Bool*/ {
         
-        self.productModel.isDescriptionOk()
+        if !self.productModel.isDescriptionOk() {
+            self.modelField = .descrizione
+            throw CS_NewModelCheckError.descrizioneNonValda
+        }
         
     }
     
-    private func checkAllergeni() -> Bool {
+    private func checkAllergeni() throws /*-> Bool*/ {
 
-        return self.areAllergeniOk
+        if !self.areAllergeniOk {
+            throw CS_NewModelCheckError.listaAllergeniNonValidata
+        }
     }
     
-    private func checkCategoria() -> Bool {
+    private func checkCategoria() throws /*-> Bool*/ {
 
-        return !self.productModel.categoriaMenu.isEmpty
+        if self.productModel.categoriaMenu.isEmpty {
+            throw CS_NewModelCheckError.categoriaMancante
+        }
     }
     
-    private func checkIngredienti() -> Bool {
+    private func checkIngredienti() throws /*-> Bool*/ {
         
-        self.productModel.checkCompilazioneIngredienti()
+        if !self.productModel.checkCompilazioneIngredienti() {
+            
+            throw CS_NewModelCheckError.erroreCompilazioneIngredienti
+        }
         
     }
     
-    private func checkIntestazione() -> Bool {
+    private func checkIntestazione() throws /*-> Bool*/ {
     
         let intestazione = self.productModel.intestazione
         
-        return !intestazione.isEmpty
+        guard !intestazione.isEmpty else {
+            
+            self.modelField = .intestazione
+            throw CS_NewModelCheckError.intestazioneMancante
+        }
+        
+       // return true
     }
     
-    private func checkFormats() -> Bool {
+    private func checkFormats() throws /* -> Bool*/ {
          
         guard self.productModel.pricingPiatto.count > 1 else {
             
             let price = self.productModel.pricingPiatto[0].price
             
-            return csCheckDouble(testo: price)
+            if !csCheckDouble(testo: price) { throw CS_NewModelCheckError.formatPriceNotValid }
+            return
             
         }
         
         for format in self.productModel.pricingPiatto {
             
-            if !csCheckStringa(testo: format.label, minLenght: 3) { return false }
-            else if !csCheckDouble(testo: format.price) { return false }
+            if !csCheckStringa(testo: format.label, minLenght: 3) {
+                throw CS_NewModelCheckError.formatPriceNotValid
+                 }
+            else if !csCheckDouble(testo: format.price) {
+                throw CS_NewModelCheckError.formatPriceNotValid
+            }
             
             }
-        return true
+       // return true
       }
     
     // ViewBuilder
@@ -479,24 +606,30 @@ struct NewProductIbridView: View {
             case .composizione:
                 manageComposizione()
             case .finito:
-                manageProdottoFinito()
+            
+            if let ingredientAsProduct { manageProdottoFinito(asProduct: ingredientAsProduct) }
+                
+           // buildIngredientFromProduct()
             }
 }
     
    @ViewBuilder private func managePreparazione() -> some View {
         
-        let productArchiviato = self.productArchiviato
-        var currentProduct = self.productModel
+       let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: self.productModel.id, path: \.db.allMyDish)
+       
+       let productArchiviato = self.productArchiviato.intestazione
+       var currentProduct = self.productModel
        
     csBuilderDialogButton {
         
         // nuova Preparazione
         DialogButtonElement(
             label: .saveNew) {
-                productArchiviato.intestazione.isEmpty
+                !alreadyExist
+               // productArchiviato.intestazione.isEmpty
             } action: {
                 
-                self.viewModel.createModelOnSub(
+                self.viewModel.createOrUpdateModelOnSub(
                     itemModel: self.productModel)
                 
                 self.salvaECreaPostAction()
@@ -504,9 +637,10 @@ struct NewProductIbridView: View {
         
         DialogButtonElement(
             label: .saveEsc) {
-                productArchiviato.intestazione.isEmpty
+                !alreadyExist
+               // productArchiviato.intestazione.isEmpty
             } action: {
-                self.viewModel.createModelOnSub(
+                self.viewModel.createOrUpdateModelOnSub(
                     itemModel: self.productModel,
                     refreshPath: self.destinationPath)
             }
@@ -515,35 +649,37 @@ struct NewProductIbridView: View {
         
         DialogButtonElement(
             label: .saveModEsc) {
-                !productArchiviato.intestazione.isEmpty
+                //!productArchiviato.intestazione.isEmpty
+                alreadyExist
                 
             } action: {
-                self.viewModel.updateModelOnSub(
+                self.viewModel.createOrUpdateModelOnSub(
                     itemModel: self.productModel,
                     refreshPath: self.destinationPath)
             }
         
-        DialogButtonElement(
+       /* DialogButtonElement(
             label: .saveModNew) {
-                !productArchiviato.intestazione.isEmpty
+               // !productArchiviato.intestazione.isEmpty
+                alreadyExist
             } action: {
-                self.viewModel.updateModelOnSub(
+                self.viewModel.createOrUpdateModelOnSub(
                     itemModel: self.productModel)
                 self.salvaECreaPostAction()
-            }
+            } */
         
         // trattasi di modifica che permette il salvataggio come nuovo prodotto
         
         DialogButtonElement(
             label: .saveAsNew,
             extraLabel: "Prodotto") {
-                productArchiviato.intestazione != "" &&
-                currentProduct.intestazione != productArchiviato.intestazione
+                alreadyExist &&
+                currentProduct.intestazione != productArchiviato
             } action: {
                 
                 currentProduct.updateModelID()
                 
-                self.viewModel.createModelOnSub(
+                self.viewModel.createOrUpdateModelOnSub(
                     itemModel: currentProduct,
                     refreshPath: self.destinationPath)
             }
@@ -555,8 +691,10 @@ struct NewProductIbridView: View {
     
    @ViewBuilder private func manageComposizione() -> some View {
         
+       let alreadyExist = self.viewModel.isTheModelAlreadyExist(modelID: self.productModel.id, path: \.db.allMyDish)
+       
        var currentProduct:ProductModel = self.productModel
-       let productArchiviato:ProductModel = self.productArchiviato
+       let productArchiviato:String = self.productArchiviato.intestazione
         
        let customEncoder:Firestore.Encoder = {
             let encoder = Firestore.Encoder()
@@ -570,9 +708,10 @@ struct NewProductIbridView: View {
            
            DialogButtonElement(
                label: .saveNew) {
-                   productArchiviato.intestazione.isEmpty
+                   !alreadyExist
+                  // productArchiviato.intestazione.isEmpty
                } action: {
-                   self.viewModel.createModelOnSub(
+                   self.viewModel.createOrUpdateModelOnSub(
                        itemModel: currentProduct,
                        encoder: customEncoder)
                    
@@ -581,9 +720,10 @@ struct NewProductIbridView: View {
            
            DialogButtonElement(
                label: .saveEsc) {
-                   productArchiviato.intestazione.isEmpty
+                   !alreadyExist
+                   //productArchiviato.intestazione.isEmpty
                } action: {
-                   self.viewModel.createModelOnSub(
+                   self.viewModel.createOrUpdateModelOnSub(
                        itemModel: currentProduct,
                        refreshPath: self.destinationPath,
                        encoder: customEncoder)
@@ -591,21 +731,23 @@ struct NewProductIbridView: View {
            
            // modifica esistente
            
-           DialogButtonElement(
+         /*  DialogButtonElement(
                label: .saveModNew) {
-                   !productArchiviato.intestazione.isEmpty
+                   alreadyExist
+                   //!productArchiviato.intestazione.isEmpty
                } action: {
-                   self.viewModel.updateModelOnSub(
+                   self.viewModel.createOrUpdateModelOnSub(
                        itemModel: currentProduct,
                        encoder: customEncoder)
                    self.salvaECreaPostAction()
-               }
+               } */
            
            DialogButtonElement(
                label: .saveModEsc) {
-                   !productArchiviato.intestazione.isEmpty
+                   alreadyExist
+                   //!productArchiviato.intestazione.isEmpty
                } action: {
-                   self.viewModel.updateModelOnSub(
+                   self.viewModel.createOrUpdateModelOnSub(
                        itemModel: currentProduct,
                        refreshPath: self.destinationPath,
                        encoder: customEncoder)
@@ -617,13 +759,15 @@ struct NewProductIbridView: View {
            DialogButtonElement(
                label: .saveAsNew,
                extraLabel: "Prodotto") {
-                   !productArchiviato.intestazione.isEmpty &&
-                   productArchiviato.intestazione != currentProduct.intestazione
+                   
+                   alreadyExist && productArchiviato != currentProduct.intestazione
+                   /*!productArchiviato.intestazione.isEmpty &&
+                   productArchiviato.intestazione != currentProduct.intestazione*/
                } action: {
                    
                    currentProduct.updateModelID()
                    
-                   self.viewModel.createModelOnSub(
+                   self.viewModel.createOrUpdateModelOnSub(
                        itemModel: currentProduct,
                        refreshPath: self.destinationPath,
                        encoder: customEncoder)
@@ -633,103 +777,91 @@ struct NewProductIbridView: View {
 
     }
     
-   @ViewBuilder private func manageProdottoFinito() -> some View {
-      
-     /*
-      1. Nuovo da Nuovo Prodotto -> !alreadyExist && sottostante != nil
-      2. Modifica da DishList -> alreadyExist && sottostante == nil
-      3. Vedi da Ingredient -> alreadyExist && sottostante == nil
-      4. Crea da Ingrediente -> !alreadyExist && sottostante == nil
-      
-      */
-       let alreadyExist:Bool = {
-         
-           let exist = self.viewModel.isTheModelAlreadyExist(modelID: self.productModel.id, path: \.db.allMyDish)
-         return exist
-       }()
+    @ViewBuilder private func manageProdottoFinito(asProduct:IngredientModel) -> some View {
+     
+        let productExist = self.viewModel.isTheModelAlreadyExist(modelID: self.productModel.id, path: \.db.allMyDish)
        
-       //let sottostante = self.productModel.ingredienteSottostante
-       
-       let currentProduct:ProductModel = {
-           var current = self.productModel
-           current.ingredienteSottostante = nil
-           return current
-       }()
+        let modMessage:(String,String) = {
+            
+            let title = "Attenzione"
+            let message = "Le modifiche riguarderanno sia il prodotto che l'ingrediente collegato"
+            return (title,message)
+        }()
+        
+        let newMessage:(String,String)? = {
+            
+            let rifExist = self.viewModel.isTheModelAlreadyExist(modelID: asProduct.id, path: \.db.allMyIngredients)
+            
+            if rifExist { return nil }
+            else {
+                // nuovo product// nuovo ingredient
+                let title = "Attenzione"
+                let message = "Saranno creati due oggetti collegati, un prodotto vendibile nei menu, e un ingrediente utilizzabile nelle preparazioni."
+                return (title,message)
+            }
+            
+        }()
+        
+        let customEncoder:Firestore.Encoder = {
+             let encoder = Firestore.Encoder()
+             encoder.userInfo[ProductModel.codingInfo] = MyCodingCase.inbound
+             return encoder
+         }()
 
        csBuilderDialogButton {
            // Salva come nuovo non abilitato
            // nuovo pF
            DialogButtonElement(
             label: .saveNew) {
-               // productArchiviato.intestazione.isEmpty
-               // sottostante != nil
-                !alreadyExist
+                !productExist && (newMessage != nil)
+              // !alreadyExist
             } action: {
                 
-                if let sottostante = self.productModel.ingredienteSottostante {
-                    print("SAVE SOTTOSTANTE:\(sottostante.intestazione)")
-                    self.viewModel.createModelOnSub(
-                        itemModel: sottostante)
-                  /* self.viewModel.createModelOnSub(
-                        itemModel: currentProduct)
-                    self.salvaECreaPostAction()*/
-                    
-                }/* else {
-                    self.viewModel.logMessage = "[ERRORE]_prodotto non salvato"
-                }*/
-                
-                self.viewModel.createModelOnSub(
-                    itemModel: currentProduct)
+                self.viewModel.createOrUpdateModelOnSub(
+                    itemModel: asProduct,
+                    alertMessagge: newMessage,
+                    encoder: customEncoder)
                 self.salvaECreaPostAction()
-                
             }
 
            DialogButtonElement(
             label: .saveEsc) {
-               // productArchiviato.intestazione.isEmpty
-               // sottostante != nil
-                !alreadyExist
+               !productExist
+               // !alreadyExist
             } action: {
                 
-                if let sottostante = self.productModel.ingredienteSottostante {
-                    print("SAVE SOTTOSTANTE:\(sottostante.intestazione)")
-                    self.viewModel.createModelOnSub(
-                        itemModel: sottostante)
-                    
-                   /* self.viewModel.createModelOnSub(
-                        itemModel: currentProduct,
-                        refreshPath: self.destinationPath)*/
-                } /*else {
-                    self.viewModel.logMessage = "[ERRORE]_prodotto non salvato"
-                }*/
-                
-                self.viewModel.createModelOnSub(
-                    itemModel: currentProduct,
-                    refreshPath: self.destinationPath)
+                self.viewModel.createOrUpdateModelOnSub(
+                    itemModel: asProduct,
+                    alertMessagge: newMessage,
+                    refreshPath: self.destinationPath,
+                    encoder: customEncoder)
             }
            
-           // trattasi di una modifica al rpdotto. Il sosttostante non è stato toccato
-           
-           DialogButtonElement(
+          /* DialogButtonElement(
             label: .saveModNew) {
                // productArchiviato.intestazione != ""
                // sottostante == nil
-                alreadyExist
+               // alreadyExist
+                productExist
             } action: {
-                self.viewModel.updateModelOnSub(
-                    itemModel: currentProduct)
+                self.viewModel.createOrUpdateModelOnSub(
+                    itemModel: asProduct,
+                    alertMessagge: modMessage)
                 self.salvaECreaPostAction()
-            }
+            } */
 
            DialogButtonElement(
             label: .saveModEsc) {
               //  productArchiviato.intestazione != ""
                // sottostante == nil
-                alreadyExist
+               // alreadyExist
+                productExist
             } action: {
-                self.viewModel.updateModelOnSub(
-                    itemModel: currentProduct,
-                    refreshPath: self.destinationPath)
+                self.viewModel.createOrUpdateModelOnSub(
+                    itemModel: asProduct,
+                    alertMessagge: modMessage,
+                    refreshPath: self.destinationPath,
+                    encoder: customEncoder)
             }
 
        }// chiusa result builder

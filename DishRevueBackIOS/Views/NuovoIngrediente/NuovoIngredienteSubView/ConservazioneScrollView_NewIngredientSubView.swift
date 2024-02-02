@@ -11,7 +11,7 @@ import MyPackView_L0
 
 struct ConservazioneScrollView_NewIngredientSubView: View {
     
-    @Binding var nuovoIngrediente: IngredientModel
+    @Binding var nuovoIngrediente: IngredientSubModel
     let generalErrorCheck: Bool
     
   //  @Binding var isConservazioneOk: Bool

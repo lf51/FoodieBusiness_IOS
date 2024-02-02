@@ -44,14 +44,14 @@ struct IngredientModel_SmallRowView: View {
                 
                     vbIntestazioneIngrediente(itemIsModel: itemIsModel)
                 
-                    vbAllergeneScrollRowView(listaAllergeni: self.currentModel.allergeni)
+                vbAllergeneScrollRowView(listaAllergeni: self.currentModel.values.allergeni)
                     .overlay(alignment: .trailing) {
                         
                         HStack(spacing:4) {
                             
                           //  if self.currentModel.conservazione != .altro {
                                 
-                                csVbSwitchImageText(string: self.currentModel.conservazione.imageAssociated(), size: .large)
+                                csVbSwitchImageText(string: self.currentModel.values.conservazione.imageAssociated(), size: .large)
                                    .padding(2.0)
                                    .background(
                                         Color.seaTurtle_2
@@ -130,7 +130,7 @@ struct IngredientModel_SmallRowView: View {
                 .foregroundStyle(Color.white)
                 .overlay(alignment:.topTrailing) {
                     
-                    if self.currentModel.produzione == .biologico {
+                    if self.currentModel.values.produzione == .biologico {
                         
                         Text("Bio")
                             .font(.system(.caption2, design: .monospaced, weight: .black))

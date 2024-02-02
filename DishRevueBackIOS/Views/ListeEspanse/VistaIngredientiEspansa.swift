@@ -277,7 +277,7 @@ struct VistaIngredientiEspansa_Selectable: View {
                     allCases: OrigineIngrediente.allCases,
                     filterProperty: $filterCore.filterProperties.origineING,
                     selectionColor: Color.brown) { value in
-                        container.filter({$0.origine == value}).count
+                        container.filter({$0.values.origine == value}).count
                     }
  
         }

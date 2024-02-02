@@ -13,7 +13,7 @@ import Combine
 struct CloudImportCategoriesView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-    @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<CategoriaMenu>()
+    @StateObject private var importVM:CloudManagerGenericViewModel = CloudManagerGenericViewModel<CategoriaMenu>()
         
     private(set) var categoriesManager:CategoriesManager = CategoriesManager()
     @State private var searchLetter:String = ""

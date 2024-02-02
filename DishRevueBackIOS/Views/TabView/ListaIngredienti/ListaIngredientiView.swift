@@ -75,43 +75,40 @@ struct ListaIngredientiView: View {
                 }, elementView: { ingredient in
                     
                     let navigationPath = \AccounterVM.ingredientListPath
-                    
-                    let isAReadyProduct:ProductModel? = {
+                    let isReady = ingredient.ingredientType == .asProduct
+                   /* let isAReadyProduct:ProductModel? = {
                         if let id = viewModel.isASubOfReadyProduct(id: ingredient.id) {
                            return viewModel.modelFromId(id:id, modelPath: \.db.allMyDish)
                         } else {
                             return nil
                         }
                         
-                    }()
+                    }() */
+                    
+                  
                     
                     GenericItemModel_RowViewMask(model: ingredient) {
                         
-                        Group {
+                     //   Group {
                             
                             ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath)
 
-                            vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: navigationPath)
-                        
-                            vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                      //  if ingredient.ingredientType == .standard {
                             
-                        }//.disabled(isAReadyProduct != nil)
+                        Group {
+                            
+                            vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: navigationPath)
+                     //  }
+                            vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                        }
+                        .csModifier(isReady) { $0.hidden() }
+                            
+                            vbReadyProdutcOption(ingredient: ingredient)
+                        
+                       // }//.disabled(isAReadyProduct != nil)
                         
                         // Da ViewBuildizzare
-                        if let isAReadyProduct {
-                            Button {
-                                self.viewModel.addToThePath(destinationPath: .ingredientList, destinationView: .piatto(isAReadyProduct))
-                            } label: {
-                                Text("Vedi Prodotto")
-                            }
-
-                        } else {
-                            Button {
-                                self.viewModel.addToThePath(destinationPath: .ingredientList, destinationView: .piatto(ProductModel(from: ingredient)))
-                            } label: {
-                                Text("Crea Prodotto")
-                            }
-                        }
+                    
                         
                        
                     }
@@ -133,13 +130,104 @@ struct ListaIngredientiView: View {
             
             self.mapTree = MapTree(
                 mapProperties: OrigineIngrediente.allCases,
-                kpPropertyInObject: \IngredientModel.origine.id,
+                kpPropertyInObject: \IngredientModel.values.origine.id,
                 labelColor: .seaTurtle_3)
             
         } else {
             
             self.mapTree = nil
         }
+    }
+    
+    @ViewBuilder private func vbReadyProdutcOption(ingredient:IngredientModel) -> some View {
+        
+        let disable = ingredient.statusTransition == .archiviato
+        let isAReadyProduct:ProductModel? = {
+            
+            if let asProduct = ingredient.asProduct {
+                
+                let product = viewModel.modelFromId(id: asProduct.id, modelPath: \.db.allMyDish)
+                return product
+                
+            } else { return nil }
+
+         }()
+        
+        if let isAReadyProduct {
+            
+            Button {
+                self.viewModel.addToThePath(destinationPath: .ingredientList, destinationView: .piatto(isAReadyProduct))
+            } label: {
+                HStack {
+                    Text("Modifica")
+                    Image(systemName: "square.and.pencil")
+                }
+            }.disabled(disable)
+            
+            Menu {
+            
+                Button(role:.destructive) {
+                    
+                    removeTask(for: ingredient.id)
+                    
+                  /*  let key = IngredientModel.CodingKeys.asProduct.rawValue
+                    let value:String? = nil
+                    let path = [key:value as Any]
+                    
+                    self.viewModel.updateSingleField(
+                        docId: ingredient.id,
+                        sub: .allMyIngredients,
+                        path: path) */
+                    
+                } label: {
+                    HStack {
+                        Text("Rimuovi Prodotto")
+                        Image(systemName: "trash")
+                    }
+                }
+                
+                vbMenuInterattivoModuloTrash(currentModel: ingredient, viewModel: viewModel)
+                
+            } label: {
+                
+                HStack {
+                    Text(" Trash Options")
+                    Image(systemName: "trash.slash")
+                }
+            }
+
+        } else {
+            
+            Button {
+                
+                let product = ProductModel(from: ingredient)
+                self.viewModel.addToThePath(destinationPath: .ingredientList, destinationView: .piatto(product))
+            } label: {
+                HStack {
+                    Text("Crea Prodotto")
+                    Image(systemName: "fork.knife.circle")
+                }
+            }.disabled(disable)
+        }
+        
+    }
+    
+    private func removeTask(for ingredientId:String) {
+        
+        Task {
+            
+            let key = IngredientModel.CodingKeys.asProduct.rawValue
+            let value:String? = nil
+            let path = [key:value as Any]
+            
+           try await self.viewModel.updateSingleField(
+                docId: ingredientId,
+                sub: .allMyIngredients,
+                path: path)
+            
+            
+        }
+        
     }
     
     @ViewBuilder private func vbTrailing() -> some View {
@@ -198,7 +286,7 @@ struct ListaIngredientiView: View {
             selectionColor: Color.gray,
             imageOrEmoji: "globe.americas",
             label: "Provenienza") { value in
-                container.filter({$0.provenienza == value}).count
+                container.filter({$0.values.provenienza == value}).count
             }
         
         MyFilterRow(
@@ -207,7 +295,7 @@ struct ListaIngredientiView: View {
             selectionColor: Color.green,
             imageOrEmoji: "sun.min.fill",
             label: "Metodo di Produzione") { value in
-                container.filter({$0.produzione == value}).count
+                container.filter({$0.values.produzione == value}).count
             }
         
         MyFilterRow(
@@ -216,7 +304,7 @@ struct ListaIngredientiView: View {
             selectionColor: Color.cyan,
             imageOrEmoji: "thermometer.snowflake",
             label: "Metodo di Conservazione") { value in
-                container.filter({$0.conservazione == value}).count
+                container.filter({$0.values.conservazione == value}).count
             }
         
         MyFilterRow(
@@ -225,7 +313,7 @@ struct ListaIngredientiView: View {
             selectionColor: Color.brown,
             imageOrEmoji: "leaf",
             label: "Origine") { value in
-                container.filter({$0.origine == value}).count
+                container.filter({$0.values.origine == value}).count
             }
         
         MyFilterRow(
@@ -237,7 +325,7 @@ struct ListaIngredientiView: View {
                // container.filter({$0.allergeni.contains(value)}).count
                 container.filter({
                     
-                    if let allergens = $0.allergeni {
+                    if let allergens = $0.values.allergeni {
                         return allergens.contains(value)
                     } else { return false }
                 }).count

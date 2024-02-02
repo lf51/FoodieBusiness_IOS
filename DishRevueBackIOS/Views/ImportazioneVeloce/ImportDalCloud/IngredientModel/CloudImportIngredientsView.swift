@@ -15,7 +15,7 @@ struct CloudImportIngredientsView: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     private(set) var ingredientsManager:IngredientManager = IngredientManager()
-    @StateObject private var importVM:CloudImportGenericViewModel = CloudImportGenericViewModel<IngredientModel>()
+    @StateObject private var importVM:CloudManagerGenericViewModel = CloudManagerGenericViewModel<IngredientModel>()
 
     @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
     @State private var openFilter:Bool = false

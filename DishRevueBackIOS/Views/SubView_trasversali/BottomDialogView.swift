@@ -73,7 +73,7 @@ struct BottomDialogView<Content:View>: View {
         .confirmationDialog(
             description().estesa,
                 isPresented: $showDialog,
-                titleVisibility: .visible) { primaryDialogAction() }
+            titleVisibility: .visible) { primaryDialogAction() }
         
     }
  

@@ -200,8 +200,8 @@ struct FastImport_CorpoScheda:View {
         
         for ingredient in temporaryModel.ingredients {
             
-            let origineOk = ingredient.origine != .defaultValue
-            let conservazioneOk = ingredient.conservazione != .defaultValue
+            let origineOk = ingredient.values.origine != .defaultValue
+            let conservazioneOk = ingredient.values.conservazione != .defaultValue
 
             if !origineOk || !conservazioneOk  { return false }
                 

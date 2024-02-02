@@ -396,6 +396,8 @@ public final class SubCollectionManager {
     var modified = PassthroughSubject<String?,Error>()
     var removed = PassthroughSubject<String?,Error>()
     
+   // var bolleAcquistoPublisher:PassthroughSubject<[BollaAcquisto]?, Error>?
+    
     func retrieveCloudData() {
         
         print("[CALL]_retrieveCloudData_thread:\(Thread.current)")
@@ -412,11 +414,18 @@ public final class SubCollectionManager {
                 type: CategoriaMenu.self,
                 syncroWith: \.allMyCategoriesPublisher)
 
+        let asProductDecoder:Firestore.Decoder = {
+            let decoder = Firestore.Decoder()
+            decoder.userInfo[ProductModel.codingInfo] = MyCodingCase.inbound
+            return decoder
+        }()
+        
         listenAndPublishSubCollection(
              from: mainRef,
              for: .allMyIngredients,
              type: IngredientModel.self,
-             syncroWith: \.allMyIngredientsPublisher)
+             syncroWith: \.allMyIngredientsPublisher,
+             throw: asProductDecoder)
         
         let customDecoder:Firestore.Decoder = {
             let decoder = Firestore.Decoder()
@@ -640,11 +649,15 @@ public final class SubCollectionManager {
      func publishSubCollection<Item:MyProStarterPack_L0 & Codable>(
         sub collectionKey:CloudDataStore.SubCollectionKey,
         as items:[Item],
+        merge:Bool = true,
         encoder:Firestore.Encoder = Firestore.Encoder()) async throws {
-        
+        /*
+         31_04_24 Abbiamo dato dinamicità al Merge, poichè nel salvataggio dei sostituti temporanei, quando rimuovevamo un sostituto in un piatto dove l'elenco off contenesse più di una key-value pair, il merge true non faceva operazione. 
+         */
         guard let currentPropertySnap else {
             throw CS_FirebaseError.invalidPropertySnap
             }
+            
         let propertyID = currentPropertySnap.documentID
             
         let batch = self.db_base.batch()
@@ -660,7 +673,7 @@ public final class SubCollectionManager {
               try batch.setData(
                 from: element,
                 forDocument: ref,
-                merge: true,
+                merge: merge,
                 encoder: encoder)
             
         }
@@ -740,7 +753,7 @@ public final class SubCollectionManager {
 
     }
     
-    func deleteDataFromSubCollection(
+   /* func deleteDataFromSubCollection(
         forPropID propertyID:String,
         sub collectionKey:CloudDataStore.SubCollectionKey,
         delete itemsId:[String]) async throws {
@@ -761,16 +774,19 @@ public final class SubCollectionManager {
             }
                 
         
-    }
+    }*/ // deprecata 30_12_23
     
     func deleteFromSubCollection(
         sub collectionKey:CloudDataStore.SubCollectionKey,
         delete itemId:String) async throws {
         
-       guard let currentPropertySnap else { return }
+       guard let currentPropertySnap else {
+           
+           throw CS_FirebaseError.invalidPropertySnap }
+            
        let propertyID = currentPropertySnap.documentID
             
-        let subCollection = self.db_base
+       let subCollection = self.db_base
                 .collection(CollectionKey
                     .propertyCollection
                     .rawValue)
@@ -782,8 +798,31 @@ public final class SubCollectionManager {
                         .delete()
                 
     }
-
+    
     func setSingleField(
+        docId:String,
+        sub collectionKey:CloudDataStore.SubCollectionKey,
+        path value:[String:Any]) throws {
+        
+            guard let currentPropertySnap else {
+                throw CS_FirebaseError.invalidPropertySnap }
+            
+        let propertyID = currentPropertySnap.documentID
+        
+        let subCollection = self.db_base
+                .collection(CollectionKey
+                    .propertyCollection
+                    .rawValue)
+                .document(propertyID)
+                .collection(collectionKey.rawValue)
+        
+      subCollection
+                .document(docId)
+                .setData(value, merge: true)
+
+    }
+
+   /* func setSingleField(
         docId:String,
         sub collectionKey:CloudDataStore.SubCollectionKey,
         path value:[String:String]) throws {
@@ -802,10 +841,110 @@ public final class SubCollectionManager {
                 .document(docId)
                 .setData(value, merge: true)
 
-    }
+    }*/ // deprecata in Futuro
 
 
 } // close cloudDataManager
+/// Gestione Statica delle subCollection
+extension SubCollectionManager {
+    
+    func subCollectionCount(sub collectionKey:CloudDataStore.SubCollectionKey) async throws -> Int {
+        
+        guard let currentPropertySnap else {
+            
+            throw CS_FirebaseError.invalidPropertySnap }
+             
+        let propertyID = currentPropertySnap.documentID
+        
+        let subCollection = self.db_base
+                 .collection(CollectionKey
+                     .propertyCollection
+                     .rawValue)
+                 .document(propertyID)
+                 .collection(collectionKey.rawValue)
+        
+        let snap = try await subCollection.count.getAggregation(source: .server)
+        
+        return Int(truncating: snap.count)
+    }
+    
+    func queryCount(query:Query) async throws -> Int {
+        
+        let snap = try await query.count.getAggregation(source: .server)
+        return Int(truncating: snap.count)
+    }
+    
+    func fetchStaticFromSubCollection<Item:MyProStarterPack_L0 & Decodable>(
+        sub collectionKey:CloudDataStore.SubCollectionKey,
+        field:String,
+        value:String,
+        publisher:PassthroughSubject<[Item]?,Error>,
+        decoder:Firestore.Decoder = Firestore.Decoder()) throws {
+    
+        guard let currentPropertySnap else {
+            
+            throw CS_FirebaseError.invalidPropertySnap }
+             
+        let propertyID = currentPropertySnap.documentID
+       // let publishTo = publisher
+            
+        let subCollection = self.db_base
+                 .collection(CollectionKey
+                     .propertyCollection
+                     .rawValue)
+                 .document(propertyID)
+                 .collection(collectionKey.rawValue)
+
+        let currentyQuery = subCollection
+           .whereField(field, isEqualTo: value)
+       
+        Task {
+            
+            let count = try await queryCount(query: currentyQuery)
+            
+            guard count > 0 else {
+                print("[GUARD]_countQuery is:\(count)")
+                throw CS_FirebaseError.queryCountZero
+               // publishTo.send(nil)
+               // return
+            }
+            
+           try await executivefetchStaticFromSubCollection(lastQuery:currentyQuery,queryCount: count,publisher: publisher,decoder: decoder)
+            
+        }
+        
+    }
+    
+   private func executivefetchStaticFromSubCollection<Item:MyProStarterPack_L0 & Decodable>(
+    lastQuery:Query,
+    queryCount:Int?,
+    publisher:PassthroughSubject<[Item]?,Error>,
+    decoder:Firestore.Decoder = Firestore.Decoder()) async throws {
+        
+        let docs = try? await lastQuery//.limit(to: 3)
+           .getDocuments()
+           // .limit(to: 10)
+           // .csStartAfter(document: startAfter)
+       guard let docs else {
+           throw CS_FirebaseError.getDocsFail
+       }
+       
+       /* let items = try docs.documents.compactMap({ snap -> Item? in
+            // nota 01_01_24
+             try snap.data(as: Item.self,decoder: decoder)
+        
+        }) */
+        
+       let items = docs.documents.compactMap({ snap -> Item? in
+           // nota 01_01_24
+           try? snap.data(as: Item.self,decoder: decoder)
+
+       })
+       
+       publisher.send(items)
+       
+    }
+}
 
 public final class CategoriesManager {
     
@@ -1016,7 +1155,6 @@ public final class CategoriesManager {
  // end deprecate
     
 } // close CategoriesManager
-
 ///Classe di servizio per la gestione in sola lettura della main Ingredient Library
 public final class IngredientManager {
 
@@ -1077,6 +1215,7 @@ deinit {
         }
         
         Task {
+            
             let count = try await queryCount(query: currentQuery)
             
             guard count > 0 else { 
@@ -1252,4 +1391,3 @@ deinit {
     
 } // close IngredientManagar
 
-// 728D409A-B022-4C70-9E4C-35EB75A6F6D8

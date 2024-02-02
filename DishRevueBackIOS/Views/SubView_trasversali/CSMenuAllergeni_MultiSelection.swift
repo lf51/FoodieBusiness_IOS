@@ -73,7 +73,7 @@ struct CSMenuAllergeni_MultiSelection: View {
         
         //
         
-        var allergens = self.ingredient.allergeni ?? []
+        var allergens = self.ingredient.values.allergeni ?? []
         
         if let index = allergens.firstIndex(of: allergene) {
             
@@ -84,7 +84,7 @@ struct CSMenuAllergeni_MultiSelection: View {
             allergens.append(allergene)
         }
         
-        self.ingredient.allergeni = allergens.isEmpty ? nil : allergens
+        self.ingredient.values.allergeni = allergens.isEmpty ? nil : allergens
 
     }
         
@@ -99,7 +99,7 @@ struct CSMenuAllergeni_MultiSelection: View {
       
         } else { Text(allergene.simpleDescription()) } */
        
-       if let allergens = self.ingredient.allergeni,
+       if let allergens = self.ingredient.values.allergeni,
           allergens.contains(allergene){
             
             HStack {

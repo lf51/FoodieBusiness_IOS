@@ -39,7 +39,7 @@ struct CS_RemoteModelChange:ViewModifier {
                // }
             }
     }
-}
+} // obsoleto
 
 struct CustomHpadding: ViewModifier {
     

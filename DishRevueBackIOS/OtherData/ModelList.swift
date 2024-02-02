@@ -37,7 +37,7 @@ enum ModelList: Equatable, Hashable  {
     static var ingredientAllergeniList: [ModelList] = [
     
         .viewModelContainer("Lista Allergeni", \.allergeni, .fonte),
-        .itemModelContainer("Allergeni Contenuti", \IngredientModel.allergeni, .destinazione(Color.red, grado: .principale))
+        .itemModelContainer("Allergeni Contenuti", \IngredientModel.values.allergeni, .destinazione(Color.red, grado: .principale))
     
     
     ]

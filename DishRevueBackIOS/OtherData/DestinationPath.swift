@@ -52,7 +52,8 @@ public enum DestinationPathView: Hashable {
     case vistaCronologiaAcquisti(_ :IngredientModel)
     case vistaRecensioniEspansa
     
-    case moduloSostituzioneING(_ :IngredientModel,isPermanente:Bool = false)
+    case moduloSostituzioneTemporaneaING(_ :IngredientModel)
+    case moduloSostituzionePermanenteING(_ :IngredientModel)
     
     case listaDellaSpesa
     
@@ -135,14 +136,25 @@ public enum DestinationPathView: Hashable {
            /* VistaPiattiEspansa(currentMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */
             
         case .vistaCronologiaAcquisti(let ingredient):
-            VistaCronologiaAcquisti(ingrediente: ingredient, backgroundColorView: backgroundColorView)
+           /*VistaCronologiaAcquisti(ingrediente: ingredient, backgroundColorView: backgroundColorView)*/
+            CronologiaAcquistiView(ingrediente: ingredient, backgroundColorView: backgroundColorView)
             
         case .vistaRecensioniEspansa:
             VistaRecensioniEspansa(backgroundColorView: backgroundColorView)
             
-        case .moduloSostituzioneING(let ingredient,let isPermanente):
-            Text("check_moduloSostituzioneING")
-           /* DishListByIngredientView(ingredientModelCorrente: ingredient,isPermanente: isPermanente, destinationPath: destinationPath, backgroundColorView: backgroundColorView)*/
+        case .moduloSostituzioneTemporaneaING(let ingredient):
+            
+            ModuloSostituzioneTemporanea(
+                ingredientModelCorrente: ingredient,
+                destinationPath: destinationPath,
+                backgroundColorView: backgroundColorView)
+            
+        case .moduloSostituzionePermanenteING(let ingredient):
+            
+            ModuloSostituzionePermanente(
+                ingredientModelCorrente: ingredient,
+                destinationPath: destinationPath,
+                backgroundColorView: backgroundColorView)
             
         case .listaDellaSpesa:
             let inventario = readOnlyViewModel.inventarioIngredienti()

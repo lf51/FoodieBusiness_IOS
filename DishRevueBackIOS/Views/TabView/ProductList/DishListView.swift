@@ -71,19 +71,22 @@ struct DishListView: View {
                 elementView: { dish in
                     
                     let navigationPath = \AccounterVM.dishListPath
+                    let isReady = dish.adress == .finito
 
                         GenericItemModel_RowViewMask(model: dish) {
                     
                             dish.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
                                 
-                            if dish.adress != .finito {
+                          //  if dish.adress != .finito {
                                 
-                                vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
-                            }
+                            vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
+                                .csModifier(isReady) { $0.hidden() }
+                          //  }
                                 
-                                vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
+                            vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
                             
-                                vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
+                            vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
+                                .csModifier(isReady) { $0.hidden() }
                            
                         }
                     
@@ -220,7 +223,7 @@ struct DishListView: View {
             imageOrEmoji: "checkmark.shield",
             label: "Qualità") { value in
                 container.filter({
-                    $0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.produzione, quality: value)
+                    $0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.values.produzione, quality: value)
                 }).count
             }
         
@@ -230,7 +233,7 @@ struct DishListView: View {
             selectionColor: Color.blue,
             imageOrEmoji: nil) { value in
                 container.filter({
-                    $0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.provenienza, quality: value)
+                    $0.hasAllIngredientSameQuality(viewModel: self.viewModel, kpQuality: \.values.provenienza, quality: value)
                 }).count
             }
         

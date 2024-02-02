@@ -293,7 +293,7 @@ struct PreCallVistaPiattiEspansa: View {
 
         private func saveAction() {
 
-            self.viewModel.updateModelOnSub(itemModel: currentMenu,refreshPath: destinationPath)
+            self.viewModel.createOrUpdateModelOnSub(itemModel: currentMenu,refreshPath: destinationPath)
         }
         
         private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {

@@ -45,7 +45,8 @@ struct NuovoIngredienteGeneralView: View {
             
            // let asProduct = self.nuovoIngrediente.type == .asProduct
            // let asProduct = self.viewModel.isASubOfReadyProduct(id: self.nuovoIngrediente.id) != nil
-            let asProduct = self.nuovoIngrediente.getIngredientType(viewModel: self.viewModel) == .asProduct
+           /* let asProduct = self.nuovoIngrediente.getIngredientType(viewModel: self.viewModel) == .asProduct */
+            let asProduct = self.nuovoIngrediente.ingredientType == .asProduct
             
             VStack {
                     
@@ -78,25 +79,25 @@ struct NuovoIngredienteGeneralView: View {
                             
                             // Origine
                             OrigineScrollView_NewIngredientSubView(
-                                nuovoIngrediente: $nuovoIngrediente,
+                                nuovoIngrediente: $nuovoIngrediente.values,
                                 generalErrorCheck: generalErrorCheck)
 
                             // Allergeni
                             AllergeniScrollView_NewIngredientSubView(
-                                nuovoIngrediente: self.$nuovoIngrediente,
+                                nuovoIngrediente: self.$nuovoIngrediente.values,
                                 generalErrorCheck: generalErrorCheck,
                                 areAllergeniOk: $areAllergeniOk,
                                 wannaAddAllergene: $wannaAddAllergeni)
                             
                             ConservazioneScrollView_NewIngredientSubView(
-                            nuovoIngrediente: $nuovoIngrediente,
+                                nuovoIngrediente: $nuovoIngrediente.values,
                             generalErrorCheck: generalErrorCheck)
                             
                             ProduzioneScrollView_NewIngredientSubView(
-                                nuovoIngrediente: $nuovoIngrediente)
+                                nuovoIngrediente: $nuovoIngrediente.values)
                             
                             ProvenienzaScrollView_NewIngredientSubView(
-                                nuovoIngrediente: $nuovoIngrediente)
+                                nuovoIngrediente: $nuovoIngrediente.values)
                             
                             BottomDialogView {
                                 self.infoIngrediente()
@@ -134,7 +135,7 @@ struct NuovoIngredienteGeneralView: View {
             .csHpadding()
             .popover(isPresented: $wannaAddAllergeni,attachmentAnchor: .point(.top),arrowEdge: .bottom) {
                 VistaAllergeni_Selectable(
-                    allergeneIn: $nuovoIngrediente.allergeni,
+                    allergeneIn: $nuovoIngrediente.values.allergeni,
                     backgroundColor: backgroundColorView)
                 .presentationDetents([.large])
             }
@@ -174,13 +175,13 @@ struct NuovoIngredienteGeneralView: View {
         
       let string = csInfoIngrediente(
         areAllergeniOk: self.areAllergeniOk,
-        nuovoIngrediente: ingrediente)
+        nuovoIngrediente: ingrediente.values)
        
         let incipit:String = {
             
-            let origine = ingrediente.origine
-            let isBio = ingrediente.produzione == .biologico
-            let provenienza = ingrediente.provenienza
+            let origine = ingrediente.values.origine
+            let isBio = ingrediente.values.produzione == .biologico
+            let provenienza = ingrediente.values.provenienza
             
             var stringa = "Ingrediente"
             
@@ -237,7 +238,7 @@ struct NuovoIngredienteGeneralView: View {
     
     private func checkOrigine() -> Bool {
         
-         self.nuovoIngrediente.origine != .defaultValue
+        self.nuovoIngrediente.values.origine != .defaultValue
         
     }
     
@@ -249,7 +250,7 @@ struct NuovoIngredienteGeneralView: View {
     
     private func checkConservazione() -> Bool {
         
-        self.nuovoIngrediente.conservazione != .defaultValue
+        self.nuovoIngrediente.values.conservazione != .defaultValue
     }
     
     // ViewBuilder
@@ -269,7 +270,7 @@ struct NuovoIngredienteGeneralView: View {
                   //  Task {
                      /*  try await self.viewModel.createIngredient(item: self.nuovoIngrediente) { _ in }*/
                             
-                        self.viewModel.createModelOnSub(itemModel: self.nuovoIngrediente)
+                        self.viewModel.createOrUpdateModelOnSub(itemModel: self.nuovoIngrediente)
                         self.salvaECreaPostAction()
                    // }
                 }
@@ -288,7 +289,7 @@ struct NuovoIngredienteGeneralView: View {
                             refreshPath: self.destinationPath) { _ in }*/
                    // }
                     
-                    self.viewModel.createModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: self.nuovoIngrediente,
                         refreshPath: self.destinationPath)
                 }
@@ -303,7 +304,7 @@ struct NuovoIngredienteGeneralView: View {
                    /* self.viewModel.updateModel(
                         itemModel: self.nuovoIngrediente)*/
                   /*  self.viewModel.updateIngredient(item: self.nuovoIngrediente)*/
-                    self.viewModel.updateModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: self.nuovoIngrediente)
                     self.salvaECreaPostAction()
                 }
@@ -319,7 +320,7 @@ struct NuovoIngredienteGeneralView: View {
                    /* self.viewModel.updateIngredient(
                         item: self.nuovoIngrediente,
                         refreshPath: self.destinationPath)*/
-                    self.viewModel.updateModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: self.nuovoIngrediente,
                         refreshPath: self.destinationPath)
                 }
@@ -343,7 +344,7 @@ struct NuovoIngredienteGeneralView: View {
                       /* try await self.viewModel.createIngredient(item: new) { _ in }*/
                   //  }
                     
-                    self.viewModel.createModelOnSub(
+                    self.viewModel.createOrUpdateModelOnSub(
                         itemModel: new,
                         refreshPath: self.destinationPath)
                 }

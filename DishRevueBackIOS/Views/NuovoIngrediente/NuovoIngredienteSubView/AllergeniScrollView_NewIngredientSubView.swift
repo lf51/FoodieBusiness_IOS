@@ -14,7 +14,7 @@ struct AllergeniScrollView_NewIngredientSubView: View {
     static var showAlertAllergene:Bool = true
     
     @EnvironmentObject var viewModel:AccounterVM
-    @Binding var nuovoIngrediente: IngredientModel
+    @Binding var nuovoIngrediente: IngredientSubModel
     let generalErrorCheck: Bool
     var lockEdit:Bool = false 
     

@@ -106,12 +106,12 @@ struct FastImport_IngredientRow: View {
 
                         HStack {
                             
-                            CS_Picker(selection: $ingredient.conservazione, customLabel: "Conservazione", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                            CS_Picker(selection: $ingredient.values.conservazione, customLabel: "Conservazione", dataContainer: ConservazioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                                 .csWarningModifier(isPresented: checkError) {
-                                    self.ingredient.conservazione == .defaultValue
+                                    self.ingredient.values.conservazione == .defaultValue
                                 }//.fixedSize()
                             
-                            CS_PickerWithDefault(selection: $ingredient.produzione, customLabel: "Produzione(?)", dataContainer: ProduzioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                            CS_PickerWithDefault(selection: $ingredient.values.produzione, customLabel: "Produzione(?)", dataContainer: ProduzioneIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                               /*  .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.produzione == .defaultValue
                                 }//.fixedSize()*/
@@ -119,13 +119,13 @@ struct FastImport_IngredientRow: View {
                         
                         HStack {
                             
-                            CS_Picker(selection: $ingredient.origine, customLabel: "Origine", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                            CS_Picker(selection: $ingredient.values.origine, customLabel: "Origine", dataContainer: OrigineIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                                 .csWarningModifier(isPresented: checkError) {
-                                    self.ingredient.origine == .defaultValue
+                                    self.ingredient.values.origine == .defaultValue
                                 }//.fixedSize()
 
 
-                            CS_PickerWithDefault(selection: $ingredient.provenienza, customLabel: "Provenienza(?)", dataContainer: ProvenienzaIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
+                            CS_PickerWithDefault(selection: $ingredient.values.provenienza, customLabel: "Provenienza(?)", dataContainer: ProvenienzaIngrediente.allCases, backgroundColor: Color.white, opacity: 0.5)
                                 .fixedSize()
                              /*   .csWarningModifier(isPresented: checkError) {
                                     self.ingredient.provenienza == .defaultValue
@@ -152,7 +152,7 @@ struct FastImport_IngredientRow: View {
                             Image(systemName: "thermometer.snowflake")
                                 .imageScale(.small)
                             
-                            if self.ingredient.conservazione == .defaultValue {
+                            if self.ingredient.values.conservazione == .defaultValue {
                                 
                                 Text("Metodo di conservazione non indicato")
                                     .italic()
@@ -160,7 +160,7 @@ struct FastImport_IngredientRow: View {
                                     .font(.caption)
                                     .foregroundStyle(Color.black)
                             } else {
-                                Text(ingredient.conservazione.extendedDescription())
+                                Text(ingredient.values.conservazione.extendedDescription())
                                     .italic()
                                     .fontWeight(.semibold)
                                     .font(.caption)
@@ -169,7 +169,7 @@ struct FastImport_IngredientRow: View {
                             
                         }
                         
-                        vbAllergeneScrollRowView(listaAllergeni: self.ingredient.allergeni)
+                        vbAllergeneScrollRowView(listaAllergeni: self.ingredient.values.allergeni)
                       /*  HStack(alignment:.bottom) {
                             
                             Image(systemName: "allergens")
@@ -183,7 +183,7 @@ struct FastImport_IngredientRow: View {
                         } */
                     }
                 }
-                .onChange(of: self.ingredient.allergeni) {
+                .onChange(of: self.ingredient.values.allergeni) {
                     self.areAllergeniOk = false
                 }
                 .padding(.top,10) // o .Vertical
@@ -196,12 +196,12 @@ struct FastImport_IngredientRow: View {
 
    @ViewBuilder private func vbOrigineIcon() -> some View {
         
-       let allergeni = self.ingredient.allergeni ?? []
+       let allergeni = self.ingredient.values.allergeni ?? []
     
-       if self.ingredient.origine != .defaultValue {
+       if self.ingredient.values.origine != .defaultValue {
            
            if allergeni.isEmpty {
-               let image = self.ingredient.origine.imageAssociated()
+               let image = self.ingredient.values.origine.imageAssociated()
                csVbSwitchImageText(string: image, size: .large)
                
            } else {
@@ -217,8 +217,8 @@ struct FastImport_IngredientRow: View {
     
     private func iterateAllergeni() -> String {
         
-        let allergeni = self.ingredient.allergeni ?? []
-        var image = self.ingredient.origine.imageAssociated()
+        let allergeni = self.ingredient.values.allergeni ?? []
+        var image = self.ingredient.values.origine.imageAssociated()
         
         if allergeni.contains(.latte_e_derivati) { image = "🥛"}
         else if allergeni.contains(where: {
@@ -230,10 +230,10 @@ struct FastImport_IngredientRow: View {
     
     @ViewBuilder private func vbConservazioneIcon() -> some View {
         
-        switch ingredient.conservazione {
+        switch ingredient.values.conservazione {
             
         case .congelato, .surgelato:
-            let image = ingredient.conservazione.imageAssociated()
+            let image = ingredient.values.conservazione.imageAssociated()
             csVbSwitchImageText(string: image, size: .large)
                 .foregroundStyle(Color.white)
             
@@ -256,7 +256,7 @@ struct FastImport_IngredientRow: View {
     
     @ViewBuilder private func vbProduzioneCheck() -> some View {
         
-        switch self.ingredient.produzione {
+        switch self.ingredient.values.produzione {
             
         case .biologico:
             Text("Bio")

@@ -11,7 +11,7 @@ import MyPackView_L0
 
 struct ProduzioneScrollView_NewIngredientSubView: View {
     
-    @Binding var nuovoIngrediente: IngredientModel
+    @Binding var nuovoIngrediente: IngredientSubModel
   //  let generalErrorCheck: Bool
     
     var body: some View {

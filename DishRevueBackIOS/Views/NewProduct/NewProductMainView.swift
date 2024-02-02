@@ -81,13 +81,40 @@ struct NewProductMainView: View {
     
     private func disabilitaSwitch() -> Bool {
         
-        let modelExist = self.viewModel.isTheModelAlreadyExist(modelID: self.newProduct.id, path: \.db.allMyDish)
+       // let modelExist = self.viewModel.isTheModelAlreadyExist(modelID: self.newProduct.id, path: \.db.allMyDish)
+        let conditionBasic = disabilitaThrowAdress()
         
-        return modelExist || self.disabilitaPicker
+        return conditionBasic || self.disabilitaPicker
        /* self.newProduct.status != .noStatus ||
         self.disabilitaPicker*/
         
     }
+    
+    private func disabilitaThrowAdress() -> Bool {
+        
+        let modelExist = self.viewModel.isTheModelAlreadyExist(modelID: self.newProduct.id, path: \.db.allMyDish)
+        
+        guard !modelExist else { return modelExist }
+        
+        switch self.newProduct.adress {
+        case .preparazione,.composizione:
+            return modelExist
+        case .finito:
+            
+            if let rif = newProduct.rifIngredienteSottostante {
+                    
+               let rifExist = self.viewModel.isTheModelAlreadyExist(modelID: rif, path: \.db.allMyIngredients)
+                
+               return rifExist
+                    
+            } else {
+                return true // in questo caso vi è un errore
+            }
+
+        }
+        
+    }
+    
     
 }
 

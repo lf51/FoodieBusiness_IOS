@@ -58,7 +58,7 @@ func csSwitchSingolarePlurale(checkNumber:Int,wordSingolare:String,wordPlurale:S
 }
 
 /// Analizza le proprietà di un ingrediente e tira fuori una stringa. Trasfersale al modello nuovo Ingrediente e al modello Ibrido
-func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientModel) -> String {
+func csInfoIngrediente(areAllergeniOk:Bool,nuovoIngrediente:IngredientSubModel) -> String {
     
     var stringaAllergeni: String = "Presenza/assenza Allergeni non Confermata."
     var stringaCongeSurge: String = "\nMetodo di Conservazione non indicato."

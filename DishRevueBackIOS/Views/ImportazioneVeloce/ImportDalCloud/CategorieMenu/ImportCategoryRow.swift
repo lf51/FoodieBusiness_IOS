@@ -13,7 +13,7 @@ import MyPackView_L0
 struct ImportCategoryRow: View {
     
     @EnvironmentObject var viewModel:AccounterVM
-    @ObservedObject var importVM:CloudImportGenericViewModel<CategoriaMenu>
+    @ObservedObject var importVM:CloudManagerGenericViewModel<CategoriaMenu>
     
     let category:CategoriaMenu
    // let selectingAction:(_ isSelected:Bool) -> ()

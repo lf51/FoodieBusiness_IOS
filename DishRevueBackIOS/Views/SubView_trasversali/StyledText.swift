@@ -9,8 +9,7 @@ import SwiftUI
 
 /// Duplica il CSText-TightRectangle ma aggiunge un visualContent al posto del Text
 struct CSText_tightRectangleVisual<VisualContent:View>: View {
-    
-   // let testo:String
+
     let fontWeight:Font.Weight
     let textColor:Color
     let strokeColor:Color
@@ -28,9 +27,10 @@ struct CSText_tightRectangleVisual<VisualContent:View>: View {
                 
                 RoundedRectangle(cornerRadius: 5.0)
                     .strokeBorder(strokeColor)
-                    .background(RoundedRectangle(cornerRadius: 5.0)
-                                    .fill(fillColor.opacity(0.8))
-                    .shadow(radius: 3.0)
+                    .background(
+                        RoundedRectangle(cornerRadius: 5.0)
+                            .fill(fillColor.opacity(0.8))
+                            .shadow(radius: 3.0)
                                )
                 )
     }

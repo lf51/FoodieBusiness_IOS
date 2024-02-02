@@ -64,7 +64,7 @@ struct DialogButtonElement {
         case saveNew = "Salva e Crea Nuovo"
         
         case saveModEsc = "Salva Modifiche ed Esci"
-        case saveModNew = "Salva Modifiche e Crea Nuovo"
+        case saveModNew = "Salva Modifiche e Crea Nuovo" // deprecata
         
         case saveAsNew = "Salva come Nuovo"
         case validate = "Convalida Acquisti"

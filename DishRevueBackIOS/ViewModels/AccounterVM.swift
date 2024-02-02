@@ -109,11 +109,11 @@ UserManager refCount:\(CFGetRetainCount(userManager))
      
         addGenericSubscriber(to: self.subCollectionManager.allMyCategoriesPublisher.main)
 
-         addGenericSubscriber(to: self.subCollectionManager.allMyIngredientsPublisher.main)
+        // addGenericSubscriber(to: self.subCollectionManager.allMyIngredientsPublisher.main)
          
-        addGenericSubscriber(to: self.subCollectionManager.allMyProductsPublisher.main)
+       // addGenericSubscriber(to: self.subCollectionManager.allMyProductsPublisher.main)
     
-       // addAllMyProductsSubscriber() // eliminare
+        addProductsAndIngredientsSubscriber()
         
         addGenericSubscriber(to: self.subCollectionManager.allMyMenuPublisher.main)
         addGenericSubscriber(to: self.subCollectionManager.allMyReviewsPublisher.main)
@@ -164,14 +164,12 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     // MyProStarterPack_L1
     
     /// Controlla se un modello esiste già nel viewModel controllando la presenza del sui ID
-    func isTheModelAlreadyExist<M:MyProStarterPack_L0&MyProStarterPack_L1>(modelID:String, path: KeyPath<AccounterVM,[M]>) -> Bool {
+   /* func isTheModelAlreadyExist<M:MyProStarterPack_L0&MyProStarterPack_L1>(modelID:String, path: KeyPath<AccounterVM,[M]>) -> Bool {
         
-       // let kp = model.basicModelInfoInstanceAccess().vmPathContainer
-    
         let containerM = self[keyPath: path]
         return containerM.contains(where: {$0.id == modelID})
         
-    }
+    }*/ // 25_12_23 spostata in superClasse
     
     /// Controlla che non ci sia un modello con lo stesso nome, qualora ci fosse ritorna il modello esistente. Questo ci serve per dare superiorità al dato salvato nel caso ad esempio del fastSave
     func checkExistingUniqueModelName<M:MyProStarterPack_L01&MyProStarterPack_L1>(model:M) -> (Bool,M?) where M.VM == AccounterVM {
@@ -198,11 +196,11 @@ UserManager refCount:\(CFGetRetainCount(userManager))
             newMenu.id = oldModel.id
             newMenu.rifDishIn = oldModel.rifDishIn
             
-            self.updateModelOnSub(itemModel: newMenu)
+            self.createOrUpdateModelOnSub(itemModel: newMenu)
             
         } else {
             
-            self.createModelOnSub(itemModel: newMenu)
+            self.createOrUpdateModelOnSub(itemModel: newMenu)
         }
 
     }
@@ -221,7 +219,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         new.id = oldModel.id
         new.rifDishIn = oldModel.rifDishIn
         
-        self.updateModelOnSub(itemModel: new)
+        self.createOrUpdateModelOnSub(itemModel: new)
         
     }
     
@@ -599,7 +597,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         }
         
       //  self.updateItemModel(itemModel: currentMenu)
-        self.updateModelOnSub(itemModel: currentMenu)
+        self.createOrUpdateModelOnSub(itemModel: currentMenu)
         
     }
 
@@ -641,7 +639,6 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }*/ // 02.01.23 Ricollocato in MyFoodiePackage
     
     func dishFilteredByIngrediet(idIngredient:String) -> [ProductModel] {
-        // Da modificare per considerare anche gli ingredienti Sostituti
         
         let filteredDish = self.db.allMyDish.filter { dish in
             
@@ -657,11 +654,11 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
 
     /// filtra tutti gli ingredient Model presenti nel viewModel per status, escludendo quello con l'idIngredient passato.
-    func ingredientListFilteredBy(idIngredient:String,ingredientStatus:StatusTransition) ->[IngredientModel] {
+    func ingredientListFilteredBy(idIngredient:String,ingredientStatus:[StatusTransition]) ->[IngredientModel] {
 
         let filterArray = self.db.allMyIngredients.filter({
             $0.id != idIngredient &&
-            $0.statusTransition == ingredientStatus
+            ingredientStatus.contains($0.statusTransition)
             
         })
 
@@ -1236,15 +1233,15 @@ extension AccounterVM {
          let allING = self.db.allMyIngredients.filter({$0.isDaAcquistare()})
            
          let allVegetable = allING.filter({
-             $0.origine.returnTypeCase() == .vegetale
+             $0.values.origine.returnTypeCase() == .vegetale
          }).sorted(by: {$0.intestazione < $1.intestazione})
         
         let allMeat = allING.filter({
             
-            let conditionOne = $0.origine.returnTypeCase() == .animale
+            let conditionOne = $0.values.origine.returnTypeCase() == .animale
             var conditionTwo = true
             
-            if let allergens = $0.allergeni {
+            if let allergens = $0.values.allergeni {
                 
                 conditionTwo =
                 !allergens.contains(.latte_e_derivati) &&
@@ -1259,7 +1256,7 @@ extension AccounterVM {
        
         let allFish = allING.filter({
             
-            if let allergens = $0.allergeni {
+            if let allergens = $0.values.allergeni {
                 
                return allergens.contains(.molluschi) ||
                 allergens.contains(.pesce) ||
@@ -1272,9 +1269,9 @@ extension AccounterVM {
           
         let allMilk = allING.filter({
             
-            let conditionOne = $0.origine.returnTypeCase() == .animale
+            let conditionOne = $0.values.origine.returnTypeCase() == .animale
             var conditionTwo = false
-            if let allergens = $0.allergeni {
+            if let allergens = $0.values.allergeni {
                 conditionTwo = allergens.contains(.latte_e_derivati)
             }
               return conditionOne && conditionTwo
@@ -1548,41 +1545,62 @@ extension AccounterVM {
 
     }
     
-   /* private func addAllMyCategoriesSubscriber() {
+    private func addProductsAndIngredientsSubscriber() {
         
         self.subCollectionManager
-            .allMyCategoriesPublisher
+            .allMyProductsPublisher
             .main
+            .combineLatest(self.subCollectionManager.allMyIngredientsPublisher.main)
             .sink { completion in
                 //
-            } receiveValue: { [weak self] allCategories in
-                
-                guard let self,
-                let allCategories else { 
+            } receiveValue: { [weak self] products,ingredients in
+            
+                guard let self else {
                     
                     DispatchQueue.main.async {
-                        self?.db.allMyCategories = []
+                       // self?[keyPath: kp] = []
                         self?.isLoading = nil
                     }
-                    
-                    return }
+                    return
+                }
                 
-                Task {
+                var allProducts:[ProductModel] = []
+                var allIngredients:[IngredientModel] = []
+                
+                if let products {
                     
-                let joinedCategories = try await self.categoriesManager.joinCategories(from: allCategories)
+                    allProducts = products
+                }
+                
+                if let ingredients {
                     
-                    DispatchQueue.main.async {
+                    allIngredients = ingredients
+                    
+                   for ing in ingredients {
                         
-                        self.db.allMyCategories = joinedCategories
-                        self.isLoading = nil
-                        
+                       if let asProduct = ing.compileAsProduct() {
+                           allProducts.append(asProduct)
+                       }
                     }
                     
                 }
-
+                
+                let sortedProduct = allProducts.sorted(by: {$0.sortCondition(compare: $1)})
+                let sortedIngredient = allIngredients.sorted(by: {$0.sortCondition(compare: $1)})
+                
+                DispatchQueue.main.async {
+                    
+                    self.db.allMyIngredients = sortedIngredient
+                    self.db.allMyDish = sortedProduct
+                    
+                    self.isLoading = nil
+                }
+                
+                
             }.store(in: &cancellables)
 
-    }*/ // deprecato in futuro
+
+    } // deprecato in futuro
 
     
     private func addGenericSubscriber<Item:MyProStarterPack_L1 & MyProSubCollectionPack & Codable>(to publisher:PassthroughSubject<[Item]?,Error>) where Item.VM == AccounterVM {
@@ -1634,6 +1652,35 @@ extension AccounterVM {
     func updateSingleField(
         docId:String,
         sub collectionKey:CloudDataStore.SubCollectionKey,
+        path value:[String:Any]) async throws {
+        
+       /* do {
+            
+            DispatchQueue.main.async {
+                self.isLoading = true
+            }*/
+
+            try self.subCollectionManager.setSingleField(
+                docId: docId,
+                sub: collectionKey,
+                path: value)
+            
+          /* DispatchQueue.main.asyncAfter(deadline: .now() + 8.0) {
+                self.isLoading = false
+            }*/
+            
+       /* } catch let error {
+            
+            DispatchQueue.main.async {
+                self.logMessage = error.localizedDescription
+            }
+        }*/
+        
+    }
+    
+   /* func updateSingleField(
+        docId:String,
+        sub collectionKey:CloudDataStore.SubCollectionKey,
         path value:[String:String]) {
         
         do {
@@ -1648,29 +1695,20 @@ extension AccounterVM {
             self.logMessage = ""
         }
         
-        
-    }
+    }*/// deprecta 18_12_23
     
     /// Crea un oggetto nella SubCollection. Manda un alert (opzionale)
-    func createModelOnSub<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
+    func createOrUpdateModelOnSub<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
         itemModel:T,
-        showAlert:Bool = false,
-        alertMessagge: String = "",
+        alertMessagge: (String,String)? = nil,
         refreshPath:DestinationPath? = nil,
         encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
         
-        if !showAlert {
-            
-            self.createModelExecutive(
-                itemModel: itemModel,
-                destinationPath: refreshPath,
-                encoder: encoder)
-            
-        } else {
-            
+        if let alertMessagge {
+    
             self.alertItem = AlertModel(
-                title: "Crea \(itemModel.intestazione)",
-                message: alertMessagge,
+                title: alertMessagge.0,
+                message: alertMessagge.1,
                 actionPlus: ActionModel(
                     title: .conferma,
                     action: {
@@ -1681,6 +1719,15 @@ extension AccounterVM {
                             encoder: encoder)
                     
                                         }))
+            
+        } else {
+            
+            self.createModelExecutive(
+                itemModel: itemModel,
+                destinationPath: refreshPath,
+                encoder: encoder)
+            
+            
         }
     }
     
@@ -1745,7 +1792,7 @@ extension AccounterVM {
     }
     
     /// Aggiorna un Modello nelle subCollection. Manda un alert di conferma optional
-    func updateModelOnSub<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
+  /*  func updateModelOnSub<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
         itemModel:T,
         showAlert:Bool = false,
         alertMessage: String = "",
@@ -1777,9 +1824,9 @@ extension AccounterVM {
         }
        
         
-    }
+    }*/// deprecato
     
-    private func updateModelExecutive<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
+  /*  private func updateModelExecutive<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(
         itemModel: T,
         destinationPath: DestinationPath? = nil,
         encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
@@ -1833,28 +1880,34 @@ extension AccounterVM {
                 }
             }
 
-    }
+    }*/// 25_12_23 deprecato
     
     /// Permette di aggiornare un array di model
     func updateModelCollection<T:MyProSubCollectionPack & Codable & MyProStarterPack_L0>(
         items:[T],
         sub:CloudDataStore.SubCollectionKey,
+        merge:Bool = true,
         encoder:Firestore.Encoder = Firestore.Encoder(),
-        destinationPath:DestinationPath? = nil)/* where T.VM == AccounterVM*/ {
+        destinationPath:DestinationPath? = nil) async throws {
         
-        Task {
+       // Task {
+            
+          // throw CS_GenericError.propertyDataCorrotti
             
             try await self.subCollectionManager.publishSubCollection(
                 sub: sub,
                 as: items,
+                merge: merge,
                 encoder: encoder)
             
             if let destPath = destinationPath {
                 
-                self.refreshPath(destinationPath: destPath)
+                DispatchQueue.main.async {
+                    self.refreshPath(destinationPath: destPath)
+                }
                 
             }
-        }
+       // }
 
     }
     
@@ -1916,31 +1969,48 @@ extension AccounterVM {
     } // deprecata 26_11_23
     
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
-    func deleteModel<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(itemModel: T,postDeleteAction:(@escaping() -> Void) = {} ) where T.VM == AccounterVM {
+    func deleteModel<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(itemModel: T,postDeleteAction:(@escaping() throws -> Void) = {} ) where T.VM == AccounterVM {
         
         self.alertItem = AlertModel(
-            title: "Conferma Eliminazione",
+            title: "Azione NON Reversibile",
             message: "Confermi di volere eliminare \(itemModel.intestazione)?",
             actionPlus: ActionModel(
                 title: .elimina,
                 action: {
-                    withAnimation {
-                        self.deleteModelExecution(itemModel: itemModel)
-                        postDeleteAction()
-                    }
-                   
+                      withAnimation {
+                           self.deleteModelExecution(
+                            itemModel: itemModel,
+                            postDeleteAction: postDeleteAction)
+                           
+                        }
                 }))
 
     }
     
-    private func deleteModelExecution<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(itemModel: T) where T.VM == AccounterVM {
+    private func deleteModelExecution<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(itemModel: T,postDeleteAction:(@escaping() throws -> Void) = {} ) where T.VM == AccounterVM {
         
-
         Task {
             let sub = itemModel.subCollection() as! CloudDataStore.SubCollectionKey
             
-            try await self.subCollectionManager.deleteFromSubCollection(sub: sub , delete: itemModel.id)
-            self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!")
+            do {
+                
+                try await self.subCollectionManager.deleteFromSubCollection(
+                        sub: sub ,
+                        delete: itemModel.id)
+                try postDeleteAction()
+               
+                DispatchQueue.main.async {
+                    self.logMessage = "\(itemModel.intestazione) rimosso con successo"
+                }
+            } catch let error {
+                
+                DispatchQueue.main.async {
+                    self.logMessage = error.localizedDescription
+                }
+            }
+            
+
+           /* self.alertItem = AlertModel(title: "Eliminazione Eseguita", message: "\(itemModel.intestazione) rimosso con Successo!") */
         }
 
     }
@@ -1956,7 +2026,7 @@ extension AccounterVM {
         
         return readyProduct?.id
     
-    }
+    }// deprecata in futuro
     
     func getStatusScorteING(from id:String) -> StatoScorte {
         

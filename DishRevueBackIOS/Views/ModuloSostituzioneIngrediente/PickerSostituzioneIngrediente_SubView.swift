@@ -28,7 +28,7 @@ struct PickerSostituzioneIngrediente_SubView: View {
                     Picker(selection: $modelSostitutoGlobale) {
                         
                      //   if nomeIngredienteSostituto == "" {
-                        Text(modelSostitutoGlobale == nil ? "Scegli" : "Annulla Selezione")
+                        Text(modelSostitutoGlobale == nil ? "Scegli:" : "Annulla Scelta")
                                 .tag(nil as IngredientModel?)
                                // .tag("SCEGLI") // seza il tag non è selezionabile, ovvero il valore non viene passato e quindi lo possiamo usare come "segnaposto"
                      //   }

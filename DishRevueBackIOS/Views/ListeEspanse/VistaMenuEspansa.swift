@@ -147,10 +147,12 @@ struct VistaMenuEspansa: View {
         
         let menuModified = compareMenu()
         
-        self.viewModel.updateModelCollection(
-            items: menuModified,
-            sub: .allMyMenu,
-            destinationPath: .dishList)
+        Task {
+           try await self.viewModel.updateModelCollection(
+                items: menuModified,
+                sub: .allMyMenu,
+                destinationPath: .dishList)
+        }
        
     }
     

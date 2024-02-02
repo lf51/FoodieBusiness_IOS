@@ -53,6 +53,9 @@ extension ProductModel {
     
     /// analizza gli ingredienti per comprendere se un piatto è eseguibile o meno
     func checkStatusExecution(viewModel:AccounterVM) -> ExecutionState {
+        // 22_01_24 da Aggiornare in ragione del fatto che lo status degli ing è strettamente correlato in automatico con lo stato scorte.
+        // Quando abbiamo creato questa func lo status dell'ing poteva essere forzato manualmente
+        
         
         // 1. Eseguibile
         // 1a. Tutti gli ing sono disponibili, principali, secondari o eventuali sostituti
@@ -63,7 +66,14 @@ extension ProductModel {
  
         //end update
         let allIng = self.allMinusArchiviati(viewModel: viewModel)
+        
+        if self.adress == .preparazione,
+           allIng.isEmpty {
+           return .nonEseguibile
+        }
+        
         let ingCount = allIng.count
+        
         let ingActive = self.allIngredientsAttivi(viewModel: viewModel)
         let activeCount = ingActive.count
         
@@ -204,8 +214,8 @@ extension ProductModel:MyProStarterPack_L1 {
        guard let sottostante = self.ingredienteSottostante,
              let rhs_sottostante = rhs.ingredienteSottostante else { return false }
         
-       return self.intestazione == rhs.intestazione &&
-        sottostante.isEqual(to: rhs_sottostante)
+       return self.intestazione == rhs.intestazione /*&&
+        sottostante.isEqual(to: rhs_sottostante)*/
         
     }
     
@@ -350,12 +360,12 @@ extension ProductModel: Object_FPC {
         
         self.preCallHasAllIngredientSameQuality(
             viewModel: readOnlyVM,
-            kpQuality: \.produzione,
+            kpQuality: \.values.produzione,
             quality: properties.produzioneING) &&
         
         self.preCallHasAllIngredientSameQuality(
             viewModel: readOnlyVM,
-            kpQuality: \.provenienza,
+            kpQuality: \.values.provenienza,
             quality: properties.provenienzaING)
         
         
@@ -583,12 +593,7 @@ extension ProductModel:MyProStatusPack_L1 {
         
         if statusCache == 0  {
             // automatizzato
-            
-            if self.adress != .finito {
-               return getTransitionFromExecution(viewModel: viewModel)
-            } else {
-               return getTransitionFromRifSottostante(viewModel: viewModel)
-            }
+            return getTransitionFromExecution(viewModel: viewModel)
 
         } else {
             // valore precedentemente forzato
@@ -599,7 +604,7 @@ extension ProductModel:MyProStatusPack_L1 {
 
     }
     
-    private func getTransitionFromRifSottostante(viewModel:AccounterVM) -> StatusTransition {
+  /*  private func getTransitionFromRifSottostante(viewModel:AccounterVM) -> StatusTransition {
         
         let sottostante = self.getSottostante(viewModel: viewModel).sottostante
         
@@ -610,7 +615,7 @@ extension ProductModel:MyProStatusPack_L1 {
             // throwerei un errore
             return .archiviato
         }
-    }
+    } */
     
     private func getTransitionFromExecution(viewModel:AccounterVM) -> StatusTransition {
         
@@ -631,10 +636,14 @@ extension ProductModel:MyProStatusPack_L1 {
         let key = Self.CodingKeys.status.rawValue
         let path = [key:value]
         
-        viewModel.updateSingleField(
-            docId: self.id,
-            sub: .allMyDish,
-            path: path)
+        Task {
+            
+           try await viewModel.updateSingleField(
+                docId: self.id,
+                sub: .allMyDish,
+                path: path)
+            
+        }
     }
     
     public func disabilitaSetStatusTransition(viewModel: AccounterVM) -> (general:Bool,upToDisponibile:Bool) {
@@ -686,8 +695,8 @@ extension ProductModel:MyProStatusPack_L1 {
     private func checkOptionalComposizione() -> Bool {
     
         if let ingredienteSottostante {
-            
-            return ingredienteSottostante.optionalComplete()
+            return false
+          //  return ingredienteSottostante.optionalComplete()
         } else {
             return false
         }
@@ -709,6 +718,7 @@ extension ProductModel:MyProStatusPack_L02 {
         
         let statusDescription = self.status.simpleDescription()
         let transitionDescription = transition.simpleDescription()
+        let adressDescription = self.adress.tapDescription()
         var thirdString:String
         
         // Switch fra stato scorte per i prodotti finiti ed executionState per gli altri
@@ -727,8 +737,7 @@ extension ProductModel:MyProStatusPack_L02 {
             
         }
         
-        
-        let descrizione = "Form: \(statusDescription)\nStato: \(transitionDescription)\n\(thirdString)"
+        let descrizione = "\(adressDescription)\nForm: \(statusDescription)\nStato: \(transitionDescription)\n\(thirdString)"
         
         return (imageInt,coloreInterno,coloreEsterno,descrizione)
         
@@ -742,10 +751,8 @@ extension ProductModel:MyProEditingPack_L0 {
         
         let statusTransition = getStatusTransition(viewModel: viewModel)
         return statusTransition == .archiviato
+      
         
-        
-      /*  let statusTransition = StatusTransition.decodeStatus(from: self.statusCache)
-        return statusTransition == .archiviato */
     }
 }
 
@@ -759,6 +766,12 @@ extension ProductModel:MyProTrashPack_L0 {
     }
     
     public func manageModelDelete(viewModel: AccounterVM) {
+        // da sistemare
+        
+        /*
+         
+        // da sistemare 27_12_23
+        
         
         let allMenuWithDish = viewModel.allMenuContaining(idPiatto: self.id)
         
@@ -785,11 +798,23 @@ extension ProductModel:MyProTrashPack_L0 {
             allCleanedMenu.append(new)
             
         }
-       // viewModel.updateItemModelCollection(items: allCleanedMenu)
-       // viewModel.deleteItemModel(itemModel: self)
-        viewModel.deleteModel(itemModel: self) {
-            viewModel.updateModelCollection(items: allCleanedMenu, sub: CloudDataStore.SubCollectionKey.allMyMenu)
+        
+         viewModel.deleteModel(itemModel: self){
+             viewModel.updateModelCollection(items: allCleanedMenu, sub: CloudDataStore.SubCollectionKey.allMyMenu)
+         }
+        
+        */
+    
+        viewModel.deleteModel(itemModel: self){
+            // try test()
+             test()
         }
+       
+    }
+    
+    func test()  {
+       // throw CS_GenericError.propertyDataCorrotti
+        print("=======TEST()========")
     }
 }
 
@@ -854,12 +879,10 @@ extension ProductModel:MyProVisualPack_L0 {
     
    @ViewBuilder private func vbSwitchReviewAndAdress(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
-        switch self.adress {
+       switch self.adress {
             
         case .finito:
-            vbSottostanteDestination(
-                viewModel: viewModel,
-                navigationPath: navigationPath)
+           vbFinitoLabel()
         case .composizione,.preparazione:
             vbVisualReview(
                 viewModel: viewModel,
@@ -868,25 +891,14 @@ extension ProductModel:MyProVisualPack_L0 {
         
     }
     
-   @ViewBuilder private func vbSottostanteDestination(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
+   @ViewBuilder private func vbFinitoLabel() -> some View {
         
-        let sottostante = self.getSottostante(viewModel: viewModel).sottostante
-        
-        if let sottostante {
-            
-             Button {
-                 
-                viewModel[keyPath: navigationPath].append(DestinationPathView.ingrediente(sottostante))
-                 
-             } label: {
-                 HStack{
-                     Text("Vedi Sottostante")
-                     Image(systemName: "leaf")
-                 }
-             }
-            
-        }
-        
+       Label {
+           Text("Type: ready product")
+       } icon: {
+           Image(systemName: "doc.on.doc")
+       }
+
     }
     
     private func vbVisualReview(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
