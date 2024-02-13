@@ -85,14 +85,14 @@ struct ModuloSP_RowSub: View {
                             Image(systemName: hasToBeReplaceFromTemporary ? "checkmark.circle" : "circle")
                             
                         }
-                    }.disabled(self.dish.idSavedSubstitute == nil)
+                    }.disabled(self.dish.offManager?.idSavedSubstitute == nil)
                     
                     
                     ForEach(mapArray,id:\.self) { ingredient in
 
                         let (isIngredientIn,isIngredientSelected) = isInAndSelected(idIngredient: ingredient.id)
                         let image:String = isIngredientSelected ? "checkmark.circle" : "circle"
-                        let isAsSaved = self.dish.idSavedSubstitute == ingredient.id
+                        let isAsSaved = self.dish.offManager?.idSavedSubstitute == ingredient.id
                         
                         Button {
                             
@@ -156,9 +156,9 @@ struct ModuloSP_RowSub: View {
         .onAppear { onAppearAction() }
         .onChange(of: self.dish) { _ , new in
             
-            let value = new.elencoIngredientiOff?[self.idIngredienteCorrente]
+            let value = new.offManager?.elencoIngredientiOff[self.idIngredienteCorrente]
             
-            let changeAppen = value != self.dish.idSavedSubstitute
+            let changeAppen = value != self.dish.offManager?.idSavedSubstitute
             let isAlreadyIn = self.idProductsModified.contains(self.dish.id)
             
             let hasToBeNotified = changeAppen && !isAlreadyIn
@@ -186,7 +186,7 @@ struct ModuloSP_RowSub: View {
         
         guard !hasToBeReplaceFromTemporary else { return }
         
-        self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] = self.idSostitutoGlobale == nil ? self.dish.idSavedSubstitute : self.idSostitutoGlobale
+        self.dish.offManager?.elencoIngredientiOff[self.idIngredienteCorrente] = self.idSostitutoGlobale == nil ? self.dish.offManager?.idSavedSubstitute : self.idSostitutoGlobale
                 
     }
     
@@ -200,11 +200,11 @@ struct ModuloSP_RowSub: View {
     
     private func replaceTempAction() {
         
-        guard let savedSub = self.dish.idSavedSubstitute else { return }
+        guard let savedSub = self.dish.offManager?.idSavedSubstitute else { return }
         
-        if self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] != savedSub {
+        if self.dish.offManager?.elencoIngredientiOff[self.idIngredienteCorrente] != savedSub {
             
-            self.dish.elencoIngredientiOff?.updateValue(savedSub, forKey: self.idIngredienteCorrente)
+            self.dish.offManager?.elencoIngredientiOff.updateValue(savedSub, forKey: self.idIngredienteCorrente)
         }
         
         self.replaceWithTemporary.append(self.dish.id)
@@ -253,18 +253,18 @@ struct ModuloSP_RowSub: View {
         
         if isIngredientSelected {
             
-            if let savedValue = self.dish.idSavedSubstitute {
+            if let savedValue = self.dish.offManager?.idSavedSubstitute {
                 
-                self.dish.elencoIngredientiOff?.updateValue(savedValue, forKey: self.idIngredienteCorrente)
+                self.dish.offManager?.elencoIngredientiOff.updateValue(savedValue, forKey: self.idIngredienteCorrente)
             } else {
-                self.dish.elencoIngredientiOff?.removeValue(forKey: self.idIngredienteCorrente)
+                self.dish.offManager?.elencoIngredientiOff.removeValue(forKey: self.idIngredienteCorrente)
             }
             
             self.nomeSostitutoLocale = nil
             
         } else {
             
-            self.dish.elencoIngredientiOff?.updateValue(idIngredient, forKey: self.idIngredienteCorrente)
+            self.dish.offManager?.elencoIngredientiOff.updateValue(idIngredient, forKey: self.idIngredienteCorrente)
             self.nomeSostitutoLocale = nomeIngrediente
         }
         
@@ -274,7 +274,7 @@ struct ModuloSP_RowSub: View {
         
         let isIngredientIn = self.dish.checkIngredientsIn(idIngrediente: idIngredient)
         
-        let isIngredientSelected = self.dish.elencoIngredientiOff?[self.idIngredienteCorrente] == idIngredient
+        let isIngredientSelected = self.dish.offManager?.elencoIngredientiOff[self.idIngredienteCorrente] == idIngredient
  
         return (isIngredientIn,isIngredientSelected)
     }

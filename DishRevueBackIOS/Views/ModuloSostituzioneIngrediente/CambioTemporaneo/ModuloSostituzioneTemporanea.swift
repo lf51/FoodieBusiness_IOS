@@ -248,6 +248,29 @@ struct ModuloSostituzioneTemporanea: View {
         let idSostitutoGlobale = modelSostitutoGlobale.id
         let nameSostitutoGlobale = modelSostitutoGlobale.intestazione
         
+        guard let offManager = currentDish.offManager else {
+            return (idSostitutoGlobale,nameSostitutoGlobale)
+        }
+    
+        guard offManager.elencoIngredientiOff[self.ingredienteCorrente.id] != idSostitutoGlobale else {return (idSostitutoGlobale,nameSostitutoGlobale) }
+        // Vedi Nota 01.09
+        // end 01.09
+        
+        let checkIn = currentDish.checkIngredientsIn(idIngrediente: idSostitutoGlobale)
+        
+        if checkIn { return (nil,nameSostitutoGlobale) }
+        else { return (idSostitutoGlobale,nameSostitutoGlobale)}
+        
+    }
+    
+   /* private func checkSostitutoGlobale(currentDish: ProductModel) ->(idChecked:String?,nome:String?) {
+        
+        guard let modelSostitutoGlobale else { return (nil,nil) }
+        
+        // 01.09
+        let idSostitutoGlobale = modelSostitutoGlobale.id
+        let nameSostitutoGlobale = modelSostitutoGlobale.intestazione
+        
         guard let off = currentDish.elencoIngredientiOff else {
             return (idSostitutoGlobale,nameSostitutoGlobale)
         }
@@ -261,7 +284,7 @@ struct ModuloSostituzioneTemporanea: View {
         if checkIn { return (nil,nameSostitutoGlobale) }
         else { return (idSostitutoGlobale,nameSostitutoGlobale)}
         
-    }
+    }*/ // updated
     
 }
 /*

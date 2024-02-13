@@ -57,7 +57,9 @@ public final class AccounterVM:FoodieViewModel/*,MyProDataCompiler*/ {
     @Published var dishListPath = NavigationPath()
     @Published var ingredientListPath = NavigationPath()
     
+    @Published var pathSelection:DestinationPath = .homeView
     @Published var resetScroll:Bool = false
+    var showSpecificModel:String? // Nota 08.02.24
     
     var allergeni:[AllergeniIngrediente] = AllergeniIngrediente.allCases // necessario al selettore Allergeni
     
@@ -703,9 +705,20 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     }
     
     /// Azzera il path di riferimento e chiama il reset dello Scroll
-    func refreshPathAndScroll(tab:DestinationPath) -> Void {
+   /* func refreshPathAndScroll(tab:DestinationPath) -> Void {
 
         let path = tab.vmPathAssociato()
+        
+        if self[keyPath: path].isEmpty { self.resetScroll.toggle() }
+        else { self[keyPath: path] = NavigationPath() }
+
+    }*/ // 08.02.24 deprecata
+    
+    /// Azzera il path di riferimento e chiama il reset dello Scroll
+    func refreshPathAndScroll() -> Void {
+
+        self.showSpecificModel = nil 
+        let path = self.pathSelection.vmPathAssociato()
         
         if self[keyPath: path].isEmpty { self.resetScroll.toggle() }
         else { self[keyPath: path] = NavigationPath() }
@@ -902,7 +915,14 @@ UserManager refCount:\(CFGetRetainCount(userManager))
             let activeIngRif = dish.allIngredientsRif()
             allIngredientsRif.append(contentsOf: activeIngRif)
             
-            let isEseguibile = dish.controllaSeEseguibile(viewModel: self)
+            /* // update 08.02.24 da verificare poi l'intera funzione
+             
+             // let isEseguibile = dish.controllaSeEseguibile(viewModel: self)
+             */
+            
+            let isEseguibile = dish.checkStatusExecution(viewModel: self) == .eseguibile
+           // end update 08.02.24 da verificare poi l'intera funzione
+            
             if isEseguibile { dishEseguibili.append(dish) }
             
         }
@@ -1736,59 +1756,64 @@ extension AccounterVM {
         destinationPath:DestinationPath? = nil,
         encoder:Firestore.Encoder = Firestore.Encoder()) where T.VM == AccounterVM {
 
-        // verifica unicità nel viewModel
-      
-     /*   let(kpContainerT,_,nomeModelloT,_) = itemModel.basicModelInfoInstanceAccess()
-            
-        let containerT = assegnaContainerFromPath(path: kpContainerT)
-            
-        guard !containerT.contains(where: {$0.isEqual(to: itemModel)}) else {
-                return self.alertItem = AlertModel(
-                    title: "Controllare",
-                    message: "Hai già un \(nomeModelloT) con queste caratteristiche")
-            } */
-            
-          /* guard self.checkModelNotInVM(itemModel: itemModel) else {
-                
-                return self.alertItem = AlertModel(
-                    title: "Controllare",
-                    message: "Hai già creato un oggetto con questo nome e caratteristiche")
-                
-            }*/ // obsoleto
-            
             let sub = itemModel.subCollection() as! CloudDataStore.SubCollectionKey
             
             Task {
                 
-            // let item = itemModel
+                do {
+                  
+                    DispatchQueue.main.async {
+                        self.isLoading = true
+                    }
+                    
+                  try await self.subCollectionManager
+                              .setDataSubCollectionSingleDocument(
+                                 to: sub,
+                                 item: itemModel,
+                                 throw: encoder)
+                    
+                    if let path = destinationPath {
+                        
+                        DispatchQueue.main.async {
+                            self.isLoading = nil
+                            self.refreshPath(destinationPath: path)
+                        }
+                        
+                    }
+                    
+                } catch let error {
+                    
+                    DispatchQueue.main.async {
+                        self.isLoading = nil
+                        self.logMessage = error.localizedDescription
+                    }
+                    
+                }
                 
-            /* if item is IngredientModel {
-                // salva in main
-                 let ingredient = item as! IngredientModel
-                 
-               /*  if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) { item.id = id } */
-                 try await manageIngredientCreation(item: ingredient){ id in
-                     print("Nuovo Oggeto \(ingredient.intestazione) creato con id: \(id ?? "Nuovo")")
-                 }
-                     
-             }*/// else {
-                 
+            }
+            
+            
+            
+            
+           /* Task {
+                
                  // salvare in subCollection
                try await self.subCollectionManager
                      .setDataSubCollectionSingleDocument(
                         to: sub,
                         item: itemModel,
                         throw: encoder)
-           //  }
 
                 // refresh del path
                 if let path = destinationPath {
                     
-                    self.refreshPath(destinationPath: path)
+                    DispatchQueue.main.async {
+                        self.refreshPath(destinationPath: path)
+                    }
                     
                 }
 
-            }
+            }*/
     }
     
     /// Aggiorna un Modello nelle subCollection. Manda un alert di conferma optional
@@ -1917,7 +1942,7 @@ extension AccounterVM {
        // Task {
 
         let rigenera = try checkAnalizeAndRetrieve(temporaryModel: item)
-            
+        print("[FAST_SAVE]Ingredients:\(rigenera.ingredients.count)")
         try await self.subCollectionManager
                     .publishSubCollection(
                         sub: .allMyIngredients,
@@ -1933,40 +1958,19 @@ extension AccounterVM {
     }
 
     private func checkAnalizeAndRetrieve(temporaryModel:TemporaryModel) throws -> (product:ProductModel,ingredients:[IngredientModel])  {
-        // analizzare gli ingredienti / esistenti nel viewModel / esistenti nella library
+        // analizzare gli ingredienti e passare soltanto i NON esistenti nel viewModel
        let ingredients = temporaryModel.ingredients
-      // let secondaryRif = temporaryModel.rifIngredientiSecondari
        
        let notInVM = ingredients.compactMap({
             if !self.isTheModelAlreadyExist(modelID: $0.id, path: \.db.allMyIngredients) { return $0 }
             else { return nil }
         })
         
-      // var ingRigenerated:[IngredientModel] = ingredients
-      // var secondaryRifRigenerated:[String] = secondaryRif
-        
-         /*   for ingredient in notInVM {
-                
-                if let id = try await self.ingredientsManager.checkAndPublish(ingredient: ingredient) {
-                    // esiste nella main e quindi lo rigeneriamo per la sub
-                    var rigeneraING = ingredient
-                    rigeneraING.id = id
-                    
-                    if let oldIndex = ingRigenerated.firstIndex(where: {$0.id == ingredient.id}) {
-                        ingRigenerated[oldIndex] = rigeneraING
-                    }
-                    
-                    if let index =  secondaryRifRigenerated.firstIndex(of: ingredient.id) {
-                        secondaryRifRigenerated[index] = id
-                    }
-                }
-        }*/
-       
        let product = try temporaryModel.generaProduct()
         
        return (product,notInVM)
         
-    } // deprecata 26_11_23
+    }
     
     /// Manda un alert di conferma prima di eliminare l' Oggetto MyModelProtocol
     func deleteModel<T:MyProSubCollectionPack & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1>(itemModel: T,postDeleteAction:(@escaping() throws -> Void) = {} ) where T.VM == AccounterVM {
@@ -2020,13 +2024,13 @@ extension AccounterVM {
 extension AccounterVM {
     
     /// ritorna l'id dell'eventuale prodotto
-    func isASubOfReadyProduct(id ingredient:String) -> String? {
+   /* func isASubOfReadyProduct(id ingredient:String) -> String? {
         
         let readyProduct = self.db.allMyDish.first(where: {$0.rifIngredienteSottostante == ingredient})
         
         return readyProduct?.id
     
-    }// deprecata in futuro
+    }*/// deprecata in futuro
     
     func getStatusScorteING(from id:String) -> StatoScorte {
         

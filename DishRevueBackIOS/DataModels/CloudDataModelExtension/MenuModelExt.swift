@@ -249,7 +249,7 @@ extension MenuModel:Object_FPC {
         
         self.preCallIsOnAir(filterValue: filterProperties.onlineOfflineMenu) &&
         
-        coreFilter.compareStatusTransition(localStatus: statusTransition, filterStatus: filterProperties.status) &&
+        coreFilter.compareStatusTransition(localStatus: statusTransition, filterStatus: filterProperties.status, tipologiaFiltro: coreFilter.tipologiaFiltro) &&
         
         coreFilter.compareCollectionToProperty(localCollection: self.giorniDelServizio, filterProperty: filterProperties.giornoServizio) &&
         

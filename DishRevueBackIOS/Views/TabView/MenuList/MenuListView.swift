@@ -14,7 +14,7 @@ struct MenuListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    let tabSelection: DestinationPath 
+   // let tabSelection: DestinationPath 
     let backgroundColorView: Color
     
     @State private var openFilter: Bool = false
@@ -52,7 +52,7 @@ struct MenuListView: View {
                 generalDisable: generalDisable,
                 onChangeValue: self.viewModel.resetScroll,
                 onChangeProxyControl: { proxy in
-                    if self.tabSelection == .menuList {
+                    if self.viewModel.pathSelection == .menuList {
                         withAnimation {
                             proxy.scrollTo(1, anchor: .top)
                         }
@@ -68,7 +68,8 @@ struct MenuListView: View {
                     self.vbSorterView()
                 }, elementView: { menu in
                     
-                    let navigationPath = \AccounterVM.menuListPath
+                   // let navigationPath = \AccounterVM.menuListPath
+                    let navigationPath = self.viewModel.pathSelection.vmPathAssociato()
                     
                     GenericItemModel_RowViewMask(model: menu) {
                         

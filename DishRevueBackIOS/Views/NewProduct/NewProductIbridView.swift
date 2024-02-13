@@ -321,7 +321,8 @@ struct NewProductIbridView: View {
     
     private func infoPreparazione() -> Text {
                    
-        let allIngredients = self.productModel.allIngredientsAttivi(viewModel: viewModel).map({$0.intestazione})
+       // let allIngredients = self.productModel.allIngredientsAttivi(viewModel: viewModel).map({$0.intestazione})
+        let allIngredients = self.productModel.allIngredientsIn(viewModel: viewModel).map({$0.intestazione})
         
         let allAllergeni = self.productModel.calcolaAllergeniNelPiatto(viewModel: viewModel).map({$0.intestazione})
         

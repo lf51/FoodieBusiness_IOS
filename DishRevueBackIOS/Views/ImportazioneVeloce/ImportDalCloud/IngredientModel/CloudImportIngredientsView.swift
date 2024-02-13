@@ -20,6 +20,7 @@ struct CloudImportIngredientsView: View {
     @State private var filterCore:CoreFilter<IngredientModel> = CoreFilter()
     @State private var openFilter:Bool = false
     let backgroundColor:Color
+    let destinatinationPath:DestinationPath
     
     var body: some View {
         
@@ -180,11 +181,14 @@ struct CloudImportIngredientsView: View {
                
                     Button {
 
-                        Task {
+                        //Task {
 
-                            try await self.importVM.importInSubCollection(subCollection:.allMyIngredients,viewModel:self.viewModel)
+                           /*try await*/ self.importVM.importInSubCollection(
+                            subCollection:.allMyIngredients,
+                            viewModel:self.viewModel,
+                            destinationPath: self.destinatinationPath)
                                 
-                        }
+                      //  }
                         
                     } label: {
                         Text("Importa")

@@ -14,7 +14,7 @@ struct ListaIngredientiView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    let tabSelection: DestinationPath // Ancora non Usate
+    //let tabSelection: DestinationPath // Ancora non Usate
     let backgroundColorView: Color
     
     @State private var openFilter:Bool = false
@@ -30,12 +30,22 @@ struct ListaIngredientiView: View {
         
         NavigationStack(path:$viewModel.ingredientListPath) {
             
-            let allModelCount = self.viewModel.db.allMyIngredients.count
-           // let container_0 = self.viewModel.ricercaFiltra(containerPath: \.cloudData.allMyIngredients, coreFilter: filterCore)
-            let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
-            // update 10.07.23
-           /* let container = container_0.filter({$0.status != .bozza()})*/ // obsoleto
-            // update per escludere gli ing di sistema. Prima questo avveniva nella propertyCompare degli Ing, ma abbiamo dovuto modificare perchè ci impediva di filtrare i prodotti finiti nella vista espansa PF del monitor.
+            /*let container:[IngredientModel] = self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)*/
+            
+            let container:[IngredientModel] = {
+                
+                if let specificOne = self.viewModel.showSpecificModel,
+                   let model = self.viewModel.modelFromId(id: specificOne, modelPath: \.db.allMyIngredients){
+                    
+                    return [model] // Nota 08.02.24
+                    
+                } else {
+                    
+                   return self.viewModel.ricercaFiltra(containerPath: \.db.allMyIngredients, coreFilter: filterCore)
+                }
+                
+            }()
+           
             let generalDisable:Bool = {
                 
                 let condition_1 = container.isEmpty
@@ -48,7 +58,7 @@ struct ListaIngredientiView: View {
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
-                title: "I Miei Ingredienti (\(allModelCount))",
+                title: "I Miei Ingredienti (\(container.count))",
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per nome e/o allergene",
                 altezzaPopOverSorter: 300,
@@ -58,7 +68,7 @@ struct ListaIngredientiView: View {
                 generalDisable: generalDisable,
                 onChangeValue: self.viewModel.resetScroll,
                 onChangeProxyControl: { proxy in
-                    if self.tabSelection == .ingredientList {
+                    if self.viewModel.pathSelection == .ingredientList {
                         withAnimation {
                             proxy.scrollTo(1, anchor: .top)
                         }
@@ -74,27 +84,14 @@ struct ListaIngredientiView: View {
                     vbSorterView()
                 }, elementView: { ingredient in
                     
-                    let navigationPath = \AccounterVM.ingredientListPath
+                   // let navigationPath = \AccounterVM.ingredientListPath
+                    let navigationPath = self.viewModel.pathSelection.vmPathAssociato()
                     let isReady = ingredient.ingredientType == .asProduct
-                   /* let isAReadyProduct:ProductModel? = {
-                        if let id = viewModel.isASubOfReadyProduct(id: ingredient.id) {
-                           return viewModel.modelFromId(id:id, modelPath: \.db.allMyDish)
-                        } else {
-                            return nil
-                        }
-                        
-                    }() */
-                    
-                  
-                    
+        
                     GenericItemModel_RowViewMask(model: ingredient) {
                         
-                     //   Group {
-                            
                             ingredient.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath: navigationPath)
-
-                      //  if ingredient.ingredientType == .standard {
-                            
+ 
                         Group {
                             
                             vbMenuInterattivoModuloEdit(currentModel: ingredient, viewModel: viewModel, navPath: navigationPath)
@@ -104,17 +101,8 @@ struct ListaIngredientiView: View {
                         .csModifier(isReady) { $0.hidden() }
                             
                             vbReadyProdutcOption(ingredient: ingredient)
-                        
-                       // }//.disabled(isAReadyProduct != nil)
-                        
-                        // Da ViewBuildizzare
-                    
-                        
-                       
+        
                     }
-                   // .opacity(isAReadyProduct != nil ? 0.6 : 1.0)
-                    
-                                        
                 })
             .navigationDestination(for: DestinationPathView.self, destination: { destination in
                 destination.destinationAdress(backgroundColorView: backgroundColorView, destinationPath: .ingredientList, readOnlyViewModel: viewModel)
@@ -138,6 +126,26 @@ struct ListaIngredientiView: View {
             self.mapTree = nil
         }
     }
+    
+    private func removeTask(for ingredientId:String) {
+        
+        Task {
+            
+            let key = IngredientModel.CodingKeys.asProduct.rawValue
+            let value:String? = nil
+            let path = [key:value as Any]
+            
+           try await self.viewModel.updateSingleField(
+                docId: ingredientId,
+                sub: .allMyIngredients,
+                path: path)
+            
+            
+        }
+        
+    }
+    
+    // ViewBuilder
     
     @ViewBuilder private func vbReadyProdutcOption(ingredient:IngredientModel) -> some View {
         
@@ -169,15 +177,6 @@ struct ListaIngredientiView: View {
                 Button(role:.destructive) {
                     
                     removeTask(for: ingredient.id)
-                    
-                  /*  let key = IngredientModel.CodingKeys.asProduct.rawValue
-                    let value:String? = nil
-                    let path = [key:value as Any]
-                    
-                    self.viewModel.updateSingleField(
-                        docId: ingredient.id,
-                        sub: .allMyIngredients,
-                        path: path) */
                     
                 } label: {
                     HStack {
@@ -212,24 +211,6 @@ struct ListaIngredientiView: View {
         
     }
     
-    private func removeTask(for ingredientId:String) {
-        
-        Task {
-            
-            let key = IngredientModel.CodingKeys.asProduct.rawValue
-            let value:String? = nil
-            let path = [key:value as Any]
-            
-           try await self.viewModel.updateSingleField(
-                docId: ingredientId,
-                sub: .allMyIngredients,
-                path: path)
-            
-            
-        }
-        
-    }
-    
     @ViewBuilder private func vbTrailing() -> some View {
         
         Menu {
@@ -259,14 +240,22 @@ struct ListaIngredientiView: View {
     
     @ViewBuilder private func vbFilterView(container:[IngredientModel]) -> some View {
         
-        MyFilterRow(
+       /* MyFilterRow(
             allCases: StatusTransition.allCases,
             filterCollection: $filterCore.filterProperties.status,
             selectionColor: Color.mint.opacity(0.8),
             imageOrEmoji: "circle.dashed",
             label: "Status") { value in
                 container.filter({$0.statusTransition == value}).count
-            }
+            }*/
+        MyFilterRow(
+            allCases: IngredientModel.IngredientType.allCases,
+             filterProperty: $filterCore.filterProperties.tipologia,
+             selectionColor: Color.mint.opacity(0.8),
+             imageOrEmoji: "leaf",
+             label: "Tipologia") { value in
+                 container.filter({$0.ingredientType == value}).count
+             }
         
         MyFilterRow(
             allCases: StatoScorte.allCases,

@@ -19,6 +19,7 @@ struct CloudImportCategoriesView: View {
     @State private var searchLetter:String = ""
     @State private var productType:ProductType = .noValue
     let backgroundColor:Color
+    let destinationPath:DestinationPath
 
     var body: some View {
         
@@ -186,13 +187,13 @@ struct CloudImportCategoriesView: View {
                 
                 Button {
                     
-                    Task {
+                  //  Task {
 
                         self.updateCategoriesListIndex()
 
-                        try await self.importVM.importInSubCollection(subCollection: .allMyCategories, viewModel: self.viewModel)
+                       /*try await*/ self.importVM.importInSubCollection(subCollection: .allMyCategories, viewModel: self.viewModel,destinationPath: destinationPath)
                         
-                    }
+                  // }
                     
                 } label: {
                     Text("Importa")

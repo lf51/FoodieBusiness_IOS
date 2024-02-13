@@ -286,10 +286,10 @@ struct ModuloSostituzionePermanente: View {
             let cleanDish = {
                 var cleanCopy = dish
                 
-                if let sostituto = cleanCopy.elencoIngredientiOff?[self.ingredienteCorrente.id] {
+                if let sostituto = cleanCopy.offManager?.fetchSubstitute(for: self.ingredienteCorrente.id) {
                     
                     cleanCopy[keyPath:path!]![posizione!] = sostituto
-                    cleanCopy.elencoIngredientiOff?[self.ingredienteCorrente.id] = nil
+                    cleanCopy.offManager?.elencoIngredientiOff[self.ingredienteCorrente.id] = nil
                     
                 } // else { cleanCopy[keyPath:path!]!.remove(at: posizione!) }
 
@@ -351,11 +351,11 @@ struct ModuloSostituzionePermanente: View {
         let idSostitutoGlobale = modelSostitutoGlobale.id
         let nameSostitutoGlobale = modelSostitutoGlobale.intestazione
         
-        guard let off = currentDish.elencoIngredientiOff else {
+        guard let offManager = currentDish.offManager else {
             return (idSostitutoGlobale,nameSostitutoGlobale)
         }
         
-        guard off[self.ingredienteCorrente.id] != idSostitutoGlobale else {return (idSostitutoGlobale,nameSostitutoGlobale) }
+        guard offManager.elencoIngredientiOff[self.ingredienteCorrente.id] != idSostitutoGlobale else {return (idSostitutoGlobale,nameSostitutoGlobale) }
         // Vedi Nota 01.09
         // end 01.09
         

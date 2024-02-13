@@ -14,7 +14,7 @@ struct DishListView: View {
     
     @EnvironmentObject var viewModel: AccounterVM
     
-    let tabSelection: DestinationPath // non Usata
+   // let tabSelection: DestinationPath // non Usata
     let backgroundColorView: Color
     
     @State private var openFilter: Bool = false
@@ -26,8 +26,21 @@ struct DishListView: View {
         
         NavigationStack(path:$viewModel.dishListPath) {
             
-            let allModelCount = self.viewModel.db.allMyDish.count
-            let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyDish, coreFilter: filterCore)
+            let container:[ProductModel] = {
+                
+                if let specificOne = self.viewModel.showSpecificModel,
+                   let model = self.viewModel.modelFromId(id: specificOne, modelPath: \.db.allMyDish){
+                    
+                    return [model] // Nota 08.02.24
+                    
+                } else {
+                    
+                   return self.viewModel.ricercaFiltra(containerPath: \.db.allMyDish, coreFilter: filterCore)
+                }
+                
+            }()
+            
+          //  let container = self.viewModel.ricercaFiltra(containerPath: \.db.allMyDish, coreFilter: filterCore)
             
             let generalDisable:Bool = {
                 
@@ -41,7 +54,7 @@ struct DishListView: View {
             
             FiltrableContainerView(
                 backgroundColorView: backgroundColorView,
-                title: "I Miei Prodotti (\(allModelCount))",
+                title: "I Miei Prodotti (\(container.count))",
                 filterCore: $filterCore,
                 placeHolderBarraRicerca: "Cerca per Prodotto e/o Ingrediente",
                 buttonColor: .seaTurtle_3,
@@ -50,7 +63,7 @@ struct DishListView: View {
                 generalDisable: generalDisable,
                 onChangeValue: self.viewModel.resetScroll,
                 onChangeProxyControl: { proxy in
-                    if self.tabSelection == .dishList {
+                    if self.viewModel.pathSelection == .dishList {
                         withAnimation {
                             proxy.scrollTo(1, anchor: .top)
                         }
@@ -70,23 +83,30 @@ struct DishListView: View {
                 },
                 elementView: { dish in
                     
-                    let navigationPath = \AccounterVM.dishListPath
+                   // let navigationPath = \AccounterVM.dishListPath
+                    let navigationPath = self.viewModel.pathSelection.vmPathAssociato()
                     let isReady = dish.adress == .finito
 
                         GenericItemModel_RowViewMask(model: dish) {
                     
-                            dish.vbMenuInterattivoModuloCustom(viewModel: viewModel, navigationPath:navigationPath)
+                            dish.vbMenuInterattivoModuloCustom(
+                                viewModel: viewModel,
+                                navigationPath:navigationPath)
                                 
                           //  if dish.adress != .finito {
+                            Group {
                                 
-                            vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
-                                .csModifier(isReady) { $0.hidden() }
-                          //  }
+                                vbMenuInterattivoModuloCambioStatus(myModel: dish,viewModel: viewModel)
+                                    //.csModifier(isReady) { $0.hidden() }
+                              //  }
+                                vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
                                 
-                            vbMenuInterattivoModuloEdit(currentModel: dish, viewModel: viewModel, navPath: navigationPath)
-                            
-                            vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
-                                .csModifier(isReady) { $0.hidden() }
+                                vbMenuInterattivoModuloTrash(currentModel: dish, viewModel: viewModel)
+                                    //.csModifier(isReady) { $0.hidden() }
+                                
+                                
+                            }.csModifier(isReady) { $0.hidden() }
+                          
                            
                         }
                     
@@ -149,11 +169,29 @@ struct DishListView: View {
             filterCollection: $filterCore.filterProperties.percorsoPRP,
             selectionColor: Color.white.opacity(0.5),
             imageOrEmoji: "fork.knife",
-            label: "Prodotto") { value in
+            label: "Tipologia") { value in
                 container.filter({$0.adress == value}).count
             }
         
-        let checkAvailability = checkStatoScorteAvailability()
+        let checkAvailabilityPrep = checkAvailability(for: .preparazione)
+        
+        MyFilterRow(
+            allCases: ProductModel.ExecutionState.allCases,
+            filterProperty: $filterCore.filterProperties.executionState,
+            selectionColor: Color.orange.opacity(0.8),
+            imageOrEmoji: "circle.dashed",
+            label: "Status Execution") { value in
+                
+                if checkAvailabilityPrep {
+                    return container.filter({
+                        $0.checkStatusExecution(viewModel: self.viewModel) == value
+                    }).count
+                    
+                } else { return 0 }
+            }.opacity(checkAvailabilityPrep ? 1.0 : 0.3)
+            .disabled(!checkAvailabilityPrep)
+        
+        let checkAvailabilityPF = checkAvailability(for: .finito)
         
         MyFilterRow(
             allCases: StatoScorte.allCases,
@@ -162,28 +200,29 @@ struct DishListView: View {
             imageOrEmoji: "cart",
             label: "Livello Scorte") { value in
                 
-                if checkAvailability {
+                if checkAvailabilityPF {
+                    
                      return container.filter({
                          
-                         self.viewModel.getStatusScorteING(from: $0.id) == value
-                       /* self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == value*/
+                         $0.getStatoScorteAsProduct(viewModel: self.viewModel) == value
+
                     }).count
                 } else { return 0 }
             }
-            .opacity(checkAvailability ? 1.0 : 0.3)
-            .disabled(!checkAvailability)
+            .opacity(checkAvailabilityPF ? 1.0 : 0.3)
+            .disabled(!checkAvailabilityPF)
         
         MyFilterRow(
             allCases: StatusTransition.allCases,
             filterCollection: $filterCore.filterProperties.status,
             selectionColor: Color.mint.opacity(0.8),
-            imageOrEmoji: "circle.dashed",
+            imageOrEmoji: "circle.fill",
             label: "Status") { value in
                 container.filter({
                     $0.getStatusTransition(viewModel:self.viewModel) == value
                 }).count
             }
-     
+        
         MyFilterRow(
             allCases: self.viewModel.db.allMyCategories,
             filterCollection: $filterCore.filterProperties.categorieMenu,
@@ -208,7 +247,7 @@ struct DishListView: View {
         MyFilterRow(
             allCases: TipoDieta.allCases,
             filterCollection: $filterCore.filterProperties.dietePRP,
-            selectionColor: Color.orange.opacity(0.6),
+            selectionColor: Color.white.opacity(0.6),
             imageOrEmoji: "person.fill.checkmark",
             label: "Adatto alla dieta") { value in
                 container.filter({
@@ -251,7 +290,7 @@ struct DishListView: View {
     
     @ViewBuilder private func vbSorterView() -> some View {
         
-        let isPF = checkStatoScorteAvailability()
+        let isPF = checkAvailability(for: .finito)
         let color:Color = .seaTurtle_3
         
         MySortRow(
@@ -288,11 +327,13 @@ struct DishListView: View {
      
     }
 
-    private func checkStatoScorteAvailability() -> Bool {
+    private func checkAvailability(for adress:ProductAdress) -> Bool {
        
         guard let percorso = self.filterCore.filterProperties.percorsoPRP else { return false }
         
-       return percorso.contains(.finito) &&
+       guard filterCore.tipologiaFiltro == .includi else { return false }
+        
+       return percorso.contains(adress) &&
         percorso.count == 1
  
     }

@@ -57,6 +57,7 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
     let disabilita = myModel.disabilitaSetStatusTransition(viewModel: viewModel)
 
     Group {
+        
         if statusTransition == .disponibile {
                     
             VStack {

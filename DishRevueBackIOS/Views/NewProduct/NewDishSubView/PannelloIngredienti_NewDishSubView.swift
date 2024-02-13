@@ -117,33 +117,39 @@ struct PannelloIngredienti_NewDishSubView: View {
 
         let (model,sostituto) = checkPreliminareIngredientSmallRow(id: id)
         
-        if model != nil {
-            IngredientModel_SmallRowView(titolare: model!, sostituto: sostituto)
+        if let model {
+            IngredientModel_SmallRowView(titolare: model, sostituto: sostituto)
         }
   
     }
     
-    private func checkPreliminareIngredientSmallRow(id:String) -> (model:IngredientModel?,sosituto:IngredientModel?) {
+    private func checkPreliminareIngredientSmallRow(id:String) -> (model:IngredientModel?,sostituto:IngredientModel?) {
 
         guard let ingredient = self.viewModel.modelFromId(id: id, modelPath: \.db.allMyIngredients) else { return (nil,nil)}
-      /*  guard let ingredient = self.viewModel.ingredientFromId(id: id) else {
-            return (nil,nil)
-        }*/
         
-        guard ingredient.statusTransition == .inPausa else {
+        guard ingredient.statusTransition == .inPausa,
+        let offManager = newDish.offManager,
+        let idSostituto = offManager.fetchSubstitute(for: id) else {
             return (ingredient,nil)
         }
         
-        let idSostituto = self.newDish.elencoIngredientiOff?[id]
+       /* guard let offManager = newDish.offManager else {
+            return (ingredient,nil)
+        }*/
+        
+       /* guard let idSostituto = offManager.fetchSubstitute(for: id) else {
+            return (ingredient,nil)
+        }*/
                 
-        guard idSostituto != nil else { return (ingredient,nil)}
+       // guard idSostituto != nil else { return (ingredient,nil)}
 
        /* guard let modelSostituto = self.viewModel.ingredientFromId(id: idSostituto!) else {
             return (ingredient,nil)
                 } */
-        guard let modelSostituto = self.viewModel.modelFromId(id: idSostituto!, modelPath: \.db.allMyIngredients) else { return (ingredient,nil) }
+        guard let modelSostituto = self.viewModel.modelFromId(id: idSostituto, modelPath: \.db.allMyIngredients),
+              modelSostituto.statusTransition == .disponibile else { return (ingredient,nil) }
         
-        guard modelSostituto.statusTransition == .disponibile else { return (ingredient,nil)}
+       /* guard modelSostituto.statusTransition == .disponibile else { return (ingredient,nil)}*/
                 
         return (ingredient,modelSostituto)
         

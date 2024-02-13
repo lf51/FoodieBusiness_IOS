@@ -34,6 +34,7 @@ enum CS_GenericError:Error,LocalizedError {
     case propertyAlreadyRegistered
     case propertyDataCorrotti
     case fastImportDishWithNoIng
+    case modelNameAlreadyIn(_:String)
     case invalidPreparazioneStructure
     
     var errorDescription: String? {
@@ -48,6 +49,9 @@ enum CS_GenericError:Error,LocalizedError {
             
         case .fastImportDishWithNoIng:
             return NSLocalizedString("[Error]_Ciascuna preparazione deve contenere almeno un ingrediente", comment: "Creazione in blocco interrotta")
+            
+        case .modelNameAlreadyIn(let name):
+            return NSLocalizedString("[Error]_Esiste già una preparazione intitolata <\(name)> Cambiare e riprovare.", comment: "Creazione in blocco interrotta")
             
         case .invalidPreparazioneStructure:
             return NSLocalizedString("[Error]_La preparazione deve contenere almeno un ingrediente principale", comment: "Array Ingredienti principali vuoto")

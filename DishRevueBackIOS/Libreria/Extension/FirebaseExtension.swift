@@ -13,7 +13,7 @@ import MyFoodiePackage
 extension Query {
     
     /// ritorna la query precedente nel caso il valore per cui filtrare è nil / IngredientModel
-    func csWhereField<F:RawRepresentable & Codable>(isEqualTo:F?,in key:IngredientModel.CodingKeys) -> Query {
+    func csWhereField<F:RawRepresentable & Codable>(isEqualTo:F?,in key:IngredientSubModel.CodingKeys) -> Query {
         
         guard let isEqualTo else { return self }
         
@@ -21,7 +21,7 @@ extension Query {
     }
     
     /// ritorna la query precedente nel caso il valore per cui filtrare è un array optiona // IngredientModel / La chiave deve contenere almeno uno dei valori passati
-    func csWhereField<F:RawRepresentable & Codable>(contain values:[F]?,in key:IngredientModel.CodingKeys) -> Query {
+    func csWhereField<F:RawRepresentable & Codable>(contain values:[F]?,in key:IngredientSubModel.CodingKeys) -> Query {
         
         guard let values else { return self }
         

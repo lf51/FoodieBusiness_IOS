@@ -13,7 +13,7 @@ struct MainView: View {
     @EnvironmentObject var viewModel:AccounterVM
     
     @ObservedObject var authProcess: AuthenticationManager
-    @State private var tabSelector: DestinationPath = .homeView
+   // @State private var tabSelector: DestinationPath = .homeView
     
     private let backgroundColorView: Color = Color.seaTurtle_1
     
@@ -26,18 +26,28 @@ struct MainView: View {
 
     var body: some View {
             
-        TabView(selection:$tabSelector.csOnUpdate { oldValue, newValue in
+       /* TabView(selection:$tabSelector.csOnUpdate { oldValue, newValue in
             
             if oldValue == newValue {
                 self.viewModel.refreshPathAndScroll(tab: self.tabSelector)
             }
             
-        } ) { // Deprecata da Apple / Sostituire
+        } ) { // Deprecata da Apple / Sostituire */
                 
+        TabView(selection:$viewModel.pathSelection.csOnUpdate { oldValue, newValue in
+             
+             if oldValue == newValue {
+                // self.viewModel.refreshPathAndScroll(tab: self.tabSelector)
+                 self.viewModel.refreshPathAndScroll()
+             }
+             
+         } ) {
+        
             Group {
+                
                 HomeView(
                     authProcess: authProcess,
-                    tabSelection: tabSelector,
+                   //tabSelection: tabSelector,
                     backgroundColorView: backgroundColorView)
                        // .badge(dishChange)
                         .badge(0) // Il pallino rosso delle notifiche !!!
@@ -47,14 +57,18 @@ struct MainView: View {
                         }.tag(DestinationPath.homeView)
                         // .tag(1)
                    
-                MenuListView(tabSelection: tabSelector, backgroundColorView: backgroundColorView)
+                MenuListView(
+                   // tabSelection: tabSelector,
+                    backgroundColorView: backgroundColorView)
                     .badge(viewModel.remoteStorage.menu_countModificheIndirette)
                     .tabItem {
                         Image (systemName: "menucard")//scroll.fill
                         Text("Menu")
                     }.tag(DestinationPath.menuList)
                 
-                DishListView(tabSelection: tabSelector, backgroundColorView: backgroundColorView)
+                DishListView(
+                   // tabSelection: tabSelector,
+                    backgroundColorView: backgroundColorView)
                     .badge(viewModel.remoteStorage.dish_countModificheIndirette)
                         .tabItem {
                             Image (systemName: "fork.knife.circle")
@@ -62,7 +76,9 @@ struct MainView: View {
                         }
                         .tag(DestinationPath.dishList)
                       
-                ListaIngredientiView(tabSelection: tabSelector, backgroundColorView: backgroundColorView)
+                ListaIngredientiView(
+                   // tabSelection: tabSelector,
+                    backgroundColorView: backgroundColorView)
                    
                     .badge(self.ingChanged)
                     .tabItem {
@@ -79,7 +95,7 @@ struct MainView: View {
             .toolbarBackground(Color.seaTurtle_1.opacity(0.9), for: .tabBar)
                 
             }
-        .onChange(of: self.tabSelector) { _, newValue in
+        .onChange(of: self.viewModel.pathSelection) { _, newValue in
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
               
@@ -110,14 +126,14 @@ struct MainView: View {
     }
 }
 
-enum CS_TabSelector:Hashable {
+/*enum CS_TabSelector:Hashable {
     
     case home
     case ing
     case dish
     case menu
     
-} // 24.02 Deprecata in quanto duplicazione del DestinationPath
+}*/ // 24.02 Deprecata in quanto duplicazione del DestinationPath
 
 /*
 struct MainView_Previews: PreviewProvider {

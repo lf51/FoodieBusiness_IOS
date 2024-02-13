@@ -26,7 +26,7 @@ extension CoreFilter {
         return false
         
     }*/  // deprecata
-    func compareStatusTransition(localStatus:StatusTransition,filterStatus:[StatusTransition]?) -> Bool {
+    func compareStatusTransition(localStatus:StatusTransition,filterStatus:[StatusTransition]?,tipologiaFiltro:TipologiaFiltro) -> Bool {
         
         guard
             let filter = filterStatus,
@@ -42,41 +42,35 @@ extension CoreFilter {
         
     }
     
-    func compareStatusTransition(localStatus:StatusTransition,singleFilter:StatusTransition?) -> Bool {
+    func compareStatusTransition(localStatus:StatusTransition,singleFilter:StatusTransition?,tipologiaFiltro:TipologiaFiltro) -> Bool {
         
         guard
             let filter = singleFilter else { return true }
       
-            return localStatus == filter
+        let condition = localStatus == filter
+        
+        return tipologiaFiltro.normalizeBoolValue(value: condition)
         
     }
-   /* func compareStatusTransition(localStatus:StatusModel,singleFilter:StatusTransition?) -> Bool {
-        
-        guard
-            let filter = singleFilter else { return true }
-      
-            return localStatus.checkStatusTransition(check: filter)
-        
-    } */ // deprecata
     
-    func compareStatoScorte(modelId:String,filterInventario:[StatoScorte]?, readOnlyVM:AccounterVM) -> Bool {
+   /* func compareStatoScorte(modelId:String,filterInventario:[StatoScorte]?,tipologiaFiltro:TipologiaFiltro, readOnlyVM:AccounterVM) -> Bool {
         
         guard let inventario = filterInventario,
               inventario != [] else { return true }
         
-       /* let statoScorte = readOnlyVM.currentProperty.inventario.statoScorteIng(idIngredient: modelId) */
         let statoScorte = readOnlyVM.getStatusScorteING(from: modelId)
+        let condition = inventario.contains(statoScorte)
         
-        return inventario.contains(statoScorte)
-    }
+        return tipologiaFiltro.normalizeBoolValue(value: condition)
+    } */
     
-    func compareStatoScorte(modelId:String,singleFilter:StatoScorte?, readOnlyVM:AccounterVM) -> Bool {
+   /* func compareStatoScorte(modelId:String,singleFilter:StatoScorte?,tipologiaFiltro:TipologiaFiltro, readOnlyVM:AccounterVM) -> Bool {
         
         guard let inventario = singleFilter else { return true }
         
         let statoScorte = readOnlyVM.getStatusScorteING(from: modelId)
-        
-        return statoScorte == inventario
-    } // create 09.07.23
+        let condition = statoScorte == inventario
+        return tipologiaFiltro.normalizeBoolValue(value: condition)
+    }*/ // create 09.07.23
 
 }

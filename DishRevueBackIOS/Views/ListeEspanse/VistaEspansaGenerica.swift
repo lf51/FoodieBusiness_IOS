@@ -224,7 +224,7 @@ struct VistaEspansaMenuPerAnteprima: View {
                                     Button {
                                         self.viewModel.addToThePath(
                                             destinationPath: destinationPath,
-                                            destinationView: .piatto(model,.ridotto))
+                                            destinationView: .piatto(model))
                                     } label: {
                                         Image(systemName:"gearshape")
                                             .imageScale(.large)

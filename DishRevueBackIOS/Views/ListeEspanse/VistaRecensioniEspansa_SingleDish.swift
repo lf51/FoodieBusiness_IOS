@@ -116,7 +116,7 @@ struct VistaRecensioniEspansa_SingleDish: View {
                                 
                                 Button(role:.destructive) {
 
-                                    self.viewModel[keyPath: navigationPath.vmPathAssociato()].append(DestinationPathView.piatto(currentDish,.ridotto))
+                                    self.viewModel[keyPath: navigationPath.vmPathAssociato()].append(DestinationPathView.piatto(currentDish))
                                     
                                 } label: {
                                     

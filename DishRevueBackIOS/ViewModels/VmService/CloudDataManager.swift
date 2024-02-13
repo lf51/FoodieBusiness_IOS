@@ -731,6 +731,8 @@ public final class SubCollectionManager {
         item newItem:Item,
         throw encoder:Firestore.Encoder = Firestore.Encoder()) async throws {
            
+          //  throw CS_FirebaseError.invalidPropertySnap // test
+            
         guard let currentPropertySnap else {
             throw CS_FirebaseError.invalidPropertySnap
                 }

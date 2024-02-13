@@ -121,6 +121,7 @@ extension IngredientModel:Object_FPC {
         }()
         
         let allergens = self.values.allergeni ?? []
+        let statoScorte = self.statusScorte()
         
         return stringResult && // update 10.07.23 vedi ListIngredientView
         
@@ -134,25 +135,23 @@ extension IngredientModel:Object_FPC {
         
         coreFilter.compareCollectionToCollection(localCollection: allergens, filterCollection: filterProperties.allergeniIn) &&
         
-        coreFilter.compareStatusTransition(localStatus: self.statusTransition, filterStatus: filterProperties.status) &&
+        coreFilter.comparePropertyToProperty(localProperty: self.ingredientType, filterProperty: filterProperties.tipologia) &&
+       /* coreFilter.compareStatusTransition(localStatus: self.statusTransition, filterStatus: filterProperties.status) &&*/
         
-        coreFilter.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario, readOnlyVM: readOnlyVM) &&
+       /* coreFilter.compareStatoScorte(modelId: self.id, filterInventario: filterProperties.inventario,tipologiaFiltro: coreFilter.tipologiaFiltro, readOnlyVM: readOnlyVM) &&*/
+        coreFilter.comparePropertyToCollection(localProperty: statoScorte, filterCollection: filterProperties.inventario) &&
         
-        coreFilter.compareStatusTransition(localStatus: self.statusTransition, singleFilter: filterProperties.status_singleChoice) &&
+        coreFilter.comparePropertyToProperty(localProperty: statoScorte, filterProperty: filterProperties.inventario_singleChoice)
         
-        coreFilter.compareStatoScorte(modelId: self.id, singleFilter: filterProperties.inventario_singleChoice, readOnlyVM: readOnlyVM)
+       /* coreFilter.compareStatusTransition(localStatus: self.statusTransition, singleFilter: filterProperties.status_singleChoice) &&*/
+        
+       /* coreFilter.compareStatoScorte(modelId: self.id, singleFilter: filterProperties.inventario_singleChoice, tipologiaFiltro: coreFilter.tipologiaFiltro, readOnlyVM: readOnlyVM)*/
         
     }
     
     public struct FilterProperty:SubFilterObject_FPC {
         
-      //  public typealias M = IngredientModel
-        
-      //  public var coreFilter: CoreFilter
-      //  public var sortCondition: SortCondition
-        
-        var status:[StatusTransition]?
-       // var inventario:[Inventario.TransitoScorte]?
+        //var status:[StatusTransition]?
         var inventario:[StatoScorte]?
         
         //09.07.23 innesto per filtro visivo
@@ -166,6 +165,8 @@ extension IngredientModel:Object_FPC {
         var origineING:OrigineIngrediente?
         var conservazioneING:[ConservazioneIngrediente]?
         var allergeniIn:[AllergeniIngrediente]?
+        
+        var tipologia:IngredientType?
         
         public init() {
            // self.coreFilter = CoreFilter()
@@ -183,9 +184,12 @@ extension IngredientModel:Object_FPC {
             countManageSingle_FPC(
                 newValue: new.origineING,
                 oldValue: old.origineING) +
-            countManageCollection_FPC(
+            countManageSingle_FPC(
+                newValue: new.tipologia,
+                oldValue: old.tipologia) +
+            /*countManageCollection_FPC(
                 newValue: new.status,
-                oldValue: old.status) +
+                oldValue: old.status) +*/
             countManageCollection_FPC(
                 newValue: new.inventario,
                 oldValue: old.inventario) +
@@ -287,8 +291,8 @@ extension IngredientModel:MyProVisualPack_L0 {
         switch self.statusTransition {
             
         case .disponibile: return 1.0
-        case .inPausa: return 0.8
-        case .archiviato: return 0.5
+        case .inPausa: return 0.7
+        case .archiviato: return 0.4
         }
     }
     
@@ -328,7 +332,7 @@ extension IngredientModel:MyProVisualPack_L0 {
         
        return VStack {
             
-           vbFinitoLabel()
+           vbFinitoLabel(viewModel: viewModel)
            vbVisualManageScorte(viewModel: viewModel,navigationPath: navigationPath)
          
           // Group {
@@ -358,14 +362,35 @@ extension IngredientModel:MyProVisualPack_L0 {
         }
     }
     
-    @ViewBuilder private func vbFinitoLabel() -> some View {
+    @ViewBuilder private func vbFinitoLabel(viewModel:AccounterVM) -> some View {
          
-        if self.ingredientType == .asProduct {
+        if let asProduct {
             
-            Label {
-                Text("Type: as Product")
-            } icon: {
-                Image(systemName: "doc.on.doc")
+            let label = self.ingredientType.simpleDescription()
+            
+            Group {
+                
+                Label {
+                    Text("Type: \(label)")
+                } icon: {
+                    Image(systemName: "doc.on.doc")
+                }
+                
+                Button {
+                    viewModel.showSpecificModel = asProduct.id
+                    
+                    withAnimation {
+                        viewModel.pathSelection = .dishList
+                    }
+                    
+                } label: {
+                    HStack {
+                        Text("Vai al Prodotto")
+                        Image(systemName: "arrow.up.forward.app")
+                    }
+                }
+                
+                
             }
         }
     
@@ -397,7 +422,7 @@ extension IngredientModel:MyProVisualPack_L0 {
             let conditionThree = statoScorte == .outOfStock
             let conditionFour = statoScorte == .esaurito || conditionThree
             
-            let noDish = dishIn.dishCount == 0
+            //let noDish = dishIn.dishCount == 0
             
             let inEsauri = statoScorte != .inStock
             let esauri = conditionOne || conditionFour
@@ -622,7 +647,9 @@ extension IngredientModel {
 
     }*/
     
-    public enum IngredientType:String,Codable {
+    public enum IngredientType:String,Codable,Property_FPC {
+        
+        static var allCases:[IngredientType] = [.standard,.asProduct]
         
         case standard
         case asProduct
@@ -648,7 +675,7 @@ extension IngredientModel {
             case .standard:
                return "standard"
             case .asProduct:
-                return "prodotto pronto"
+                return "as product"
            // case .limited:
              //   return "sottostante composizione"
             }
@@ -677,6 +704,23 @@ extension IngredientModel {
             //    return Color.clear
             }
         }
+        
+        public func returnTypeCase() -> MyFoodiePackage.IngredientModel.IngredientType {
+            return self
+        }
+        
+        public func orderAndStorageValue() -> Int {
+            
+            switch self {
+            case .standard:
+                return 0
+            case .asProduct:
+                return 1
+            }
+        }
+        
+        
     }
+
     
 }

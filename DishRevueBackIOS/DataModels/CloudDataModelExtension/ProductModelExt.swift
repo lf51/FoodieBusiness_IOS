@@ -17,26 +17,27 @@ extension ProductModel:MyProVMPack_L0 {
 
 extension ProductModel {
 
-    private func preCallHasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T?) -> Bool {
+   /* private func preCallHasAllIngredientSameQuality<T:MyProEnumPack_L0>(viewModel:AccounterVM,kpQuality:KeyPath<IngredientModel,T>,quality:T?) -> Bool {
         
         guard let unwrapQuality = quality else { return true }
         
        return self.hasAllIngredientSameQuality(viewModel: viewModel, kpQuality: kpQuality, quality: unwrapQuality)
         
-    } // Migrata su MyFoodiePackage 20.01.23
+    }*/ // Migrata su MyFoodiePackage 20.01.23
     
 
-    func topRatedValue(readOnlyVM:AccounterVM) -> Double {
+   /* func topRatedValue(readOnlyVM:AccounterVM) -> Double {
         
         let (media,count,_) = self.ratingInfo(readOnlyViewModel:readOnlyVM)
        
         return (media * Double(count))
      
-    } // 20.01.23 Ricollocata in MyFoodiePackage
+    }*/ // 20.01.23 Ricollocata in MyFoodiePackage
     
     /// controlla tutti gii ingredienti attivi del piatto, se sono in stock, in arrivo, o in esaurimento. In caso affermativo ritorna true, il piatto è eseguibile
-    func controllaSeEseguibile(viewModel:AccounterVM) -> Bool {
+   /* func controllaSeEseguibile(viewModel:AccounterVM) -> Bool {
         // il controllo dello status è deprecato in futuro perchè sarà derivato dallo stato Scorte
+        //07.02.24 Da aggiornare quando si andrà a lavorare su Menu e/o Monitor. Gli ingredienti atttivi() sono stati aggiornati
         let allIngActive = self.allIngredientsAttivi(viewModel: viewModel)
         
         let mapStock = allIngActive.map({
@@ -49,23 +50,34 @@ extension ProductModel {
         
         return allIngActive.count == filtraStock.count
         
-    } // deprecata 16.03.23
+    } */ // deprecata 16.03.23 || effettivo 08.02.24
     
     /// analizza gli ingredienti per comprendere se un piatto è eseguibile o meno
     func checkStatusExecution(viewModel:AccounterVM) -> ExecutionState {
         // 22_01_24 da Aggiornare in ragione del fatto che lo status degli ing è strettamente correlato in automatico con lo stato scorte.
         // Quando abbiamo creato questa func lo status dell'ing poteva essere forzato manualmente
         
-        
         // 1. Eseguibile
         // 1a. Tutti gli ing sono disponibili, principali, secondari o eventuali sostituti
         // Passaggio di status sempre consentito. 16.03.23 Nessuna modifica da apportare
         
         //Update 09.07.23
-        guard self.adress != .composizione else { return .eseguibileConRiserva }
+        
+        switch self.adress {
+            
+        case .preparazione: return checkStatusPreparazione(viewModel: viewModel)
+        case .finito: return checkStatusAsProduct(viewModel: viewModel)
+        case .composizione: return .eseguibileConRiserva
+            
+        }
+        
+       /* guard self.adress != .composizione else { return .eseguibileConRiserva }
  
+        guard self.adress != .finito else {
+            return .nonEseguibile
+        } */
         //end update
-        let allIng = self.allMinusArchiviati(viewModel: viewModel)
+      /*  let allIng = self.allIngredientsIn(viewModel: viewModel)
         
         if self.adress == .preparazione,
            allIng.isEmpty {
@@ -85,7 +97,56 @@ extension ProductModel {
        /* let allInPausaAvaible = allInPausa.map({viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)}).contains(.esaurito) */
         
         let areNotAllIngInPausaAvaible = allInPausa.contains(where: { /*viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == .esaurito*/
-            viewModel.getStatusScorteING(from: $0.id) == .esaurito
+           // viewModel.getStatusScorteING(from: $0.id) == .esaurito
+            $0.statusScorte() == .esaurito
+        })
+        
+        guard areNotAllIngInPausaAvaible else { return .eseguibile }
+        
+        // 2.Eseguibile con Riserva
+        
+        //2a. Se Gli ing in Pausa, e non in stock, sono tutti secondari è consentito eseguire il piatto con riserva dello chef
+        // In questo caso il passaggio di Status da inPausa a Disponibile può essere consentito con conferma. 16.03.23 da implementare
+        
+        let idIngInPausa = allInPausa.map({$0.id})
+        let ingredientiPrincipali = self.ingredientiPrincipali ?? []
+        let areNotInPausaAllSecondary = ingredientiPrincipali.contains {
+            idIngInPausa.contains($0)
+        }
+        
+        guard areNotInPausaAllSecondary else { return .eseguibileConRiserva }
+        
+        // 3. Non Eseguibile. Il piatto contiene fra i principali degli ing in pausa e non in stock
+        // In questo caso il passaggio di Status da inPausa a Disponibile deve essere bloccato. 16.03.23 da implementare
+        
+        return .nonEseguibile */
+        
+    }
+    
+   /* private func checkStatusPreparazione(viewModel:AccounterVM) -> ExecutionState {
+        
+        let allIng = self.allIngredientsIn(viewModel: viewModel)
+        
+        if self.adress == .preparazione,
+           allIng.isEmpty {
+           return .nonEseguibile
+        }
+        
+        let ingCount = allIng.count
+        
+        let ingActive = self.allIngredientsAttivi(viewModel: viewModel)
+        let activeCount = ingActive.count
+        
+        guard ingCount != activeCount else { return .eseguibile }
+        
+        // 1b. Non tutti gli ing sono disponibili, ma sono tutti in stock
+        // Passaggio di status consentito con alert informativo della presenza di ing inPausa. 16.03.23 da implementare
+        let allInPausa = allIng.filter({ $0.statusTransition == .inPausa })
+       /* let allInPausaAvaible = allInPausa.map({viewModel.inventarioScorte.statoScorteIng(idIngredient: $0.id)}).contains(.esaurito) */
+        
+        let areNotAllIngInPausaAvaible = allInPausa.contains(where: { /*viewModel.currentProperty.inventario.statoScorteIng(idIngredient: $0.id) == .esaurito*/
+           // viewModel.getStatusScorteING(from: $0.id) == .esaurito
+            $0.statusScorte() == .esaurito
         })
         
         guard areNotAllIngInPausaAvaible else { return .eseguibile }
@@ -108,8 +169,66 @@ extension ProductModel {
         
         return .nonEseguibile
         
+        
+    }*/ // backup 07.02.24
+    
+    private func checkStatusPreparazione(viewModel:AccounterVM) -> ExecutionState {
+        
+        let allING = self.allIngredientsOrSubs(viewModel: viewModel)
+        
+        guard !allING.isEmpty else { return .nonEseguibile}
+        
+        let ingredientiPrincipali = self.ingredientiPrincipali ?? []
+        
+        let allEsauriti = allING.filter({$0.statusScorte() == .esaurito})// coincideranno con gli ing in pausa che non hanno un sostituto
+        
+        guard allEsauriti.isEmpty else {
+            // vi sono ingredienti esauriti senza rimpiazzo
+            let esauritiID = allEsauriti.map({$0.id})
+            
+            let esauriFraPrincipali = ingredientiPrincipali.contains(where: {
+                esauritiID.contains($0)
+            })
+            
+            if esauriFraPrincipali { return .nonEseguibile }
+            else { return .eseguibileConRiserva }
+        }
+        
+        // tutti gli ing sono disponibili o hanno un sostituto disponibile
+        
+        // verifichiamo se ve ne sono in esaurimento
+        
+        let allInEsaurimento = allING.filter({$0.statusScorte() == .inEsaurimento})
+        
+        guard allInEsaurimento.isEmpty else {
+            
+            // vi sono ing in esaurimento. Non possiamo sapere se riguardano un principale o un secondario per via di eventuali sostituzioni, e quindi non badiamo al path e lo rimandiamo ad un controllo manuale, indicandolo come eseguibile con riserva
+            return .eseguibileConRiserva
+            
+        }
+        
+        return .eseguibile
+
     }
     
+    private func checkStatusAsProduct(viewModel:AccounterVM) -> ExecutionState {
+        
+        guard let collegato = self.getIngredienteCollegatoAsProduct(viewModel: viewModel) else { return .nonEseguibile }
+        
+        let statoScorte = collegato.statusScorte()
+        
+        switch statoScorte {
+            
+        case .inEsaurimento:
+            return .eseguibileConRiserva
+        case .esaurito,.outOfStock:
+            return.nonEseguibile
+        case .inStock:
+            return .eseguibile
+        
+        }
+        
+    }
     
     public enum ExecutionState:Property_FPC {
         
@@ -124,7 +243,7 @@ extension ProductModel {
                 
             case .eseguibile: return "Eseguibile"
             case .eseguibileConRiserva: return "con Riserva"
-            case .nonEseguibile: return "non Eseguibile"
+            case .nonEseguibile: return "Non Eseguibile"
             
             }
         }
@@ -180,7 +299,7 @@ extension ProductModel:MyProStarterPack_L1 {
     public func basicModelInfoInstanceAccess() -> (vmPathContainer: ReferenceWritableKeyPath<AccounterVM, [ProductModel]>, nomeContainer: String, nomeOggetto:String,imageAssociated:String) {
         
          return (
-            \.db.allMyDish, "Lista Piatti",
+            \.db.allMyDish, "Lista Prodotti",
              self.adress.simpleDescription(),
              self.adress.imageAssociated().system
          )
@@ -211,8 +330,8 @@ extension ProductModel:MyProStarterPack_L1 {
     }
     private func isEqualComposizione(to rhs:ProductModel) -> Bool {
         
-       guard let sottostante = self.ingredienteSottostante,
-             let rhs_sottostante = rhs.ingredienteSottostante else { return false }
+       guard self.ingredienteSottostante != nil,
+             rhs.ingredienteSottostante != nil else { return false }
         
        return self.intestazione == rhs.intestazione /*&&
         sottostante.isEqual(to: rhs_sottostante)*/
@@ -288,7 +407,7 @@ extension ProductModel: Object_FPC {
         
         guard readOnlyVM != nil else { return conditionOne } // è inutile percheè passeremo sempre un valore valido. Lo mettiamo per forma. Abbiamo messo il parametro optional per non passarlo negli altri modelli dove non ci serve
         
-        let allIngredients = self.allMinusArchiviati(viewModel: readOnlyVM!)
+        let allIngredients = self.allIngredientsIn(viewModel: readOnlyVM!)
       //  let allIngredients = self.allIngredientsAttivi(viewModel: readOnlyVM!)
         let allINGMapped = allIngredients.map({$0.intestazione.lowercased()})
         
@@ -322,16 +441,9 @@ extension ProductModel: Object_FPC {
         let executionState:ExecutionState = self.checkStatusExecution(viewModel: readOnlyVM)
         
         let statusTransition = getStatusTransition(viewModel: readOnlyVM)
-       // let core = filterProperties.coreFilter
-        
-      //  return
-        
-      //  !self.status.checkStatusBozza() && // pre Condizione
-        
-        
+        let statoScorte = getStatoScorteAsProduct(viewModel: readOnlyVM)
+
        return stringResult &&
-        
-        //self.stringResearch(string: coreFilter.stringaRicerca, readOnlyVM: readOnlyVM) &&
         
         coreFilter.comparePropertyToCollection(localProperty: percorso, filterCollection: properties.percorsoPRP) &&
         
@@ -344,29 +456,34 @@ extension ProductModel: Object_FPC {
         
         coreFilter.comparePropertyToProperty(localProperty: basePreparazione, filterProperty: properties.basePRP) &&
         
-        coreFilter.compareStatusTransition(localStatus: statusTransition, filterStatus: properties.status) &&
+       /* coreFilter.compareStatusTransition(localStatus: statusTransition, filterStatus: properties.status, tipologiaFiltro: coreFilter.tipologiaFiltro) &&*/
+        coreFilter.comparePropertyToCollection(localProperty: statusTransition, filterCollection: properties.status) &&
         
         // innsesto 16.03.23
         
-        coreFilter.compareStatusTransition(
+       /* coreFilter.compareStatusTransition(
             localStatus: statusTransition,
-            singleFilter: properties.status_singleChoice) &&
+            singleFilter: properties.status_singleChoice, tipologiaFiltro: coreFilter.tipologiaFiltro) &&*/
+        coreFilter.comparePropertyToProperty(localProperty: statusTransition, filterProperty: properties.status_singleChoice) &&
         
         coreFilter.comparePropertyToProperty(localProperty: executionState, filterProperty: properties.executionState) &&
         
         // end 16.03
         
-        coreFilter.compareStatoScorte(modelId: self.id, filterInventario: properties.inventario, readOnlyVM: readOnlyVM) &&
+       /* coreFilter.compareStatoScorte(modelId: self.id, filterInventario: properties.inventario, tipologiaFiltro: coreFilter.tipologiaFiltro, readOnlyVM: readOnlyVM) &&*/
+        coreFilter.comparePropertyToCollection(localProperty: statoScorte, filterCollection: properties.inventario) &&
         
         self.preCallHasAllIngredientSameQuality(
             viewModel: readOnlyVM,
             kpQuality: \.values.produzione,
-            quality: properties.produzioneING) &&
+            quality: properties.produzioneING,
+            tipologiaFiltro: coreFilter.tipologiaFiltro) &&
         
         self.preCallHasAllIngredientSameQuality(
             viewModel: readOnlyVM,
             kpQuality: \.values.provenienza,
-            quality: properties.provenienzaING)
+            quality: properties.provenienzaING,
+            tipologiaFiltro: coreFilter.tipologiaFiltro)
         
         
     }
@@ -374,7 +491,7 @@ extension ProductModel: Object_FPC {
     public struct FilterProperty:SubFilterObject_FPC {
 
         var status:[StatusTransition]?
-        // innest0 16.03.23 escluse dal countChange
+        // innest0 16.03.23
         var status_singleChoice:StatusTransition?
         var executionState:ExecutionState?
         // 16.03 end
@@ -386,8 +503,7 @@ extension ProductModel: Object_FPC {
         var basePRP:ProductModel.BasePreparazione? //
         var allergeniIn:[AllergeniIngrediente]?
         var dietePRP:[TipoDieta]?
-        
-       //var inventario:[Inventario.TransitoScorte]?
+
         var inventario:[StatoScorte]?
         var produzioneING:ProduzioneIngrediente? //
         var provenienzaING:ProvenienzaIngrediente? //
@@ -546,8 +662,8 @@ extension ProductModel: MyProProgressBar {
 }
 
 extension ProductModel {
-    /// al 30_10_23 funziona solo per ingredienti principali e secondari. Da sviluppare sui sostituti e  sostituiti
-    public func replaceIngredients(id old:String,with new:String) -> ProductModel? {
+    /// al 30.10.23 funziona solo per ingredienti principali e secondari. Da sviluppare sui sostituti e  sostituiti
+   /* public func replaceIngredients(id old:String,with new:String) -> ProductModel? {
         
         let ingPath = self.individuaPathIngrediente(idIngrediente: old)
         
@@ -561,7 +677,7 @@ extension ProductModel {
         newDish[keyPath: path]![index] = new
         return newDish
         
-    }
+    }*/
 }
 
 extension ProductModel:MyProSubCollectionPack {
@@ -630,20 +746,37 @@ extension ProductModel:MyProStatusPack_L1 {
         
     }
     
-    public func setStatusTransition(to status: StatusTransition, viewModel: AccounterVM) {
+    public func setStatusTransition(
+        to status: StatusTransition,
+        viewModel: AccounterVM) {
         
-        let value = String(status.orderAndStorageValue())
-        let key = Self.CodingKeys.status.rawValue
-        let path = [key:value]
-        
-        Task {
+        let menuIn = viewModel.allMenuContaining(idPiatto: self.id).countWhereDishIsIn
             
-           try await viewModel.updateSingleField(
-                docId: self.id,
-                sub: .allMyDish,
-                path: path)
+        if status == .archiviato,
+           menuIn > 0 {
+            // blocchiamo il passaggio di status perchè il prodotto è in menu
+            
+            viewModel.alertItem = AlertModel(
+                title: "Azione Bloccata",
+                message: "\(self.intestazione) è inserito in \(menuIn) menu e non può essere messo fuori inventario. Una volta rimosso da tutti i menu sarà possibile procedere.")
+            
+        } else {
+            
+            let value = String(status.orderAndStorageValue())
+            let key = Self.CodingKeys.status.rawValue
+            let path = [key:value]
+            
+            Task {
+                
+               try await viewModel.updateSingleField(
+                    docId: self.id,
+                    sub: .allMyDish,
+                    path: path)
+                
+            }
             
         }
+        
     }
     
     public func disabilitaSetStatusTransition(viewModel: AccounterVM) -> (general:Bool,upToDisponibile:Bool) {
@@ -671,28 +804,28 @@ extension ProductModel:MyProStatusPack_L1 {
     /// ritorna true se tutte le proprietà optional sono state compilate, e dunque il modello è completo.
     public func optionalComplete() -> Bool {
             
-        var conditionOne:Bool
+        let conditionOne:Bool = self.checkOptional()
         
-        switch self.adress {
+       /* switch self.adress {
         case .preparazione:
-            conditionOne = checkOptionalPreparazione()
+           // conditionOne = checkOptionalPreparazione()
         case .composizione:
-            conditionOne = checkOptionalComposizione()
+           // conditionOne = checkOptionalComposizione()
         case .finito:
-            conditionOne = true
-        }
+           // conditionOne = true
+        }*/
         
        return conditionOne && self.mostraDieteCompatibili
     }
     
-    private func checkOptionalPreparazione() -> Bool {
+    private func checkOptional() -> Bool {
         
         guard let descrizione else { return false }
         
         return descrizione != ""
     }
     
-    private func checkOptionalComposizione() -> Bool {
+   /* private func checkOptionalComposizione() -> Bool {
     
         if let ingredienteSottostante {
             return false
@@ -701,7 +834,7 @@ extension ProductModel:MyProStatusPack_L1 {
             return false
         }
         
-    }
+    }*/
         
 }
 
@@ -807,7 +940,7 @@ extension ProductModel:MyProTrashPack_L0 {
     
         viewModel.deleteModel(itemModel: self){
             // try test()
-             test()
+             test() // probabile uso per pulizia dei menu. Mentre per gli ingredienti la pulizia è manuale
         }
        
     }
@@ -832,8 +965,8 @@ extension ProductModel:MyProVisualPack_L0 {
         switch statusTransition {
             
         case .disponibile: return 1.0
-        case .inPausa: return 0.8
-        case .archiviato: return 0.5
+        case .inPausa: return 0.7
+        case .archiviato: return 0.4
         }
     }
     
@@ -860,9 +993,10 @@ extension ProductModel:MyProVisualPack_L0 {
 
           vbVisualManageMenuDiSistema(viewModel: viewModel)
               .disabled(!isDisponibile)
+            //  .disabled(generalDisabled)
           
           vbVisualManageEspansioneMenu(viewModel: viewModel, navigationPath: navigationPath)
-              .disabled(!isDisponibile)
+              .disabled(generalDisabled)
           
           if ingredientsCanBeExpanded {
               
@@ -870,11 +1004,12 @@ extension ProductModel:MyProVisualPack_L0 {
                 viewModel: viewModel,
                 navigationPath: navigationPath,
                 ingredientsCount: ingredientsCount)
+                .disabled(ingredientsCount == 0)
 
           }
 
         }
-      .disabled(generalDisabled)
+     // .disabled(generalDisabled)
     }
     
    @ViewBuilder private func vbSwitchReviewAndAdress(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
@@ -882,7 +1017,10 @@ extension ProductModel:MyProVisualPack_L0 {
        switch self.adress {
             
         case .finito:
-           vbFinitoLabel()
+           vbFinitoLabel(
+            viewModel: viewModel,
+            navigationPath: navigationPath)
+           
         case .composizione,.preparazione:
             vbVisualReview(
                 viewModel: viewModel,
@@ -891,12 +1029,34 @@ extension ProductModel:MyProVisualPack_L0 {
         
     }
     
-   @ViewBuilder private func vbFinitoLabel() -> some View {
+   @ViewBuilder private func vbFinitoLabel(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
-       Label {
-           Text("Type: ready product")
-       } icon: {
-           Image(systemName: "doc.on.doc")
+       Group {
+        
+           Label {
+               Text("Type: ready product")
+           } icon: {
+               Image(systemName: "doc.on.doc")
+           }
+           
+           if let rifIngredienteSottostante {
+               
+               Button {
+                   viewModel.showSpecificModel = rifIngredienteSottostante
+                   
+                   withAnimation {
+                       viewModel.pathSelection = .ingredientList
+                   }
+                   
+               } label: {
+                   HStack {
+                       Text("Vai all'Ingrediente")
+                       Image(systemName: "arrow.up.forward.app")
+                   }
+               }
+               
+           }
+
        }
 
     }
@@ -913,7 +1073,7 @@ extension ProductModel:MyProVisualPack_L0 {
             
         } label: {
             HStack{
-                Text("Vedi Recensioni")
+                Text("Vedi Recensioni (\(reviewCount))")
                 Image(systemName: "eye")
             }
         }.disabled(disabilitaReview)
@@ -953,8 +1113,9 @@ extension ProductModel:MyProVisualPack_L0 {
             } label: {
                 HStack{
                     
-                    Text(isDelGiorno ? "[-] Menu del Giorno" : "[+] Menu del Giorno")
-                    Image(systemName:isDelGiorno ? "clock.badge.xmark" : "clock.badge.checkmark")
+                   /* Text(isDelGiorno ? "[-] Menu del Giorno" : "[+] Menu del Giorno")*/
+                    Text("Menu del Giorno")
+                    Image(systemName:isDelGiorno ? "x.circle" : "clock.badge.checkmark")
                 }
             }
             
@@ -964,7 +1125,8 @@ extension ProductModel:MyProVisualPack_L0 {
 
             } label: {
                 HStack{
-                    Text(isDelloChef ? "[-] dai consigliati" : "[+] ai consigliati")
+                   /* Text(isDelloChef ? "[-] Menu Consigliati" : "[+] Menu Consigliati")*/
+                    Text("Menu Consigliati")
                     Image(systemName:isDelloChef ? "x.circle" : "clock.badge.checkmark")
                 }
             }
@@ -982,7 +1144,7 @@ extension ProductModel:MyProVisualPack_L0 {
       
         } label: {
             HStack{
-                Text("Espandi Menu (\(allWhereDishIsIn)/\(allMenuMinusDS))")
+                Text("Espandi altri Menu (\(allWhereDishIsIn)/\(allMenuMinusDS))")
                 Image (systemName: "menucard")
             }
         }.disabled(allMenuMinusDS == 0)

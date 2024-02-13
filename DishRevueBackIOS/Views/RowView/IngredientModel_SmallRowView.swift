@@ -42,7 +42,7 @@ struct IngredientModel_SmallRowView: View {
  
             VStack(alignment:.leading,spacing:5) {
                 
-                    vbIntestazioneIngrediente(itemIsModel: itemIsModel)
+                vbIntestazioneIngrediente(itemIsModel: itemIsModel)
                 
                 vbAllergeneScrollRowView(listaAllergeni: self.currentModel.values.allergeni)
                     .overlay(alignment: .trailing) {
@@ -86,13 +86,14 @@ struct IngredientModel_SmallRowView: View {
                 
                 if !isDisponibile {
                     
-                    Text("_: \(self.currentModel.status.simpleDescription())")
+                    Text("_: \(self.currentModel.statusTransition.simpleDescription())")
                         .textCase(.uppercase)
                         .bold()
                         .font(.title3)
                 }
                 
-                if sostituto != nil && itemIsModel {
+                if let sostituto,
+                   itemIsModel {
                     
                     HStack {
                         Image(systemName: "eye")
@@ -105,9 +106,9 @@ struct IngredientModel_SmallRowView: View {
             }.foregroundStyle(sostituto != nil ? Color.seaTurtle_3 : Color.black)
         }
         .onTapGesture {
-            if sostituto != nil {
+            if let sostituto {
                 withAnimation {
-                    self.currentModel = itemIsModel ? sostituto! : titolare
+                    self.currentModel = itemIsModel ? sostituto : titolare
                     }
                 }
             }

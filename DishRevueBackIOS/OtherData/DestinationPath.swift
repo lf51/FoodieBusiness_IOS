@@ -33,7 +33,7 @@ public enum DestinationPathView: Hashable {
     case property(_ :PropertyModel)
     
     case menu(_ menuModel:MenuModel,_ saveDialogType:SaveDialogType = .completo)
-    case piatto(_ ProductModel:ProductModel,_ saveDialogType:SaveDialogType = .completo)
+    case piatto(_ ProductModel:ProductModel)
     case ingrediente(_ :IngredientModel)
     case categoriaMenu
     
@@ -91,7 +91,7 @@ public enum DestinationPathView: Hashable {
                 destinationPath: destinationPath,
                 saveDialogType: dialogType)
             
-        case .piatto(let piatto,let dialogType):
+        case .piatto(let piatto):
             NewProductMainView(
                 newProduct: piatto,
                 backgroundColorView: backgroundColorView,
@@ -107,14 +107,15 @@ public enum DestinationPathView: Hashable {
         case .moduloCreaInBloccoCategorie:
           //  FastImport_MainView(backgroundColorView: backgroundColorView)
             FastImport_Categorie(backgroundColorView: backgroundColorView)
+            
         case .moduloCreaInBloccoPiattiEIngredienti:
             FastImport_MainView(backgroundColorView: backgroundColorView)
  
         case .moduloImportazioneDaLibreriaIngredienti:
-            CloudImportIngredientsView(backgroundColor: backgroundColorView)
+            CloudImportIngredientsView(backgroundColor: backgroundColorView,destinatinationPath: destinationPath)
             
         case .moduloImportazioneDaLibreriaCategorie:
-            CloudImportCategoriesView(backgroundColor: backgroundColorView)
+            CloudImportCategoriesView(backgroundColor: backgroundColorView,destinationPath: destinationPath)
             
         case .recensioni(let rifDish):
            // DishRatingListView(dishItem: dish, backgroundColorView: backgroundColorView, readOnlyViewModel: readOnlyViewModel)

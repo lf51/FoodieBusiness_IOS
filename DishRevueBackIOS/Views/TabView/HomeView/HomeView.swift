@@ -18,7 +18,7 @@ struct HomeView: View {
     @ObservedObject var authProcess: AuthenticationManager
     @EnvironmentObject var viewModel: AccounterVM
     
-    let tabSelection: DestinationPath
+   // let tabSelection: DestinationPath
     let backgroundColorView: Color
 
     @State private var wannaAddNewProperty:Bool = false
@@ -147,7 +147,7 @@ struct HomeView: View {
                             }
                         }*/
                         .onChange(of: self.viewModel.resetScroll) {
-                            if self.tabSelection == .homeView {
+                            if self.viewModel.pathSelection == .homeView {
                                 withAnimation {
                                     self.scrollPosition = 0
                                   // proxy.scrollTo(0,anchor: .top)
@@ -520,8 +520,8 @@ struct HomeView: View {
         
         Menu {
             
-           // NavigationButtonGeneric(item: newING)
-            Text("NEW_ING ERROR")
+            NavigationButtonGeneric(item: newING)
+            //Text("NEW_ING ERROR")
             NavigationButtonGeneric(item: newDish)
             NavigationButtonGeneric(item: newMenu)
             
@@ -531,11 +531,11 @@ struct HomeView: View {
                 navigationPath: .homeView,
                 destination: .moduloCreaInBloccoPiattiEIngredienti)
             
-            NavigationButtonBasic(
+           /* NavigationButtonBasic(
                 label: "Categorie in blocco",
                 systemImage: "doc.on.doc",
                 navigationPath: .homeView,
-                destination: .moduloCreaInBloccoCategorie)
+                destination: .moduloCreaInBloccoCategorie)*/
 
         } label: {
             Text("[+]Aggiungi")
@@ -800,7 +800,7 @@ struct NavigationButtonBasic:View {
     }
 }
 
-struct NavigationButtonGeneric<M:MyProStatusPack_L1&MyProStarterPack_L1&MyProNavigationPack_L0>:View where M.DPV == DestinationPathView {
+struct NavigationButtonGeneric<M:MyProStarterPack_L1&MyProNavigationPack_L0>:View where M.DPV == DestinationPathView {
     
     @EnvironmentObject var viewModel: AccounterVM
     let item: M

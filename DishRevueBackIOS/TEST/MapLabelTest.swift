@@ -113,7 +113,7 @@ struct MapLabel_Previews: PreviewProvider {
     }
 }
 */
-
+/*
 public struct TabLabel: View {
     
     @State private var tab:CS_TabSelector?
@@ -182,3 +182,4 @@ struct MapLabel_Previews: PreviewProvider {
         }
     }
 }
+*/

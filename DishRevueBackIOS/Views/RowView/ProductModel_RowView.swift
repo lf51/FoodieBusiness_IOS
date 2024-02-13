@@ -533,7 +533,7 @@ struct ProductModel_RowView: View {
     
     @ViewBuilder private func vbIngredientScrollRow() -> some View {
  
-        let allFilteredIngredients:[IngredientModel] = self.item.allMinusArchiviati(viewModel: self.viewModel)
+        let allFilteredIngredients:[IngredientModel] = self.item.allIngredientsIn(viewModel: self.viewModel)
     
             HStack(spacing: 4.0) {
    
@@ -599,7 +599,7 @@ struct ProductModel_RowView: View {
                     }
                 } else {
                     
-                    Text("Lista Ingredienti Vuota")
+                    Text("[Error]_Lista Ingredienti Vuota")
                         .italic()
                         .font(.headline)
                         .foregroundStyle(Color.seaTurtle_1)
@@ -719,12 +719,18 @@ struct ProductModel_RowView: View {
   
         var isOff: Bool = false
         
-        if self.item.idIngredienteDaSostituire == ingredient.id {isOff = true}
+       /* if let offManager = item.offManager {
+            print("OFFMANAGER != NIL")
+            isOff = offManager.idIngredienteDaSostituire == ingredient.id
+        }*/
+        
+        if self.item.offManager?.idIngredienteDaSostituire == ingredient.id {isOff = true}
         else { isOff = ingredient.statusTransition == .inPausa }
+        
         var idSostituto: String? = nil
 
         if isOff {
-            let allTemporaryOff = self.item.elencoIngredientiOff ?? [:]
+            let allTemporaryOff = self.item.offManager?.elencoIngredientiOff ?? [:]
             
             for (key,value) in allTemporaryOff {
                 

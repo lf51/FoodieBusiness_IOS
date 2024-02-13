@@ -228,24 +228,39 @@ final class CloudManagerGenericViewModel<Item:MyProStarterPack_L0 & Codable>:Obs
 
     }
         
-    func importInSubCollection(subCollection:CloudDataStore.SubCollectionKey,viewModel:AccounterVM) async throws {
-        // chiamata da una task means che siamo su un backThread
+    func importInSubCollection(subCollection:CloudDataStore.SubCollectionKey,viewModel:AccounterVM,destinationPath:DestinationPath) /*async throws*/ {
 
-        guard let selectedContainer else { return}
-        
-       // let rigeneratedCategories = updateListIndex(items: selectedCategory)
-
-        try await viewModel
-                      .subCollectionManager
-                      .publishSubCollection(
-                        sub: subCollection,
-                        as: selectedContainer)
-                      // su un backThread
-        
-        
-        DispatchQueue.main.async {
-            self.selectedContainer = nil
-        }// torniamo sul main
+        guard let selectedContainer else { return }
+ 
+        Task {
+            
+            do {
+                
+                DispatchQueue.main.async {
+                    viewModel.isLoading = true
+                }
+                
+                try await viewModel
+                              .subCollectionManager
+                              .publishSubCollection(
+                                sub: subCollection,
+                                as: selectedContainer)
+                
+                DispatchQueue.main.async {
+                    self.selectedContainer = nil
+                    viewModel.refreshPath(destinationPath: destinationPath)
+                }
+                
+            } catch let error {
+                
+                viewModel.isLoading = nil
+                viewModel.logMessage = error.localizedDescription
+                
+            }
+ 
+        }
+       
+       
         
         
     }
