@@ -40,7 +40,9 @@ struct ContentView: View {
        } else {
            
            WaitLoadingView(
-            backgroundColorView: .yellow)
+            backgroundColorView: .yellow,
+            image: "fork.knife.circle",
+            imageColor: Color.seaTurtle_2)
        }
 
     }
@@ -82,7 +84,11 @@ UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
                 if let isLoading = self.viewModel.isLoading,
                 isLoading {
 
-                    WaitLoadingView(backgroundColorView: .seaTurtle_1) {
+                    WaitLoadingView(
+                        backgroundColorView: .seaTurtle_1,
+                        image: "fork.knife.circle",
+                        imageColor: Color.seaTurtle_2, 
+                        loadingInfo: {
                             
                             VStack(alignment:.leading,spacing:10) {
                                 let refIn = self.viewModel.currentUser?.propertiesRef?.count
@@ -134,7 +140,7 @@ UserManager refCount:\(CFGetRetainCount(authProcess.userManager))
                                     .opacity(0.8)
                                     
                             }
-                    }
+                    })
                     .opacity(0.6)
                 } else {
                     
@@ -247,6 +253,8 @@ ViewModel reference Count: \(CFGetRetainCount(self.viewModel))
             
             WaitLoadingView(
                 backgroundColorView: .green,
+                image: "fork.knife.circle",
+                imageColor: Color.seaTurtle_2,
                 onAppearAction:  {
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { // il delay da togliere
@@ -254,7 +262,10 @@ ViewModel reference Count: \(CFGetRetainCount(self.viewModel))
                     }
             })
  
-        default: WaitLoadingView(backgroundColorView: .red)
+        default: WaitLoadingView(
+            backgroundColorView: .red,
+            image: "fork.knife.circle",
+            imageColor: Color.seaTurtle_2)
                 
         }
      }

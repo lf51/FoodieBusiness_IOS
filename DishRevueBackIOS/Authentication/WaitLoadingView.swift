@@ -28,7 +28,7 @@ public enum LoadingVisualEffect {
     
 }*/
 // da traslocare in un frameWorlk
-struct WaitLoadingView<Info:View>: View {
+/*struct WaitLoadingView<Info:View>: View {
     
     let backgroundColorView:Color
    // var loadingEffect:LoadingVisualEffect
@@ -86,10 +86,11 @@ struct WaitLoadingView<Info:View>: View {
     }
     
    
-}
+}*/ // 28.02.24 traslocata e aggiornata su MyPackView
 
+/*
 struct WaitLoadingView_Previews: PreviewProvider {
     static var previews: some View {
         WaitLoadingView(backgroundColorView: .seaTurtle_1)
     }
-}
+}*/

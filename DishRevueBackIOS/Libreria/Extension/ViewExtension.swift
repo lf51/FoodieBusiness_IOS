@@ -21,11 +21,11 @@ extension View {
     
     
     /// lf51 - Send an Alert
-    func csAlertModifier(isPresented: Binding<Bool>, item: AlertModel?) -> some View {
+   /* func csAlertModifier(isPresented: Binding<Bool>, item: AlertModel?) -> some View {
         
         self.modifier(CS_AlertModifier(isPresented: isPresented, item: item))
         
-    }
+    }*/ // 28.02.24 traslocato su MyPackView
     
     /// Layers the given views behind this ``TextEditor``.
     func csTextEditorBackground<V>(@ViewBuilder _ content: () -> V) -> some View where V : View {
