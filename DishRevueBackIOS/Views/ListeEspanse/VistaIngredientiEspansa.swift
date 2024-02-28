@@ -97,7 +97,7 @@ struct VistaIngredientiEspansa: View {
               let subModel = self.viewModel.modelFromId(id: subId, modelPath: \.db.allMyIngredients)
         else { return ([model],[.titolare,.nessunSostituto]) }
         
-        let isDisponibile = model.statusTransition == .disponibile
+        let isDisponibile = model.getStatusTransition() == .disponibile
         
         guard isDisponibile else { return ([model,subModel],[.titolare,.sostitutoTitolare]) }
 
@@ -105,7 +105,6 @@ struct VistaIngredientiEspansa: View {
         
     }
 }
-
 
 private struct IngredientScrollWithLabel:View {
     
@@ -200,7 +199,7 @@ private struct IngredientScrollWithLabel:View {
     
     private func vbSubsDescription() -> Text {
         
-        let titolareIsDispo = self.ingAndSub[0].statusTransition == .disponibile
+        let titolareIsDispo = self.ingAndSub[0].getStatusTransition() == .disponibile
         let ing = self.ingAndSub.map({$0.intestazione})
 
         let count = ing.count
@@ -217,7 +216,7 @@ private struct IngredientScrollWithLabel:View {
             }
         }
         
-        let subIsDispo = self.ingAndSub[1].statusTransition == .disponibile
+        let subIsDispo = self.ingAndSub[1].getStatusTransition() == .disponibile
         
         let subString:String = {
             

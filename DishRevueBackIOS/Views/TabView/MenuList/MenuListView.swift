@@ -157,7 +157,7 @@ struct MenuListView: View {
             selectionColor: Color.yellow.opacity(0.7),
             imageOrEmoji: "calendar.day.timeline.trailing",
             label: "Arco Temporale") { value in
-                container.filter({$0.isAvaibleWhen == value}).count
+                container.filter({$0.availability == value}).count
             }
         
         MyFilterRow(

@@ -28,7 +28,8 @@ struct IngredientModel_SmallRowView: View {
     
     var body: some View {
         
-        let isDisponibile = self.currentModel.statusTransition == .disponibile
+        let statusTransition = self.currentModel.getStatusTransition()
+        let isDisponibile = statusTransition == .disponibile
         let itemIsModel = self.currentModel == self.titolare
         
         let value:(opacity:CGFloat,blur:CGFloat) = {
@@ -86,7 +87,7 @@ struct IngredientModel_SmallRowView: View {
                 
                 if !isDisponibile {
                     
-                    Text("_: \(self.currentModel.statusTransition.simpleDescription())")
+                    Text("_: \(statusTransition.simpleDescription())")
                         .textCase(.uppercase)
                         .bold()
                         .font(.title3)
@@ -119,7 +120,7 @@ struct IngredientModel_SmallRowView: View {
     @ViewBuilder private func vbIntestazioneIngrediente(itemIsModel:Bool) -> some View {
         
         /*let dashedColor = self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()*/
-        let dashedColor = self.currentModel.statusScorte().coloreAssociato() /*self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()*/
+       // let dashedColor = self.currentModel.statusScorte().coloreAssociato() /*self.viewModel.currentProperty.inventario.statoScorteIng(idIngredient: self.currentModel.id).coloreAssociato()*/
         
         HStack(alignment:.lastTextBaseline) {
             

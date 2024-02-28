@@ -29,7 +29,12 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                             
                 ForEach(TipologiaMenu.allCases) { tipologia in
  
-                    CSText_tightRectangle(testo: tipologia.simpleDescription(), fontWeight: .bold, textColor: Color.white, strokeColor: self.newMenu.tipologia.id == tipologia.id ? Color.clear : Color.blue, fillColor: self.newMenu.tipologia.id == tipologia.id ? Color.seaTurtle_3 : Color.clear)
+                    CSText_tightRectangle(
+                        testo: tipologia.simpleDescription(),
+                        fontWeight: .bold,
+                        textColor: Color.white,
+                        strokeColor: self.newMenu.tipologia.id == tipologia.id ? Color.clear : Color.blue,
+                        fillColor: self.newMenu.tipologia.id == tipologia.id ? Color.seaTurtle_3 : Color.clear)
                         .onTapGesture {
                             withAnimation(.default) {
                               
@@ -38,21 +43,24 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
                                     self.wannaInsertValues = true
       
                                 }
-                                
                                 else {
+                                    
+                                    self.newMenu.tipologia = tipologia
+                                }
+                               /* else {
                                     
                                     self.newMenu.tipologia = self.newMenu.tipologia.id == tipologia.id ? .defaultValue : tipologia
                                     
-                                            }
+                                            }*/
                                         }
                                     }
-                        .onLongPressGesture {
+                       /* .onLongPressGesture {
                             withAnimation(.default) {
                                 
                                 if tipologia.editingAvaible() { self.newMenu.tipologia = .defaultValue }
                                
                                                     }
-                                                }
+                                                }*/
                                     }
                                 }
                 Text(self.newMenu.tipologia.extendedDescription())
@@ -67,13 +75,26 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
  
                         HStack {
 
-                            CS_Picker(
+                            Picker(selection: $pax) {
+                                
+                                ForEach(PaxMenuFisso.allCases,id:\.self) { pax in
+                                
+                                    Image(systemName: pax.imageAssociated())
+                                        //.imageScale(.medium)
+                                        .tag(pax)
+                                }
+                            } label: {
+                               //
+                            }
+
+                           /* CS_Picker(
                                 selection: $pax,
                                 customLabel: "Pax",
                                 dataContainer: PaxMenuFisso.allCases,
-                                cleanAndOrderContainer: false)
+                                cleanAndOrderContainer: false)*/
                             
-                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.00", image: "dollarsign.circle", keyboardType: .decimalPad)
+                            
+                            CSTextField_4(textFieldItem: $prezzo, placeHolder: "0.00", image: "eurosign.circle", keyboardType: .decimalPad)
                             
                         }
                         
@@ -123,7 +144,7 @@ struct SpecificTipologiaNuovoMenu_SubView: View {
         self.newMenu.tipologia = .fisso(persone: self.pax, costo: newPrice)
 
         self.prezzo = ""
-        self.pax = .uno
+        self.pax = .defaultValue
 
     }
         

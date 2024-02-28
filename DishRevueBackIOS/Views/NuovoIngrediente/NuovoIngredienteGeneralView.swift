@@ -106,12 +106,13 @@ struct NuovoIngredienteGeneralView: View {
                             } secondaryAction: {
                                 self.resetAction()
                             } preDialogCheck: {
-                                let check = checkPreliminare()
+                                checkPreliminare()
+                               /* let check = checkPreliminare()
                                 if check { return check }
                                 else {
                                     logMessage()
                                     return false
-                                }
+                                }*/
                             } primaryDialogAction: {
                                 self.saveButtonDialogView()
                             }
@@ -202,31 +203,95 @@ struct NuovoIngredienteGeneralView: View {
     
     private func checkPreliminare() -> Bool {
         
-        guard checkIntestazione() else {
+        do {
+            
+            try checkIntestazione()
+            try checkOrigine()
+            try allergeneOk()
+            try checkConservazione()
+            return true
+            
+            
+        } catch let error {
+            
+            withAnimation {
+                self.generalErrorCheck = true
+                self.viewModel.logMessage = error.localizedDescription
+            }
+            
+            return false
+        }
+        
+        
+        
+       /* guard checkIntestazione() else {
             let field:ModelField = .intestazione
             withAnimation {
                 self.modelField = field
                 self.scrollPosition = field.rawValue
             }
-            return false }
+            return false }*/
         
-        guard checkOrigine() else { return false }
+      //  guard checkOrigine() else { return false }
         
-        guard self.areAllergeniOk else { return false }
+       // guard self.areAllergeniOk else { return false }
         
-        guard checkConservazione() else { return false }
+      //  guard checkConservazione() else { return false }
 
        /* if self.nuovoIngrediente.optionalComplete() {
             self.nuovoIngrediente.status = .completo(.disponibile) }
         else {
             self.nuovoIngrediente.status = .bozza(.disponibile)
         } */
-        self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS Ingrediente in CHECK_PRELIMINARE"
-        return true
+       // self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS Ingrediente in CHECK_PRELIMINARE"
+      //  return true
        
     }
     
-    private func logMessage() {
+    private func checkIntestazione() throws/*-> Bool*/ {
+    
+        guard !self.nuovoIngrediente.intestazione.isEmpty else {
+            
+            let field:ModelField = .intestazione
+            withAnimation {
+                self.modelField = field
+                self.scrollPosition = field.rawValue
+            }
+            
+            throw CS_NewModelCheckError.intestazioneMancante
+        }
+   
+    }
+    
+    private func checkOrigine() throws {
+        
+        let origine = self.nuovoIngrediente.values.origine
+        guard origine != .defaultValue else {
+            
+            throw CS_NewModelCheckError.erroreDiCompilazione
+        }
+        
+    }
+    
+    private func allergeneOk() throws {
+        
+        guard self.areAllergeniOk else {
+            
+            throw CS_NewModelCheckError.listaAllergeniNonValidata
+        }
+    }
+    
+    private func checkConservazione() throws {
+        
+       let conservazione = self.nuovoIngrediente.values.conservazione
+    
+        guard conservazione != .defaultValue else {
+            
+            throw CS_NewModelCheckError.erroreDiCompilazione
+        }
+    }
+    
+   /* private func logMessage() {
         
         self.generalErrorCheck = true
         
@@ -234,24 +299,13 @@ struct NuovoIngredienteGeneralView: View {
                
                 self.viewModel.logMessage = "[ERRORE]_Form Incompleto."
             }
-    }
+    }*/
     
-    private func checkOrigine() -> Bool {
-        
-        self.nuovoIngrediente.values.origine != .defaultValue
-        
-    }
     
-    private func checkIntestazione() -> Bool {
     
-         self.nuovoIngrediente.intestazione != ""
+    
+    
    
-    }
-    
-    private func checkConservazione() -> Bool {
-        
-        self.nuovoIngrediente.values.conservazione != .defaultValue
-    }
     
     // ViewBuilder
     

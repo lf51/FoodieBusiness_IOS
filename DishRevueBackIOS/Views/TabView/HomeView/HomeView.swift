@@ -826,20 +826,20 @@ struct NavigationButtonGeneric<M:MyProStarterPack_L1&MyProNavigationPack_L0>:Vie
     
     private func infoItem() -> (incipit:String,nome:String,image:String) {
         
-        let incipit:String
+        let incipit:String = "Nuovo"
         let nome:String
         let image:String
         
         if let localItem = item as? ProductModel {
             
-                incipit = "Nuova"
-                nome = "Preparazione"
+              // incipit = "Nuova"
+                nome = "Prodotto"
                 image = localItem.basicModelInfoInstanceAccess().imageAssociated
-                
+             
   
         } else {
             
-            incipit = "Nuovo"
+           // incipit = "Nuovo"
             (_,_,nome,image) = item.basicModelInfoInstanceAccess()
             
         }

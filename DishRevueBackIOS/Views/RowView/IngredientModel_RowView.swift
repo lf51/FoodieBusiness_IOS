@@ -198,7 +198,7 @@ struct IngredientModel_RowView: View {
     @ViewBuilder private func vbDishIn() -> some View {
         
         let (dishCount,substitution) = self.item.dishWhereIn(readOnlyVM: self.viewModel)
-        let isInPausa = self.item.statusTransition == .inPausa
+        let isInPausa = self.item.getStatusTransition() == .inPausa
         
         let type = self.item.ingredientType
         let isDiTerzi = type == .asProduct

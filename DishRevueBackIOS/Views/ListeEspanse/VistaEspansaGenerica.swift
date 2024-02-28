@@ -11,7 +11,7 @@ import MyFoodiePackage
 import MyFilterPackage
 
 
-struct VistaEspansaGenerica<M:/*MyProToolPack_L1*/MyProStatusPack_L1&MyProStarterPack_L0&MyProVisualPack_L0>: View where M.VM == AccounterVM, M.RS == RowSize {
+/*struct VistaEspansaGenerica<M:/*MyProToolPack_L1*//*MyProStatusPack_L1*/MyProTransitionPack_L02&MyProTransitionPack_L03&MyProStarterPack_L0&MyProVisualPack_L0>: View where /*M.VM == AccounterVM,*/ M.RS == RowSize {
     
     @EnvironmentObject var viewModel:AccounterVM
     
@@ -53,7 +53,7 @@ struct VistaEspansaGenerica<M:/*MyProToolPack_L1*/MyProStatusPack_L1&MyProStarte
         
         }
     }
-} // 09.07.23 probabile deprecazione. Controllare uso della VistaEspansaGenerica_PlusVB
+}*/ // 09.07.23 probabile deprecazione. Controllare uso della VistaEspansaGenerica_PlusVB
 
 
 /*
@@ -64,7 +64,7 @@ struct VistaEspansaGenerica_Previews: PreviewProvider {
 }
 */
 
-struct VistaEspansaMenuPerAnteprima: View {
+/*struct VistaEspansaMenuPerAnteprima: View {
     
     @EnvironmentObject var viewModel:AccounterVM
     
@@ -140,7 +140,7 @@ struct VistaEspansaMenuPerAnteprima: View {
     // Method
     
     
-}
+}*/
 
  struct AnteprimaPiattiMenu: View {
     // 01.03.23 Questa è la view gemella di quella che sarà visualizzata al cliente. Ne creiamo due perchè questa avrà delle chiare modifiche per permettere al ristoratore di fare modifiche

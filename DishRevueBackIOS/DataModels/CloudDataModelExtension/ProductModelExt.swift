@@ -53,7 +53,7 @@ extension ProductModel {
     } */ // deprecata 16.03.23 || effettivo 08.02.24
     
     /// analizza gli ingredienti per comprendere se un piatto è eseguibile o meno
-    func checkStatusExecution(viewModel:AccounterVM) -> ExecutionState {
+   /* func checkStatusExecution(viewModel:AccounterVM) -> ExecutionState {
         // 22_01_24 da Aggiornare in ragione del fatto che lo status degli ing è strettamente correlato in automatico con lo stato scorte.
         // Quando abbiamo creato questa func lo status dell'ing poteva essere forzato manualmente
         
@@ -121,7 +121,7 @@ extension ProductModel {
         
         return .nonEseguibile */
         
-    }
+    }*/ // Spsostata in FrameWork MyFoodie
     
    /* private func checkStatusPreparazione(viewModel:AccounterVM) -> ExecutionState {
         
@@ -172,7 +172,7 @@ extension ProductModel {
         
     }*/ // backup 07.02.24
     
-    private func checkStatusPreparazione(viewModel:AccounterVM) -> ExecutionState {
+   /* private func checkStatusPreparazione(viewModel:AccounterVM) -> ExecutionState {
         
         let allING = self.allIngredientsOrSubs(viewModel: viewModel)
         
@@ -228,9 +228,9 @@ extension ProductModel {
         
         }
         
-    }
+    } */ // Spsostate in MyFoodiePackage
     
-    public enum ExecutionState:Property_FPC {
+    /*public enum ExecutionState:Property_FPC {
         
         static let allCases:[ExecutionState] = [.eseguibile,.eseguibileConRiserva,.nonEseguibile]
         
@@ -285,7 +285,7 @@ extension ProductModel {
             
         }
         
-    }
+    }*/ // Spsosta in MyFoodiePackage
     
     
 }
@@ -700,96 +700,9 @@ extension ProductModel:MyProNavigationPack_L0 {
     }
 }
 
-extension ProductModel:MyProStatusPack_L1 {
-
+extension ProductModel:MyProStatusPack_L0 {
+    
     public var status: StatusModel { self.getStatus() }
-  
-    /// Lo status Transition è ricavato in modo semi-Automatico. Il valore di default per i nuovi prodotti sarà zero, ovvero disponibile. In questo caso il transition si muoverà in automatico, riflettendo l'executionState. Se l'utente lo forza ad uno stato di inPausa o archiviato, l'executionState sarà ignorato. Se l'utente vuole ripristinare lo stato di disponibile, il sistema ritorneraà ad una assegnazione automatica in funzione dell'executionState. Potremmo rimpiazzare sul firebase lo status di .disponibile con un valore nil.
-    public func getStatusTransition(viewModel:AccounterVM) -> StatusTransition {
-        
-        if statusCache == 0  {
-            // automatizzato
-            return getTransitionFromExecution(viewModel: viewModel)
-
-        } else {
-            // valore precedentemente forzato
-            let currentStatus = StatusTransition.decodeStatus(from: self.statusCache)
-            
-            return currentStatus
-        }
-
-    }
-    
-  /*  private func getTransitionFromRifSottostante(viewModel:AccounterVM) -> StatusTransition {
-        
-        let sottostante = self.getSottostante(viewModel: viewModel).sottostante
-        
-        if let sottostante {
-            return sottostante.statusTransition
-        } else {
-            // deve esserci un errore
-            // throwerei un errore
-            return .archiviato
-        }
-    } */
-    
-    private func getTransitionFromExecution(viewModel:AccounterVM) -> StatusTransition {
-        
-        let executionState = self.checkStatusExecution(viewModel: viewModel)
-        
-        switch executionState {
-        case .eseguibile,.eseguibileConRiserva:
-            return .disponibile
-        case .nonEseguibile:
-            return .inPausa
-        }
-        
-    }
-    
-    public func setStatusTransition(
-        to status: StatusTransition,
-        viewModel: AccounterVM) {
-        
-        let menuIn = viewModel.allMenuContaining(idPiatto: self.id).countWhereDishIsIn
-            
-        if status == .archiviato,
-           menuIn > 0 {
-            // blocchiamo il passaggio di status perchè il prodotto è in menu
-            
-            viewModel.alertItem = AlertModel(
-                title: "Azione Bloccata",
-                message: "\(self.intestazione) è inserito in \(menuIn) menu e non può essere messo fuori inventario. Una volta rimosso da tutti i menu sarà possibile procedere.")
-            
-        } else {
-            
-            let value = String(status.orderAndStorageValue())
-            let key = Self.CodingKeys.status.rawValue
-            let path = [key:value]
-            
-            Task {
-                
-               try await viewModel.updateSingleField(
-                    docId: self.id,
-                    sub: .allMyDish,
-                    path: path)
-                
-            }
-            
-        }
-        
-    }
-    
-    public func disabilitaSetStatusTransition(viewModel: AccounterVM) -> (general:Bool,upToDisponibile:Bool) {
-        
-        let executionState = self.checkStatusExecution(viewModel: viewModel)
-        
-        switch executionState {
-        case .eseguibile,.eseguibileConRiserva:
-            return (false,false)
-        case .nonEseguibile:
-            return (false,true)
-        }
-    }
     
     public func getStatus() -> StatusModel {
         
@@ -824,6 +737,176 @@ extension ProductModel:MyProStatusPack_L1 {
         
         return descrizione != ""
     }
+    
+}
+
+extension ProductModel:MyProTransitionSetPack_L02 {
+
+   
+  
+  
+    
+  /*  private func getTransitionFromRifSottostante(viewModel:AccounterVM) -> StatusTransition {
+        
+        let sottostante = self.getSottostante(viewModel: viewModel).sottostante
+        
+        if let sottostante {
+            return sottostante.statusTransition
+        } else {
+            // deve esserci un errore
+            // throwerei un errore
+            return .archiviato
+        }
+    } */
+    
+  
+    
+    public func setStatusTransition(
+        to status: StatusTransition,
+        viewModel: AccounterVM) {
+        
+       // let menuIn = viewModel.allMenuContaining(idPiatto: self.id).countWhereDishIsIn
+            
+       // let throwCondition = (status == .archiviato) && (menuIn > 0)
+            
+            Task {
+                
+                do {
+                    
+                    DispatchQueue.main.async {
+                        
+                        viewModel.isLoading = true
+                    }
+
+                       try validateUpdateStatusTransition(to: status, viewModel: viewModel)
+                       // print("[SET_TRANSITION]CHECK_THROW")
+                        let value = String(status.orderAndStorageValue())
+                        let key = Self.CodingKeys.status.rawValue
+                        let path = [key:value]
+                        
+                       try await viewModel.updateSingleField(
+                            docId: self.id,
+                            sub: .allMyDish,
+                            path: path)
+
+                }
+                
+                catch let error as CS_ErroreGenericoCustom {
+                    
+                    DispatchQueue.main.async {
+                        
+                        viewModel.isLoading = nil
+                        
+                        viewModel.alertItem = AlertModel(
+                            title: "Azione Bloccata",
+                            message: "\(error.localizedDescription)")
+                    }
+                    
+                    
+                } 
+                
+                catch let error {
+                    
+                    DispatchQueue.main.async {
+                        
+                        viewModel.isLoading = nil
+                        viewModel.logMessage = error.localizedDescription
+                        
+                    }
+
+                }
+            }
+            
+            
+            
+           /* guard archivioCondition else {
+                
+                throw CS_StatusTransitionError.archiviazioneFail(modelName: self.intestazione, reason: "Il Prodotto è in uso in uno o più menu. E' necessario rimuoverlo prima di procedere")
+            }*/
+            
+            
+      /*  if status == .archiviato,
+           menuIn > 0 {
+            // blocchiamo il passaggio di status perchè il prodotto è in menu
+            
+            viewModel.alertItem = AlertModel(
+                title: "Azione Bloccata",
+                message: "\(self.intestazione) è inserito in \(menuIn) menu e non può essere messo fuori inventario. Una volta rimosso da tutti i menu sarà possibile procedere.")
+            
+        } else {
+            
+            let value = String(status.orderAndStorageValue())
+            let key = Self.CodingKeys.status.rawValue
+            let path = [key:value]
+            
+            Task {
+                
+               try await viewModel.updateSingleField(
+                    docId: self.id,
+                    sub: .allMyDish,
+                    path: path)
+                
+            }
+            
+        } */
+        
+    }
+    
+    public func validateUpdateStatusTransition(to newStatus:StatusTransition,viewModel:AccounterVM) throws {
+        
+        switch newStatus {
+        case .disponibile:
+            try checkUpateStatusToDisponible(viewModel: viewModel)
+        case .inPausa:
+            return
+        case .archiviato:
+            try checkUpdateStatusToArchiviato(viewModel: viewModel)
+        }
+
+    }
+    
+    private func checkUpdateStatusToArchiviato(viewModel:AccounterVM) throws {
+         let menuIn = viewModel.allMenuContaining(idPiatto: self.id).countWhereDishIsIn
+             
+        guard menuIn == 0 else {
+            
+            throw CS_ErroreGenericoCustom.erroreGenerico(
+                modelName: self.intestazione,
+                problem: "Il prodotto non può essere archiviato.",
+                reason: "È in uso in uno o più menu. È necessario rimuoverlo dai menu prima di procedere")
+            
+        }
+
+    }
+    
+    private func checkUpateStatusToDisponible(viewModel:AccounterVM) throws {
+        
+        let executionState = self.checkStatusExecution(viewModel: viewModel)
+        
+        guard executionState != .nonEseguibile else {
+          
+            throw CS_ErroreGenericoCustom.erroreGenerico(
+                modelName: self.intestazione,
+                problem: "Il prodotto non può essere reso disponibile.",
+                reason: "L'indisponibilità di tutti o parte degli ingredienti non lo rende eseguibile. Controllare la lista ingredienti.")
+             }
+            
+        }
+    
+    public func generalDisableSetStatusTransition(viewModel: AccounterVM) -> Bool { false }
+   /* public func disabilitaSetStatusTransition(viewModel: AccounterVM) -> (general:Bool,upToDisponibile:Bool) {
+        
+        let executionState = self.checkStatusExecution(viewModel: viewModel)
+        
+        switch executionState {
+        case .eseguibile,.eseguibileConRiserva:
+            return (false,false)
+        case .nonEseguibile:
+            return (false,true)
+        }
+    }*/ // deprecata
+    
+   
     
    /* private func checkOptionalComposizione() -> Bool {
     
@@ -1113,8 +1196,8 @@ extension ProductModel:MyProVisualPack_L0 {
             } label: {
                 HStack{
                     
-                   /* Text(isDelGiorno ? "[-] Menu del Giorno" : "[+] Menu del Giorno")*/
-                    Text("Menu del Giorno")
+                    Text(isDelGiorno ? "[-] Menu del Giorno" : "[+] Menu del Giorno")
+                    //Text("Menu del Giorno")
                     Image(systemName:isDelGiorno ? "x.circle" : "clock.badge.checkmark")
                 }
             }
@@ -1125,8 +1208,8 @@ extension ProductModel:MyProVisualPack_L0 {
 
             } label: {
                 HStack{
-                   /* Text(isDelloChef ? "[-] Menu Consigliati" : "[+] Menu Consigliati")*/
-                    Text("Menu Consigliati")
+                    Text(isDelloChef ? "[-] Menu Consigliati" : "[+] Menu Consigliati")
+                   // Text("Menu Consigliati")
                     Image(systemName:isDelloChef ? "x.circle" : "clock.badge.checkmark")
                 }
             }

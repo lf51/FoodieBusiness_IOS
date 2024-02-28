@@ -257,6 +257,7 @@ struct SpesaRowIngredientView: View {
         VStack(alignment:.leading) {
             
             let isStatoInArrivo = statoInventario == .inArrivo
+            let statusTransition = element.getStatusTransition()
             
             HStack(alignment:.top) {
                 
@@ -270,7 +271,7 @@ struct SpesaRowIngredientView: View {
      
                            RoundedRectangle(cornerRadius: 2.0)
                                         .frame(width: 5)
-                                        .foregroundStyle(element.statusTransition.colorAssociated())
+                                        .foregroundStyle(statusTransition.colorAssociated())
         
                             VStack(alignment:.leading,spacing:0) {
                                 

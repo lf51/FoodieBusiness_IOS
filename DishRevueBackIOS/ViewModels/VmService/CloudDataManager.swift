@@ -377,7 +377,7 @@ public final class SubCollectionManager {
     deinit {
             print("[DEINIT]_CloudDataManagerManager")
         }
-
+    
     public enum CollectionKey:String {
         
          case propertyCollection = "properties_registered" // properties_library

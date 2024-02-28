@@ -543,7 +543,7 @@ struct NewProductIbridView: View {
     
     private func checkCategoria() throws /*-> Bool*/ {
 
-        if self.productModel.categoriaMenu.isEmpty {
+        if self.productModel.categoriaMenu == CategoriaMenu.defaultValue.id {
             throw CS_NewModelCheckError.categoriaMancante
         }
     }

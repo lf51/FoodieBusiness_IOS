@@ -48,6 +48,7 @@ public enum DestinationPathView: Hashable {
     case vistaIngredientiEspansa(_ :ProductModel)
     case vistaMenuEspansa(_ :ProductModel)
     case vistaPiattiEspansa(_ :MenuModel,_ :RowSize = .normale())
+    case vistaPiattiByING(_ :IngredientModel)
     
     case vistaCronologiaAcquisti(_ :IngredientModel)
     case vistaRecensioniEspansa
@@ -136,6 +137,12 @@ public enum DestinationPathView: Hashable {
                 destinationPath: destinationPath)
            /* VistaPiattiEspansa(currentMenu: menu, backgroundColorView: backgroundColorView, destinationPath: destinationPath) */
             
+        case .vistaPiattiByING(let ingredient):
+            VistaEspansaProdottiByING(
+                currentING: ingredient,
+                backgroundColorView: backgroundColorView,
+                readOnlyVM: readOnlyViewModel)
+            
         case .vistaCronologiaAcquisti(let ingredient):
            /*VistaCronologiaAcquisti(ingrediente: ingredient, backgroundColorView: backgroundColorView)*/
             CronologiaAcquistiView(ingrediente: ingredient, backgroundColorView: backgroundColorView)
@@ -162,11 +169,12 @@ public enum DestinationPathView: Hashable {
             ListaDellaSpesa_MainView(inventarioIngredienti: inventario, backgroundColorView: backgroundColorView)
 
         case .listaGenericaMenu(let container,let label):
-            VistaEspansaGenerica(
+            Text("VistaEspansaGenericaMENUDeprecata for containerCount:\(container.count) for label:\(label)")
+           /* VistaEspansaGenerica(
                 container: container,
                 containerPath: \.db.allMyMenu,
                 label:label,
-                backgroundColorView: backgroundColorView)
+                backgroundColorView: backgroundColorView)*/
             
         case .listaGenericaIng(let container,let label):
             
@@ -178,21 +186,24 @@ public enum DestinationPathView: Hashable {
                 backgroundColorView: backgroundColorView)*/
             
         case .listaGenericaDish(let container,let label):
-            VistaEspansaGenerica(
+            Text("VistaEspansaGenericaDISHDeprecata for containerCount:\(container.count) for label:\(label)")
+            
+           /* VistaEspansaGenerica(
                 container: container,
                 containerPath: \.db.allMyDish,
                 label:label,
-                backgroundColorView: backgroundColorView)
+                backgroundColorView: backgroundColorView)*/
             
         case .listaMenuPerAnteprima(let rifMenuOn,let rifDishOn, let label):
-            VistaEspansaMenuPerAnteprima(
+            Text("listaMenuPerAnteprimaDeprecatafor label:\(label)")
+           /* VistaEspansaMenuPerAnteprima(
                // viewModel:readOnlyViewModel,
                 rifMenuOn: rifMenuOn,
                 rifDishOn: rifDishOn,
                 //containerPath: \.cloudData.allMyMenu,
                 label: label,
                 destinationPath: destinationPath,
-                backgroundColorView: backgroundColorView)
+                backgroundColorView: backgroundColorView)*/
             
         case .anteprimaPiattiMenu(let rifDishes,let label):
             AnteprimaPiattiMenu(

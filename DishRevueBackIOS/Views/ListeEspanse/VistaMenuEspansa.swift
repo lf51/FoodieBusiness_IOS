@@ -50,10 +50,17 @@ struct VistaMenuEspansa: View {
                 }()
                 
                     HStack(spacing:4) {
+                        let statusTransition = self.currentDish.getStatusTransition(viewModel: self.viewModel)
+                       // Text("Status Piatto:")
                         
-                        Text("Status Piatto:")
-                        
-                        CSEtichetta(text: currentDish.status.simpleDescription(), textColor: Color.white, image: currentDish.status.imageAssociated(), imageColor: currentDish.status.transitionStateColor(), imageSize: .large, backgroundColor: Color.white, backgroundOpacity: 0.2)
+                        CSEtichetta(
+                            text: statusTransition.simpleDescription(),
+                            textColor: Color.white, 
+                            image:
+                                currentDish.status.imageAssociated(), 
+                            imageColor: statusTransition.colorAssociated(),
+                            imageSize: .large,
+                            backgroundColor: Color.white, backgroundOpacity: 0.2)
                     }
                     
                 .font(.system(.headline, design: .rounded, weight: .semibold))
@@ -98,17 +105,6 @@ struct VistaMenuEspansa: View {
                     }
                 }
                 
-                
-             /* BottomView_DLBIVSubView(
-                isDeActive: self.disableCondition() ) {
-                    self.description()
-                } resetAction: {
-                    self.resetAction()
-                } saveAction: {
-                    self.saveAction()
-                }*/
-
-                
                 BottomDialogView {
                     self.description()
                 } disableConditions: {
@@ -145,19 +141,35 @@ struct VistaMenuEspansa: View {
     
     private func saveAction() {
         
-        let menuModified = compareMenu()
-        
         Task {
-           try await self.viewModel.updateModelCollection(
-                items: menuModified,
-                sub: .allMyMenu,
-                destinationPath: .dishList)
+            
+            do {
+
+                    DispatchQueue.main.async {
+                        self.viewModel.isLoading = true
+                    }
+                    
+                   let menuModified = try compareMenu()
+                    
+                   try await self.viewModel.updateModelCollection(
+                        items: menuModified,
+                        sub: .allMyMenu,
+                        destinationPath: .dishList)
+
+                
+            } catch let error {
+                
+                DispatchQueue.main.async {
+                    self.viewModel.isLoading = nil
+                    self.viewModel.alertItem = AlertModel(title: "Errore", message: error.localizedDescription)
+                }
+                
+            }
         }
-       
     }
     
     /// Compare i menu nella State con in menu archiviati per ritornare un array utile al salvataggio di soli menu che hanno subito modifiche
-    private func compareMenu() -> [MenuModel] {
+    private func compareMenu() throws -> [MenuModel] {
         
         var menuModified:[MenuModel] = []
         
@@ -172,11 +184,20 @@ struct VistaMenuEspansa: View {
             }
         }
         
+        guard !menuModified.isEmpty else {
+            
+            throw CS_ErroreGenericoCustom.erroreGenerico(
+                modelName: self.currentDish.intestazione,
+                problem: "Impossibile salvare i dati",
+                reason: "Non risultano modifiche nei menu")
+        }
+        
         return menuModified
     }
     
     private func resetAction() {
-        self.allMenu = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: currentDish.id).0
+       // self.allMenu = self.viewModel.allMenuMinusDiSistemaPlusContain(idPiatto: currentDish.id).0
+        self.allMenu = self.archivioAllMenu
     }
     
     private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
@@ -207,15 +228,15 @@ struct VistaMenuEspansa: View {
         
         if localMenu.rifDishIn.contains(currentDish.id) {
             currentMenu.rifDishIn.removeAll(where: {$0 == currentDish.id})
-            updateStatus()
+           // updateStatus()
         } else {
             currentMenu.rifDishIn.append(currentDish.id)
-            updateStatus()
+           // updateStatus()
         }
         
         // Innest0 0.12.22
         
-        func updateStatus() {
+       /* func updateStatus() {
             
             guard !localMenu.tipologia.isDiSistema() else { return }
             
@@ -233,7 +254,7 @@ struct VistaMenuEspansa: View {
                 currentMenu.setStatusTransition(to:.disponibile,viewModel: self.viewModel)// .disponibile
                 self.viewModel.logMessage = "IMPLEMENTARE SAVE SU FIREBASE"
             }
-        }
+        }*/
         // fine Innesto
         
         if let index = self.allMenu.firstIndex(where: {$0.id == currentMenu.id}) {

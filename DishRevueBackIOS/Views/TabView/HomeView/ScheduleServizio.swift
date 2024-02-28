@@ -38,19 +38,19 @@ struct ScheduleServizio:View {
         let allMenuAvaible = self.viewModel.db.allMyMenu.filter({
             $0.getStatusTransition(viewModel:self.viewModel) == .disponibile })
         
-        let allMenuDataEsatta = allMenuAvaible.filter({$0.isAvaibleWhen == .dataEsatta})
+        let allMenuDataEsatta = allMenuAvaible.filter({$0.availability == .dataEsatta})
       /*  let allDataEsatta = allMenuAvaible.filter({$0.isAvaibleWhen == .dataEsatta}).sorted(by: {$0.dataInizio < $1.dataInizio}) */
 
        // let allExactDate = allDataEsatta.map({$0.id})
         
         // .2
         let allRange = allMenuAvaible.filter({
-            $0.isAvaibleWhen == .intervalloAperto ||
-            $0.isAvaibleWhen == .intervalloChiuso
+            $0.availability == .intervalloAperto ||
+            $0.availability == .intervalloChiuso
         })
        
         let allRangeActive = allRange.filter({
-            $0.dataInizio < Date.now
+            $0.giornoInizio < Date.now
         })
         
         let menuByDay:[GiorniDelServizio:[MenuModel]] = {
@@ -163,7 +163,7 @@ struct ScheduleServizio:View {
     
     @ViewBuilder private func vbMenuConDataSpecifica(allMenuExactDate:[MenuModel]) -> some View {
         
-        let allDate = allMenuExactDate.map({ $0.dataInizio })// .sorted(by: <)
+        let allDate = allMenuExactDate.map({ $0.giornoInizio })// .sorted(by: <)
         let allStringDate = Set( allDate.map({csTimeFormatter().data.string(from: $0)}) ) // per controllo
         let allStringDateArray = Array(allStringDate)
         let orderedStringDate = allStringDateArray.sorted(by: {
@@ -205,7 +205,7 @@ struct ScheduleServizio:View {
             ForEach(orderedStringDate,id: \.self) { dataEsatta in
                 
                 let allMenuOfTheDay = allMenuExactDate.filter({
-                    let stringDate = csTimeFormatter().data.string(from: $0.dataInizio)
+                    let stringDate = csTimeFormatter().data.string(from: $0.giornoInizio)
                     return stringDate == dataEsatta
                     
                 })

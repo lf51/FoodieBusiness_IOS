@@ -535,7 +535,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     
     // 23.10 Gestione del Cambio Status dei Modelli (Al fine di eliminare il binding dalle liste per il funzionamento del cambio status nei menu interattivi )
    
-    func manageCambioStatusModel<M:MyProStatusPack_L1 & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1 & MyProSubCollectionPack>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
+   /* func manageCambioStatusModel<M:MyProStatusPack_L1 & Codable & MyProStarterPack_L01 & MyProStarterPack_L0 & MyProStarterPack_L1 & MyProSubCollectionPack>(model:M,nuovoStatus:StatusTransition) where M.VM == AccounterVM {
 
       /*  var newModel = model
         newModel.statusTransition = nuovoStatus
@@ -543,7 +543,7 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         self.updateModelOnSub(itemModel: newModel)*/
         self.logMessage = "[CHECK]_manageCambioStatusModel -OBSOLETO-"
 
-    } // deprecata in Futuro
+    }*/ // deprecata in Futuro
     
     /// ritorna un array con i piatti contenenti l'ingrediente passato. La presenza dell'ing è controllata fra i principali, i secondari, e i sosituti.
     func allDishContainingIngredient(idIng:String) -> [ProductModel] {
@@ -659,8 +659,11 @@ UserManager refCount:\(CFGetRetainCount(userManager))
     func ingredientListFilteredBy(idIngredient:String,ingredientStatus:[StatusTransition]) ->[IngredientModel] {
 
         let filterArray = self.db.allMyIngredients.filter({
-            $0.id != idIngredient &&
-            ingredientStatus.contains($0.statusTransition)
+            
+            let statusTransition = $0.getStatusTransition()
+            
+           return $0.id != idIngredient &&
+            ingredientStatus.contains(statusTransition)
             
         })
 
@@ -931,7 +934,8 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         let cleanAllIngreArray = Array(cleanAllIngredient)
         //
         
-        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.db.allMyIngredients).filter({ $0.statusTransition != .archiviato })
+        let allIngModelFiltered = self.modelCollectionFromCollectionID(collectionId: cleanAllIngreArray, modelPath: \.db.allMyIngredients).filter({ 
+            $0.getStatusTransition() != .archiviato })
         
         //
         
@@ -971,6 +975,27 @@ UserManager refCount:\(CFGetRetainCount(userManager))
         return allRif
     }
     
+    /// Filtra una collezione di piatti per uno statusTransition.. Se passiamo nil, verrà filtrata l'intera collezione di piatti del viewModel.
+   /* public func checkDishStatusTransition(of dishes:[String]? = nil,check:StatusTransition) -> [String] {
+        
+        let allModel:[ProductModel] = {
+            
+            guard let allDishes = dishes else {
+                return self.db.allMyDish
+            }
+            
+          let allModelDishes = self.modelCollectionFromCollectionID(
+            collectionId: allDishes,
+            modelPath: \.db.allMyDish)
+        
+            return allModelDishes
+        }()
+        
+        let allModelChecked = allModel.filter({$0.getStatusTransition(viewModel: self) == check})
+        let allRif = allModelChecked.map({$0.id})
+        
+        return allRif
+    }*/ // spostata in superClasse
     
     /*
     /// Ritorna un quadro corrente del servizio, ossia il servizo del giorno. Le preparazione tornate sono quelle marcate come .disponibili, i menu sono quelli onAir, e gli ingredienti quelli attivi delle preparazioni disponibili.
@@ -1669,11 +1694,20 @@ extension AccounterVM {
       
     }// deprecata in futuro // può servire solo per i menu per evitare accavallamenti
     
+    /// Permette di salvare su firebase su un singolo documento un path specifico [field:valore], multicampo
+    /// - Parameters:
+    ///   - docId: id documento
+    ///   - collectionKey: sub collection di appartenenza
+    ///   - value: [Field:Valore] dizionario dei campi con i rispettivi valori da salvare
+    ///   - refreshPath: valore di default is False. Quando true svuota il NavigationPath per uscire dalla view corrente
     func updateSingleField(
         docId:String,
         sub collectionKey:CloudDataStore.SubCollectionKey,
-        path value:[String:Any]) async throws {
+        path value:[String:Any],
+        refreshPath:Bool = false) async throws {
         
+         //   throw CS_GenericError.fastImportDishWithNoIng // test
+            
        /* do {
             
             DispatchQueue.main.async {
@@ -1684,6 +1718,13 @@ extension AccounterVM {
                 docId: docId,
                 sub: collectionKey,
                 path: value)
+            
+            if refreshPath {
+                
+                DispatchQueue.main.async {
+                    self.refreshPath(destinationPath: self.pathSelection)
+                }
+            }
             
           /* DispatchQueue.main.asyncAfter(deadline: .now() + 8.0) {
                 self.isLoading = false
@@ -2043,3 +2084,30 @@ extension AccounterVM {
     }
 }
 
+/// Logica suller Recensioni
+extension AccounterVM {
+    
+    /// Ritorna la media ponderata delle recensioni di un array di Prodotti. Esclude i prodotti finiti. Considera ognoi status transition
+    public func mediaValoreRecensioni(for rif:[String]) -> Double {
+        
+      let productToAnalize =  self.modelCollectionFromCollectionID(collectionId: rif, modelPath: \.db.allMyDish)
+        
+      let scrematuraProducts = productToAnalize.filter({
+            let statusTransition = $0.getStatusTransition(viewModel: self)
+           return $0.adress != .finito })
+        
+      let tuttiVotiPesati = scrematuraProducts.map({$0.topRatedValue(readOnlyVM: self)})
+        
+      let tuttiPesi = scrematuraProducts.map({Double($0.ratingInfo(readOnlyViewModel: self).count)})
+        
+      let sommaVotiPesati = csSommaValoriCollection(collectionValue: tuttiVotiPesati)
+      let sommaPesi = csSommaValoriCollection(collectionValue: tuttiPesi)
+        
+      let media = sommaVotiPesati / sommaPesi
+       
+      return media
+    }
+    
+    
+    
+}

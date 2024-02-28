@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import MyFoodiePackage
 import MyFilterPackage
+import MyPackView_L0
 
 extension MenuModel:MyProVMPack_L0 {
     
@@ -18,7 +19,7 @@ extension MenuModel:MyProVMPack_L0 {
 
 extension MenuModel {
     /// Gestisce il cambio automatico dello status. Chiede un idDaEscludere perchè la chiamata per l'update arriva da un piatto non ancora passato di status
-    public func autoManageCambioStatus(viewModel:AccounterVM,idPiattoEscluso:String) {
+   /* public func autoManageCambioStatus(viewModel:AccounterVM,idPiattoEscluso:String) {
 
         guard !self.tipologia.isDiSistema() else { return }
         
@@ -32,7 +33,7 @@ extension MenuModel {
             viewModel.remoteStorage.menu_countModificheIndirette += 1
         }
         
-    }
+    }*/
     
     func allDishActive(idDishEscluso:String? = nil,viewModel:AccounterVM) -> [ProductModel] {
         
@@ -62,7 +63,7 @@ extension MenuModel {
     /// Ritorna la media dei voti dei piatti contenuti. La media è pesata, tiene conto del numero di recensioni.
     func mediaValorePiattiInMenu(readOnlyVM:AccounterVM) -> Double {
         
-        let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.db.allMyDish)
+       /* let allDish = readOnlyVM.modelCollectionFromCollectionID(collectionId: self.rifDishIn, modelPath: \.db.allMyDish)
         
         let allAvaibleDish = allDish.filter({
             let statusTransition = $0.getStatusTransition(viewModel: readOnlyVM)
@@ -77,7 +78,10 @@ extension MenuModel {
         let sommaPesi = csSommaValoriCollection(collectionValue: tuttiPesi)
         
         let media = sommaVotiPesati / sommaPesi
-        return media
+        return media */ // trasformata in un metodo nel viewModel
+        
+        readOnlyVM.mediaValoreRecensioni(for: self.rifDishIn)
+        
     }
 }
 
@@ -94,13 +98,25 @@ extension MenuModel:MyProStarterPack_L1 {
     
     public func isEqual(to rhs: MyFoodiePackage.MenuModel) -> Bool {
         
-        self.tipologia == rhs.tipologia &&
-        self.isAvaibleWhen == rhs.isAvaibleWhen &&
-        self.dataInizio == rhs.dataInizio &&
-        self.dataFine == rhs.dataFine &&
-        self.oraInizio == rhs.oraInizio &&
-        self.oraFine == rhs.oraFine &&
-        self.rifDishIn == rhs.rifDishIn
+        let inizioOra = csTimeConversione(data: self.oraInizio)
+        let inizioOraRhs = csTimeConversione(data: rhs.oraInizio)
+        
+        let fineOra = csTimeConversione(data: self.oraFine)
+        let fineOraRhs = csTimeConversione(data: rhs.oraFine)
+        
+        let dataInizio = csTimeFormatter().data.string(from: self.giornoInizio)
+        let dataInizioRhs = csTimeFormatter().data.string(from: rhs.giornoInizio)
+        
+        let dataFine = csTimeFormatter().data.string(from: self.giornoFine ?? Date.now)
+        let dataFineRhs = csTimeFormatter().data.string(from: rhs.giornoFine ?? Date.now)
+        
+        return self.tipologia == rhs.tipologia &&
+        dataInizio == dataInizioRhs &&
+        dataFine == dataFineRhs &&
+        inizioOra == inizioOraRhs &&
+        fineOra == fineOraRhs &&
+        self.rifDishIn == rhs.rifDishIn &&
+        self.giorniDelServizio == rhs.giorniDelServizio
         
     }
     
@@ -124,9 +140,9 @@ extension MenuModel:MyProVisualPack_L0 {
         case .disponibile:
             return 1.0
         case .inPausa:
-            return 0.8
+            return 0.7
         case .archiviato:
-            return 0.5
+            return 0.4
         }
         
     }
@@ -183,7 +199,7 @@ extension MenuModel:Object_FPC {
             return lhs.intestazione < rhs.intestazione
             
         case .dataInizio:
-           return lhs.dataInizio < rhs.dataInizio
+           return lhs.giornoInizio < rhs.giornoInizio
             
         case .mostContaining:
             return lhs.rifDishIn.count > rhs.rifDishIn.count
@@ -193,7 +209,7 @@ extension MenuModel:Object_FPC {
             rhs.mediaValorePiattiInMenu(readOnlyVM: readOnlyVM)
             
         case .dataFine:
-            return lhs.dataFine < rhs.dataFine
+            return (lhs.giornoFine ?? Date.now) < (rhs.giornoFine ?? Date.now)  // 16.02.24 da sistemare
             
         case .topPriced:
             return lhs.tipologia.returnMenuPriceValue().asDouble >
@@ -255,7 +271,7 @@ extension MenuModel:Object_FPC {
         
         coreFilter.comparePropertyToProperty(localProperty: self.tipologia, filterProperty: filterProperties.tipologiaMenu) &&
         
-        coreFilter.comparePropertyToProperty(localProperty: self.isAvaibleWhen, filterProperty: filterProperties.rangeTemporaleMenu)
+        coreFilter.comparePropertyToProperty(localProperty: self.availability, filterProperty: filterProperties.rangeTemporaleMenu)
         
     }
     
@@ -355,8 +371,8 @@ extension MenuModel:MyProProgressBar {
         
         if self.intestazione != "" { count += 0.2}
         if self.descrizione != "" { count += 0.1 }
-        if self.tipologia != .defaultValue { count += 0.2 }
-        if self.isAvaibleWhen != .defaultValue { count += 0.2 }
+       // if self.tipologia != .defaultValue { count += 0.2 }
+       // if self.isAvaibleWhen != .defaultValue { count += 0.2 }
         if self.rifDishIn != [] { count += 0.3 }
         
         return count
@@ -385,8 +401,7 @@ extension MenuModel:MyProNavigationPack_L0 {
         DestinationPathView.menu(self)
     }
 }
-
-extension MenuModel:MyProStatusPack_L1 {
+extension MenuModel:MyProStatusPack_L0 {
     
     public var status: StatusModel { self.getStatus() }
     
@@ -396,17 +411,118 @@ extension MenuModel:MyProStatusPack_L1 {
         else { return .bozza }
     }
     
-    public func getStatusTransition(viewModel:AccounterVM) -> StatusTransition {
+    public func modelStatusDescription() -> String {
+        "Menu (\(self.status.simpleDescription().capitalized))"
+    }
+}
+
+extension MenuModel:MyProStatusPack_L02 {
+    
+    public func visualStatusDescription(viewModel: AccounterVM) -> (internalImage: String, internalColor: Color, externalColor: Color, description: String) {
         
-       // guard let statusCache else { return .archiviato }
+        let transition = getStatusTransition(viewModel: viewModel)
+        let transitionDescription = transition.simpleDescription()
+        let statusDescription = self.status.simpleDescription()
         
-        return .disponibile // da sviluppare convertendo un Intero
+        let imageInt = self.status.imageAssociated()
+        let coloreInterno = transition.colorAssociated()
+        
+        let tipologiaMenu = self.tipologia.simpleDescription()
+        
+        let coloreEsterno:Color = Color.blue // da derivare dall'isOnAirStatus
+        let onlineStatus:String = "Programmazione: daSviluppare" // da derivare dall'isOnAirStatus
+        
+        let descrizione = "Menu \(tipologiaMenu)\nForm: \(statusDescription)\nStato: \(transitionDescription)\n\(onlineStatus)"
+        
+        
+        return (imageInt,coloreInterno,coloreEsterno,descrizione)
+    }
+}
+
+extension MenuModel:MyProTransitionSetPack_L02 {
+    
+    public func setStatusTransition(
+        to status:StatusTransition,
+        viewModel: AccounterVM) {
+        
+            Task {
+                
+                do {
+                    
+                    DispatchQueue.main.async {
+                        
+                        viewModel.isLoading = true
+                    }
+                       try validateUpdateStatusTransition(to: status, viewModel: viewModel)
+                       // print("[SET_TRANSITION]CHECK_THROW")
+                        let value = String(status.orderAndStorageValue())
+                        let key = Self.CodingKeys.statusCache.rawValue
+                        let path = [key:value]
+                        
+                       try await viewModel.updateSingleField(
+                            docId: self.id,
+                            sub: .allMyMenu,
+                            path: path)
+
+                }
+ 
+                catch let error {
+                    
+                    DispatchQueue.main.async {
+                        
+                        viewModel.isLoading = nil
+                        viewModel.alertItem = AlertModel(
+                            title: "Azione Bloccata",
+                            message: "\(error.localizedDescription)")
+                        
+                    }
+
+                }
+            }
+     
     }
     
-    public func setStatusTransition(to status:StatusTransition,viewModel: AccounterVM) {
-        //
+    public func validateUpdateStatusTransition(to newStatus:StatusTransition,viewModel:AccounterVM) throws {
+        
+        switch newStatus {
+            
+        case .disponibile:
+            try checkUpateStatusToDisponible(viewModel: viewModel)
+        case .inPausa:
+            return
+        case .archiviato:
+            return
+        }
+        
     }
-    public func disabilitaSetStatusTransition(viewModel: AccounterVM) -> (general: Bool, upToDisponibile: Bool) {
+    
+    private func checkUpateStatusToDisponible(viewModel:AccounterVM) throws {
+        
+        guard !self.rifDishIn.isEmpty else {
+            
+            throw CS_ErroreGenericoCustom.erroreGenerico(
+                modelName: self.intestazione,
+                problem: "Lo status non può essere modificato.",
+                reason: "La lista prodotti del menu è vuota.")
+             }
+        
+        let productsDisponibili:[String] = viewModel.checkDishStatusTransition(of: self.rifDishIn, check: .disponibile)
+        
+        guard !productsDisponibili.isEmpty else {
+            
+            throw CS_ErroreGenericoCustom.erroreGenerico(
+                modelName: self.intestazione,
+                problem: "Lo status non può essere modificato.",
+                reason: "Il menu non contiene prodotti disponibili alla vendita.")
+        }
+        
+    }
+    
+    public func generalDisableSetStatusTransition(viewModel: AccounterVM) -> Bool {
+        let isDiSistema = self.tipologia.isDiSistema()
+        return isDiSistema
+    }
+   /* public func disabilitaSetStatusTransition(viewModel: AccounterVM) -> (general: Bool, upToDisponibile: Bool) {
         
         // da sviluppare la parte dell'UpToDisponibile
         //  self.allDishActive(viewModel: viewModel).isEmpty
@@ -415,21 +531,14 @@ extension MenuModel:MyProStatusPack_L1 {
         
         return(isDiSistema,false)
         
-    }
+    }*/ // deprecata
     
-    public func modelStatusDescription() -> String {
-        "Menu (\(self.status.simpleDescription().capitalized))"
-    }
+  
     
    
 }
 
-extension MenuModel:MyProStatusPack_L02 {
-    
-    public func visualStatusDescription(viewModel: AccounterVM) -> (internalImage: String, internalColor: Color, externalColor: Color, description: String) {
-        return ("x.circle",Color.gray,Color.gray,"DA SVILUPPARE")
-    }
-}
+
 
 extension MenuModel:MyProEditingPack_L0 {
     

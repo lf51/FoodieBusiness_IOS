@@ -68,6 +68,7 @@ struct PreCallVistaPiattiEspansa: View {
                 title: "Seleziona Piatti",
                 titlePosition: .bodyEmbed([.horizontal,.top],15),
                 backgroundColorView: backgroundColorView) {
+                    
                 VistaPiattiEspansa(
                     currentMenu: $globalBindingMenu,
                     rowViewSize: rowViewSize,
@@ -81,6 +82,7 @@ struct PreCallVistaPiattiEspansa: View {
             CSZStackVB(
                 title: localStateMenu.intestazione,
                 backgroundColorView: backgroundColorView) {
+                    
                 VistaPiattiEspansa(
                     currentMenu: $localStateMenu,
                     menuArchiviato: menuArchiviato,
@@ -127,15 +129,13 @@ struct PreCallVistaPiattiEspansa: View {
                     self.showButtonBar = false
                 }
             
-           // self.valoreArchiviato = currentMenu.wrappedValue.rifDishIn
-           // self.statusArchiviato = currentMenu.wrappedValue.status
             self.rowViewSize = rowViewSize
             self.backgroundColorView = backgroundColorView
             self.destinationPath = destinationPath
         }
         
-        @State private var filterCategoria:CategoriaMenu = .defaultValue
-        @State private var filterPercorso:ProductAdress = .preparazione
+        @State private var filterCategoria:CategoriaMenu?
+        @State private var filterPercorso:ProductAdress?
         
         var body: some View {
             
@@ -148,7 +148,7 @@ struct PreCallVistaPiattiEspansa: View {
                        return isDiSist && !isOnAir
                     }()
                     
-                    let container:[ProductModel] = {
+                   /* let container:[ProductModel] = {
                        
                         var allDish:[ProductModel] = []
                         
@@ -167,47 +167,147 @@ struct PreCallVistaPiattiEspansa: View {
                         })
                         
                         return allDish
+                    }()*/
+                    
+                    let container:[ProductModel] = {
+                       
+                        var allProduct = self.viewModel.db.allMyDish
+                        
+                        if let filterPercorso {
+                            
+                           allProduct = allProduct.filter({$0.adress == filterPercorso})
+                        }
+                        
+                        if let filterCategoria {
+                            
+                           allProduct = allProduct.filter({
+                                $0.categoriaMenu == filterCategoria.id
+                                })
+                            
+                        }
+                    
+                        allProduct.sort(by: {
+                            
+                            (currentMenu.rifDishIn.contains($0.id).description,$1.intestazione) > (currentMenu.rifDishIn.contains($1.id).description, $0.intestazione)
+                        })
+                        
+                        return allProduct
                     }()
                     
                         HStack(spacing:4) {
                             
-                            Text("Status:")
+                            let status = self.currentMenu.getStatusTransition(viewModel: self.viewModel)
+                            
+                           /* Text("Status:")
                                 .font(.system(.headline, design: .rounded, weight: .semibold))
-                                .foregroundStyle(Color.seaTurtle_2)
+                                .foregroundStyle(Color.seaTurtle_2)*/
+                            
                             CSEtichetta(
-                                text: currentMenu.status.simpleDescription(),
+                                text: status.simpleDescription(),
                                 textColor: Color.white,
                                 image: currentMenu.status.imageAssociated(),
-                                imageColor: currentMenu.status.transitionStateColor(),
+                                imageColor: status.colorAssociated(),
                                 imageSize: .large,
                                 backgroundColor: Color.white, backgroundOpacity: 0.2).fixedSize()
                             Spacer()
                             
-                            CS_PickerWithDefault(selection: $filterCategoria, customLabel: "Tutti", dataContainer: self.viewModel.db.allMyCategories)
+                            adressPicker()
+                                  .fixedSize()
+                            
+                          /* adressPicker()
+                                .fixedSize()
+                            Spacer()
+                            categoriesPicker()
+                                .fixedSize()*/
+                            
+                           /* CS_PickerWithDefault(
+                                selection: $filterCategoria,
+                                customLabel: "Tutti",
+                                dataContainer: self.viewModel.db.allMyCategories)*/
 
                         }
-
-                  //  }
-                    let placeHolder:String = {
+                    
+                   /* let placeHolder:String = {
                       
-                        if filterCategoria == .defaultValue {
-                            return "Preparazioni & Prodotti"
-                        } else {
+                        if let filterCategoria {
                             return filterCategoria.simpleDescription()
+                        } else {
+                           
+                            return "Preparazioni & Prodotti"
                         }
                     }()
 
-                    CSLabel_1Button(placeHolder: placeHolder, imageNameOrEmojy: filterCategoria.imageAssociated(), backgroundColor: Color.black)
+                    CSLabel_1Button(
+                        placeHolder: placeHolder,
+                        imageNameOrEmojy: filterCategoria?.imageAssociated(),
+                        backgroundColor: Color.black) */
+              
+                    
+                 /*   HStack {
+                        
+                        categoriesPicker()
+                            .fixedSize()
+                        
+                        Spacer()
+                        
+                        let dishIn = self.currentMenu.rifDishIn.count
+                        Text("In:\(dishIn)")
+                            .font(.system(.subheadline, design: .monospaced,weight: .light))
+                        
+                        let media = self.currentMenu.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
+                        let strinMedia = String(format: "%.1f",media)
+                        Text("\(Image(systemName: "medal")):\(strinMedia)")
+                    }*/
+                    
+                    HStack {
+                        
+                        categoriesPicker()
+                            .fixedSize()
+                        
+                        Spacer()
+                        let dishIn = self.currentMenu.rifDishIn.count
+                        
+                        let media = self.currentMenu.mediaValorePiattiInMenu(readOnlyVM: self.viewModel)
+                        let strinMedia = String(format: "%.1f",media)
+                        
+                        CSEtichetta( // 21.09
+                            text: strinMedia,
+                            fontStyle: .body,
+                            fontWeight: .semibold,
+                            textColor: Color.yellow.opacity(0.7),
+                            image: "medal.fill",
+                            imageColor: Color.yellow.opacity(0.8),
+                            imageSize:.large,
+                            backgroundColor: Color.green.opacity(0.4),
+                            backgroundOpacity: 1.0)
+                        
+                        
+                        CSEtichetta( // 21.09
+                            text: "\(dishIn)",
+                            fontStyle: .body,
+                            fontWeight: .semibold,
+                            textColor: Color.seaTurtle_4,
+                            image: "fork.knife.circle",
+                            imageColor: Color.seaTurtle_4,
+                            imageSize: .large,
+                            backgroundColor: Color.seaTurtle_2,
+                            backgroundOpacity: 1.0)
+               
+                    }
+                    
+                    
+                    
                     
                     ScrollView(showsIndicators:false) {
                         
                         VStack {
                             
-                            ForEach(container) { ProductModel in
+                            ForEach(container) { productModel in
         
-                                let containTheDish = currentMenu.rifDishIn.contains(ProductModel.id)
-                                
-                                ProductModel.returnModelRowView(rowSize: rowViewSize)
+                     
+                                let containTheDish = currentMenu.rifDishIn.contains(productModel.id)
+           
+                                productModel.returnModelRowView(rowSize: rowViewSize)
                                     .opacity(containTheDish ? 1.0 : 0.4)
                                     .overlay(alignment: .bottomTrailing) {
                                         
@@ -222,7 +322,7 @@ struct PreCallVistaPiattiEspansa: View {
                                                frontColor: .blue) {
                                                    withAnimation {
                                                        
-                                                       self.addRemoveDishLocally(idPiatto: ProductModel.id)
+                                                       self.addRemoveDishLocally(model: productModel)
      
                                                    }
                                                                }
@@ -232,10 +332,7 @@ struct PreCallVistaPiattiEspansa: View {
                                                        .clipShape(Circle())
                                                        .shadow(radius: 5.0)
                                                }
-                                            
                                         }
-                                           
-                   
                                     }
                             }
                         }
@@ -278,6 +375,109 @@ struct PreCallVistaPiattiEspansa: View {
         
         // ViewBuilder
         
+        @ViewBuilder private func adressPicker() -> some View {
+            
+            let dataContainer = ProductAdress.allCases
+            let container:[ProductModel] = self.viewModel.db.allMyDish
+            let categoriaFiltro = filterCategoria?.id
+            
+            let containerCount = container.filter({
+                let condition = categoriaFiltro == nil ? true : ($0.categoriaMenu == categoriaFiltro)
+                return condition
+            }).count
+            
+            HStack(spacing:0) {
+                
+                let image:(String,Color)? = filterPercorso?.imageAssociated()
+                csVbSwitchImageText(string: image?.0,size: .large)
+                    .foregroundColor(image?.1)
+                
+                Picker(selection:$filterPercorso) {
+                             
+                    Text("All Type (\(containerCount))")
+                        .tag(nil as ProductAdress?)
+                    
+                        ForEach(dataContainer, id:\.self) {filter in
+
+                            let count = container.filter({
+                                
+                                let condition_2 = categoriaFiltro == nil ? true : ($0.categoriaMenu == categoriaFiltro)
+                                
+                               return $0.adress == filter &&
+                                condition_2
+                            }).count
+                            
+                            Text("\(filter.simpleDescription()) (\(count))")
+                                .tag(filter as ProductAdress?)
+                                
+                        }
+                              
+                } label: {}
+                          .pickerStyle(MenuPickerStyle())
+                          .accentColor(Color.black)
+                          
+                
+            }
+            .padding(.leading,5)
+            .background(
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color.white.opacity(0.5))
+            )
+
+        }
+        
+        @ViewBuilder private func categoriesPicker() -> some View {
+            
+            let dataContainer = self.viewModel.db.allMyCategories
+            let container = self.viewModel.db.allMyDish
+            let adressFilter = filterPercorso
+            
+            let containerCount = container.filter({
+                let condition = adressFilter == nil ? true : ($0.adress == adressFilter!)
+                return condition
+            }).count
+            
+            HStack(spacing:0) {
+                
+                let image = filterCategoria?.image
+                csVbSwitchImageText(string: image,size: .large)
+                    
+                Picker(selection:$filterCategoria) {
+                             
+                    Text("All Categories (\(containerCount))")
+                        .tag(nil as CategoriaMenu?)
+                    
+                        ForEach(dataContainer, id:\.self) {filter in
+
+                            let count = container.filter({
+                                
+                                let condition_2 = adressFilter == nil ? true : ($0.adress == adressFilter!)
+                                
+                               return $0.categoriaMenu == filter.id &&
+                                        condition_2
+                                
+                            }).count
+                            
+                            Text("\(filter.simpleDescription()) (\(count))")
+                                .tag(filter as CategoriaMenu?)
+                                
+                        }
+                              
+                } label: {}
+                          .pickerStyle(MenuPickerStyle())
+                          .accentColor(Color.seaTurtle_4)
+            }
+            .padding(.leading,5)
+            .background(
+                
+                RoundedRectangle(cornerRadius: 5.0)
+                    .fill(Color.black.opacity(0.2))
+            )
+
+              
+        }
+        
         @ViewBuilder private func saveButtonDialogView() -> some View {
      
             csBuilderDialogButton {
@@ -288,12 +488,51 @@ struct PreCallVistaPiattiEspansa: View {
             }
         }
         
-        
         // Method
 
         private func saveAction() {
 
-            self.viewModel.createOrUpdateModelOnSub(itemModel: currentMenu,refreshPath: destinationPath)
+           /* self.viewModel.createOrUpdateModelOnSub(
+                itemModel: currentMenu,
+                refreshPath: destinationPath) */ // deprecata
+            
+            // Funziona su i piattiEspansi e quindi salviamo solo le modifiche al rif dei Piatti. Quando è inbound nel nuovoMenuMainView questa funzione non è eseguita e le modifiche riguardono il currentMenu a livello StateLocally
+            
+            // B2B7
+            //C6C4
+            
+            Task {
+                do {
+                    
+                    DispatchQueue.main.async {
+                        
+                        viewModel.isLoading = true
+                    }
+                    
+                    let value = self.currentMenu.rifDishIn
+                    let key = MenuModel.CodingKeys.rifDishIn.rawValue
+                    let path = [key:value]
+                    
+                    try await viewModel.updateSingleField(
+                        docId: self.currentMenu.id,
+                         sub: .allMyMenu,
+                         path: path,
+                         refreshPath: true)
+                    
+                } catch let error {
+                    
+                    DispatchQueue.main.async {
+                        
+                        viewModel.isLoading = nil
+                        viewModel.alertItem = AlertModel(
+                            title: "Errore",
+                            message: "\(error.localizedDescription)")
+                        
+                    }
+                    
+                }
+            }
+            
         }
         
         private func disableCondition() -> (general:Bool?,primary:Bool,secondary:Bool?) {
@@ -320,39 +559,48 @@ struct PreCallVistaPiattiEspansa: View {
             
         }
         
-        private func addRemoveDishLocally(idPiatto:String) {
+        private func addRemoveDishLocally(model:ProductModel) {
             
-            if self.currentMenu.rifDishIn.contains(idPiatto) {
-                self.currentMenu.rifDishIn.removeAll(where: {$0 == idPiatto})
-                updateStatus()
-            } else {
-                self.currentMenu.rifDishIn.append(idPiatto)
-                updateStatus()
+            do {
+                
+                try validateAction(for: model)
+                executionAction(for: model.id)
+                
+            } catch let error {
+                
+               // self.viewModel.alertItem = AlertModel(
+                 //   title: "Azione Bloccata",
+                 //   message: error.localizedDescription)
+                self.viewModel.logMessage = error.localizedDescription
+                // usiamo il log perchè l'alert cozza con il popOver del selezionaPiatti in nuovoMenuMainView
             }
         
-            // Innesto 01.12.22
-            func updateStatus() {
-                
-                self.viewModel.logMessage = "[SVILUPPARE]_updateStatus()"
-                /*
-                
-                guard !currentMenu.tipologia.isDiSistema(),
-                      statusArchiviato.checkStatusTransition(check: .disponibile) else { return }
-                      
-                
-                if currentMenu.allDishActive(viewModel: self.viewModel).isEmpty {
-                    self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS MENU"
-                   /* currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .inPausa)*/
-                } else {
-                    self.viewModel.logMessage = "[ERRORE]_SVILUPPARE CAMBIO STATUS MENU"
-                  /*  currentMenu.status = currentMenu.status.changeStatusTransition(changeIn: .disponibile)*/
-                }
-                
-                */
-                
-            }
-           
         }
+        
+        private func validateAction(for model:ProductModel) throws {
+            
+            let isArchiviato = model.getStatusTransition(viewModel: self.viewModel) == .archiviato
+            
+            if isArchiviato {
+                
+               throw CS_ErroreGenericoCustom.erroreGenerico(
+                    modelName: model.intestazione,
+                    problem: "Non può essere inserito in menu.",
+                    reason: "È un prodotto archiviato.")
+            }
+            
+        }
+        
+        private func executionAction(for modelId:String) {
+            
+            if self.currentMenu.rifDishIn.contains(modelId) {
+                self.currentMenu.rifDishIn.removeAll(where: {$0 == modelId})
+            } else {
+                self.currentMenu.rifDishIn.append(modelId)
+            
+            }
+        }
+        
     }
     
 }

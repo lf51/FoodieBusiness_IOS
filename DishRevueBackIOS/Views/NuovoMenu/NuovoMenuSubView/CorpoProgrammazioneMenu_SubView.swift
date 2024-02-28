@@ -12,10 +12,145 @@ import MyPackView_L0
 struct CorpoProgrammazioneMenu_SubView: View {
     
     @Binding var nuovoMenu: MenuModel
+
+    var body: some View {
+        
+        VStack {
+            
+            switchProgrammazione()
+        
+            HStack {
+                
+                DatePicker("dalle:", selection: self.$nuovoMenu.oraInizio, displayedComponents: .hourAndMinute)
+                    
+                Text("  |  ")
+                
+                DatePicker("alle:", selection: self.$nuovoMenu.oraFine, in: (self.nuovoMenu.oraInizio.addingTimeInterval(3600.0))... ,displayedComponents: .hourAndMinute)
+                
+            }
+            
+        }
+        
+    }
+
+    // ViewBuilder
+    
+    @ViewBuilder private func switchProgrammazione() -> some View {
+        
+        let title = nuovoMenu.availability.titlePicker()
+        let availability = nuovoMenu.availability
+        
+        switch availability {
+        case .dataEsatta:
+            programmaDataEsatta(title: title)
+        case .intervalloChiuso:
+            programmaChiuso(title: title)
+        case .intervalloAperto:
+            programmaAperto(title: title)
+       /* case .noValue:
+            EmptyView()*/
+        }
+        
+    }
+    
+    @ViewBuilder private func programmaChiuso(title:String) -> some View {
+        
+        HStack {
+           
+            DatePicker(
+                title,
+                selection: self.$nuovoMenu.giornoInizio,
+                in:Date()...,
+                displayedComponents: .date)
+            
+            Text("  |  ")
+            
+            if let endDay = self.nuovoMenu.giornoFine {
+                
+                let dayToEnd = Binding {
+                    endDay
+                } set: { new in
+                    self.nuovoMenu.giornoFine = new
+                }
+
+                DatePicker(
+                    "al:",
+                    selection: dayToEnd,
+                    in:(self.nuovoMenu.giornoInizio.advanced(by: 604800))... ,
+                    displayedComponents: .date)
+            }
+            
+        }
+         
+            PropertyScrollCases(
+                cases: GiorniDelServizio.allCases,
+                dishCollectionProperty: self.$nuovoMenu.giorniDelServizio,
+                colorSelection: Color.mint)
+            
+    }
+    
+    @ViewBuilder private func programmaAperto(title:String) -> some View {
+        
+        HStack {
+         
+            DatePicker(
+                title,
+                selection: self.$nuovoMenu.giornoInizio,
+                in:Date()...,
+                displayedComponents: .date)
+            .fixedSize()
+            Spacer()
+        }
+         
+            PropertyScrollCases(
+                cases: GiorniDelServizio.allCases,
+                dishCollectionProperty: self.$nuovoMenu.giorniDelServizio,
+                colorSelection: Color.mint)
+
+    }
+    
+    @ViewBuilder private func programmaDataEsatta(title:String) -> some View {
+        
+        HStack {
+           
+            DatePicker(
+                title,
+                selection: self.$nuovoMenu.giornoInizio,
+                in:Date()...,
+                displayedComponents: .date)
+            .fixedSize()
+            
+            Spacer()
+        }
+ 
+            let serviceDay = self.nuovoMenu.getGiornoServizioDataEsatta()
+            
+            HStack {
+                
+                CSText_tightRectangleVisual(fontWeight:.semibold,textColor: Color.white, strokeColor: Color.white, fillColor: Color.cyan) {
+                    
+                    HStack {
+                        
+                        csVbSwitchImageText(string: serviceDay.imageAssociated(), size: .large)
+                        Text(serviceDay.simpleDescription())
+                     //   Spacer()
+                    }
+                }
+                Spacer()
+            }
+            
+    }
+
+
+}
+
+/*struct CorpoProgrammazioneMenu_SubView: View {
+    
+    @Binding var nuovoMenu: MenuModel
     
     var valueFor:(disableDataInizio:Bool, disableDataFine:Bool, disableDays:Bool, disableOrari:Bool, titlePicker:String) {
          
-         switch self.nuovoMenu.isAvaibleWhen {
+         switch self.nuovoMenu.availability {
              
          case .dataEsatta:
              return (false,true,true,false,"li:")
@@ -35,13 +170,21 @@ struct CorpoProgrammazioneMenu_SubView: View {
             
             HStack {
                 
-                DatePicker(valueFor.titlePicker, selection: self.$nuovoMenu.dataInizio,in:Date()..., displayedComponents: .date)
+                DatePicker(
+                    valueFor.titlePicker,
+                    selection: self.$nuovoMenu.dataInizio,
+                    in:Date()...,
+                    displayedComponents: .date)
                     .opacity(self.valueFor.disableDataInizio ? 0.6 : 1.0)
                     .disabled(self.valueFor.disableDataInizio)
                 
                 Text("  |  ")
                 
-                DatePicker("al:", selection: self.$nuovoMenu.dataFine, in:(self.nuovoMenu.dataInizio.advanced(by: 604800))... ,displayedComponents: .date)
+                DatePicker(
+                    "al:",
+                    selection: self.$nuovoMenu.dataFine,
+                    in:(self.nuovoMenu.dataInizio.advanced(by: 604800))... ,
+                    displayedComponents: .date)
                     .opacity(self.valueFor.disableDataFine ? 0.6 : 1.0)
                     .disabled(self.valueFor.disableDataFine)
                 
@@ -119,7 +262,7 @@ struct CorpoProgrammazioneMenu_SubView: View {
         // Crea un doppio binario, ricava il giorno della data esatta, in quanto questo metodo viene eseguito solo in quel caso, lo copia nel nuovo menu, ma visivamente utilizza il valore di ritorno.
     } */
 
-}
+}*/ // backup 14.02.24
 
 /*struct CSLabel_1Picker_Previews: PreviewProvider {
     static var previews: some View {

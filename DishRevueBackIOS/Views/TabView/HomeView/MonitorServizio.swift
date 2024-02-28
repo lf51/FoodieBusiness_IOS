@@ -887,11 +887,11 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
         
     }
     
-    @ViewBuilder private func vbSingleStatusRow<M:MyProStarterPack_L0&MyProStatusPack_L1>(
+    @ViewBuilder private func vbSingleStatusRow<M:MyProStarterPack_L0&MyProTransitionGetPack_L01>(
         rifToCheck:[String],
         statusCheck:StatusTransition,
         path:KeyPath<FoodieViewModel,[M]>,
-        label:String? = nil) -> some View where M.VM == AccounterVM {
+        label:String? = nil) -> some View /*where M.VM == AccounterVM*/ {
         
         let localLabel = label ?? statusCheck.simpleDescription()
             
@@ -1040,10 +1040,10 @@ struct MonitorServizio_SubLogic<TopStack:View>:View {
     }
     
     
-    private func csDispoCountAndRif<M:MyProStatusPack_L1&MyProStarterPack_L0>(
+    private func csDispoCountAndRif<M:MyProTransitionGetPack_L01&MyProStarterPack_L0>(
         rifToCheck:[String],
         statusCheck:StatusTransition,
-        path:KeyPath<FoodieViewModel,[M]>) -> (count:Int,percentage:String) where M.VM == AccounterVM {
+        path:KeyPath<FoodieViewModel,[M]>) -> (count:Int,percentage:String) /*where M.VM == AccounterVM*/ {
         
         let active = self.viewModel.modelCollectionFromCollectionID(collectionId: rifToCheck, modelPath: path)
         let dispo = active.filter({

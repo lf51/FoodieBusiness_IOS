@@ -127,7 +127,9 @@ struct PannelloIngredienti_NewDishSubView: View {
 
         guard let ingredient = self.viewModel.modelFromId(id: id, modelPath: \.db.allMyIngredients) else { return (nil,nil)}
         
-        guard ingredient.statusTransition == .inPausa,
+        let statusTransition = ingredient.getStatusTransition()
+        
+        guard statusTransition == .inPausa,
         let offManager = newDish.offManager,
         let idSostituto = offManager.fetchSubstitute(for: id) else {
             return (ingredient,nil)
@@ -147,7 +149,7 @@ struct PannelloIngredienti_NewDishSubView: View {
             return (ingredient,nil)
                 } */
         guard let modelSostituto = self.viewModel.modelFromId(id: idSostituto, modelPath: \.db.allMyIngredients),
-              modelSostituto.statusTransition == .disponibile else { return (ingredient,nil) }
+              modelSostituto.getStatusTransition() == .disponibile else { return (ingredient,nil) }
         
        /* guard modelSostituto.statusTransition == .disponibile else { return (ingredient,nil)}*/
                 

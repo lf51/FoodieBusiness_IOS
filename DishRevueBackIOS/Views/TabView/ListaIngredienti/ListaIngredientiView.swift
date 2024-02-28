@@ -127,29 +127,61 @@ struct ListaIngredientiView: View {
         }
     }
     
-    private func removeTask(for ingredientId:String) {
+    private func removeTask(for ingredientId:String,and productId:String) {
         
         Task {
             
-            let key = IngredientModel.CodingKeys.asProduct.rawValue
-            let value:String? = nil
-            let path = [key:value as Any]
-            
-           try await self.viewModel.updateSingleField(
-                docId: ingredientId,
-                sub: .allMyIngredients,
-                path: path)
-            
-            
+            do {
+                
+                DispatchQueue.main.async {
+                    self.viewModel.isLoading = true
+                }
+                
+              try validateProductRemotion(productId: productId)
+                
+                let key = IngredientModel.CodingKeys.asProduct.rawValue
+                let value:String? = nil
+                let path = [key:value as Any]
+                
+               try await self.viewModel.updateSingleField(
+                    docId: ingredientId,
+                    sub: .allMyIngredients,
+                    path: path)
+                
+            } catch let error {
+                
+                DispatchQueue.main.async {
+                    self.viewModel.isLoading = nil
+                    self.viewModel.alertItem = AlertModel(
+                        title: "Azione Bloccata",
+                        message: error.localizedDescription)
+                    
+                }
+            }
+ 
         }
         
+    }
+    
+    private func validateProductRemotion(productId:String) throws {
+        
+        let menuIn:Int = self.viewModel.allMenuContaining(idPiatto: productId).countWhereDishIsIn
+        
+        guard menuIn == 0 else {
+   
+            throw CS_ErroreGenericoCustom.erroreGenerico(
+                modelName: "Prodotto Pronto",
+                problem: "L'ingrediente come prodotto pronto non può essere rimosso.",
+                reason: "Attualmente in uso in \(menuIn) menu.")
+        }
+
     }
     
     // ViewBuilder
     
     @ViewBuilder private func vbReadyProdutcOption(ingredient:IngredientModel) -> some View {
         
-        let disable = ingredient.statusTransition == .archiviato
+        let disable = ingredient.getStatusTransition() == .archiviato
         let isAReadyProduct:ProductModel? = {
             
             if let asProduct = ingredient.asProduct {
@@ -176,7 +208,7 @@ struct ListaIngredientiView: View {
             
                 Button(role:.destructive) {
                     
-                    removeTask(for: ingredient.id)
+                    removeTask(for: ingredient.id, and: isAReadyProduct.id)
                     
                 } label: {
                     HStack {

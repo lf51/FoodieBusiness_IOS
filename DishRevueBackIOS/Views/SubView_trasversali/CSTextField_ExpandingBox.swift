@@ -48,7 +48,9 @@ import MyPackView_L0
    
             VStack {
                          
-                TextField("[+] Inserire una descrizione", text: $description, axis: .vertical)
+                TextField("[+] Inserire una descrizione", 
+                          text: $description,
+                          axis: .vertical)
                     .font(.system(.body,design:.rounded))
                     .foregroundStyle(/*isEditorActive ? Color.white :*/ Color.black)
                     .autocapitalization(.sentences)
@@ -145,8 +147,8 @@ import MyPackView_L0
       // self.isEditorActive = false
         csHideKeyboard()
         // 22.08
-        let newDescription = csStringCleaner(string: description)
-        self.itemModel.descrizione = newDescription
+        let newDescription = csStringCleaner(string: self.description)
+        self.itemModel.descrizione = newDescription.isEmpty ? nil : newDescription
         self.dismissButton = false
         //
        // self.itemModel.descrizione = description

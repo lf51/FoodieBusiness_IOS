@@ -51,10 +51,10 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
     }
 }
 
-@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProStatusPack_L1>(myModel: M,viewModel:M.VM) -> some View {
+@ViewBuilder func vbMenuInterattivoModuloCambioStatus<M:MyProTransitionGetPack_L01&MyProTransitionSetPack_L02>(myModel: M,viewModel:M.VM) -> some View {
 
     let statusTransition = myModel.getStatusTransition(viewModel: viewModel)
-    let disabilita = myModel.disabilitaSetStatusTransition(viewModel: viewModel)
+    let generalDisable = myModel.generalDisableSetStatusTransition(viewModel: viewModel)
 
     Group {
         
@@ -103,7 +103,7 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
                             Image(systemName: "play.circle")
                            
                         }
-                    }.disabled(disabilita.upToDisponibile)
+                    }//.disabled(disabilita.upToDisponibile)
                     
                     
                     Button(role:.destructive) {
@@ -136,14 +136,12 @@ func csCircleDashed(internalCircle:String = "circle.fill",internalColor:Color,da
                             Image(systemName: "play.circle")
                            
                         }
-                    }.disabled(disabilita.upToDisponibile)
-                    
-
+                    }//.disabled(disabilita.upToDisponibile)
 
                 }
         }
        
-    }.disabled(disabilita.general)           
+    }.disabled(generalDisable)
 }
 
 @ViewBuilder func vbMenuInterattivoModuloEdit<M:MyProEditingPack_L0&MyProNavigationPack_L0&MyProVMPack_L0>(currentModel:M,viewModel:M.VM, navPath:ReferenceWritableKeyPath<M.VM,NavigationPath>) -> some View {

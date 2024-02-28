@@ -59,9 +59,7 @@ struct CS_Picker<E:MyProEnumPack_L1>: View {
 
 /// Mantiene una label per il ritorno allo stato di default
 struct CS_PickerWithDefault<E:MyProEnumPack_L1>: View {
-    
-    // passa da MyEnumProtocolMapConform a MyProEnumPackL1
-    
+
     @Binding var selection: E
     let customLabel:String
     let dataContainer: [E]

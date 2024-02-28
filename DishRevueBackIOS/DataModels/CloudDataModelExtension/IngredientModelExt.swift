@@ -288,7 +288,9 @@ extension IngredientModel:MyProVisualPack_L0 {
     
     public func opacityModelRowView(viewModel:AccounterVM) -> CGFloat {
         
-        switch self.statusTransition {
+        let statusTransition = self.getStatusTransition()
+        
+        switch statusTransition {
             
         case .disponibile: return 1.0
         case .inPausa: return 0.7
@@ -334,7 +336,7 @@ extension IngredientModel:MyProVisualPack_L0 {
             
            vbFinitoLabel(viewModel: viewModel)
            vbVisualManageScorte(viewModel: viewModel,navigationPath: navigationPath)
-         
+           vbEspandiPiatti(viewModel: viewModel)
           // Group {
                
                Button {
@@ -360,6 +362,27 @@ extension IngredientModel:MyProVisualPack_L0 {
                }.disabled(disabilitaButton.cambioPerma)
          
         }
+    }
+    
+    @ViewBuilder private func vbEspandiPiatti(viewModel:AccounterVM) -> some View {
+        
+        let navigationPath = viewModel.pathSelection.vmPathAssociato()
+        let allDish = viewModel.allDishContainingIngredient(idIng: self.id).count
+      //  Group {
+            Button {
+             
+                viewModel[keyPath: navigationPath].append(DestinationPathView.vistaPiattiByING(self))
+                
+            } label: {
+                HStack {
+                    Text("Vedi Utilizzo (\(allDish))")
+                    Image(systemName: "arrow.up.forward.app")
+                }
+                .lineLimit(1)
+            }
+            .disabled(allDish == 0)
+       // }
+        
     }
     
     @ViewBuilder private func vbFinitoLabel(viewModel:AccounterVM) -> some View {
@@ -398,7 +421,7 @@ extension IngredientModel:MyProVisualPack_L0 {
     
     public func vbVisualManageScorte(viewModel:AccounterVM,navigationPath:ReferenceWritableKeyPath<AccounterVM,NavigationPath>) -> some View {
         
-        let dishIn = self.dishWhereIn(readOnlyVM: viewModel)
+       // let dishIn = self.dishWhereIn(readOnlyVM: viewModel)
         
         let statoScorte = self.statusScorte()
         let transitionScorte = self.transitionScorte()
@@ -450,13 +473,13 @@ extension IngredientModel:MyProVisualPack_L0 {
             
             Button("Fuori Inventario",role: .destructive) {
 
-                if dishIn.dishCount == 0 {
+               // if dishIn.dishCount == 0 {
                     self.changeAndUpdateStatusTask(status: .outOfStock, viewModel: viewModel)
-                } else {
+               /* } else {
                     viewModel.alertItem = AlertModel(
                         title: "Azione Bloccata",
                         message: "L'ingrediente è in uso e non può essere messo fuori inventario. E' possibile usare il modulo di cambio permanente per sostiuirlo e/o rimuoverlo dai prodotti.")
-                }
+                }*/
 
             }.disabled(disabilitaButton.outOfStock)
             
@@ -508,7 +531,10 @@ extension IngredientModel:MyProVisualPack_L0 {
                 
                 DispatchQueue.main.async {
                     viewModel.isLoading = nil
-                    viewModel.logMessage = error.localizedDescription
+                   // viewModel.logMessage = error.localizedDescription
+                    viewModel.alertItem = AlertModel(
+                        title: "Azione Bloccata",
+                        message: error.localizedDescription)
                 }
 
             }
@@ -516,9 +542,39 @@ extension IngredientModel:MyProVisualPack_L0 {
     }
     
     public func changeAndUpdateStatus(status:StatoScorte,viewModel:AccounterVM) async throws {
-                
-       // throw CS_GenericError.propertyDataCorrotti
+       
+        // Updated 17.02.24
+        let menuIn:Int = {
+            
+            guard let asProduct else { return 0 }
+            
+            let id = asProduct.id
+            return viewModel.allMenuContaining(idPiatto: id).countWhereDishIsIn
+        }()
         
+        let dishIn = self.dishWhereIn(readOnlyVM: viewModel).dishCount
+        let condition = (menuIn > 0) || (dishIn > 0)
+        if status == .outOfStock,
+           condition {
+            
+            let reason:String = {
+                
+                let value = csSwitchSingolarePlurale(checkNumber: dishIn, wordSingolare: "prodotto", wordPlurale: "prodotti")
+                
+                let first = menuIn > 0 ? "come prodotto in \(menuIn) menu" : ""
+                let second = dishIn > 0 ? "come ingrediente in \(dishIn) \(value)." : ""
+                
+                let junction:String = first.isEmpty ? "" : second.isEmpty ? "." : " e "
+                
+                return first + junction + second
+            }()
+            
+            throw CS_ErroreGenericoCustom.erroreGenerico(
+                modelName: self.intestazione,
+                problem: "L'ingrediente non può andare fuori inventario.",
+                reason: "Attualmente in uso \(reason)")
+        }
+           
         let mainKey = IngredientModel.CodingKeys.inventario.rawValue
         let subKey = InventarioScorte.CodingKeys.status.rawValue
         
@@ -548,13 +604,15 @@ extension IngredientModel:MyProStatusPack_L02 {
     
     public func visualStatusDescription(viewModel: AccounterVM) -> (internalImage: String, internalColor: Color, externalColor: Color, description: String) {
         
+        let statusTransition = self.getStatusTransition()
+        
         let imageInternal = self.status.imageAssociated()
-        let colorInternal = self.statusTransition.colorAssociated()
+        let colorInternal = statusTransition.colorAssociated()
         let dashedColor = self.statusScorte().coloreAssociato()
         
         let type = self.ingredientType.tapDescription()
         let form = "Form: \(self.status.simpleDescription())"
-        let stato = "Stato: \(self.statusTransition.simpleDescription())"
+        let stato = "Stato: \(statusTransition.simpleDescription())"
         
         let descrizione = "\(type)\n\(form)\n\(stato)\nScorte: \(self.statoScorteDescription())"
         
@@ -567,7 +625,9 @@ extension IngredientModel:MyProEditingPack_L0 {
     
     public func disabilitaEditing(viewModel:AccounterVM) -> Bool {
         
-        self.statusTransition == .archiviato || self.asProduct != nil
+        let statusTransition = self.getStatusTransition()
+        
+       return statusTransition == .archiviato || self.asProduct != nil
         
     }
 }
@@ -576,7 +636,9 @@ extension IngredientModel:MyProTrashPack_L0 {
     
     public func disabilitaTrash(viewModel:AccounterVM) -> Bool {
        
-        self.statusTransition != .archiviato
+        let statusTransition = self.getStatusTransition()
+        
+        return statusTransition != .archiviato
     }
     
     public func manageModelDelete(viewModel:AccounterVM) {

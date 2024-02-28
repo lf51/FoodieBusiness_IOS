@@ -37,6 +37,8 @@ enum CS_GenericError:Error,LocalizedError {
     case modelNameAlreadyIn(_:String)
     case invalidPreparazioneStructure
     
+   
+    
     var errorDescription: String? {
         
         switch self {
@@ -55,6 +57,8 @@ enum CS_GenericError:Error,LocalizedError {
             
         case .invalidPreparazioneStructure:
             return NSLocalizedString("[Error]_La preparazione deve contenere almeno un ingrediente principale", comment: "Array Ingredienti principali vuoto")
+            
+        
         }
         
         
@@ -74,8 +78,13 @@ enum CS_NewModelCheckError:Error,LocalizedError {
     case formatPriceLabelNotValid
     case sottostanteNil
     case rifSottostanteNil
+    case modelloEsistente
     
+    case elencoProdottiVuoto
+    case noServiceDays
     
+    case erroreDiCompilazione
+ 
     
     var errorDescription: String? {
         
@@ -104,7 +113,35 @@ enum CS_NewModelCheckError:Error,LocalizedError {
             return NSLocalizedString("[ERRORE]_Sottostante corrotto", comment: "Check Fallito")
         case .rifSottostanteNil:
             return NSLocalizedString("[ERRORE]_rif sottostante corrotto", comment: "Check Fallito")
+            
+        case .modelloEsistente:
+            return NSLocalizedString("[ERRORE]_Esiste già un modello con le medesime caratteristiche", comment: "Check Fallito")
       
+        case .elencoProdottiVuoto:
+            return NSLocalizedString("[ERRORE]_Il Menu deve contenere almento un prodotto.", comment: "Check Fallito")
+            
+        case .noServiceDays:
+            return NSLocalizedString("[ERRORE]_Il Menu deve essere attivo almeno un giorno a settimana.", comment: "Check Fallito")
+            
+        case .erroreDiCompilazione:
+            return NSLocalizedString("[ERRORE]_Una o più proprietà mancanti..", comment: "Check Fallito")
+     
+        }
+        
+    }
+    
+}
+
+enum CS_ErroreGenericoCustom:Error,LocalizedError {
+    
+    case erroreGenerico(modelName:String,problem:String,reason:String)
+   
+    var errorDescription: String? {
+        
+        switch self {
+        case .erroreGenerico(let model,let problem,let reason):
+            return NSLocalizedString("[OGGETTO] \(model)\n[PROBLEM] \(problem)\n[REASON] \(reason) ", comment: "Errore Generico")
+       
         }
         
     }

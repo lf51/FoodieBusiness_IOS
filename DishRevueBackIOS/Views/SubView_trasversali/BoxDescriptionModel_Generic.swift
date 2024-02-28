@@ -9,6 +9,7 @@ import SwiftUI
 import MyFoodiePackage
 import MyPackView_L0
 
+/// Se passiamo un generalErrorCheck, tornerà un alert di errore se la descrizione resta su nil o vuota
 struct BoxDescriptionModel_Generic<M:MyProDescriptionPack_L0>: View {
     // 15.09 passa da MyProModelPack a MyProToolPack
     

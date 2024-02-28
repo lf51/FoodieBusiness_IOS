@@ -64,6 +64,7 @@
 		3F5CF2182ADD8BD6009FC2D0 /* VariousExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5CF2172ADD8BD6009FC2D0 /* VariousExtension.swift */; };
 		3F5F306C2B02A38300E2B8CC /* BottomDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5F306B2B02A38300E2B8CC /* BottomDialogView.swift */; };
 		3F5F306E2B0396F400E2B8CC /* ResultBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F5F306D2B0396F400E2B8CC /* ResultBuilder.swift */; };
+		3F61D4B42B84F4FB000C85D8 /* VistaEspansaProdottiByING.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F61D4B32B84F4FB000C85D8 /* VistaEspansaProdottiByING.swift */; };
 		3F628A102A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */; };
 		3F628A2D2A3DF1C300976D93 /* FastImport_Categorie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */; };
 		3F62DDFE289E56D9008F17A4 /* ModuloSostituzionePermanente.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F62DDFD289E56D9008F17A4 /* ModuloSostituzionePermanente.swift */; };
@@ -229,6 +230,7 @@
 		3F5CF2172ADD8BD6009FC2D0 /* VariousExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariousExtension.swift; sourceTree = "<group>"; };
 		3F5F306B2B02A38300E2B8CC /* BottomDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomDialogView.swift; sourceTree = "<group>"; };
 		3F5F306D2B0396F400E2B8CC /* ResultBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultBuilder.swift; sourceTree = "<group>"; };
+		3F61D4B32B84F4FB000C85D8 /* VistaEspansaProdottiByING.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VistaEspansaProdottiByING.swift; sourceTree = "<group>"; };
 		3F628A0F2A3DB12500976D93 /* NewPropertyMainView_GoogleMaps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewPropertyMainView_GoogleMaps.swift; sourceTree = "<group>"; };
 		3F628A2C2A3DF1C300976D93 /* FastImport_Categorie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FastImport_Categorie.swift; sourceTree = "<group>"; };
 		3F62DDFD289E56D9008F17A4 /* ModuloSostituzionePermanente.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuloSostituzionePermanente.swift; sourceTree = "<group>"; };
@@ -524,6 +526,7 @@
 				3FC26D0B2994F5EB00763915 /* VistaAllergeni_Selectable.swift */,
 				3F58EFD72A5B13BA0053BB67 /* VistaEspansaGenerica_PlusVB.swift */,
 				3FE300452B77D5B80083F028 /* VistaIngredientiEspansa_Selectable.swift */,
+				3F61D4B32B84F4FB000C85D8 /* VistaEspansaProdottiByING.swift */,
 			);
 			path = ListeEspanse;
 			sourceTree = "<group>";
@@ -1244,6 +1247,7 @@
 				4D4FE6EC27FEEBF700AC0190 /* MenuModel_RowView.swift in Sources */,
 				4DA4615B27AD14D200BD648D /* HomeView.swift in Sources */,
 				4D168C10284A56A9000B137E /* GemotryReaderTEST.swift in Sources */,
+				3F61D4B42B84F4FB000C85D8 /* VistaEspansaProdottiByING.swift in Sources */,
 				3FC26D0C2994F5EB00763915 /* VistaAllergeni_Selectable.swift in Sources */,
 				3F37FE862AF682620002FA73 /* NewProductIbridView.swift in Sources */,
 				3F39855D29029C03007731C2 /* VistaRecensioniEspansa.swift in Sources */,
@@ -1396,7 +1400,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 139;
+				CURRENT_PROJECT_VERSION = 140;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;
@@ -1427,7 +1431,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DishRevueBackIOS/DishRevueBackIOS.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 139;
+				CURRENT_PROJECT_VERSION = 140;
 				DEVELOPMENT_ASSET_PATHS = "\"DishRevueBackIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 2HR732K89Z;
 				ENABLE_PREVIEWS = YES;

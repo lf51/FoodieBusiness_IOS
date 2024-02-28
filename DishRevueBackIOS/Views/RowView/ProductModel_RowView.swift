@@ -725,7 +725,7 @@ struct ProductModel_RowView: View {
         }*/
         
         if self.item.offManager?.idIngredienteDaSostituire == ingredient.id {isOff = true}
-        else { isOff = ingredient.statusTransition == .inPausa }
+        else { isOff = ingredient.getStatusTransition() == .inPausa }
         
         var idSostituto: String? = nil
 
